@@ -1,0 +1,746 @@
+ook();
+  }
+
+  if (current !== null && !didReceiveUpdate) {
+    bailoutHooks(current, workInProgress, renderLanes);
+    return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
+  }
+
+  if (getIsHydrating() && hasId) {
+    pushMaterializedTreeId(workInProgress);
+  } // React DevTools reads this flag.
+
+
+  workInProgress.flags |= PerformedWork;
+  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
+  return workInProgress.child;
+}
+
+function replayFunctionComponent(current, workInProgress, nextProps, Component, secondArg, renderLanes) {
+  // This function is used to replay a component that previously suspended,
+  // after its data resolves. It's a simplified version of
+  // updateFunctionComponent that reuses the hooks from the previous attempt.
+  prepareToReadContext(workInProgress, renderLanes);
+
+  const nextChildren = replaySuspendedComponentWithHooks(current, workInProgress, Component, nextProps, secondArg);
+  const hasId = checkDidRenderIdHook();
+
+  if (current !== null && !didReceiveUpdate) {
+    bailoutHooks(current, workInProgress, renderLanes);
+    return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
+  }
+
+  if (getIsHydrating() && hasId) {
+    pushMaterializedTreeId(workInProgress);
+  } // React DevTools reads this flag.
+
+
+  workInProgress.flags |= PerformedWork;
+  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
+  return workInProgress.child;
+}
+
+function updateClassComponent(current, workInProgress, Component, nextProps, renderLanes) {
+  // During mounting we don't know the child context yet as the instance doesn't exist.
+  // We will invalidate the child context in finishClassComponent() right after rendering.
+
+
+  let hasContext;
+
+  if (isContextProvider(Component)) {
+    hasContext = true;
+    pushContextProvider(workInProgress);
+  } else {
+    hasContext = false;
+  }
+
+  prepareToReadContext(workInProgress, renderLanes);
+  const instance = workInProgress.stateNode;
+  let shouldUpdate;
+
+  if (instance === null) {
+    resetSuspendedCurrentOnMountInLegacyMode(current, workInProgress); // In the initial pass we might need to construct the instance.
+
+    constructClassInstance(workInProgress, Component, nextProps);
+    mountClassInstance(workInProgress, Component, nextProps, renderLanes);
+    shouldUpdate = true;
+  } else if (current === null) {
+    // In a resume, we'll already have an instance we can reuse.
+    shouldUpdate = resumeMountClassInstance(workInProgress, Component, nextProps, renderLanes);
+  } else {
+    shouldUpdate = updateClassInstance(current, workInProgress, Component, nextProps, renderLanes);
+  }
+
+  const nextUnitOfWork = finishClassComponent(current, workInProgress, Component, shouldUpdate, hasContext, renderLanes);
+
+  return nextUnitOfWork;
+}
+
+function finishClassComponent(current, workInProgress, Component, shouldUpdate, hasContext, renderLanes) {
+  // Refs should update even if shouldComponentUpdate returns false
+  markRef$1(current, workInProgress);
+  const didCaptureError = (workInProgress.flags & DidCapture) !== NoFlags$1;
+
+  if (!shouldUpdate && !didCaptureError) {
+    // Context providers should defer to sCU for rendering
+    if (hasContext) {
+      invalidateContextProvider(workInProgress, Component, false);
+    }
+
+    return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
+  }
+
+  const instance = workInProgress.stateNode; // Rerender
+
+  ReactCurrentOwner$1.current = workInProgress;
+  let nextChildren;
+
+  if (didCaptureError && typeof Component.getDerivedStateFromError !== 'function') {
+    // If we captured an error, but getDerivedStateFromError is not defined,
+    // unmount all the children. componentDidCatch will schedule an update to
+    // re-render a fallback. This is temporary until we migrate everyone to
+    // the new API.
+    // TODO: Warn in a future release.
+    nextChildren = null;
+  } else {
+
+    {
+      nextChildren = instance.render();
+    }
+  } // React DevTools reads this flag.
+
+
+  workInProgress.flags |= PerformedWork;
+
+  if (current !== null && didCaptureError) {
+    // If we're recovering from an error, reconcile without reusing any of
+    // the existing children. Conceptually, the normal children and the children
+    // that are shown on error are two different sets, so we shouldn't reuse
+    // normal children even if their identities match.
+    forceUnmountCurrentAndReconcile(current, workInProgress, nextChildren, renderLanes);
+  } else {
+    reconcileChildren(current, workInProgress, nextChildren, renderLanes);
+  } // Memoize state using the values we just used to render.
+  // TODO: Restructure so we never read values from the instance.
+
+
+  workInProgress.memoizedState = instance.state; // The context might have changed so we need to recalculate it.
+
+  if (hasContext) {
+    invalidateContextProvider(workInProgress, Component, true);
+  }
+
+  return workInProgress.child;
+}
+
+function pushHostRootContext(workInProgress) {
+  const root = workInProgress.stateNode;
+
+  if (root.pendingContext) {
+    pushTopLevelContextObject(workInProgress, root.pendingContext, root.pendingContext !== root.context);
+  } else if (root.context) {
+    // Should always be set
+    pushTopLevelContextObject(workInProgress, root.context, false);
+  }
+
+  pushHostContainer(workInProgress, root.containerInfo);
+}
+
+function updateHostRoot(current, workInProgress, renderLanes) {
+  pushHostRootContext(workInProgress);
+
+  if (current === null) {
+    throw Error(formatProdErrorMessage(387));
+  }
+
+  const nextProps = workInProgress.pendingProps;
+  const prevState = workInProgress.memoizedState;
+  const prevChildren = prevState.element;
+  cloneUpdateQueue(current, workInProgress);
+  processUpdateQueue(workInProgress, nextProps, null, renderLanes);
+  const nextState = workInProgress.memoizedState;
+
+  {
+    const nextCache = nextState.cache;
+    pushCacheProvider(workInProgress, nextCache);
+
+    if (nextCache !== prevState.cache) {
+      // The root cache refreshed.
+      propagateContextChange(workInProgress, CacheContext, renderLanes);
+    }
+  } // Caution: React DevTools currently depends on this property
+  // being called "element".
+
+
+  const nextChildren = nextState.element;
+
+  if (prevState.isDehydrated) {
+    // This is a hydration root whose shell has not yet hydrated. We should
+    // attempt to hydrate.
+    // Flip isDehydrated to false to indicate that when this render
+    // finishes, the root will no longer be dehydrated.
+    const overrideState = {
+      element: nextChildren,
+      isDehydrated: false,
+      cache: nextState.cache
+    };
+    const updateQueue = workInProgress.updateQueue; // `baseState` can always be the last state because the root doesn't
+    // have reducer functions so it doesn't need rebasing.
+
+    updateQueue.baseState = overrideState;
+    workInProgress.memoizedState = overrideState;
+
+    if (workInProgress.flags & ForceClientRender) {
+      // Something errored during a previous attempt to hydrate the shell, so we
+      // forced a client render.
+      const recoverableError = createCapturedValueAtFiber(Error(formatProdErrorMessage(423)), workInProgress);
+      return mountHostRootWithoutHydrating(current, workInProgress, nextChildren, renderLanes, recoverableError);
+    } else if (nextChildren !== prevChildren) {
+      const recoverableError = createCapturedValueAtFiber(Error(formatProdErrorMessage(424)), workInProgress);
+      return mountHostRootWithoutHydrating(current, workInProgress, nextChildren, renderLanes, recoverableError);
+    } else {
+      // The outermost shell has not hydrated yet. Start hydrating.
+      enterHydrationState(workInProgress);
+      const child = mountChildFibers(workInProgress, null, nextChildren, renderLanes);
+      workInProgress.child = child;
+      let node = child;
+
+      while (node) {
+        // Mark each child as hydrating. This is a fast path to know whether this
+        // tree is part of a hydrating tree. This is used to determine if a child
+        // node has fully mounted yet, and for scheduling event replaying.
+        // Conceptually this is similar to Placement in that a new subtree is
+        // inserted into the React tree here. It just happens to not need DOM
+        // mutations because it already exists.
+        node.flags = node.flags & ~Placement | Hydrating;
+        node = node.sibling;
+      }
+    }
+  } else {
+    // Root is not dehydrated. Either this is a client-only root, or it
+    // already hydrated.
+    resetHydrationState();
+
+    if (nextChildren === prevChildren) {
+      return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
+    }
+
+    reconcileChildren(current, workInProgress, nextChildren, renderLanes);
+  }
+
+  return workInProgress.child;
+}
+
+function mountHostRootWithoutHydrating(current, workInProgress, nextChildren, renderLanes, recoverableError) {
+  // Revert to client rendering.
+  resetHydrationState();
+  queueHydrationError(recoverableError);
+  workInProgress.flags |= ForceClientRender;
+  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
+  return workInProgress.child;
+}
+
+function updateHostComponent$1(current, workInProgress, renderLanes) {
+  pushHostContext(workInProgress);
+
+  if (current === null) {
+    tryToClaimNextHydratableInstance(workInProgress);
+  }
+
+  const type = workInProgress.type;
+  const nextProps = workInProgress.pendingProps;
+  const prevProps = current !== null ? current.memoizedProps : null;
+  let nextChildren = nextProps.children;
+  const isDirectTextChild = shouldSetTextContent(type, nextProps);
+
+  if (isDirectTextChild) {
+    // We special case a direct text child of a host node. This is a common
+    // case. We won't handle it as a reified child. We will instead handle
+    // this in the host environment that also has access to this prop. That
+    // avoids allocating another HostText fiber and traversing it.
+    nextChildren = null;
+  } else if (prevProps !== null && shouldSetTextContent(type, prevProps)) {
+    // If we're switching from a direct text child to a normal child, or to
+    // empty, we need to schedule the text content to be reset.
+    workInProgress.flags |= ContentReset;
+  }
+
+  {
+    const memoizedState = workInProgress.memoizedState;
+
+    if (memoizedState !== null) {
+      // This fiber has been upgraded to a stateful component. The only way
+      // happens currently is for form actions. We use hooks to track the
+      // pending and error state of the form.
+      //
+      // Once a fiber is upgraded to be stateful, it remains stateful for the
+      // rest of its lifetime.
+      const newState = renderTransitionAwareHostComponentWithHooks(current, workInProgress, renderLanes); // If the transition state changed, propagate the change to all the
+      // descendents. We use Context as an implementation detail for this.
+      //
+      // This is intentionally set here instead of pushHostContext because
+      // pushHostContext gets called before we process the state hook, to avoid
+      // a state mismatch in the event that something suspends.
+      //
+      // NOTE: This assumes that there cannot be nested transition providers,
+      // because the only renderer that implements this feature is React DOM,
+      // and forms cannot be nested. If we did support nested providers, then
+      // we would need to push a context value even for host fibers that
+      // haven't been upgraded yet.
+
+      {
+        HostTransitionContext._currentValue = newState;
+      }
+
+      {
+        if (didReceiveUpdate) {
+          if (current !== null) {
+            const oldStateHook = current.memoizedState;
+            const oldState = oldStateHook.memoizedState; // This uses regular equality instead of Object.is because we assume
+            // that host transition state doesn't include NaN as a valid type.
+
+            if (oldState !== newState) {
+              propagateContextChange(workInProgress, HostTransitionContext, renderLanes);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  markRef$1(current, workInProgress);
+  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
+  return workInProgress.child;
+}
+
+function updateHostHoistable(current, workInProgress, renderLanes) {
+  markRef$1(current, workInProgress);
+  const currentProps = current === null ? null : current.memoizedProps;
+  const resource = workInProgress.memoizedState = getResource(workInProgress.type, currentProps, workInProgress.pendingProps);
+
+  if (current === null) {
+    if (!getIsHydrating() && resource === null) {
+      // This is not a Resource Hoistable and we aren't hydrating so we construct the instance.
+      workInProgress.stateNode = createHoistableInstance(workInProgress.type, workInProgress.pendingProps, getRootHostContainer(), workInProgress);
+    }
+  } // Resources never have reconciler managed children. It is possible for
+  // the host implementation of getResource to consider children in the
+  // resource construction but they will otherwise be discarded. In practice
+  // this precludes all but the simplest children and Host specific warnings
+  // should be implemented to warn when children are passsed when otherwise not
+  // expected
+
+
+  return null;
+}
+
+function updateHostSingleton(current, workInProgress, renderLanes) {
+  pushHostContext(workInProgress);
+
+  if (current === null) {
+    claimHydratableSingleton(workInProgress);
+  }
+
+  const nextChildren = workInProgress.pendingProps.children;
+
+  if (current === null && !getIsHydrating()) {
+    // Similar to Portals we append Singleton children in the commit phase. So we
+    // Track insertions even on mount.
+    // TODO: Consider unifying this with how the root works.
+    workInProgress.child = reconcileChildFibers(workInProgress, null, nextChildren, renderLanes);
+  } else {
+    reconcileChildren(current, workInProgress, nextChildren, renderLanes);
+  }
+
+  markRef$1(current, workInProgress);
+  return workInProgress.child;
+}
+
+function updateHostText$1(current, workInProgress) {
+  if (current === null) {
+    tryToClaimNextHydratableTextInstance(workInProgress);
+  } // Nothing to do here. This is terminal. We'll do the completion step
+  // immediately after.
+
+
+  return null;
+}
+
+function mountLazyComponent(_current, workInProgress, elementType, renderLanes) {
+  resetSuspendedCurrentOnMountInLegacyMode(_current, workInProgress);
+  const props = workInProgress.pendingProps;
+  const lazyComponent = elementType;
+  const payload = lazyComponent._payload;
+  const init = lazyComponent._init;
+  let Component = init(payload); // Store the unwrapped component in the type.
+
+  workInProgress.type = Component;
+  const resolvedTag = workInProgress.tag = resolveLazyComponentTag(Component);
+  const resolvedProps = resolveDefaultProps(Component, props);
+  let child;
+
+  switch (resolvedTag) {
+    case FunctionComponent:
+      {
+
+        child = updateFunctionComponent(null, workInProgress, Component, resolvedProps, renderLanes);
+        return child;
+      }
+
+    case ClassComponent:
+      {
+
+        child = updateClassComponent(null, workInProgress, Component, resolvedProps, renderLanes);
+        return child;
+      }
+
+    case ForwardRef:
+      {
+
+        child = updateForwardRef(null, workInProgress, Component, resolvedProps, renderLanes);
+        return child;
+      }
+
+    case MemoComponent:
+      {
+
+        child = updateMemoComponent(null, workInProgress, Component, resolveDefaultProps(Component.type, resolvedProps), // The inner type can have defaults too
+        renderLanes);
+        return child;
+      }
+  }
+
+  let hint = '';
+  // because the fact that it's a separate type of work is an
+  // implementation detail.
+
+
+  throw Error(formatProdErrorMessage(306, Component, hint));
+}
+
+function mountIncompleteClassComponent(_current, workInProgress, Component, nextProps, renderLanes) {
+  resetSuspendedCurrentOnMountInLegacyMode(_current, workInProgress); // Promote the fiber to a class and try rendering again.
+
+  workInProgress.tag = ClassComponent; // The rest of this function is a fork of `updateClassComponent`
+  // Push context providers early to prevent context stack mismatches.
+  // During mounting we don't know the child context yet as the instance doesn't exist.
+  // We will invalidate the child context in finishClassComponent() right after rendering.
+
+  let hasContext;
+
+  if (isContextProvider(Component)) {
+    hasContext = true;
+    pushContextProvider(workInProgress);
+  } else {
+    hasContext = false;
+  }
+
+  prepareToReadContext(workInProgress, renderLanes);
+  constructClassInstance(workInProgress, Component, nextProps);
+  mountClassInstance(workInProgress, Component, nextProps, renderLanes);
+  return finishClassComponent(null, workInProgress, Component, true, hasContext, renderLanes);
+}
+
+function mountIndeterminateComponent(_current, workInProgress, Component, renderLanes) {
+  resetSuspendedCurrentOnMountInLegacyMode(_current, workInProgress);
+  const props = workInProgress.pendingProps;
+  let context;
+
+  {
+    const unmaskedContext = getUnmaskedContext(workInProgress, Component, false);
+    context = getMaskedContext(workInProgress, unmaskedContext);
+  }
+
+  prepareToReadContext(workInProgress, renderLanes);
+  let value;
+  let hasId;
+
+  {
+    value = renderWithHooks(null, workInProgress, Component, props, context, renderLanes);
+    hasId = checkDidRenderIdHook();
+  }
+
+
+  workInProgress.flags |= PerformedWork;
+
+  if ( // Run these checks in production only if the flag is off.
+  // Eventually we'll delete this branch altogether.
+  typeof value === 'object' && value !== null && typeof value.render === 'function' && value.$$typeof === undefined) {
+
+
+    workInProgress.tag = ClassComponent; // Throw out any hooks that were used.
+
+    workInProgress.memoizedState = null;
+    workInProgress.updateQueue = null; // Push context providers early to prevent context stack mismatches.
+    // During mounting we don't know the child context yet as the instance doesn't exist.
+    // We will invalidate the child context in finishClassComponent() right after rendering.
+
+    let hasContext = false;
+
+    if (isContextProvider(Component)) {
+      hasContext = true;
+      pushContextProvider(workInProgress);
+    } else {
+      hasContext = false;
+    }
+
+    workInProgress.memoizedState = value.state !== null && value.state !== undefined ? value.state : null;
+    initializeUpdateQueue(workInProgress);
+    adoptClassInstance(workInProgress, value);
+    mountClassInstance(workInProgress, Component, props, renderLanes);
+    return finishClassComponent(null, workInProgress, Component, true, hasContext, renderLanes);
+  } else {
+    // Proceed under the assumption that this is a function component
+    workInProgress.tag = FunctionComponent;
+
+    if (getIsHydrating() && hasId) {
+      pushMaterializedTreeId(workInProgress);
+    }
+
+    reconcileChildren(null, workInProgress, value, renderLanes);
+
+    return workInProgress.child;
+  }
+}
+
+const SUSPENDED_MARKER = {
+  dehydrated: null,
+  treeContext: null,
+  retryLane: NoLane
+};
+
+function mountSuspenseOffscreenState(renderLanes) {
+  return {
+    baseLanes: renderLanes,
+    cachePool: getSuspendedCache()
+  };
+}
+
+function updateSuspenseOffscreenState(prevOffscreenState, renderLanes) {
+  let cachePool = null;
+
+  {
+    const prevCachePool = prevOffscreenState.cachePool;
+
+    if (prevCachePool !== null) {
+      const parentCache = CacheContext._currentValue ;
+
+      if (prevCachePool.parent !== parentCache) {
+        // Detected a refresh in the parent. This overrides any previously
+        // suspended cache.
+        cachePool = {
+          parent: parentCache,
+          pool: parentCache
+        };
+      } else {
+        // We can reuse the cache from last time. The only thing that would have
+        // overridden it is a parent refresh, which we checked for above.
+        cachePool = prevCachePool;
+      }
+    } else {
+      // If there's no previous cache pool, grab the current one.
+      cachePool = getSuspendedCache();
+    }
+  }
+
+  return {
+    baseLanes: mergeLanes(prevOffscreenState.baseLanes, renderLanes),
+    cachePool
+  };
+} // TODO: Probably should inline this back
+
+
+function shouldRemainOnFallback(current, workInProgress, renderLanes) {
+  // If we're already showing a fallback, there are cases where we need to
+  // remain on that fallback regardless of whether the content has resolved.
+  // For example, SuspenseList coordinates when nested content appears.
+  // TODO: For compatibility with offscreen prerendering, this should also check
+  // whether the current fiber (if it exists) was visible in the previous tree.
+  if (current !== null) {
+    const suspenseState = current.memoizedState;
+
+    if (suspenseState === null) {
+      // Currently showing content. Don't hide it, even if ForceSuspenseFallback
+      // is true. More precise name might be "ForceRemainSuspenseFallback".
+      // Note: This is a factoring smell. Can't remain on a fallback if there's
+      // no fallback to remain on.
+      return false;
+    }
+  } // Not currently showing content. Consult the Suspense context.
+
+
+  const suspenseContext = suspenseStackCursor.current;
+  return hasSuspenseListContext(suspenseContext, ForceSuspenseFallback);
+}
+
+function getRemainingWorkInPrimaryTree(current, primaryTreeDidDefer, renderLanes) {
+  let remainingLanes = current !== null ? removeLanes(current.childLanes, renderLanes) : NoLanes;
+
+  if (primaryTreeDidDefer) {
+    // A useDeferredValue hook spawned a deferred task inside the primary tree.
+    // Ensure that we retry this component at the deferred priority.
+    // TODO: We could make this a per-subtree value instead of a global one.
+    // Would need to track it on the context stack somehow, similar to what
+    // we'd have to do for resumable contexts.
+    remainingLanes = mergeLanes(remainingLanes, peekDeferredLane());
+  }
+
+  return remainingLanes;
+}
+
+function updateSuspenseComponent(current, workInProgress, renderLanes) {
+  const nextProps = workInProgress.pendingProps; // This is used by DevTools to force a boundary to suspend.
+
+  let showFallback = false;
+  const didSuspend = (workInProgress.flags & DidCapture) !== NoFlags$1;
+
+  if (didSuspend || shouldRemainOnFallback(current)) {
+    // Something in this boundary's subtree already suspended. Switch to
+    // rendering the fallback children.
+    showFallback = true;
+    workInProgress.flags &= ~DidCapture;
+  } // Check if the primary children spawned a deferred task (useDeferredValue)
+  // during the first pass.
+
+
+  const didPrimaryChildrenDefer = (workInProgress.flags & DidDefer) !== NoFlags$1;
+  workInProgress.flags &= ~DidDefer; // OK, the next part is confusing. We're about to reconcile the Suspense
+  // boundary's children. This involves some custom reconciliation logic. Two
+  // main reasons this is so complicated.
+  //
+  // First, Legacy Mode has different semantics for backwards compatibility. The
+  // primary tree will commit in an inconsistent state, so when we do the
+  // second pass to render the fallback, we do some exceedingly, uh, clever
+  // hacks to make that not totally break. Like transferring effects and
+  // deletions from hidden tree. In Concurrent Mode, it's much simpler,
+  // because we bailout on the primary tree completely and leave it in its old
+  // state, no effects. Same as what we do for Offscreen (except that
+  // Offscreen doesn't have the first render pass).
+  //
+  // Second is hydration. During hydration, the Suspense fiber has a slightly
+  // different layout, where the child points to a dehydrated fragment, which
+  // contains the DOM rendered by the server.
+  //
+  // Third, even if you set all that aside, Suspense is like error boundaries in
+  // that we first we try to render one tree, and if that fails, we render again
+  // and switch to a different tree. Like a try/catch block. So we have to track
+  // which branch we're currently rendering. Ideally we would model this using
+  // a stack.
+
+  if (current === null) {
+    // Initial mount
+    // Special path for hydration
+    // If we're currently hydrating, try to hydrate this boundary.
+    if (getIsHydrating()) {
+      // We must push the suspense handler context *before* attempting to
+      // hydrate, to avoid a mismatch in case it errors.
+      if (showFallback) {
+        pushPrimaryTreeSuspenseHandler(workInProgress);
+      } else {
+        pushFallbackTreeSuspenseHandler(workInProgress);
+      }
+
+      tryToClaimNextHydratableSuspenseInstance(workInProgress); // This could've been a dehydrated suspense component.
+
+      const suspenseState = workInProgress.memoizedState;
+
+      if (suspenseState !== null) {
+        const dehydrated = suspenseState.dehydrated;
+
+        if (dehydrated !== null) {
+          return mountDehydratedSuspenseComponent(workInProgress, dehydrated);
+        }
+      } // If hydration didn't succeed, fall through to the normal Suspense path.
+      // To avoid a stack mismatch we need to pop the Suspense handler that we
+      // pushed above. This will become less awkward when move the hydration
+      // logic to its own fiber.
+
+
+      popSuspenseHandler(workInProgress);
+    }
+
+    const nextPrimaryChildren = nextProps.children;
+    const nextFallbackChildren = nextProps.fallback;
+
+    if (showFallback) {
+      pushFallbackTreeSuspenseHandler(workInProgress);
+      const fallbackFragment = mountSuspenseFallbackChildren(workInProgress, nextPrimaryChildren, nextFallbackChildren, renderLanes);
+      const primaryChildFragment = workInProgress.child;
+      primaryChildFragment.memoizedState = mountSuspenseOffscreenState(renderLanes);
+      primaryChildFragment.childLanes = getRemainingWorkInPrimaryTree(current, didPrimaryChildrenDefer, renderLanes);
+      workInProgress.memoizedState = SUSPENDED_MARKER;
+
+      return fallbackFragment;
+    } else if (typeof nextProps.unstable_expectedLoadTime === 'number') {
+      // This is a CPU-bound tree. Skip this tree and show a placeholder to
+      // unblock the surrounding content. Then immediately retry after the
+      // initial commit.
+      pushFallbackTreeSuspenseHandler(workInProgress);
+      const fallbackFragment = mountSuspenseFallbackChildren(workInProgress, nextPrimaryChildren, nextFallbackChildren, renderLanes);
+      const primaryChildFragment = workInProgress.child;
+      primaryChildFragment.memoizedState = mountSuspenseOffscreenState(renderLanes);
+      primaryChildFragment.childLanes = getRemainingWorkInPrimaryTree(current, didPrimaryChildrenDefer, renderLanes);
+      workInProgress.memoizedState = SUSPENDED_MARKER; // TODO: Transition Tracing is not yet implemented for CPU Suspense.
+      // Since nothing actually suspended, there will nothing to ping this to
+      // get it started back up to attempt the next item. While in terms of
+      // priority this work has the same priority as this current render, it's
+      // not part of the same transition once the transition has committed. If
+      // it's sync, we still want to yield so that it can be painted.
+      // Conceptually, this is really the same as pinging. We can use any
+      // RetryLane even if it's the one currently rendering since we're leaving
+      // it behind on this node.
+
+      workInProgress.lanes = SomeRetryLane;
+      return fallbackFragment;
+    } else {
+      pushPrimaryTreeSuspenseHandler(workInProgress);
+      return mountSuspensePrimaryChildren(workInProgress, nextPrimaryChildren);
+    }
+  } else {
+    // This is an update.
+    // Special path for hydration
+    const prevState = current.memoizedState;
+
+    if (prevState !== null) {
+      const dehydrated = prevState.dehydrated;
+
+      if (dehydrated !== null) {
+        return updateDehydratedSuspenseComponent(current, workInProgress, didSuspend, didPrimaryChildrenDefer, nextProps, dehydrated, prevState, renderLanes);
+      }
+    }
+
+    if (showFallback) {
+      pushFallbackTreeSuspenseHandler(workInProgress);
+      const nextFallbackChildren = nextProps.fallback;
+      const nextPrimaryChildren = nextProps.children;
+      const fallbackChildFragment = updateSuspenseFallbackChildren(current, workInProgress, nextPrimaryChildren, nextFallbackChildren, renderLanes);
+      const primaryChildFragment = workInProgress.child;
+      const prevOffscreenState = current.child.memoizedState;
+      primaryChildFragment.memoizedState = prevOffscreenState === null ? mountSuspenseOffscreenState(renderLanes) : updateSuspenseOffscreenState(prevOffscreenState, renderLanes);
+
+      primaryChildFragment.childLanes = getRemainingWorkInPrimaryTree(current, didPrimaryChildrenDefer, renderLanes);
+      workInProgress.memoizedState = SUSPENDED_MARKER;
+      return fallbackChildFragment;
+    } else {
+      pushPrimaryTreeSuspenseHandler(workInProgress);
+      const nextPrimaryChildren = nextProps.children;
+      const primaryChildFragment = updateSuspensePrimaryChildren(current, workInProgress, nextPrimaryChildren, renderLanes);
+      workInProgress.memoizedState = null;
+      return primaryChildFragment;
+    }
+  }
+}
+
+function mountSuspensePrimaryChildren(workInProgress, primaryChildren, renderLanes) {
+  const mode = workInProgress.mode;
+  const primaryChildProps = {
+    mode: 'visible',
+    children: primaryChildren
+  };
+  const primaryChildFragment = mountWorkInProgressOffscreenFiber(primaryChildProps, mode);
+  primaryChildFragment.return = workInProgress;
+  workInProgress.child = primaryChildFragment;
+  return primaryChildFragment;
+}
+
+function mountSuspense
