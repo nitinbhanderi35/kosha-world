@@ -1,0 +1,1689 @@
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.resolveURI = factory());
+})(this, (function () { 'use strict';
+
+    // Matches the scheme of a URL, eg "http://"
+    const schemeRegex = /^[\w+.-]+:\/\//;
+    /**
+     * Matches the parts of a URL:
+     * 1. Scheme, including ":", guaranteed.
+     * 2. User/password, including "@", optional.
+     * 3. Host, guaranteed.
+     * 4. Port, including ":", optional.
+     * 5. Path, including "/", optional.
+     * 6. Query, including "?", optional.
+     * 7. Hash, including "#", optional.
+     */
+    const urlRegex = /^([\w+.-]+:)\/\/([^@/#?]*@)?([^:/#?]*)(:\d+)?(\/[^#?]*)?(\?[^#]*)?(#.*)?/;
+    /**
+     * File URLs are weird. They dont' need the regular `//` in the scheme, they may or may not start
+     * with a leading `/`, they can have a domain (but only if they don't start with a Windows drive).
+     *
+     * 1. Host, optional.
+     * 2. Path, which may include "/", guaranteed.
+     * 3. Query, including "?", optional.
+     * 4. Hash, including "#", optional.
+     */
+    const fileRegex = /^file:(?:\/\/((?![a-z]:)[^/#?]*)?)?(\/?[^#?]*)(\?[^#]*)?(#.*)?/i;
+    var UrlType;
+    (function (UrlType) {
+        UrlType[UrlType["Empty"] = 1] = "Empty";
+        UrlType[UrlType["Hash"] = 2] = "Hash";
+        UrlType[UrlType["Query"] = 3] = "Query";
+        UrlType[UrlType["RelativePath"] = 4] = "RelativePath";
+        UrlType[UrlType["AbsolutePath"] = 5] = "AbsolutePath";
+        UrlType[UrlType["SchemeRelative"] = 6] = "SchemeRelative";
+        UrlType[UrlType["Absolute"] = 7] = "Absolute";
+    })(UrlType || (UrlType = {}));
+    function isAbsoluteUrl(input) {
+        return schemeRegex.test(input);
+    }
+    function isSchemeRelativeUrl(input) {
+        return input.startsWith('//');
+    }
+    function isAbsolutePath(input) {
+        return input.startsWith('/');
+    }
+    function isFileUrl(input) {
+        return input.startsWith('file:');
+    }
+    function isRelative(input) {
+        return /^[.?#]/.test(input);
+    }
+    function parseAbsoluteUrl(input) {
+        const match = urlRegex.exec(input);
+        return makeUrl(match[1], match[2] || '', match[3], match[4] || '', match[5] || '/', match[6] || '', match[7] || '');
+    }
+    function parseFileUrl(input) {
+        const match = fileRegex.exec(input);
+        const path = match[2];
+        return makeUrl('file:', '', match[1] || '', '', isAbsolutePath(path) ? path : '/' + path, match[3] || '', match[4] || '');
+    }
+    function makeUrl(scheme, user, host, port, path, query, hash) {
+        return {
+            scheme,
+            user,
+            host,
+            port,
+            path,
+            query,
+            hash,
+            type: UrlType.Absolute,
+        };
+    }
+    function parseUrl(input) {
+        if (isSchemeRelativeUrl(input)) {
+            const url = parseAbsoluteUrl('http:' + input);
+            url.scheme = '';
+            url.type = UrlType.SchemeRelative;
+            return url;
+        }
+        if (isAbsolutePath(input)) {
+            const url = parseAbsoluteUrl('http://foo.com' + input);
+            url.scheme = '';
+            url.host = '';
+            url.type = UrlType.AbsolutePath;
+            return url;
+        }
+        if (isFileUrl(input))
+            return parseFileUrl(input);
+        if (isAbsoluteUrl(input))
+            return parseAbsoluteUrl(input);
+        const url = parseAbsoluteUrl('http://foo.com/' + input);
+        url.scheme = '';
+        url.host = '';
+        url.type = input
+            ? input.startsWith('?')
+                ? UrlType.Query
+                : input.startsWith('#')
+                    ? UrlType.Hash
+                    : UrlType.RelativePath
+            : UrlType.Empty;
+        return url;
+    }
+    function stripPathFilename(path) {
+        // If a path ends with a parent directory "..", then it's a relative path with excess parent
+        // paths. It's not a file, so we can't strip it.
+        if (path.endsWith('/..'))
+            return path;
+        const index = path.lastIndexOf('/');
+        return path.slice(0, index + 1);
+    }
+    function mergePaths(url, base) {
+        normalizePath(base, base.type);
+        // If the path is just a "/", then it was an empty path to begin with (remember, we're a relative
+        // path).
+        if (url.path === '/') {
+            url.path = base.path;
+        }
+        else {
+            // Resolution happens relative to the base path's directory, not the file.
+            url.path = stripPathFilename(base.path) + url.path;
+        }
+    }
+    /**
+     * The path can have empty directories "//", unneeded parents "foo/..", or current directory
+     * "foo/.". We need to normalize to a standard representation.
+     */
+    function normalizePath(url, type) {
+        const rel = type <= UrlType.RelativePath;
+        const pieces = url.path.split('/');
+        // We need to preserve the first piece always, so that we output a leading slash. The item at
+        // pieces[0] is an empty string.
+        let pointer = 1;
+        // Positive is the number of real directories we've output, used for popping a parent directory.
+        // Eg, "foo/bar/.." will have a positive 2, and we can decrement to be left with just "foo".
+        let positive = 0;
+        // We need to keep a trailing slash if we encounter an empty directory (eg, splitting "foo/" will
+        // generate `["foo", ""]` pieces). And, if we pop a parent directory. But once we encounter a
+        // real directory, we won't need to append, unless the other conditions happen again.
+        let addTrailingSlash = false;
+        for (let i = 1; i < pieces.length; i++) {
+            const piece = pieces[i];
+            // An empty directory, could be a trailing slash, or just a double "//" in the path.
+            if (!piece) {
+                addTrailingSlash = true;
+                continue;
+            }
+            // If we encounter a real directory, then we don't need to append anymore.
+            addTrailingSlash = false;
+            // A current directory, which we can always drop.
+            if (piece === '.')
+                continue;
+            // A parent directory, we need to see if there are any real directories we can pop. Else, we
+            // have an excess of parents, and we'll need to keep the "..".
+            if (piece === '..') {
+                if (positive) {
+                    addTrailingSlash = true;
+                    positive--;
+                    pointer--;
+                }
+                else if (rel) {
+                    // If we're in a relativePath, then we need to keep the excess parents. Else, in an absolute
+                    // URL, protocol relative URL, or an absolute path, we don't need to keep excess.
+                    pieces[pointer++] = piece;
+                }
+                continue;
+            }
+            // We've encountered a real directory. Move it to the next insertion pointer, which accounts for
+            // any popped or dropped directories.
+            pieces[pointer++] = piece;
+            positive++;
+        }
+        let path = '';
+        for (let i = 1; i < pointer; i++) {
+            path += '/' + pieces[i];
+        }
+        if (!path || (addTrailingSlash && !path.endsWith('/..'))) {
+            path += '/';
+        }
+        url.path = path;
+    }
+    /**
+     * Attempts to resolve `input` URL/path relative to `base`.
+     */
+    function resolve(input, base) {
+        if (!input && !base)
+            return '';
+        const url = parseUrl(input);
+        let inputType = url.type;
+        if (base && inputType !== UrlType.Absolute) {
+            const baseUrl = parseUrl(base);
+            const baseType = baseUrl.type;
+            switch (inputType) {
+                case UrlType.Empty:
+                    url.hash = baseUrl.hash;
+                // fall through
+                case UrlType.Hash:
+                    url.query = baseUrl.query;
+                // fall through
+                case UrlType.Query:
+                case UrlType.RelativePath:
+                    mergePaths(url, baseUrl);
+                // fall through
+                case UrlType.AbsolutePath:
+                    // The host, user, and port are joined, you can't copy one without the others.
+                    url.user = baseUrl.user;
+                    url.host = baseUrl.host;
+                    url.port = baseUrl.port;
+                // fall through
+                case UrlType.SchemeRelative:
+                    // The input doesn't have a schema at least, so we need to copy at least that over.
+                    url.scheme = baseUrl.scheme;
+            }
+            if (baseType > inputType)
+                inputType = baseType;
+        }
+        normalizePath(url, inputType);
+        const queryHash = url.query + url.hash;
+        switch (inputType) {
+            // This is impossible, because of the empty checks at the start of the function.
+            // case UrlType.Empty:
+            case UrlType.Hash:
+            case UrlType.Query:
+                return queryHash;
+            case UrlType.RelativePath: {
+                // The first char is always a "/", and we need it to be relative.
+                const path = url.path.slice(1);
+                if (!path)
+                    return queryHash || '.';
+                if (isRelative(base || input) && !isRelative(path)) {
+                    // If base started with a leading ".", or there is no base and input started with a ".",
+                    // then we need to ensure that the relative path starts with a ".". We don't know if
+                    // relative starts with a "..", though, so check before prepending.
+                    return './' + path + queryHash;
+                }
+                return path + queryHash;
+            }
+            case UrlType.AbsolutePath:
+                return url.path + queryHash;
+            default:
+                return url.scheme + '//' + url.user + url.host + url.port + url.path + queryHash;
+        }
+    }
+
+    return resolve;
+
+}));
+//# sourceMappingURL=resolve-uri.umd.js.map
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               /**
+ * @fileoverview Enforce boolean attributes notation in JSX
+ * @author Yannick Croissant
+ */
+
+'use strict';
+
+const docsUrl = require('../util/docsUrl');
+const report = require('../util/report');
+
+// ------------------------------------------------------------------------------
+// Rule Definition
+// ------------------------------------------------------------------------------
+
+const exceptionsSchema = {
+  type: 'array',
+  items: { type: 'string', minLength: 1 },
+  uniqueItems: true,
+};
+
+const ALWAYS = 'always';
+const NEVER = 'never';
+
+const errorData = new WeakMap();
+/**
+ * @param {object} exceptions
+ * @returns {object}
+ */
+function getErrorData(exceptions) {
+  if (!errorData.has(exceptions)) {
+    const exceptionProps = Array.from(exceptions, (name) => `\`${name}\``).join(', ');
+    const exceptionsMessage = exceptions.size > 0 ? ` for the following props: ${exceptionProps}` : '';
+    errorData.set(exceptions, { exceptionsMessage });
+  }
+  return errorData.get(exceptions);
+}
+/**
+ * @param {string} configuration
+ * @param {Set<string>} exceptions
+ * @param {string} propName
+ * @returns {boolean} propName
+*/
+function isAlways(configuration, exceptions, propName) {
+  const isException = exceptions.has(propName);
+  if (configuration === ALWAYS) {
+    return !isException;
+  }
+  return isException;
+}
+/**
+ * @param {string} configuration
+ * @param {Set<string>} exceptions
+ * @param {string} propName
+ * @returns {boolean} propName
+ */
+function isNever(configuration, exceptions, propName) {
+  const isException = exceptions.has(propName);
+  if (configuration === NEVER) {
+    return !isException;
+  }
+  return isException;
+}
+
+const messages = {
+  omitBoolean: 'Value must be omitted for boolean attributes{{exceptionsMessage}}',
+  omitBoolean_noMessage: 'Value must be omitted for boolean attributes',
+  setBoolean: 'Value must be set for boolean attributes{{exceptionsMessage}}',
+  setBoolean_noMessage: 'Value must be set for boolean attributes',
+};
+
+module.exports = {
+  meta: {
+    docs: {
+      description: 'Enforce boolean attributes notation in JSX',
+      category: 'Stylistic Issues',
+      recommended: false,
+      url: docsUrl('jsx-boolean-value'),
+    },
+    fixable: 'code',
+
+    messages,
+
+    schema: {
+      anyOf: [{
+        type: 'array',
+        items: [{ enum: [ALWAYS, NEVER] }],
+        additionalItems: false,
+      }, {
+        type: 'array',
+        items: [{
+          enum: [ALWAYS],
+        }, {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            [NEVER]: exceptionsSchema,
+          },
+        }],
+        additionalItems: false,
+      }, {
+        type: 'array',
+        items: [{
+          enum: [NEVER],
+        }, {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            [ALWAYS]: exceptionsSchema,
+          },
+        }],
+        additionalItems: false,
+      }],
+    },
+  },
+
+  create(context) {
+    const configuration = context.options[0] || NEVER;
+    const configObject = context.options[1] || {};
+    const exceptions = new Set((configuration === ALWAYS ? configObject[NEVER] : configObject[ALWAYS]) || []);
+
+    return {
+      JSXAttribute(node) {
+        const propName = node.name && node.name.name;
+        const value = node.value;
+
+        if (
+          isAlways(configuration, exceptions, propName)
+          && value === null
+        ) {
+          const data = getErrorData(exceptions);
+          const messageId = data.exceptionsMessage ? 'setBoolean' : 'setBoolean_noMessage';
+          report(context, messages[messageId], messageId, {
+            node,
+            data,
+            fix(fixer) {
+              return fixer.insertTextAfter(node, '={true}');
+            },
+          });
+        }
+        if (
+          isNever(configuration, exceptions, propName)
+          && value
+          && value.type === 'JSXExpressionContainer'
+          && value.expression.value === true
+        ) {
+          const data = getErrorData(exceptions);
+          const messageId = data.exceptionsMessage ? 'omitBoolean' : 'omitBoolean_noMessage';
+          report(context, messages[messageId], messageId, {
+            node,
+            data,
+            fix(fixer) {
+              return fixer.removeRange([node.name.range[1], value.range[1]]);
+            },
+          });
+        }
+      },
+    };
+  },
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            "use strict";
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function _export(target, all) {
+    for(var name in all)Object.defineProperty(target, name, {
+        enumerable: true,
+        get: all[name]
+    });
+}
+_export(exports, {
+    normalizeURL: function() {
+        return normalizeURL;
+    },
+    getUrlFromPagesDirectories: function() {
+        return getUrlFromPagesDirectories;
+    },
+    execOnce: function() {
+        return execOnce;
+    }
+});
+var _path = /*#__PURE__*/ _interop_require_wildcard(require("path"));
+var _fs = /*#__PURE__*/ _interop_require_wildcard(require("fs"));
+function _array_like_to_array(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+    for(var i = 0, arr2 = new Array(len); i < len; i++)arr2[i] = arr[i];
+    return arr2;
+}
+function _array_without_holes(arr) {
+    if (Array.isArray(arr)) return _array_like_to_array(arr);
+}
+function _getRequireWildcardCache(nodeInterop) {
+    if (typeof WeakMap !== "function") return null;
+    var cacheBabelInterop = new WeakMap();
+    var cacheNodeInterop = new WeakMap();
+    return (_getRequireWildcardCache = function(nodeInterop) {
+        return nodeInterop ? cacheNodeInterop : cacheBabelInterop;
+    })(nodeInterop);
+}
+function _interop_require_wildcard(obj, nodeInterop) {
+    if (!nodeInterop && obj && obj.__esModule) {
+        return obj;
+    }
+    if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
+        return {
+            default: obj
+        };
+    }
+    var cache = _getRequireWildcardCache(nodeInterop);
+    if (cache && cache.has(obj)) {
+        return cache.get(obj);
+    }
+    var newObj = {};
+    var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+    for(var key in obj){
+        if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
+            var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+            if (desc && (desc.get || desc.set)) {
+                Object.defineProperty(newObj, key, desc);
+            } else {
+                newObj[key] = obj[key];
+            }
+        }
+    }
+    newObj.default = obj;
+    if (cache) {
+        cache.set(obj, newObj);
+    }
+    return newObj;
+}
+function _iterable_to_array(iter) {
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+}
+function _non_iterable_spread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _to_consumable_array(arr) {
+    return _array_without_holes(arr) || _iterable_to_array(arr) || _unsupported_iterable_to_array(arr) || _non_iterable_spread();
+}
+function _unsupported_iterable_to_array(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _array_like_to_array(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(n);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _array_like_to_array(o, minLen);
+}
+// Cache for fs.readdirSync lookup.
+// Prevent multiple blocking IO requests that have already been calculated.
+var fsReadDirSyncCache = {};
+/**
+ * Recursively parse directory for page URLs.
+ */ function parseUrlForPages(urlprefix, directory) {
+    var _fsReadDirSyncCache, _directory;
+    var _;
+    (_ = (_fsReadDirSyncCache = fsReadDirSyncCache)[_directory = directory]) !== null && _ !== void 0 ? _ : _fsReadDirSyncCache[_directory] = _fs.readdirSync(directory, {
+        withFileTypes: true
+    });
+    var res = [];
+    fsReadDirSyncCache[directory].forEach(function(dirent) {
+        // TODO: this should account for all page extensions
+        // not just js(x) and ts(x)
+        if (/(\.(j|t)sx?)$/.test(dirent.name)) {
+            if (/^index(\.(j|t)sx?)$/.test(dirent.name)) {
+                res.push("".concat(urlprefix).concat(dirent.name.replace(/^index(\.(j|t)sx?)$/, "")));
+            }
+            res.push("".concat(urlprefix).concat(dirent.name.replace(/(\.(j|t)sx?)$/, "")));
+        } else {
+            var dirPath = _path.join(directory, dirent.name);
+            if (dirent.isDirectory() && !dirent.isSymbolicLink()) {
+                var _res;
+                (_res = res).push.apply(_res, _to_consumable_array(parseUrlForPages(urlprefix + dirent.name + "/", dirPath)));
+            }
+        }
+    });
+    return res;
+}
+function normalizeURL(url) {
+    if (!url) {
+        return;
+    }
+    url = url.split("?")[0];
+    url = url.split("#")[0];
+    url = url = url.replace(/(\/index\.html)$/, "/");
+    // Empty URLs should not be trailed with `/`, e.g. `#heading`
+    if (url === "") {
+        return url;
+    }
+    url = url.endsWith("/") ? url : url + "/";
+    return url;
+}
+function getUrlFromPagesDirectories(urlPrefix, directories) {
+    return Array.from(// De-duplicate similar pages across multiple directories.
+    new Set(directories.flatMap(function(directory) {
+        return parseUrlForPages(urlPrefix, directory);
+    }).map(// Since the URLs are normalized we add `^` and `$` to the RegExp to make sure they match exactly.
+    function(url) {
+        return "^".concat(normalizeURL(url), "$");
+    }))).map(function(urlReg) {
+        urlReg = urlReg.replace(/\[.*\]/g, "((?!.+?\\..+?).*?)");
+        return new RegExp(urlReg);
+    });
+}
+function execOnce(fn) {
+    var used = false;
+    var result;
+    return function() {
+        for(var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++){
+            args[_key] = arguments[_key];
+        }
+        if (!used) {
+            used = true;
+            result = fn.apply(void 0, _to_consumable_array(args));
+        }
+        return result;
+    };
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       /*
+1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
+2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
+*/
+
+*,
+::before,
+::after {
+  box-sizing: border-box; /* 1 */
+  border-width: 0; /* 2 */
+  border-style: solid; /* 2 */
+  border-color: theme('borderColor.DEFAULT', currentColor); /* 2 */
+}
+
+::before,
+::after {
+  --tw-content: '';
+}
+
+/*
+1. Use a consistent sensible line-height in all browsers.
+2. Prevent adjustments of font size after orientation changes in iOS.
+3. Use a more readable tab size.
+4. Use the user's configured `sans` font-family by default.
+5. Use the user's configured `sans` font-feature-settings by default.
+6. Use the user's configured `sans` font-variation-settings by default.
+*/
+
+html {
+  line-height: 1.5; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+  -moz-tab-size: 4; /* 3 */
+  tab-size: 4; /* 3 */
+  font-family: theme('fontFamily.sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"); /* 4 */
+  font-feature-settings: theme('fontFamily.sans[1].fontFeatureSettings', normal); /* 5 */
+  font-variation-settings: theme('fontFamily.sans[1].fontVariationSettings', normal); /* 6 */
+}
+
+/*
+1. Remove the margin in all browsers.
+2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
+*/
+
+body {
+  margin: 0; /* 1 */
+  line-height: inherit; /* 2 */
+}
+
+/*
+1. Add the correct height in Firefox.
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+3. Ensure horizontal rules are visible by default.
+*/
+
+hr {
+  height: 0; /* 1 */
+  color: inherit; /* 2 */
+  border-top-width: 1px; /* 3 */
+}
+
+/*
+Add the correct text decoration in Chrome, Edge, and Safari.
+*/
+
+abbr:where([title]) {
+  text-decoration: underline dotted;
+}
+
+/*
+Remove the default font size and weight for headings.
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/*
+Reset links to optimize for opt-in styling instead of opt-out.
+*/
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/*
+Add the correct font weight in Edge and Safari.
+*/
+
+b,
+strong {
+  font-weight: bolder;
+}
+
+/*
+1. Use the user's configured `mono` font family by default.
+2. Correct the odd `em` font sizing in all browsers.
+*/
+
+code,
+kbd,
+samp,
+pre {
+  font-family: theme('fontFamily.mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace); /* 1 */
+  font-size: 1em; /* 2 */
+}
+
+/*
+Add the correct font size in all browsers.
+*/
+
+small {
+  font-size: 80%;
+}
+
+/*
+Prevent `sub` and `sup` elements from affecting the line height in all browsers.
+*/
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+/*
+1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
+2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
+3. Remove gaps between table borders by default.
+*/
+
+table {
+  text-indent: 0; /* 1 */
+  border-color: inherit; /* 2 */
+  border-collapse: collapse; /* 3 */
+}
+
+/*
+1. Change the font styles in all browsers.
+2. Remove the margin in Firefox and Safari.
+3. Remove default padding in all browsers.
+*/
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-feature-settings: inherit; /* 1 */
+  font-variation-settings: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  font-weight: inherit; /* 1 */
+  line-height: inherit; /* 1 */
+  color: inherit; /* 1 */
+  margin: 0; /* 2 */
+  padding: 0; /* 3 */
+}
+
+/*
+Remove the inheritance of text transform in Edge and Firefox.
+*/
+
+button,
+select {
+  text-transform: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Remove default button styles.
+*/
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 1 */
+  background-color: transparent; /* 2 */
+  background-image: none; /* 2 */
+}
+
+/*
+Use the modern Firefox focus style for all focusable elements.
+*/
+
+:-moz-focusring {
+  outline: auto;
+}
+
+/*
+Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
+*/
+
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+
+/*
+Add the correct vertical alignment in Chrome and Firefox.
+*/
+
+progress {
+  vertical-align: baseline;
+}
+
+/*
+Correct the cursor style of increment and decrement buttons in Safari.
+*/
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+  height: auto;
+}
+
+/*
+1. Correct the odd appearance in Chrome and Safari.
+2. Correct the outline style in Safari.
+*/
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 1 */
+  outline-offset: -2px; /* 2 */
+}
+
+/*
+Remove the inner padding in Chrome and Safari on macOS.
+*/
+
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+1. Correct the inability to style clickable types in iOS and Safari.
+2. Change font properties to `inherit` in Safari.
+*/
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button; /* 1 */
+  font: inherit; /* 2 */
+}
+
+/*
+Add the correct display in Chrome and Safari.
+*/
+
+summary {
+  display: list-item;
+}
+
+/*
+Removes the default spacing and border for appropriate elements.
+*/
+
+blockquote,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+figure,
+p,
+pre {
+  margin: 0;
+}
+
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  padding: 0;
+}
+
+ol,
+ul,
+menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+Reset default styling for dialogs.
+*/
+dialog {
+  padding: 0;
+}
+
+/*
+Prevent resizing textareas horizontally by default.
+*/
+
+textarea {
+  resize: vertical;
+}
+
+/*
+1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
+2. Set the default placeholder color to the user's configured gray 400 color.
+*/
+
+input::placeholder,
+textarea::placeholder {
+  opacity: 1; /* 1 */
+  color: theme('colors.gray.400', #9ca3af); /* 2 */
+}
+
+/*
+Set the default cursor for buttons.
+*/
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
+
+/*
+Make sure disabled buttons don't get the pointer cursor.
+*/
+:disabled {
+  cursor: default;
+}
+
+/*
+1. Make replaced elements `display: block` by default. (https://github.com/mozdevs/cssremedy/issues/14)
+2. Add `vertical-align: middle` to align replaced elements more sensibly by default. (https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210)
+   This can trigger a poorly considered lint error in some tools but is included by design.
+*/
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block; /* 1 */
+  vertical-align: middle; /* 2 */
+}
+
+/*
+Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
+*/
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make elements with the HTML hidden attribute stay hidden by default */
+[hidden] {
+  display: none;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      # Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v1.0.7](https://github.com/es-shims/String.prototype.trimStart/compare/v1.0.6...v1.0.7) - 2023-09-04
+
+### Commits
+
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `aud`, `tape` [`58e7aa6`](https://github.com/es-shims/String.prototype.trimStart/commit/58e7aa63b702f4494b89b8723b585bab5899a304)
+- [Deps] update `define-properties`, `es-abstract` [`8d9a7bf`](https://github.com/es-shims/String.prototype.trimStart/commit/8d9a7bf123f320799211dd57aa0c832aaafb8a19)
+
+## [v1.0.6](https://github.com/es-shims/String.prototype.trimStart/compare/v1.0.5...v1.0.6) - 2022-11-07
+
+### Commits
+
+- [meta] use `npmignore` to autogenerate an npmignore file [`0838ae4`](https://github.com/es-shims/String.prototype.trimStart/commit/0838ae4ed948df470185afbeea4296f5c5ecd759)
+- [actions] update rebase action to use reusable workflow [`d6bb784`](https://github.com/es-shims/String.prototype.trimStart/commit/d6bb78400a00459e9ab0b28f433c45804a65184d)
+- [Dev Deps] update `aud`, `tape` [`8734d9a`](https://github.com/es-shims/String.prototype.trimStart/commit/8734d9a616c6aca9ec7f0c8819e66c2496deb32e)
+- [Deps] update `es-abstract` [`30f593f`](https://github.com/es-shims/String.prototype.trimStart/commit/30f593f3febf6d8d9b3d5605174b437fed9cbb3a)
+
+## [v1.0.5](https://github.com/es-shims/String.prototype.trimStart/compare/v1.0.4...v1.0.5) - 2022-05-02
+
+### Commits
+
+- [actions] reuse common workflows [`61d4009`](https://github.com/es-shims/String.prototype.trimStart/commit/61d40098a96b3dcc6cf963c9d03dd1b23b6eb13d)
+- [actions] use `node/install` instead of `node/run`; use `codecov` action [`bfe39c4`](https://github.com/es-shims/String.prototype.trimStart/commit/bfe39c498e26a4ad75c64cce27ff3df9bfef2cc1)
+- [Fix] ensure main entry point properly checks the receiver in ES3 engines [`36e3730`](https://github.com/es-shims/String.prototype.trimStart/commit/36e37307bb06fb5dc34d861a4bf6f7db931340d9)
+- [Fix] as of unicode v6, the mongolian vowel separator is no longer whitespace [`4f77eed`](https://github.com/es-shims/String.prototype.trimStart/commit/4f77eed5aa64e6f781310847d7831563fce90f5c)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@es-shims/api`, `safe-publish-latest`, `tape` [`59fcb99`](https://github.com/es-shims/String.prototype.trimStart/commit/59fcb995ef8d4723a83e28d46dbe41a14253b681)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `functions-have-names`, `tape` [`486ffcf`](https://github.com/es-shims/String.prototype.trimStart/commit/486ffcfa93c75516601169a3973b81fdfeb7de8b)
+- [actions] update codecov uploader [`b33ac48`](https://github.com/es-shims/String.prototype.trimStart/commit/b33ac48ccc86f6b894d8fde5162bd1c806904972)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@es-shims/api`, `aud`, `auto-changelog`, `tape` [`3c89fa5`](https://github.com/es-shims/String.prototype.trimStart/commit/3c89fa571d1c4b8894230d93caaf3b3d9885534d)
+- [readme] add github actions/codecov badges [`00be6b3`](https://github.com/es-shims/String.prototype.trimStart/commit/00be6b34fdd989950b934b4471087362b78d4b0c)
+- [Dev Deps] update `eslint`, `tape` [`13a08f5`](https://github.com/es-shims/String.prototype.trimStart/commit/13a08f578c53cf5f129fb6ebe486e8bbcc40c14e)
+- [actions] update workflows [`6ac576d`](https://github.com/es-shims/String.prototype.trimStart/commit/6ac576dde99f73d19492777efed29ec069e89bf1)
+- [meta] use `prepublishOnly` script for npm 7+ [`fa382ca`](https://github.com/es-shims/String.prototype.trimStart/commit/fa382caa5c8e9a868572605ce215a3db1dc9ef21)
+- [Deps] update `define-properties` [`d57bffe`](https://github.com/es-shims/String.prototype.trimStart/commit/d57bffef7d89384c8888627c5ee33b80e24d54e0)
+
+## [v1.0.4](https://github.com/es-shims/String.prototype.trimStart/compare/v1.0.3...v1.0.4) - 2021-02-23
+
+### Commits
+
+- [meta] do not publish github action workflow files [`9c434ec`](https://github.com/es-shims/String.prototype.trimStart/commit/9c434eceb50141cf36e8e65f514226b0b547b568)
+- [readme] remove travis badge [`7843160`](https://github.com/es-shims/String.prototype.trimStart/commit/7843160a3e8feaa2213feb0da9c5ad7d9bf21b59)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `functions-have-names`, `has-strict-mode`, `tape` [`8b52646`](https://github.com/es-shims/String.prototype.trimStart/commit/8b52646510aea20473da5491fe0876117a2251b1)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `tape` [`badeda2`](https://github.com/es-shims/String.prototype.trimStart/commit/badeda2b01d2e266e4d1c2e7dc0e4fca0f066f3e)
+- [Tests] increase coverage [`bf8777d`](https://github.com/es-shims/String.prototype.trimStart/commit/bf8777d54c4b05c093559021cfaf0670306120f8)
+- [actions] update workflows [`61be1c6`](https://github.com/es-shims/String.prototype.trimStart/commit/61be1c649ae859faa40286e57fa22cef65ae1229)
+- [meta] gitignore coverage output [`c9c98d7`](https://github.com/es-shims/String.prototype.trimStart/commit/c9c98d75d7708e8906a39b55a0ad7a0ed6a9e4b0)
+- [Deps] update `call-bind` [`c8645e8`](https://github.com/es-shims/String.prototype.trimStart/commit/c8645e89f9ace7681660ba66c724cf00c798f3d4)
+
+## [v1.0.3](https://github.com/es-shims/String.prototype.trimStart/compare/v1.0.2...v1.0.3) - 2020-11-21
+
+### Commits
+
+- [Tests] migrate tests to Github Actions [`fbc7519`](https://github.com/es-shims/String.prototype.trimStart/commit/fbc7519cce2b5bfff9fe28dea96fb5f6f82e19fd)
+- [Tests] add `implementation` test; run `es-shim-api` in postlint; use `tape` runner [`3c9330b`](https://github.com/es-shims/String.prototype.trimStart/commit/3c9330be9ad02497f78ff0fd94b7c918c3a4bc21)
+- [Tests] run `nyc` on all tests [`52229ca`](https://github.com/es-shims/String.prototype.trimStart/commit/52229ca28426be516c3826743e417be85144673e)
+- [Deps] replace `es-abstract` with `call-bind` [`5e5068d`](https://github.com/es-shims/String.prototype.trimStart/commit/5e5068d2cc85d0a6f2a441ea984521ee70470537)
+- [Dev Deps] update `eslint`, `aud`; add `safe-publish-latest` [`42a853e`](https://github.com/es-shims/String.prototype.trimStart/commit/42a853e2cb419378085098cb66e421ee94eed3ab)
+
+## [v1.0.2](https://github.com/es-shims/String.prototype.trimStart/compare/v1.0.1...v1.0.2) - 2020-10-20
+
+### Commits
+
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `tape` [`d032b38`](https://github.com/es-shims/String.prototype.trimStart/commit/d032b38aac7e9ebae7bf5c4195492c508af2815a)
+- [actions] add "Allow Edits" workflow [`83e30ba`](https://github.com/es-shims/String.prototype.trimStart/commit/83e30bac01572b6dba6358fec6e339c55dc431c9)
+- [Deps] update `es-abstract` [`707d85d`](https://github.com/es-shims/String.prototype.trimStart/commit/707d85d827d9c537a144f199fdecc47edaade1cd)
+- [actions] switch Automatic Rebase workflow to `pull_request_target` event [`096c6d9`](https://github.com/es-shims/String.prototype.trimStart/commit/096c6d9dc142286c750da7024e7a88ed698a4953)
+
+## [v1.0.1](https://github.com/es-shims/String.prototype.trimStart/compare/v1.0.0...v1.0.1) - 2020-04-09
+
+### Commits
+
+- [meta] add some missing repo metadata [`3385da3`](https://github.com/es-shims/String.prototype.trimStart/commit/3385da3bbb87819de11a869981ca954887a6a092)
+- [Dev Deps] update `auto-changelog` [`879377d`](https://github.com/es-shims/String.prototype.trimStart/commit/879377df9c1ff97d8f0b3eac800683f1d68a304c)
+
+## [v1.0.0](https://github.com/es-shims/String.prototype.trimStart/compare/v0.1.0...v1.0.0) - 2020-03-30
+
+### Commits
+
+- [Breaking] convert to es-shim API [`970922c`](https://github.com/es-shims/String.prototype.trimStart/commit/970922c494c78b033c351c77f61a8aefd49c30d9)
+- [meta] add `auto-changelog` [`ff30c09`](https://github.com/es-shims/String.prototype.trimStart/commit/ff30c0996289113d2c3dbbfca7e280ff151bf36d)
+- [meta] update readme [`816291d`](https://github.com/es-shims/String.prototype.trimStart/commit/816291d01e0eaf85da9b732c179cfb2454bd282e)
+- [Tests] add `npm run lint` [`3341104`](https://github.com/es-shims/String.prototype.trimStart/commit/3341104450bc6ac84f3b70a6d6c0fbeb4df5131e)
+- Only apps should have lockfiles [`f008df7`](https://github.com/es-shims/String.prototype.trimStart/commit/f008df73fbf3dcf8dfad6d5cad86de7050d0ae09)
+- [actions] add automatic rebasing / merge commit blocking [`e5ba35c`](https://github.com/es-shims/String.prototype.trimStart/commit/e5ba35c1a14fcf652336cc9c4be49d232981161e)
+- [Tests] use shared travis-ci configs [`46516b1`](https://github.com/es-shims/String.prototype.trimStart/commit/46516b137a8c07ed5807d751bd61199688ef9baa)
+- [meta] add `funding` field [`34ae856`](https://github.com/es-shims/String.prototype.trimStart/commit/34ae8563f115bd4a5e5f5d2d786c0fa0a420fa2a)
+- [meta] fix non-updated version number [`3b0e262`](https://github.com/es-shims/String.prototype.trimStart/commit/3b0e262e2f4eeee2e1b99fe890f8ca17bed8f2fd)
+
+## [v0.1.0](https://github.com/es-shims/String.prototype.trimStart/compare/v0.0.1...v0.1.0) - 2017-12-19
+
+### Commits
+
+- updated README [`ab2f6ac`](https://github.com/es-shims/String.prototype.trimStart/commit/ab2f6ac8813ed336a0f2dc3aa8cdb52f4d52814b)
+
+## v0.0.1 - 2017-12-19
+
+### Commits
+
+- finished polyfill [`1c7ca20`](https://github.com/es-shims/String.prototype.trimStart/commit/1c7ca2043e3383b6e743870bc622ad4a38477147)
+- created README file: [`192ecad`](https://github.com/es-shims/String.prototype.trimStart/commit/192ecaded4e0d5baaa65cd41e590b8d837520d44)
+- Initial commit [`14044f8`](https://github.com/es-shims/String.prototype.trimStart/commit/14044f8a0fe1d155fe7403a8327bdbaf135da2d6)
+- updated README [`d4fb6be`](https://github.com/es-shims/String.prototype.trimStart/commit/d4fb6be15455dd68fc4b306bee1d30dd4afc96e7)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         # Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v1.0.7](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.6...v1.0.7) - 2023-09-07
+
+### Commits
+
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `aud`, `tape` [`1a10293`](https://github.com/es-shims/String.prototype.trimEnd/commit/1a102935636b564cd346d83666f62a9398864081)
+- [Deps] update `define-properties`, `es-abstract` [`6ba2e19`](https://github.com/es-shims/String.prototype.trimEnd/commit/6ba2e19a78f9c63bad2daf0627ce7f2e33f1aeb9)
+
+## [v1.0.6](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.5...v1.0.6) - 2022-11-07
+
+### Commits
+
+- [meta] use `npmignore` to autogenerate an npmignore file [`1d1e717`](https://github.com/es-shims/String.prototype.trimEnd/commit/1d1e71720ada81e484c9bffb386f65d7a6a1335e)
+- [actions] update rebase action to use reusable workflow [`83f2683`](https://github.com/es-shims/String.prototype.trimEnd/commit/83f268325cc37ca72bea995281167a9d2821810b)
+- [Dev Deps] update `aud`, `tape` [`a3a9129`](https://github.com/es-shims/String.prototype.trimEnd/commit/a3a9129dd995a949bdb93d278f403aa400e088ed)
+- [Deps] update `es-abstract` [`a6e476d`](https://github.com/es-shims/String.prototype.trimEnd/commit/a6e476dc0120a41a22e66b5079bf3b407da387fa)
+
+## [v1.0.5](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.4...v1.0.5) - 2022-05-02
+
+### Commits
+
+- [actions] reuse common workflows [`69a56ce`](https://github.com/es-shims/String.prototype.trimEnd/commit/69a56ce95343848d5e498f8e939a0697db8ac9f2)
+- [actions] use `node/install` instead of `node/run`; use `codecov` action [`5d7db31`](https://github.com/es-shims/String.prototype.trimEnd/commit/5d7db314948faac975705db56305b6cc3dae7ba9)
+- [Fix] ensure main entry point properly checks the receiver in ES3 engines [`bb1983d`](https://github.com/es-shims/String.prototype.trimEnd/commit/bb1983dc27504733ab883a42f55b134f679a642d)
+- [Fix] as of unicode v6, the mongolian vowel separator is no longer whitespace [`10a1091`](https://github.com/es-shims/String.prototype.trimEnd/commit/10a10916e1ffc8cdab78515b2cc521cc74c08277)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@es-shims/api`, `safe-publish-latest`, `tape` [`a08e14b`](https://github.com/es-shims/String.prototype.trimEnd/commit/a08e14bfea5e27d419ef742e83f467a169a69971)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `functions-have-names`, `tape` [`1c4c8da`](https://github.com/es-shims/String.prototype.trimEnd/commit/1c4c8dab4aefc1c5823a61b5a0286bb6fe1e036c)
+- [actions] update codecov uploader [`70c4a7c`](https://github.com/es-shims/String.prototype.trimEnd/commit/70c4a7c566fd5bf72475df9318ec2cd218ceca26)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@es-shims/api`, `aud`, `auto-changelog`, `tape` [`4b08ed7`](https://github.com/es-shims/String.prototype.trimEnd/commit/4b08ed78a579585b593b3ca4ac7919d13906e840)
+- [readme] add github actions/codecov badges [`9805501`](https://github.com/es-shims/String.prototype.trimEnd/commit/980550105b304385bcccb8ec05a247e02c24d04a)
+- [Dev Deps] update `eslint`, `tape` [`50ec335`](https://github.com/es-shims/String.prototype.trimEnd/commit/50ec335ed42b59d1ab626dbe412f4ae23ab99b4b)
+- [actions] update workflows [`bf9c32e`](https://github.com/es-shims/String.prototype.trimEnd/commit/bf9c32efe08e98b53302df67581dc971b7a758cd)
+- [meta] use `prepublishOnly` script for npm 7+ [`9d921bd`](https://github.com/es-shims/String.prototype.trimEnd/commit/9d921bdbcaf8cebebbc302e6df518cbc3e4907bd)
+- [Deps] update `define-properties` [`15617ce`](https://github.com/es-shims/String.prototype.trimEnd/commit/15617ced8ac2ea3ab8324a04d16fd294b12059b5)
+
+## [v1.0.4](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.3...v1.0.4) - 2021-02-23
+
+### Commits
+
+- [meta] do not publish github action workflow files [`08e735c`](https://github.com/es-shims/String.prototype.trimEnd/commit/08e735cd55b00ae78a9dc16c6b4e786f7931085b)
+- [readme] remove travis badge [`10e0e47`](https://github.com/es-shims/String.prototype.trimEnd/commit/10e0e47cb2ecfd171e68b40f8486c5d007dcf3ef)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `functions-have-names`, `has-strict-mode`, `tape` [`0871432`](https://github.com/es-shims/String.prototype.trimEnd/commit/0871432c70c2f6a3929acd740a5d1f57c939f345)
+- [Tests] increase coverage [`711e6a6`](https://github.com/es-shims/String.prototype.trimEnd/commit/711e6a66660f30f7a30fef536be435af1a13d05c)
+- [actions] update workflows [`deb0d06`](https://github.com/es-shims/String.prototype.trimEnd/commit/deb0d06f41ac1c3e1e640ecd1cf0e69303ab5799)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `tape` [`e250b4a`](https://github.com/es-shims/String.prototype.trimEnd/commit/e250b4a38401e7c02a067dab26cc68316da47ef7)
+- [meta] gitignore coverage output [`55231df`](https://github.com/es-shims/String.prototype.trimEnd/commit/55231dfd9829277ba5c3f07be5434dc385703ca9)
+- [Deps] update `call-bind` [`0580f5f`](https://github.com/es-shims/String.prototype.trimEnd/commit/0580f5f915ecb87677764d03fe3cf023e3bee7d8)
+
+## [v1.0.3](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.2...v1.0.3) - 2020-11-21
+
+### Commits
+
+- [Tests] migrate tests to Github Actions [`23e7a09`](https://github.com/es-shims/String.prototype.trimEnd/commit/23e7a09a4ad37c21c3db3d7761212c7d84a371a2)
+- [Tests] add `implementation` test; run `es-shim-api` in postlint; use `tape` runner [`26e8623`](https://github.com/es-shims/String.prototype.trimEnd/commit/26e8623cf35c1859d0b482d4bb5b3450d101a810)
+- [Tests] run `nyc` on all tests [`a72a546`](https://github.com/es-shims/String.prototype.trimEnd/commit/a72a546f671c5d3ac65dff68b4db1a1cc7089bfd)
+- [Deps] replace `es-abstract` with `call-bind` [`f07b87d`](https://github.com/es-shims/String.prototype.trimEnd/commit/f07b87dd452090a2601d666edceb1daa90d45f24)
+- [Dev Deps] update `eslint`, `aud`; add `safe-publish-latest` [`122ecb7`](https://github.com/es-shims/String.prototype.trimEnd/commit/122ecb726b1dc043b9ef27fa5a7b4172a4d5df37)
+
+## [v1.0.2](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.1...v1.0.2) - 2020-10-20
+
+### Commits
+
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `tape` [`a003e71`](https://github.com/es-shims/String.prototype.trimEnd/commit/a003e7166d8de16c551a14b0ec855187357cce43)
+- [actions] add "Allow Edits" workflow [`0b4b43c`](https://github.com/es-shims/String.prototype.trimEnd/commit/0b4b43cb605f7b3532e61c43dfc7f1795296c5a4)
+- [Deps] update `es-abstract` [`75ca6b0`](https://github.com/es-shims/String.prototype.trimEnd/commit/75ca6b0e9757d64013ae863cfaac49ebcb36f1cf)
+- [actions] switch Automatic Rebase workflow to `pull_request_target` event [`552016c`](https://github.com/es-shims/String.prototype.trimEnd/commit/552016cb631ac13c12bbbc0d6dd65012e5e79583)
+
+## [v1.0.1](https://github.com/es-shims/String.prototype.trimEnd/compare/v1.0.0...v1.0.1) - 2020-04-09
+
+### Commits
+
+- [meta] add some missing repo metadata [`6abe248`](https://github.com/es-shims/String.prototype.trimEnd/commit/6abe248ba0b57a8b0e16bbe01de07a4d37c421bc)
+- [Dev Deps] update `auto-changelog` [`e2eaab2`](https://github.com/es-shims/String.prototype.trimEnd/commit/e2eaab2fd1bc27a3d224b3d76db16190c1dd6d08)
+
+## [v1.0.0](https://github.com/es-shims/String.prototype.trimEnd/compare/v0.1.0...v1.0.0) - 2020-03-30
+
+### Commits
+
+- [Breaking] convert to es-shim API [`2c6ef13`](https://github.com/es-shims/String.prototype.trimEnd/commit/2c6ef13d3f0b07a9bc55e367b311dbb731780405)
+- [meta] add `auto-changelog` [`6f1fcc1`](https://github.com/es-shims/String.prototype.trimEnd/commit/6f1fcc1739de1e9541bd603b659807646a13dd7f)
+- [meta] update readme [`ed4ce0d`](https://github.com/es-shims/String.prototype.trimEnd/commit/ed4ce0d84d53e626b48375c5959be20332464eaf)
+- [Tests] add `npm run lint` [`eadaf2c`](https://github.com/es-shims/String.prototype.trimEnd/commit/eadaf2c83f2d791b54d80d7b30a9961ebc0f246f)
+- Only apps should have lockfiles [`44d355f`](https://github.com/es-shims/String.prototype.trimEnd/commit/44d355f7dafcb0b51c5001824b07f7a2b9f1d06e)
+- [actions] add automatic rebasing / merge commit blocking [`e78bf8e`](https://github.com/es-shims/String.prototype.trimEnd/commit/e78bf8e5fc04fcb3379dd1c98360d7df4f9ea7d6)
+- [Tests] use shared travis-ci configs [`983c563`](https://github.com/es-shims/String.prototype.trimEnd/commit/983c5639efca2c9bb8b93ebbb917fbcb2561b94c)
+- [meta] add `funding` field [`35139d6`](https://github.com/es-shims/String.prototype.trimEnd/commit/35139d6236ceacfc1501d08fb196d18a936ee583)
+- [meta] fix non-updated version number [`a2d308b`](https://github.com/es-shims/String.prototype.trimEnd/commit/a2d308b99967ca427936c54747175794ca7336e1)
+
+## [v0.1.0](https://github.com/es-shims/String.prototype.trimEnd/compare/v0.0.1...v0.1.0) - 2017-12-19
+
+### Commits
+
+- updated README [`f1c71a0`](https://github.com/es-shims/String.prototype.trimEnd/commit/f1c71a0a882e89e1c207ed2b316d91670be2b075)
+
+## v0.0.1 - 2017-12-19
+
+### Commits
+
+- finished polyfill [`e58d550`](https://github.com/es-shims/String.prototype.trimEnd/commit/e58d550ab8695924ff4221ebe91f00f29801aa4b)
+- created README file [`f78628a`](https://github.com/es-shims/String.prototype.trimEnd/commit/f78628ab123171f8b7759bba331d6a589702584f)
+- Initial commit [`9199478`](https://github.com/es-shims/String.prototype.trimEnd/commit/9199478256da953e2f5bddfc4d82a161f4537e85)
+- typo [`d1f4558`](https://github.com/es-shims/String.prototype.trimEnd/commit/d1f4558a51157833f14d8a424426d038d06576ce)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              # Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [v2.0.7](https://github.com/es-shims/Object.fromEntries/compare/v2.0.6...v2.0.7) - 2023-08-28
+
+### Commits
+
+- [Deps] update `define-properties`, `es-abstract` [`dbf1467`](https://github.com/es-shims/Object.fromEntries/commit/dbf1467c5586bbf0183ebdee1239176eaf1f94d6)
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `aud`, `tape` [`495556f`](https://github.com/es-shims/Object.fromEntries/commit/495556fd641f1c6b9f2f1eedf1be98ed7dad1c43)
+
+## [v2.0.6](https://github.com/es-shims/Object.fromEntries/compare/v2.0.5...v2.0.6) - 2022-11-06
+
+### Commits
+
+- [actions] reuse common workflows [`867603d`](https://github.com/es-shims/Object.fromEntries/commit/867603ddb384887d25749488579a4c74fa9c1443)
+- [meta] add `auto-changelog` [`3621c90`](https://github.com/es-shims/Object.fromEntries/commit/3621c90294140f0139cf65c9ed852e7ace01c40f)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@es-shims/api`, `safe-publish-latest`, `tape` [`d6c3de7`](https://github.com/es-shims/Object.fromEntries/commit/d6c3de793e1f2055b5b11102f778270378956f71)
+- [Deps] update `define-properties`, `es-abstract` [`a0eca66`](https://github.com/es-shims/Object.fromEntries/commit/a0eca66c2d21c1030430b8c06c36d9235d0f5870)
+- [actions] update rebase action to use reusable workflow [`91df159`](https://github.com/es-shims/Object.fromEntries/commit/91df159d076da80dcb62dd4a27cc303e4bdaf76e)
+- [actions] update codecov uploader [`e7f2c96`](https://github.com/es-shims/Object.fromEntries/commit/e7f2c965103df04dc21042bd735ce1a5d1446193)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `tape` [`ec22968`](https://github.com/es-shims/Object.fromEntries/commit/ec22968b61d5888816c66d8416bb045f6584e3a1)
+
+<!-- auto-changelog-above -->
+
+2.0.5 / 2021-10-03
+=================
+  * [readme] add actions and codecov badges
+  * [Deps] update `es-abstract`
+  * [Deps] remove unused `has` dep
+  * [meta] use `prepublishOnly` script for npm 7+
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `@es-shims/api`, `aud`, `tape`
+  * [actions] update workflows
+  * [actions] use `node/install` instead of `node/run`; use `codecov` action
+  * [Tests] increase coverage
+
+2.0.4 / 2021-02-21
+=================
+  * [readme] fix repo URLs; remove travis badge
+  * [meta] do not publish github action workflow files
+  * [Deps] update `call-bind`, `es-abstract`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `has-strict-mode`, `tape`
+  * [actions] update workflows
+
+2.0.3 / 2020-11-26
+=================
+  * [Deps] update `es-abstract`; remove `function-bind`; use `call-bind` where applicable
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape`; add `aud`, `safe-publish-latest`
+  * [actions] add "Allow Edits" workflow
+  * [actions] switch Automatic Rebase workflow to `pull_request_target` event
+  * [Tests] migrate tests to Github Actions
+  * [Tests] run `nyc` on all tests
+  * [Tests] add `implementation` test; run `es-shim-api` in postlint; use `tape` runner
+  * [Tests] only audit prod deps
+
+2.0.2 / 2019-12-12
+=================
+  * [Refactor] use split-up `es-abstract` (63% bundle size decrease)
+  * [readme] remove testling
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`
+  * [meta] add `funding` field
+  * [Tests] use shared travis-ci configs
+  * [actions] add automatic rebasing / merge commit blocking
+
+2.0.1 / 2019-10-03
+=================
+  * [Fix] do not mutate `Object.fromEntries` when already present
+  * [Deps] update `define-properties`, `es-abstract`, `has`
+  * [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `covert`, `tape`
+  * [Tests] up to `node` `v12.9`, `v11.15`, `v10.16`, `v9.11`, `v8.16`, `v6.17`, `v4.9`
+  * [Tests] use `npx aud` instead of `nsp` or `npm audit` with hoops
+
+2.0.0 / 2018-08-09
+=================
+  * [Breaking] throw when `iterable` is nullish
+  * [Docs] Fix link to proposed spec
+
+1.0.0 / 2018-03-21
+=================
+  * v1.0.0
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     # object-hash
+
+Generate hashes from objects and values in node and the browser.  Uses node.js
+crypto module for hashing.  Supports SHA1 and many others (depending on the platform)
+as well as custom streams (e.g. CRC32).
+
+[![NPM](https://nodei.co/npm/object-hash.png?downloads=true&downloadRank=true)](https://www.npmjs.com/package/object-hash)
+
+[![Travis CI](https://secure.travis-ci.org/puleos/object-hash.png?branch=master)](https://secure.travis-ci.org/puleos/object-hash?branch=master)
+[![Coverage Status](https://coveralls.io/repos/puleos/object-hash/badge.svg?branch=master&service=github)](https://coveralls.io/github/puleos/object-hash?branch=master)
+
+* Hash values of any type.
+* Supports a keys only option for grouping similar objects with different values.
+
+```js
+var hash = require('object-hash');
+
+hash({foo: 'bar'}) // => '67b69634f9880a282c14a0f0cb7ba20cf5d677e9'
+hash([1, 2, 2.718, 3.14159]) // => '136b9b88375971dff9f1af09d7356e3e04281951'
+```
+
+## Versioning Disclaimer
+
+Starting with version `1.1.8` (released April 2017), new versions will consider
+the exact returned hash part of the API contract, i.e. changes that will affect
+hash values will be considered `semver-major`. Previous versions may violate
+that expectation.
+
+For more information, see [this discussion](https://github.com/puleos/object-hash/issues/30).
+
+## hash(value, options)
+
+Generate a hash from any object or type.  Defaults to sha1 with hex encoding.
+
+* `algorithm` hash algo to be used: 'sha1', 'md5', 'passthrough'. default: sha1
+  * This supports the algorithms returned by `crypto.getHashes()`. Note that the default of SHA-1 is not considered secure, and a stronger algorithm should be used if a cryptographical hash is desired.
+  * This also supports the `passthrough` algorith, which will return the information that would otherwise have been hashed.
+* `excludeValues` {true|false} hash object keys, values ignored. default: false
+* `encoding` hash encoding, supports 'buffer', 'hex', 'binary', 'base64'. default: hex
+* `ignoreUnknown` {true|*false} ignore unknown object types. default: false
+* `replacer` optional function that replaces values before hashing. default: accept all values
+* `respectFunctionProperties` {true|false} Whether properties on functions are considered when hashing. default: true
+* `respectFunctionNames` {true|false} consider `name` property of functions for hashing. default: true
+* `respectType` {true|false} Whether special type attributes (`.prototype`, `.__proto__`, `.constructor`)
+   are hashed. default: true
+* `unorderedArrays` {true|false} Sort all arrays before hashing. Note that this affects *all* collections,
+   i.e. including typed arrays, Sets, Maps, etc. default: false
+* `unorderedSets` {true|false} Sort `Set` and `Map` instances before hashing, i.e. make
+  `hash(new Set([1, 2])) == hash(new Set([2, 1]))` return `true`. default: true
+* `unorderedObjects` {true|false} Sort objects before hashing, i.e. make `hash({ x: 1, y: 2 }) === hash({ y: 2, x: 1 })`. default: true
+* `excludeKeys` optional function for excluding specific key(s) from hashing, if true is returned then exclude from hash. default: include all keys
+
+## hash.sha1(value)
+
+Hash using the sha1 algorithm.
+
+Note that SHA-1 is not considered secure, and a stronger algorithm should be used if a cryptographical hash is desired.
+
+*Sugar method, equivalent to* `hash(value, {algorithm: 'sha1'})`
+
+## hash.keys(value)
+
+Hash object keys using the sha1 algorithm, values ignored.
+
+*Sugar method, equivalent to* `hash(value, {excludeValues: true})`
+
+## hash.MD5(value)
+
+Hash using the md5 algorithm.
+
+Note that the MD5 algorithm is not considered secure, and a stronger algorithm should be used if a cryptographical hash is desired.
+
+*Sugar method, equivalent to* `hash(value, {algorithm: 'md5'})`
+
+## hash.keysMD5(value)
+
+Hash object keys using the md5 algorithm, values ignored.
+
+Note that the MD5 algorithm is not considered secure, and a stronger algorithm should be used if a cryptographical hash is desired.
+
+*Sugar method, equivalent to* `hash(value, {algorithm: 'md5', excludeValues: true})`
+
+## hash.writeToStream(value, [options,] stream)
+
+Write the information that would otherwise have been hashed to a stream, e.g.:
+
+```js
+hash.writeToStream({foo: 'bar', a: 42}, {respectType: false}, process.stdout)
+// => e.g. 'object:a:number:42foo:string:bar'
+```
+
+## Installation
+
+node:
+
+```js
+npm install object-hash
+```
+
+browser: */dist/object_hash.js*
+
+```html
+<script src="object_hash.js" type="text/javascript"></script>
+
+<script>
+  var hash = objectHash.sha1({foo:'bar'});
+
+  console.log(hash); // e003c89cdf35cdf46d8239b4692436364b7259f9
+</script>
+```
+
+## Example usage
+
+```js
+var hash = require('object-hash');
+
+var peter = { name: 'Peter', stapler: false, friends: ['Joanna', 'Michael', 'Samir'] };
+var michael = { name: 'Michael', stapler: false, friends: ['Peter', 'Samir'] };
+var bob = { name: 'Bob', stapler: true, friends: [] };
+
+/***
+ * sha1 hex encoding (default)
+ */
+hash(peter);
+// 14fa461bf4b98155e82adc86532938553b4d33a9
+hash(michael);
+// 4b2b30e27699979ce46714253bc2213010db039c
+hash(bob);
+// 38d96106bc8ef3d8bd369b99bb6972702c9826d5
+
+/***
+ * hash object keys, values ignored
+ */
+hash(peter, { excludeValues: true });
+// 48f370a772c7496f6c9d2e6d92e920c87dd00a5c
+hash(michael, { excludeValues: true });
+// 48f370a772c7496f6c9d2e6d92e920c87dd00a5c
+hash.keys(bob);
+// 48f370a772c7496f6c9d2e6d92e920c87dd00a5c
+
+/***
+ * hash object, ignore specific key(s)
+ */
+hash(peter, { excludeKeys: function(key) {
+    if ( key === 'friends') {
+      return true;
+    }
+    return false;
+  }
+});
+// 66b7d7e64871aa9fda1bdc8e88a28df797648d80
+
+/***
+ * md5 base64 encoding
+ */
+hash(peter, { algorithm: 'md5', encoding: 'base64' });
+// 6rkWaaDiG3NynWw4svGH7g==
+hash(michael, { algorithm: 'md5', encoding: 'base64' });
+// djXaWpuWVJeOF8Sb6SFFNg==
+hash(bob, { algorithm: 'md5', encoding: 'base64' });
+// lFzkw/IJ8/12jZI0rQeS3w==
+```
+
+## Legacy Browser Support
+
+IE <= 8 and Opera <= 11 support dropped in version 0.3.0.  If you require
+legacy browser support you must either use an ES5 shim or use version 0.2.5
+of this module.
+
+## Development
+
+```sh-session
+git clone https://github.com/puleos/object-hash
+```
+
+## Node Docker Wrapper
+
+If you want to stand this up in a docker container, you should take at look
+at the [![node-object-hash](https://github.com/bean5/node-object-hash)](https://github.com/bean5/node-object-hash) project.
+
+### gulp tasks
+
+* `gulp watch` (default) watch files, test and lint on change/add
+* `gulp test` unit tests
+* `gulp karma` browser unit tests
+* `gulp lint` jshint
+* `gulp dist` create browser version in /dist
+
+## License
+
+MIT
+
+## Changelog
+
+### v2.0.0
+
+Only Node.js versions `>= 6.0.0` are being tested in CI now.
+No other breaking changes were introduced.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   import type CJSImportProcessor from "../CJSImportProcessor";
+import type { HelperManager } from "../HelperManager";
+import type NameManager from "../NameManager";
+import type TokenProcessor from "../TokenProcessor";
+import type ReactHotLoaderTransformer from "./ReactHotLoaderTransformer";
+import type RootTransformer from "./RootTransformer";
+import Transformer from "./Transformer";
+/**
+ * Class for editing import statements when we are transforming to commonjs.
+ */
+export default class CJSImportTransformer extends Transformer {
+    readonly rootTransformer: RootTransformer;
+    readonly tokens: TokenProcessor;
+    readonly importProcessor: CJSImportProcessor;
+    readonly nameManager: NameManager;
+    readonly helperManager: HelperManager;
+    readonly reactHotLoaderTransformer: ReactHotLoaderTransformer | null;
+    readonly enableLegacyBabel5ModuleInterop: boolean;
+    readonly enableLegacyTypeScriptModuleInterop: boolean;
+    readonly isTypeScriptTransformEnabled: boolean;
+    readonly isFlowTransformEnabled: boolean;
+    readonly preserveDynamicImport: boolean;
+    readonly keepUnusedImports: boolean;
+    private hadExport;
+    private hadNamedExport;
+    private hadDefaultExport;
+    private declarationInfo;
+    constructor(rootTransformer: RootTransformer, tokens: TokenProcessor, importProcessor: CJSImportProcessor, nameManager: NameManager, helperManager: HelperManager, reactHotLoaderTransformer: ReactHotLoaderTransformer | null, enableLegacyBabel5ModuleInterop: boolean, enableLegacyTypeScriptModuleInterop: boolean, isTypeScriptTransformEnabled: boolean, isFlowTransformEnabled: boolean, preserveDynamicImport: boolean, keepUnusedImports: boolean);
+    getPrefixCode(): string;
+    getSuffixCode(): string;
+    process(): boolean;
+    private processImportEquals;
+    /**
+     * Transform this:
+     * import foo, {bar} from 'baz';
+     * into
+     * var _baz = require('baz'); var _baz2 = _interopRequireDefault(_baz);
+     *
+     * The import code was already generated in the import preprocessing step, so
+     * we just need to look it up.
+     */
+    private processImport;
+    /**
+     * Erase this import (since any CJS output would be completely different), and
+     * return true if this import is should be elided due to being a type-only
+     * import. Such imports will not be emitted at all to avoid side effects.
+     *
+     * Import elision only happens with the TypeScript or Flow transforms enabled.
+     *
+     * TODO: This function has some awkward overlap with
+     *  CJSImportProcessor.pruneTypeOnlyImports , and the two should be unified.
+     *  That function handles TypeScript implicit import name elision, and removes
+     *  an import if all typical imported names (without `type`) are removed due
+     *  to being type-only imports. This function handles Flow import removal and
+     *  properly distinguishes `import 'foo'` from `import {} from 'foo'` for TS
+     *  purposes.
+     *
+     * The position should end at the import string.
+     */
+    private removeImportAndDetectIfShouldElide;
+    private removeRemainingImport;
+    private processIdentifier;
+    processObjectShorthand(): boolean;
+    processExport(): boolean;
+    private processAssignment;
+    /**
+     * Process something like `a += 3`, where `a` might be an exported value.
+     */
+    private processComplexAssignment;
+    /**
+     * Process something like `++a`, where `a` might be an exported value.
+     */
+    private processPreIncDec;
+    /**
+     * Process something like `a++`, where `a` might be an exported value.
+     * This starts at the `a`, not at the `++`.
+     */
+    private processPostIncDec;
+    private processExportDefault;
+    private copyDecorators;
+    /**
+     * Transform a declaration like `export var`, `export let`, or `export const`.
+     */
+    private processExportVar;
+    /**
+     * Determine if the export is of the form:
+     * export var/let/const [varName] = [expr];
+     * In other words, determine if function name inference might apply.
+     */
+    private isSimpleExportVar;
+    /**
+     * Transform an `export var` declaration initializing a single variable.
+     *
+     * For example, this:
+     * export const f = () => {};
+     * becomes this:
+     * const f = () => {}; exports.f = f;
+     *
+     * The variable is unused (e.g. exports.f has the true value of the export).
+     * We need to produce an assignment of this form so that the function will
+     * have an inferred name of "f", which wouldn't happen in the more general
+     * case below.
+     */
+    private processSimpleExportVar;
+    /**
+     * Transform normal declaration exports, including handling destructuring.
+     * For example, this:
+     * export const {x: [a = 2, b], c} = d;
+     * becomes this:
+     * ({x: [exports.a = 2, exports.b], c: exports.c} = d;)
+     */
+    private processComplexExportVar;
+    /**
+     * Transform this:
+     * export function foo() {}
+     * into this:
+     * function foo() {} exports.foo = foo;
+     */
+    private processExportFunction;
+    /**
+     * Skip past a function with a name and return that name.
+     */
+    private processNamedFunction;
+    /**
+     * Transform this:
+     * export class A {}
+     * into this:
+     * class A {} exports.A = A;
+     */
+    private processExportClass;
+    /**
+     * Transform this:
+     * export {a, b as c};
+     * into this:
+     * exports.a = a; exports.c = b;
+     *
+     * OR
+     *
+     * Transform this:
+     * export {a, b as c} from './foo';
+     * into the pre-generated Object.defineProperty code from the ImportProcessor.
+     *
+     * For the first case, if the TypeScript transform is enabled, we need to skip
+     * exports that are only defined as types.
+     */
+    private processExportBindings;
+    private processExportStar;
+    private shouldElideExportedIdentifier;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 "use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = void 0;
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+var _ariaQuery = require("aria-query");
+var _jsxAstUtils = require("jsx-ast-utils");
+var _arrayIncludes = _interopRequireDefault(require("array-includes"));
+var _schemas = require("../util/schemas");
+var _getElementType = _interopRequireDefault(require("../util/getElementType"));
+var _isAbstractRole = _interopRequireDefault(require("../util/isAbstractRole"));
+var _isHiddenFromScreenReader = _interopRequireDefault(require("../util/isHiddenFromScreenReader"));
+var _isInteractiveElement = _interopRequireDefault(require("../util/isInteractiveElement"));
+var _isInteractiveRole = _interopRequireDefault(require("../util/isInteractiveRole"));
+var _isNonInteractiveElement = _interopRequireDefault(require("../util/isNonInteractiveElement"));
+var _isNonInteractiveRole = _interopRequireDefault(require("../util/isNonInteractiveRole"));
+var _isNonLiteralProperty = _interopRequireDefault(require("../util/isNonLiteralProperty"));
+var _isPresentationRole = _interopRequireDefault(require("../util/isPresentationRole"));
+/**
+ * @fileoverview Enforce static elements have no interactive handlers.
+ * @author Ethan Cohen
+ * 
+ */
+
+// ----------------------------------------------------------------------------
+// Rule Definition
+// ----------------------------------------------------------------------------
+
+var errorMessage = 'Avoid non-native interactive elements. If using native HTML is not possible, add an appropriate role and support for tabbing, mouse, keyboard, and touch inputs to an interactive content element.';
+var domElements = (0, _toConsumableArray2["default"])(_ariaQuery.dom.keys());
+var defaultInteractiveProps = [].concat(_jsxAstUtils.eventHandlersByType.focus, _jsxAstUtils.eventHandlersByType.keyboard, _jsxAstUtils.eventHandlersByType.mouse);
+var schema = (0, _schemas.generateObjSchema)({
+  handlers: _schemas.arraySchema
+});
+var _default = {
+  meta: {
+    docs: {
+      url: 'https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/tree/HEAD/docs/rules/no-static-element-interactions.md',
+      description: 'Enforce that non-interactive, visible elements (such as `<div>`) that have click handlers use the role attribute.'
+    },
+    schema: [schema]
+  },
+  create: function create(context) {
+    var options = context.options;
+    var elementType = (0, _getElementType["default"])(context);
+    return {
+      JSXOpeningElement: function JSXOpeningElement(node) {
+        var attributes = node.attributes;
+        var type = elementType(node);
+        var _ref = options[0] || {},
+          allowExpressionValues = _ref.allowExpressionValues,
+          _ref$handlers = _ref.handlers,
+          handlers = _ref$handlers === void 0 ? defaultInteractiveProps : _ref$handlers;
+        var hasInteractiveProps = handlers.some(function (prop) {
+          return (0, _jsxAstUtils.hasProp)(attributes, prop) && (0, _jsxAstUtils.getPropValue)((0, _jsxAstUtils.getProp)(attributes, prop)) != null;
+        });
+        if (!(0, _arrayIncludes["default"])(domElements, type)) {
+          // Do not test higher level JSX components, as we do not know what
+          // low-level DOM element this maps to.
+          return;
+        }
+        if (!hasInteractiveProps || (0, _isHiddenFromScreenReader["default"])(type, attributes) || (0, _isPresentationRole["default"])(type, attributes)) {
+          // Presentation is an intentional signal from the author that this
+          // element is not meant to be perceivable. For example, a click screen
+          // to close a dialog .
+          return;
+        }
+        if ((0, _isInteractiveElement["default"])(type, attributes) || (0, _isInteractiveRole["default"])(type, attributes) || (0, _isNonInteractiveElement["default"])(type, attributes) || (0, _isNonInteractiveRole["default"])(type, attributes) || (0, _isAbstractRole["default"])(type, attributes)) {
+          // This rule has no opinion about abstract roles.
+          return;
+        }
+        if (allowExpressionValues === true && (0, _isNonLiteralProperty["default"])(attributes, 'role')) {
+          // Special case if role is assigned using ternary with literals on both side
+          var roleProp = (0, _jsxAstUtils.getProp)(attributes, 'role');
+          if (roleProp && roleProp.type === 'JSXAttribute' && roleProp.value.type === 'JSXExpressionContainer') {
+            if (roleProp.value.expression.type === 'ConditionalExpression') {
+              if (roleProp.value.expression.consequent.type === 'Literal' && roleProp.value.expression.alternate.type === 'Literal') {
+                return;
+              }
+            }
+          }
+          return;
+        }
+
+        // Visible, non-interactive elements should not have an interactive handler.
+        context.report({
+          node,
+          message: errorMessage
+        });
+      }
+    };
+  }
+};
+exports["default"] = _default;
+module.exports = exports.default;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     /**
+ * @fileoverview Pattern for det
