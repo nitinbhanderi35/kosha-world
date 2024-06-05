@@ -1,0 +1,110 @@
+/* eslint-disable */ var Module = function() {
+    return function(Module) {
+        Module = Module || {};
+        var Module = typeof Module !== "undefined" ? Module : {};
+        var readyPromiseResolve, readyPromiseReject;
+        Module["ready"] = new Promise(function(resolve, reject) {
+            readyPromiseResolve = resolve;
+            readyPromiseReject = reject;
+        });
+        var moduleOverrides = {};
+        var key;
+        for(key in Module){
+            if (Module.hasOwnProperty(key)) {
+                moduleOverrides[key] = Module[key];
+            }
+        }
+        var arguments_ = [];
+        var thisProgram = "./this.program";
+        var quit_ = function(status, toThrow) {
+            throw toThrow;
+        };
+        var ENVIRONMENT_IS_WEB = false;
+        var ENVIRONMENT_IS_WORKER = false;
+        var ENVIRONMENT_IS_NODE = true;
+        var scriptDirectory = "";
+        function locateFile(path) {
+            if (Module["locateFile"]) {
+                return Module["locateFile"](path, scriptDirectory);
+            }
+            return scriptDirectory + path;
+        }
+        var read_, readBinary;
+        var nodeFS;
+        var nodePath;
+        if (ENVIRONMENT_IS_NODE) {
+            if (ENVIRONMENT_IS_WORKER) {
+                scriptDirectory = require("path").dirname(scriptDirectory) + "/";
+            } else {
+                scriptDirectory = __dirname + "/";
+            }
+            read_ = function shell_read(filename, binary) {
+                if (!nodeFS) nodeFS = require("fs");
+                if (!nodePath) nodePath = require("path");
+                filename = nodePath["normalize"](filename);
+                return nodeFS["readFileSync"](filename, binary ? null : "utf8");
+            };
+            readBinary = function readBinary(filename) {
+                var ret = read_(filename, true);
+                if (!ret.buffer) {
+                    ret = new Uint8Array(ret);
+                }
+                assert(ret.buffer);
+                return ret;
+            };
+            if (process["argv"].length > 1) {
+                thisProgram = process["argv"][1].replace(/\\/g, "/");
+            }
+            arguments_ = process["argv"].slice(2);
+            quit_ = function(status) {
+                process["exit"](status);
+            };
+            Module["inspect"] = function() {
+                return "[Emscripten Module object]";
+            };
+        } else {}
+        var out = Module["print"] || console.log.bind(console);
+        var err = Module["printErr"] || console.warn.bind(console);
+        for(key in moduleOverrides){
+            if (moduleOverrides.hasOwnProperty(key)) {
+                Module[key] = moduleOverrides[key];
+            }
+        }
+        moduleOverrides = null;
+        if (Module["arguments"]) arguments_ = Module["arguments"];
+        if (Module["thisProgram"]) thisProgram = Module["thisProgram"];
+        if (Module["quit"]) quit_ = Module["quit"];
+        var tempRet0 = 0;
+        var setTempRet0 = function(value) {
+            tempRet0 = value;
+        };
+        var wasmBinary;
+        if (Module["wasmBinary"]) wasmBinary = Module["wasmBinary"];
+        var noExitRuntime = Module["noExitRuntime"] || true;
+        if (typeof WebAssembly !== "object") {
+            abort("no native wasm support detected");
+        }
+        var wasmMemory;
+        var ABORT = false;
+        var EXITSTATUS;
+        function assert(condition, text) {
+            if (!condition) {
+                abort("Assertion failed: " + text);
+            }
+        }
+        var UTF8Decoder = new TextDecoder("utf8");
+        function UTF8ArrayToString(heap, idx, maxBytesToRead) {
+            var endIdx = idx + maxBytesToRead;
+            var endPtr = idx;
+            while(heap[endPtr] && !(endPtr >= endIdx))++endPtr;
+            return UTF8Decoder.decode(heap.subarray ? heap.subarray(idx, endPtr) : new Uint8Array(heap.slice(idx, endPtr)));
+        }
+        function UTF8ToString(ptr, maxBytesToRead) {
+            if (!ptr) return "";
+            var maxPtr = ptr + maxBytesToRead;
+            for(var end = ptr; !(end >= maxPtr) && HEAPU8[end];)++end;
+            return UTF8Decoder.decode(HEAPU8.subarray(ptr, end));
+        }
+        function stringToUTF8Array(str, heap, outIdx, maxBytesToWrite) {
+            if (!(maxBytesToWrite > 0)) return 0;
+  

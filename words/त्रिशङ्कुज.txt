@@ -1,0 +1,114 @@
+            } else {
+                    str += String.fromCharCode(utf32);
+                }
+            }
+            return str;
+        }
+        function stringToUTF32(str, outPtr, maxBytesToWrite) {
+            if (maxBytesToWrite === undefined) {
+                maxBytesToWrite = 2147483647;
+            }
+            if (maxBytesToWrite < 4) return 0;
+            var startPtr = outPtr;
+            var endPtr = startPtr + maxBytesToWrite - 4;
+            for(var i = 0; i < str.length; ++i){
+                var codeUnit = str.charCodeAt(i);
+                if (codeUnit >= 55296 && codeUnit <= 57343) {
+                    var trailSurrogate = str.charCodeAt(++i);
+                    codeUnit = 65536 + ((codeUnit & 1023) << 10) | trailSurrogate & 1023;
+                }
+                HEAP32[outPtr >> 2] = codeUnit;
+                outPtr += 4;
+                if (outPtr + 4 > endPtr) break;
+            }
+            HEAP32[outPtr >> 2] = 0;
+            return outPtr - startPtr;
+        }
+        function lengthBytesUTF32(str) {
+            var len = 0;
+            for(var i = 0; i < str.length; ++i){
+                var codeUnit = str.charCodeAt(i);
+                if (codeUnit >= 55296 && codeUnit <= 57343) ++i;
+                len += 4;
+            }
+            return len;
+        }
+        function writeAsciiToMemory(str, buffer, dontAddNull) {
+            for(var i = 0; i < str.length; ++i){
+                HEAP8[buffer++ >> 0] = str.charCodeAt(i);
+            }
+            if (!dontAddNull) HEAP8[buffer >> 0] = 0;
+        }
+        function alignUp(x, multiple) {
+            if (x % multiple > 0) {
+                x += multiple - x % multiple;
+            }
+            return x;
+        }
+        var buffer, HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64;
+        function updateGlobalBufferAndViews(buf) {
+            buffer = buf;
+            Module["HEAP8"] = HEAP8 = new Int8Array(buf);
+            Module["HEAP16"] = HEAP16 = new Int16Array(buf);
+            Module["HEAP32"] = HEAP32 = new Int32Array(buf);
+            Module["HEAPU8"] = HEAPU8 = new Uint8Array(buf);
+            Module["HEAPU16"] = HEAPU16 = new Uint16Array(buf);
+            Module["HEAPU32"] = HEAPU32 = new Uint32Array(buf);
+            Module["HEAPF32"] = HEAPF32 = new Float32Array(buf);
+            Module["HEAPF64"] = HEAPF64 = new Float64Array(buf);
+        }
+        var INITIAL_MEMORY = Module["INITIAL_MEMORY"] || 16777216;
+        var wasmTable;
+        var __ATPRERUN__ = [];
+        var __ATINIT__ = [];
+        var __ATPOSTRUN__ = [];
+        var runtimeInitialized = false;
+        var runtimeExited = false;
+        function preRun() {
+            if (Module["preRun"]) {
+                if (typeof Module["preRun"] == "function") Module["preRun"] = [
+                    Module["preRun"]
+                ];
+                while(Module["preRun"].length){
+                    addOnPreRun(Module["preRun"].shift());
+                }
+            }
+            callRuntimeCallbacks(__ATPRERUN__);
+        }
+        function initRuntime() {
+            runtimeInitialized = true;
+            callRuntimeCallbacks(__ATINIT__);
+        }
+        function exitRuntime() {
+            runtimeExited = true;
+        }
+        function postRun() {
+            if (Module["postRun"]) {
+                if (typeof Module["postRun"] == "function") Module["postRun"] = [
+                    Module["postRun"]
+                ];
+                while(Module["postRun"].length){
+                    addOnPostRun(Module["postRun"].shift());
+                }
+            }
+            callRuntimeCallbacks(__ATPOSTRUN__);
+        }
+        function addOnPreRun(cb) {
+            __ATPRERUN__.unshift(cb);
+        }
+        function addOnInit(cb) {
+            __ATINIT__.unshift(cb);
+        }
+        function addOnPostRun(cb) {
+            __ATPOSTRUN__.unshift(cb);
+        }
+        var runDependencies = 0;
+        var runDependencyWatcher = null;
+        var dependenciesFulfilled = null;
+        function addRunDependency(id) {
+            runDependencies++;
+            if (Module["monitorRunDependencies"]) {
+                Module["monitorRunDependencies"](runDependencies);
+            }
+        }
+       

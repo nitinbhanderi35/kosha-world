@@ -1,0 +1,114 @@
+            var unboundTypes = [];
+            var seen = {};
+            function visit(type) {
+                if (seen[type]) {
+                    return;
+                }
+                if (registeredTypes[type]) {
+                    return;
+                }
+                if (typeDependencies[type]) {
+                    typeDependencies[type].forEach(visit);
+                    return;
+                }
+                unboundTypes.push(type);
+                seen[type] = true;
+            }
+            types.forEach(visit);
+            throw new UnboundTypeError(message + ": " + unboundTypes.map(getTypeName).join([
+                ", "
+            ]));
+        }
+        function __embind_register_function(name, argCount, rawArgTypesAddr, signature, rawInvoker, fn) {
+            var argTypes = heap32VectorToArray(argCount, rawArgTypesAddr);
+            name = readLatin1String(name);
+            rawInvoker = embind__requireFunction(signature, rawInvoker);
+            exposePublicSymbol(name, function() {
+                throwUnboundTypeError("Cannot call " + name + " due to unbound types", argTypes);
+            }, argCount - 1);
+            whenDependentTypesAreResolved([], argTypes, function(argTypes) {
+                var invokerArgsArray = [
+                    argTypes[0],
+                    null
+                ].concat(argTypes.slice(1));
+                replacePublicSymbol(name, craftInvokerFunction(name, invokerArgsArray, null, rawInvoker, fn), argCount - 1);
+                return [];
+            });
+        }
+        function integerReadValueFromPointer(name, shift, signed) {
+            switch(shift){
+                case 0:
+                    return signed ? function readS8FromPointer(pointer) {
+                        return HEAP8[pointer];
+                    } : function readU8FromPointer(pointer) {
+                        return HEAPU8[pointer];
+                    };
+                case 1:
+                    return signed ? function readS16FromPointer(pointer) {
+                        return HEAP16[pointer >> 1];
+                    } : function readU16FromPointer(pointer) {
+                        return HEAPU16[pointer >> 1];
+                    };
+                case 2:
+                    return signed ? function readS32FromPointer(pointer) {
+                        return HEAP32[pointer >> 2];
+                    } : function readU32FromPointer(pointer) {
+                        return HEAPU32[pointer >> 2];
+                    };
+                default:
+                    throw new TypeError("Unknown integer type: " + name);
+            }
+        }
+        function __embind_register_integer(primitiveType, name, size, minRange, maxRange) {
+            name = readLatin1String(name);
+            if (maxRange === -1) {
+                maxRange = 4294967295;
+            }
+            var shift = getShiftFromSize(size);
+            var fromWireType = function(value) {
+                return value;
+            };
+            if (minRange === 0) {
+                var bitshift = 32 - 8 * size;
+                fromWireType = function(value) {
+                    return value << bitshift >>> bitshift;
+                };
+            }
+            var isUnsignedType = name.includes("unsigned");
+            registerType(primitiveType, {
+                name: name,
+                fromWireType: fromWireType,
+                toWireType: function(destructors, value) {
+                    if (typeof value !== "number" && typeof value !== "boolean") {
+                        throw new TypeError('Cannot convert "' + _embind_repr(value) + '" to ' + this.name);
+                    }
+                    if (value < minRange || value > maxRange) {
+                        throw new TypeError('Passing a number "' + _embind_repr(value) + '" from JS side to C/C++ side to an argument of type "' + name + '", which is outside the valid range [' + minRange + ", " + maxRange + "]!");
+                    }
+                    return isUnsignedType ? value >>> 0 : value | 0;
+                },
+                argPackAdvance: 8,
+                readValueFromPointer: integerReadValueFromPointer(name, shift, minRange !== 0),
+                destructorFunction: null
+            });
+        }
+        function __embind_register_memory_view(rawType, dataTypeIndex, name) {
+            var typeMapping = [
+                Int8Array,
+                Uint8Array,
+                Int16Array,
+                Uint16Array,
+                Int32Array,
+                Uint32Array,
+                Float32Array,
+                Float64Array
+            ];
+            var TA = typeMapping[dataTypeIndex];
+            function decodeMemoryView(handle) {
+                handle = handle >> 2;
+                var heap = HEAPU32;
+                var size = heap[handle];
+                var data = heap[handle + 1];
+                return new TA(buffer, data, size);
+            }
+            name = readLatin1
