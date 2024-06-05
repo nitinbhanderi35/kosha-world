@@ -1,0 +1,257 @@
+"use strict";
+(() => {
+var exports = {};
+exports.id = 6331;
+exports.ids = [6331];
+exports.modules = {
+
+/***/ 4082:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5893);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const ContentCard = ({ children , border , padding , className  })=>{
+    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+            className: `bg-card ${border ? border : "border"} border-solid border-b_color  ${padding ? padding : ""} ${className ? className : ""}`,
+            children: children
+        })
+    });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ContentCard);
+
+
+/***/ }),
+
+/***/ 6679:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5893);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const TitleCard = ({ className , children , borderradius , textsize , padding , zindex , backGroundImage  })=>{
+    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+            className: `${className} text-center bg-primary sticky top-[52px] md:top-[60px] text-secondary
+        ${textsize ? textsize : "text-sm sm:text-xl md:text-2xl"}
+        ${zindex ? zindex : "z-10"}
+        ${padding ? padding : "p-2 md:p-3"}
+        ${borderradius ? borderradius : "rounded-t-md"}
+        `,
+            children: children
+        })
+    });
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TitleCard);
+
+
+/***/ }),
+
+/***/ 8764:
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5893);
+/* harmony import */ var _components_Card_ContentCard__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4082);
+/* harmony import */ var _components_Card_TitleCard__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6679);
+/* harmony import */ var _utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6420);
+/* harmony import */ var _utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2361);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1664);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_6__);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_4__]);
+_utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_4__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
+
+
+
+
+
+
+
+const Sutratype = ({ sutratype_id  })=>{
+    const { sutraani , sutratypeArray  } = (0,react__WEBPACK_IMPORTED_MODULE_6__.useContext)(_utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_4__/* .SutraaniContext */ .i);
+    const [sutraData, setSutraData] = (0,react__WEBPACK_IMPORTED_MODULE_6__.useState)();
+    const [title, setTitle] = (0,react__WEBPACK_IMPORTED_MODULE_6__.useState)();
+    const arr = [];
+    sutraani?.data?.map((s)=>{
+        arr.push(s.type.split("##"));
+    });
+    const data = [
+        ...new Set(arr.reduce((acc, curr)=>acc.concat(curr), []))
+    ];
+    const getSutraTypeData = (key)=>{
+        const finalData = [];
+        const S = [];
+        data?.map((d)=>{
+            if (d.split("$")[0] == key) {
+                S.push(d);
+            }
+        });
+        S.map((s)=>{
+            const data = sutraani?.data?.map((sutra)=>{
+                if (sutra?.type.includes(s)) {
+                    return sutra;
+                }
+            });
+            // const datas = {
+            //   name: s.split("$")[1],
+            //   data: data.filter((e) => e !== undefined),
+            // };
+            finalData.push({
+                name: s.split("$")[1],
+                data: data.filter((e)=>e !== undefined)
+            });
+        });
+        setSutraData(finalData);
+    };
+    const getAdhikaarData = (data)=>{
+        const adhikaarArray = data.split("##");
+        const newData = adhikaarArray.map((a)=>{
+            if (a.split("$")[0] == "AD") {
+                const sdata = sutraani?.data?.map((s)=>{
+                    if (s?.i == a.split("$")[2]) {
+                        return `<span class="text-black">${s.s}</span><a class="text-[#00d]" href=/ashtadhyayi/sutraani/${s.i}> ${(0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .convertToHindi */ .ZS)(s.a)}.${(0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .convertToHindi */ .ZS)(s.p)}.${(0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .convertToHindi */ .ZS)(s.n)}</a>`;
+                    }
+                });
+                return sdata.filter((f)=>f !== undefined);
+            }
+        });
+        return newData.filter((f)=>f !== undefined);
+    };
+    (0,react__WEBPACK_IMPORTED_MODULE_6__.useEffect)(()=>{
+        sutratypeArray.map((e)=>{
+            if (e.route == sutratype_id) {
+                getSutraTypeData(e.key);
+                setTitle(e.type);
+            }
+        });
+    }, [
+        sutratype_id,
+        sutratypeArray
+    ]);
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: [
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Card_TitleCard__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z, {
+                backGroundImage: true,
+                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h1", {
+                    children: "अष्टाध्याय्यां " + title
+                })
+            }),
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Card_ContentCard__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z, {
+                children: sutraData?.map((f, i)=>{
+                    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                            className: "border-b border-x border-b_color p-2 font-medium text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl max-w-full",
+                            children: [
+                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                    className: "mr-2 mb-1 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
+                                    children: (0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .convertToHindi */ .ZS)(i + 1)
+                                }),
+                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                    className: "text-red font-bold break-words align-baseline inline-block",
+                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                        children: f.name
+                                    })
+                                }),
+                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                    children: f?.data?.map((d)=>{
+                                        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                            className: "mt-1",
+                                            children: [
+                                                "• ",
+                                                d.s,
+                                                " ",
+                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_5___default()), {
+                                                    href: "/ashtadhyayi/sutraani/[sutraani_id]",
+                                                    as: "/ashtadhyayi/sutraani/" + d?.i,
+                                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                                                        className: "ml-2 text-[#00d]",
+                                                        children: (0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .stringNumberHindi */ .rE)(`${d.a}.${d.p}.${d.n}`)
+                                                    })
+                                                }),
+                                                sutratype_id == "adhikaar" && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                                                    className: "text-muted",
+                                                    dangerouslySetInnerHTML: {
+                                                        __html: ` इत्यतः ${getAdhikaarData(d.type)} इति यावत् ।`
+                                                    }
+                                                })
+                                            ]
+                                        }, d?.i);
+                                    })
+                                })
+                            ]
+                        })
+                    });
+                })
+            })
+        ]
+    });
+};
+Sutratype.getInitialProps = ({ query  })=>{
+    const { sutratype_id: sutratype_id  } = query;
+    return {
+        sutratype_id: sutratype_id
+    };
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Sutratype);
+
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ }),
+
+/***/ 3280:
+/***/ ((module) => {
+
+module.exports = require("next/dist/shared/lib/app-router-context.js");
+
+/***/ }),
+
+/***/ 4964:
+/***/ ((module) => {
+
+module.exports = require("next/dist/shared/lib/router-context.js");
+
+/***/ }),
+
+/***/ 1751:
+/***/ ((module) => {
+
+module.exports = require("next/dist/shared/lib/router/utils/add-path-prefix.js");
+
+/***/ }),
+
+/***/ 3938:
+/***/ ((module) => {
+
+module.exports = require("next/dist/shared/lib/router/utils/format-url.js");
+
+/***/ }),
+
+/***/ 1109:
+/***/ ((module) => {
+
+module.exports = require("next/dist/shared/lib/router/utils/is-local-url.js");
+
+/***/ }),
+
+/***/ 8854:
+/***/ ((module) => {
+
+module.exports = requi
