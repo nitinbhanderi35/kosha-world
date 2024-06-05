@@ -1,0 +1,897 @@
+will always be set before read.
+// it is important that this not be used except when the stack guarantees it exists.
+// Currentlyt his is only during insertSuspendedStylesheet.
+
+
+let precedencesByRoot = null;
+
+function insertSuspendedStylesheets(state, resources) {
+  // We need to clear this out so we don't try to reinsert after the stylesheets have loaded
+  state.stylesheets = null;
+
+  if (state.unsuspend === null) {
+    // The suspended commit was cancelled. We don't need to insert any stylesheets.
+    return;
+  } // Temporarily increment count. we don't want any synchronously loaded stylesheets to try to unsuspend
+  // before we finish inserting all stylesheets.
+
+
+  state.count++;
+  precedencesByRoot = new Map();
+  resources.forEach(insertStylesheetIntoRoot, state);
+  precedencesByRoot = null; // We can remove our temporary count and if we're still at zero we can unsuspend.
+  // If we are in the synchronous phase before deciding if the commit should suspend and this
+  // ends up hitting the unsuspend path it will just invoke the noop unsuspend.
+
+  onUnsuspend.call(state);
+}
+
+function insertStylesheetIntoRoot(root, resource, map) {
+  if (resource.state.loading & Inserted) {
+    // This resource was inserted by another root committing. we don't need to insert it again
+    return;
+  }
+
+  let last;
+  let precedences = precedencesByRoot.get(root);
+
+  if (!precedences) {
+    precedences = new Map();
+    precedencesByRoot.set(root, precedences);
+    const nodes = root.querySelectorAll('link[data-precedence],style[data-precedence]');
+
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+
+      if (node.nodeName === 'link' || // We omit style tags with media="not all" because they are not in the right position
+      // and will be hoisted by the Fizz runtime imminently.
+      node.getAttribute('media') !== 'not all') {
+        precedences.set('p' + node.dataset.precedence, node);
+        last = node;
+      }
+    }
+
+    if (last) {
+      precedences.set('last', last);
+    }
+  } else {
+    last = precedences.get('last');
+  } // We only call this after we have constructed an instance so we assume it here
+
+
+  const instance = resource.instance; // We will always have a precedence for stylesheet instances
+
+  const precedence = instance.getAttribute('data-precedence');
+  const prior = precedences.get('p' + precedence) || last;
+
+  if (prior === last) {
+    precedences.set('last', instance);
+  }
+
+  precedences.set(precedence, instance);
+  this.count++;
+  const onComplete = onUnsuspend.bind(this);
+  instance.addEventListener('load', onComplete);
+  instance.addEventListener('error', onComplete);
+
+  if (prior) {
+    prior.parentNode.insertBefore(instance, prior.nextSibling);
+  } else {
+    const parent = root.nodeType === DOCUMENT_NODE ? root.head : root;
+    parent.insertBefore(instance, parent.firstChild);
+  }
+
+  resource.state.loading |= Inserted;
+}
+
+const NotPendingTransition = NotPending;
+
+const Dispatcher$1 = Internals.Dispatcher;
+
+if (typeof document !== 'undefined') {
+  // Set the default dispatcher to the client dispatcher
+  Dispatcher$1.current = ReactDOMClientDispatcher;
+}
+/* global reportError */
+
+const defaultOnRecoverableError = typeof reportError === 'function' ? // In modern browsers, reportError will dispatch an error event,
+// emulating an uncaught JavaScript error.
+reportError : error => {
+  // In older browsers and test environments, fallback to console.error.
+  // eslint-disable-next-line react-internal/no-production-logging
+  console['error'](error);
+}; // $FlowFixMe[missing-this-annot]
+
+function ReactDOMRoot(internalRoot) {
+  this._internalRoot = internalRoot;
+} // $FlowFixMe[prop-missing] found when upgrading Flow
+
+
+ReactDOMHydrationRoot.prototype.render = ReactDOMRoot.prototype.render = // $FlowFixMe[missing-this-annot]
+function (children) {
+  const root = this._internalRoot;
+
+  if (root === null) {
+    throw Error(formatProdErrorMessage(409));
+  }
+
+  updateContainer(children, root, null, null);
+}; // $FlowFixMe[prop-missing] found when upgrading Flow
+
+
+ReactDOMHydrationRoot.prototype.unmount = ReactDOMRoot.prototype.unmount = // $FlowFixMe[missing-this-annot]
+function () {
+
+  const root = this._internalRoot;
+
+  if (root !== null) {
+    this._internalRoot = null;
+    const container = root.containerInfo;
+
+    flushSync$1(() => {
+      updateContainer(null, root, null, null);
+    });
+    unmarkContainerAsRoot(container);
+  }
+};
+
+function createRoot$1(container, options) {
+  if (!isValidContainer(container)) {
+    throw Error(formatProdErrorMessage(299));
+  }
+  let isStrictMode = false;
+  let concurrentUpdatesByDefaultOverride = false;
+  let identifierPrefix = '';
+  let onRecoverableError = defaultOnRecoverableError;
+  let transitionCallbacks = null;
+
+  if (options !== null && options !== undefined) {
+
+    if (options.unstable_strictMode === true) {
+      isStrictMode = true;
+    }
+
+    if (options.identifierPrefix !== undefined) {
+      identifierPrefix = options.identifierPrefix;
+    }
+
+    if (options.onRecoverableError !== undefined) {
+      onRecoverableError = options.onRecoverableError;
+    }
+
+    if (options.unstable_transitionCallbacks !== undefined) {
+      transitionCallbacks = options.unstable_transitionCallbacks;
+    }
+  }
+
+  const root = createContainer(container, ConcurrentRoot, null, isStrictMode, concurrentUpdatesByDefaultOverride, identifierPrefix, onRecoverableError, transitionCallbacks);
+  markContainerAsRoot(root.current, container);
+  Dispatcher$1.current = ReactDOMClientDispatcher;
+  const rootContainerElement = container.nodeType === COMMENT_NODE ? container.parentNode : container;
+  listenToAllSupportedEvents(rootContainerElement); // $FlowFixMe[invalid-constructor] Flow no longer supports calling new on functions
+
+  return new ReactDOMRoot(root);
+} // $FlowFixMe[missing-this-annot]
+
+function ReactDOMHydrationRoot(internalRoot) {
+  this._internalRoot = internalRoot;
+}
+
+function scheduleHydration(target) {
+  if (target) {
+    queueExplicitHydrationTarget(target);
+  }
+} // $FlowFixMe[prop-missing] found when upgrading Flow
+
+
+ReactDOMHydrationRoot.prototype.unstable_scheduleHydration = scheduleHydration;
+function hydrateRoot$1(container, initialChildren, options) {
+  if (!isValidContainer(container)) {
+    throw Error(formatProdErrorMessage(405));
+  }
+  // the hydration callbacks.
+
+
+  const hydrationCallbacks = options != null ? options : null;
+  let isStrictMode = false;
+  let concurrentUpdatesByDefaultOverride = false;
+  let identifierPrefix = '';
+  let onRecoverableError = defaultOnRecoverableError;
+  let transitionCallbacks = null;
+  let formState = null;
+
+  if (options !== null && options !== undefined) {
+    if (options.unstable_strictMode === true) {
+      isStrictMode = true;
+    }
+
+    if (options.identifierPrefix !== undefined) {
+      identifierPrefix = options.identifierPrefix;
+    }
+
+    if (options.onRecoverableError !== undefined) {
+      onRecoverableError = options.onRecoverableError;
+    }
+
+    if (options.unstable_transitionCallbacks !== undefined) {
+      transitionCallbacks = options.unstable_transitionCallbacks;
+    }
+
+    {
+      if (options.formState !== undefined) {
+        formState = options.formState;
+      }
+    }
+  }
+
+  const root = createHydrationContainer(initialChildren, null, container, ConcurrentRoot, hydrationCallbacks, isStrictMode, concurrentUpdatesByDefaultOverride, identifierPrefix, onRecoverableError, transitionCallbacks, formState);
+  markContainerAsRoot(root.current, container);
+  Dispatcher$1.current = ReactDOMClientDispatcher; // This can't be a comment node since hydration doesn't work on comment nodes anyway.
+
+  listenToAllSupportedEvents(container); // $FlowFixMe[invalid-constructor] Flow no longer supports calling new on functions
+
+  return new ReactDOMHydrationRoot(root);
+}
+function isValidContainer(node) {
+  return !!(node && (node.nodeType === ELEMENT_NODE || node.nodeType === DOCUMENT_NODE || node.nodeType === DOCUMENT_FRAGMENT_NODE || !disableCommentsAsDOMContainers  ));
+} // TODO: Remove this function which also includes comment nodes.
+// We only use it in places that are currently more relaxed.
+
+function isValidContainerLegacy(node) {
+  return !!(node && (node.nodeType === ELEMENT_NODE || node.nodeType === DOCUMENT_NODE || node.nodeType === DOCUMENT_FRAGMENT_NODE || node.nodeType === COMMENT_NODE && node.nodeValue === ' react-mount-point-unstable '));
+}
+
+function noopOnRecoverableError() {// This isn't reachable because onRecoverableError isn't called in the
+  // legacy API.
+}
+
+function legacyCreateRootFromDOMContainer(container, initialChildren, parentComponent, callback, isHydrationContainer) {
+  if (isHydrationContainer) {
+    if (typeof callback === 'function') {
+      const originalCallback = callback;
+
+      callback = function () {
+        const instance = getPublicRootInstance(root);
+        originalCallback.call(instance);
+      };
+    }
+
+    const root = createHydrationContainer(initialChildren, callback, container, LegacyRoot, null, // hydrationCallbacks
+    false, // isStrictMode
+    false, // concurrentUpdatesByDefaultOverride,
+    '', // identifierPrefix
+    noopOnRecoverableError, // TODO(luna) Support hydration later
+    null, null);
+    container._reactRootContainer = root;
+    markContainerAsRoot(root.current, container);
+    const rootContainerElement = container.nodeType === COMMENT_NODE ? container.parentNode : container; // $FlowFixMe[incompatible-call]
+
+    listenToAllSupportedEvents(rootContainerElement);
+    flushSync$1();
+    return root;
+  } else {
+    // First clear any existing content.
+    clearContainer(container);
+
+    if (typeof callback === 'function') {
+      const originalCallback = callback;
+
+      callback = function () {
+        const instance = getPublicRootInstance(root);
+        originalCallback.call(instance);
+      };
+    }
+
+    const root = createContainer(container, LegacyRoot, null, // hydrationCallbacks
+    false, // isStrictMode
+    false, // concurrentUpdatesByDefaultOverride,
+    '', // identifierPrefix
+    noopOnRecoverableError, // onRecoverableError
+    null // transitionCallbacks
+    );
+    container._reactRootContainer = root;
+    markContainerAsRoot(root.current, container);
+    const rootContainerElement = container.nodeType === COMMENT_NODE ? container.parentNode : container; // $FlowFixMe[incompatible-call]
+
+    listenToAllSupportedEvents(rootContainerElement); // Initial mount should not be batched.
+
+    flushSync$1(() => {
+      updateContainer(initialChildren, root, parentComponent, callback);
+    });
+    return root;
+  }
+}
+
+function legacyRenderSubtreeIntoContainer(parentComponent, children, container, forceHydrate, callback) {
+
+  const maybeRoot = container._reactRootContainer;
+  let root;
+
+  if (!maybeRoot) {
+    // Initial mount
+    root = legacyCreateRootFromDOMContainer(container, children, parentComponent, callback, forceHydrate);
+  } else {
+    root = maybeRoot;
+
+    if (typeof callback === 'function') {
+      const originalCallback = callback;
+
+      callback = function () {
+        const instance = getPublicRootInstance(root);
+        originalCallback.call(instance);
+      };
+    } // Update
+
+
+    updateContainer(children, root, parentComponent, callback);
+  }
+
+  return getPublicRootInstance(root);
+}
+
+function findDOMNode(componentOrElement) {
+
+  if (componentOrElement == null) {
+    return null;
+  }
+
+  if (componentOrElement.nodeType === ELEMENT_NODE) {
+    return componentOrElement;
+  }
+
+  return findHostInstance(componentOrElement);
+}
+function hydrate(element, container, callback) {
+
+  if (!isValidContainerLegacy(container)) {
+    throw Error(formatProdErrorMessage(200));
+  }
+
+
+  return legacyRenderSubtreeIntoContainer(null, element, container, true, callback);
+}
+function render(element, container, callback) {
+
+  if (!isValidContainerLegacy(container)) {
+    throw Error(formatProdErrorMessage(200));
+  }
+
+  return legacyRenderSubtreeIntoContainer(null, element, container, false, callback);
+}
+function unstable_renderSubtreeIntoContainer(parentComponent, element, containerNode, callback) {
+
+  if (!isValidContainerLegacy(containerNode)) {
+    throw Error(formatProdErrorMessage(200));
+  }
+
+  if (parentComponent == null || !has(parentComponent)) {
+    throw Error(formatProdErrorMessage(38));
+  }
+
+  return legacyRenderSubtreeIntoContainer(parentComponent, element, containerNode, false, callback);
+}
+function unmountComponentAtNode(container) {
+  if (!isValidContainerLegacy(container)) {
+    throw Error(formatProdErrorMessage(40));
+  }
+
+  if (container._reactRootContainer) {
+
+
+    flushSync$1(() => {
+      legacyRenderSubtreeIntoContainer(null, null, container, false, () => {
+        // $FlowFixMe[incompatible-type] This should probably use `delete container._reactRootContainer`
+        container._reactRootContainer = null;
+        unmarkContainerAsRoot(container);
+      });
+    }); // If you call unmountComponentAtNode twice in quick succession, you'll
+    // get `true` twice. That's probably fine?
+
+    return true;
+  } else {
+
+    return false;
+  }
+}
+
+const ReactDOMSharedInternals = Internals;
+
+function getCrossOriginString(input) {
+  if (typeof input === 'string') {
+    return input === 'use-credentials' ? input : '';
+  }
+
+  return undefined;
+}
+function getCrossOriginStringAs(as, input) {
+  if (as === 'font') {
+    return '';
+  }
+
+  if (typeof input === 'string') {
+    return input === 'use-credentials' ? input : '';
+  }
+
+  return undefined;
+}
+
+const Dispatcher = ReactDOMSharedInternals.Dispatcher;
+function prefetchDNS(href) {
+
+  const dispatcher = Dispatcher.current;
+
+  if (dispatcher && typeof href === 'string') {
+    dispatcher.prefetchDNS(href);
+  } // We don't error because preconnect needs to be resilient to being called in a variety of scopes
+  // and the runtime may not be capable of responding. The function is optimistic and not critical
+  // so we favor silent bailout over warning or erroring.
+
+}
+function preconnect(href, options) {
+
+  const dispatcher = Dispatcher.current;
+
+  if (dispatcher && typeof href === 'string') {
+    const crossOrigin = options ? getCrossOriginString(options.crossOrigin) : null;
+    dispatcher.preconnect(href, crossOrigin);
+  } // We don't error because preconnect needs to be resilient to being called in a variety of scopes
+  // and the runtime may not be capable of responding. The function is optimistic and not critical
+  // so we favor silent bailout over warning or erroring.
+
+}
+function preload(href, options) {
+
+  const dispatcher = Dispatcher.current;
+
+  if (dispatcher && typeof href === 'string' && // We check existence because we cannot enforce this function is actually called with the stated type
+  typeof options === 'object' && options !== null && typeof options.as === 'string') {
+    const as = options.as;
+    const crossOrigin = getCrossOriginStringAs(as, options.crossOrigin);
+    dispatcher.preload(href, as, {
+      crossOrigin,
+      integrity: typeof options.integrity === 'string' ? options.integrity : undefined,
+      nonce: typeof options.nonce === 'string' ? options.nonce : undefined,
+      type: typeof options.type === 'string' ? options.type : undefined,
+      fetchPriority: typeof options.fetchPriority === 'string' ? options.fetchPriority : undefined,
+      referrerPolicy: typeof options.referrerPolicy === 'string' ? options.referrerPolicy : undefined,
+      imageSrcSet: typeof options.imageSrcSet === 'string' ? options.imageSrcSet : undefined,
+      imageSizes: typeof options.imageSizes === 'string' ? options.imageSizes : undefined
+    });
+  } // We don't error because preload needs to be resilient to being called in a variety of scopes
+  // and the runtime may not be capable of responding. The function is optimistic and not critical
+  // so we favor silent bailout over warning or erroring.
+
+}
+function preloadModule(href, options) {
+
+  const dispatcher = Dispatcher.current;
+
+  if (dispatcher && typeof href === 'string') {
+    if (options) {
+      const crossOrigin = getCrossOriginStringAs(options.as, options.crossOrigin);
+      dispatcher.preloadModule(href, {
+        as: typeof options.as === 'string' && options.as !== 'script' ? options.as : undefined,
+        crossOrigin,
+        integrity: typeof options.integrity === 'string' ? options.integrity : undefined
+      });
+    } else {
+      dispatcher.preloadModule(href);
+    }
+  } // We don't error because preload needs to be resilient to being called in a variety of scopes
+  // and the runtime may not be capable of responding. The function is optimistic and not critical
+  // so we favor silent bailout over warning or erroring.
+
+}
+function preinit(href, options) {
+
+  const dispatcher = Dispatcher.current;
+
+  if (dispatcher && typeof href === 'string' && options && typeof options.as === 'string') {
+    const as = options.as;
+    const crossOrigin = getCrossOriginStringAs(as, options.crossOrigin);
+    const integrity = typeof options.integrity === 'string' ? options.integrity : undefined;
+    const fetchPriority = typeof options.fetchPriority === 'string' ? options.fetchPriority : undefined;
+
+    if (as === 'style') {
+      dispatcher.preinitStyle(href, typeof options.precedence === 'string' ? options.precedence : undefined, {
+        crossOrigin,
+        integrity,
+        fetchPriority
+      });
+    } else if (as === 'script') {
+      dispatcher.preinitScript(href, {
+        crossOrigin,
+        integrity,
+        fetchPriority,
+        nonce: typeof options.nonce === 'string' ? options.nonce : undefined
+      });
+    }
+  } // We don't error because preinit needs to be resilient to being called in a variety of scopes
+  // and the runtime may not be capable of responding. The function is optimistic and not critical
+  // so we favor silent bailout over warning or erroring.
+
+}
+function preinitModule(href, options) {
+
+  const dispatcher = Dispatcher.current;
+
+  if (dispatcher && typeof href === 'string') {
+    if (typeof options === 'object' && options !== null) {
+      if (options.as == null || options.as === 'script') {
+        const crossOrigin = getCrossOriginStringAs(options.as, options.crossOrigin);
+        dispatcher.preinitModuleScript(href, {
+          crossOrigin,
+          integrity: typeof options.integrity === 'string' ? options.integrity : undefined,
+          nonce: typeof options.nonce === 'string' ? options.nonce : undefined
+        });
+      }
+    } else if (options == null) {
+      dispatcher.preinitModuleScript(href);
+    }
+  } // We don't error because preinit needs to be resilient to being called in a variety of scopes
+  // and the runtime may not be capable of responding. The function is optimistic and not critical
+  // so we favor silent bailout over warning or erroring.
+
+}
+
+function createPortal(children, container) {
+  let key = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+
+  if (!isValidContainer(container)) {
+    throw Error(formatProdErrorMessage(200));
+  } // TODO: pass ReactDOM portal implementation as third argument
+  // $FlowFixMe[incompatible-return] The Flow type is opaque but there's no way to actually create it.
+
+
+  return createPortal$1(children, container, null, key);
+}
+
+function renderSubtreeIntoContainer(parentComponent, element, containerNode, callback) {
+  return unstable_renderSubtreeIntoContainer(parentComponent, element, containerNode, callback);
+}
+
+function createRoot(container, options) {
+
+  return createRoot$1(container, options);
+}
+
+function hydrateRoot(container, initialChildren, options) {
+
+  return hydrateRoot$1(container, initialChildren, options);
+} // Overload the definition to the two valid signatures.
+// Warning, this opts-out of checking the function body.
+// eslint-disable-next-line no-redeclare
+// eslint-disable-next-line no-redeclare
+
+
+function flushSync(fn) {
+
+  return flushSync$1(fn);
+}
+// This is an array for better minification.
+
+Internals.Events = [getInstanceFromNode$1, getNodeFromInstance, getFiberCurrentPropsFromNode, enqueueStateRestore, restoreStateIfNeeded, batchedUpdates$1];
+injectIntoDevTools({
+  findFiberByHostInstance: getClosestInstanceFromNode,
+  bundleType: 0,
+  version: ReactVersion,
+  rendererPackageName: 'react-dom'
+});
+
+function experimental_useFormStatus() {
+
+  return useFormStatus();
+}
+function experimental_useFormState(action, initialState, permalink) {
+
+  return useFormState(action, initialState, permalink);
+}
+
+exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = Internals;
+exports.createComponentSelector = createComponentSelector;
+exports.createHasPseudoClassSelector = createHasPseudoClassSelector;
+exports.createPortal = createPortal;
+exports.createRoleSelector = createRoleSelector;
+exports.createRoot = createRoot;
+exports.createTestNameSelector = createTestNameSelector;
+exports.createTextSelector = createTextSelector;
+exports.experimental_useFormState = experimental_useFormState;
+exports.experimental_useFormStatus = experimental_useFormStatus;
+exports.findAllNodes = findAllNodes;
+exports.findBoundingRects = findBoundingRects;
+exports.findDOMNode = findDOMNode;
+exports.flushSync = flushSync;
+exports.focusWithin = focusWithin;
+exports.getFindAllNodesFailureDescription = getFindAllNodesFailureDescription;
+exports.hydrate = hydrate;
+exports.hydrateRoot = hydrateRoot;
+exports.observeVisibleRects = observeVisibleRects;
+exports.preconnect = preconnect;
+exports.prefetchDNS = prefetchDNS;
+exports.preinit = preinit;
+exports.preinitModule = preinitModule;
+exports.preload = preload;
+exports.preloadModule = preloadModule;
+exports.render = render;
+exports.unmountComponentAtNode = unmountComponentAtNode;
+exports.unstable_batchedUpdates = batchedUpdates$1;
+exports.unstable_renderSubtreeIntoContainer = renderSubtreeIntoContainer;
+exports.unstable_runWithPriority = runWithPriority;
+exports.useFormState = useFormState;
+exports.useFormStatus = useFormStatus;
+exports.version = ReactVersion;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+/*! js-yaml 4.1.0 https://github.com/nodeca/js-yaml @license MIT */
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.jsyaml = {}));
+}(this, (function (exports) { 'use strict';
+
+  function isNothing(subject) {
+    return (typeof subject === 'undefined') || (subject === null);
+  }
+
+
+  function isObject(subject) {
+    return (typeof subject === 'object') && (subject !== null);
+  }
+
+
+  function toArray(sequence) {
+    if (Array.isArray(sequence)) return sequence;
+    else if (isNothing(sequence)) return [];
+
+    return [ sequence ];
+  }
+
+
+  function extend(target, source) {
+    var index, length, key, sourceKeys;
+
+    if (source) {
+      sourceKeys = Object.keys(source);
+
+      for (index = 0, length = sourceKeys.length; index < length; index += 1) {
+        key = sourceKeys[index];
+        target[key] = source[key];
+      }
+    }
+
+    return target;
+  }
+
+
+  function repeat(string, count) {
+    var result = '', cycle;
+
+    for (cycle = 0; cycle < count; cycle += 1) {
+      result += string;
+    }
+
+    return result;
+  }
+
+
+  function isNegativeZero(number) {
+    return (number === 0) && (Number.NEGATIVE_INFINITY === 1 / number);
+  }
+
+
+  var isNothing_1      = isNothing;
+  var isObject_1       = isObject;
+  var toArray_1        = toArray;
+  var repeat_1         = repeat;
+  var isNegativeZero_1 = isNegativeZero;
+  var extend_1         = extend;
+
+  var common = {
+  	isNothing: isNothing_1,
+  	isObject: isObject_1,
+  	toArray: toArray_1,
+  	repeat: repeat_1,
+  	isNegativeZero: isNegativeZero_1,
+  	extend: extend_1
+  };
+
+  // YAML error class. http://stackoverflow.com/questions/8458984
+
+
+  function formatError(exception, compact) {
+    var where = '', message = exception.reason || '(unknown reason)';
+
+    if (!exception.mark) return message;
+
+    if (exception.mark.name) {
+      where += 'in "' + exception.mark.name + '" ';
+    }
+
+    where += '(' + (exception.mark.line + 1) + ':' + (exception.mark.column + 1) + ')';
+
+    if (!compact && exception.mark.snippet) {
+      where += '\n\n' + exception.mark.snippet;
+    }
+
+    return message + ' ' + where;
+  }
+
+
+  function YAMLException$1(reason, mark) {
+    // Super constructor
+    Error.call(this);
+
+    this.name = 'YAMLException';
+    this.reason = reason;
+    this.mark = mark;
+    this.message = formatError(this, false);
+
+    // Include stack trace in error object
+    if (Error.captureStackTrace) {
+      // Chrome and NodeJS
+      Error.captureStackTrace(this, this.constructor);
+    } else {
+      // FF, IE 10+ and Safari 6+. Fallback for others
+      this.stack = (new Error()).stack || '';
+    }
+  }
+
+
+  // Inherit from Error
+  YAMLException$1.prototype = Object.create(Error.prototype);
+  YAMLException$1.prototype.constructor = YAMLException$1;
+
+
+  YAMLException$1.prototype.toString = function toString(compact) {
+    return this.name + ': ' + formatError(this, compact);
+  };
+
+
+  var exception = YAMLException$1;
+
+  // get snippet for a single line, respecting maxLength
+  function getLine(buffer, lineStart, lineEnd, position, maxLineLength) {
+    var head = '';
+    var tail = '';
+    var maxHalfLength = Math.floor(maxLineLength / 2) - 1;
+
+    if (position - lineStart > maxHalfLength) {
+      head = ' ... ';
+      lineStart = position - maxHalfLength + head.length;
+    }
+
+    if (lineEnd - position > maxHalfLength) {
+      tail = ' ...';
+      lineEnd = position + maxHalfLength - tail.length;
+    }
+
+    return {
+      str: head + buffer.slice(lineStart, lineEnd).replace(/\t/g, '→') + tail,
+      pos: position - lineStart + head.length // relative position
+    };
+  }
+
+
+  function padStart(string, max) {
+    return common.repeat(' ', max - string.length) + string;
+  }
+
+
+  function makeSnippet(mark, options) {
+    options = Object.create(options || null);
+
+    if (!mark.buffer) return null;
+
+    if (!options.maxLength) options.maxLength = 79;
+    if (typeof options.indent      !== 'number') options.indent      = 1;
+    if (typeof options.linesBefore !== 'number') options.linesBefore = 3;
+    if (typeof options.linesAfter  !== 'number') options.linesAfter  = 2;
+
+    var re = /\r?\n|\r|\0/g;
+    var lineStarts = [ 0 ];
+    var lineEnds = [];
+    var match;
+    var foundLineNo = -1;
+
+    while ((match = re.exec(mark.buffer))) {
+      lineEnds.push(match.index);
+      lineStarts.push(match.index + match[0].length);
+
+      if (mark.position <= match.index && foundLineNo < 0) {
+        foundLineNo = lineStarts.length - 2;
+      }
+    }
+
+    if (foundLineNo < 0) foundLineNo = lineStarts.length - 1;
+
+    var result = '', i, line;
+    var lineNoLength = Math.min(mark.line + options.linesAfter, lineEnds.length).toString().length;
+    var maxLineLength = options.maxLength - (options.indent + lineNoLength + 3);
+
+    for (i = 1; i <= options.linesBefore; i++) {
+      if (foundLineNo - i < 0) break;
+      line = getLine(
+        mark.buffer,
+        lineStarts[foundLineNo - i],
+        lineEnds[foundLineNo - i],
+        mark.position - (lineStarts[foundLineNo] - lineStarts[foundLineNo - i]),
+        maxLineLength
+      );
+      result = common.repeat(' ', options.indent) + padStart((mark.line - i + 1).toString(), lineNoLength) +
+        ' | ' + line.str + '\n' + result;
+    }
+
+    line = getLine(mark.buffer, lineStarts[foundLineNo], lineEnds[foundLineNo], mark.position, maxLineLength);
+    result += common.repeat(' ', options.indent) + padStart((mark.line + 1).toString(), lineNoLength) +
+      ' | ' + line.str + '\n';
+    result += common.repeat('-', options.indent + lineNoLength + 3 + line.pos) + '^' + '\n';
+
+    for (i = 1; i <= options.linesAfter; i++) {
+      if (foundLineNo + i >= lineEnds.length) break;
+      line = getLine(
+        mark.buffer,
+        lineStarts[foundLineNo + i],
+        lineEnds[foundLineNo + i],
+        mark.position - (lineStarts[foundLineNo] - lineStarts[foundLineNo + i]),
+        maxLineLength
+      );
+      result += common.repeat(' ', options.indent) + padStart((mark.line + i + 1).toString(), lineNoLength) +
+        ' | ' + line.str + '\n';
+    }
+
+    return result.replace(/\n$/, '');
+  }
+
+
+  var snippet = makeSnippet;
+
+  var TYPE_CONSTRUCTOR_OPTIONS = [
+    'kind',
+    'multi',
+    'resolve',
+    'construct',
+    'instanceOf',
+    'predicate',
+    'represent',
+    'representName',
+    'defaultStyle',
+    'styleAliases'
+  ];
+
+  var YAML_NODE_KINDS = [
+    'scalar',
+    'sequence',
+    'mapping'
+  ];
+
+  function compileStyleAliases(map) {
+    var result = {};
+
+    if (map !== null) {
+      Object.keys(map).forEach(function (style) {
+        map[style].forEach(function (alias) {
+          result[String(alias)] = style;
+        });
+      });
+    }
+
+    return result;
+  }
+
+  function Type$1(tag, options) {
+    options = options || {};
+
+    Object.keys(options).forEach(function (name) {
+      if (TYPE_CONSTRUCTOR_OPTIONS.indexOf(name) === -1) {
+        throw new exception('Unknown option "' + name + '" is met in definition of "' + tag + '" YAML type.');
+      }
+    });
+
+    // TODO: Add tag format check.
+    this.options       = options; // keep original options in case user wants to extend this type later
+    this.tag           = tag;
+    this.kind          = options['kind']          || null;
+    this.resolve       = options['resolve']       || function () { return true; };
+    this.construct     = options['construct']     || function (data) { return data; };
+    this.instanceOf    = options['instanceOf']    || null;
+    this.predicate     = options['predicate']     || null;
+    this.represent     = options['represent']     || null;
+    this.representName =
