@@ -1,0 +1,114 @@
+                      if (valueIsOfTypeString) {
+                            for(var i = 0; i < length; ++i){
+                                var charCode = value.charCodeAt(i);
+                                if (charCode > 255) {
+                                    _free(ptr);
+                                    throwBindingError("String has UTF-16 code units that do not fit in 8 bits");
+                                }
+                                HEAPU8[ptr + 4 + i] = charCode;
+                            }
+                        } else {
+                            for(var i = 0; i < length; ++i){
+                                HEAPU8[ptr + 4 + i] = value[i];
+                            }
+                        }
+                    }
+                    if (destructors !== null) {
+                        destructors.push(_free, ptr);
+                    }
+                    return ptr;
+                },
+                argPackAdvance: 8,
+                readValueFromPointer: simpleReadValueFromPointer,
+                destructorFunction: function(ptr) {
+                    _free(ptr);
+                }
+            });
+        }
+        function __embind_register_std_wstring(rawType, charSize, name) {
+            name = readLatin1String(name);
+            var decodeString, encodeString, getHeap, lengthBytesUTF, shift;
+            if (charSize === 2) {
+                decodeString = UTF16ToString;
+                encodeString = stringToUTF16;
+                lengthBytesUTF = lengthBytesUTF16;
+                getHeap = function() {
+                    return HEAPU16;
+                };
+                shift = 1;
+            } else if (charSize === 4) {
+                decodeString = UTF32ToString;
+                encodeString = stringToUTF32;
+                lengthBytesUTF = lengthBytesUTF32;
+                getHeap = function() {
+                    return HEAPU32;
+                };
+                shift = 2;
+            }
+            registerType(rawType, {
+                name: name,
+                fromWireType: function(value) {
+                    var length = HEAPU32[value >> 2];
+                    var HEAP = getHeap();
+                    var str;
+                    var decodeStartPtr = value + 4;
+                    for(var i = 0; i <= length; ++i){
+                        var currentBytePtr = value + 4 + i * charSize;
+                        if (i == length || HEAP[currentBytePtr >> shift] == 0) {
+                            var maxReadBytes = currentBytePtr - decodeStartPtr;
+                            var stringSegment = decodeString(decodeStartPtr, maxReadBytes);
+                            if (str === undefined) {
+                                str = stringSegment;
+                            } else {
+                                str += String.fromCharCode(0);
+                                str += stringSegment;
+                            }
+                            decodeStartPtr = currentBytePtr + charSize;
+                        }
+                    }
+                    _free(value);
+                    return str;
+                },
+                toWireType: function(destructors, value) {
+                    if (!(typeof value === "string")) {
+                        throwBindingError("Cannot pass non-string to C++ string type " + name);
+                    }
+                    var length = lengthBytesUTF(value);
+                    var ptr = _malloc(4 + length + charSize);
+                    HEAPU32[ptr >> 2] = length >> shift;
+                    encodeString(value, ptr + 4, length + charSize);
+                    if (destructors !== null) {
+                        destructors.push(_free, ptr);
+                    }
+                    return ptr;
+                },
+                argPackAdvance: 8,
+                readValueFromPointer: simpleReadValueFromPointer,
+                destructorFunction: function(ptr) {
+                    _free(ptr);
+                }
+            });
+        }
+        function __embind_register_value_object(rawType, name, constructorSignature, rawConstructor, destructorSignature, rawDestructor) {
+            structRegistrations[rawType] = {
+                name: readLatin1String(name),
+                rawConstructor: embind__requireFunction(constructorSignature, rawConstructor),
+                rawDestructor: embind__requireFunction(destructorSignature, rawDestructor),
+                fields: []
+            };
+        }
+        function __embind_register_value_object_field(structType, fieldName, getterReturnType, getterSignature, getter, getterContext, setterArgumentType, setterSignature, setter, setterContext) {
+            structRegistrations[structType].fields.push({
+                fieldName: readLatin1String(fieldName),
+                getterReturnType: getterReturnType,
+                getter: embind__requireFunction(getterSignature, getter),
+                getterContext: getterContext,
+                setterArgumentType: setterArgumentType,
+                setter: embind__requireFunction(setterSignature, setter),
+                setterContext: setterContext
+            });
+        }
+        function __embind_register_void(rawType, name) {
+            name = readLatin1String(name);
+            registerType(rawType, {
+         

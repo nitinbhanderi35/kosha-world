@@ -1,0 +1,124 @@
+   }
+        }
+    }
+    src = typeof src === "string" ? src : staticSrc;
+    let isLazy = !priority && (loading === "lazy" || typeof loading === "undefined");
+    if (!src || src.startsWith("data:") || src.startsWith("blob:")) {
+        // https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
+        unoptimized = true;
+        isLazy = false;
+    }
+    if (config.unoptimized) {
+        unoptimized = true;
+    }
+    if (isDefaultLoader && src.endsWith(".svg") && !config.dangerouslyAllowSVG) {
+        // Special case to make svg serve as-is to avoid proxying
+        // through the built-in Image Optimization API.
+        unoptimized = true;
+    }
+    if (priority) {
+        fetchPriority = "high";
+    }
+    const qualityInt = getInt(quality);
+    if (process.env.NODE_ENV !== "production") {
+        if (config.output === "export" && isDefaultLoader && !unoptimized) {
+            throw new Error("Image Optimization using the default loader is not compatible with `{ output: 'export' }`.\n  Possible solutions:\n    - Remove `{ output: 'export' }` and run \"next start\" to run server mode including the Image Optimization API.\n    - Configure `{ images: { unoptimized: true } }` in `next.config.js` to disable the Image Optimization API.\n  Read more: https://nextjs.org/docs/messages/export-image-api");
+        }
+        if (!src) {
+            // React doesn't show the stack trace and there's
+            // no `src` to help identify which image, so we
+            // instead console.error(ref) during mount.
+            unoptimized = true;
+        } else {
+            if (fill) {
+                if (width) {
+                    throw new Error('Image with src "' + src + '" has both "width" and "fill" properties. Only one should be used.');
+                }
+                if (height) {
+                    throw new Error('Image with src "' + src + '" has both "height" and "fill" properties. Only one should be used.');
+                }
+                if ((style == null ? void 0 : style.position) && style.position !== "absolute") {
+                    throw new Error('Image with src "' + src + '" has both "fill" and "style.position" properties. Images with "fill" always use position absolute - it cannot be modified.');
+                }
+                if ((style == null ? void 0 : style.width) && style.width !== "100%") {
+                    throw new Error('Image with src "' + src + '" has both "fill" and "style.width" properties. Images with "fill" always use width 100% - it cannot be modified.');
+                }
+                if ((style == null ? void 0 : style.height) && style.height !== "100%") {
+                    throw new Error('Image with src "' + src + '" has both "fill" and "style.height" properties. Images with "fill" always use height 100% - it cannot be modified.');
+                }
+            } else {
+                if (typeof widthInt === "undefined") {
+                    throw new Error('Image with src "' + src + '" is missing required "width" property.');
+                } else if (isNaN(widthInt)) {
+                    throw new Error('Image with src "' + src + '" has invalid "width" property. Expected a numeric value in pixels but received "' + width + '".');
+                }
+                if (typeof heightInt === "undefined") {
+                    throw new Error('Image with src "' + src + '" is missing required "height" property.');
+                } else if (isNaN(heightInt)) {
+                    throw new Error('Image with src "' + src + '" has invalid "height" property. Expected a numeric value in pixels but received "' + height + '".');
+                }
+            }
+        }
+        if (!VALID_LOADING_VALUES.includes(loading)) {
+            throw new Error('Image with src "' + src + '" has invalid "loading" property. Provided "' + loading + '" should be one of ' + VALID_LOADING_VALUES.map(String).join(",") + ".");
+        }
+        if (priority && loading === "lazy") {
+            throw new Error('Image with src "' + src + '" has both "priority" and "loading=\'lazy\'" properties. Only one should be used.');
+        }
+        if (placeholder !== "empty" && placeholder !== "blur" && !placeholder.startsWith("data:image/")) {
+            throw new Error('Image with src "' + src + '" has invalid "placeholder" property "' + placeholder + '".');
+        }
+        if (placeholder !== "empty") {
+            if (widthInt && heightInt && widthInt * heightInt < 1600) {
+                (0, _warnonce.warnOnce)('Image with src "' + src + '" is smaller than 40x40. Consider removing the "placeholder" property to improve performance.');
+            }
+        }
+        if (placeholder === "blur" && !blurDataURL) {
+            const VALID_BLUR_EXT = [
+                "jpeg",
+                "png",
+                "webp",
+                "avif"
+            ] // should match next-image-loader
+            ;
+            throw new Error('Image with src "' + src + '" has "placeholder=\'blur\'" property but is missing the "blurDataURL" property.\n        Possible solutions:\n          - Add a "blurDataURL" property, the contents should be a small Data URL to represent the image\n          - Change the "src" property to a static import with one of the supported file types: ' + VALID_BLUR_EXT.join(",") + ' (animated images not supported)\n          - Remove the "placeholder" property, effectively no blur effect\n        Read more: https://nextjs.org/docs/messages/placeholder-blur-data-url');
+        }
+        if ("ref" in rest) {
+            (0, _warnonce.warnOnce)('Image with src "' + src + '" is using unsupported "ref" property. Consider using the "onLoad" property instead.');
+        }
+        if (!unoptimized && !isDefaultLoader) {
+            const urlStr = loader({
+                config,
+                src,
+                width: widthInt || 400,
+                quality: qualityInt || 75
+            });
+            let url;
+            try {
+                url = new URL(urlStr);
+            } catch (err) {}
+            if (urlStr === src || url && url.pathname === src && !url.search) {
+                (0, _warnonce.warnOnce)('Image with src "' + src + '" has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.' + "\nRead more: https://nextjs.org/docs/messages/next-image-missing-loader-width");
+            }
+        }
+        if (onLoadingComplete) {
+            (0, _warnonce.warnOnce)('Image with src "' + src + '" is using deprecated "onLoadingComplete" property. Please use the "onLoad" property instead.');
+        }
+        for (const [legacyKey, legacyValue] of Object.entries({
+            layout,
+            objectFit,
+            objectPosition,
+            lazyBoundary,
+            lazyRoot
+        })){
+            if (legacyValue) {
+                (0, _warnonce.warnOnce)('Image with src "' + src + '" has legacy prop "' + legacyKey + '". Did you forget to run the codemod?' + "\nRead more: https://nextjs.org/docs/messages/next-image-upgrade-to-13");
+            }
+        }
+        if (typeof window !== "undefined" && !perfObserver && window.PerformanceObserver) {
+            perfObserver = new PerformanceObserver((entryList)=>{
+                for (const entry of entryList.getEntries()){
+                    var _entry_element;
+                    // @ts-ignore - missing "LargestContentfulPaint" class with "element" prop
+                    const imgSrc = (entry == null ? void 0 : (_entry_element = entry.element) == null ? void 0 : _entry_element.src) || "";
+                    const lcpImage = allImgs.get(img
