@@ -1,0 +1,146 @@
+veData,
+							(err, createdModule) => {
+								if (!createdModule) {
+									if (!resolveData.request) {
+										return callback(new Error("Empty dependency (no request)"));
+									}
+
+									// TODO webpack 6 make it required and move javascript/wasm/asset properties to own module
+									createdModule = this.hooks.createModuleClass
+										.for(
+											/** @type {ModuleSettings} */ (createData.settings).type
+										)
+										.call(createData, resolveData);
+
+									if (!createdModule) {
+										createdModule = /** @type {Module} */ (
+											new NormalModule(
+												/** @type {NormalModuleCreateData} */ (createData)
+											)
+										);
+									}
+								}
+
+								createdModule = this.hooks.module.call(
+									createdModule,
+									createData,
+									resolveData
+								);
+
+								return callback(null, createdModule);
+							}
+						);
+					});
+				});
+			}
+		);
+		this.hooks.resolve.tapAsync(
+			{
+				name: "NormalModuleFactory",
+				stage: 100
+			},
+			(data, callback) => {
+				const {
+					contextInfo,
+					context,
+					dependencies,
+					dependencyType,
+					request,
+					assertions,
+					resolveOptions,
+					fileDependencies,
+					missingDependencies,
+					contextDependencies
+				} = data;
+				const loaderResolver = this.getResolver("loader");
+
+				/** @type {ResourceData | undefined} */
+				let matchResourceData = undefined;
+				/** @type {string} */
+				let unresolvedResource;
+				/** @type {ParsedLoaderRequest[]} */
+				let elements;
+				let noPreAutoLoaders = false;
+				let noAutoLoaders = false;
+				let noPrePostAutoLoaders = false;
+
+				const contextScheme = getScheme(context);
+				/** @type {string | undefined} */
+				let scheme = getScheme(request);
+
+				if (!scheme) {
+					/** @type {string} */
+					let requestWithoutMatchResource = request;
+					const matchResourceMatch = MATCH_RESOURCE_REGEX.exec(request);
+					if (matchResourceMatch) {
+						let matchResource = matchResourceMatch[1];
+						if (matchResource.charCodeAt(0) === 46) {
+							// 46 === ".", 47 === "/"
+							const secondChar = matchResource.charCodeAt(1);
+							if (
+								secondChar === 47 ||
+								(secondChar === 46 && matchResource.charCodeAt(2) === 47)
+							) {
+								// if matchResources startsWith ../ or ./
+								matchResource = join(this.fs, context, matchResource);
+							}
+						}
+						matchResourceData = {
+							resource: matchResource,
+							...cacheParseResource(matchResource)
+						};
+						requestWithoutMatchResource = request.slice(
+							matchResourceMatch[0].length
+						);
+					}
+
+					scheme = getScheme(requestWithoutMatchResource);
+
+					if (!scheme && !contextScheme) {
+						const firstChar = requestWithoutMatchResource.charCodeAt(0);
+						const secondChar = requestWithoutMatchResource.charCodeAt(1);
+						noPreAutoLoaders = firstChar === 45 && secondChar === 33; // startsWith "-!"
+						noAutoLoaders = noPreAutoLoaders || firstChar === 33; // startsWith "!"
+						noPrePostAutoLoaders = firstChar === 33 && secondChar === 33; // startsWith "!!";
+						const rawElements = requestWithoutMatchResource
+							.slice(
+								noPreAutoLoaders || noPrePostAutoLoaders
+									? 2
+									: noAutoLoaders
+										? 1
+										: 0
+							)
+							.split(/!+/);
+						unresolvedResource = /** @type {string} */ (rawElements.pop());
+						elements = rawElements.map(el => {
+							const { path, query } = cachedParseResourceWithoutFragment(el);
+							return {
+								loader: path,
+								options: query ? query.slice(1) : undefined
+							};
+						});
+						scheme = getScheme(unresolvedResource);
+					} else {
+						unresolvedResource = requestWithoutMatchResource;
+						elements = EMPTY_ELEMENTS;
+					}
+				} else {
+					unresolvedResource = request;
+					elements = EMPTY_ELEMENTS;
+				}
+
+				/** @type {ResolveContext} */
+				const resolveContext = {
+					fileDependencies,
+					missingDependencies,
+					contextDependencies
+				};
+
+				/** @type {ResourceDataWithData} */
+				let resourceData;
+
+				/** @type {undefined | LoaderItem[]} */
+				let loaders;
+
+				const continueCallback = needCalls(2, err => {
+					if

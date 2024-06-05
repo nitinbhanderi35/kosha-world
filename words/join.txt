@@ -1,0 +1,231 @@
+lving additional hints for this error: ${err2.message}`;
+								err.stack += `
+
+A fatal error happened during resolving additional hints for this error:
+${err2.stack}`;
+								return callback(err);
+							}
+							if (hints && hints.length > 0) {
+								err.message += `
+${hints.join("\n\n")}`;
+							}
+
+							// Check if the extension is missing a leading dot (e.g. "js" instead of ".js")
+							let appendResolveExtensionsHint = false;
+							const specifiedExtensions = Array.from(
+								resolver.options.extensions
+							);
+							const expectedExtensions = specifiedExtensions.map(extension => {
+								if (LEADING_DOT_EXTENSION_REGEX.test(extension)) {
+									appendResolveExtensionsHint = true;
+									return `.${extension}`;
+								}
+								return extension;
+							});
+							if (appendResolveExtensionsHint) {
+								err.message += `\nDid you miss the leading dot in 'resolve.extensions'? Did you mean '${JSON.stringify(
+									expectedExtensions
+								)}' instead of '${JSON.stringify(specifiedExtensions)}'?`;
+							}
+
+							callback(err);
+						}
+					);
+				}
+				callback(err, resolvedResource, resolvedResourceResolveData);
+			}
+		);
+	}
+
+	/**
+	 * @param {Error} error error
+	 * @param {ModuleFactoryCreateDataContextInfo} contextInfo context info
+	 * @param {string} context context
+	 * @param {string} unresolvedResource unresolved resource
+	 * @param {ResolverWithOptions} resolver resolver
+	 * @param {ResolveContext} resolveContext resolver context
+	 * @param {Callback<string[]>} callback callback
+	 * @private
+	 */
+	_resolveResourceErrorHints(
+		error,
+		contextInfo,
+		context,
+		unresolvedResource,
+		resolver,
+		resolveContext,
+		callback
+	) {
+		asyncLib.parallel(
+			[
+				callback => {
+					if (!resolver.options.fullySpecified) return callback();
+					resolver
+						.withOptions({
+							fullySpecified: false
+						})
+						.resolve(
+							contextInfo,
+							context,
+							unresolvedResource,
+							resolveContext,
+							(err, resolvedResource) => {
+								if (!err && resolvedResource) {
+									const resource = parseResource(resolvedResource).path.replace(
+										/^.*[\\/]/,
+										""
+									);
+									return callback(
+										null,
+										`Did you mean '${resource}'?
+BREAKING CHANGE: The request '${unresolvedResource}' failed to resolve only because it was resolved as fully specified
+(probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
+The extension in the request is mandatory for it to be fully specified.
+Add the extension to the request.`
+									);
+								}
+								callback();
+							}
+						);
+				},
+				callback => {
+					if (!resolver.options.enforceExtension) return callback();
+					resolver
+						.withOptions({
+							enforceExtension: false,
+							extensions: []
+						})
+						.resolve(
+							contextInfo,
+							context,
+							unresolvedResource,
+							resolveContext,
+							(err, resolvedResource) => {
+								if (!err && resolvedResource) {
+									let hint = "";
+									const match = /(\.[^.]+)(\?|$)/.exec(unresolvedResource);
+									if (match) {
+										const fixedRequest = unresolvedResource.replace(
+											/(\.[^.]+)(\?|$)/,
+											"$2"
+										);
+										if (resolver.options.extensions.has(match[1])) {
+											hint = `Did you mean '${fixedRequest}'?`;
+										} else {
+											hint = `Did you mean '${fixedRequest}'? Also note that '${match[1]}' is not in 'resolve.extensions' yet and need to be added for this to work?`;
+										}
+									} else {
+										hint = `Did you mean to omit the extension or to remove 'resolve.enforceExtension'?`;
+									}
+									return callback(
+										null,
+										`The request '${unresolvedResource}' failed to resolve only because 'resolve.enforceExtension' was specified.
+${hint}
+Including the extension in the request is no longer possible. Did you mean to enforce including the extension in requests with 'resolve.extensions: []' instead?`
+									);
+								}
+								callback();
+							}
+						);
+				},
+				callback => {
+					if (
+						/^\.\.?\//.test(unresolvedResource) ||
+						resolver.options.preferRelative
+					) {
+						return callback();
+					}
+					resolver.resolve(
+						contextInfo,
+						context,
+						`./${unresolvedResource}`,
+						resolveContext,
+						(err, resolvedResource) => {
+							if (err || !resolvedResource) return callback();
+							const moduleDirectories = resolver.options.modules
+								.map(m => (Array.isArray(m) ? m.join(", ") : m))
+								.join(", ");
+							callback(
+								null,
+								`Did you mean './${unresolvedResource}'?
+Requests that should resolve in the current directory need to start with './'.
+Requests that start with a name are treated as module requests and resolve within module directories (${moduleDirectories}).
+If changing the source code is not an option there is also a resolve options called 'preferRelative' which tries to resolve these kind of requests in the current directory too.`
+							);
+						}
+					);
+				}
+			],
+			(err, hints) => {
+				if (err) return callback(err);
+				callback(null, /** @type {string[]} */ (hints).filter(Boolean));
+			}
+		);
+	}
+
+	/**
+	 * @param {ModuleFactoryCreateDataContextInfo} contextInfo context info
+	 * @param {string} context context
+	 * @param {LoaderItem[]} array array
+	 * @param {ResolverWithOptions} resolver resolver
+	 * @param {ResolveContext} resolveContext resolve context
+	 * @param {Callback<LoaderItem[]>} callback callback
+	 * @returns {void} result
+	 */
+	resolveRequestArray(
+		contextInfo,
+		context,
+		array,
+		resolver,
+		resolveContext,
+		callback
+	) {
+		// LoaderItem
+		if (array.length === 0) return callback(null, array);
+		asyncLib.map(
+			array,
+			(item, callback) => {
+				resolver.resolve(
+					contextInfo,
+					context,
+					item.loader,
+					resolveContext,
+					(err, result, resolveRequest) => {
+						if (
+							err &&
+							/^[^/]*$/.test(item.loader) &&
+							!/-loader$/.test(item.loader)
+						) {
+							return resolver.resolve(
+								contextInfo,
+								context,
+								item.loader + "-loader",
+								resolveContext,
+								err2 => {
+									if (!err2) {
+										err.message =
+											err.message +
+											"\n" +
+											"BREAKING CHANGE: It's no longer allowed to omit the '-loader' suffix when using loaders.\n" +
+											`                 You need to specify '${item.loader}-loader' instead of '${item.loader}',\n` +
+											"                 see https://webpack.js.org/migrate/3/#automatic-loader-module-name-extension-removed";
+									}
+									callback(err);
+								}
+							);
+						}
+						if (err) return callback(err);
+
+						const parsedResult = this._parseResourceWithoutFragment(result);
+
+						const type = /\.mjs$/i.test(parsedResult.path)
+							? "module"
+							: /\.cjs$/i.test(parsedResult.path)
+								? "commonjs"
+								: /** @type {ResolveRequest} */
+									(resolveRequest).descriptionFileData === undefined
+									? undefined
+									: /** @type {ResolveRequest} */
+										(resolveRequest).descriptionFileData.type;
+						const resolved = {
+	

@@ -1,0 +1,313 @@
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+"use strict";
+
+const { getContext } = require("loader-runner");
+const asyncLib = require("neo-async");
+const {
+	AsyncSeriesBailHook,
+	SyncWaterfallHook,
+	SyncBailHook,
+	SyncHook,
+	HookMap
+} = require("tapable");
+const ChunkGraph = require("./ChunkGraph");
+const Module = require("./Module");
+const ModuleFactory = require("./ModuleFactory");
+const ModuleGraph = require("./ModuleGraph");
+const { JAVASCRIPT_MODULE_TYPE_AUTO } = require("./ModuleTypeConstants");
+const NormalModule = require("./NormalModule");
+const BasicEffectRulePlugin = require("./rules/BasicEffectRulePlugin");
+const BasicMatcherRulePlugin = require("./rules/BasicMatcherRulePlugin");
+const ObjectMatcherRulePlugin = require("./rules/ObjectMatcherRulePlugin");
+const RuleSetCompiler = require("./rules/RuleSetCompiler");
+const UseEffectRulePlugin = require("./rules/UseEffectRulePlugin");
+const LazySet = require("./util/LazySet");
+const { getScheme } = require("./util/URLAbsoluteSpecifier");
+const { cachedCleverMerge, cachedSetProperty } = require("./util/cleverMerge");
+const { join } = require("./util/fs");
+const {
+	parseResource,
+	parseResourceWithoutFragment
+} = require("./util/identifier");
+
+/** @typedef {import("../declarations/WebpackOptions").ModuleOptionsNormalized} ModuleOptions */
+/** @typedef {import("../declarations/WebpackOptions").RuleSetRule} RuleSetRule */
+/** @typedef {import("./Generator")} Generator */
+/** @typedef {import("./ModuleFactory").ModuleFactoryCreateData} ModuleFactoryCreateData */
+/** @typedef {import("./ModuleFactory").ModuleFactoryCreateDataContextInfo} ModuleFactoryCreateDataContextInfo */
+/** @typedef {import("./ModuleFactory").ModuleFactoryResult} ModuleFactoryResult */
+/** @typedef {import("./NormalModule").GeneratorOptions} GeneratorOptions */
+/** @typedef {import("./NormalModule").LoaderItem} LoaderItem */
+/** @typedef {import("./NormalModule").NormalModuleCreateData} NormalModuleCreateData */
+/** @typedef {import("./NormalModule").ParserOptions} ParserOptions */
+/** @typedef {import("./Parser")} Parser */
+/** @typedef {import("./ResolverFactory")} ResolverFactory */
+/** @typedef {import("./ResolverFactory").ResolveContext} ResolveContext */
+/** @typedef {import("./ResolverFactory").ResolveRequest} ResolveRequest */
+/** @typedef {import("./ResolverFactory").ResolverWithOptions} ResolverWithOptions */
+/** @typedef {import("./dependencies/ModuleDependency")} ModuleDependency */
+/** @typedef {import("./util/fs").InputFileSystem} InputFileSystem */
+
+/** @typedef {Pick<RuleSetRule, 'type'|'sideEffects'|'parser'|'generator'|'resolve'|'layer'>} ModuleSettings */
+/** @typedef {Partial<NormalModuleCreateData & {settings: ModuleSettings}>} CreateData */
+
+/**
+ * @typedef {Object} ResolveData
+ * @property {ModuleFactoryCreateData["contextInfo"]} contextInfo
+ * @property {ModuleFactoryCreateData["resolveOptions"]} resolveOptions
+ * @property {string} context
+ * @property {string} request
+ * @property {Record<string, any> | undefined} assertions
+ * @property {ModuleDependency[]} dependencies
+ * @property {string} dependencyType
+ * @property {CreateData} createData
+ * @property {LazySet<string>} fileDependencies
+ * @property {LazySet<string>} missingDependencies
+ * @property {LazySet<string>} contextDependencies
+ * @property {boolean} cacheable allow to use the unsafe cache
+ */
+
+/**
+ * @typedef {Object} ResourceData
+ * @property {string} resource
+ * @property {string=} path
+ * @property {string=} query
+ * @property {string=} fragment
+ * @property {string=} context
+ */
+
+/** @typedef {ResourceData & { data: Record<string, any> }} ResourceDataWithData */
+
+/**
+ * @typedef {Object} ParsedLoaderRequest
+ * @property {string} loader loader
+ * @property {string|undefined} options options
+ */
+
+/**
+ * @template T
+ * @callback Callback
+ * @param {(Error | null)=} err
+ * @param {T=} stats
+ * @returns {void}
+ */
+
+const EMPTY_RESOLVE_OPTIONS = {};
+/** @type {ParserOptions} */
+const EMPTY_PARSER_OPTIONS = {};
+/** @type {GeneratorOptions} */
+const EMPTY_GENERATOR_OPTIONS = {};
+/** @type {ParsedLoaderRequest[]} */
+const EMPTY_ELEMENTS = [];
+
+const MATCH_RESOURCE_REGEX = /^([^!]+)!=!/;
+const LEADING_DOT_EXTENSION_REGEX = /^[^.]/;
+
+/**
+ * @param {LoaderItem} data data
+ * @returns {string} ident
+ */
+const loaderToIdent = data => {
+	if (!data.options) {
+		return data.loader;
+	}
+	if (typeof data.options === "string") {
+		return data.loader + "?" + data.options;
+	}
+	if (typeof data.options !== "object") {
+		throw new Error("loader options must be string or object");
+	}
+	if (data.ident) {
+		return data.loader + "??" + data.ident;
+	}
+	return data.loader + "?" + JSON.stringify(data.options);
+};
+
+/**
+ * @param {LoaderItem[]} loaders loaders
+ * @param {string} resource resource
+ * @returns {string} stringified loaders and resource
+ */
+const stringifyLoadersAndResource = (loaders, resource) => {
+	let str = "";
+	for (const loader of loaders) {
+		str += loaderToIdent(loader) + "!";
+	}
+	return str + resource;
+};
+
+/**
+ * @param {number} times times
+ * @param {(err?: null | Error) => void} callback callback
+ * @returns {(err?: null | Error) => void} callback
+ */
+const needCalls = (times, callback) => {
+	return err => {
+		if (--times === 0) {
+			return callback(err);
+		}
+		if (err && times > 0) {
+			times = NaN;
+			return callback(err);
+		}
+	};
+};
+
+/**
+ * @template T
+ * @template O
+ * @param {T} globalOptions global options
+ * @param {string} type type
+ * @param {O} localOptions local options
+ * @returns {T & O | T | O} result
+ */
+const mergeGlobalOptions = (globalOptions, type, localOptions) => {
+	const parts = type.split("/");
+	let result;
+	let current = "";
+	for (const part of parts) {
+		current = current ? `${current}/${part}` : part;
+		const options = globalOptions[current];
+		if (typeof options === "object") {
+			if (result === undefined) {
+				result = options;
+			} else {
+				result = cachedCleverMerge(result, options);
+			}
+		}
+	}
+	if (result === undefined) {
+		return localOptions;
+	} else {
+		return cachedCleverMerge(result, localOptions);
+	}
+};
+
+// TODO webpack 6 remove
+/**
+ * @param {string} name name
+ * @param {TODO} hook hook
+ * @returns {string} result
+ */
+const deprecationChangedHookMessage = (name, hook) => {
+	const names = hook.taps
+		.map(
+			/**
+			 * @param {TODO} tapped tapped
+			 * @returns {string} name
+			 */
+			tapped => {
+				return tapped.name;
+			}
+		)
+		.join(", ");
+
+	return (
+		`NormalModuleFactory.${name} (${names}) is no longer a waterfall hook, but a bailing hook instead. ` +
+		"Do not return the passed object, but modify it instead. " +
+		"Returning false will ignore the request and results in no module created."
+	);
+};
+
+const ruleSetCompiler = new RuleSetCompiler([
+	new BasicMatcherRulePlugin("test", "resource"),
+	new BasicMatcherRulePlugin("scheme"),
+	new BasicMatcherRulePlugin("mimetype"),
+	new BasicMatcherRulePlugin("dependency"),
+	new BasicMatcherRulePlugin("include", "resource"),
+	new BasicMatcherRulePlugin("exclude", "resource", true),
+	new BasicMatcherRulePlugin("resource"),
+	new BasicMatcherRulePlugin("resourceQuery"),
+	new BasicMatcherRulePlugin("resourceFragment"),
+	new BasicMatcherRulePlugin("realResource"),
+	new BasicMatcherRulePlugin("issuer"),
+	new BasicMatcherRulePlugin("compiler"),
+	new BasicMatcherRulePlugin("issuerLayer"),
+	new ObjectMatcherRulePlugin("assert", "assertions"),
+	new ObjectMatcherRulePlugin("descriptionData"),
+	new BasicEffectRulePlugin("type"),
+	new BasicEffectRulePlugin("sideEffects"),
+	new BasicEffectRulePlugin("parser"),
+	new BasicEffectRulePlugin("resolve"),
+	new BasicEffectRulePlugin("generator"),
+	new BasicEffectRulePlugin("layer"),
+	new UseEffectRulePlugin()
+]);
+
+class NormalModuleFactory extends ModuleFactory {
+	/**
+	 * @param {Object} param params
+	 * @param {string=} param.context context
+	 * @param {InputFileSystem} param.fs file system
+	 * @param {ResolverFactory} param.resolverFactory resolverFactory
+	 * @param {ModuleOptions} param.options options
+	 * @param {Object=} param.associatedObjectForCache an object to which the cache will be attached
+	 * @param {boolean=} param.layers enable layers
+	 */
+	constructor({
+		context,
+		fs,
+		resolverFactory,
+		options,
+		associatedObjectForCache,
+		layers = false
+	}) {
+		super();
+		this.hooks = Object.freeze({
+			/** @type {AsyncSeriesBailHook<[ResolveData], Module | false | void>} */
+			resolve: new AsyncSeriesBailHook(["resolveData"]),
+			/** @type {HookMap<AsyncSeriesBailHook<[ResourceDataWithData, ResolveData], true | void>>} */
+			resolveForScheme: new HookMap(
+				() => new AsyncSeriesBailHook(["resourceData", "resolveData"])
+			),
+			/** @type {HookMap<AsyncSeriesBailHook<[ResourceDataWithData, ResolveData], true | void>>} */
+			resolveInScheme: new HookMap(
+				() => new AsyncSeriesBailHook(["resourceData", "resolveData"])
+			),
+			/** @type {AsyncSeriesBailHook<[ResolveData], Module | undefined>} */
+			factorize: new AsyncSeriesBailHook(["resolveData"]),
+			/** @type {AsyncSeriesBailHook<[ResolveData], false | void>} */
+			beforeResolve: new AsyncSeriesBailHook(["resolveData"]),
+			/** @type {AsyncSeriesBailHook<[ResolveData], false | void>} */
+			afterResolve: new AsyncSeriesBailHook(["resolveData"]),
+			/** @type {AsyncSeriesBailHook<[ResolveData["createData"], ResolveData], Module | void>} */
+			createModule: new AsyncSeriesBailHook(["createData", "resolveData"]),
+			/** @type {SyncWaterfallHook<[Module, ResolveData["createData"], ResolveData], Module>} */
+			module: new SyncWaterfallHook(["module", "createData", "resolveData"]),
+			/** @type {HookMap<SyncBailHook<[ParserOptions], Parser>>} */
+			createParser: new HookMap(() => new SyncBailHook(["parserOptions"])),
+			/** @type {HookMap<SyncBailHook<[TODO, ParserOptions], void>>} */
+			parser: new HookMap(() => new SyncHook(["parser", "parserOptions"])),
+			/** @type {HookMap<SyncBailHook<[GeneratorOptions], Generator>>} */
+			createGenerator: new HookMap(
+				() => new SyncBailHook(["generatorOptions"])
+			),
+			/** @type {HookMap<SyncBailHook<[TODO, GeneratorOptions], void>>} */
+			generator: new HookMap(
+				() => new SyncHook(["generator", "generatorOptions"])
+			),
+			/** @type {HookMap<SyncBailHook<[TODO, ResolveData], Module>>} */
+			createModuleClass: new HookMap(
+				() => new SyncBailHook(["createData", "resolveData"])
+			)
+		});
+		this.resolverFactory = resolverFactory;
+		this.ruleSet = ruleSetCompiler.compile([
+			{
+				rules: options.defaultRules
+			},
+			{
+				rules: options.rules
+			}
+		]);
+		this.context = context || "";
+		this.fs = fs;
+		this._globalParserOptions = options.parser;
+		this._globalGeneratorOptions = options.generator;
+		/** @type {Map<string, WeakMap<Object, Parser>>} */
+		this.parserCache = new Map();
+		/** @type {Map<string, WeakMap<Object, Generator>
