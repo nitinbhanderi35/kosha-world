@@ -1,0 +1,946 @@
+/**
+ * @license React
+ * react-server-dom-turbopack-server.node.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+'use strict';
+
+if (process.env.NODE_ENV !== "production") {
+  (function() {
+'use strict';
+
+var React = require('react');
+var util = require('util');
+require('crypto');
+var async_hooks = require('async_hooks');
+var ReactDOM = require('react-dom');
+
+var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+
+function error(format) {
+  {
+    {
+      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        args[_key2 - 1] = arguments[_key2];
+      }
+
+      printWarning('error', format, args);
+    }
+  }
+}
+
+function printWarning(level, format, args) {
+  // When changing this logic, you might want to also
+  // update consoleWithStackDev.www.js as well.
+  {
+    var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
+    var stack = ReactDebugCurrentFrame.getStackAddendum();
+
+    if (stack !== '') {
+      format += '%s';
+      args = args.concat([stack]);
+    } // eslint-disable-next-line react-internal/safe-string-coercion
+
+
+    var argsWithFormat = args.map(function (item) {
+      return String(item);
+    }); // Careful: RN currently depends on this prefix
+
+    argsWithFormat.unshift('Warning: ' + format); // We intentionally don't use spread (or .apply) directly because it
+    // breaks IE9: https://github.com/facebook/react/issues/13610
+    // eslint-disable-next-line react-internal/no-production-logging
+
+    Function.prototype.apply.call(console[level], console, argsWithFormat);
+  }
+}
+
+// -----------------------------------------------------------------------------
+var enablePostpone = true;
+
+function scheduleWork(callback) {
+  setImmediate(callback);
+}
+function flushBuffered(destination) {
+  // If we don't have any more data to send right now.
+  // Flush whatever is in the buffer to the wire.
+  if (typeof destination.flush === 'function') {
+    // By convention the Zlib streams provide a flush function for this purpose.
+    // For Express, compression middleware adds this method.
+    destination.flush();
+  }
+}
+var VIEW_SIZE = 2048;
+var currentView = null;
+var writtenBytes = 0;
+var destinationHasCapacity = true;
+function beginWriting(destination) {
+  currentView = new Uint8Array(VIEW_SIZE);
+  writtenBytes = 0;
+  destinationHasCapacity = true;
+}
+
+function writeStringChunk(destination, stringChunk) {
+  if (stringChunk.length === 0) {
+    return;
+  } // maximum possible view needed to encode entire string
+
+
+  if (stringChunk.length * 3 > VIEW_SIZE) {
+    if (writtenBytes > 0) {
+      writeToDestination(destination, currentView.subarray(0, writtenBytes));
+      currentView = new Uint8Array(VIEW_SIZE);
+      writtenBytes = 0;
+    }
+
+    writeToDestination(destination, textEncoder.encode(stringChunk));
+    return;
+  }
+
+  var target = currentView;
+
+  if (writtenBytes > 0) {
+    target = currentView.subarray(writtenBytes);
+  }
+
+  var _textEncoder$encodeIn = textEncoder.encodeInto(stringChunk, target),
+      read = _textEncoder$encodeIn.read,
+      written = _textEncoder$encodeIn.written;
+
+  writtenBytes += written;
+
+  if (read < stringChunk.length) {
+    writeToDestination(destination, currentView.subarray(0, writtenBytes));
+    currentView = new Uint8Array(VIEW_SIZE);
+    writtenBytes = textEncoder.encodeInto(stringChunk.slice(read), currentView).written;
+  }
+
+  if (writtenBytes === VIEW_SIZE) {
+    writeToDestination(destination, currentView);
+    currentView = new Uint8Array(VIEW_SIZE);
+    writtenBytes = 0;
+  }
+}
+
+function writeViewChunk(destination, chunk) {
+  if (chunk.byteLength === 0) {
+    return;
+  }
+
+  if (chunk.byteLength > VIEW_SIZE) {
+    {
+      if (precomputedChunkSet && precomputedChunkSet.has(chunk)) {
+        error('A large precomputed chunk was passed to writeChunk without being copied.' + ' Large chunks get enqueued directly and are not copied. This is incompatible with precomputed chunks because you cannot enqueue the same precomputed chunk twice.' + ' Use "cloneChunk" to make a copy of this large precomputed chunk before writing it. This is a bug in React.');
+      }
+    } // this chunk may overflow a single view which implies it was not
+    // one that is cached by the streaming renderer. We will enqueu
+    // it directly and expect it is not re-used
+
+
+    if (writtenBytes > 0) {
+      writeToDestination(destination, currentView.subarray(0, writtenBytes));
+      currentView = new Uint8Array(VIEW_SIZE);
+      writtenBytes = 0;
+    }
+
+    writeToDestination(destination, chunk);
+    return;
+  }
+
+  var bytesToWrite = chunk;
+  var allowableBytes = currentView.length - writtenBytes;
+
+  if (allowableBytes < bytesToWrite.byteLength) {
+    // this chunk would overflow the current view. We enqueue a full view
+    // and start a new view with the remaining chunk
+    if (allowableBytes === 0) {
+      // the current view is already full, send it
+      writeToDestination(destination, currentView);
+    } else {
+      // fill up the current view and apply the remaining chunk bytes
+      // to a new view.
+      currentView.set(bytesToWrite.subarray(0, allowableBytes), writtenBytes);
+      writtenBytes += allowableBytes;
+      writeToDestination(destination, currentView);
+      bytesToWrite = bytesToWrite.subarray(allowableBytes);
+    }
+
+    currentView = new Uint8Array(VIEW_SIZE);
+    writtenBytes = 0;
+  }
+
+  currentView.set(bytesToWrite, writtenBytes);
+  writtenBytes += bytesToWrite.byteLength;
+
+  if (writtenBytes === VIEW_SIZE) {
+    writeToDestination(destination, currentView);
+    currentView = new Uint8Array(VIEW_SIZE);
+    writtenBytes = 0;
+  }
+}
+
+function writeChunk(destination, chunk) {
+  if (typeof chunk === 'string') {
+    writeStringChunk(destination, chunk);
+  } else {
+    writeViewChunk(destination, chunk);
+  }
+}
+
+function writeToDestination(destination, view) {
+  var currentHasCapacity = destination.write(view);
+  destinationHasCapacity = destinationHasCapacity && currentHasCapacity;
+}
+
+function writeChunkAndReturn(destination, chunk) {
+  writeChunk(destination, chunk);
+  return destinationHasCapacity;
+}
+function completeWriting(destination) {
+  if (currentView && writtenBytes > 0) {
+    destination.write(currentView.subarray(0, writtenBytes));
+  }
+
+  currentView = null;
+  writtenBytes = 0;
+  destinationHasCapacity = true;
+}
+function close$1(destination) {
+  destination.end();
+}
+var textEncoder = new util.TextEncoder();
+function stringToChunk(content) {
+  return content;
+}
+var precomputedChunkSet = new Set() ;
+function typedArrayToBinaryChunk(content) {
+  // Convert any non-Uint8Array array to Uint8Array. We could avoid this for Uint8Arrays.
+  return new Uint8Array(content.buffer, content.byteOffset, content.byteLength);
+}
+function byteLengthOfChunk(chunk) {
+  return typeof chunk === 'string' ? Buffer.byteLength(chunk, 'utf8') : chunk.byteLength;
+}
+function byteLengthOfBinaryChunk(chunk) {
+  return chunk.byteLength;
+}
+function closeWithError(destination, error) {
+  // $FlowFixMe[incompatible-call]: This is an Error object or the destination accepts other types.
+  destination.destroy(error);
+}
+
+// eslint-disable-next-line no-unused-vars
+var CLIENT_REFERENCE_TAG = Symbol.for('react.client.reference');
+var SERVER_REFERENCE_TAG = Symbol.for('react.server.reference');
+function isClientReference(reference) {
+  return reference.$$typeof === CLIENT_REFERENCE_TAG;
+}
+function isServerReference(reference) {
+  return reference.$$typeof === SERVER_REFERENCE_TAG;
+}
+function registerClientReference(proxyImplementation, id, exportName) {
+  return registerClientReferenceImpl(proxyImplementation, id + '#' + exportName, false);
+}
+
+function registerClientReferenceImpl(proxyImplementation, id, async) {
+  return Object.defineProperties(proxyImplementation, {
+    $$typeof: {
+      value: CLIENT_REFERENCE_TAG
+    },
+    $$id: {
+      value: id
+    },
+    $$async: {
+      value: async
+    }
+  });
+} // $FlowFixMe[method-unbinding]
+
+
+var FunctionBind = Function.prototype.bind; // $FlowFixMe[method-unbinding]
+
+var ArraySlice = Array.prototype.slice;
+
+function bind() {
+  // $FlowFixMe[unsupported-syntax]
+  var newFn = FunctionBind.apply(this, arguments);
+
+  if (this.$$typeof === SERVER_REFERENCE_TAG) {
+    var args = ArraySlice.call(arguments, 1);
+    return Object.defineProperties(newFn, {
+      $$typeof: {
+        value: SERVER_REFERENCE_TAG
+      },
+      $$id: {
+        value: this.$$id
+      },
+      $$bound: {
+        value: this.$$bound ? this.$$bound.concat(args) : args
+      },
+      bind: {
+        value: bind
+      }
+    });
+  }
+
+  return newFn;
+}
+
+function registerServerReference(reference, id, exportName) {
+  return Object.defineProperties(reference, {
+    $$typeof: {
+      value: SERVER_REFERENCE_TAG
+    },
+    $$id: {
+      value: exportName === null ? id : id + '#' + exportName
+    },
+    $$bound: {
+      value: null
+    },
+    bind: {
+      value: bind
+    }
+  });
+}
+var PROMISE_PROTOTYPE = Promise.prototype;
+var deepProxyHandlers = {
+  get: function (target, name, receiver) {
+    switch (name) {
+      // These names are read by the Flight runtime if you end up using the exports object.
+      case '$$typeof':
+        // These names are a little too common. We should probably have a way to
+        // have the Flight runtime extract the inner target instead.
+        return target.$$typeof;
+
+      case '$$id':
+        return target.$$id;
+
+      case '$$async':
+        return target.$$async;
+
+      case 'name':
+        return target.name;
+
+      case 'displayName':
+        return undefined;
+      // We need to special case this because createElement reads it if we pass this
+      // reference.
+
+      case 'defaultProps':
+        return undefined;
+      // Avoid this attempting to be serialized.
+
+      case 'toJSON':
+        return undefined;
+
+      case Symbol.toPrimitive:
+        // $FlowFixMe[prop-missing]
+        return Object.prototype[Symbol.toPrimitive];
+
+      case 'Provider':
+        throw new Error("Cannot render a Client Context Provider on the Server. " + "Instead, you can export a Client Component wrapper " + "that itself renders a Client Context Provider.");
+    } // eslint-disable-next-line react-internal/safe-string-coercion
+
+
+    var expression = String(target.name) + '.' + String(name);
+    throw new Error("Cannot access " + expression + " on the server. " + 'You cannot dot into a client module from a server component. ' + 'You can only pass the imported name through.');
+  },
+  set: function () {
+    throw new Error('Cannot assign to a client module from a server module.');
+  }
+};
+var proxyHandlers = {
+  get: function (target, name, receiver) {
+    switch (name) {
+      // These names are read by the Flight runtime if you end up using the exports object.
+      case '$$typeof':
+        return target.$$typeof;
+
+      case '$$id':
+        return target.$$id;
+
+      case '$$async':
+        return target.$$async;
+
+      case 'name':
+        return target.name;
+      // We need to special case this because createElement reads it if we pass this
+      // reference.
+
+      case 'defaultProps':
+        return undefined;
+      // Avoid this attempting to be serialized.
+
+      case 'toJSON':
+        return undefined;
+
+      case Symbol.toPrimitive:
+        // $FlowFixMe[prop-missing]
+        return Object.prototype[Symbol.toPrimitive];
+
+      case '__esModule':
+        // Something is conditionally checking which export to use. We'll pretend to be
+        // an ESM compat module but then we'll check again on the client.
+        var moduleId = target.$$id;
+        target.default = registerClientReferenceImpl(function () {
+          throw new Error("Attempted to call the default export of " + moduleId + " from the server " + "but it's on the client. It's not possible to invoke a client function from " + "the server, it can only be rendered as a Component or passed to props of a " + "Client Component.");
+        }, target.$$id + '#', target.$$async);
+        return true;
+
+      case 'then':
+        if (target.then) {
+          // Use a cached value
+          return target.then;
+        }
+
+        if (!target.$$async) {
+          // If this module is expected to return a Promise (such as an AsyncModule) then
+          // we should resolve that with a client reference that unwraps the Promise on
+          // the client.
+          var clientReference = registerClientReferenceImpl({}, target.$$id, true);
+          var proxy = new Proxy(clientReference, proxyHandlers); // Treat this as a resolved Promise for React's use()
+
+          target.status = 'fulfilled';
+          target.value = proxy;
+          var then = target.then = registerClientReferenceImpl(function then(resolve, reject) {
+            // Expose to React.
+            return Promise.resolve(resolve(proxy));
+          }, // If this is not used as a Promise but is treated as a reference to a `.then`
+          // export then we should treat it as a reference to that name.
+          target.$$id + '#then', false);
+          return then;
+        } else {
+          // Since typeof .then === 'function' is a feature test we'd continue recursing
+          // indefinitely if we return a function. Instead, we return an object reference
+          // if we check further.
+          return undefined;
+        }
+
+    }
+
+    var cachedReference = target[name];
+
+    if (!cachedReference) {
+      var reference = registerClientReferenceImpl(function () {
+        throw new Error( // eslint-disable-next-line react-internal/safe-string-coercion
+        "Attempted to call " + String(name) + "() from the server but " + String(name) + " is on the client. " + "It's not possible to invoke a client function from the server, it can " + "only be rendered as a Component or passed to props of a Client Component.");
+      }, target.$$id + '#' + name, target.$$async);
+      Object.defineProperty(reference, 'name', {
+        value: name
+      });
+      cachedReference = target[name] = new Proxy(reference, deepProxyHandlers);
+    }
+
+    return cachedReference;
+  },
+  getPrototypeOf: function (target) {
+    // Pretend to be a Promise in case anyone asks.
+    return PROMISE_PROTOTYPE;
+  },
+  set: function () {
+    throw new Error('Cannot assign to a client module from a server module.');
+  }
+};
+function createClientModuleProxy(moduleId) {
+  var clientReference = registerClientReferenceImpl({}, // Represents the whole Module object instead of a particular import.
+  moduleId, false);
+  return new Proxy(clientReference, proxyHandlers);
+}
+
+function getClientReferenceKey(reference) {
+  return reference.$$async ? reference.$$id + '#async' : reference.$$id;
+}
+function resolveClientReferenceMetadata(config, clientReference) {
+  var modulePath = clientReference.$$id;
+  var name = '';
+  var resolvedModuleData = config[modulePath];
+
+  if (resolvedModuleData) {
+    // The potentially aliased name.
+    name = resolvedModuleData.name;
+  } else {
+    // We didn't find this specific export name but we might have the * export
+    // which contains this name as well.
+    // TODO: It's unfortunate that we now have to parse this string. We should
+    // probably go back to encoding path and name separately on the client reference.
+    var idx = modulePath.lastIndexOf('#');
+
+    if (idx !== -1) {
+      name = modulePath.slice(idx + 1);
+      resolvedModuleData = config[modulePath.slice(0, idx)];
+    }
+
+    if (!resolvedModuleData) {
+      throw new Error('Could not find the module "' + modulePath + '" in the React Client Manifest. ' + 'This is probably a bug in the React Server Components bundler.');
+    }
+  }
+
+  if (clientReference.$$async === true) {
+    return [resolvedModuleData.id, resolvedModuleData.chunks, name, 1];
+  } else {
+    return [resolvedModuleData.id, resolvedModuleData.chunks, name];
+  }
+}
+function getServerReferenceId(config, serverReference) {
+  return serverReference.$$id;
+}
+function getServerReferenceBoundArguments(config, serverReference) {
+  return serverReference.$$bound;
+}
+
+var ReactDOMSharedInternals = ReactDOM.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+
+var ReactDOMFlightServerDispatcher = {
+  prefetchDNS: prefetchDNS,
+  preconnect: preconnect,
+  preload: preload,
+  preloadModule: preloadModule$1,
+  preinitStyle: preinitStyle,
+  preinitScript: preinitScript,
+  preinitModuleScript: preinitModuleScript
+};
+
+function prefetchDNS(href) {
+  {
+    if (typeof href === 'string' && href) {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = 'D|' + href;
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+        emitHint(request, 'D', href);
+      }
+    }
+  }
+}
+
+function preconnect(href, crossOrigin) {
+  {
+    if (typeof href === 'string') {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = "C|" + (crossOrigin == null ? 'null' : crossOrigin) + "|" + href;
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+
+        if (typeof crossOrigin === 'string') {
+          emitHint(request, 'C', [href, crossOrigin]);
+        } else {
+          emitHint(request, 'C', href);
+        }
+      }
+    }
+  }
+}
+
+function preload(href, as, options) {
+  {
+    if (typeof href === 'string') {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = 'L';
+
+        if (as === 'image' && options) {
+          key += getImagePreloadKey(href, options.imageSrcSet, options.imageSizes);
+        } else {
+          key += "[" + as + "]" + href;
+        }
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+        var trimmed = trimOptions(options);
+
+        if (trimmed) {
+          emitHint(request, 'L', [href, as, trimmed]);
+        } else {
+          emitHint(request, 'L', [href, as]);
+        }
+      }
+    }
+  }
+}
+
+function preloadModule$1(href, options) {
+  {
+    if (typeof href === 'string') {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = 'm|' + href;
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+        var trimmed = trimOptions(options);
+
+        if (trimmed) {
+          return emitHint(request, 'm', [href, trimmed]);
+        } else {
+          return emitHint(request, 'm', href);
+        }
+      }
+    }
+  }
+}
+
+function preinitStyle(href, precedence, options) {
+  {
+    if (typeof href === 'string') {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = 'S|' + href;
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+        var trimmed = trimOptions(options);
+
+        if (trimmed) {
+          return emitHint(request, 'S', [href, typeof precedence === 'string' ? precedence : 0, trimmed]);
+        } else if (typeof precedence === 'string') {
+          return emitHint(request, 'S', [href, precedence]);
+        } else {
+          return emitHint(request, 'S', href);
+        }
+      }
+    }
+  }
+}
+
+function preinitScript(href, options) {
+  {
+    if (typeof href === 'string') {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = 'X|' + href;
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+        var trimmed = trimOptions(options);
+
+        if (trimmed) {
+          return emitHint(request, 'X', [href, trimmed]);
+        } else {
+          return emitHint(request, 'X', href);
+        }
+      }
+    }
+  }
+}
+
+function preinitModuleScript(href, options) {
+  {
+    if (typeof href === 'string') {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = 'M|' + href;
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+        var trimmed = trimOptions(options);
+
+        if (trimmed) {
+          return emitHint(request, 'M', [href, trimmed]);
+        } else {
+          return emitHint(request, 'M', href);
+        }
+      }
+    }
+  }
+} // Flight normally encodes undefined as a special character however for directive option
+// arguments we don't want to send unnecessary keys and bloat the payload so we create a
+// trimmed object which omits any keys with null or undefined values.
+// This is only typesafe because these option objects have entirely optional fields where
+// null and undefined represent the same thing as no property.
+
+
+function trimOptions(options) {
+  if (options == null) return null;
+  var hasProperties = false;
+  var trimmed = {};
+
+  for (var key in options) {
+    if (options[key] != null) {
+      hasProperties = true;
+      trimmed[key] = options[key];
+    }
+  }
+
+  return hasProperties ? trimmed : null;
+}
+
+function getImagePreloadKey(href, imageSrcSet, imageSizes) {
+  var uniquePart = '';
+
+  if (typeof imageSrcSet === 'string' && imageSrcSet !== '') {
+    uniquePart += '[' + imageSrcSet + ']';
+
+    if (typeof imageSizes === 'string') {
+      uniquePart += '[' + imageSizes + ']';
+    }
+  } else {
+    uniquePart += '[][]' + href;
+  }
+
+  return "[image]" + uniquePart;
+}
+
+var ReactDOMCurrentDispatcher = ReactDOMSharedInternals.Dispatcher;
+function prepareHostDispatcher() {
+  ReactDOMCurrentDispatcher.current = ReactDOMFlightServerDispatcher;
+} // Used to distinguish these contexts from ones used in other renderers.
+// small, smaller than how we encode undefined, and is unambiguous. We could use
+// a different tuple structure to encode this instead but this makes the runtime
+// cost cheaper by eliminating a type checks in more positions.
+// prettier-ignore
+
+function createHints() {
+  return new Set();
+}
+
+// We do this globally since the async work can potentially eagerly
+// start before the first request and once requests start they can interleave.
+// In theory we could enable and disable using a ref count of active requests
+// but given that typically this is just a live server, it doesn't really matter.
+
+function initAsyncDebugInfo() {
+  {
+    async_hooks.createHook({
+      init: function (asyncId, type, triggerAsyncId) {// TODO
+      },
+      promiseResolve: function (asyncId) {
+        // TODO
+        async_hooks.executionAsyncId();
+      },
+      destroy: function (asyncId) {// TODO
+      }
+    }).enable();
+  }
+}
+
+var requestStorage = new async_hooks.AsyncLocalStorage();
+
+// ATTENTION
+// When adding new symbols to this file,
+// Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
+// The Symbol used to tag the ReactElement-like types.
+var REACT_ELEMENT_TYPE = Symbol.for('react.element');
+var REACT_FRAGMENT_TYPE = Symbol.for('react.fragment');
+var REACT_PROVIDER_TYPE = Symbol.for('react.provider');
+var REACT_SERVER_CONTEXT_TYPE = Symbol.for('react.server_context');
+var REACT_FORWARD_REF_TYPE = Symbol.for('react.forward_ref');
+var REACT_SUSPENSE_TYPE = Symbol.for('react.suspense');
+var REACT_SUSPENSE_LIST_TYPE = Symbol.for('react.suspense_list');
+var REACT_MEMO_TYPE = Symbol.for('react.memo');
+var REACT_LAZY_TYPE = Symbol.for('react.lazy');
+var REACT_SERVER_CONTEXT_DEFAULT_VALUE_NOT_LOADED = Symbol.for('react.default_value');
+var REACT_MEMO_CACHE_SENTINEL = Symbol.for('react.memo_cache_sentinel');
+var REACT_POSTPONE_TYPE = Symbol.for('react.postpone');
+var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
+var FAUX_ITERATOR_SYMBOL = '@@iterator';
+function getIteratorFn(maybeIterable) {
+  if (maybeIterable === null || typeof maybeIterable !== 'object') {
+    return null;
+  }
+
+  var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
+
+  if (typeof maybeIterator === 'function') {
+    return maybeIterator;
+  }
+
+  return null;
+}
+
+var rendererSigil;
+
+{
+  // Use this to detect multiple renderers using the same context
+  rendererSigil = {};
+} // Used to store the parent path of all context overrides in a shared linked list.
+// Forming a reverse tree.
+// The structure of a context snapshot is an implementation of this file.
+// Currently, it's implemented as tracking the current active node.
+
+
+var rootContextSnapshot = null; // We assume that this runtime owns the "current" field on all ReactContext instances.
+// This global (actually thread local) state represents what state all those "current",
+// fields are currently in.
+
+var currentActiveSnapshot = null;
+
+function popNode(prev) {
+  {
+    prev.context._currentValue = prev.parentValue;
+  }
+}
+
+function pushNode(next) {
+  {
+    next.context._currentValue = next.value;
+  }
+}
+
+function popToNearestCommonAncestor(prev, next) {
+  if (prev === next) ; else {
+    popNode(prev);
+    var parentPrev = prev.parent;
+    var parentNext = next.parent;
+
+    if (parentPrev === null) {
+      if (parentNext !== null) {
+        throw new Error('The stacks must reach the root at the same time. This is a bug in React.');
+      }
+    } else {
+      if (parentNext === null) {
+        throw new Error('The stacks must reach the root at the same time. This is a bug in React.');
+      }
+
+      popToNearestCommonAncestor(parentPrev, parentNext); // On the way back, we push the new ones that weren't common.
+
+      pushNode(next);
+    }
+  }
+}
+
+function popAllPrevious(prev) {
+  popNode(prev);
+  var parentPrev = prev.parent;
+
+  if (parentPrev !== null) {
+    popAllPrevious(parentPrev);
+  }
+}
+
+function pushAllNext(next) {
+  var parentNext = next.parent;
+
+  if (parentNext !== null) {
+    pushAllNext(parentNext);
+  }
+
+  pushNode(next);
+}
+
+function popPreviousToCommonLevel(prev, next) {
+  popNode(prev);
+  var parentPrev = prev.parent;
+
+  if (parentPrev === null) {
+    throw new Error('The depth must equal at least at zero before reaching the root. This is a bug in React.');
+  }
+
+  if (parentPrev.depth === next.depth) {
+    // We found the same level. Now we just need to find a shared ancestor.
+    popToNearestCommonAncestor(parentPrev, next);
+  } else {
+    // We must still be deeper.
+    popPreviousToCommonLevel(parentPrev, next);
+  }
+}
+
+function popNextToCommonLevel(prev, next) {
+  var parentNext = next.parent;
+
+  if (parentNext === null) {
+    throw new Error('The depth must equal at least at zero before reaching the root. This is a bug in React.');
+  }
+
+  if (prev.depth === parentNext.depth) {
+    // We found the same level. Now we just need to find a shared ancestor.
+    popToNearestCommonAncestor(prev, parentNext);
+  } else {
+    // We must still be deeper.
+    popNextToCommonLevel(prev, parentNext);
+  }
+
+  pushNode(next);
+} // Perform context switching to the new snapshot.
+// To make it cheap to read many contexts, while not suspending, we make the switch eagerly by
+// updating all the context's current values. That way reads, always just read the current value.
+// At the cost of updating contexts even if they're never read by this subtree.
+
+
+function switchContext(newSnapshot) {
+  // The basic algorithm we need to do is to pop back any contexts that are no longer on the stack.
+  // We also need to update any new contexts that are now on the stack with the deepest value.
+  // The easiest way to update new contexts is to just reapply them in reverse order from the
+  // perspective of the backpointers. To avoid allocating a lot when switching, we use the stack
+  // for that. Therefore this algorithm is recursive.
+  // 1) First we pop which ever snapshot tree was deepest. Popping old contexts as we go.
+  // 2) Then we find the nearest common ancestor from there. Popping old contexts as we go.
+  // 3) Then we reapply new contexts on the way back up the stack.
+  var prev = currentActiveSnapshot;
+  var next = newSnapshot;
+
+  if (prev !== next) {
+    if (prev === null) {
+      // $FlowFixMe[incompatible-call]: This has to be non-null since it's not equal to prev.
+      pushAllNext(next);
+    } else if (next === null) {
+      popAllPrevious(prev);
+    } else if (prev.depth === next.depth) {
+      popToNearestCommonAncestor(prev, next);
+    } else if (prev.depth > next.depth) {
+      popPreviousToCommonLevel(prev, next);
+    } else {
+      popNextToCommonLevel(prev, next);
+    }
+
+    currentActiveSnapshot = next;
+  }
+}
+function pushProvider(context, nextValue) {
+  var prevValue;
+
+  {
+    prevValue = context._currentValue;
+    context._currentValue = nextValue;
+
+    {
+      if (context._currentRenderer !== undefined && context._currentRenderer !== null && context._currentRenderer !== rendererSigil) {
+        error('Detected multiple renderers concurr
