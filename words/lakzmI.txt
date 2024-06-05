@@ -1,0 +1,200 @@
+ys
+		for (const info of this.itemInfo.values()) {
+			write(info.etag);
+		}
+		for (const info of this.itemInfo.values()) {
+			write(info.lastAccess);
+		}
+		for (let i = 0; i < this.content.length; i++) {
+			const content = this.content[i];
+			if (content !== undefined) {
+				write(content.items);
+				content.writeLazy(lazy => writeSeparate(lazy, { name: `${i}` }));
+			} else {
+				write(undefined); // undefined marks an empty content slot
+			}
+		}
+		write(null); // null as marker of the end of items
+	}
+
+	/**
+	 * @param {ObjectDeserializerContext & { logger: Logger }} context context
+	 */
+	deserialize({ read, logger }) {
+		this.logger = logger;
+		{
+			const items = [];
+			let item = read();
+			while (item !== null) {
+				items.push(item);
+				item = read();
+			}
+			this.itemInfo.clear();
+			const infoItems = items.map(identifier => {
+				const info = new PackItemInfo(identifier, undefined, undefined);
+				this.itemInfo.set(identifier, info);
+				return info;
+			});
+			for (const info of infoItems) {
+				info.etag = read();
+			}
+			for (const info of infoItems) {
+				info.lastAccess = read();
+			}
+		}
+		this.content.length = 0;
+		let items = read();
+		while (items !== null) {
+			if (items === undefined) {
+				this.content.push(items);
+			} else {
+				const idx = this.content.length;
+				const lazy = read();
+				this.content.push(
+					new PackContent(
+						items,
+						new Set(),
+						lazy,
+						logger,
+						`${this.content.length}`
+					)
+				);
+				for (const identifier of items) {
+					this.itemInfo.get(identifier).location = idx;
+				}
+			}
+			items = read();
+		}
+	}
+}
+
+makeSerializable(Pack, "webpack/lib/cache/PackFileCacheStrategy", "Pack");
+
+class PackContentItems {
+	/**
+	 * @param {Map<string, any>} map items
+	 */
+	constructor(map) {
+		this.map = map;
+	}
+
+	/**
+	 * @param {ObjectSerializerContext & { snapshot: TODO, rollback: TODO, logger: Logger, profile: boolean | undefined  }} context context
+	 */
+	serialize({ write, snapshot, rollback, logger, profile }) {
+		if (profile) {
+			write(false);
+			for (const [key, value] of this.map) {
+				const s = snapshot();
+				try {
+					write(key);
+					const start = process.hrtime();
+					write(value);
+					const durationHr = process.hrtime(start);
+					const duration = durationHr[0] * 1000 + durationHr[1] / 1e6;
+					if (duration > 1) {
+						if (duration > 500)
+							logger.error(`Serialization of '${key}': ${duration} ms`);
+						else if (duration > 50)
+							logger.warn(`Serialization of '${key}': ${duration} ms`);
+						else if (duration > 10)
+							logger.info(`Serialization of '${key}': ${duration} ms`);
+						else if (duration > 5)
+							logger.log(`Serialization of '${key}': ${duration} ms`);
+						else logger.debug(`Serialization of '${key}': ${duration} ms`);
+					}
+				} catch (e) {
+					rollback(s);
+					if (e === NOT_SERIALIZABLE) continue;
+					const msg = "Skipped not serializable cache item";
+					if (e.message.includes("ModuleBuildError")) {
+						logger.log(`${msg} (in build error): ${e.message}`);
+						logger.debug(`${msg} '${key}' (in build error): ${e.stack}`);
+					} else {
+						logger.warn(`${msg}: ${e.message}`);
+						logger.debug(`${msg} '${key}': ${e.stack}`);
+					}
+				}
+			}
+			write(null);
+			return;
+		}
+		// Try to serialize all at once
+		const s = snapshot();
+		try {
+			write(true);
+			write(this.map);
+		} catch (e) {
+			rollback(s);
+
+			// Try to serialize each item on it's own
+			write(false);
+			for (const [key, value] of this.map) {
+				const s = snapshot();
+				try {
+					write(key);
+					write(value);
+				} catch (e) {
+					rollback(s);
+					if (e === NOT_SERIALIZABLE) continue;
+					logger.warn(
+						`Skipped not serializable cache item '${key}': ${e.message}`
+					);
+					logger.debug(e.stack);
+				}
+			}
+			write(null);
+		}
+	}
+
+	/**
+	 * @param {ObjectDeserializerContext & { logger: Logger, profile: boolean | undefined }} context context
+	 */
+	deserialize({ read, logger, profile }) {
+		if (read()) {
+			this.map = read();
+		} else if (profile) {
+			const map = new Map();
+			let key = read();
+			while (key !== null) {
+				const start = process.hrtime();
+				const value = read();
+				const durationHr = process.hrtime(start);
+				const duration = durationHr[0] * 1000 + durationHr[1] / 1e6;
+				if (duration > 1) {
+					if (duration > 100)
+						logger.error(`Deserialization of '${key}': ${duration} ms`);
+					else if (duration > 20)
+						logger.warn(`Deserialization of '${key}': ${duration} ms`);
+					else if (duration > 5)
+						logger.info(`Deserialization of '${key}': ${duration} ms`);
+					else if (duration > 2)
+						logger.log(`Deserialization of '${key}': ${duration} ms`);
+					else logger.debug(`Deserialization of '${key}': ${duration} ms`);
+				}
+				map.set(key, value);
+				key = read();
+			}
+			this.map = map;
+		} else {
+			const map = new Map();
+			let key = read();
+			while (key !== null) {
+				map.set(key, read());
+				key = read();
+			}
+			this.map = map;
+		}
+	}
+}
+
+makeSerializable(
+	PackContentItems,
+	"webpack/lib/cache/PackFileCacheStrategy",
+	"PackContentItems"
+);
+
+class PackContent {
+	/*
+		This class can be in these states:
+		  

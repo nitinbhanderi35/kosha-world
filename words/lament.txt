@@ -1,0 +1,148 @@
+		packs.push(pack);
+				return pack;
+			};
+			let pack = createNextPack();
+			if (this.requestsTimeout !== undefined)
+				clearTimeout(this.requestsTimeout);
+			for (const identifier of this.requests) {
+				if (identifier === undefined) {
+					if (ignoreNextTimeTick) {
+						ignoreNextTimeTick = false;
+					} else if (pack.items.size >= MIN_ITEMS_IN_FRESH_PACK) {
+						i = 0;
+						pack = createNextPack();
+					}
+					continue;
+				}
+				const info = this.freshContent.get(identifier);
+				if (info === undefined) continue;
+				pack.items.add(identifier);
+				pack.map.set(identifier, info.freshValue);
+				info.location = pack.loc;
+				info.freshValue = undefined;
+				this.freshContent.delete(identifier);
+				if (++i > itemsPerPack) {
+					i = 0;
+					pack = createNextPack();
+					ignoreNextTimeTick = true;
+				}
+			}
+			this.requests.length = 0;
+			for (const pack of packs) {
+				this.content[pack.loc] = new PackContent(
+					pack.items,
+					new Set(pack.items),
+					new PackContentItems(pack.map)
+				);
+			}
+			this.logger.log(
+				`${itemsCount} fresh items in cache put into pack ${
+					packs.length > 1
+						? packs
+								.map(pack => `${pack.loc} (${pack.items.size} items)`)
+								.join(", ")
+						: packs[0].loc
+				}`
+			);
+		}
+	}
+
+	/**
+	 * Merges small content files to a single content file
+	 */
+	_optimizeSmallContent() {
+		// 1. Find all small content files
+		// Treat unused content files separately to avoid
+		// a merge-split cycle
+		/** @type {number[]} */
+		const smallUsedContents = [];
+		/** @type {number} */
+		let smallUsedContentSize = 0;
+		/** @type {number[]} */
+		const smallUnusedContents = [];
+		/** @type {number} */
+		let smallUnusedContentSize = 0;
+		for (let i = 0; i < this.content.length; i++) {
+			const content = this.content[i];
+			if (content === undefined) continue;
+			if (content.outdated) continue;
+			const size = content.getSize();
+			if (size < 0 || size > MIN_CONTENT_SIZE) continue;
+			if (content.used.size > 0) {
+				smallUsedContents.push(i);
+				smallUsedContentSize += size;
+			} else {
+				smallUnusedContents.push(i);
+				smallUnusedContentSize += size;
+			}
+		}
+
+		// 2. Check if minimum number is reached
+		let mergedIndices;
+		if (
+			smallUsedContents.length >= CONTENT_COUNT_TO_MERGE ||
+			smallUsedContentSize > MIN_CONTENT_SIZE
+		) {
+			mergedIndices = smallUsedContents;
+		} else if (
+			smallUnusedContents.length >= CONTENT_COUNT_TO_MERGE ||
+			smallUnusedContentSize > MIN_CONTENT_SIZE
+		) {
+			mergedIndices = smallUnusedContents;
+		} else return;
+
+		/** @type {PackContent[] } */
+		const mergedContent = [];
+
+		// 3. Remove old content entries
+		for (const i of mergedIndices) {
+			mergedContent.push(/** @type {PackContent} */ (this.content[i]));
+			this.content[i] = undefined;
+		}
+
+		// 4. Determine merged items
+		/** @type {Items} */
+		const mergedItems = new Set();
+		/** @type {Items} */
+		const mergedUsedItems = new Set();
+		/** @type {(function(Map<string, any>): Promise<void>)[]} */
+		const addToMergedMap = [];
+		for (const content of mergedContent) {
+			for (const identifier of content.items) {
+				mergedItems.add(identifier);
+			}
+			for (const identifier of content.used) {
+				mergedUsedItems.add(identifier);
+			}
+			addToMergedMap.push(async map => {
+				// unpack existing content
+				// after that values are accessible in .content
+				await content.unpack(
+					"it should be merged with other small pack contents"
+				);
+				for (const [identifier, value] of content.content) {
+					map.set(identifier, value);
+				}
+			});
+		}
+
+		// 5. GC and update location of merged items
+		const newLoc = this._findLocation();
+		this._gcAndUpdateLocation(mergedItems, mergedUsedItems, newLoc);
+
+		// 6. If not empty, store content somewhere
+		if (mergedItems.size > 0) {
+			this.content[newLoc] = new PackContent(
+				mergedItems,
+				mergedUsedItems,
+				memoize(async () => {
+					/** @type {Map<string, any>} */
+					const map = new Map();
+					await Promise.all(addToMergedMap.map(fn => fn(map)));
+					return new PackContentItems(map);
+				})
+			);
+			this.logger.log(
+				"Merged %d small files with %d cache items into pack %d",
+				mergedContent.length,
+				mergedItems.size,
