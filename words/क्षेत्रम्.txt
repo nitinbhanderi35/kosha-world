@@ -1,0 +1,888 @@
+se, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 222,
+                                    columnNumber: 13
+                                }, this),
+                                currentSkanda && " > ",
+                                currentSkanda && /*#__PURE__*/ _jsxDEV(Link, {
+                                    className: "hover:underline text-[#C00000] font-bold",
+                                    style: {
+                                        textShadow: "3px 2px 3px silver",
+                                        fontFamily: "".concat(devanagari.style.fontFamily)
+                                    },
+                                    href: "/harililakalpataru/".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id),
+                                    children: currentSkanda && (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.title)
+                                }, void 0, false, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 235,
+                                    columnNumber: 15
+                                }, this),
+                                currentAdhyay && " > ",
+                                currentAdhyay && /*#__PURE__*/ _jsxDEV(Link, {
+                                    className: "hover:underline text-[#C00000] font-bold",
+                                    style: {
+                                        textShadow: "3px 2px 3px silver",
+                                        fontFamily: "".concat(devanagari.style.fontFamily)
+                                    },
+                                    href: "/harililakalpataru/".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id, "/").concat(currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.id),
+                                    children: currentAdhyay && (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.title)
+                                }, void 0, false, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 249,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 221,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ _jsxDEV(Link, {
+                            href: "/harililakalpataru/".concat(handlePage("NEXT")).concat(router.query.tab ? "?tab=" + router.query.tab : "", " "),
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: " cursor-pointer rounded bg-secondary",
+                                children: /*#__PURE__*/ _jsxDEV(FaAngleRight, {
+                                    className: "w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9",
+                                    color: "#f8ecc2"
+                                }, void 0, false, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 268,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 267,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 262,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                    lineNumber: 208,
+                    columnNumber: 9
+                }, this)
+            }, void 0, false, {
+                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                lineNumber: 207,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ _jsxDEV("div", {
+                className: "mb-10",
+                children: harililakalpataru_name.length === 1 && currentAdhyayList.length > 0 ? /*#__PURE__*/ _jsxDEV("div", {
+                    className: "bg-card border-b",
+                    children: [
+                        (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.header) && /*#__PURE__*/ _jsxDEV("div", {
+                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: "break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
+                                dangerouslySetInnerHTML: {
+                                    __html: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.header
+                                }
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 282,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 281,
+                            columnNumber: 15
+                        }, this),
+                        currentAdhyayList && (currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.map((e, k)=>{
+                            return /*#__PURE__*/ _jsxDEV(Link, {
+                                href: "/harililakalpataru/".concat(harililakalpataru_name.join("/"), "/").concat(e === null || e === void 0 ? void 0 : e.id),
+                                children: /*#__PURE__*/ _jsxDEV("div", {
+                                    className: "border-b border-x border-b_color p-2 text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full",
+                                    children: [
+                                        /*#__PURE__*/ _jsxDEV("div", {
+                                            className: "mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
+                                            children: convertToHindi(k + 1)
+                                        }, void 0, false, {
+                                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                            lineNumber: 300,
+                                            columnNumber: 23
+                                        }, this),
+                                        /*#__PURE__*/ _jsxDEV("div", {
+                                            className: "inline-block break-words align-baseline font-bold text-red",
+                                            children: e === null || e === void 0 ? void 0 : e.title
+                                        }, void 0, false, {
+                                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                            lineNumber: 303,
+                                            columnNumber: 23
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 299,
+                                    columnNumber: 21
+                                }, this)
+                            }, k, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 293,
+                                columnNumber: 19
+                            }, this);
+                        })),
+                        (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.footer) && /*#__PURE__*/ _jsxDEV("div", {
+                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: "break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
+                                dangerouslySetInnerHTML: {
+                                    __html: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.footer
+                                }
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 312,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 311,
+                            columnNumber: 15
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                    lineNumber: 279,
+                    columnNumber: 11
+                }, this) : harililakalpataru_name.length === 2 && currentVersesList.length > 0 ? /*#__PURE__*/ _jsxDEV("div", {
+                    className: "bg-card border-b",
+                    children: [
+                        (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.header) && /*#__PURE__*/ _jsxDEV("div", {
+                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: "break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
+                                dangerouslySetInnerHTML: {
+                                    __html: currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.header
+                                }
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 326,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 325,
+                            columnNumber: 15
+                        }, this),
+                        currentVersesList && (currentVersesList === null || currentVersesList === void 0 ? void 0 : currentVersesList.map((e, k)=>{
+                            return /*#__PURE__*/ _jsxDEV("div", {
+                                className: "flex items-center border-b border-x border-b_color p-2 sm:p-2 text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full",
+                                children: [
+                                    /*#__PURE__*/ _jsxDEV("div", {
+                                        className: "mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
+                                        children: convertToHindi(k + 1)
+                                    }, void 0, false, {
+                                        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                        lineNumber: 341,
+                                        columnNumber: 21
+                                    }, this),
+                                    (e === null || e === void 0 ? void 0 : e.shabda_chheda) && /*#__PURE__*/ _jsxDEV(ShabdaChhedaCardInLine, {
+                                        shabda_chheda: e === null || e === void 0 ? void 0 : e.shabda_chheda,
+                                        original: e === null || e === void 0 ? void 0 : e.title
+                                    }, void 0, false, {
+                                        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                        lineNumber: 352,
+                                        columnNumber: 23
+                                    }, this)
+                                ]
+                            }, k, true, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 337,
+                                columnNumber: 19
+                            }, this);
+                        })),
+                        (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.footer) && /*#__PURE__*/ _jsxDEV("div", {
+                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: "break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
+                                dangerouslySetInnerHTML: {
+                                    __html: currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.footer
+                                }
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 362,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 361,
+                            columnNumber: 15
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                    lineNumber: 323,
+                    columnNumber: 11
+                }, this) : /*#__PURE__*/ _jsxDEV(LottieAnimation, {}, void 0, false, {
+                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                    lineNumber: 372,
+                    columnNumber: 11
+                }, this)
+            }, void 0, false, {
+                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                lineNumber: 277,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+        lineNumber: 206,
+        columnNumber: 5
+    }, this);
+};
+_s(HarililakalpataruName, "brqQf9wQHdlnaqt5+T9HUccgEcU=", false, function() {
+    return [
+        useRouter
+    ];
+});
+_c = HarililakalpataruName;
+HarililakalpataruName.getInitialProps = async (param)=>{
+    let { query  } = param;
+    const { harililakalpataru_name  } = query;
+    return {
+        harililakalpataru_name
+    };
+};
+export default HarililakalpataruName;
+var _c;
+$RefreshReg$(_c, "HarililakalpataruName");
+
+
+;
+    // Wrapped in an IIFE to avoid polluting the global scope
+    ;
+    (function () {
+        var _a, _b;
+        // Legacy CSS implementations will `eval` browser code in a Node.js context
+        // to extract CSS. For backwards compatibility, we need to check we're in a
+        // browser context before continuing.
+        if (typeof self !== 'undefined' &&
+            // AMP / No-JS mode does not inject these helpers:
+            '$RefreshHelpers$' in self) {
+            // @ts-ignore __webpack_module__ is global
+            var currentExports = __webpack_module__.exports;
+            // @ts-ignore __webpack_module__ is global
+            var prevExports = (_b = (_a = __webpack_module__.hot.data) === null || _a === void 0 ? void 0 : _a.prevExports) !== null && _b !== void 0 ? _b : null;
+            // This cannot happen in MainTemplate because the exports mismatch between
+            // templating and execution.
+            self.$RefreshHelpers$.registerExportsForReactRefresh(currentExports, __webpack_module__.id);
+            // A module can be accepted automatically based on its exports, e.g. when
+            // it is a Refresh Boundary.
+            if (self.$RefreshHelpers$.isReactRefreshBoundary(currentExports)) {
+                // Save the previous exports on update so we can compare the boundary
+                // signatures.
+                __webpack_module__.hot.dispose(function (data) {
+                    data.prevExports = currentExports;
+                });
+                // Unconditionally accept an update to this module, we'll check if it's
+                // still a Refresh Boundary later.
+                // @ts-ignore importMeta is replaced in the loader
+                import.meta.webpackHot.accept();
+                // This field is set when the previous version of this module was a
+                // Refresh Boundary, letting us know we need to check for invalidation or
+                // enqueue an update.
+                if (prevExports !== null) {
+                    // A boundary can become ineligible if its exports are incompatible
+                    // with the previous exports.
+                    //
+                    // For example, if you add/remove/change exports, we'll want to
+                    // re-execute the importing modules, and force those components to
+                    // re-render. Similarly, if you convert a class component to a
+                    // function, we want to invalidate the boundary.
+                    if (self.$RefreshHelpers$.shouldInvalidateReactRefreshBoundary(prevExports, currentExports)) {
+                        __webpack_module__.hot.invalidate();
+                    }
+                    else {
+                        self.$RefreshHelpers$.scheduleUpdate();
+                    }
+                }
+            }
+            else {
+                // Since we just executed the code for the module, it's possible that the
+                // new exports made it ineligible for being a boundary.
+                // We only care about the case when we were _previously_ a boundary,
+                // because we already accepted this update (accidental side effect).
+                var isNoLongerABoundary = prevExports !== null;
+                if (isNoLongerABoundary) {
+                    __webpack_module__.hot.invalidate();
+                }
+            }
+        }
+    })();
+ø   webpack://./node_modules/next/dist/compiled/@next/react-refresh-utils/dist/loader.js!./node_modules/next/dist/build/webpack/loaders/next-swc-loader.js??ruleSet[1].rules[1].oneOf[2].use[1]!./src/pages/harililakalpataru/[...harililakalpataru_name].jsà]  {"version":3,"sources":["webpack://./src/pages/harililakalpataru/[...harililakalpataru_name].js"],"sourcesContent":["import React, { useEffect, useState } from \"react\";\r\nimport { useDebounce } from \"use-debounce\";\r\nimport { FaAngleLeft, FaAngleRight } from \"react-icons/fa\";\r\nimport { useRouter } from \"next/router\";\r\nimport Link from \"next/link\";\r\nimport axios from \"axios\";\r\nimport { convertToHindi } from \"@/utils/ashtadhyayi/Function\";\r\nimport LottieAnimation from \"@/components/LottieAnimation \";\r\nimport TitleCard from \"@/components/Card/TitleCard\";\r\nimport ShabdaChhedaCardInLine from \"@/components/Card/ShabdaChhedaCardInLine\";\r\nimport { Noto_Serif_Devanagari, Noto_Serif_Gujarati } from \"next/font/google\";\r\n\r\nconst gujarati = Noto_Serif_Gujarati({\r\n  subsets: [\"gujarati\"],\r\n});\r\n\r\nconst devanagari = Noto_Serif_Devanagari({\r\n  subsets: [\"devanagari\"],\r\n});\r\n\r\nconst HarililakalpataruName = ({ harililakalpataru_name }) => {\r\n  const router = useRouter();\r\n  const [currentSkanda, setCurrentSkanda] = useState({});\r\n  const [currentAdhyayList, setCurrentAdhyayList] = useState([]);\r\n  const [currentVersesList, setCurrentVersesList] = useState([]);\r\n  const [currentAdhyay, setCurrentAdhyay] = useState([]);\r\n  const [harililakalpataruSkanda, setHarililakalpataruSkanda] = useState([]);\r\n\r\n  const getAllSkanda = async () => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/skanda\");\r\n      setHarililakalpataruSkanda(response?.data?.data);\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentSkanda = async (id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/skanda\", {\r\n        params: {\r\n          id: id,\r\n        },\r\n      });\r\n      setCurrentSkanda(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentAdhyayList = async (id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/adhyay\", {\r\n        params: {\r\n          skandaId: id,\r\n        },\r\n      });\r\n      setCurrentAdhyayList(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentAdhyay = async (skandaId, id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/adhyay\", {\r\n        params: {\r\n          skandaId: skandaId,\r\n          id: id,\r\n        },\r\n      });\r\n      setCurrentAdhyay(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentVersesList = async (skandaId, adhyayId) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/verses\", {\r\n        params: {\r\n          skandaId: skandaId,\r\n          adhyayId: adhyayId,\r\n        },\r\n      });\r\n      setCurrentVersesList(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error getCurrentVersesList data:\", error);\r\n    }\r\n  };\r\n\r\n  useEffect(() => {\r\n    getAllSkanda();\r\n    if (harililakalpataru_name.length >= 1) {\r\n      getCurrentSkanda(harililakalpataru_name[0]);\r\n      getCurrentAdhyayList(harililakalpataru_name[0]);\r\n    } else {\r\n      setCurrentSkanda({});\r\n      setCurrentAdhyayList([]);\r\n    }\r\n    if (harililakalpataru_name.length >= 2) {\r\n      getCurrentAdhyay(harililakalpataru_name[0], harililakalpataru_name[1]);\r\n      getCurrentVersesList(\r\n        harililakalpataru_name[0],\r\n        harililakalpataru_name[1]\r\n      );\r\n    } else {\r\n      setCurrentAdhyay({});\r\n      setCurrentVersesList([]);\r\n    }\r\n  }, [router.query, harililakalpataru_name]);\r\n\r\n  // console.log(\"harililakalpataruSkanda----------\", harililakalpataruSkanda);\r\n  // console.log(\"currentSkanda----------\", currentSkanda);\r\n  // console.log(\"currentAdhyayList----------\", currentAdhyayList);\r\n  // console.log(\"currentAdhyay----------\", currentAdhyay);\r\n  // console.log(\"currentVersesList----------\", currentVersesList);\r\n\r\n  const handlePage = (page) => {\r\n    if (harililakalpataru_name.length == 1 && harililakalpataruSkanda) {\r\n      const currentObject = harililakalpataruSkanda?.find(\r\n        (obj) => obj.id == harililakalpataru_name[0]\r\n      );\r\n      const currentIndexInArray =\r\n        harililakalpataruSkanda?.indexOf(currentObject);\r\n      if (page == \"NEXT\") {\r\n        const nextObject = harililakalpataruSkanda[currentIndexInArray + 1];\r\n        return nextObject\r\n          ? nextObject.id\r\n          : harililakalpataru_name[harililakalpataru_name.length - 1];\r\n      }\r\n      if (page == \"PREVIOUS\") {\r\n        const nextObject = harililakalpataruSkanda[currentIndexInArray - 1];\r\n        return nextObject\r\n          ? nextObject.id\r\n          : harililakalpataru_name[harililakalpataru_name.length - 1];\r\n      }\r\n    } else if (harililakalpataru_name.length == 2 && currentAdhyayList) {\r\n      const currentObject = currentAdhyayList?.find(\r\n        (obj) => obj.id == harililakalpataru_name[1]\r\n      );\r\n      const currentIndexInArray = currentAdhyayList?.indexOf(currentObject);\r\n      if (page == \"NEXT\") {\r\n        const nextObject = currentAdhyayList[currentIndexInArray + 1];\r\n        return nextObject\r\n          ? `${harililakalpataru_name[0]}/${nextObject.id}`\r\n          : `${harililakalpataru_name[0]}/${\r\n              harililakalpataru_name[harililakalpataru_name.length - 1]\r\n            }`;\r\n      }\r\n      if (page == \"PREVIOUS\") {\r\n        const nextObject = currentAdhyayList[currentIndexInArray - 1];\r\n        return nextObject\r\n          ? `${harililakalpataru_name[0]}/${nextObject.id}`\r\n          : `${harililakalpataru_name[0]}/${\r\n              harililakalpataru_name[harililakalpataru_name.length - 1]\r\n            }`;\r\n      }\r\n    }\r\n    // else if (\r\n    //   harililakalpataru_name.length == 3 &&\r\n    //   currentSangiJeevansDiscription\r\n    // ) {\r\n    //   const currentData =\r\n    //     currentSangiJeevansText &&\r\n    //     currentSangiJeevansText?.items?.filter((a) => a.id !== -1);\r\n    //   const currentObject = currentData?.find(\r\n    //     (obj) => obj.id == harililakalpataru_name[2]\r\n    //   );\r\n    //   const currentIndexInArray = currentData?.indexOf(currentObject);\r\n    //   if (page == \"NEXT\") {\r\n    //     const nextObject = currentData[currentIndexInArray + 1];\r\n    //     return nextObject\r\n    //       ? `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${nextObject.id}`\r\n    //       : `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${\r\n    //           harililakalpataru_name[harililakalpataru_name.length - 1]\r\n    //         }`;\r\n    //   }\r\n    //   if (page == \"PREVIOUS\") {\r\n    //     const nextObject = currentData[currentIndexInArray - 1];\r\n    //     return nextObject\r\n    //       ? `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${nextObject.id}`\r\n    //       : `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${\r\n    //           harililakalpataru_name[harililakalpataru_name.length - 1]\r\n    //         }`;\r\n    //   }\r\n    // } else {\r\n    //   if (page == \"NEXT\") {\r\n    //     return `${harililakalpataru_name[0]}/${\r\n    //       parseInt(harililakalpataru_name[1]) + 1\r\n    //     }`;\r\n    //   }\r\n    //   if (page == \"PREVIOUS\") {\r\n    //     return `${harililakalpataru_name[0]}/${\r\n    //       parseInt(harililakalpataru_name[1]) - 1\r\n    //     }`;\r\n    //   }\r\n    // }\r\n  };\r\n\r\n  return (\r\n    <div>\r\n      <TitleCard backGroundImage>\r\n        <span className=\"flex items-center justify-between\">\r\n          <Link\r\n            href={`/harililakalpataru/${handlePage(\"PREVIOUS\")}${\r\n              router.query.tab ? \"?tab=\" + router.query.tab : \"\"\r\n            } `}\r\n          >\r\n            <div className=\"cursor-pointer rounded bg-secondary\">\r\n              <FaAngleLeft\r\n                className=\"w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9\"\r\n                color=\"#f8ecc2\"\r\n              />\r\n            </div>\r\n          </Link>\r\n          <span className=\"capitalize\">\r\n            <Link\r\n              className=\"hover:underline text-[#C00000] font-bold\"\r\n              style={{\r\n                textShadow: \"3px 2px 3px silver\",\r\n                fontFamily: `${devanagari.style.fontFamily}`,\r\n              }}\r\n              href={`/harililakalpataru`}\r\n            >\r\n              à¥¥ à¤¹à¤°à¤¿à¤²à¥€à¤²à¤¾à¤•à¤²à¥à¤ªà¤¤à¤°à¥ à¥¥\r\n            </Link>\r\n\r\n            {currentSkanda && \" > \"}\r\n            {currentSkanda && (\r\n              <Link\r\n               className=\"hover:underline text-[#C00000] font-bold\"\r\n              style={{\r\n                textShadow: \"3px 2px 3px silver\",\r\n                fontFamily: `${devanagari.style.fontFamily}`,\r\n              }}\r\n                href={`/harililakalpataru/${currentSkanda?.id}`}\r\n              >\r\n                {currentSkanda && currentSkanda?.title}\r\n              </Link>\r\n            )}\r\n\r\n            {currentAdhyay && \" > \"}\r\n            {currentAdhyay && (\r\n              <Link\r\n               className=\"hover:underline text-[#C00000] font-bold\"\r\n              style={{\r\n                textShadow: \"3px 2px 3px silver\",\r\n                fontFamily: `${devanagari.style.fontFamily}`,\r\n              }}\r\n                href={`/harililakalpataru/${currentSkanda?.id}/${currentAdhyay?.id}`}\r\n              >\r\n                {currentAdhyay && currentAdhyay?.title}\r\n              </Link>\r\n            )}\r\n          </span>\r\n\r\n          <Link\r\n            href={`/harililakalpataru/${handlePage(\"NEXT\")}${\r\n              router.query.tab ? \"?tab=\" + router.query.tab : \"\"\r\n            } `}\r\n          >\r\n            <div className=\" cursor-pointer rounded bg-secondary\">\r\n              <FaAngleRight\r\n                className=\"w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9\"\r\n                color=\"#f8ecc2\"\r\n              />\r\n            </div>\r\n          </Link>\r\n        </span>\r\n      </TitleCard>\r\n\r\n      <div className=\"mb-10\">\r\n        {harililakalpataru_name.length === 1 && currentAdhyayList.length > 0 ? (\r\n          <div className=\"bg-card border-b\">\r\n            {currentSkanda?.header && (\r\n              <div className=\"bg-card border-b p-2 flex justify-center border-x border-b_color\">\r\n                <div\r\n                  className=\"break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1\"\r\n                  dangerouslySetInnerHTML={{\r\n                    __html: currentSkanda?.header,\r\n                  }}\r\n                />\r\n              </div>\r\n            )}\r\n            {currentAdhyayList &&\r\n              currentAdhyayList?.map((e, k) => {\r\n                return (\r\n                  <Link\r\n                    key={k}\r\n                    href={`/harililakalpataru/${harililakalpataru_name.join(\r\n                      \"/\"\r\n                    )}/${e?.id}`}\r\n                  >\r\n                    <div className=\"border-b border-x border-b_color p-2 text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full\">\r\n                      <div className=\"mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle\">\r\n                        {convertToHindi(k + 1)}\r\n                      </div>\r\n                      <div className=\"inline-block break-words align-baseline font-bold text-red\">\r\n                        {e?.title}\r\n                      </div>\r\n                    </div>\r\n                  </Link>\r\n                );\r\n              })}\r\n            {currentSkanda?.footer && (\r\n              <div className=\"bg-card border-b p-2 flex justify-center border-x border-b_color\">\r\n                <div\r\n                  className=\"break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1\"\r\n                  dangerouslySetInnerHTML={{\r\n                    __html: currentSkanda?.footer,\r\n                  }}\r\n                />\r\n              </div>\r\n            )}\r\n          </div>\r\n        ) : harililakalpataru_name.length === 2 &&\r\n          currentVersesList.length > 0 ? (\r\n          <div className=\"bg-card border-b\">\r\n            {currentAdhyay?.header && (\r\n              <div className=\"bg-card border-b p-2 flex justify-center border-x border-b_color\">\r\n                <div\r\n                  className=\"break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1\"\r\n                  dangerouslySetInnerHTML={{\r\n                    __html: currentAdhyay?.header,\r\n                  }}\r\n                />\r\n              </div>\r\n            )}\r\n            {currentVersesList &&\r\n              currentVersesList?.map((e, k) => {\r\n                return (\r\n                  <div\r\n                    key={k}\r\n                    className=\"flex items-center border-b border-x border-b_color p-2 sm:p-2 text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full\"\r\n                  >\r\n                    <div className=\"mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle\">\r\n                      {convertToHindi(k + 1)}\r\n                    </div>\r\n                    {/* <div\r\n                      className=\"break-words text-justify align-baseline text-red font-bold\"\r\n                      dangerouslySetInnerHTML={{\r\n                        __html: e?.title?.replaceAll(\"à¥¤\", \"à¥¤ <br>\"),\r\n                      }}\r\n                    /> */}\r\n\r\n                    {e?.shabda_chheda && (\r\n                      <ShabdaChhedaCardInLine\r\n                        shabda_chheda={e?.shabda_chheda}\r\n                        original={e?.title}\r\n                      />\r\n                    )}\r\n                  </div>\r\n                );\r\n              })}\r\n            {currentAdhyay?.footer && (\r\n              <div className=\"bg-card border-b p-2 flex justify-center border-x border-b_color\">\r\n                <div\r\n                  className=\"break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1\"\r\n                  dangerouslySetInnerHTML={{\r\n                    __html: currentAdhyay?.footer,\r\n                  }}\r\n                />\r\n              </div>\r\n            )}\r\n          </div>\r\n        ) : (\r\n          <LottieAnimation />\r\n        )}\r\n      </div>\r\n    </div>\r\n  );\r\n};\r\n\r\nHarililakalpataruName.getInitialProps = async ({ query }) => {\r\n  const { harililakalpataru_name } = query;\r\n  return { harililakalpataru_name };\r\n};\r\n\r\nexport default HarililakalpataruName;\r\n"],"names":["gujarati","devanagari","React","useEffect","useState","useDebounce","FaAngleLeft","FaAngleRight","useRouter","Link","axios","convertToHindi","LottieAnimation","TitleCard","ShabdaChhedaCardInLine","HarililakalpataruName","harililakalpataru_name","router","currentSkanda","setCurrentSkanda","currentAdhyayList","setCurrentAdhyayList","currentVersesList","setCurrentVersesList","currentAdhyay","setCurrentAdhyay","harililakalpataruSkanda","setHarililakalpataruSkanda","getAllSkanda","response","get","data","error","console","getCurrentSkanda","id","params","getCurrentAdhyayList","skandaId","getCurrentAdhyay","getCurrentVersesList","adhyayId","length","query","handlePage","page","currentObject","find","obj","currentIndexInArray","indexOf","nextObject","div","backGroundImage","span","className","href","tab","color","style","textShadow","fontFamily","title","header","dangerouslySetInnerHTML","__html","map","e","k","join","footer","shabda_chheda","original","getInitialProps"],"mappings":"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","file":"x"}`†‡ˆºH:\DHRUVIK\sardhar-ashtadhyayi\src\pages\harililakalpatarufullySpecifiedˆ´ûÄçH:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\@next\react-refresh-utils\dist\loader.jsŞH:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\build\webpack\loaders\next-swc-loader.jsÅÆ942017b654277d6cÇ’__webpack_module__
+‚_s‚_c•HarililakalpataruName	  7â¤úxBÙH:\DHRUVIK\sardhar-ashtadhyayi\src\pages\harililakalpataru\[...harililakalpataru_name].jsÊ  p6â¤úxB   06â¤úxB`6dÿ ÿ ı€ `: `:€`T@6   @â   €A7  !   @ê   €A"  U   `3€AV     `+€A‚  ½   `;€A¾  æ   `(€Aç    	 	`€A    
+ 
+`€A   ^  c >€A_  ›  c <€Aœ  Ğ  c 4€AÑ    c N‰undefinedA¤%  ¨%  @Â   `#@Â   `'ıAè&  ì&  @Ç   `@Ç   `#ûA(  (  @Ì   `@Ì   `ùA,  ,  @Ü   `#@Ü   `'÷Az0  ~0  @ê   `#@ê   `'õA55  95  @ø   `#@ø   `'óA‚6  †6  @ş   `@ş   `ñA:  :  @
+  `#@
+  `'ïA^;  b;  @  `@  `#íA<  ’<  @  `@  `ëAª=  ®=  @  `@  `éA>  ¡>  @  `@  `çA·C  »C  @0  `@0  `#åAçD  ëD  @5  `@5  `ãAiJ  mJ  @C  `+@C  `/áA
+M  M  @K  `+@K  `/ßA‡N  ‹N  @Q  `#@Q  `'İAÆO  ÊO  @V  `@V  `#ÛAÜS  àS  @c  `@c  `#ÙAU  U  @h  `@h  `×A)V  -V  @n  `@n  `ÕAÛZ  ßZ  @|  `@|  `#ÓA\  \  @  `@  `ÑA˜`  œ`  @  `'@  `+ÏAbc  fc  @•  `'@•  `+ÍAÂd  Æd  @›  `@›  `#ËAØh  Üh  @¨  `@¨  `#ÉAj  j  @­  `@­  `ÇA%k  )k  @³  `@³  `ÅAGl  Kl  @·  `@·  `ÃA:m  >m  @¼  `@¼  `ÁAn  n  @Â  @Â  `Auo  Šo  Afo  ‹o  @Ñ   @Ñ  `%†moduleAğq  r  
+ş@â  `!@â  `3üAmr  r  
+û@ä  `*@ä  `<XÿÿÿA·s  Ìs  
+Wÿÿÿ@ç  `Q@ç  `föA#u  5u  
+õ@í  `@í  `"‘module.hot.acceptA}v  šv  
+ñ@ó  `@ó  `/ïAz  z  
+î@   `@   `*ìA·|  É|  
+ë@  `@  `&`K•react/jsx-dev-runtimeÿ `:Ä   next/font/google/target.css?{"path":"src\\pages\\harililakalpataru\\[...harililakalpataru_name].js","import":"Noto_Serif_Gujarati","arguments":[{"subsets":["gujarati"]}],"variableName":"gujarati"}ÿ @â   Ê   next/font/google/target.css?{"path":"src\\pages\\harililakalpataru\\[...harililakalpataru_name].js","import":"Noto_Serif_Devanagari","arguments":[{"subsets":["devanagari"]}],"variableName":"devanagari"}ÿ @ê   …reactÿ `3Œuse-debounceÿ `+react-icons/faÿ `;‹next/routerÿ `(‰next/linkÿ	 	`	…axiosÿ
+ 
+`
+œ@/utils/ashtadhyayi/Functionÿc >`@/components/LottieAnimation ÿc <`›@/components/Card/TitleCardÿc 4`¨@/components/Card/ShabdaChhedaCardInLineÿc N‰useRouterşA“  œ  ïïÿcˆuseStateşAÎ  Ö  ååÿc.6üûA    ââÿc6>ùøAV  ^  ßßÿc6>öõA’  š  ÜÜÿc.6óòAâ  ê  ÙÙÿcBJ9ÿÿÿƒgetàAf  o  
+	ßßÿc#,5ÿÿÿüİA    
+	ÜÜÿc###,2ÿÿÿùÚA¡	  ª	  
+	ÙÙÿc0#0,/ÿÿÿö×A>  G  
+	ÖÖÿc=#=,,ÿÿÿóÔA    
+	ÓÓÿcK#K,‰useEffectşAz  ƒ  ÅÅÿcWW†jsxDEV‡_jsxDEVAø   ÿ   ººÿ@°   `@°   ` ûüA7!  >!  ··ÿ@²   `@²   `!ÿÿÿ‰TitleCardA?!  H!  `ÉÉÿ@²   `"@²   `+ôõA›!  ¢!  °°ÿ@´   `(@´   `/ñòA7"  >"  ­­ÿ@·   `&@·   `-ÿÿÿ„LinkA?"  C"  ··ÿ@·   `.@·   `2êëA#  #  ¦¦ÿ@¹   `4@¹   `;çèA®#  µ#  ££ÿ@»   `8@»   `?‹FaAngleLeftşA¶#  Á#  ©©ÿ@»   `@@»   `KàáAE(  L(  œœÿ@Í   `&@Í   `-İŞAâ(  é(  ™™ÿ@Ğ   `.@Ğ   `5ìíAê(  î(  ¥¥ÿ@Ğ   `6@Ğ   `:ışÿÿ…styleŠfontFamilyŠdevanagariA*  *  ••ÿ@Ô   `>@Ô   `YÒÓA™,   ,  ÿ@Ş   `?@Ş   `FáâA¡,  ¥,  ššÿ@Ş   `G@Ş   `Kòşÿÿõö÷A¹-  Ô-  ÿ@â   `>@â   `YÊËAø0  ÿ0  ††ÿ@ì   `?@ì   `FÙÚA 1  1  ’’ÿ@ì   `G@ì   `KêşÿÿíîïA2  32  ……ÿ@ğ   `>@ğ   `YÂÃA¯6  ¶6  ~ÿÿÿ~ÿÿÿÿ@ÿ   `&@ÿ   `-ÑÒA·6  »6  ŠŠÿ@ÿ   `.@ÿ   `2½¾A‡7  7  yÿÿÿyÿÿÿÿ@  `4@  `;º»A#8  *8  vÿÿÿvÿÿÿÿ@  `8@  `?ŒFaAngleRightşA+8  78  |ÿÿÿ|ÿÿÿÿ@  `@@  `L³´A¾>  Å>  oÿÿÿoÿÿÿÿ@   `@   `!°±Aa?  h?  lÿÿÿlÿÿÿÿ@"  `n@"  `u­®AC@  J@  iÿÿÿiÿÿÿÿ@%  `~A%  …   ª«Aó@  ú@  fÿÿÿfÿÿÿÿ@'  `4@'  `;§¨A³E  ºE  cÿÿÿcÿÿÿÿ@7  `1@7  `8¶·A»E  ¿E  oÿÿÿoÿÿÿÿ@7  `9@7  `=¢£A™F   F  ^ÿÿÿ^ÿÿÿÿ@9  `8@9  `?Ÿ A¿G  ÆG  [ÿÿÿ[ÿÿÿÿ@<  `6@<  `=convertToHindişAÙH  çH  
+iÿÿÿiÿÿÿÿ@>  `6@>  `D˜™A¦J  ­J  TÿÿÿTÿÿÿÿ@D  `6@D  `=•–AhP  oP  QÿÿÿQÿÿÿÿ@X  `~AX  …   ’“AQ  Q  NÿÿÿNÿÿÿÿ@Z  `4@Z  `;A…V  ŒV  KÿÿÿKÿÿÿÿ@n  `o@n  `vŒAgW  nW  HÿÿÿHÿÿÿÿ@q  `~Aq  …   ‰ŠAX  X  EÿÿÿEÿÿÿÿ@s  `4@s  `;†‡A×\  Ş\  BÿÿÿBÿÿÿÿ@ƒ  `1@ƒ  `8ƒ„A
+^  ^  ?ÿÿÿ?ÿÿÿÿ@†  `2@†  `9äãA_  *_  
+NÿÿÿNÿÿÿÿ@ˆ  `2@ˆ  `@}ÿÿÿ~ÿÿÿAa  a  9ÿÿÿ9ÿÿÿÿ@  `m@  `tŸşÿÿ–ShabdaChhedaCardInLineAa  *a  `MÿÿÿMÿÿÿÿ@  `uA  ‹   vÿÿÿwÿÿÿAde  ke  2ÿÿÿ2ÿÿÿÿ@  `~A  …   sÿÿÿtÿÿÿAf  f  /ÿÿÿ/ÿÿÿÿ@Ÿ  `4@Ÿ  `;pÿÿÿqÿÿÿA;k  Bk  ,ÿÿÿ,ÿÿÿÿ@³  `)@³  `0’şÿÿLottieAnimationACk  Rk  `<ÿÿÿ<ÿÿÿÿ@³  `1@³  `@Aÿÿÿ@ÿÿÿA{n  „n  1ÿÿÿ1ÿÿÿÿ@Æ  @Æ  `	ÿÿÿ
+ÿÿÿ€@Ñ   @Ñ  `% ‡sources“runtimeRequirements„dataSşÿÿŠjavascript«webpack/lib/util/registerExternalSerializerœwebpack-sources/CachedSource   ô  «webpack/lib/util/registerExternalSerializerœwebpack-sources/ConcatSource€«webpack/lib/util/registerExternalSerializer™webpack-sources/RawSource„  __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ "./node_modules/react/jsx-dev-runtime.js");
+/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var next_font_google_target_css_path_src_pages_harililakalpataru_harililakalpataru_name_js_import_Noto_Serif_Devanagari_arguments_subsets_devanagari_variableName_devanagari___WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! next/font/google/target.css?{"path":"src\\pages\\harililakalpataru\\[...harililakalpataru_name].js","import":"Noto_Serif_Devanagari","arguments":[{"subsets":["devanagari"]}],"variableName":"devanagari"} */ "./node_modules/next/font/google/target.css?{\"path\":\"src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_name].js\",\"import\":\"Noto_Serif_Devanagari\",\"arguments\":[{\"subsets\":[\"devanagari\"]}],\"variableName\":\"devanagari\"}");
+/* harmony import */ var next_font_google_target_css_path_src_pages_harililakalpataru_harililakalpataru_name_js_import_Noto_Serif_Devanagari_arguments_subsets_devanagari_variableName_devanagari___WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(next_font_google_target_css_path_src_pages_harililakalpataru_harililakalpataru_name_js_import_Noto_Serif_Devanagari_arguments_subsets_devanagari_variableName_devanagari___WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.esm.js");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/router */ "./node_modules/next/router.js");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! next/link */ "./node_modules/next/link.js");
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var _utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/utils/ashtadhyayi/Function */ "./src/utils/ashtadhyayi/Function.js");
+/* harmony import */ var _components_LottieAnimation___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/LottieAnimation  */ "./src/components/LottieAnimation .js");
+/* harmony import */ var _components_Card_TitleCard__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/Card/TitleCard */ "./src/components/Card/TitleCard.js");
+/* harmony import */ var _components_Card_ShabdaChhedaCardInLine__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/Card/ShabdaChhedaCardInLine */ "./src/components/Card/ShabdaChhedaCardInLine.js");
+«webpack/lib/util/registerExternalSerializerwebpack-sources/ReplaceSource«webpack/lib/util/registerExternalSerializerŸwebpack-sources/SourceMapSource0}  import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
+var _s = $RefreshSig$();
+import gujarati from 'next/font/google/target.css?{"path":"src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_name].js","import":"Noto_Serif_Gujarati","arguments":[{"subsets":["gujarati"]}],"variableName":"gujarati"}';
+import devanagari from 'next/font/google/target.css?{"path":"src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_name].js","import":"Noto_Serif_Devanagari","arguments":[{"subsets":["devanagari"]}],"variableName":"devanagari"}';
+import React, { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import axios from "axios";
+import { convertToHindi } from "@/utils/ashtadhyayi/Function";
+import LottieAnimation from "@/components/LottieAnimation ";
+import TitleCard from "@/components/Card/TitleCard";
+import ShabdaChhedaCardInLine from "@/components/Card/ShabdaChhedaCardInLine";
+const HarililakalpataruName = (param)=>{
+    let { harililakalpataru_name  } = param;
+    _s();
+    const router = useRouter();
+    const [currentSkanda, setCurrentSkanda] = useState({});
+    const [currentAdhyayList, setCurrentAdhyayList] = useState([]);
+    const [currentVersesList, setCurrentVersesList] = useState([]);
+    const [currentAdhyay, setCurrentAdhyay] = useState([]);
+    const [harililakalpataruSkanda, setHarililakalpataruSkanda] = useState([]);
+    const getAllSkanda = async ()=>{
+        try {
+            var _response_data;
+            const response = await axios.get("/api/harililakalpataru/skanda");
+            setHarililakalpataruSkanda(response === null || response === void 0 ? void 0 : (_response_data = response.data) === null || _response_data === void 0 ? void 0 : _response_data.data);
+        } catch (error) {
+            console.error("Error geting data:", error);
+        }
+    };
+    const getCurrentSkanda = async (id)=>{
+        try {
+            const response = await axios.get("/api/harililakalpataru/skanda", {
+                params: {
+                    id: id
+                }
+            });
+            setCurrentSkanda(response.data.data);
+            return;
+        } catch (error) {
+            console.error("Error geting data:", error);
+        }
+    };
+    const getCurrentAdhyayList = async (id)=>{
+        try {
+            const response = await axios.get("/api/harililakalpataru/adhyay", {
+                params: {
+                    skandaId: id
+                }
+            });
+            setCurrentAdhyayList(response.data.data);
+            return;
+        } catch (error) {
+            console.error("Error geting data:", error);
+        }
+    };
+    const getCurrentAdhyay = async (skandaId, id)=>{
+        try {
+            const response = await axios.get("/api/harililakalpataru/adhyay", {
+                params: {
+                    skandaId: skandaId,
+                    id: id
+                }
+            });
+            setCurrentAdhyay(response.data.data);
+            return;
+        } catch (error) {
+            console.error("Error geting data:", error);
+        }
+    };
+    const getCurrentVersesList = async (skandaId, adhyayId)=>{
+        try {
+            const response = await axios.get("/api/harililakalpataru/verses", {
+                params: {
+                    skandaId: skandaId,
+                    adhyayId: adhyayId
+                }
+            });
+            setCurrentVersesList(response.data.data);
+            return;
+        } catch (error) {
+            console.error("Error getCurrentVersesList data:", error);
+        }
+    };
+    useEffect(()=>{
+        getAllSkanda();
+        if (harililakalpataru_name.length >= 1) {
+            getCurrentSkanda(harililakalpataru_name[0]);
+            getCurrentAdhyayList(harililakalpataru_name[0]);
+        } else {
+            setCurrentSkanda({});
+            setCurrentAdhyayList([]);
+        }
+        if (harililakalpataru_name.length >= 2) {
+            getCurrentAdhyay(harililakalpataru_name[0], harililakalpataru_name[1]);
+            getCurrentVersesList(harililakalpataru_name[0], harililakalpataru_name[1]);
+        } else {
+            setCurrentAdhyay({});
+            setCurrentVersesList([]);
+        }
+    }, [
+        router.query,
+        harililakalpataru_name
+    ]);
+    // console.log("harililakalpataruSkanda----------", harililakalpataruSkanda);
+    // console.log("currentSkanda----------", currentSkanda);
+    // console.log("currentAdhyayList----------", currentAdhyayList);
+    // console.log("currentAdhyay----------", currentAdhyay);
+    // console.log("currentVersesList----------", currentVersesList);
+    const handlePage = (page)=>{
+        if (harililakalpataru_name.length == 1 && harililakalpataruSkanda) {
+            const currentObject = harililakalpataruSkanda === null || harililakalpataruSkanda === void 0 ? void 0 : harililakalpataruSkanda.find((obj)=>obj.id == harililakalpataru_name[0]);
+            const currentIndexInArray = harililakalpataruSkanda === null || harililakalpataruSkanda === void 0 ? void 0 : harililakalpataruSkanda.indexOf(currentObject);
+            if (page == "NEXT") {
+                const nextObject = harililakalpataruSkanda[currentIndexInArray + 1];
+                return nextObject ? nextObject.id : harililakalpataru_name[harililakalpataru_name.length - 1];
+            }
+            if (page == "PREVIOUS") {
+                const nextObject = harililakalpataruSkanda[currentIndexInArray - 1];
+                return nextObject ? nextObject.id : harililakalpataru_name[harililakalpataru_name.length - 1];
+            }
+        } else if (harililakalpataru_name.length == 2 && currentAdhyayList) {
+            const currentObject = currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.find((obj)=>obj.id == harililakalpataru_name[1]);
+            const currentIndexInArray = currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.indexOf(currentObject);
+            if (page == "NEXT") {
+                const nextObject = currentAdhyayList[currentIndexInArray + 1];
+                return nextObject ? "".concat(harililakalpataru_name[0], "/").concat(nextObject.id) : "".concat(harililakalpataru_name[0], "/").concat(harililakalpataru_name[harililakalpataru_name.length - 1]);
+            }
+            if (page == "PREVIOUS") {
+                const nextObject = currentAdhyayList[currentIndexInArray - 1];
+                return nextObject ? "".concat(harililakalpataru_name[0], "/").concat(nextObject.id) : "".concat(harililakalpataru_name[0], "/").concat(harililakalpataru_name[harililakalpataru_name.length - 1]);
+            }
+        }
+    // else if (
+    //   harililakalpataru_name.length == 3 &&
+    //   currentSangiJeevansDiscription
+    // ) {
+    //   const currentData =
+    //     currentSangiJeevansText &&
+    //     currentSangiJeevansText?.items?.filter((a) => a.id !== -1);
+    //   const currentObject = currentData?.find(
+    //     (obj) => obj.id == harililakalpataru_name[2]
+    //   );
+    //   const currentIndexInArray = currentData?.indexOf(currentObject);
+    //   if (page == "NEXT") {
+    //     const nextObject = currentData[currentIndexInArray + 1];
+    //     return nextObject
+    //       ? `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${nextObject.id}`
+    //       : `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${
+    //           harililakalpataru_name[harililakalpataru_name.length - 1]
+    //         }`;
+    //   }
+    //   if (page == "PREVIOUS") {
+    //     const nextObject = currentData[currentIndexInArray - 1];
+    //     return nextObject
+    //       ? `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${nextObject.id}`
+    //       : `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${
+    //           harililakalpataru_name[harililakalpataru_name.length - 1]
+    //         }`;
+    //   }
+    // } else {
+    //   if (page == "NEXT") {
+    //     return `${harililakalpataru_name[0]}/${
+    //       parseInt(harililakalpataru_name[1]) + 1
+    //     }`;
+    //   }
+    //   if (page == "PREVIOUS") {
+    //     return `${harililakalpataru_name[0]}/${
+    //       parseInt(harililakalpataru_name[1]) - 1
+    //     }`;
+    //   }
+    // }
+    };
+    return /*#__PURE__*/ _jsxDEV("div", {
+        children: [
+            /*#__PURE__*/ _jsxDEV(TitleCard, {
+                backGroundImage: true,
+                children: /*#__PURE__*/ _jsxDEV("span", {
+                    className: "flex items-center justify-between",
+                    children: [
+                        /*#__PURE__*/ _jsxDEV(Link, {
+                            href: "/harililakalpataru/".concat(handlePage("PREVIOUS")).concat(router.query.tab ? "?tab=" + router.query.tab : "", " "),
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: "cursor-pointer rounded bg-secondary",
+                                children: /*#__PURE__*/ _jsxDEV(FaAngleLeft, {
+                                    className: "w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9",
+                                    color: "#f8ecc2"
+                                }, void 0, false, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 215,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 214,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 209,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ _jsxDEV("span", {
+                            className: "capitalize",
+                            children: [
+                                /*#__PURE__*/ _jsxDEV(Link, {
+                                    className: "hover:underline text-[#C00000] font-bold",
+                                    style: {
+                                        textShadow: "3px 2px 3px silver",
+                                        fontFamily: "".concat(devanagari.style.fontFamily)
+                                    },
+                                    href: "/harililakalpataru",
+                                    children: "à¥¥ à¤¹à¤°à¤¿à¤²à¥€à¤²à¤¾à¤•à¤²à¥à¤ªà¤¤à¤°à¥ à¥¥"
+                                }, void 0, false, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 222,
+                                    columnNumber: 13
+                                }, this),
+                                currentSkanda && " > ",
+                                currentSkanda && /*#__PURE__*/ _jsxDEV(Link, {
+                                    className: "hover:underline text-[#C00000] font-bold",
+                                    style: {
+                                        textShadow: "3px 2px 3px silver",
+                                        fontFamily: "".concat(devanagari.style.fontFamily)
+                                    },
+                                    href: "/harililakalpataru/".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id),
+                                    children: currentSkanda && (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.title)
+                                }, void 0, false, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 235,
+                                    columnNumber: 15
+                                }, this),
+                                currentAdhyay && " > ",
+                                currentAdhyay && /*#__PURE__*/ _jsxDEV(Link, {
+                                    className: "hover:underline text-[#C00000] font-bold",
+                                    style: {
+                                        textShadow: "3px 2px 3px silver",
+                                        fontFamily: "".concat(devanagari.style.fontFamily)
+                                    },
+                                    href: "/harililakalpataru/".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id, "/").concat(currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.id),
+                                    children: currentAdhyay && (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.title)
+                                }, void 0, false, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 249,
+                                    columnNumber: 15
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 221,
+                            columnNumber: 11
+                        }, this),
+                        /*#__PURE__*/ _jsxDEV(Link, {
+                            href: "/harililakalpataru/".concat(handlePage("NEXT")).concat(router.query.tab ? "?tab=" + router.query.tab : "", " "),
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: " cursor-pointer rounded bg-secondary",
+                                children: /*#__PURE__*/ _jsxDEV(FaAngleRight, {
+                                    className: "w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9",
+                                    color: "#f8ecc2"
+                                }, void 0, false, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 268,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 267,
+                                columnNumber: 13
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 262,
+                            columnNumber: 11
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                    lineNumber: 208,
+                    columnNumber: 9
+                }, this)
+            }, void 0, false, {
+                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                lineNumber: 207,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ _jsxDEV("div", {
+                className: "mb-10",
+                children: harililakalpataru_name.length === 1 && currentAdhyayList.length > 0 ? /*#__PURE__*/ _jsxDEV("div", {
+                    className: "bg-card border-b",
+                    children: [
+                        (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.header) && /*#__PURE__*/ _jsxDEV("div", {
+                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: "break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
+                                dangerouslySetInnerHTML: {
+                                    __html: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.header
+                                }
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 282,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 281,
+                            columnNumber: 15
+                        }, this),
+                        currentAdhyayList && (currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.map((e, k)=>{
+                            return /*#__PURE__*/ _jsxDEV(Link, {
+                                href: "/harililakalpataru/".concat(harililakalpataru_name.join("/"), "/").concat(e === null || e === void 0 ? void 0 : e.id),
+                                children: /*#__PURE__*/ _jsxDEV("div", {
+                                    className: "border-b border-x border-b_color p-2 text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full",
+                                    children: [
+                                        /*#__PURE__*/ _jsxDEV("div", {
+                                            className: "mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
+                                            children: convertToHindi(k + 1)
+                                        }, void 0, false, {
+                                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                            lineNumber: 300,
+                                            columnNumber: 23
+                                        }, this),
+                                        /*#__PURE__*/ _jsxDEV("div", {
+                                            className: "inline-block break-words align-baseline font-bold text-red",
+                                            children: e === null || e === void 0 ? void 0 : e.title
+                                        }, void 0, false, {
+                                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                            lineNumber: 303,
+                                            columnNumber: 23
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                    lineNumber: 299,
+                                    columnNumber: 21
+                                }, this)
+                            }, k, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 293,
+                                columnNumber: 19
+                            }, this);
+                        })),
+                        (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.footer) && /*#__PURE__*/ _jsxDEV("div", {
+                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: "break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
+                                dangerouslySetInnerHTML: {
+                                    __html: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.footer
+                                }
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 312,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 311,
+                            columnNumber: 15
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                    lineNumber: 279,
+                    columnNumber: 11
+                }, this) : harililakalpataru_name.length === 2 && currentVersesList.length > 0 ? /*#__PURE__*/ _jsxDEV("div", {
+                    className: "bg-card border-b",
+                    children: [
+                        (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.header) && /*#__PURE__*/ _jsxDEV("div", {
+                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: "break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
+                                dangerouslySetInnerHTML: {
+                                    __html: currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.header
+                                }
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 326,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 325,
+                            columnNumber: 15
+                        }, this),
+                        currentVersesList && (currentVersesList === null || currentVersesList === void 0 ? void 0 : currentVersesList.map((e, k)=>{
+                            return /*#__PURE__*/ _jsxDEV("div", {
+                                className: "flex items-center border-b border-x border-b_color p-2 sm:p-2 text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full",
+                                children: [
+                                    /*#__PURE__*/ _jsxDEV("div", {
+                                        className: "mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
+                                        children: convertToHindi(k + 1)
+                                    }, void 0, false, {
+                                        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                        lineNumber: 341,
+                                        columnNumber: 21
+                                    }, this),
+                                    (e === null || e === void 0 ? void 0 : e.shabda_chheda) && /*#__PURE__*/ _jsxDEV(ShabdaChhedaCardInLine, {
+                                        shabda_chheda: e === null || e === void 0 ? void 0 : e.shabda_chheda,
+                                        original: e === null || e === void 0 ? void 0 : e.title
+                                    }, void 0, false, {
+                                        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                        lineNumber: 352,
+                                        columnNumber: 23
+                                    }, this)
+                                ]
+                            }, k, true, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 337,
+                                columnNumber: 19
+                            }, this);
+                        })),
+                        (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.footer) && /*#__PURE__*/ _jsxDEV("div", {
+                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
+                            children: /*#__PURE__*/ _jsxDEV("div", {
+                                className: "break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
+                                dangerouslySetInnerHTML: {
+                                    __html: currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.footer
+                                }
+                            }, void 0, false, {
+                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                                lineNumber: 362,
+                                columnNumber: 17
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                            lineNumber: 361,
+                            columnNumber: 15
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                    lineNumber: 323,
+                    columnNumber: 11
+                }, this) : /*#__PURE__*/ _jsxDEV(LottieAnimation, {}, void 0, false, {
+                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                    lineNumber: 372,
+                    columnNumber: 11
+                }, this)
+            }, void 0, false, {
+                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+                lineNumber: 277,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
+        lineNumber: 206,
+        columnNumber: 5
+    }, this);
+};
+_s(HarililakalpataruName, "brqQf9wQHdlnaqt5+T9HUccgEcU=", false, function() {
+    return [
+        useRouter
+    ];
+});
+_c = HarililakalpataruName;
+HarililakalpataruName.getInitialProps = async (param)=>{
+    let { query  } = param;
+    const { harililakalpataru_name  } = query;
+    return {
+        harililakalpataru_name
+    };
+};
+export default HarililakalpataruName;
+var _c;
+$RefreshReg$(_c, "HarililakalpataruName");
+
+
+;
+    // Wrapped in an IIFE to avoid polluting the global scope
+    ;
+    (function () {
+        var _a, _b;
+        // Legacy CSS implementations will `eval` browser code in a Node.js context
+        // to extract CSS. For backwards compatibility, we need to check we're in a
+        // browser context before continuing.
+        if (typeof self !== 'undefined' &&
+            // AMP / No-JS mode does not inject these helpers:
+            '$RefreshHelpers$' in self) {
+            // @ts-ignore __webpack_module__ is global
+            var currentExports = __webpack_module__.exports;
+            // @ts-ignore __webpack_module__ is global
+            var prevExports = (_b = (_a = __webpack_module__.hot.data) === null || _a === void 0 ? void 0 : _a.prevExports) !== null && _b !== void 0 ? _b : null;
+            // This cannot happen in MainTemplate because the exports mismatch between
+            // templating and execution.
+            self.$RefreshHelpers$.registerExportsForReactRefresh(currentExports, __webpack_module__.id);
+            // A module can be accepted automatically based on its exports, e.g. when
+            // it is a Refresh Boundary.
+            if (self.$RefreshHelpers$.isReactRefreshBoundary(currentExports)) {
+                // Save the previous exports on update so we can compare the boundary
+                // signatures.
+                __webpack_module__.hot.dispose(function (data) {
+                    data.prevExports = currentExports;
+                });
+                // Unconditionally accept an update to this module, we'll check if it's
+                // still a Refresh Boundary later.
+                // @ts-ignore importMeta is replaced in the loader
+                import.meta.webpackHot.accept();
+                // This field is set when the previous version of this module was a
+                // Refresh Boundary, letting us know we need to check for invalidation or
+                // enqueue an update.
+                if (prevExports !== null) {
+                    // A boundary can become ineligible if its exports are incompatible
+                    // with the previous exports.
+                    //
+                    // For example, if you add/remove/change exports, we'll want to
+                    // re-execute the importing modules, and force those components to
+                    // re-render. Similarly, if you convert a class component to a
+                    // function, we want to invalidate the boundary.
+                    if (self.$RefreshHelpers$.shouldInvalidateReactRefreshBoundary(prevExports, currentExports)) {
+                        __webpack_module__.hot.invalidate();
+                    }
+                    else {
+                        self.$RefreshHelpers$.scheduleUpdate();
+                    }
+                }
+            }
+            else {
+                // Since we just executed the code for the module, it's possible that the
+                // new exports made it ineligible for being a boundary.
+                // We only care about the case when we were _previously_ a boundary,
+                // because we already accepted this update (accidental side effect).
+                var isNoLongerABoundary = prevExports !== null;
+                if (isNoLongerABoundary) {
+                    __webpack_module__.hot.invalidate();
+                }
+            }
+        }
+    })();
+ø   webpack://./node_modules/next/dist/compiled/@next/react-refresh-utils/dist/loader.js!./node_modules/next/dist/build/webpack/loaders/next-swc-loader.js??ruleSet[1].rules[1].oneOf[2].use[1]!./src/pages/harililakalpataru/[...harililakalpataru_name].jsà]  {"version":3,"sources":["webpack://./src/pages/harililakalpataru/[...harililakalpataru_name].js"],"sourcesContent":["import React, { useEffect, useState } from \"react\";\r\nimport { useDebounce } from \"use-debounce\";\r\nimport { FaAngleLeft, FaAngleRight } from \"react-icons/fa\";\r\nimport { useRouter } from \"next/router\";\r\nimport Link from \"next/link\";\r\nimport axios from \"axios\";\r\nimport { convertToHindi } from \"@/utils/ashtadhyayi/Function\";\r\nimport LottieAnimation from \"@/components/LottieAnimation \";\r\nimport TitleCard from \"@/components/Card/TitleCard\";\r\nimport ShabdaChhedaCardInLine from \"@/components/Card/ShabdaChhedaCardInLine\";\r\nimport { Noto_Serif_Devanagari, Noto_Serif_Gujarati } from \"next/font/google\";\r\n\r\nconst gujarati = Noto_Serif_Gujarati({\r\n  subsets: [\"gujarati\"],\r\n});\r\n\r\nconst devanagari = Noto_Serif_Devanagari({\r\n  subsets: [\"devanagari\"],\r\n});\r\n\r\nconst HarililakalpataruName = ({ harililakalpataru_name }) => {\r\n  const router = useRouter();\r\n  const [currentSkanda, setCurrentSkanda] = useState({});\r\n  const [currentAdhyayList, setCurrentAdhyayList] = useState([]);\r\n  const [currentVersesList, setCurrentVersesList] = useState([]);\r\n  const [currentAdhyay, setCurrentAdhyay] = useState([]);\r\n  const [harililakalpataruSkanda, setHarililakalpataruSkanda] = useState([]);\r\n\r\n  const getAllSkanda = async () => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/skanda\");\r\n      setHarililakalpataruSkanda(response?.data?.data);\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentSkanda = async (id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/skanda\", {\r\n        params: {\r\n          id: id,\r\n        },\r\n      });\r\n      setCurrentSkanda(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentAdhyayList = async (id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/adhyay\", {\r\n        params: {\r\n          skandaId: id,\r\n        },\r\n      });\r\n      setCurrentAdhyayList(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentAdhyay = async (skandaId, id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/adhyay\", {\r\n        params: {\r\n          skandaId: skandaId,\r\n          id: id,\r\n        },\r\n      });\r\n      setCurrentAdhyay(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentVersesList = async (skandaId, adhyayId) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/verses\", {\r\n        params: {\r\n          skandaId: skandaId,\r\n          adhyayId: adhyayId,\r\n        },\r\n  
