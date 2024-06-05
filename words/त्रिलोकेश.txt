@@ -1,0 +1,244 @@
+OR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
+
+  if (typeof maybeIterator === 'function') {
+    return maybeIterator;
+  }
+
+  return null;
+}
+
+// $FlowFixMe[method-unbinding]
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
+const ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
+
+function hasValidRef(config) {
+
+  return config.ref !== undefined;
+}
+
+function hasValidKey(config) {
+
+  return config.key !== undefined;
+}
+/**
+ * Factory method to create a new React element. This no longer adheres to
+ * the class pattern, so do not use new to call it. Also, instanceof check
+ * will not work. Instead test $$typeof field against Symbol.for('react.element') to check
+ * if something is a React Element.
+ *
+ * @param {*} type
+ * @param {*} props
+ * @param {*} key
+ * @param {string|object} ref
+ * @param {*} owner
+ * @param {*} self A *temporary* helper to detect places where `this` is
+ * different from the `owner` when React.createElement is called, so that we
+ * can warn. We want to get rid of owner and replace string `ref`s with arrow
+ * functions, and as long as `this` and owner are the same, there will be no
+ * change in behavior.
+ * @param {*} source An annotation object (added by a transpiler or otherwise)
+ * indicating filename, line number, and/or other information.
+ * @internal
+ */
+
+
+function ReactElement(type, key, _ref, self, source, owner, props) {
+  let ref;
+
+  {
+    ref = _ref;
+  }
+
+  let element;
+
+  {
+    // In prod, `ref` is a regular property. It will be removed in a
+    // future release.
+    element = {
+      // This tag allows us to uniquely identify this as a React Element
+      $$typeof: REACT_ELEMENT_TYPE,
+      // Built-in properties that belong on the element
+      type,
+      key,
+      ref,
+      props,
+      // Record the component responsible for creating this element.
+      _owner: owner
+    };
+  }
+
+  return element;
+}
+/**
+ * Create and return a new ReactElement of the given type.
+ * See https://reactjs.org/docs/react-api.html#createelement
+ */
+
+function createElement(type, config, children) {
+
+  let propName; // Reserved names are extracted
+
+  const props = {};
+  let key = null;
+  let ref = null;
+
+  if (config != null) {
+    if (hasValidRef(config)) {
+      {
+        ref = config.ref;
+      }
+    }
+
+    if (hasValidKey(config)) {
+
+      key = '' + config.key;
+    } // Remaining properties are added to a new props object
+
+
+    for (propName in config) {
+      if (hasOwnProperty.call(config, propName) && // Skip over reserved prop names
+      propName !== 'key' && (propName !== 'ref') && // Even though we don't use these anymore in the runtime, we don't want
+      // them to appear as props, so in createElement we filter them out.
+      // We don't have to do this in the jsx() runtime because the jsx()
+      // transform never passed these as props; it used separate arguments.
+      propName !== '__self' && propName !== '__source') {
+        props[propName] = config[propName];
+      }
+    }
+  } // Children can be more than one argument, and those are transferred onto
+  // the newly allocated props object.
+
+
+  const childrenLength = arguments.length - 2;
+
+  if (childrenLength === 1) {
+    props.children = children;
+  } else if (childrenLength > 1) {
+    const childArray = Array(childrenLength);
+
+    for (let i = 0; i < childrenLength; i++) {
+      childArray[i] = arguments[i + 2];
+    }
+
+    props.children = childArray;
+  } // Resolve default props
+
+
+  if (type && type.defaultProps) {
+    const defaultProps = type.defaultProps;
+
+    for (propName in defaultProps) {
+      if (props[propName] === undefined) {
+        props[propName] = defaultProps[propName];
+      }
+    }
+  }
+
+  const element = ReactElement(type, key, ref, undefined, undefined, ReactCurrentOwner.current, props);
+
+  return element;
+}
+function cloneAndReplaceKey(oldElement, newKey) {
+  return ReactElement(oldElement.type, newKey, // When enableRefAsProp is on, this argument is ignored. This check only
+  // exists to avoid the `ref` access warning.
+  oldElement.ref, undefined, undefined, oldElement._owner, oldElement.props);
+}
+/**
+ * Clone and return a new ReactElement using element as the starting point.
+ * See https://reactjs.org/docs/react-api.html#cloneelement
+ */
+
+function cloneElement(element, config, children) {
+  if (element === null || element === undefined) {
+    throw Error(formatProdErrorMessage(267, element));
+  }
+
+  let propName; // Original props are copied
+
+  const props = assign({}, element.props); // Reserved names are extracted
+
+  let key = element.key;
+  let ref = element.ref; // Owner will be preserved, unless ref is overridden
+
+  let owner = element._owner;
+
+  if (config != null) {
+    if (hasValidRef(config)) {
+      {
+        // Silently steal the ref from the parent.
+        ref = config.ref;
+      }
+
+      owner = ReactCurrentOwner.current;
+    }
+
+    if (hasValidKey(config)) {
+
+      key = '' + config.key;
+    } // Remaining properties override existing props
+
+
+    let defaultProps;
+
+    if (element.type && element.type.defaultProps) {
+      defaultProps = element.type.defaultProps;
+    }
+
+    for (propName in config) {
+      if (hasOwnProperty.call(config, propName) && // Skip over reserved prop names
+      propName !== 'key' && (propName !== 'ref') && // ...and maybe these, too, though we currently rely on them for
+      // warnings and debug information in dev. Need to decide if we're OK
+      // with dropping them. In the jsx() runtime it's not an issue because
+      // the data gets passed as separate arguments instead of props, but
+      // it would be nice to stop relying on them entirely so we can drop
+      // them from the internal Fiber field.
+      propName !== '__self' && propName !== '__source' && // Undefined `ref` is ignored by cloneElement. We treat it the same as
+      // if the property were missing. This is mostly for
+      // backwards compatibility.
+      !(enableRefAsProp  )) {
+        if (config[propName] === undefined && defaultProps !== undefined) {
+          // Resolve default props
+          props[propName] = defaultProps[propName];
+        } else {
+          props[propName] = config[propName];
+        }
+      }
+    }
+  } // Children can be more than one argument, and those are transferred onto
+  // the newly allocated props object.
+
+
+  const childrenLength = arguments.length - 2;
+
+  if (childrenLength === 1) {
+    props.children = children;
+  } else if (childrenLength > 1) {
+    const childArray = Array(childrenLength);
+
+    for (let i = 0; i < childrenLength; i++) {
+      childArray[i] = arguments[i + 2];
+    }
+
+    props.children = childArray;
+  }
+
+  const clonedElement = ReactElement(element.type, key, ref, undefined, undefined, owner, props);
+
+  return clonedElement;
+}
+/**
+ * Verifies the object is a ReactElement.
+ * See https://reactjs.org/docs/react-api.html#isvalidelement
+ * @param {?object} object
+ * @return {boolean} True if `object` is a ReactElement.
+ * @final
+ */
+
+
+function isValidElement(object) {
+  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+}
+
+const SEPARATOR = '.';
+cons

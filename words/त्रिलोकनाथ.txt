@@ -1,0 +1,198 @@
+f this function assumes that a single child gets
+ * passed without a wrapper, but the purpose of this helper function is to
+ * abstract away the particular structure of children.
+ *
+ * @param {?object} children Child collection structure.
+ * @return {ReactElement} The first and only `ReactElement` contained in the
+ * structure.
+ */
+
+
+function onlyChild(children) {
+  if (!isValidElement(children)) {
+    throw Error(formatProdErrorMessage(143));
+  }
+
+  return children;
+}
+
+// an immutable object with a single mutable value
+function createRef() {
+  const refObject = {
+    current: null
+  };
+
+  return refObject;
+}
+
+function resolveDispatcher() {
+  const dispatcher = ReactCurrentDispatcher.current;
+  // intentionally don't throw our own error because this is in a hot path.
+  // Also helps ensure this is inlined.
+
+
+  return dispatcher;
+}
+function useCallback(callback, deps) {
+  const dispatcher = resolveDispatcher();
+  return dispatcher.useCallback(callback, deps);
+}
+function useMemo(create, deps) {
+  const dispatcher = resolveDispatcher();
+  return dispatcher.useMemo(create, deps);
+}
+function useDebugValue(value, formatterFn) {
+}
+function useId() {
+  const dispatcher = resolveDispatcher();
+  return dispatcher.useId();
+}
+function use(usable) {
+  const dispatcher = resolveDispatcher();
+  return dispatcher.use(usable);
+}
+
+function forwardRef(render) {
+
+  const elementType = {
+    $$typeof: REACT_FORWARD_REF_TYPE,
+    render
+  };
+
+  return elementType;
+}
+
+const Uninitialized = -1;
+const Pending = 0;
+const Resolved = 1;
+const Rejected = 2;
+
+function lazyInitializer(payload) {
+  if (payload._status === Uninitialized) {
+    const ctor = payload._result;
+    const thenable = ctor(); // Transition to the next state.
+    // This might throw either because it's missing or throws. If so, we treat it
+    // as still uninitialized and try again next time. Which is the same as what
+    // happens if the ctor or any wrappers processing the ctor throws. This might
+    // end up fixing it if the resolution was a concurrency bug.
+
+    thenable.then(moduleObject => {
+      if (payload._status === Pending || payload._status === Uninitialized) {
+        // Transition to the next state.
+        const resolved = payload;
+        resolved._status = Resolved;
+        resolved._result = moduleObject;
+      }
+    }, error => {
+      if (payload._status === Pending || payload._status === Uninitialized) {
+        // Transition to the next state.
+        const rejected = payload;
+        rejected._status = Rejected;
+        rejected._result = error;
+      }
+    });
+
+    if (payload._status === Uninitialized) {
+      // In case, we're still uninitialized, then we're waiting for the thenable
+      // to resolve. Set it as pending in the meantime.
+      const pending = payload;
+      pending._status = Pending;
+      pending._result = thenable;
+    }
+  }
+
+  if (payload._status === Resolved) {
+    const moduleObject = payload._result;
+
+    return moduleObject.default;
+  } else {
+    throw payload._result;
+  }
+}
+
+function lazy(ctor) {
+  const payload = {
+    // We use these fields to store the result.
+    _status: Uninitialized,
+    _result: ctor
+  };
+  const lazyType = {
+    $$typeof: REACT_LAZY_TYPE,
+    _payload: payload,
+    _init: lazyInitializer
+  };
+
+  return lazyType;
+}
+
+function memo(type, compare) {
+
+  const elementType = {
+    $$typeof: REACT_MEMO_TYPE,
+    type,
+    compare: compare === undefined ? null : compare
+  };
+
+  return elementType;
+}
+
+const UNTERMINATED = 0;
+const TERMINATED = 1;
+const ERRORED = 2;
+
+function createCacheRoot() {
+  return new WeakMap();
+}
+
+function createCacheNode() {
+  return {
+    s: UNTERMINATED,
+    // status, represents whether the cached computation returned a value or threw an error
+    v: undefined,
+    // value, either the cached result or an error, depending on s
+    o: null,
+    // object cache, a WeakMap where non-primitive arguments are stored
+    p: null // primitive cache, a regular Map where primitive arguments are stored.
+
+  };
+}
+
+function cache(fn) {
+  return function () {
+    const dispatcher = ReactCurrentCache.current;
+
+    if (!dispatcher) {
+      // If there is no dispatcher, then we treat this as not being cached.
+      // $FlowFixMe[incompatible-call]: We don't want to use rest arguments since we transpile the code.
+      return fn.apply(null, arguments);
+    }
+
+    const fnMap = dispatcher.getCacheForType(createCacheRoot);
+    const fnNode = fnMap.get(fn);
+    let cacheNode;
+
+    if (fnNode === undefined) {
+      cacheNode = createCacheNode();
+      fnMap.set(fn, cacheNode);
+    } else {
+      cacheNode = fnNode;
+    }
+
+    for (let i = 0, l = arguments.length; i < l; i++) {
+      const arg = arguments[i];
+
+      if (typeof arg === 'function' || typeof arg === 'object' && arg !== null) {
+        // Objects go into a WeakMap
+        let objectCache = cacheNode.o;
+
+        if (objectCache === null) {
+          cacheNode.o = objectCache = new WeakMap();
+        }
+
+        const objectNode = objectCache.get(arg);
+
+        if (objectNode === undefined) {
+          cacheNode = createCacheNode();
+          objectCache.set(arg, cacheNode);
+        } else {
+          cacheNode = objectNode;
