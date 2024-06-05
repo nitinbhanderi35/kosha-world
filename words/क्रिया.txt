@@ -1,0 +1,716 @@
+/**
+ * @fileoverview Enforce that elements with onClick handlers must be focusable.
+ * @author Ethan Cohen
+ */
+
+// -----------------------------------------------------------------------------
+// Requirements
+// -----------------------------------------------------------------------------
+
+import includes from 'array-includes';
+import { RuleTester } from 'eslint';
+import {
+  eventHandlers,
+  eventHandlersByType,
+} from 'jsx-ast-utils';
+import { configs } from '../../../src/index';
+import parserOptionsMapper from '../../__util__/parserOptionsMapper';
+import rule from '../../../src/rules/interactive-supports-focus';
+import ruleOptionsMapperFactory from '../../__util__/ruleOptionsMapperFactory';
+
+// -----------------------------------------------------------------------------
+// Tests
+// -----------------------------------------------------------------------------
+
+const ruleTester = new RuleTester();
+
+function template(strings, ...keys) {
+  return (...values) => keys.reduce(
+    (acc, k, i) => acc + (values[k] || '') + strings[i + 1],
+    strings[0],
+  );
+}
+
+const ruleName = 'interactive-supports-focus';
+const type = 'JSXOpeningElement';
+const codeTemplate = template`<${0} role="${1}" ${2}={() => void 0} />`;
+const tabindexTemplate = template`<${0} role="${1}" ${2}={() => void 0} tabIndex="0" />`;
+const tabbableTemplate = template`Elements with the '${0}' interactive role must be tabbable.`;
+const focusableTemplate = template`Elements with the '${0}' interactive role must be focusable.`;
+
+const componentsSettings = {
+  'jsx-a11y': {
+    components: {
+      Div: 'div',
+    },
+  },
+};
+
+const buttonError = { message: tabbableTemplate('button'), type };
+
+const recommendedOptions = configs.recommended.rules[`jsx-a11y/${ruleName}`][1] || {};
+
+const strictOptions = configs.strict.rules[`jsx-a11y/${ruleName}`][1] || {};
+
+const alwaysValid = [
+  { code: '<div />' },
+  { code: '<div aria-hidden onClick={() => void 0} />' },
+  { code: '<div aria-hidden={true == true} onClick={() => void 0} />' },
+  { code: '<div aria-hidden={true === true} onClick={() => void 0} />' },
+  { code: '<div aria-hidden={hidden !== false} onClick={() => void 0} />' },
+  { code: '<div aria-hidden={hidden != false} onClick={() => void 0} />' },
+  { code: '<div aria-hidden={1 < 2} onClick={() => void 0} />' },
+  { code: '<div aria-hidden={1 <= 2} onClick={() => void 0} />' },
+  { code: '<div aria-hidden={2 > 1} onClick={() => void 0} />' },
+  { code: '<div aria-hidden={2 >= 1} onClick={() => void 0} />' },
+  { code: '<div onClick={() => void 0} />;' },
+  { code: '<div onClick={() => void 0} tabIndex={undefined} />;' },
+  { code: '<div onClick={() => void 0} tabIndex="bad" />;' },
+  { code: '<div onClick={() => void 0} role={undefined} />;' },
+  { code: '<div role="section" onClick={() => void 0} />' },
+  { code: '<div onClick={() => void 0} aria-hidden={false} />;' },
+  { code: '<div onClick={() => void 0} {...props} />;' },
+  { code: '<input type="text" onClick={() => void 0} />' },
+  { code: '<input type="hidden" onClick={() => void 0} tabIndex="-1" />' },
+  { code: '<input type="hidden" onClick={() => void 0} tabIndex={-1} />' },
+  { code: '<input onClick={() => void 0} />' },
+  { code: '<input onClick={() => void 0} role="combobox" />' },
+  { code: '<button onClick={() => void 0} className="foo" />' },
+  { code: '<option onClick={() => void 0} className="foo" />' },
+  { code: '<select onClick={() => void 0} className="foo" />' },
+  { code: '<area href="#" onClick={() => void 0} className="foo" />' },
+  { code: '<area onClick={() => void 0} className="foo" />' },
+  { code: '<summary onClick={() => void 0} />' },
+  { code: '<textarea onClick={() => void 0} className="foo" />' },
+  { code: '<a onClick="showNextPage();">Next page</a>' },
+  { code: '<a onClick="showNextPage();" tabIndex={undefined}>Next page</a>' },
+  { code: '<a onClick="showNextPage();" tabIndex="bad">Next page</a>' },
+  { code: '<a onClick={() => void 0} />' },
+  { code: '<a tabIndex="0" onClick={() => void 0} />' },
+  { code: '<a tabIndex={dynamicTabIndex} onClick={() => void 0} />' },
+  { code: '<a tabIndex={0} onClick={() => void 0} />' },
+  { code: '<a role="button" href="#" onClick={() => void 0} />' },
+  { code: '<a onClick={() => void 0} href="http://x.y.z" />' },
+  { code: '<a onClick={() => void 0} href="http://x.y.z" tabIndex="0" />' },
+  { code: '<a onClick={() => void 0} href="http://x.y.z" tabIndex={0} />' },
+  { code: '<a onClick={() => void 0} href="http://x.y.z" role="button" />' },
+  { code: '<TestComponent onClick={doFoo} />' },
+  { code: '<input onClick={() => void 0} type="hidden" />;' },
+  { code: '<span onClick="submitForm();">Submit</span>' },
+  { code: '<span onClick="submitForm();" tabIndex={undefined}>Submit</span>' },
+  { code: '<span onClick="submitForm();" tabIndex="bad">Submit</span>' },
+  { code: '<span onClick="doSomething();" tabIndex="0">Click me!</span>' },
+  { code: '<span onClick="doSomething();" tabIndex={0}>Click me!</span>' },
+  { code: '<span onClick="doSomething();" tabIndex="-1">Click me too!</span>' },
+  {
+    code: '<a href="javascript:void(0);" onClick="doSomething();">Click ALL the things!</a>',
+  },
+  { code: '<section onClick={() => void 0} />;' },
+  { code: '<main onClick={() => void 0} />;' },
+  { code: '<article onClick={() => void 0} />;' },
+  { code: '<header onClick={() => void 0} />;' },
+  { code: '<footer onClick={() => void 0} />;' },
+  { code: '<div role="button" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="checkbox" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="link" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="menuitem" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="menuitemcheckbox" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="menuitemradio" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="option" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="radio" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="spinbutton" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="switch" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="tablist" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="tab" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="textbox" tabIndex="0" onClick={() => void 0} />' },
+  { code: '<div role="textbox" aria-disabled="true" onClick={() => void 0} />' },
+  { code: '<Foo.Bar onClick={() => void 0} aria-hidden={false} />;' },
+  { code: '<Input onClick={() => void 0} type="hidden" />;' },
+  { code: '<Div onClick={() => void 0} role="button" tabIndex="0" />', settings: componentsSettings },
+];
+
+const neverValid = [
+  { code: '<Div onClick={() => void 0} role="button" />', errors: [buttonError], settings: componentsSettings },
+];
+
+const interactiveRoles = [
+  'button',
+  'checkbox',
+  'link',
+  'gridcell',
+  'menuitem',
+  'menuitemcheckbox',
+  'menuitemradio',
+  'option',
+  'radio',
+  'searchbox',
+  'slider',
+  'spinbutton',
+  'switch',
+  'tab',
+  'textbox',
+  'treeitem',
+];
+
+const recommendedRoles = [
+  'button',
+  'checkbox',
+  'link',
+  'searchbox',
+  'spinbutton',
+  'switch',
+  'textbox',
+];
+
+const strictRoles = [
+  'button',
+  'checkbox',
+  'link',
+  'progressbar',
+  'searchbox',
+  'slider',
+  'spinbutton',
+  'switch',
+  'textbox',
+];
+
+const staticElements = [
+  'div',
+];
+
+const triggeringHandlers = [
+  ...eventHandlersByType.mouse,
+  ...eventHandlersByType.keyboard,
+];
+
+const passReducer = (roles, handlers, messageTemplate) => (
+  staticElements.reduce((elementAcc, element) => (
+    elementAcc.concat(roles.reduce((roleAcc, role) => (
+      roleAcc.concat(handlers.map((handler) => ({
+        code: messageTemplate(element, role, handler),
+      })))
+    ), []))
+  ), [])
+);
+
+const failReducer = (roles, handlers, messageTemplate) => (
+  staticElements.reduce((elementAcc, element) => (
+    elementAcc.concat(roles.reduce((roleAcc, role) => (
+      roleAcc.concat(handlers.map((handler) => ({
+        code: codeTemplate(element, role, handler),
+        errors: [{
+          type,
+          message: messageTemplate(role),
+        }],
+      })))
+    ), []))
+  ), [])
+);
+
+ruleTester.run(`${ruleName}:recommended`, rule, {
+  valid: [
+    ...alwaysValid,
+    ...passReducer(
+      interactiveRoles,
+      eventHandlers.filter((handler) => !includes(triggeringHandlers, handler)),
+      codeTemplate,
+    ),
+    ...passReducer(
+      interactiveRoles.filter((role) => !includes(recommendedRoles, role)),
+      eventHandlers.filter((handler) => includes(triggeringHandlers, handler)),
+      tabindexTemplate,
+    ),
+  ]
+    .map(ruleOptionsMapperFactory(recommendedOptions))
+    .map(parserOptionsMapper),
+  invalid: [
+    ...neverValid,
+    ...failReducer(recommendedRoles, triggeringHandlers, tabbableTemplate),
+    ...failReducer(
+      interactiveRoles.filter((role) => !includes(recommendedRoles, role)),
+      triggeringHandlers,
+      focusableTemplate,
+    ),
+  ]
+    .map(ruleOptionsMapperFactory(recommendedOptions))
+    .map(parserOptionsMapper),
+});
+
+ruleTester.run(`${ruleName}:strict`, rule, {
+  valid: [
+    ...alwaysValid,
+    ...passReducer(
+      interactiveRoles,
+      eventHandlers.filter((handler) => !includes(triggeringHandlers, handler)),
+      codeTemplate,
+    ),
+    ...passReducer(
+      interactiveRoles.filter((role) => !includes(strictRoles, role)),
+      eventHandlers.filter((handler) => includes(triggeringHandlers, handler)),
+      tabindexTemplate,
+    ),
+  ]
+    .map(ruleOptionsMapperFactory(strictOptions))
+    .map(parserOptionsMapper),
+  invalid: [
+    ...neverValid,
+    ...failReducer(strictRoles, triggeringHandlers, tabbableTemplate),
+    ...failReducer(
+      interactiveRoles.filter((role) => !includes(strictRoles, role)),
+      triggeringHandlers,
+      focusableTemplate,
+    ),
+  ]
+    .map(ruleOptionsMapperFactory(strictOptions))
+    .map(parserOptionsMapper),
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           {"version":3,"sources":["../../../../src/server/lib/incremental-cache/file-system-cache.ts"],"names":["LRUCache","path","NEXT_CACHE_TAGS_HEADER","memoryCache","tagsManifest","FileSystemCache","constructor","ctx","fs","flushToDisk","serverDistDir","appDir","_appDir","revalidatedTags","maxMemoryCacheSize","max","length","value","JSON","kind","stringify","props","Error","data","body","html","pageData","tagsManifestPath","join","loadTagsManifest","parse","readFileSync","toString","err","version","items","revalidateTag","tag","revalidatedAt","Date","now","mkdir","dirname","writeFile","console","warn","get","key","tags","softTags","fetchCache","process","env","NEXT_RUNTIME","filePath","getFsPath","pathname","fileData","readFile","mtime","stat","meta","replace","cacheEntry","lastModified","getTime","headers","status","_","isAppPath","parsedData","storedTags","every","includes","set","cacheTags","tagsHeader","split","isStale","some","undefined","combinedTags","wasRevalidated","htmlPath"],"mappings":"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"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {"version":3,"sources":["../../../../src/server/lib/incremental-cache/file-system-cache.ts"],"names":["FileSystemCache","memoryCache","tagsManifest","constructor","ctx","fs","flushToDisk","serverDistDir","appDir","_appDir","revalidatedTags","maxMemoryCacheSize","LRUCache","max","length","value","JSON","kind","stringify","props","Error","data","body","html","pageData","tagsManifestPath","path","join","loadTagsManifest","parse","readFileSync","toString","err","version","items","revalidateTag","tag","revalidatedAt","Date","now","mkdir","dirname","writeFile","console","warn","get","key","tags","softTags","fetchCache","process","env","NEXT_RUNTIME","filePath","getFsPath","pathname","fileData","readFile","mtime","stat","meta","replace","cacheEntry","lastModified","getTime","headers","status","_","isAppPath","parsedData","storedTags","every","includes","set","cacheTags","tagsHeader","NEXT_CACHE_TAGS_HEADER","split","isStale","some","undefined","combinedTags","wasRevalidated","htmlPath"],"mappings":"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"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  module.exports={C:{"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0.00473,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0.06615,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0.01418,"59":0,"60":0.00473,"61":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0,"69":0,"70":0,"71":0,"72":0.00473,"73":0,"74":0,"75":0,"76":0,"77":0,"78":0.00945,"79":0,"80":0,"81":0,"82":0,"83":0.00473,"84":0,"85":0,"86":0,"87":0,"88":0.00473,"89":0,"90":0,"91":0,"92":0,"93":0,"94":0,"95":0,"96":0,"97":0,"98":0,"99":0.00473,"100":0.00473,"101":0,"102":0.00473,"103":0,"104":0,"105":0.00473,"106":0.00473,"107":0,"108":0.00473,"109":0,"110":0.00473,"111":0.00473,"112":0.00473,"113":0.02363,"114":0.00945,"115":0.27405,"116":0.06615,"117":0.78908,"118":0.09923,"119":0,"120":0,"3.5":0,"3.6":0.00473},D:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0.0189,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0.00945,"39":0.00473,"40":0,"41":0.00473,"42":0,"43":0.00473,"44":0.00473,"45":0.00473,"46":0.00473,"47":0.00473,"48":0,"49":0.0189,"50":0,"51":0.00473,"52":0,"53":0.00473,"54":0,"55":0,"56":0,"57":0,"58":0,"59":0,"60":0.00473,"61":0,"62":0.00473,"63":0,"64":0,"65":0,"66":0,"67":0.00473,"68":0.00945,"69":0.00473,"70":0.00945,"71":0,"72":0,"73":0,"74":0.00473,"75":0.00473,"76":0,"77":0,"78":0.00473,"79":0.08978,"80":0.00473,"81":0.0378,"83":0.02835,"84":0,"85":0.01418,"86":0.00473,"87":0.02363,"88":0.00945,"89":0.00473,"90":0.01418,"91":0.1134,"92":0.00473,"93":0.00473,"94":0.00473,"95":0.00473,"96":0.00473,"97":0.02363,"98":0.00473,"99":0.00945,"100":0.00473,"101":0.00945,"102":0.02363,"103":0.0378,"104":0.01418,"105":0.01418,"106":0.0189,"107":0.0189,"108":0.03308,"109":1.89945,"110":0.05198,"111":0.02835,"112":0.03308,"113":0.07088,"114":0.42053,"115":0.15593,"116":10.4706,"117":2.40975,"118":0,"119":0,"120":0},F:{"9":0,"11":0,"12":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0.01418,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"60":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0,"69":0,"70":0.00473,"71":0.00473,"72":0.04253,"73":0.01418,"74":0.00473,"75":0,"76":0,"77":0.02363,"78":0,"79":0.00473,"80":0,"81":0,"82":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0,"92":0,"93":0,"94":0,"95":0.0567,"96":0,"97":0,"98":0,"99":0.00473,"100":0.16538,"101":0.36855,"102":0.37328,"9.5-9.6":0,"10.0-10.1":0,"10.5":0,"10.6":0,"11.1":0,"11.5":0,"11.6":0,"12.1":0.00473},B:{"12":0.00473,"13":0,"14":0.00473,"15":0,"16":0,"17":0,"18":0.00473,"79":0,"80":0,"81":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0.02363,"89":0,"90":0,"91":0,"92":0.01418,"93":0,"94":0,"95":0,"96":0,"97":0,"98":0,"99":0,"100":0,"101":0,"102":0,"103":0,"104":0,"105":0,"106":0,"107":0.00473,"108":0,"109":0.02363,"110":0.00473,"111":0,"112":0,"113":0.00473,"114":0.00945,"115":0.02835,"116":0.66623,"117":0.54338},E:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0.00473,"10":0,"11":0,"12":0,"13":0,"14":0.00473,"15":0,_:"0","3.1":0,"3.2":0,"5.1":0.00473,"6.1":0,"7.1":0,"9.1":0.00473,"10.1":0,"11.1":0,"12.1":0,"13.1":0.01418,"14.1":0.00945,"15.1":0,"15.2-15.3":0,"15.4":0,"15.5":0.00473,"15.6":0.0189,"16.0":0,"16.1":0.00473,"16.2":0.00473,"16.3":0.0189,"16.4":0.00473,"16.5":0.02363,"16.6":0.09923,"17.0":0.01418,"17.1":0},G:{"8":0.00149,"3.2":0.0005,"4.0-4.1":0,"4.2-4.3":0.00149,"5.0-5.1":0.00647,"6.0-6.1":0.00348,"7.0-7.1":0.02138,"8.1-8.4":0.02188,"9.0-9.2":0.00696,"9.3":0.0194,"10.0-10.2":0,"10.3":0.0184,"11.0-11.2":0.08454,"11.3-11.4":0.00298,"12.0-12.1":0.02039,"12.2-12.5":0.1671,"13.0-13.1":0.00298,"13.2":0.00298,"13.3":0.03083,"13.4-13.7":0.01343,"14.0-14.4":0.03083,"14.5-14.8":0.04973,"15.0-15.1":0.00995,"15.2-15.3":0.01442,"15.4":0.03083,"15.5":0.04526,"15.6-15.7":0.4446,"16.0":0.11041,"16.1":0.45107,"16.2":0.10543,"16.3":0.18799,"16.4":0.04575,"16.5":0.10792,"16.6":2.49854,"17.0":0.34116,"17.1":0},P:{"4":0.28432,"20":0.10154,"21":0.18278,"22":1.83794,"5.0-5.4":0.01015,"6.2-6.4":0.01015,"7.2-7.4":0.27417,"8.2":0,"9.2":0.02031,"10.1":0,"11.1-11.2":0.03046,"12.0":0.01015,"13.0":0.05077,"14.0":0.05077,"15.0":0.01015,"16.0":0.06093,"17.0":0.09139,"18.0":0.04062,"19.0":0.08124},I:{"0":0,"3":0,"4":0.01758,"2.1":0,"2.2":0.01055,"2.3":0.01407,"4.1":0.0211,"4.2-4.3":0.05626,"4.4":0,"4.4.3-4.4.4":0.16879},K:{_:"0 10 11 12 11.1 11.5 12.1"},A:{"6":0,"7":0.00473,"8":0.0378,"9":0.00473,"10":0.00945,"11":0.0378,"5.5":0},S:{"2.5":0.00528,_:"3.0-3.1"},J:{"7":0,"10":0.01055},N:{"10":0.01583,"11":0},L:{"0":67.9195},R:{_:"0"},M:{"0":0.15298},Q:{"13.1":0},O:{"0":0.1899},H:{"0":0.45945}};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    {"version":3,"sources":["../../../../src/server/lib/incremental-cache/fetch-cache.ts"],"names":["FetchCache","rateLimitedUntil","memoryCache","CACHE_TAGS_HEADER","CACHE_HEADERS_HEADER","CACHE_STATE_HEADER","CACHE_REVALIDATE_HEADER","CACHE_FETCH_URL_HEADER","CACHE_CONTROL_VALUE_HEADER","isAvailable","ctx","_requestHeaders","process","env","SUSPENSE_CACHE_URL","constructor","debug","NEXT_PRIVATE_DEBUG_CACHE","headers","newHeaders","JSON","parse","k","scHost","scBasePath","SUSPENSE_CACHE_BASEPATH","SUSPENSE_CACHE_AUTH_TOKEN","cacheEndpoint","console","log","maxMemoryCacheSize","LRUCache","max","length","value","kind","stringify","props","Error","data","body","html","pageData","revalidateTag","tag","Date","now","res","fetch","method","next","internal","status","retryAfter","get","parseInt","ok","err","warn","key","tags","softTags","fetchCache","fetchIdx","fetchUrl","lastModified","undefined","start","fetchParams","fetchType","join","NEXT_CACHE_SOFT_TAGS_HEADER","error","text","cached","json","cacheState","age","CACHE_ONE_YEAR","Object","keys","set","revalidate","toString"],"mappings":"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"}                                                                                                                                                                                                                                        {"version":3,"sources":["../../../../src/build/webpack/plugins/font-stylesheet-gathering-plugin.ts"],"names":["FontStylesheetGatheringPlugin","minifyCss","css","postcss","minifier","excludeAll","discardComments","normalizeWhitespace","exclude","process","from","undefined","then","res","isNodeCreatingLinkElement","node","callee","type","componentNode","arguments","name","value","constructor","adjustFontFallbacks","adjustFontFallbacksWithSizeAdjust","gatheredStylesheets","manifestContent","parserHandler","factory","JS_TYPES","hooks","parser","for","tap","evaluate","state","module","resource","includes","result","BasicEvaluatedExpression","setRange","range","setExpression","setIdentifier","getMembers","jsxNodeHandler","length","arg1","propsNode","props","properties","forEach","prop","key","rel","href","OPTIMIZED_FONT_PROVIDERS","some","url","startsWith","push","buildInfo","valueDependencies","set","FONT_MANIFEST","call","apply","compiler","normalModuleFactory","make","tapAsync","compilation","cb","finishModules","modules","modulesFinished","fontStylesheets","fontUrls","Set","fontDependencies","get","v","add","Array","fontDefinitionPromises","map","getFontDefinitionFromNetwork","promiseIndex","getFontOverrideCss","content","err","Log","warn","console","error","assets","sources","RawSource","JSON","stringify","processAssets","stage","webpack","Compilation","PROCESS_ASSETS_STAGE_ADDITIONS"],"mappings":"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"}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         'use strict';
+
+var test = require('tape');
+var forEach = require('for-each');
+var v = require('es-value-fixtures');
+var inspect = require('object-inspect');
+
+var byteLength = require('../');
+
+test('byteLength', function (t) {
+	forEach(v.objects.concat(v.primitives), function (nonAB) {
+		t.equal(byteLength(nonAB), NaN, inspect(nonAB) + ' is not an ArrayBuffer, and yields NaN');
+	});
+
+	t.test('ArrayBuffers', { skip: typeof ArrayBuffer !== 'function' }, function (st) {
+		var ab32 = new ArrayBuffer(32);
+		st.equal(byteLength(ab32), 32, 'works on an ArrayBuffer of length 32: ' + inspect(ab32));
+
+		var ab0 = new ArrayBuffer(0);
+		st.equal(byteLength(ab0), 0, 'works on an ArrayBuffer of length 0: ' + inspect(ab0));
+
+		st.end();
+	});
+
+	t.end();
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 {
+	"name": "es-set-tostringtag",
+	"version": "2.0.1",
+	"description": "A helper to optimistically set Symbol.toStringTag, when possible.",
+	"main": "index.js",
+	"exports": {
+		".": "./index.js",
+		"./package.json": "./package.json"
+	},
+	"sideEffects": false,
+	"scripts": {
+		"prepack": "npmignore --auto --commentLines=autogenerated",
+		"prepublishOnly": "safe-publish-latest",
+		"prepublish": "not-in-publish || npm run prepublishOnly",
+		"prelint": "evalmd README.md",
+		"lint": "eslint --ext=js,mjs .",
+		"pretest": "npm run lint",
+		"tests-only": "tape 'test/**/*.js'",
+		"test": "npm run tests-only",
+		"posttest": "aud --production",
+		"version": "auto-changelog && git add CHANGELOG.md",
+		"postversion": "auto-changelog && git add CHANGELOG.md && git commit --no-edit --amend && git tag -f \"v$(node -e \"console.log(require('./package.json').version)\")\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/es-shims/es-set-tostringtag.git"
+	},
+	"author": "Jordan Harband <ljharb@gmail.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/es-shims/es-set-tostringtag/issues"
+	},
+	"homepage": "https://github.com/es-shims/es-set-tostringtag#readme",
+	"devDependencies": {
+		"@ljharb/eslint-config": "^21.0.1",
+		"aud": "^2.0.2",
+		"auto-changelog": "^2.4.0",
+		"eslint": "=8.8.0",
+		"evalmd": "^0.0.19",
+		"in-publish": "^2.0.1",
+		"npmignore": "^0.3.0",
+		"safe-publish-latest": "^2.0.0",
+		"tape": "^5.6.1"
+	},
+	"dependencies": {
+		"get-intrinsic": "^1.1.3",
+		"has": "^1.0.3",
+		"has-tostringtag": "^1.0.0"
+	},
+	"engines": {
+		"node": ">= 0.4"
+	},
+	"auto-changelog": {
+		"output": "CHANGELOG.md",
+		"template": "keepachangelog",
+		"unreleased": false,
+		"commitLimit": false,
+		"backfillLimit": false,
+		"hideCredit": true
+	},
+	"testling": {
+		"files": "./test/index.js"
+	},
+	"publishConfig": {
+		"ignore": [
+			".github/workflows"
+		]
+	}
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   'use strict';
+
+var hasPropertyDescriptors = require('has-property-descriptors')();
+
+var GetIntrinsic = require('get-intrinsic');
+
+var $defineProperty = hasPropertyDescriptors && GetIntrinsic('%Object.defineProperty%', true);
+
+var $SyntaxError = GetIntrinsic('%SyntaxError%');
+var $TypeError = GetIntrinsic('%TypeError%');
+
+var gopd = require('gopd');
+
+/** @type {(obj: Record<PropertyKey, unknown>, property: PropertyKey, value: unknown, nonEnumerable?: boolean | null, nonWritable?: boolean | null, nonConfigurable?: boolean | null, loose?: boolean) => void} */
+module.exports = function defineDataProperty(
+	obj,
+	property,
+	value
+) {
+	if (!obj || (typeof obj !== 'object' && typeof obj !== 'function')) {
+		throw new $TypeError('`obj` must be an object or a function`');
+	}
+	if (typeof property !== 'string' && typeof property !== 'symbol') {
+		throw new $TypeError('`property` must be a string or a symbol`');
+	}
+	if (arguments.length > 3 && typeof arguments[3] !== 'boolean' && arguments[3] !== null) {
+		throw new $TypeError('`nonEnumerable`, if provided, must be a boolean or null');
+	}
+	if (arguments.length > 4 && typeof arguments[4] !== 'boolean' && arguments[4] !== null) {
+		throw new $TypeError('`nonWritable`, if provided, must be a boolean or null');
+	}
+	if (arguments.length > 5 && typeof arguments[5] !== 'boolean' && arguments[5] !== null) {
+		throw new $TypeError('`nonConfigurable`, if provided, must be a boolean or null');
+	}
+	if (arguments.length > 6 && typeof arguments[6] !== 'boolean') {
+		throw new $TypeError('`loose`, if provided, must be a boolean');
+	}
+
+	var nonEnumerable = arguments.length > 3 ? arguments[3] : null;
+	var nonWritable = arguments.length > 4 ? arguments[4] : null;
+	var nonConfigurable = arguments.length > 5 ? arguments[5] : null;
+	var loose = arguments.length > 6 ? arguments[6] : false;
+
+	/* @type {false | TypedPropertyDescriptor<unknown>} */
+	var desc = !!gopd && gopd(obj, property);
+
+	if ($defineProperty) {
+		$defineProperty(obj, property, {
+			configurable: nonConfigurable === null && desc ? desc.configurable : !nonConfigurable,
+			enumerable: nonEnumerable === null && desc ? desc.enumerable : !nonEnumerable,
+			value: value,
+			writable: nonWritable === null && desc ? desc.writable : !nonWritable
+		});
+	} else if (loose || (!nonEnumerable && !nonWritable && !nonConfigurable)) {
+		// must fall back to [[Set]], and was not explicitly asked to make non-enumerable, non-writable, or non-configurable
+		obj[property] = value; // eslint-disable-line no-param-reassign
+	} else {
+		throw new $SyntaxError('This environment does not support defining a property as non-configurable, non-writable, or non-enumerable.');
+	}
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       {
+	"name": "has-proto",
+	"version": "1.0.1",
+	"description": "Does this environment have the ability to get the [[Prototype]] of an object on creation with `__proto__`?",
+	"main": "index.js",
+	"exports": {
+		".": "./index.js",
+		"./package.json": "./package.json"
+	},
+	"scripts": {
+		"prepack": "npmignore --auto --commentLines=autogenerated",
+		"prepublishOnly": "safe-publish-latest",
+		"prepublish": "not-in-publish || npm run prepublishOnly",
+		"lint": "eslint --ext=js,mjs .",
+		"pretest": "npm run lint",
+		"tests-only": "tape 'test/**/*.js'",
+		"test": "npm run tests-only",
+		"posttest": "aud --production",
+		"version": "auto-changelog && git add CHANGELOG.md",
+		"postversion": "auto-changelog && git add CHANGELOG.md && git commit --no-edit --amend && git tag -f \"v$(node -e \"console.log(require('./package.json').version)\")\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/inspect-js/has-proto.git"
+	},
+	"keywords": [
+		"prototype",
+		"proto",
+		"set",
+		"get",
+		"__proto__",
+		"getPrototypeOf",
+		"setPrototypeOf",
+		"has"
+	],
+	"author": "Jordan Harband <ljharb@gmail.com>",
+	"funding": {
+		"url": "https://github.com/sponsors/ljharb"
+	},
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/inspect-js/has-proto/issues"
+	},
+	"homepage": "https://github.com/inspect-js/has-proto#readme",
+	"testling": {
+		"files": "test/index.js"
+	},
+	"devDependencies": {
+		"@ljharb/eslint-config": "^21.0.0",
+		"aud": "^2.0.2",
+		"auto-changelog": "^2.4.0",
+		"eslint": "=8.8.0",
+		"in-publish": "^2.0.1",
+		"npmignore": "^0.3.0",
+		"safe-publish-latest": "^2.0.0",
+		"tape": "^5.6.1"
+	},
+	"engines": {
+		"node": ">= 0.4"
+	},
+	"auto-changelog": {
+		"output": "CHANGELOG.md",
+		"template": "keepachangelog",
+		"unreleased": false,
+		"commitLimit": false,
+		"backfillLimit": false,
+		"hideCredit": true
+	},
+	"publishConfig": {
+		"ignore": [
+			".github/workflows"
+		]
+	}
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                'use strict';
+
+/* globals window */
+
+var test = require('tape');
+var isAsyncFunction = require('../index');
+var generatorFuncs = require('make-generator-function')();
+var asyncFuncs = require('make-async-function').list();
+var hasToStringTag = require('has-tostringtag/shams')();
+
+var forEach = function (arr, func) {
+	var i;
+	for (i = 0; i < arr.length; ++i) {
+		func(arr[i], i, arr);
+	}
+};
+
+test('returns false for non-functions', function (t) {
+	var nonFuncs = [
+		true,
+		false,
+		null,
+		undefined,
+		{},
+		[],
+		/a/g,
+		'string',
+		42,
+		new Date()
+	];
+	t.plan(nonFuncs.length);
+	forEach(nonFuncs, function (nonFunc) {
+		t.notOk(isAsyncFunction(nonFunc), nonFunc + ' is not a function');
+	});
+	t.end();
+});
+
+test('returns false for non-async functions', function (t) {
+	var func = function () {};
+	t.notOk(isAsyncFunction(func), 'anonymous function is not an async function');
+
+	var namedFunc = function foo() {};
+	t.notOk(isAsyncFunction(namedFunc), 'named function is not an async function');
+
+	if (typeof window === 'undefined') {
+		t.skip('window.alert is not an async function');
+	} else {
+		t.notOk(isAsyncFunction(window.alert), 'window.alert is not an async function');
+	}
+	t.end();
+});
+
+var fakeToString = function () { return 'async function () { return "TOTALLY REAL I SWEAR!"; }'; };
+
+test('returns false for non-async function with faked toString', function (t) {
+	var func = function () {};
+	func.toString = fakeToString;
+
+	t.notEqual(String(func), Function.prototype.toString.apply(func), 'faked toString is not real toString');
+	t.notOk(isAsyncFunction(func), 'anonymous function with faked toString is not an async function');
+	t.end();
+});
+
+test('returns false for generator functions', function (t) {
+	if (generatorFuncs.length > 0) {
+		forEach(generatorFuncs, function (generatorFunc) {
+			t.notOk(isAsyncFunction(generatorFunc), generatorFunc + ' is not async function');
+		});
+	} else {
+		t.skip('generator function is not async function - this environment does not support ES6 generator functions. Please use an engine that supports them.');
+	}
+	t.end();
+});
+
+test('returns false for non-async function with faked @@toStringTag', { skip: !hasToStringTag || asyncFuncs.length === 0 }, function (t) {
+	var asyncFunc = asyncFuncs[0];
+	var fakeAsyncFunction = {
+		toString: function () { return String(asyncFunc); },
+		valueOf: function () { return asyncFunc; }
+	};
+	fakeAsyncFunction[Symbol.toStringTag] = 'AsyncFunction';
+	t.notOk(isAsyncFunction(fakeAsyncFunction), 'fake AsyncFunction with @@toStringTag "AsyncFunction" is not an async function');
+	t.end();
+});
+
+test('returns true for async functions', function (t) {
+	if (asyncFuncs.length > 0) {
+		forEach(asyncFuncs, function (asyncFunc) {
+			t.ok(isAsyncFunction(asyncFunc), asyncFunc + ' is async function');
+		});
+	} else {
+		t.skip('async function is async function - this environment does not support ES2018 async functions. Please use an engine that supports them.');
+	}
+	t.end();
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  'use strict';
+
+var test = require('tape');
+var inspect = require('object-inspect');
+var v = require('es-value-fixtures');
+var forEach = require('for-each');
+var has = require('has');
+
+var shimUnscopables = require('../');
+
+var sortSymbols = function (a, b) {
+	return inspect(a).localeCompare(inspect(b));
+};
+
+test('shimUnscopables', function (t) {
+	t.equal(typeof shimUnscopables, 'function', 'is a function');
+
+	forEach(v.nonStrings, function (notNonEmptyString) {
+		t['throws'](
+			function () { shimUnscopables(notNonEmptyString); },
+			TypeError,
+			inspect(notNonEmptyString) + ' is not a non-empty String'
+		);
+	});
+
+	t['throws'](
+		function () { shimUnscopables('x'); },
+		TypeError,
+		inspect('x') + ' is not on Array.prototype'
+	);
+
+	t.test('no symbols', { skip: typeof Symbol === 'function' }, function (st) {
+		st.doesNotThrow(function () { shimUnscopables('forEach'); });
+
+		st.end();
+	});
+
+	t.test('symbols, no unscopables', { skip: typeof Symbol !== 'function' || Symbol.unscopables }, function (st) {
+		st.deepEqual(Object.getOwnPropertySymbols(Array.prototype), [Symbol.iterator]);
+
+		shimUnscopables('forEach');
+
+		st.deepEqual(Object.getOwnPropertySymbols(Array.prototype), [Symbol.iterator]);
+
+		st.end();
+	});
+
+	t.test('Symbol.unscopables', { skip: typeof Symbol !== 'function' || !Symbol.unscopables }, function (st) {
+		st.deepEqual(
+			Object.getOwnPropertySymbols(Array.prototype).sort(sortSymbols),
+			[Symbol.iterator, Symbol.unscopables]
+		);
+		st.notOk(has(Array.prototype[Symbol.unscopables], 'forEach'), 'unscopables map lacks forEach');
+
+		shimUnscopables('forEach');
+
+		st.deepEqual(
+			Object.getOwnPropertySymbols(Array.prototype).sort(sortSymbols),
+			[Symbol.iterator, Symbol.unscopables]
+		);
+		st.equal(Array.prototype[Symbol.unscopables].forEach, true, 'unscopables map has forEach');
+
+		st.end();
+	});
+
+	t.end();
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               'use strict';
+
+var test = require('tape');
+
+var hasPropertyDescriptors = require('../');
+
+var sentinel = {};
+
+test('hasPropertyDescriptors', function (t) {
+	t.equal(typeof hasPropertyDescriptors, 'function', 'is a function');
+	t.equal(typeof hasPropertyDescriptors.hasArrayLengthDefineBug, 'function', '`hasArrayLengthDefineBug` property is a function');
+
+	var yes = hasPropertyDescriptors();
+	t.test('property descriptors', { skip: !yes }, function (st) {
+		var o = { a: sentinel };
+
+		st.deepEqual(
+			Object.getOwnPropertyDescriptor(o, 'a'),
+			{
+				configurable: true,
+				enumerable: true,
+				value: sentinel,
+				writable: true
+			},
+			'has expected property descriptor'
+		);
+
+		Object.defineProperty(o, 'a', { enumerable: false, writable: false });
+
+		st.deepEqual(
+			Object.getOwnPropertyDescriptor(o, 'a'),
+			{
+				configurable: true,
+				enumerable: false,
+				value: sentinel,
+				writable: false
+			},
+			'has expected property descriptor after [[Define]]'
+		);
+
+		st.end();
+	});
+
+	var arrayBug = hasPropertyDescriptors.hasArrayLengthDefineBug();
+	t.test('defining array lengths', { skip: !yes || arrayBug }, function (st) {
+		var arr = [1, , 3]; // eslint-disable-line no-sparse-arrays
+		st.equal(arr.length, 3, 'array starts with length 3');
+
+		Object.defineProperty(arr, 'length', { value: 5 });
+
+		st.equal(arr.length, 5, 'array ends with length 5');
+
+		st.end();
+	});
+
+	t.end();
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
