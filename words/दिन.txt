@@ -1,0 +1,969 @@
+  // There is a bug in Safari where imageSrcSet is not respected on preload links
+        // so we omit the href here if we have imageSrcSet b/c safari will load the wrong image.
+        // This harms older browers that do not support imageSrcSet by making their preloads not work
+        // but this population is shrinking fast and is already small so we accept this tradeoff.
+        href: as === 'image' && options && options.imageSrcSet ? undefined : href,
+        as
+      }, options);
+
+      preloadPropsMap.set(key, preloadProps);
+
+      if (null === ownerDocument.querySelector(preloadSelector)) {
+        if (as === 'style' && ownerDocument.querySelector(getStylesheetSelectorFromKey(key))) {
+          // We already have a stylesheet for this key. We don't need to preload it.
+          return;
+        } else if (as === 'script' && ownerDocument.querySelector(getScriptSelectorFromKey(key))) {
+          // We already have a stylesheet for this key. We don't need to preload it.
+          return;
+        }
+
+        const instance = ownerDocument.createElement('link');
+        setInitialProperties(instance, 'link', preloadProps);
+        markNodeAsHoistable(instance);
+        ownerDocument.head.appendChild(instance);
+      }
+    }
+  }
+}
+
+function preloadModule$1(href, options) {
+
+  const ownerDocument = getDocumentForImperativeFloatMethods();
+
+  if (href) {
+    const as = options && typeof options.as === 'string' ? options.as : 'script';
+    const preloadSelector = "link[rel=\"modulepreload\"][as=\"" + escapeSelectorAttributeValueInsideDoubleQuotes(as) + "\"][href=\"" + escapeSelectorAttributeValueInsideDoubleQuotes(href) + "\"]"; // Some preloads are keyed under their selector. This happens when the preload is for
+    // an arbitrary type. Other preloads are keyed under the resource key they represent a preload for.
+    // Here we figure out which key to use to determine if we have a preload already.
+
+    let key = preloadSelector;
+
+    switch (as) {
+      case 'audioworklet':
+      case 'paintworklet':
+      case 'serviceworker':
+      case 'sharedworker':
+      case 'worker':
+      case 'script':
+        {
+          key = getScriptKey(href);
+          break;
+        }
+    }
+
+    if (!preloadPropsMap.has(key)) {
+      const props = assign({
+        rel: 'modulepreload',
+        href
+      }, options);
+
+      preloadPropsMap.set(key, props);
+
+      if (null === ownerDocument.querySelector(preloadSelector)) {
+        switch (as) {
+          case 'audioworklet':
+          case 'paintworklet':
+          case 'serviceworker':
+          case 'sharedworker':
+          case 'worker':
+          case 'script':
+            {
+              if (ownerDocument.querySelector(getScriptSelectorFromKey(key))) {
+                return;
+              }
+            }
+        }
+
+        const instance = ownerDocument.createElement('link');
+        setInitialProperties(instance, 'link', props);
+        markNodeAsHoistable(instance);
+        ownerDocument.head.appendChild(instance);
+      }
+    }
+  }
+}
+
+function preinitStyle(href, precedence, options) {
+
+  const ownerDocument = getDocumentForImperativeFloatMethods();
+
+  if (href) {
+    const styles = getResourcesFromRoot(ownerDocument).hoistableStyles;
+    const key = getStyleKey(href);
+    precedence = precedence || 'default'; // Check if this resource already exists
+
+    let resource = styles.get(key);
+
+    if (resource) {
+      // We can early return. The resource exists and there is nothing
+      // more to do
+      return;
+    }
+
+    const state = {
+      loading: NotLoaded,
+      preload: null
+    }; // Attempt to hydrate instance from DOM
+
+    let instance = ownerDocument.querySelector(getStylesheetSelectorFromKey(key));
+
+    if (instance) {
+      state.loading = Loaded | Inserted;
+    } else {
+      // Construct a new instance and insert it
+      const stylesheetProps = assign({
+        rel: 'stylesheet',
+        href,
+        'data-precedence': precedence
+      }, options);
+
+      const preloadProps = preloadPropsMap.get(key);
+
+      if (preloadProps) {
+        adoptPreloadPropsForStylesheet(stylesheetProps, preloadProps);
+      }
+
+      const link = instance = ownerDocument.createElement('link');
+      markNodeAsHoistable(link);
+      setInitialProperties(link, 'link', stylesheetProps);
+      link._p = new Promise((resolve, reject) => {
+        link.onload = resolve;
+        link.onerror = reject;
+      });
+      link.addEventListener('load', () => {
+        state.loading |= Loaded;
+      });
+      link.addEventListener('error', () => {
+        state.loading |= Errored;
+      });
+      state.loading |= Inserted;
+      insertStylesheet(instance, precedence, ownerDocument);
+    } // Construct a Resource and cache it
+
+
+    resource = {
+      type: 'stylesheet',
+      instance,
+      count: 1,
+      state
+    };
+    styles.set(key, resource);
+    return;
+  }
+}
+
+function preinitScript(src, options) {
+
+  const ownerDocument = getDocumentForImperativeFloatMethods();
+
+  if (src) {
+    const scripts = getResourcesFromRoot(ownerDocument).hoistableScripts;
+    const key = getScriptKey(src); // Check if this resource already exists
+
+    let resource = scripts.get(key);
+
+    if (resource) {
+      // We can early return. The resource exists and there is nothing
+      // more to do
+      return;
+    } // Attempt to hydrate instance from DOM
+
+
+    let instance = ownerDocument.querySelector(getScriptSelectorFromKey(key));
+
+    if (!instance) {
+      // Construct a new instance and insert it
+      const scriptProps = assign({
+        src,
+        async: true
+      }, options); // Adopt certain preload props
+
+
+      const preloadProps = preloadPropsMap.get(key);
+
+      if (preloadProps) {
+        adoptPreloadPropsForScript(scriptProps, preloadProps);
+      }
+
+      instance = ownerDocument.createElement('script');
+      markNodeAsHoistable(instance);
+      setInitialProperties(instance, 'link', scriptProps);
+      ownerDocument.head.appendChild(instance);
+    } // Construct a Resource and cache it
+
+
+    resource = {
+      type: 'script',
+      instance,
+      count: 1,
+      state: null
+    };
+    scripts.set(key, resource);
+    return;
+  }
+}
+
+function preinitModuleScript(src, options) {
+
+  const ownerDocument = getDocumentForImperativeFloatMethods();
+
+  if (src) {
+    const scripts = getResourcesFromRoot(ownerDocument).hoistableScripts;
+    const key = getScriptKey(src); // Check if this resource already exists
+
+    let resource = scripts.get(key);
+
+    if (resource) {
+      // We can early return. The resource exists and there is nothing
+      // more to do
+      return;
+    } // Attempt to hydrate instance from DOM
+
+
+    let instance = ownerDocument.querySelector(getScriptSelectorFromKey(key));
+
+    if (!instance) {
+      // Construct a new instance and insert it
+      const scriptProps = assign({
+        src,
+        async: true,
+        type: 'module'
+      }, options); // Adopt certain preload props
+
+
+      const preloadProps = preloadPropsMap.get(key);
+
+      if (preloadProps) {
+        adoptPreloadPropsForScript(scriptProps, preloadProps);
+      }
+
+      instance = ownerDocument.createElement('script');
+      markNodeAsHoistable(instance);
+      setInitialProperties(instance, 'link', scriptProps);
+      ownerDocument.head.appendChild(instance);
+    } // Construct a Resource and cache it
+
+
+    resource = {
+      type: 'script',
+      instance,
+      count: 1,
+      state: null
+    };
+    scripts.set(key, resource);
+    return;
+  }
+} // This function is called in begin work and we should always have a currentDocument set
+
+
+function getResource(type, currentProps, pendingProps) {
+  const resourceRoot = getCurrentResourceRoot();
+
+  if (!resourceRoot) {
+    throw Error(formatProdErrorMessage(446));
+  }
+
+  switch (type) {
+    case 'meta':
+    case 'title':
+      {
+        return null;
+      }
+
+    case 'style':
+      {
+        if (typeof pendingProps.precedence === 'string' && typeof pendingProps.href === 'string') {
+          const key = getStyleKey(pendingProps.href);
+          const styles = getResourcesFromRoot(resourceRoot).hoistableStyles;
+          let resource = styles.get(key);
+
+          if (!resource) {
+            resource = {
+              type: 'style',
+              instance: null,
+              count: 0,
+              state: null
+            };
+            styles.set(key, resource);
+          }
+
+          return resource;
+        }
+
+        return {
+          type: 'void',
+          instance: null,
+          count: 0,
+          state: null
+        };
+      }
+
+    case 'link':
+      {
+        if (pendingProps.rel === 'stylesheet' && typeof pendingProps.href === 'string' && typeof pendingProps.precedence === 'string') {
+          const qualifiedProps = pendingProps;
+          const key = getStyleKey(qualifiedProps.href);
+          const styles = getResourcesFromRoot(resourceRoot).hoistableStyles;
+          let resource = styles.get(key);
+
+          if (!resource) {
+            // We asserted this above but Flow can't figure out that the type satisfies
+            const ownerDocument = getDocumentFromRoot(resourceRoot);
+            resource = {
+              type: 'stylesheet',
+              instance: null,
+              count: 0,
+              state: {
+                loading: NotLoaded,
+                preload: null
+              }
+            };
+            styles.set(key, resource);
+
+            if (!preloadPropsMap.has(key)) {
+              preloadStylesheet(ownerDocument, key, preloadPropsFromStylesheet(qualifiedProps), resource.state);
+            }
+          }
+
+          return resource;
+        }
+
+        return null;
+      }
+
+    case 'script':
+      {
+        if (typeof pendingProps.src === 'string' && pendingProps.async === true) {
+          const scriptProps = pendingProps;
+          const key = getScriptKey(scriptProps.src);
+          const scripts = getResourcesFromRoot(resourceRoot).hoistableScripts;
+          let resource = scripts.get(key);
+
+          if (!resource) {
+            resource = {
+              type: 'script',
+              instance: null,
+              count: 0,
+              state: null
+            };
+            scripts.set(key, resource);
+          }
+
+          return resource;
+        }
+
+        return {
+          type: 'void',
+          instance: null,
+          count: 0,
+          state: null
+        };
+      }
+
+    default:
+      {
+        throw Error(formatProdErrorMessage(444, type));
+      }
+  }
+}
+
+function styleTagPropsFromRawProps(rawProps) {
+  return assign({}, rawProps, {
+    'data-href': rawProps.href,
+    'data-precedence': rawProps.precedence,
+    href: null,
+    precedence: null
+  });
+}
+
+function getStyleKey(href) {
+  const limitedEscapedHref = escapeSelectorAttributeValueInsideDoubleQuotes(href);
+  return "href=\"" + limitedEscapedHref + "\"";
+}
+
+function getStyleTagSelector(href) {
+  const limitedEscapedHref = escapeSelectorAttributeValueInsideDoubleQuotes(href);
+  return "style[data-href~=\"" + limitedEscapedHref + "\"]";
+}
+
+function getStylesheetSelectorFromKey(key) {
+  return "link[rel=\"stylesheet\"][" + key + "]";
+}
+
+function getPreloadStylesheetSelectorFromKey(key) {
+  return "link[rel=\"preload\"][as=\"style\"][" + key + "]";
+}
+
+function stylesheetPropsFromRawProps(rawProps) {
+  return assign({}, rawProps, {
+    'data-precedence': rawProps.precedence,
+    precedence: null
+  });
+}
+
+function preloadStylesheet(ownerDocument, key, preloadProps, state) {
+  preloadPropsMap.set(key, preloadProps);
+
+  if (!ownerDocument.querySelector(getStylesheetSelectorFromKey(key))) {
+    // There is no matching stylesheet instance in the Document.
+    // We will insert a preload now to kick off loading because
+    // we expect this stylesheet to commit
+    const preloadEl = ownerDocument.querySelector(getPreloadStylesheetSelectorFromKey(key));
+
+    if (preloadEl) {
+      // If we find a preload already it was SSR'd and we won't have an actual
+      // loading state to track. For now we will just assume it is loaded
+      state.loading = Loaded;
+    } else {
+      const instance = ownerDocument.createElement('link');
+      state.preload = instance;
+      instance.addEventListener('load', () => state.loading |= Loaded);
+      instance.addEventListener('error', () => state.loading |= Errored);
+      setInitialProperties(instance, 'link', preloadProps);
+      markNodeAsHoistable(instance);
+      ownerDocument.head.appendChild(instance);
+    }
+  }
+}
+
+function preloadPropsFromStylesheet(props) {
+  return {
+    rel: 'preload',
+    as: 'style',
+    href: props.href,
+    crossOrigin: props.crossOrigin,
+    integrity: props.integrity,
+    media: props.media,
+    hrefLang: props.hrefLang,
+    referrerPolicy: props.referrerPolicy
+  };
+}
+
+function getScriptKey(src) {
+  const limitedEscapedSrc = escapeSelectorAttributeValueInsideDoubleQuotes(src);
+  return "[src=\"" + limitedEscapedSrc + "\"]";
+}
+
+function getScriptSelectorFromKey(key) {
+  return 'script[async]' + key;
+}
+
+function acquireResource(hoistableRoot, resource, props) {
+  resource.count++;
+
+  if (resource.instance === null) {
+    switch (resource.type) {
+      case 'style':
+        {
+          const qualifiedProps = props; // Attempt to hydrate instance from DOM
+
+          let instance = hoistableRoot.querySelector(getStyleTagSelector(qualifiedProps.href));
+
+          if (instance) {
+            resource.instance = instance;
+            markNodeAsHoistable(instance);
+            return instance;
+          }
+
+          const styleProps = styleTagPropsFromRawProps(props);
+          const ownerDocument = getDocumentFromRoot(hoistableRoot);
+          instance = ownerDocument.createElement('style');
+          markNodeAsHoistable(instance);
+          setInitialProperties(instance, 'style', styleProps); // TODO: `style` does not have loading state for tracking insertions. I
+          // guess because these aren't suspensey? Not sure whether this is a
+          // factoring smell.
+          // resource.state.loading |= Inserted;
+
+          insertStylesheet(instance, qualifiedProps.precedence, hoistableRoot);
+          resource.instance = instance;
+          return instance;
+        }
+
+      case 'stylesheet':
+        {
+          // This typing is enforce by `getResource`. If we change the logic
+          // there for what qualifies as a stylesheet resource we need to ensure
+          // this cast still makes sense;
+          const qualifiedProps = props;
+          const key = getStyleKey(qualifiedProps.href); // Attempt to hydrate instance from DOM
+
+          let instance = hoistableRoot.querySelector(getStylesheetSelectorFromKey(key));
+
+          if (instance) {
+            resource.state.loading |= Inserted;
+            resource.instance = instance;
+            markNodeAsHoistable(instance);
+            return instance;
+          }
+
+          const stylesheetProps = stylesheetPropsFromRawProps(props);
+          const preloadProps = preloadPropsMap.get(key);
+
+          if (preloadProps) {
+            adoptPreloadPropsForStylesheet(stylesheetProps, preloadProps);
+          } // Construct and insert a new instance
+
+
+          const ownerDocument = getDocumentFromRoot(hoistableRoot);
+          instance = ownerDocument.createElement('link');
+          markNodeAsHoistable(instance);
+          const linkInstance = instance;
+          linkInstance._p = new Promise((resolve, reject) => {
+            linkInstance.onload = resolve;
+            linkInstance.onerror = reject;
+          });
+          setInitialProperties(instance, 'link', stylesheetProps);
+          resource.state.loading |= Inserted;
+          insertStylesheet(instance, qualifiedProps.precedence, hoistableRoot);
+          resource.instance = instance;
+          return instance;
+        }
+
+      case 'script':
+        {
+          // This typing is enforce by `getResource`. If we change the logic
+          // there for what qualifies as a stylesheet resource we need to ensure
+          // this cast still makes sense;
+          const borrowedScriptProps = props;
+          const key = getScriptKey(borrowedScriptProps.src); // Attempt to hydrate instance from DOM
+
+          let instance = hoistableRoot.querySelector(getScriptSelectorFromKey(key));
+
+          if (instance) {
+            resource.instance = instance;
+            markNodeAsHoistable(instance);
+            return instance;
+          }
+
+          let scriptProps = borrowedScriptProps;
+          const preloadProps = preloadPropsMap.get(key);
+
+          if (preloadProps) {
+            scriptProps = assign({}, borrowedScriptProps);
+            adoptPreloadPropsForScript(scriptProps, preloadProps);
+          } // Construct and insert a new instance
+
+
+          const ownerDocument = getDocumentFromRoot(hoistableRoot);
+          instance = ownerDocument.createElement('script');
+          markNodeAsHoistable(instance);
+          setInitialProperties(instance, 'link', scriptProps);
+          ownerDocument.head.appendChild(instance);
+          resource.instance = instance;
+          return instance;
+        }
+
+      case 'void':
+        {
+          return null;
+        }
+
+      default:
+        {
+          throw Error(formatProdErrorMessage(443, resource.type));
+        }
+    }
+  } else {
+    // In the case of stylesheets, they might have already been assigned an
+    // instance during `suspendResource`. But that doesn't mean they were
+    // inserted, because the commit might have been interrupted. So we need to
+    // check now.
+    //
+    // The other resource types are unaffected because they are not
+    // yet suspensey.
+    //
+    // TODO: This is a bit of a code smell. Consider refactoring how
+    // `suspendResource` and `acquireResource` work together. The idea is that
+    // `suspendResource` does all the same stuff as `acquireResource` except
+    // for the insertion.
+    if (resource.type === 'stylesheet' && (resource.state.loading & Inserted) === NotLoaded) {
+      const qualifiedProps = props;
+      const instance = resource.instance;
+      resource.state.loading |= Inserted;
+      insertStylesheet(instance, qualifiedProps.precedence, hoistableRoot);
+    }
+  }
+
+  return resource.instance;
+}
+function releaseResource(resource) {
+  resource.count--;
+}
+
+function insertStylesheet(instance, precedence, root) {
+  const nodes = root.querySelectorAll('link[rel="stylesheet"][data-precedence],style[data-precedence]');
+  const last = nodes.length ? nodes[nodes.length - 1] : null;
+  let prior = last;
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    const nodePrecedence = node.dataset.precedence;
+
+    if (nodePrecedence === precedence) {
+      prior = node;
+    } else if (prior !== last) {
+      break;
+    }
+  }
+
+  if (prior) {
+    // We get the prior from the document so we know it is in the tree.
+    // We also know that links can't be the topmost Node so the parentNode
+    // must exist.
+    prior.parentNode.insertBefore(instance, prior.nextSibling);
+  } else {
+    const parent = root.nodeType === DOCUMENT_NODE ? root.head : root;
+    parent.insertBefore(instance, parent.firstChild);
+  }
+}
+
+function adoptPreloadPropsForStylesheet(stylesheetProps, preloadProps) {
+  if (stylesheetProps.crossOrigin == null) stylesheetProps.crossOrigin = preloadProps.crossOrigin;
+  if (stylesheetProps.referrerPolicy == null) stylesheetProps.referrerPolicy = preloadProps.referrerPolicy;
+  if (stylesheetProps.title == null) stylesheetProps.title = preloadProps.title;
+}
+
+function adoptPreloadPropsForScript(scriptProps, preloadProps) {
+  if (scriptProps.crossOrigin == null) scriptProps.crossOrigin = preloadProps.crossOrigin;
+  if (scriptProps.referrerPolicy == null) scriptProps.referrerPolicy = preloadProps.referrerPolicy;
+  if (scriptProps.integrity == null) scriptProps.integrity = preloadProps.integrity;
+}
+
+let tagCaches = null;
+function hydrateHoistable(hoistableRoot, type, props, internalInstanceHandle) {
+  const ownerDocument = getDocumentFromRoot(hoistableRoot);
+  let instance = null;
+
+  getInstance: switch (type) {
+    case 'title':
+      {
+        instance = ownerDocument.getElementsByTagName('title')[0];
+
+        if (!instance || isOwnedInstance(instance) || instance.namespaceURI === SVG_NAMESPACE || instance.hasAttribute('itemprop')) {
+          instance = ownerDocument.createElement(type);
+          ownerDocument.head.insertBefore(instance, ownerDocument.querySelector('head > title'));
+        }
+
+        setInitialProperties(instance, type, props);
+        precacheFiberNode(internalInstanceHandle, instance);
+        markNodeAsHoistable(instance);
+        return instance;
+      }
+
+    case 'link':
+      {
+        const cache = getHydratableHoistableCache('link', 'href', ownerDocument);
+        const key = type + (props.href || '');
+        const maybeNodes = cache.get(key);
+
+        if (maybeNodes) {
+          const nodes = maybeNodes;
+
+          for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i];
+
+            if (node.getAttribute('href') !== (props.href == null ? null : props.href) || node.getAttribute('rel') !== (props.rel == null ? null : props.rel) || node.getAttribute('title') !== (props.title == null ? null : props.title) || node.getAttribute('crossorigin') !== (props.crossOrigin == null ? null : props.crossOrigin)) {
+              // mismatch, try the next node;
+              continue;
+            }
+
+            instance = node;
+            nodes.splice(i, 1);
+            break getInstance;
+          }
+        }
+
+        instance = ownerDocument.createElement(type);
+        setInitialProperties(instance, type, props);
+        ownerDocument.head.appendChild(instance);
+        break;
+      }
+
+    case 'meta':
+      {
+        const cache = getHydratableHoistableCache('meta', 'content', ownerDocument);
+        const key = type + (props.content || '');
+        const maybeNodes = cache.get(key);
+
+        if (maybeNodes) {
+          const nodes = maybeNodes;
+
+          for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i]; // We coerce content to string because it is the most likely one to
+
+            if (node.getAttribute('content') !== (props.content == null ? null : '' + props.content) || node.getAttribute('name') !== (props.name == null ? null : props.name) || node.getAttribute('property') !== (props.property == null ? null : props.property) || node.getAttribute('http-equiv') !== (props.httpEquiv == null ? null : props.httpEquiv) || node.getAttribute('charset') !== (props.charSet == null ? null : props.charSet)) {
+              // mismatch, try the next node;
+              continue;
+            }
+
+            instance = node;
+            nodes.splice(i, 1);
+            break getInstance;
+          }
+        }
+
+        instance = ownerDocument.createElement(type);
+        setInitialProperties(instance, type, props);
+        ownerDocument.head.appendChild(instance);
+        break;
+      }
+
+    default:
+      throw Error(formatProdErrorMessage(468, type));
+  } // This node is a match
+
+
+  precacheFiberNode(internalInstanceHandle, instance);
+  markNodeAsHoistable(instance);
+  return instance;
+}
+
+function getHydratableHoistableCache(type, keyAttribute, ownerDocument) {
+  let cache;
+  let caches;
+
+  if (tagCaches === null) {
+    cache = new Map();
+    caches = tagCaches = new Map();
+    caches.set(ownerDocument, cache);
+  } else {
+    caches = tagCaches;
+    const maybeCache = caches.get(ownerDocument);
+
+    if (!maybeCache) {
+      cache = new Map();
+      caches.set(ownerDocument, cache);
+    } else {
+      cache = maybeCache;
+    }
+  }
+
+  if (cache.has(type)) {
+    // We use type as a special key that signals that this cache has been seeded for this type
+    return cache;
+  } // Mark this cache as seeded for this type
+
+
+  cache.set(type, null);
+  const nodes = ownerDocument.getElementsByTagName(type);
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+
+    if (!isOwnedInstance(node) && (type !== 'link' || node.getAttribute('rel') !== 'stylesheet') && node.namespaceURI !== SVG_NAMESPACE) {
+      const nodeKey = node.getAttribute(keyAttribute) || '';
+      const key = type + nodeKey;
+      const existing = cache.get(key);
+
+      if (existing) {
+        existing.push(node);
+      } else {
+        cache.set(key, [node]);
+      }
+    }
+  }
+
+  return cache;
+}
+
+function mountHoistable(hoistableRoot, type, instance) {
+  const ownerDocument = getDocumentFromRoot(hoistableRoot);
+  ownerDocument.head.insertBefore(instance, type === 'title' ? ownerDocument.querySelector('head > title') : null);
+}
+function unmountHoistable(instance) {
+  instance.parentNode.removeChild(instance);
+}
+function isHostHoistableType(type, props, hostContext) {
+  let hostContextProd;
+
+  {
+    hostContextProd = hostContext;
+  } // Global opt out of hoisting for anything in SVG Namespace or anything with an itemProp inside an itemScope
+
+
+  if (hostContextProd === HostContextNamespaceSvg || props.itemProp != null) {
+
+    return false;
+  }
+
+  switch (type) {
+    case 'meta':
+    case 'title':
+      {
+        return true;
+      }
+
+    case 'style':
+      {
+        if (typeof props.precedence !== 'string' || typeof props.href !== 'string' || props.href === '') {
+
+          return false;
+        }
+
+        return true;
+      }
+
+    case 'link':
+      {
+        if (typeof props.rel !== 'string' || typeof props.href !== 'string' || props.href === '' || props.onLoad || props.onError) {
+
+          return false;
+        }
+
+        switch (props.rel) {
+          case 'stylesheet':
+            {
+              const precedence = props.precedence,
+                    disabled = props.disabled;
+
+              return typeof precedence === 'string' && disabled == null;
+            }
+
+          default:
+            {
+              return true;
+            }
+        }
+      }
+
+    case 'script':
+      {
+        if (props.async !== true || props.onLoad || props.onError || typeof props.src !== 'string' || !props.src) {
+
+          return false;
+        }
+
+        return true;
+      }
+
+    case 'noscript':
+    case 'template':
+      {
+
+        return false;
+      }
+  }
+
+  return false;
+}
+function mayResourceSuspendCommit(resource) {
+  return resource.type === 'stylesheet' && (resource.state.loading & Inserted) === NotLoaded;
+}
+function preloadInstance(type, props) {
+  // Return true to indicate it's already loaded
+  return true;
+}
+function preloadResource(resource) {
+  if (resource.type === 'stylesheet' && (resource.state.loading & Settled) === NotLoaded) {
+    // we have not finished loading the underlying stylesheet yet.
+    return false;
+  } // Return true to indicate it's already loaded
+
+
+  return true;
+}
+let suspendedState = null; // We use a noop function when we begin suspending because if possible we want the
+// waitfor step to finish synchronously. If it doesn't we'll return a function to
+// provide the actual unsuspend function and that will get completed when the count
+// hits zero or it will get cancelled if the root starts new work.
+
+function noop() {}
+
+function startSuspendingCommit() {
+  suspendedState = {
+    stylesheets: null,
+    count: 0,
+    unsuspend: noop
+  };
+}
+function suspendResource(hoistableRoot, resource, props) {
+  if (suspendedState === null) {
+    throw Error(formatProdErrorMessage(475));
+  }
+
+  const state = suspendedState;
+
+  if (resource.type === 'stylesheet') {
+    if (typeof props.media === 'string') {
+      // If we don't currently match media we avoid suspending on this resource
+      // and let it insert on the mutation path
+      if (matchMedia(props.media).matches === false) {
+        return;
+      }
+    }
+
+    if ((resource.state.loading & Inserted) === NotLoaded) {
+      if (resource.instance === null) {
+        const qualifiedProps = props;
+        const key = getStyleKey(qualifiedProps.href); // Attempt to hydrate instance from DOM
+
+        let instance = hoistableRoot.querySelector(getStylesheetSelectorFromKey(key));
+
+        if (instance) {
+          // If this instance has a loading state it came from the Fizz runtime.
+          // If there is not loading state it is assumed to have been server rendered
+          // as part of the preamble and therefore synchronously loaded. It could have
+          // errored however which we still do not yet have a means to detect. For now
+          // we assume it is loaded.
+          const maybeLoadingState = instance._p;
+
+          if (maybeLoadingState !== null && typeof maybeLoadingState === 'object' && // $FlowFixMe[method-unbinding]
+          typeof maybeLoadingState.then === 'function') {
+            const loadingState = maybeLoadingState;
+            state.count++;
+            const ping = onUnsuspend.bind(state);
+            loadingState.then(ping, ping);
+          }
+
+          resource.state.loading |= Inserted;
+          resource.instance = instance;
+          markNodeAsHoistable(instance);
+          return;
+        }
+
+        const ownerDocument = getDocumentFromRoot(hoistableRoot);
+        const stylesheetProps = stylesheetPropsFromRawProps(props);
+        const preloadProps = preloadPropsMap.get(key);
+
+        if (preloadProps) {
+          adoptPreloadPropsForStylesheet(stylesheetProps, preloadProps);
+        } // Construct and insert a new instance
+
+
+        instance = ownerDocument.createElement('link');
+        markNodeAsHoistable(instance);
+        const linkInstance = instance; // This Promise is a loading state used by the Fizz runtime. We need this incase there is a race
+        // between this resource being rendered on the client and being rendered with a late completed boundary.
+
+        linkInstance._p = new Promise((resolve, reject) => {
+          linkInstance.onload = resolve;
+          linkInstance.onerror = reject;
+        });
+        setInitialProperties(instance, 'link', stylesheetProps);
+        resource.instance = instance;
+      }
+
+      if (state.stylesheets === null) {
+        state.stylesheets = new Map();
+      }
+
+      state.stylesheets.set(resource, hoistableRoot);
+      const preloadEl = resource.state.preload;
+
+      if (preloadEl && (resource.state.loading & Settled) === NotLoaded) {
+        state.count++;
+        const ping = onUnsuspend.bind(state);
+        preloadEl.addEventListener('load', ping);
+        preloadEl.addEventListener('error', ping);
+      }
+    }
+  }
+}
+function waitForCommitToBeReady() {
+  if (suspendedState === null) {
+    throw Error(formatProdErrorMessage(475));
+  }
+
+  const state = suspendedState;
+
+  if (state.stylesheets && state.cou
