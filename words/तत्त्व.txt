@@ -1,0 +1,1471 @@
+ur fallback mode does not work well with IE's Korean IME,
+ * so just use native composition events when Korean IME is used.
+ * Although CompositionEvent.locale property is deprecated,
+ * it is available in IE, where our fallback mode is enabled.
+ *
+ * @param {object} nativeEvent
+ * @return {boolean}
+ */
+
+
+function isUsingKoreanIME(nativeEvent) {
+  return nativeEvent.locale === 'ko';
+} // Track the current IME composition status, if any.
+
+
+let isComposing = false;
+/**
+ * @return {?object} A SyntheticCompositionEvent.
+ */
+
+function extractCompositionEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget) {
+  let eventType;
+  let fallbackData;
+
+  if (canUseCompositionEvent) {
+    eventType = getCompositionEventType(domEventName);
+  } else if (!isComposing) {
+    if (isFallbackCompositionStart(domEventName, nativeEvent)) {
+      eventType = 'onCompositionStart';
+    }
+  } else if (isFallbackCompositionEnd(domEventName, nativeEvent)) {
+    eventType = 'onCompositionEnd';
+  }
+
+  if (!eventType) {
+    return null;
+  }
+
+  if (useFallbackCompositionData && !isUsingKoreanIME(nativeEvent)) {
+    // The current composition is stored statically and must not be
+    // overwritten while composition continues.
+    if (!isComposing && eventType === 'onCompositionStart') {
+      isComposing = initialize(nativeEventTarget);
+    } else if (eventType === 'onCompositionEnd') {
+      if (isComposing) {
+        fallbackData = getData();
+      }
+    }
+  }
+
+  const listeners = accumulateTwoPhaseListeners(targetInst, eventType);
+
+  if (listeners.length > 0) {
+    const event = new SyntheticCompositionEvent(eventType, domEventName, null, nativeEvent, nativeEventTarget);
+    dispatchQueue.push({
+      event,
+      listeners
+    });
+
+    if (fallbackData) {
+      // Inject data generated from fallback path into the synthetic event.
+      // This matches the property of native CompositionEventInterface.
+      // $FlowFixMe[incompatible-use]
+      event.data = fallbackData;
+    } else {
+      const customData = getDataFromCustomEvent(nativeEvent);
+
+      if (customData !== null) {
+        // $FlowFixMe[incompatible-use]
+        event.data = customData;
+      }
+    }
+  }
+}
+
+function getNativeBeforeInputChars(domEventName, nativeEvent) {
+  switch (domEventName) {
+    case 'compositionend':
+      return getDataFromCustomEvent(nativeEvent);
+
+    case 'keypress':
+      /**
+       * If native `textInput` events are available, our goal is to make
+       * use of them. However, there is a special case: the spacebar key.
+       * In Webkit, preventing default on a spacebar `textInput` event
+       * cancels character insertion, but it *also* causes the browser
+       * to fall back to its default spacebar behavior of scrolling the
+       * page.
+       *
+       * Tracking at:
+       * https://code.google.com/p/chromium/issues/detail?id=355103
+       *
+       * To avoid this issue, use the keypress event as if no `textInput`
+       * event is available.
+       */
+      const which = nativeEvent.which;
+
+      if (which !== SPACEBAR_CODE) {
+        return null;
+      }
+
+      hasSpaceKeypress = true;
+      return SPACEBAR_CHAR;
+
+    case 'textInput':
+      // Record the characters to be added to the DOM.
+      const chars = nativeEvent.data; // If it's a spacebar character, assume that we have already handled
+      // it at the keypress level and bail immediately. Android Chrome
+      // doesn't give us keycodes, so we need to ignore it.
+
+      if (chars === SPACEBAR_CHAR && hasSpaceKeypress) {
+        return null;
+      }
+
+      return chars;
+
+    default:
+      // For other native event types, do nothing.
+      return null;
+  }
+}
+/**
+ * For browsers that do not provide the `textInput` event, extract the
+ * appropriate string to use for SyntheticInputEvent.
+ */
+
+
+function getFallbackBeforeInputChars(domEventName, nativeEvent) {
+  // If we are currently composing (IME) and using a fallback to do so,
+  // try to extract the composed characters from the fallback object.
+  // If composition event is available, we extract a string only at
+  // compositionevent, otherwise extract it at fallback events.
+  if (isComposing) {
+    if (domEventName === 'compositionend' || !canUseCompositionEvent && isFallbackCompositionEnd(domEventName, nativeEvent)) {
+      const chars = getData();
+      reset();
+      isComposing = false;
+      return chars;
+    }
+
+    return null;
+  }
+
+  switch (domEventName) {
+    case 'paste':
+      // If a paste event occurs after a keypress, throw out the input
+      // chars. Paste events should not lead to BeforeInput events.
+      return null;
+
+    case 'keypress':
+      /**
+       * As of v27, Firefox may fire keypress events even when no character
+       * will be inserted. A few possibilities:
+       *
+       * - `which` is `0`. Arrow keys, Esc key, etc.
+       *
+       * - `which` is the pressed key code, but no char is available.
+       *   Ex: 'AltGr + d` in Polish. There is no modified character for
+       *   this key combination and no character is inserted into the
+       *   document, but FF fires the keypress for char code `100` anyway.
+       *   No `input` event will occur.
+       *
+       * - `which` is the pressed key code, but a command combination is
+       *   being used. Ex: `Cmd+C`. No character is inserted, and no
+       *   `input` event will occur.
+       */
+      if (!isKeypressCommand(nativeEvent)) {
+        // IE fires the `keypress` event when a user types an emoji via
+        // Touch keyboard of Windows.  In such a case, the `char` property
+        // holds an emoji character like `\uD83D\uDE0A`.  Because its length
+        // is 2, the property `which` does not represent an emoji correctly.
+        // In such a case, we directly return the `char` property instead of
+        // using `which`.
+        if (nativeEvent.char && nativeEvent.char.length > 1) {
+          return nativeEvent.char;
+        } else if (nativeEvent.which) {
+          return String.fromCharCode(nativeEvent.which);
+        }
+      }
+
+      return null;
+
+    case 'compositionend':
+      return useFallbackCompositionData && !isUsingKoreanIME(nativeEvent) ? null : nativeEvent.data;
+
+    default:
+      return null;
+  }
+}
+/**
+ * Extract a SyntheticInputEvent for `beforeInput`, based on either native
+ * `textInput` or fallback behavior.
+ *
+ * @return {?object} A SyntheticInputEvent.
+ */
+
+
+function extractBeforeInputEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget) {
+  let chars;
+
+  if (canUseTextInputEvent) {
+    chars = getNativeBeforeInputChars(domEventName, nativeEvent);
+  } else {
+    chars = getFallbackBeforeInputChars(domEventName, nativeEvent);
+  } // If no characters are being inserted, no BeforeInput event should
+  // be fired.
+
+
+  if (!chars) {
+    return null;
+  }
+
+  const listeners = accumulateTwoPhaseListeners(targetInst, 'onBeforeInput');
+
+  if (listeners.length > 0) {
+    const event = new SyntheticInputEvent('onBeforeInput', 'beforeinput', null, nativeEvent, nativeEventTarget);
+    dispatchQueue.push({
+      event,
+      listeners
+    }); // $FlowFixMe[incompatible-use]
+
+    event.data = chars;
+  }
+}
+/**
+ * Create an `onBeforeInput` event to match
+ * http://www.w3.org/TR/2013/WD-DOM-Level-3-Events-20131105/#events-inputevents.
+ *
+ * This event plugin is based on the native `textInput` event
+ * available in Chrome, Safari, Opera, and IE. This event fires after
+ * `onKeyPress` and `onCompositionEnd`, but before `onInput`.
+ *
+ * `beforeInput` is spec'd but not implemented in any browsers, and
+ * the `input` event does not provide any useful information about what has
+ * actually been added, contrary to the spec. Thus, `textInput` is the best
+ * available event to identify the characters that have actually been inserted
+ * into the target node.
+ *
+ * This plugin is also responsible for emitting `composition` events, thus
+ * allowing us to share composition fallback code for both `beforeInput` and
+ * `composition` event types.
+ */
+
+
+function extractEvents$5(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
+  extractCompositionEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
+  extractBeforeInputEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
+}
+
+/**
+ * @see http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#input-type-attr-summary
+ */
+const supportedInputTypes = {
+  color: true,
+  date: true,
+  datetime: true,
+  'datetime-local': true,
+  email: true,
+  month: true,
+  number: true,
+  password: true,
+  range: true,
+  search: true,
+  tel: true,
+  text: true,
+  time: true,
+  url: true,
+  week: true
+};
+
+function isTextInputElement(elem) {
+  const nodeName = elem && elem.nodeName && elem.nodeName.toLowerCase();
+
+  if (nodeName === 'input') {
+    return !!supportedInputTypes[elem.type];
+  }
+
+  if (nodeName === 'textarea') {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Checks if an event is supported in the current execution environment.
+ *
+ * NOTE: This will not work correctly for non-generic events such as `change`,
+ * `reset`, `load`, `error`, and `select`.
+ *
+ * Borrows from Modernizr.
+ *
+ * @param {string} eventNameSuffix Event name, e.g. "click".
+ * @return {boolean} True if the event is supported.
+ * @internal
+ * @license Modernizr 3.0.0pre (Custom Build) | MIT
+ */
+
+function isEventSupported(eventNameSuffix) {
+  if (!canUseDOM) {
+    return false;
+  }
+
+  const eventName = 'on' + eventNameSuffix;
+  let isSupported = (eventName in document);
+
+  if (!isSupported) {
+    const element = document.createElement('div');
+    element.setAttribute(eventName, 'return;');
+    isSupported = typeof element[eventName] === 'function';
+  }
+
+  return isSupported;
+}
+
+function registerEvents$2() {
+  registerTwoPhaseEvent('onChange', ['change', 'click', 'focusin', 'focusout', 'input', 'keydown', 'keyup', 'selectionchange']);
+}
+
+function createAndAccumulateChangeEvent(dispatchQueue, inst, nativeEvent, target) {
+  // Flag this event loop as needing state restore.
+  enqueueStateRestore(target);
+  const listeners = accumulateTwoPhaseListeners(inst, 'onChange');
+
+  if (listeners.length > 0) {
+    const event = new SyntheticEvent('onChange', 'change', null, nativeEvent, target);
+    dispatchQueue.push({
+      event,
+      listeners
+    });
+  }
+}
+/**
+ * For IE shims
+ */
+
+
+let activeElement$1 = null;
+let activeElementInst$1 = null;
+/**
+ * SECTION: handle `change` event
+ */
+
+function shouldUseChangeEvent(elem) {
+  const nodeName = elem.nodeName && elem.nodeName.toLowerCase();
+  return nodeName === 'select' || nodeName === 'input' && elem.type === 'file';
+}
+
+function manualDispatchChangeEvent(nativeEvent) {
+  const dispatchQueue = [];
+  createAndAccumulateChangeEvent(dispatchQueue, activeElementInst$1, nativeEvent, getEventTarget(nativeEvent)); // If change and propertychange bubbled, we'd just bind to it like all the
+  // other events and have it go through ReactBrowserEventEmitter. Since it
+  // doesn't, we manually listen for the events and so we have to enqueue and
+  // process the abstract event manually.
+  //
+  // Batching is necessary here in order to ensure that all event handlers run
+  // before the next rerender (including event handlers attached to ancestor
+  // elements instead of directly on the input). Without this, controlled
+  // components don't work properly in conjunction with event bubbling because
+  // the component is rerendered and the value reverted before all the event
+  // handlers can run. See https://github.com/facebook/react/issues/708.
+
+  batchedUpdates(runEventInBatch, dispatchQueue);
+}
+
+function runEventInBatch(dispatchQueue) {
+  processDispatchQueue(dispatchQueue, 0);
+}
+
+function getInstIfValueChanged(targetInst) {
+  const targetNode = getNodeFromInstance(targetInst);
+
+  if (updateValueIfChanged(targetNode)) {
+    return targetInst;
+  }
+}
+
+function getTargetInstForChangeEvent(domEventName, targetInst) {
+  if (domEventName === 'change') {
+    return targetInst;
+  }
+}
+/**
+ * SECTION: handle `input` event
+ */
+
+
+let isInputEventSupported = false;
+
+if (canUseDOM) {
+  // IE9 claims to support the input event but fails to trigger it when
+  // deleting text, so we ignore its input events.
+  isInputEventSupported = isEventSupported('input') && (!document.documentMode || document.documentMode > 9);
+}
+/**
+ * (For IE <=9) Starts tracking propertychange events on the passed-in element
+ * and override the value property so that we can distinguish user events from
+ * value changes in JS.
+ */
+
+
+function startWatchingForValueChange(target, targetInst) {
+  activeElement$1 = target;
+  activeElementInst$1 = targetInst;
+  activeElement$1.attachEvent('onpropertychange', handlePropertyChange);
+}
+/**
+ * (For IE <=9) Removes the event listeners from the currently-tracked element,
+ * if any exists.
+ */
+
+
+function stopWatchingForValueChange() {
+  if (!activeElement$1) {
+    return;
+  }
+
+  activeElement$1.detachEvent('onpropertychange', handlePropertyChange);
+  activeElement$1 = null;
+  activeElementInst$1 = null;
+}
+/**
+ * (For IE <=9) Handles a propertychange event, sending a `change` event if
+ * the value of the active element has changed.
+ */
+// $FlowFixMe[missing-local-annot]
+
+
+function handlePropertyChange(nativeEvent) {
+  if (nativeEvent.propertyName !== 'value') {
+    return;
+  }
+
+  if (getInstIfValueChanged(activeElementInst$1)) {
+    manualDispatchChangeEvent(nativeEvent);
+  }
+}
+
+function handleEventsForInputEventPolyfill(domEventName, target, targetInst) {
+  if (domEventName === 'focusin') {
+    // In IE9, propertychange fires for most input events but is buggy and
+    // doesn't fire when text is deleted, but conveniently, selectionchange
+    // appears to fire in all of the remaining cases so we catch those and
+    // forward the event if the value has changed
+    // In either case, we don't want to call the event handler if the value
+    // is changed from JS so we redefine a setter for `.value` that updates
+    // our activeElementValue variable, allowing us to ignore those changes
+    //
+    // stopWatching() should be a noop here but we call it just in case we
+    // missed a blur event somehow.
+    stopWatchingForValueChange();
+    startWatchingForValueChange(target, targetInst);
+  } else if (domEventName === 'focusout') {
+    stopWatchingForValueChange();
+  }
+} // For IE8 and IE9.
+
+
+function getTargetInstForInputEventPolyfill(domEventName, targetInst) {
+  if (domEventName === 'selectionchange' || domEventName === 'keyup' || domEventName === 'keydown') {
+    // On the selectionchange event, the target is just document which isn't
+    // helpful for us so just check activeElement instead.
+    //
+    // 99% of the time, keydown and keyup aren't necessary. IE8 fails to fire
+    // propertychange on the first input event after setting `value` from a
+    // script and fires only keydown, keypress, keyup. Catching keyup usually
+    // gets it and catching keydown lets us fire an event for the first
+    // keystroke if user does a key repeat (it'll be a little delayed: right
+    // before the second keystroke). Other input methods (e.g., paste) seem to
+    // fire selectionchange normally.
+    return getInstIfValueChanged(activeElementInst$1);
+  }
+}
+/**
+ * SECTION: handle `click` event
+ */
+
+
+function shouldUseClickEvent(elem) {
+  // Use the `click` event to detect changes to checkbox and radio inputs.
+  // This approach works across all browsers, whereas `change` does not fire
+  // until `blur` in IE8.
+  const nodeName = elem.nodeName;
+  return nodeName && nodeName.toLowerCase() === 'input' && (elem.type === 'checkbox' || elem.type === 'radio');
+}
+
+function getTargetInstForClickEvent(domEventName, targetInst) {
+  if (domEventName === 'click') {
+    return getInstIfValueChanged(targetInst);
+  }
+}
+
+function getTargetInstForInputOrChangeEvent(domEventName, targetInst) {
+  if (domEventName === 'input' || domEventName === 'change') {
+    return getInstIfValueChanged(targetInst);
+  }
+}
+
+function handleControlledInputBlur(node, props) {
+  if (node.type !== 'number') {
+    return;
+  }
+
+  {
+    const isControlled = props.value != null;
+
+    if (isControlled) {
+      // If controlled, assign the value attribute to the current value on blur
+      setDefaultValue(node, 'number', node.value);
+    }
+  }
+}
+/**
+ * This plugin creates an `onChange` event that normalizes change events
+ * across form elements. This event fires at a time when it's possible to
+ * change the element's value without seeing a flicker.
+ *
+ * Supported elements are:
+ * - input (see `isTextInputElement`)
+ * - textarea
+ * - select
+ */
+
+
+function extractEvents$4(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
+  const targetNode = targetInst ? getNodeFromInstance(targetInst) : window;
+  let getTargetInstFunc, handleEventFunc;
+
+  if (shouldUseChangeEvent(targetNode)) {
+    getTargetInstFunc = getTargetInstForChangeEvent;
+  } else if (isTextInputElement(targetNode)) {
+    if (isInputEventSupported) {
+      getTargetInstFunc = getTargetInstForInputOrChangeEvent;
+    } else {
+      getTargetInstFunc = getTargetInstForInputEventPolyfill;
+      handleEventFunc = handleEventsForInputEventPolyfill;
+    }
+  } else if (shouldUseClickEvent(targetNode)) {
+    getTargetInstFunc = getTargetInstForClickEvent;
+  } else if (targetInst && isCustomElement(targetInst.elementType)) {
+    getTargetInstFunc = getTargetInstForChangeEvent;
+  }
+
+  if (getTargetInstFunc) {
+    const inst = getTargetInstFunc(domEventName, targetInst);
+
+    if (inst) {
+      createAndAccumulateChangeEvent(dispatchQueue, inst, nativeEvent, nativeEventTarget);
+      return;
+    }
+  }
+
+  if (handleEventFunc) {
+    handleEventFunc(domEventName, targetNode, targetInst);
+  } // When blurring, set the value attribute for number inputs
+
+
+  if (domEventName === 'focusout' && targetInst) {
+    // These props aren't necessarily the most current but we warn for changing
+    // between controlled and uncontrolled, so it doesn't matter and the previous
+    // code was also broken for changes.
+    const props = targetInst.memoizedProps;
+    handleControlledInputBlur(targetNode, props);
+  }
+}
+
+function registerEvents$1() {
+  registerDirectEvent('onMouseEnter', ['mouseout', 'mouseover']);
+  registerDirectEvent('onMouseLeave', ['mouseout', 'mouseover']);
+  registerDirectEvent('onPointerEnter', ['pointerout', 'pointerover']);
+  registerDirectEvent('onPointerLeave', ['pointerout', 'pointerover']);
+}
+/**
+ * For almost every interaction we care about, there will be both a top-level
+ * `mouseover` and `mouseout` event that occurs. Only use `mouseout` so that
+ * we do not extract duplicate events. However, moving the mouse into the
+ * browser from outside will not fire a `mouseout` event. In this case, we use
+ * the `mouseover` top-level event.
+ */
+
+
+function extractEvents$3(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
+  const isOverEvent = domEventName === 'mouseover' || domEventName === 'pointerover';
+  const isOutEvent = domEventName === 'mouseout' || domEventName === 'pointerout';
+
+  if (isOverEvent && !isReplayingEvent(nativeEvent)) {
+    // If this is an over event with a target, we might have already dispatched
+    // the event in the out event of the other target. If this is replayed,
+    // then it's because we couldn't dispatch against this target previously
+    // so we have to do it now instead.
+    const related = nativeEvent.relatedTarget || nativeEvent.fromElement;
+
+    if (related) {
+      // If the related node is managed by React, we can assume that we have
+      // already dispatched the corresponding events during its mouseout.
+      if (getClosestInstanceFromNode(related) || isContainerMarkedAsRoot(related)) {
+        return;
+      }
+    }
+  }
+
+  if (!isOutEvent && !isOverEvent) {
+    // Must not be a mouse or pointer in or out - ignoring.
+    return;
+  }
+
+  let win; // TODO: why is this nullable in the types but we read from it?
+
+  if (nativeEventTarget.window === nativeEventTarget) {
+    // `nativeEventTarget` is probably a window object.
+    win = nativeEventTarget;
+  } else {
+    // TODO: Figure out why `ownerDocument` is sometimes undefined in IE8.
+    const doc = nativeEventTarget.ownerDocument;
+
+    if (doc) {
+      win = doc.defaultView || doc.parentWindow;
+    } else {
+      win = window;
+    }
+  }
+
+  let from;
+  let to;
+
+  if (isOutEvent) {
+    const related = nativeEvent.relatedTarget || nativeEvent.toElement;
+    from = targetInst;
+    to = related ? getClosestInstanceFromNode(related) : null;
+
+    if (to !== null) {
+      const nearestMounted = getNearestMountedFiber(to);
+      const tag = to.tag;
+
+      if (to !== nearestMounted || tag !== HostComponent && tag !== HostSingleton && tag !== HostText) {
+        to = null;
+      }
+    }
+  } else {
+    // Moving to a node from outside the window.
+    from = null;
+    to = targetInst;
+  }
+
+  if (from === to) {
+    // Nothing pertains to our managed components.
+    return;
+  }
+
+  let SyntheticEventCtor = SyntheticMouseEvent;
+  let leaveEventType = 'onMouseLeave';
+  let enterEventType = 'onMouseEnter';
+  let eventTypePrefix = 'mouse';
+
+  if (domEventName === 'pointerout' || domEventName === 'pointerover') {
+    SyntheticEventCtor = SyntheticPointerEvent;
+    leaveEventType = 'onPointerLeave';
+    enterEventType = 'onPointerEnter';
+    eventTypePrefix = 'pointer';
+  }
+
+  const fromNode = from == null ? win : getNodeFromInstance(from);
+  const toNode = to == null ? win : getNodeFromInstance(to);
+  const leave = new SyntheticEventCtor(leaveEventType, eventTypePrefix + 'leave', from, nativeEvent, nativeEventTarget);
+  leave.target = fromNode;
+  leave.relatedTarget = toNode;
+  let enter = null; // We should only process this nativeEvent if we are processing
+  // the first ancestor. Next time, we will ignore the event.
+
+  const nativeTargetInst = getClosestInstanceFromNode(nativeEventTarget);
+
+  if (nativeTargetInst === targetInst) {
+    const enterEvent = new SyntheticEventCtor(enterEventType, eventTypePrefix + 'enter', to, nativeEvent, nativeEventTarget);
+    enterEvent.target = toNode;
+    enterEvent.relatedTarget = fromNode;
+    enter = enterEvent;
+  }
+
+  accumulateEnterLeaveTwoPhaseListeners(dispatchQueue, leave, enter, from, to);
+}
+
+/**
+ * Given any node return the first leaf node without children.
+ *
+ * @param {DOMElement|DOMTextNode} node
+ * @return {DOMElement|DOMTextNode}
+ */
+
+function getLeafNode(node) {
+  while (node && node.firstChild) {
+    node = node.firstChild;
+  }
+
+  return node;
+}
+/**
+ * Get the next sibling within a container. This will walk up the
+ * DOM if a node's siblings have been exhausted.
+ *
+ * @param {DOMElement|DOMTextNode} node
+ * @return {?DOMElement|DOMTextNode}
+ */
+
+
+function getSiblingNode(node) {
+  while (node) {
+    if (node.nextSibling) {
+      return node.nextSibling;
+    }
+
+    node = node.parentNode;
+  }
+}
+/**
+ * Get object describing the nodes which contain characters at offset.
+ *
+ * @param {DOMElement|DOMTextNode} root
+ * @param {number} offset
+ * @return {?object}
+ */
+
+
+function getNodeForCharacterOffset(root, offset) {
+  let node = getLeafNode(root);
+  let nodeStart = 0;
+  let nodeEnd = 0;
+
+  while (node) {
+    if (node.nodeType === TEXT_NODE) {
+      nodeEnd = nodeStart + node.textContent.length;
+
+      if (nodeStart <= offset && nodeEnd >= offset) {
+        return {
+          node: node,
+          offset: offset - nodeStart
+        };
+      }
+
+      nodeStart = nodeEnd;
+    }
+
+    node = getLeafNode(getSiblingNode(node));
+  }
+}
+
+/**
+ * @param {DOMElement} outerNode
+ * @return {?object}
+ */
+
+function getOffsets(outerNode) {
+  const ownerDocument = outerNode.ownerDocument;
+  const win = ownerDocument && ownerDocument.defaultView || window;
+  const selection = win.getSelection && win.getSelection();
+
+  if (!selection || selection.rangeCount === 0) {
+    return null;
+  }
+
+  const anchorNode = selection.anchorNode,
+        anchorOffset = selection.anchorOffset,
+        focusNode = selection.focusNode,
+        focusOffset = selection.focusOffset; // In Firefox, anchorNode and focusNode can be "anonymous divs", e.g. the
+  // up/down buttons on an <input type="number">. Anonymous divs do not seem to
+  // expose properties, triggering a "Permission denied error" if any of its
+  // properties are accessed. The only seemingly possible way to avoid erroring
+  // is to access a property that typically works for non-anonymous divs and
+  // catch any error that may otherwise arise. See
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=208427
+
+  try {
+    /* eslint-disable ft-flow/no-unused-expressions */
+    anchorNode.nodeType;
+    focusNode.nodeType;
+    /* eslint-enable ft-flow/no-unused-expressions */
+  } catch (e) {
+    return null;
+  }
+
+  return getModernOffsetsFromPoints(outerNode, anchorNode, anchorOffset, focusNode, focusOffset);
+}
+/**
+ * Returns {start, end} where `start` is the character/codepoint index of
+ * (anchorNode, anchorOffset) within the textContent of `outerNode`, and
+ * `end` is the index of (focusNode, focusOffset).
+ *
+ * Returns null if you pass in garbage input but we should probably just crash.
+ *
+ * Exported only for testing.
+ */
+
+function getModernOffsetsFromPoints(outerNode, anchorNode, anchorOffset, focusNode, focusOffset) {
+  let length = 0;
+  let start = -1;
+  let end = -1;
+  let indexWithinAnchor = 0;
+  let indexWithinFocus = 0;
+  let node = outerNode;
+  let parentNode = null;
+
+  outer: while (true) {
+    let next = null;
+
+    while (true) {
+      if (node === anchorNode && (anchorOffset === 0 || node.nodeType === TEXT_NODE)) {
+        start = length + anchorOffset;
+      }
+
+      if (node === focusNode && (focusOffset === 0 || node.nodeType === TEXT_NODE)) {
+        end = length + focusOffset;
+      }
+
+      if (node.nodeType === TEXT_NODE) {
+        length += node.nodeValue.length;
+      }
+
+      if ((next = node.firstChild) === null) {
+        break;
+      } // Moving from `node` to its first child `next`.
+
+
+      parentNode = node;
+      node = next;
+    }
+
+    while (true) {
+      if (node === outerNode) {
+        // If `outerNode` has children, this is always the second time visiting
+        // it. If it has no children, this is still the first loop, and the only
+        // valid selection is anchorNode and focusNode both equal to this node
+        // and both offsets 0, in which case we will have handled above.
+        break outer;
+      }
+
+      if (parentNode === anchorNode && ++indexWithinAnchor === anchorOffset) {
+        start = length;
+      }
+
+      if (parentNode === focusNode && ++indexWithinFocus === focusOffset) {
+        end = length;
+      }
+
+      if ((next = node.nextSibling) !== null) {
+        break;
+      }
+
+      node = parentNode;
+      parentNode = node.parentNode;
+    } // Moving from `node` to its next sibling `next`.
+
+
+    node = next;
+  }
+
+  if (start === -1 || end === -1) {
+    // This should never happen. (Would happen if the anchor/focus nodes aren't
+    // actually inside the passed-in node.)
+    return null;
+  }
+
+  return {
+    start: start,
+    end: end
+  };
+}
+/**
+ * In modern non-IE browsers, we can support both forward and backward
+ * selections.
+ *
+ * Note: IE10+ supports the Selection object, but it does not support
+ * the `extend` method, which means that even in modern IE, it's not possible
+ * to programmatically create a backward selection. Thus, for all IE
+ * versions, we use the old IE API to create our selections.
+ *
+ * @param {DOMElement|DOMTextNode} node
+ * @param {object} offsets
+ */
+
+function setOffsets(node, offsets) {
+  const doc = node.ownerDocument || document;
+  const win = doc && doc.defaultView || window; // Edge fails with "Object expected" in some scenarios.
+  // (For instance: TinyMCE editor used in a list component that supports pasting to add more,
+  // fails when pasting 100+ items)
+
+  if (!win.getSelection) {
+    return;
+  }
+
+  const selection = win.getSelection();
+  const length = node.textContent.length;
+  let start = Math.min(offsets.start, length);
+  let end = offsets.end === undefined ? start : Math.min(offsets.end, length); // IE 11 uses modern selection, but doesn't support the extend method.
+  // Flip backward selections, so we can set with a single range.
+
+  if (!selection.extend && start > end) {
+    const temp = end;
+    end = start;
+    start = temp;
+  }
+
+  const startMarker = getNodeForCharacterOffset(node, start);
+  const endMarker = getNodeForCharacterOffset(node, end);
+
+  if (startMarker && endMarker) {
+    if (selection.rangeCount === 1 && selection.anchorNode === startMarker.node && selection.anchorOffset === startMarker.offset && selection.focusNode === endMarker.node && selection.focusOffset === endMarker.offset) {
+      return;
+    }
+
+    const range = doc.createRange();
+    range.setStart(startMarker.node, startMarker.offset);
+    selection.removeAllRanges();
+
+    if (start > end) {
+      selection.addRange(range);
+      selection.extend(endMarker.node, endMarker.offset);
+    } else {
+      range.setEnd(endMarker.node, endMarker.offset);
+      selection.addRange(range);
+    }
+  }
+}
+
+function isTextNode(node) {
+  return node && node.nodeType === TEXT_NODE;
+}
+
+function containsNode(outerNode, innerNode) {
+  if (!outerNode || !innerNode) {
+    return false;
+  } else if (outerNode === innerNode) {
+    return true;
+  } else if (isTextNode(outerNode)) {
+    return false;
+  } else if (isTextNode(innerNode)) {
+    return containsNode(outerNode, innerNode.parentNode);
+  } else if ('contains' in outerNode) {
+    return outerNode.contains(innerNode);
+  } else if (outerNode.compareDocumentPosition) {
+    return !!(outerNode.compareDocumentPosition(innerNode) & 16);
+  } else {
+    return false;
+  }
+}
+
+function isInDocument(node) {
+  return node && node.ownerDocument && containsNode(node.ownerDocument.documentElement, node);
+}
+
+function isSameOriginFrame(iframe) {
+  try {
+    // Accessing the contentDocument of a HTMLIframeElement can cause the browser
+    // to throw, e.g. if it has a cross-origin src attribute.
+    // Safari will show an error in the console when the access results in "Blocked a frame with origin". e.g:
+    // iframe.contentDocument.defaultView;
+    // A safety way is to access one of the cross origin properties: Window or Location
+    // Which might result in "SecurityError" DOM Exception and it is compatible to Safari.
+    // https://html.spec.whatwg.org/multipage/browsers.html#integration-with-idl
+    return typeof iframe.contentWindow.location.href === 'string';
+  } catch (err) {
+    return false;
+  }
+}
+
+function getActiveElementDeep() {
+  let win = window;
+  let element = getActiveElement();
+
+  while (element instanceof win.HTMLIFrameElement) {
+    if (isSameOriginFrame(element)) {
+      win = element.contentWindow;
+    } else {
+      return element;
+    }
+
+    element = getActiveElement(win.document);
+  }
+
+  return element;
+}
+/**
+ * @ReactInputSelection: React input selection module. Based on Selection.js,
+ * but modified to be suitable for react and has a couple of bug fixes (doesn't
+ * assume buttons have range selections allowed).
+ * Input selection module for React.
+ */
+
+/**
+ * @hasSelectionCapabilities: we get the element types that support selection
+ * from https://html.spec.whatwg.org/#do-not-apply, looking at `selectionStart`
+ * and `selectionEnd` rows.
+ */
+
+
+function hasSelectionCapabilities(elem) {
+  const nodeName = elem && elem.nodeName && elem.nodeName.toLowerCase();
+  return nodeName && (nodeName === 'input' && (elem.type === 'text' || elem.type === 'search' || elem.type === 'tel' || elem.type === 'url' || elem.type === 'password') || nodeName === 'textarea' || elem.contentEditable === 'true');
+}
+function getSelectionInformation() {
+  const focusedElem = getActiveElementDeep();
+  return {
+    focusedElem: focusedElem,
+    selectionRange: hasSelectionCapabilities(focusedElem) ? getSelection$1(focusedElem) : null
+  };
+}
+/**
+ * @restoreSelection: If any selection information was potentially lost,
+ * restore it. This is useful when performing operations that could remove dom
+ * nodes and place them back in, resulting in focus being lost.
+ */
+
+function restoreSelection(priorSelectionInformation) {
+  const curFocusedElem = getActiveElementDeep();
+  const priorFocusedElem = priorSelectionInformation.focusedElem;
+  const priorSelectionRange = priorSelectionInformation.selectionRange;
+
+  if (curFocusedElem !== priorFocusedElem && isInDocument(priorFocusedElem)) {
+    if (priorSelectionRange !== null && hasSelectionCapabilities(priorFocusedElem)) {
+      setSelection(priorFocusedElem, priorSelectionRange);
+    } // Focusing a node can change the scroll position, which is undesirable
+
+
+    const ancestors = [];
+    let ancestor = priorFocusedElem;
+
+    while (ancestor = ancestor.parentNode) {
+      if (ancestor.nodeType === ELEMENT_NODE) {
+        ancestors.push({
+          element: ancestor,
+          left: ancestor.scrollLeft,
+          top: ancestor.scrollTop
+        });
+      }
+    }
+
+    if (typeof priorFocusedElem.focus === 'function') {
+      priorFocusedElem.focus();
+    }
+
+    for (let i = 0; i < ancestors.length; i++) {
+      const info = ancestors[i];
+      info.element.scrollLeft = info.left;
+      info.element.scrollTop = info.top;
+    }
+  }
+}
+/**
+ * @getSelection: Gets the selection bounds of a focused textarea, input or
+ * contentEditable node.
+ * -@input: Look up selection bounds of this input
+ * -@return {start: selectionStart, end: selectionEnd}
+ */
+
+function getSelection$1(input) {
+  let selection;
+
+  if ('selectionStart' in input) {
+    // Modern browser with input or textarea.
+    selection = {
+      start: input.selectionStart,
+      end: input.selectionEnd
+    };
+  } else {
+    // Content editable or old IE textarea.
+    selection = getOffsets(input);
+  }
+
+  return selection || {
+    start: 0,
+    end: 0
+  };
+}
+/**
+ * @setSelection: Sets the selection bounds of a textarea or input and focuses
+ * the input.
+ * -@input     Set selection bounds of this input or textarea
+ * -@offsets   Object of same form that is returned from get*
+ */
+
+function setSelection(input, offsets) {
+  const start = offsets.start;
+  let end = offsets.end;
+
+  if (end === undefined) {
+    end = start;
+  }
+
+  if ('selectionStart' in input) {
+    input.selectionStart = start;
+    input.selectionEnd = Math.min(end, input.value.length);
+  } else {
+    setOffsets(input, offsets);
+  }
+}
+
+const skipSelectionChangeEvent = canUseDOM && 'documentMode' in document && document.documentMode <= 11;
+
+function registerEvents() {
+  registerTwoPhaseEvent('onSelect', ['focusout', 'contextmenu', 'dragend', 'focusin', 'keydown', 'keyup', 'mousedown', 'mouseup', 'selectionchange']);
+}
+
+let activeElement = null;
+let activeElementInst = null;
+let lastSelection = null;
+let mouseDown = false;
+/**
+ * Get an object which is a unique representation of the current selection.
+ *
+ * The return value will not be consistent across nodes or browsers, but
+ * two identical selections on the same node will return identical objects.
+ */
+
+function getSelection(node) {
+  if ('selectionStart' in node && hasSelectionCapabilities(node)) {
+    return {
+      start: node.selectionStart,
+      end: node.selectionEnd
+    };
+  } else {
+    const win = node.ownerDocument && node.ownerDocument.defaultView || window;
+    const selection = win.getSelection();
+    return {
+      anchorNode: selection.anchorNode,
+      anchorOffset: selection.anchorOffset,
+      focusNode: selection.focusNode,
+      focusOffset: selection.focusOffset
+    };
+  }
+}
+/**
+ * Get document associated with the event target.
+ */
+
+
+function getEventTargetDocument(eventTarget) {
+  return eventTarget.window === eventTarget ? eventTarget.document : eventTarget.nodeType === DOCUMENT_NODE ? eventTarget : eventTarget.ownerDocument;
+}
+/**
+ * Poll selection to see whether it's changed.
+ *
+ * @param {object} nativeEvent
+ * @param {object} nativeEventTarget
+ * @return {?SyntheticEvent}
+ */
+
+
+function constructSelectEvent(dispatchQueue, nativeEvent, nativeEventTarget) {
+  // Ensure we have the right element, and that the user is not dragging a
+  // selection (this matches native `select` event behavior). In HTML5, select
+  // fires only on input and textarea thus if there's no focused element we
+  // won't dispatch.
+  const doc = getEventTargetDocument(nativeEventTarget);
+
+  if (mouseDown || activeElement == null || activeElement !== getActiveElement(doc)) {
+    return;
+  } // Only fire when selection has actually changed.
+
+
+  const currentSelection = getSelection(activeElement);
+
+  if (!lastSelection || !shallowEqual(lastSelection, currentSelection)) {
+    lastSelection = currentSelection;
+    const listeners = accumulateTwoPhaseListeners(activeElementInst, 'onSelect');
+
+    if (listeners.length > 0) {
+      const event = new SyntheticEvent('onSelect', 'select', null, nativeEvent, nativeEventTarget);
+      dispatchQueue.push({
+        event,
+        listeners
+      });
+      event.target = activeElement;
+    }
+  }
+}
+/**
+ * This plugin creates an `onSelect` event that normalizes select events
+ * across form elements.
+ *
+ * Supported elements are:
+ * - input (see `isTextInputElement`)
+ * - textarea
+ * - contentEditable
+ *
+ * This differs from native browser implementations in the following ways:
+ * - Fires on contentEditable fields as well as inputs.
+ * - Fires for collapsed selection.
+ * - Fires after user input.
+ */
+
+
+function extractEvents$2(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
+  const targetNode = targetInst ? getNodeFromInstance(targetInst) : window;
+
+  switch (domEventName) {
+    // Track the input node that has focus.
+    case 'focusin':
+      if (isTextInputElement(targetNode) || targetNode.contentEditable === 'true') {
+        activeElement = targetNode;
+        activeElementInst = targetInst;
+        lastSelection = null;
+      }
+
+      break;
+
+    case 'focusout':
+      activeElement = null;
+      activeElementInst = null;
+      lastSelection = null;
+      break;
+    // Don't fire the event while the user is dragging. This matches the
+    // semantics of the native select event.
+
+    case 'mousedown':
+      mouseDown = true;
+      break;
+
+    case 'contextmenu':
+    case 'mouseup':
+    case 'dragend':
+      mouseDown = false;
+      constructSelectEvent(dispatchQueue, nativeEvent, nativeEventTarget);
+      break;
+    // Chrome and IE fire non-standard event when selection is changed (and
+    // sometimes when it hasn't). IE's event fires out of order with respect
+    // to key and input events on deletion, so we discard it.
+    //
+    // Firefox doesn't support selectionchange, so check selection status
+    // after each key entry. The selection changes after keydown and before
+    // keyup, but we check on keydown as well in the case of holding down a
+    // key, when multiple keydown events are fired but only one keyup is.
+    // This is also our approach for IE handling, for the reason above.
+
+    case 'selectionchange':
+      if (skipSelectionChangeEvent) {
+        break;
+      }
+
+    // falls through
+
+    case 'keydown':
+    case 'keyup':
+      constructSelectEvent(dispatchQueue, nativeEvent, nativeEventTarget);
+  }
+}
+
+/**
+ * Generate a mapping of standard vendor prefixes using the defined style property and event name.
+ *
+ * @param {string} styleProp
+ * @param {string} eventName
+ * @returns {object}
+ */
+
+function makePrefixMap(styleProp, eventName) {
+  const prefixes = {};
+  prefixes[styleProp.toLowerCase()] = eventName.toLowerCase();
+  prefixes['Webkit' + styleProp] = 'webkit' + eventName;
+  prefixes['Moz' + styleProp] = 'moz' + eventName;
+  return prefixes;
+}
+/**
+ * A list of event names to a configurable list of vendor prefixes.
+ */
+
+
+const vendorPrefixes = {
+  animationend: makePrefixMap('Animation', 'AnimationEnd'),
+  animationiteration: makePrefixMap('Animation', 'AnimationIteration'),
+  animationstart: makePrefixMap('Animation', 'AnimationStart'),
+  transitionend: makePrefixMap('Transition', 'TransitionEnd')
+};
+/**
+ * Event names that have already been detected and prefixed (if applicable).
+ */
+
+const prefixedEventNames = {};
+/**
+ * Element to check for prefixes on.
+ */
+
+let style = {};
+/**
+ * Bootstrap if a DOM exists.
+ */
+
+if (canUseDOM) {
+  style = document.createElement('div').style; // On some platforms, in particular some releases of Android 4.x,
+  // the un-prefixed "animation" and "transition" properties are defined on the
+  // style object but the events that fire will still be prefixed, so we need
+  // to check if the un-prefixed events are usable, and if not remove them from the map.
+
+  if (!('AnimationEvent' in window)) {
+    delete vendorPrefixes.animationend.animation;
+    delete vendorPrefixes.animationiteration.animation;
+    delete vendorPrefixes.animationstart.animation;
+  } // Same as above
+
+
+  if (!('TransitionEvent' in window)) {
+    delete vendorPrefixes.transitionend.transition;
+  }
+}
+/**
+ * Attempts to determine the correct vendor prefixed event name.
+ *
+ * @param {string} eventName
+ * @returns {string}
+ */
+
+
+function getVendorPrefixedEventName(eventName) {
+  if (prefixedEventNames[eventName]) {
+    return prefixedEventNames[eventName];
+  } else if (!vendorPrefixes[eventName]) {
+    return eventName;
+  }
+
+  const prefixMap = vendorPrefixes[eventName];
+
+  for (const styleProp in prefixMap) {
+    if (prefixMap.hasOwnProperty(styleProp) && styleProp in style) {
+      return prefixedEventNames[eventName] = prefixMap[styleProp];
+    }
+  }
+
+  return eventName;
+}
+
+const ANIMATION_END = getVendorPrefixedEventName('animationend');
+const ANIMATION_ITERATION = getVendorPrefixedEventName('animationiteration');
+const ANIMATION_START = getVendorPrefixedEventName('animationstart');
+const TRANSITION_END = getVendorPrefixedEventName('transitionend');
+
+const topLevelEventsToReactNames = new Map(); // NOTE: Capitalization is important in this list!
+//
+// E.g. it needs "pointerDown", not "pointerdown".
+// This is because we derive both React name ("onPointerDown")
+// and DOM name ("pointerdown") from the same list.
+//
+// Exceptions that don't match this convention are listed separately.
+//
+// prettier-ignore
+
+const simpleEventPluginEvents = ['abort', 'auxClick', 'cancel', 'canPlay', 'canPlayThrough', 'click', 'close', 'contextMenu', 'copy', 'cut', 'drag', 'dragEnd', 'dragEnter', 'dragExit', 'dragLeave', 'dragOver', 'dragStart', 'drop', 'durationChange', 'emptied', 'encrypted', 'ended', 'error', 'gotPointerCapture', 'input', 'invalid', 'keyDown', 'keyPress', 'keyUp', 'load', 'loadedData', 'loadedMetadata', 'loadStart', 'lostPointerCapture', 'mouseDown', 'mouseMove', 'mouseOut', 'mouseOver', 'mouseUp', 'paste', 'pause', 'play', 'playing', 'pointerCancel', 'pointerDown', 'pointerMove', 'pointerOut', 'pointerOver', 'pointerUp', 'progress', 'rateChange', 'reset', 'resize', 'seeked', 'seeking', 'stalled', 'submit', 'suspend', 'timeUpdate', 'touchCancel', 'touchEnd', 'touchStart', 'volumeChange', 'scroll', 'scrollEnd', 'toggle', 'touchMove', 'waiting', 'wheel'];
+
+function registerSimpleEvent(domEventName, reactName) {
+  topLevelEventsToReactNames.set(domEventName, reactName);
+  registerTwoPhaseEvent(reactName, [domEventName]);
+}
+
+function registerSimpleEvents() {
+  for (let i = 0; i < simpleEventPluginEvents.length; i++) {
+    const eventName = simpleEventPluginEvents[i];
+    const domEventName = eventName.toLowerCase();
+    const capitalizedEvent = eventName[0].toUpperCase() + eventName.slice(1);
+    registerSimpleEvent(domEventName, 'on' + capitalizedEvent);
+  } // Special cases where event names don't match.
+
+
+  registerSimpleEvent(ANIMATION_END, 'onAnimationEnd');
+  registerSimpleEvent(ANIMATION_ITERATION, 'onAnimationIteration');
+  registerSimpleEvent(ANIMATION_START, 'onAnimationStart');
+  registerSimpleEvent('dblclick', 'onDoubleClick');
+  registerSimpleEvent('focusin', 'onFocus');
+  registerSimpleEvent('focusout', 'onBlur');
+  registerSimpleEvent(TRANSITION_END, 'onTransitionEnd');
+}
+
+function extractEvents$1(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
+  const reactName = topLevelEventsToReactNames.get(domEventName);
+
+  if (reactName === undefined) {
+    return;
+  }
+
+  let SyntheticEventCtor = SyntheticEvent;
+  let reactEventType = domEventName;
+
+  switch (domEventName) {
+    case 'keypress':
+      // Firefox creates a keypress event for function keys too. This removes
+      // the unwanted keypress events. Enter is however both printable and
+      // non-printable. One would expect Tab to be as well (but it isn't).
+      // TODO: Fixed in https://bugzilla.mozilla.org/show_bug.cgi?id=968056. Can
+      // probably remove.
+      if (getEventCharCode(nativeEvent) === 0) {
+        return;
+      }
+
+    /* falls through */
+
+    case 'keydown':
+    case 'keyup':
+      SyntheticEventCtor = SyntheticKeyboardEvent;
+      break;
+
+    case 'focusin':
+      reactEventType = 'focus';
+      SyntheticEventCtor = SyntheticFocusEvent;
+      break;
+
+    case 'focusout':
+      reactEventType = 'blur';
+      SyntheticEventCtor = SyntheticFocusEvent;
+      break;
+
+    case 'beforeblur':
+    case 'afterblur':
+      SyntheticEventCtor = SyntheticFocusEvent;
+      break;
+
+    case 'click':
+      // Firefox creates a click event on right mouse clicks. This removes the
+      // unwanted click events.
+      // TODO: Fixed in https://phabricator.services.mozilla.com/D26793. Can
+      // probably remove.
+      if (nativeEvent.button === 2) {
+        return;
+      }
+
+    /* falls through */
+
+    case 'auxclick':
+    case 'dblclick':
+    case 'mousedown':
+    case 'mousemove':
+    case 'mouseup': // TODO: Disabled elements should not respond to mouse events
+
+    /* falls through */
+
+    case 'mouseout':
+    case 'mouseover':
+    case 'contextmenu':
+      SyntheticEventCtor = SyntheticMouseEvent;
+      break;
+
+    case 'drag':
+    case 'dragend':
+    case 'dragenter':
+    case 'dragexit':
+    case 'dragleave':
+    case 'dragover':
+    case 'dragstart':
+    case 'drop':
+      SyntheticEventCtor = SyntheticDragEvent;
+      break;
+
+    case 'touchcancel':
+    case 'touchend':
+    case 'touchmove':
+    case 'touchstart':
+      SyntheticEventCtor = SyntheticTouchEvent;
+      break;
+
+    case ANIMATION_END:
+    case ANIMATION_ITERATION:
+    case ANIMATION_START:
+      SyntheticEventCtor = SyntheticAnimationEvent;
+      break;
+
+    case TRANSITION_END:
+      SyntheticEventCtor = SyntheticTransitionEvent;
+      break;
+
+    case 'scroll':
+    case 'scrollend':
+      SyntheticEventCtor = SyntheticUIEvent;
+      break;
+
+    case 'wheel':
+      SyntheticEventCtor = SyntheticWheelEvent;
+      b
