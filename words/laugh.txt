@@ -1,0 +1,99 @@
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+"use strict";
+
+const Dependency = require("../Dependency");
+const { UsageState } = require("../ExportsInfo");
+const HarmonyLinkingError = require("../HarmonyLinkingError");
+const InitFragment = require("../InitFragment");
+const RuntimeGlobals = require("../RuntimeGlobals");
+const Template = require("../Template");
+const { countIterable } = require("../util/IterableHelpers");
+const { first, combine } = require("../util/SetHelpers");
+const makeSerializable = require("../util/makeSerializable");
+const propertyAccess = require("../util/propertyAccess");
+const { propertyName } = require("../util/propertyName");
+const { getRuntimeKey, keyToRuntime } = require("../util/runtime");
+const HarmonyExportInitFragment = require("./HarmonyExportInitFragment");
+const HarmonyImportDependency = require("./HarmonyImportDependency");
+const processExportInfo = require("./processExportInfo");
+
+/** @typedef {import("webpack-sources").ReplaceSource} ReplaceSource */
+/** @typedef {import("../ChunkGraph")} ChunkGraph */
+/** @typedef {import("../Dependency").ExportsSpec} ExportsSpec */
+/** @typedef {import("../Dependency").GetConditionFn} GetConditionFn */
+/** @typedef {import("../Dependency").ReferencedExport} ReferencedExport */
+/** @typedef {import("../Dependency").TRANSITIVE} TRANSITIVE */
+/** @typedef {import("../Dependency").UpdateHashContext} UpdateHashContext */
+/** @typedef {import("../DependencyTemplate").DependencyTemplateContext} DependencyTemplateContext */
+/** @typedef {import("../ExportsInfo")} ExportsInfo */
+/** @typedef {import("../ExportsInfo").ExportInfo} ExportInfo */
+/** @typedef {import("../Generator").GenerateContext} GenerateContext */
+/** @typedef {import("../Module")} Module */
+/** @typedef {import("../Module").BuildMeta} BuildMeta */
+/** @typedef {import("../Module").RuntimeRequirements} RuntimeRequirements */
+/** @typedef {import("../ModuleGraph")} ModuleGraph */
+/** @typedef {import("../ModuleGraphConnection")} ModuleGraphConnection */
+/** @typedef {import("../ModuleGraphConnection").ConnectionState} ConnectionState */
+/** @typedef {import("../RuntimeTemplate")} RuntimeTemplate */
+/** @typedef {import("../WebpackError")} WebpackError */
+/** @typedef {import("../javascript/JavascriptParser").Attributes} Attributes */
+/** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
+/** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
+/** @typedef {import("../util/Hash")} Hash */
+/** @typedef {import("../util/runtime").RuntimeSpec} RuntimeSpec */
+
+/** @typedef {"missing"|"unused"|"empty-star"|"reexport-dynamic-default"|"reexport-named-default"|"reexport-namespace-object"|"reexport-fake-namespace-object"|"reexport-undefined"|"normal-reexport"|"dynamic-reexport"} ExportModeType */
+
+const { ExportPresenceModes } = HarmonyImportDependency;
+
+const idsSymbol = Symbol("HarmonyExportImportedSpecifierDependency.ids");
+
+class NormalReexportItem {
+	/**
+	 * @param {string} name export name
+	 * @param {string[]} ids reexported ids from other module
+	 * @param {ExportInfo} exportInfo export info from other module
+	 * @param {boolean} checked true, if it should be checked at runtime if this export exists
+	 * @param {boolean} hidden true, if it is hidden behind another active export in the same module
+	 */
+	constructor(name, ids, exportInfo, checked, hidden) {
+		this.name = name;
+		this.ids = ids;
+		this.exportInfo = exportInfo;
+		this.checked = checked;
+		this.hidden = hidden;
+	}
+}
+
+class ExportMode {
+	/**
+	 * @param {ExportModeType} type type of the mode
+	 */
+	constructor(type) {
+		/** @type {ExportModeType} */
+		this.type = type;
+
+		// for "normal-reexport":
+		/** @type {NormalReexportItem[] | null} */
+		this.items = null;
+
+		// for "reexport-named-default" | "reexport-fake-namespace-object" | "reexport-namespace-object"
+		/** @type {string | null} */
+		this.name = null;
+		/** @type {ExportInfo | null} */
+		this.partialNamespaceExportInfo = null;
+
+		// for "dynamic-reexport":
+		/** @type {Set<string> | null} */
+		this.ignored = null;
+
+		// for "dynamic-reexport" | "empty-star":
+		/** @type {Set<string> | null} */
+		this.hidden = null;
+
+		// for "missing":
+		/** @type 

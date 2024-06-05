@@ -1,0 +1,296 @@
+				break;
+			}
+		} else {
+			// export * as name
+			switch (importedExportsType) {
+				case "default-only":
+					mode = new ExportMode("reexport-fake-namespace-object");
+					mode.name = name;
+					mode.partialNamespaceExportInfo = exportInfo;
+					mode.fakeType = 0;
+					break;
+				case "default-with-named":
+					mode = new ExportMode("reexport-fake-namespace-object");
+					mode.name = name;
+					mode.partialNamespaceExportInfo = exportInfo;
+					mode.fakeType = 2;
+					break;
+				case "dynamic":
+				default:
+					mode = new ExportMode("reexport-namespace-object");
+					mode.name = name;
+					mode.partialNamespaceExportInfo = exportInfo;
+			}
+		}
+
+		return mode;
+	}
+
+	// Star reexporting
+
+	const { ignoredExports, exports, checked, hidden } = dep.getStarReexports(
+		moduleGraph,
+		runtime,
+		exportsInfo,
+		importedModule
+	);
+	if (!exports) {
+		// We have too few info about the modules
+		// Delegate the logic to the runtime code
+
+		const mode = new ExportMode("dynamic-reexport");
+		mode.ignored = ignoredExports;
+		mode.hidden = hidden;
+
+		return mode;
+	}
+
+	if (exports.size === 0) {
+		const mode = new ExportMode("empty-star");
+		mode.hidden = hidden;
+
+		return mode;
+	}
+
+	const mode = new ExportMode("normal-reexport");
+
+	mode.items = Array.from(
+		exports,
+		exportName =>
+			new NormalReexportItem(
+				exportName,
+				[exportName],
+				exportsInfo.getReadOnlyExportInfo(exportName),
+				checked.has(exportName),
+				false
+			)
+	);
+	if (hidden !== undefined) {
+		for (const exportName of hidden) {
+			mode.items.push(
+				new NormalReexportItem(
+					exportName,
+					[exportName],
+					exportsInfo.getReadOnlyExportInfo(exportName),
+					false,
+					true
+				)
+			);
+		}
+	}
+
+	return mode;
+};
+
+class HarmonyExportImportedSpecifierDependency extends HarmonyImportDependency {
+	/**
+	 * @param {string} request the request string
+	 * @param {number} sourceOrder the order in the original source file
+	 * @param {string[]} ids the requested export name of the imported module
+	 * @param {string | null} name the export name of for this module
+	 * @param {Set<string>} activeExports other named exports in the module
+	 * @param {ReadonlyArray<HarmonyExportImportedSpecifierDependency> | Iterable<HarmonyExportImportedSpecifierDependency> | null} otherStarExports other star exports in the module before this import
+	 * @param {number} exportPresenceMode mode of checking export names
+	 * @param {HarmonyStarExportsList | null} allStarExports all star exports in the module
+	 * @param {Attributes=} attributes import assertions
+	 */
+	constructor(
+		request,
+		sourceOrder,
+		ids,
+		name,
+		activeExports,
+		otherStarExports,
+		exportPresenceMode,
+		allStarExports,
+		attributes
+	) {
+		super(request, sourceOrder, attributes);
+
+		this.ids = ids;
+		this.name = name;
+		this.activeExports = activeExports;
+		this.otherStarExports = otherStarExports;
+		this.exportPresenceMode = exportPresenceMode;
+		this.allStarExports = allStarExports;
+	}
+
+	/**
+	 * @returns {boolean | TRANSITIVE} true, when changes to the referenced module could affect the referencing module; TRANSITIVE, when changes to the referenced module could affect referencing modules of the referencing module
+	 */
+	couldAffectReferencingModule() {
+		return Dependency.TRANSITIVE;
+	}
+
+	// TODO webpack 6 remove
+	get id() {
+		throw new Error("id was renamed to ids and type changed to string[]");
+	}
+
+	// TODO webpack 6 remove
+	getId() {
+		throw new Error("id was renamed to ids and type changed to string[]");
+	}
+
+	// TODO webpack 6 remove
+	setId() {
+		throw new Error("id was renamed to ids and type changed to string[]");
+	}
+
+	get type() {
+		return "harmony export imported specifier";
+	}
+
+	/**
+	 * @param {ModuleGraph} moduleGraph the module graph
+	 * @returns {string[]} the imported id
+	 */
+	getIds(moduleGraph) {
+		return moduleGraph.getMeta(this)[idsSymbol] || this.ids;
+	}
+
+	/**
+	 * @param {ModuleGraph} moduleGraph the module graph
+	 * @param {string[]} ids the imported ids
+	 * @returns {void}
+	 */
+	setIds(moduleGraph, ids) {
+		moduleGraph.getMeta(this)[idsSymbol] = ids;
+	}
+
+	/**
+	 * @param {ModuleGraph} moduleGraph the module graph
+	 * @param {RuntimeSpec} runtime the runtime
+	 * @returns {ExportMode} the export mode
+	 */
+	getMode(moduleGraph, runtime) {
+		return moduleGraph.dependencyCacheProvide(
+			this,
+			getRuntimeKey(runtime),
+			getMode
+		);
+	}
+
+	/**
+	 * @param {ModuleGraph} moduleGraph the module graph
+	 * @param {RuntimeSpec} runtime the runtime
+	 * @param {ExportsInfo} exportsInfo exports info about the current module (optional)
+	 * @param {Module} importedModule the imported module (optional)
+	 * @returns {{exports?: Set<string>, checked?: Set<string>, ignoredExports: Set<string>, hidden?: Set<string>}} information
+	 */
+	getStarReexports(
+		moduleGraph,
+		runtime,
+		exportsInfo = moduleGraph.getExportsInfo(
+			/** @type {Module} */ (moduleGraph.getParentModule(this))
+		),
+		importedModule = /** @type {Module} */ (moduleGraph.getModule(this))
+	) {
+		const importedExportsInfo = moduleGraph.getExportsInfo(importedModule);
+		const noExtraExports =
+			importedExportsInfo.otherExportsInfo.provided === false;
+		const noExtraImports =
+			exportsInfo.otherExportsInfo.getUsed(runtime) === UsageState.Unused;
+
+		const ignoredExports = new Set(["default", ...this.activeExports]);
+
+		let hiddenExports = undefined;
+		const otherStarExports =
+			this._discoverActiveExportsFromOtherStarExports(moduleGraph);
+		if (otherStarExports !== undefined) {
+			hiddenExports = new Set();
+			for (let i = 0; i < otherStarExports.namesSlice; i++) {
+				hiddenExports.add(otherStarExports.names[i]);
+			}
+			for (const e of ignoredExports) hiddenExports.delete(e);
+		}
+
+		if (!noExtraExports && !noExtraImports) {
+			return {
+				ignoredExports,
+				hidden: hiddenExports
+			};
+		}
+
+		/** @type {Set<string>} */
+		const exports = new Set();
+		/** @type {Set<string>} */
+		const checked = new Set();
+		/** @type {Set<string> | undefined} */
+		const hidden = hiddenExports !== undefined ? new Set() : undefined;
+
+		if (noExtraImports) {
+			for (const exportInfo of exportsInfo.orderedExports) {
+				const name = exportInfo.name;
+				if (ignoredExports.has(name)) continue;
+				if (exportInfo.getUsed(runtime) === UsageState.Unused) continue;
+				const importedExportInfo =
+					importedExportsInfo.getReadOnlyExportInfo(name);
+				if (importedExportInfo.provided === false) continue;
+				if (hiddenExports !== undefined && hiddenExports.has(name)) {
+					/** @type {Set<string>} */
+					(hidden).add(name);
+					continue;
+				}
+				exports.add(name);
+				if (importedExportInfo.provided === true) continue;
+				checked.add(name);
+			}
+		} else if (noExtraExports) {
+			for (const importedExportInfo of importedExportsInfo.orderedExports) {
+				const name = importedExportInfo.name;
+				if (ignoredExports.has(name)) continue;
+				if (importedExportInfo.provided === false) continue;
+				const exportInfo = exportsInfo.getReadOnlyExportInfo(name);
+				if (exportInfo.getUsed(runtime) === UsageState.Unused) continue;
+				if (hiddenExports !== undefined && hiddenExports.has(name)) {
+					/** @type {Set<string>} */
+					(hidden).add(name);
+					continue;
+				}
+				exports.add(name);
+				if (importedExportInfo.provided === true) continue;
+				checked.add(name);
+			}
+		}
+
+		return { ignoredExports, exports, checked, hidden };
+	}
+
+	/**
+	 * @param {ModuleGraph} moduleGraph module graph
+	 * @returns {null | false | GetConditionFn} function to determine if the connection is active
+	 */
+	getCondition(moduleGraph) {
+		return (connection, runtime) => {
+			const mode = this.getMode(moduleGraph, runtime);
+			return mode.type !== "unused" && mode.type !== "empty-star";
+		};
+	}
+
+	/**
+	 * @param {ModuleGraph} moduleGraph the module graph
+	 * @returns {ConnectionState} how this dependency connects the module to referencing modules
+	 */
+	getModuleEvaluationSideEffectsState(moduleGraph) {
+		return false;
+	}
+
+	/**
+	 * Returns list of exports referenced by this dependency
+	 * @param {ModuleGraph} moduleGraph module graph
+	 * @param {RuntimeSpec} runtime the runtime for which the module is analysed
+	 * @returns {(string[] | ReferencedExport)[]} referenced exports
+	 */
+	getReferencedExports(moduleGraph, runtime) {
+		const mode = this.getMode(moduleGraph, runtime);
+
+		switch (mode.type) {
+			case "missing":
+			case "unused":
+			case "empty-star":
+			case "reexport-undefined":
+				return Dependency.NO_EXPORTS_REFERENCED;
+
+			case "reexport-dynamic-default":
+				return Dependency.EXPORTS_OBJECT_R
