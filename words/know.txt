@@ -1,0 +1,165 @@
+ "@ckeditor/ckeditor5-engine": "41.3.1",
+        "@ckeditor/ckeditor5-utils": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-essentials": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-essentials/-/ckeditor5-essentials-41.3.1.tgz",
+      "integrity": "sha512-Tr8fIhRith4OVg5yYm8UbbRUjuj15AQ27H3AiwOzRMRr+EYCI07ni5quqBwOMlkOQQ2H9U21gS8mYKqkqU5osw==",
+      "dependencies": {
+        "ckeditor5": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-heading": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-heading/-/ckeditor5-heading-41.3.1.tgz",
+      "integrity": "sha512-WFu/zYXHqJ4Q6UI/IM7/WwmXCwKFVBDhuOeYnlRY1vgmFciaVtrbJW/tECBr+2TBVR4lANvmivWMFDLpN0fW+g==",
+      "dependencies": {
+        "ckeditor5": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-image": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-image/-/ckeditor5-image-41.3.1.tgz",
+      "integrity": "sha512-v8lcXET3TDP/yPKhdUCmIcukMQ6GNdTyVAjkTip5JhVKFv8bFWBp5Xn616L6T+8OeQ6DggF9QVGcskmTiGQv7g==",
+      "dependencies": {
+        "@ckeditor/ckeditor5-ui": "41.3.1",
+        "ckeditor5": "41.3.1",
+        "lodash-es": "4.17.21"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-indent": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-indent/-/ckeditor5-indent-41.3.1.tgz",
+      "integrity": "sha512-JYXF/Clfw+j06wt1+qo43n+y3fmVKPSaN5NXzw4a5Rce0dMaWctH53X8KP3tIuOfEzW9xPhsTUQBJI8rsc+f9g==",
+      "dependencies": {
+        "ckeditor5": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-link": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-link/-/ckeditor5-link-41.3.1.tgz",
+      "integrity": "sha512-tl+vnEWUKP0cK/4g+KkQt1YujklG9aUb2NxkkF0HSo7/0m6JnKf+1LVwY1OP2702FLCJO1vdC09oY0JDXGmkfg==",
+      "dependencies": {
+        "@ckeditor/ckeditor5-ui": "41.3.1",
+        "ckeditor5": "41.3.1",
+        "lodash-es": "4.17.21"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-list": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-list/-/ckeditor5-list-41.3.1.tgz",
+      "integrity": "sha512-X1PDaqNnQUTlqYgTYASirJuityG25hxthrGlnEvqPZIxivbxDcefWxkBlNXvmnHOy/EUES0cEZ2H0GUr6CPz2g==",
+      "dependencies": {
+        "ckeditor5": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-media-embed": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-media-embed/-/ckeditor5-media-embed-41.3.1.tgz",
+      "integrity": "sha512-3yXePmVPR2WmzeT+fj6WotMbEIJ6lYka0aUG02LxZV0oCL5LU8nF1wFIFhk77wrQVlQtjmLVtvaPcSdNIz/+pA==",
+      "dependencies": {
+        "@ckeditor/ckeditor5-ui": "41.3.1",
+        "ckeditor5": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-paragraph": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-paragraph/-/ckeditor5-paragraph-41.3.1.tgz",
+      "integrity": "sha512-weRPLyO/1Z8PpU9+lET4gYgJ8adDuCjYiREup81URSuS1DDQ8vb3D29xA+4Ov7lwg8BaNAMCpTBdp07GHHzv6w==",
+      "dependencies": {
+        "@ckeditor/ckeditor5-core": "41.3.1",
+        "@ckeditor/ckeditor5-ui": "41.3.1",
+        "@ckeditor/ckeditor5-utils": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-paste-from-office": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-paste-from-office/-/ckeditor5-paste-from-office-41.3.1.tgz",
+      "integrity": "sha512-bvDNGQXIUVCiAgmIcvnOw461XWAG8lscQrJaZFXNfayJJah73zvDbOJDkv5hm/N/jYaPTsTnSv1jg5xM9XqfCw==",
+      "dependencies": {
+        "ckeditor5": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-react": {
+      "version": "6.3.0",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-react/-/ckeditor5-react-6.3.0.tgz",
+      "integrity": "sha512-yfVc8L+o1U63qljyOJVSV+O+2C2+hOjNAf7Qabi8AF4gvsPib82efVDlmvnNJB4Ka11owysQ5MAHpP8I0c7lIA==",
+      "dependencies": {
+        "prop-types": "^15.7.2"
+      },
+      "engines": {
+        "node": ">=18.0.0"
+      },
+      "peerDependencies": {
+        "@ckeditor/ckeditor5-core": ">=41.3.1",
+        "@ckeditor/ckeditor5-editor-multi-root": ">=41.3.1",
+        "@ckeditor/ckeditor5-engine": ">=41.3.1",
+        "@ckeditor/ckeditor5-utils": ">=41.3.1",
+        "@ckeditor/ckeditor5-watchdog": ">=41.3.1",
+        "react": "^16.13.1 || ^17.0.0 || ^18.0.0"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-select-all": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-select-all/-/ckeditor5-select-all-41.3.1.tgz",
+      "integrity": "sha512-a/LAPO+O9fwHjQ/8s3UNtyrqQRieAnpnPw2IhLlGqOS7nxPKMR2vkb6WnG2LUdO+wYqkCzxUDpBlfVkjkQEI0w==",
+      "dependencies": {
+        "@ckeditor/ckeditor5-core": "41.3.1",
+        "@ckeditor/ckeditor5-ui": "41.3.1",
+        "@ckeditor/ckeditor5-utils": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-table": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-table/-/ckeditor5-table-41.3.1.tgz",
+      "integrity": "sha512-Lx2xnWdeuiekXOuRERjvf1I3zhTZwK/IRna9FgTW/ldj6rBH9fVqhY+z/Y/nIpI1LgWee3R0DWZBGXgj1QNFcQ==",
+      "dependencies": {
+        "ckeditor5": "41.3.1",
+        "lodash-es": "4.17.21"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-typing": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-typing/-/ckeditor5-typing-41.3.1.tgz",
+      "integrity": "sha512-4Oeafc3if6fTITOest1ILQ573fnkzE9/tn5eNm3zWnHVYR79mRCYxaha9yUlKVQiqaxZ48EVo2FjHiouXmn9+Q==",
+      "dependencies": {
+        "@ckeditor/ckeditor5-core": "41.3.1",
+        "@ckeditor/ckeditor5-engine": "41.3.1",
+        "@ckeditor/ckeditor5-utils": "41.3.1",
+        "lodash-es": "4.17.21"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-ui": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-ui/-/ckeditor5-ui-41.3.1.tgz",
+      "integrity": "sha512-xN7OAiRp7ALKYXUp6Qe/AjkjrhyLuoz9nxq7Jdsnsyb/XXfsXDloMcOuvNRoUgr4gIFHMOoZZxsIn8qegBvcYA==",
+      "dependencies": {
+        "@ckeditor/ckeditor5-core": "41.3.1",
+        "@ckeditor/ckeditor5-utils": "41.3.1",
+        "color-convert": "2.0.1",
+        "color-parse": "1.4.2",
+        "lodash-es": "4.17.21",
+        "vanilla-colorful": "0.7.2"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-undo": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-undo/-/ckeditor5-undo-41.3.1.tgz",
+      "integrity": "sha512-PElWTnlIwuQ94mvdhuH7Mno99oocSnOWPMHi9UuWe6+zVgznQwn0f0diBZvX3l5y8hFgK6q/pQ/CCmbvvYnovA==",
+      "dependencies": {
+        "@ckeditor/ckeditor5-core": "41.3.1",
+        "@ckeditor/ckeditor5-engine": "41.3.1",
+        "@ckeditor/ckeditor5-ui": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-upload": {
+      "version": "41.3.1",
+      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-upload/-/ckeditor5-upload-41.3.1.tgz",
+      "integrity": "sha512-ugTgGEgA9qsSl5+qptTmawdfYaONr6b3uTG4byZ76JMdf0qiniZjBF/TtGAVmBkCipcVWFoaZKteiz0fhQMHjA==",
+      "dependencies": {
+        "@ckeditor/ckeditor5-core": "41.3.1",
+        "@ckeditor/ckeditor5-utils": "41.3.1"
+      }
+    },
+    "node_modules/@ckeditor/ckeditor5-uti

@@ -1,0 +1,129 @@
+(response.headers.get("x-middleware-next") === "1") {
+            // TODO: move this error into the `NextResponse.next()` function.
+            throw new Error("NextResponse.next() was used in a app route handler, this is not supported. See here for more info: https://nextjs.org/docs/messages/next-response-next-in-app-route-handler");
+        }
+        return response;
+    }
+    async handle(request, context) {
+        try {
+            // Execute the route to get the response.
+            const response = await this.execute(request, context);
+            // The response was handled, return it.
+            return response;
+        } catch (err) {
+            // Try to resolve the error to a response, else throw it again.
+            const response = resolveHandlerError(err);
+            if (!response) throw err;
+            // The response was resolved, return it.
+            return response;
+        }
+    }
+}
+export default AppRouteRouteModule;
+/**
+ * Gets all the method names for handlers that are not considered static.
+ *
+ * @param handlers the handlers from the userland module
+ * @returns the method names that are not considered static or false if all
+ *          methods are static
+ */ export function hasNonStaticMethods(handlers) {
+    if (// Order these by how common they are to be used
+    handlers.POST || handlers.POST || handlers.DELETE || handlers.PATCH || handlers.OPTIONS) {
+        return true;
+    }
+    return false;
+}
+// These symbols will be used to stash cached values on Proxied requests without requiring
+// additional closures or storage such as WeakMaps.
+const nextURLSymbol = Symbol("nextUrl");
+const requestCloneSymbol = Symbol("clone");
+const urlCloneSymbol = Symbol("clone");
+const searchParamsSymbol = Symbol("searchParams");
+const hrefSymbol = Symbol("href");
+const toStringSymbol = Symbol("toString");
+const headersSymbol = Symbol("headers");
+const cookiesSymbol = Symbol("cookies");
+/**
+ * The general technique with these proxy handlers is to prioritize keeping them static
+ * by stashing computed values on the Proxy itself. This is safe because the Proxy is
+ * inaccessible to the consumer since all operations are forwarded
+ */ const forceStaticRequestHandlers = {
+    get (target, prop, receiver) {
+        switch(prop){
+            case "headers":
+                return target[headersSymbol] || (target[headersSymbol] = HeadersAdapter.seal(new Headers({})));
+            case "cookies":
+                return target[cookiesSymbol] || (target[cookiesSymbol] = RequestCookiesAdapter.seal(new RequestCookies(new Headers({}))));
+            case "nextUrl":
+                return target[nextURLSymbol] || (target[nextURLSymbol] = new Proxy(target.nextUrl, forceStaticNextUrlHandlers));
+            case "url":
+                // we don't need to separately cache this we can just read the nextUrl
+                // and return the href since we know it will have been stripped of any
+                // dynamic parts. We access via the receiver to trigger the get trap
+                return receiver.nextUrl.href;
+            case "geo":
+            case "ip":
+                return undefined;
+            case "clone":
+                return target[requestCloneSymbol] || (target[requestCloneSymbol] = ()=>new Proxy(// This is vaguely unsafe but it's required since NextRequest does not implement
+                    // clone. The reason we might expect this to work in this context is the Proxy will
+                    // respond with static-amenable values anyway somewhat restoring the interface.
+                    // @TODO we need to rethink NextRequest and NextURL because they are not sufficientlly
+                    // sophisticated to adequately represent themselves in all contexts. A better approach is
+                    // to probably embed the static generation logic into the class itself removing the need
+                    // for any kind of proxying
+                    target.clone(), forceStaticRequestHandlers));
+            default:
+                const result = Reflect.get(target, prop, receiver);
+                if (typeof result === "function") {
+                    return result.bind(target);
+                }
+                return result;
+        }
+    }
+};
+const forceStaticNextUrlHandlers = {
+    get (target, prop, receiver) {
+        switch(prop){
+            // URL properties
+            case "search":
+                return "";
+            case "searchParams":
+                return target[searchParamsSymbol] || (target[searchParamsSymbol] = new URLSearchParams());
+            case "href":
+                return target[hrefSymbol] || (target[hrefSymbol] = cleanURL(target.href).href);
+            case "toJSON":
+            case "toString":
+                return target[toStringSymbol] || (target[toStringSymbol] = ()=>receiver.href);
+            // NextUrl properties
+            case "url":
+                // Currently nextURL does not expose url but our Docs indicate that it is an available property
+                // I am forcing this to undefined here to avoid accidentally exposing a dynamic value later if
+                // the underlying nextURL ends up adding this property
+                return undefined;
+            case "clone":
+                return target[urlCloneSymbol] || (target[urlCloneSymbol] = ()=>new Proxy(target.clone(), forceStaticNextUrlHandlers));
+            default:
+                const result = Reflect.get(target, prop, receiver);
+                if (typeof result === "function") {
+                    return result.bind(target);
+                }
+                return result;
+        }
+    }
+};
+const staticGenerationRequestHandlers = {
+    get (target, prop, receiver) {
+        switch(prop){
+            case "nextUrl":
+                return target[nextURLSymbol] || (target[nextURLSymbol] = new Proxy(target.nextUrl, staticGenerationNextUrlHandlers));
+            case "headers":
+            case "cookies":
+            case "url":
+            case "body":
+            case "blob":
+            case "json":
+            case "text":
+            case "arrayBuffer":
+            case "formData":
+                throw new DynamicServerError(`Route ${target.nextUrl.pathname} couldn't be rendered statically because it acce
