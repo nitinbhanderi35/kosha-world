@@ -1,0 +1,184 @@
+              destructorFunction: function(ptr) {
+                    _free(ptr);
+                }
+            });
+        }
+        function __embind_register_value_object(rawType, name, constructorSignature, rawConstructor, destructorSignature, rawDestructor) {
+            structRegistrations[rawType] = {
+                name: readLatin1String(name),
+                rawConstructor: embind__requireFunction(constructorSignature, rawConstructor),
+                rawDestructor: embind__requireFunction(destructorSignature, rawDestructor),
+                fields: []
+            };
+        }
+        function __embind_register_value_object_field(structType, fieldName, getterReturnType, getterSignature, getter, getterContext, setterArgumentType, setterSignature, setter, setterContext) {
+            structRegistrations[structType].fields.push({
+                fieldName: readLatin1String(fieldName),
+                getterReturnType: getterReturnType,
+                getter: embind__requireFunction(getterSignature, getter),
+                getterContext: getterContext,
+                setterArgumentType: setterArgumentType,
+                setter: embind__requireFunction(setterSignature, setter),
+                setterContext: setterContext
+            });
+        }
+        function __embind_register_void(rawType, name) {
+            name = readLatin1String(name);
+            registerType(rawType, {
+                isVoid: true,
+                name: name,
+                argPackAdvance: 0,
+                fromWireType: function() {
+                    return undefined;
+                },
+                toWireType: function(destructors, o) {
+                    return undefined;
+                }
+            });
+        }
+        var emval_symbols = {};
+        function getStringOrSymbol(address) {
+            var symbol = emval_symbols[address];
+            if (symbol === undefined) {
+                return readLatin1String(address);
+            } else {
+                return symbol;
+            }
+        }
+        function emval_get_global() {
+            if (typeof globalThis === "object") {
+                return globalThis;
+            }
+            return (function() {
+                return Function;
+            })()("return this")();
+        }
+        function __emval_get_global(name) {
+            if (name === 0) {
+                return __emval_register(emval_get_global());
+            } else {
+                name = getStringOrSymbol(name);
+                return __emval_register(emval_get_global()[name]);
+            }
+        }
+        function __emval_incref(handle) {
+            if (handle > 4) {
+                emval_handle_array[handle].refcount += 1;
+            }
+        }
+        function requireRegisteredType(rawType, humanName) {
+            var impl = registeredTypes[rawType];
+            if (undefined === impl) {
+                throwBindingError(humanName + " has unknown type " + getTypeName(rawType));
+            }
+            return impl;
+        }
+        function craftEmvalAllocator(argCount) {
+            var argsList = "";
+            for(var i = 0; i < argCount; ++i){
+                argsList += (i !== 0 ? ", " : "") + "arg" + i;
+            }
+            var functionBody = "return function emval_allocator_" + argCount + "(constructor, argTypes, args) {\n";
+            for(var i = 0; i < argCount; ++i){
+                functionBody += "var argType" + i + " = requireRegisteredType(Module['HEAP32'][(argTypes >>> 2) + " + i + '], "parameter ' + i + '");\n' + "var arg" + i + " = argType" + i + ".readValueFromPointer(args);\n" + "args += argType" + i + "['argPackAdvance'];\n";
+            }
+            functionBody += "var obj = new constructor(" + argsList + ");\n" + "return __emval_register(obj);\n" + "}\n";
+            return new Function("requireRegisteredType", "Module", "__emval_register", functionBody)(requireRegisteredType, Module, __emval_register);
+        }
+        var emval_newers = {};
+        function requireHandle(handle) {
+            if (!handle) {
+                throwBindingError("Cannot use deleted val. handle = " + handle);
+            }
+            return emval_handle_array[handle].value;
+        }
+        function __emval_new(handle, argCount, argTypes, args) {
+            handle = requireHandle(handle);
+            var newer = emval_newers[argCount];
+            if (!newer) {
+                newer = craftEmvalAllocator(argCount);
+                emval_newers[argCount] = newer;
+            }
+            return newer(handle, argTypes, args);
+        }
+        function _abort() {
+            abort();
+        }
+        function _emscripten_memcpy_big(dest, src, num) {
+            HEAPU8.copyWithin(dest, src, src + num);
+        }
+        function emscripten_realloc_buffer(size) {
+            try {
+                wasmMemory.grow(size - buffer.byteLength + 65535 >>> 16);
+                updateGlobalBufferAndViews(wasmMemory.buffer);
+                return 1;
+            } catch (e) {}
+        }
+        function _emscripten_resize_heap(requestedSize) {
+            var oldSize = HEAPU8.length;
+            requestedSize = requestedSize >>> 0;
+            var maxHeapSize = 2147483648;
+            if (requestedSize > maxHeapSize) {
+                return false;
+            }
+            for(var cutDown = 1; cutDown <= 4; cutDown *= 2){
+                var overGrownHeapSize = oldSize * (1 + 0.2 / cutDown);
+                overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296);
+                var newSize = Math.min(maxHeapSize, alignUp(Math.max(requestedSize, overGrownHeapSize), 65536));
+                var replacement = emscripten_realloc_buffer(newSize);
+                if (replacement) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        var ENV = {};
+        function getExecutableName() {
+            return thisProgram || "./this.program";
+        }
+        function getEnvStrings() {
+            if (!getEnvStrings.strings) {
+                var lang = (typeof navigator === "object" && navigator.languages && navigator.languages[0] || "C").replace("-", "_") + ".UTF-8";
+                var env = {
+                    USER: "web_user",
+                    LOGNAME: "web_user",
+                    PATH: "/",
+                    PWD: "/",
+                    HOME: "/home/web_user",
+                    LANG: lang,
+                    _: getExecutableName()
+                };
+                for(var x in ENV){
+                    env[x] = ENV[x];
+                }
+                var strings = [];
+                for(var x in env){
+                    strings.push(x + "=" + env[x]);
+                }
+                getEnvStrings.strings = strings;
+            }
+            return getEnvStrings.strings;
+        }
+        var SYSCALLS = {
+            mappings: {},
+            buffers: [
+                null,
+                [],
+                []
+            ],
+            printChar: function(stream, curr) {
+                var buffer = SYSCALLS.buffers[stream];
+                if (curr === 0 || curr === 10) {
+                    (stream === 1 ? out : err)(UTF8ArrayToString(buffer, 0));
+                    buffer.length = 0;
+                } else {
+                    buffer.push(curr);
+                }
+            },
+            varargs: undefined,
+            get: function() {
+                SYSCALLS.varargs += 4;
+                var ret = HEAP32[SYSCALLS.varargs - 4 >> 2];
+                return ret;
+            },
+   
