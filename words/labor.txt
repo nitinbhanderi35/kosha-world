@@ -1,0 +1,288 @@
+ring} reason explanation why unpack is necessary
+	 * @returns {void | Promise<void>} maybe a promise if lazy
+	 */
+	unpack(reason) {
+		if (this.content) return;
+
+		// Move from state B to C
+		if (this.lazy) {
+			const { lazyName } = this;
+			/** @type {string | undefined} */
+			let timeMessage;
+			if (lazyName) {
+				// only log once
+				this.lazyName = undefined;
+				timeMessage = `unpack cache content ${lazyName} (${formatSize(
+					this.getSize()
+				)})`;
+				this.logger.log(
+					`starting to unpack cache content ${lazyName} (${formatSize(
+						this.getSize()
+					)}) because ${reason}`
+				);
+				this.logger.time(timeMessage);
+			}
+			const value = this.lazy();
+			if ("then" in value) {
+				return value.then(data => {
+					if (timeMessage) {
+						this.logger.timeEnd(timeMessage);
+					}
+					this.content = data.map;
+				});
+			} else {
+				if (timeMessage) {
+					this.logger.timeEnd(timeMessage);
+				}
+				this.content = value.map;
+			}
+		}
+	}
+
+	/**
+	 * @returns {number} size of the content or -1 if not known
+	 */
+	getSize() {
+		if (!this.lazy) return -1;
+		const options = /** @type {any} */ (this.lazy).options;
+		if (!options) return -1;
+		const size = options.size;
+		if (typeof size !== "number") return -1;
+		return size;
+	}
+
+	/**
+	 * @param {string} identifier identifier
+	 */
+	delete(identifier) {
+		this.items.delete(identifier);
+		this.used.delete(identifier);
+		this.outdated = true;
+	}
+
+	/**
+	 * @template T
+	 * @param {function(any): function(): Promise<PackContentItems> | PackContentItems} write write function
+	 * @returns {void}
+	 */
+	writeLazy(write) {
+		if (!this.outdated && this.lazy) {
+			// State B1 or C1
+			// this.lazy is still the valid deserialized version
+			write(this.lazy);
+			return;
+		}
+		if (!this.outdated && this.content) {
+			// State A1
+			const map = new Map(this.content);
+			// Move to state C1
+			this.lazy = SerializerMiddleware.unMemoizeLazy(
+				write(() => new PackContentItems(map))
+			);
+			return;
+		}
+		if (this.content) {
+			// State A2 or C2
+			/** @type {Map<string, any>} */
+			const map = new Map();
+			for (const item of this.items) {
+				map.set(item, this.content.get(item));
+			}
+			// Move to state C1
+			this.outdated = false;
+			this.content = map;
+			this.lazy = SerializerMiddleware.unMemoizeLazy(
+				write(() => new PackContentItems(map))
+			);
+			return;
+		}
+		// State B2
+		const { lazyName } = this;
+		/** @type {string | undefined} */
+		let timeMessage;
+		if (lazyName) {
+			// only log once
+			this.lazyName = undefined;
+			timeMessage = `unpack cache content ${lazyName} (${formatSize(
+				this.getSize()
+			)})`;
+			this.logger.log(
+				`starting to unpack cache content ${lazyName} (${formatSize(
+					this.getSize()
+				)}) because it's outdated and need to be serialized`
+			);
+			this.logger.time(timeMessage);
+		}
+		const value = this.lazy();
+		this.outdated = false;
+		if ("then" in value) {
+			// Move to state B1
+			this.lazy = write(() =>
+				value.then(data => {
+					if (timeMessage) {
+						this.logger.timeEnd(timeMessage);
+					}
+					const oldMap = data.map;
+					/** @type {Map<string, any>} */
+					const map = new Map();
+					for (const item of this.items) {
+						map.set(item, oldMap.get(item));
+					}
+					// Move to state C1 (or maybe C2)
+					this.content = map;
+					this.lazy = SerializerMiddleware.unMemoizeLazy(this.lazy);
+
+					return new PackContentItems(map);
+				})
+			);
+		} else {
+			// Move to state C1
+			if (timeMessage) {
+				this.logger.timeEnd(timeMessage);
+			}
+			const oldMap = value.map;
+			/** @type {Map<string, any>} */
+			const map = new Map();
+			for (const item of this.items) {
+				map.set(item, oldMap.get(item));
+			}
+			this.content = map;
+			this.lazy = write(() => new PackContentItems(map));
+		}
+	}
+}
+
+/**
+ * @param {Buffer} buf buffer
+ * @returns {Buffer} buffer that can be collected
+ */
+const allowCollectingMemory = buf => {
+	const wasted = buf.buffer.byteLength - buf.byteLength;
+	if (wasted > 8192 && (wasted > 1048576 || wasted > buf.byteLength)) {
+		return Buffer.from(buf);
+	}
+	return buf;
+};
+
+class PackFileCacheStrategy {
+	/**
+	 * @param {Object} options options
+	 * @param {Compiler} options.compiler the compiler
+	 * @param {IntermediateFileSystem} options.fs the filesystem
+	 * @param {string} options.context the context directory
+	 * @param {string} options.cacheLocation the location of the cache data
+	 * @param {string} options.version version identifier
+	 * @param {Logger} options.logger a logger
+	 * @param {SnapshotOptions} options.snapshot options regarding snapshotting
+	 * @param {number} options.maxAge max age of cache items
+	 * @param {boolean | undefined} options.profile track and log detailed timing information for individual cache items
+	 * @param {boolean | undefined} options.allowCollectingMemory allow to collect unused memory created during deserialization
+	 * @param {false | "gzip" | "brotli" | undefined} options.compression compression used
+	 * @param {boolean | undefined} options.readonly disable storing cache into filesystem
+	 */
+	constructor({
+		compiler,
+		fs,
+		context,
+		cacheLocation,
+		version,
+		logger,
+		snapshot,
+		maxAge,
+		profile,
+		allowCollectingMemory,
+		compression,
+		readonly
+	}) {
+		this.fileSerializer = createFileSerializer(
+			fs,
+			compiler.options.output.hashFunction
+		);
+		this.fileSystemInfo = new FileSystemInfo(fs, {
+			managedPaths: snapshot.managedPaths,
+			immutablePaths: snapshot.immutablePaths,
+			logger: logger.getChildLogger("webpack.FileSystemInfo"),
+			hashFunction: compiler.options.output.hashFunction
+		});
+		this.compiler = compiler;
+		this.context = context;
+		this.cacheLocation = cacheLocation;
+		this.version = version;
+		this.logger = logger;
+		this.maxAge = maxAge;
+		this.profile = profile;
+		this.readonly = readonly;
+		this.allowCollectingMemory = allowCollectingMemory;
+		this.compression = compression;
+		this._extension =
+			compression === "brotli"
+				? ".pack.br"
+				: compression === "gzip"
+					? ".pack.gz"
+					: ".pack";
+		this.snapshot = snapshot;
+		/** @type {BuildDependencies} */
+		this.buildDependencies = new Set();
+		/** @type {LazySet<string>} */
+		this.newBuildDependencies = new LazySet();
+		/** @type {Snapshot | undefined} */
+		this.resolveBuildDependenciesSnapshot = undefined;
+		/** @type {ResolveResults | undefined} */
+		this.resolveResults = undefined;
+		/** @type {Snapshot | undefined} */
+		this.buildSnapshot = undefined;
+		/** @type {Promise<Pack> | undefined} */
+		this.packPromise = this._openPack();
+		this.storePromise = Promise.resolve();
+	}
+
+	/**
+	 * @returns {Promise<Pack>} pack
+	 */
+	_getPack() {
+		if (this.packPromise === undefined) {
+			this.packPromise = this.storePromise.then(() => this._openPack());
+		}
+		return this.packPromise;
+	}
+
+	/**
+	 * @returns {Promise<Pack>} the pack
+	 */
+	_openPack() {
+		const { logger, profile, cacheLocation, version } = this;
+		/** @type {Snapshot} */
+		let buildSnapshot;
+		/** @type {BuildDependencies} */
+		let buildDependencies;
+		/** @type {BuildDependencies} */
+		let newBuildDependencies;
+		/** @type {Snapshot} */
+		let resolveBuildDependenciesSnapshot;
+		/** @type {ResolveResults | undefined} */
+		let resolveResults;
+		logger.time("restore cache container");
+		return this.fileSerializer
+			.deserialize(null, {
+				filename: `${cacheLocation}/index${this._extension}`,
+				extension: `${this._extension}`,
+				logger,
+				profile,
+				retainedBuffer: this.allowCollectingMemory
+					? allowCollectingMemory
+					: undefined
+			})
+			.catch(err => {
+				if (err.code !== "ENOENT") {
+					logger.warn(
+						`Restoring pack failed from ${cacheLocation}${this._extension}: ${err}`
+					);
+					logger.debug(err.stack);
+				} else {
+					logger.debug(
+						`No pack exists at ${cacheLocation}${this._extension}: ${err}`
+					);
+				}
+				return undefined;
+			})
+			.then(packContainer => {
