@@ -1,0 +1,84 @@
+import { RouteModule } from "../route-module";
+import { RequestAsyncStorageWrapper } from "../../../async-storage/request-async-storage-wrapper";
+import { StaticGenerationAsyncStorageWrapper } from "../../../async-storage/static-generation-async-storage-wrapper";
+import { handleBadRequestResponse, handleInternalServerErrorResponse } from "../helpers/response-handlers";
+import { HTTP_METHODS, isHTTPMethod } from "../../../web/http";
+import { addImplicitTags, patchFetch } from "../../../lib/patch-fetch";
+import { getTracer } from "../../../lib/trace/tracer";
+import { AppRouteRouteHandlersSpan } from "../../../lib/trace/constants";
+import { getPathnameFromAbsolutePath } from "./helpers/get-pathname-from-absolute-path";
+import { resolveHandlerError } from "./helpers/resolve-handler-error";
+import * as Log from "../../../../build/output/log";
+import { autoImplementMethods } from "./helpers/auto-implement-methods";
+import { appendMutableCookies } from "../../../web/spec-extension/adapters/request-cookies";
+import { HeadersAdapter } from "../../../web/spec-extension/adapters/headers";
+import { RequestCookiesAdapter } from "../../../web/spec-extension/adapters/request-cookies";
+import { parsedUrlQueryToParams } from "./helpers/parsed-url-query-to-params";
+import * as serverHooks from "../../../../client/components/hooks-server-context";
+import { DynamicServerError } from "../../../../client/components/hooks-server-context";
+import { requestAsyncStorage } from "../../../../client/components/request-async-storage.external";
+import { staticGenerationAsyncStorage } from "../../../../client/components/static-generation-async-storage.external";
+import { actionAsyncStorage } from "../../../../client/components/action-async-storage.external";
+import * as sharedModules from "./shared-modules";
+import { getIsServerAction } from "../../../lib/server-action-request-meta";
+import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import { cleanURL } from "./helpers/clean-url";
+import { StaticGenBailoutError } from "../../../../client/components/static-generation-bailout";
+/**
+ * AppRouteRouteHandler is the handler for app routes.
+ */ export class AppRouteRouteModule extends RouteModule {
+    static #_ = this.sharedModules = sharedModules;
+    constructor({ userland, definition, resolvedPagePath, nextConfigOutput }){
+        super({
+            userland,
+            definition
+        });
+        /**
+   * A reference to the request async storage.
+   */ this.requestAsyncStorage = requestAsyncStorage;
+        /**
+   * A reference to the static generation async storage.
+   */ this.staticGenerationAsyncStorage = staticGenerationAsyncStorage;
+        /**
+   * An interface to call server hooks which interact with the underlying
+   * storage.
+   */ this.serverHooks = serverHooks;
+        /**
+   * A reference to the mutation related async storage, such as mutations of
+   * cookies.
+   */ this.actionAsyncStorage = actionAsyncStorage;
+        this.resolvedPagePath = resolvedPagePath;
+        this.nextConfigOutput = nextConfigOutput;
+        // Automatically implement some methods if they aren't implemented by the
+        // userland module.
+        this.methods = autoImplementMethods(userland);
+        // Get the non-static methods for this route.
+        this.hasNonStaticMethods = hasNonStaticMethods(userland);
+        // Get the dynamic property from the userland module.
+        this.dynamic = this.userland.dynamic;
+        if (this.nextConfigOutput === "export") {
+            if (!this.dynamic || this.dynamic === "auto") {
+                this.dynamic = "error";
+            } else if (this.dynamic === "force-dynamic") {
+                throw new Error(`export const dynamic = "force-dynamic" on page "${definition.pathname}" cannot be used with "output: export". See more info here: https://nextjs.org/docs/advanced-features/static-html-export`);
+            }
+        }
+        // We only warn in development after here, so return if we're not in
+        // development.
+        if (process.env.NODE_ENV === "development") {
+            // Print error in development if the exported handlers are in lowercase, only
+            // uppercase handlers are supported.
+            const lowercased = HTTP_METHODS.map((method)=>method.toLowerCase());
+            for (const method of lowercased){
+                if (method in this.userland) {
+                    Log.error(`Detected lowercase method '${method}' in '${this.resolvedPagePath}'. Export the uppercase '${method.toUpperCase()}' method name to fix this error.`);
+                }
+            }
+            // Print error if the module exports a default handler, they must use named
+            // exports for each HTTP method.
+            if ("default" in this.userland) {
+                Log.error(`Detected default export in '${this.resolvedPagePath}'. Export a named export for each HTTP method instead.`);
+            }
+            // If there is no methods exported by this module, then return a not found
+            // response.
+            if (!HTTP_METHODS

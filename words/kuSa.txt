@@ -1,0 +1,87 @@
+ to the most recent refactor this logic was buried deep in staticGenerationBailout
+                            // so it is possible it was unintentional and then tests were written to assert the current behavior
+                            staticGenerationStore.revalidate = 0;
+                        }
+                    }
+                    // We assume we can pass the original request through however we may end up
+                    // proxying it in certain circumstances based on execution type and configuration
+                    let request = rawRequest;
+                    // Update the static generation store based on the dynamic property.
+                    if (isStaticGeneration) {
+                        switch(this.dynamic){
+                            case "force-dynamic":
+                                {
+                                    // Routes of generated paths should be dynamic
+                                    staticGenerationStore.forceDynamic = true;
+                                    break;
+                                }
+                            case "force-static":
+                                // The dynamic property is set to force-static, so we should
+                                // force the page to be static.
+                                staticGenerationStore.forceStatic = true;
+                                // We also Proxy the request to replace dynamic data on the request
+                                // with empty stubs to allow for safely executing as static
+                                request = new Proxy(rawRequest, forceStaticRequestHandlers);
+                                break;
+                            case "error":
+                                // The dynamic property is set to error, so we should throw an
+                                // error if the page is being statically generated.
+                                staticGenerationStore.dynamicShouldError = true;
+                                if (isStaticGeneration) request = new Proxy(rawRequest, requireStaticRequestHandlers);
+                                break;
+                            default:
+                                // When we are statically generating a route we want to bail out if anything dynamic
+                                // is accessed. We only create this proxy in the staticGenerationCase because it is overhead
+                                // for dynamic runtime executions
+                                request = new Proxy(rawRequest, staticGenerationRequestHandlers);
+                        }
+                    } else {
+                        // Generally if we are in a dynamic render we don't have to modify much however for
+                        // force-static specifically we ensure the dynamic and static behavior is consistent
+                        // by proxying the request in the same way in both cases
+                        if (this.dynamic === "force-static") {
+                            // The dynamic property is set to force-static, so we should
+                            // force the page to be static.
+                            staticGenerationStore.forceStatic = true;
+                            request = new Proxy(rawRequest, forceStaticRequestHandlers);
+                        }
+                    }
+                    // If the static generation store does not have a revalidate value
+                    // set, then we should set it the revalidate value from the userland
+                    // module or default to false.
+                    staticGenerationStore.revalidate ??= this.userland.revalidate ?? false;
+                    // TODO: propagate this pathname from route matcher
+                    const route = getPathnameFromAbsolutePath(this.resolvedPagePath);
+                    (_getTracer_getRootSpanAttributes = getTracer().getRootSpanAttributes()) == null ? void 0 : _getTracer_getRootSpanAttributes.set("next.route", route);
+                    return getTracer().trace(AppRouteRouteHandlersSpan.runHandler, {
+                        spanName: `executing api route (app) ${route}`,
+                        attributes: {
+                            "next.route": route
+                        }
+                    }, async ()=>{
+                        var _staticGenerationStore_tags;
+                        // Patch the global fetch.
+                        patchFetch({
+                            serverHooks: this.serverHooks,
+                            staticGenerationAsyncStorage: this.staticGenerationAsyncStorage
+                        });
+                        const res = await handler(request, {
+                            params: context.params ? parsedUrlQueryToParams(context.params) : undefined
+                        });
+                        if (!(res instanceof Response)) {
+                            throw new Error(`No response is returned from route handler '${this.resolvedPagePath}'. Ensure you return a \`Response\` or a \`NextResponse\` in all branches of your handler.`);
+                        }
+                        context.renderOpts.fetchMetrics = staticGenerationStore.fetchMetrics;
+                        context.renderOpts.waitUntil = Promise.all(Object.values(staticGenerationStore.pendingRevalidates || []));
+                        addImplicitTags(staticGenerationStore);
+                        context.renderOpts.fetchTags = (_staticGenerationStore_tags = staticGenerationStore.tags) == null ? void 0 : _staticGenerationStore_tags.join(",");
+                        // It's possible cookies were set in the handler, so we need
+                        // to merge the modified cookies and the returned response
+                        // here.
+                        const requestStore = this.requestAsyncStorage.getStore();
+                        if (requestStore && requestStore.mutableCookies) {
+                            const headers = new Headers(res.headers);
+                            if (appendMutableCookies(headers, requestStore.mutableCookies)) {
+                                return new Response(res.body, {
+                                    status: res.status,
+                                    statusText: res.stat
