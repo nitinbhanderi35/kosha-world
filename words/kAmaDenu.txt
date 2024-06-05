@@ -1,0 +1,149 @@
+      if (listRef.current && router.query.id) {
+                const item = listRef.current.querySelector(`[data-id="${router.query.id}"]`);
+                item.scrollIntoView({
+                    block: "center"
+                });
+            }
+        }, 500);
+    }, [
+        listRef.current,
+        router.query.id
+    ]);
+    let keyArray = [];
+    let dataArray = [];
+    sutraani?.data?.map((s)=>{
+        kaumudiListArray.map((e)=>{
+            if (s.sk_chapter == praudhamanorama_id && e.sk_chapter == s.sk_chapter) {
+                keyArray.push({
+                    i: s.i,
+                    a: s.a,
+                    p: s.p,
+                    n: s.n,
+                    skn: s.skn,
+                    s: s.s,
+                    title: e.title,
+                    sk_chapter: e.sk_chapter
+                });
+            }
+        });
+    });
+    if (keyArray && praudhamanorama && allKaumudi) {
+        keyArray.sort((a, b)=>a.skn - b.skn).map((k)=>{
+            dataArray.push({
+                i: k.i,
+                a: k.a,
+                p: k.p,
+                n: k.n,
+                skn: k.skn,
+                s: k.s,
+                title: k.title,
+                sk_chapter: k.sk_chapter,
+                d: praudhamanorama[k.i],
+                k: allKaumudi[k.i]
+            });
+        });
+    }
+    const handlePage = (page)=>{
+        const currentObject = kaumudiListArray?.find((obj)=>obj.sk_chapter === router.query.praudhamanorama_id);
+        const currentIndexInArray = kaumudiListArray?.indexOf(currentObject);
+        if (page == "NEXT") {
+            const nextObject = kaumudiListArray[currentIndexInArray + 1];
+            return nextObject ? nextObject.sk_chapter : router.query.praudhamanorama_id;
+        }
+        if (page == "PREVIOUS") {
+            const nextObject = kaumudiListArray[currentIndexInArray - 1];
+            return nextObject ? nextObject.sk_chapter : router.query.praudhamanorama_id;
+        }
+    };
+    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+        children: [
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Card_TitleCard__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z, {
+                backGroundImage: true,
+                children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("span", {
+                    className: "flex justify-between",
+                    children: [
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_9___default()), {
+                            href: "/ashtadhyayi/praudhamanorama/[praudhamanorama_id]",
+                            as: "/ashtadhyayi/praudhamanorama/" + handlePage("PREVIOUS"),
+                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_TitleButton__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z, {
+                                angle: "left"
+                            })
+                        }),
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h3", {
+                            children: `॥ ${(0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_7__/* .convertToHindi */ .ZS)(keyArray[0]?.sk_chapter)} . अथ प्रौढमनोरमायां  ${keyArray[0]?.title} ॥`
+                        }),
+                        /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_9___default()), {
+                            href: "/ashtadhyayi/praudhamanorama/[praudhamanorama_id]",
+                            as: "/ashtadhyayi/praudhamanorama/" + handlePage("NEXT"),
+                            children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_TitleButton__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z, {
+                                angle: "right"
+                            })
+                        })
+                    ]
+                })
+            }),
+            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                className: "bg-card border-b",
+                ref: listRef,
+                children: !dataArray || dataArray?.length === 0 ? /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_LottieAnimation___WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z, {}) : /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+                    children: [
+                        praudhamanorama_id == 1 && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                            className: "border-b border-x border-b_color text-justify text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl p-2",
+                            children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                className: "ml-2",
+                                children: [
+                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
+                                        className: "text-muted",
+                                        children: "कौमुदीमूलम् — "
+                                    }),
+                                    "१. अइउण् । २. ऋऌक् । ३. एओङ् । ४. ऐऔच् । ५. हयवरट् । ६. लण् । ७. ञमङणनम् । ८. झभञ् । ९. घढधष् । १०. जबगडदश् । ११. खफछठथचटतव् । १२. कपय् । १३. शषसर् । १४. हल् ॥ इति माहेश्वराणि सूत्राण्यणादिसंज्ञार्थानि । एषामन्त्याः इतः । लण्सूत्रेऽकारश्च । हकारादिष्वकार उच्चारणार्थः ॥"
+                                ]
+                            })
+                        }),
+                        dataArray?.map((e)=>{
+                            return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                "data-id": e?.i,
+                                className: router.query.id == e?.i ? "bg-[#ffff99] border-b border-x border-b_color p-2  text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full" : "border-b border-x border-b_color p-2  text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full",
+                                children: [
+                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                        className: "mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
+                                        children: (0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_7__/* .convertToHindi */ .ZS)(e?.skn)
+                                    }),
+                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                        className: "inline-block break-words align-baseline text-red font-bold",
+                                        children: e?.s
+                                    }),
+                                    /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                        className: "inline-block ml-2 mr-2 sm:mr-3",
+                                        children: [
+                                            "[",
+                                            (0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_7__/* .convertToHindi */ .ZS)(e?.a) + "." + (0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_7__/* .convertToHindi */ .ZS)(e?.p) + "." + (0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_7__/* .convertToHindi */ .ZS)(e?.n),
+                                            "]"
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_ashtadhyayi_ExtraLink__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .Z, {
+                                        link: "/ashtadhyayi/sutraani/" + e?.i
+                                    }),
+                                    /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+                                        children: [
+                                            e?.k && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                className: "break-words text-justify leading-6 sm:leading-9  mt-1",
+                                                dangerouslySetInnerHTML: {
+                                                    __html: '<span class="text-muted">कौमुदीमूलम् —  </span>' + formetString(e?.k)
+                                                }
+                                            }),
+                                            e?.d && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
+                                                className: "break-words text-justify leading-6 sm:leading-9  mt-2  inline-block align-middle",
+                                                dangerouslySetInnerHTML: {
+                                                    __html: e?.d ? (0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_7__/* .stringNumberHindi */ .rE)(formetString(e?.d)) : ""
+                                                }
+                                            })
+                                        ]
+                                    })
+                                ]
+                            }, e?.i);
+                        })
+                    ]
+                })
+            }),
+       

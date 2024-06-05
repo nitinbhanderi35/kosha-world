@@ -1,0 +1,87 @@
+ck_require__(7087);
+/* harmony import */ var _utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6420);
+/* harmony import */ var _utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2361);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1664);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1853);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6689);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(6290);
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(react_icons_fa__WEBPACK_IMPORTED_MODULE_12__);
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_pages_api_api__WEBPACK_IMPORTED_MODULE_6__, _utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_8__]);
+([_pages_api_api__WEBPACK_IMPORTED_MODULE_6__, _utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_8__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+
+
+
+
+
+
+
+
+
+
+
+
+
+const Praudhamanorama = ({ praudhamanorama_id  })=>{
+    const { sutraani , formetString , kaumudiListArray , allKaumudi  } = (0,react__WEBPACK_IMPORTED_MODULE_11__.useContext)(_utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_8__/* .SutraaniContext */ .i);
+    const router = (0,next_router__WEBPACK_IMPORTED_MODULE_10__.useRouter)();
+    const [praudhamanorama, setPraudhamanorama] = (0,react__WEBPACK_IMPORTED_MODULE_11__.useState)();
+    const listRef = (0,react__WEBPACK_IMPORTED_MODULE_11__.useRef)(null);
+    (0,react__WEBPACK_IMPORTED_MODULE_11__.useEffect)(()=>{
+        (0,_pages_api_api__WEBPACK_IMPORTED_MODULE_6__/* .getDataFromIndexDB */ .aD)("praudhamanorama").then((data)=>{
+            setPraudhamanorama(data?.data);
+        });
+    }, []);
+    (0,react__WEBPACK_IMPORTED_MODULE_11__.useEffect)(()=>{
+        setTimeout(()=>{
+            if (listRef.current && router.query.id) {
+                const item = listRef.current.querySelector(`[data-id="${router.query.id}"]`);
+                item.scrollIntoView({
+                    block: "center"
+                });
+            }
+        }, 500);
+    }, [
+        listRef.current,
+        router.query.id
+    ]);
+    let keyArray = [];
+    let dataArray = [];
+    sutraani?.data?.map((s)=>{
+        kaumudiListArray.map((e)=>{
+            if (s.sk_chapter == praudhamanorama_id && e.sk_chapter == s.sk_chapter) {
+                keyArray.push({
+                    i: s.i,
+                    a: s.a,
+                    p: s.p,
+                    n: s.n,
+                    skn: s.skn,
+                    s: s.s,
+                    title: e.title,
+                    sk_chapter: e.sk_chapter
+                });
+            }
+        });
+    });
+    if (keyArray && praudhamanorama && allKaumudi) {
+        keyArray.sort((a, b)=>a.skn - b.skn).map((k)=>{
+            dataArray.push({
+                i: k.i,
+                a: k.a,
+                p: k.p,
+                n: k.n,
+                skn: k.skn,
+                s: k.s,
+                title: k.title,
+                sk_chapter: k.sk_chapter,
+                d: praudhamanorama[k.i],
+                k: allKaumudi[k.i]
+            });
+        });
+    }
+    const handlePage = (page)=>{
+        const currentObject = kaumudiListArray?.find((obj)=>obj.sk_chapter === router.query.praudhamanorama_id);
+        const currentIndexInArray = kaumudiListArray?.indexOf(currentObject);
+        if (page == "NEXT
