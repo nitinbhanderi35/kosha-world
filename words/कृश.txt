@@ -1,0 +1,1392 @@
+er Manifest. ' + 'This is probably a bug in the React Server Components bundler.');
+    }
+  } // TODO: This needs to return async: true if it's an async module.
+
+
+  return [resolvedModuleData.id, resolvedModuleData.chunks, name];
+} // The chunk cache contains all the chunks we've preloaded so far.
+// If they're still pending they're a thenable. This map also exists
+// in Turbopack but unfortunately it's not exposed so we have to
+// replicate it in user space. null means that it has already loaded.
+
+var chunkCache = new Map();
+
+function requireAsyncModule(id) {
+  // We've already loaded all the chunks. We can require the module.
+  var promise = globalThis.__next_require__(id);
+
+  if (typeof promise.then !== 'function') {
+    // This wasn't a promise after all.
+    return null;
+  } else if (promise.status === 'fulfilled') {
+    // This module was already resolved earlier.
+    return null;
+  } else {
+    // Instrument the Promise to stash the result.
+    promise.then(function (value) {
+      var fulfilledThenable = promise;
+      fulfilledThenable.status = 'fulfilled';
+      fulfilledThenable.value = value;
+    }, function (reason) {
+      var rejectedThenable = promise;
+      rejectedThenable.status = 'rejected';
+      rejectedThenable.reason = reason;
+    });
+    return promise;
+  }
+}
+
+function ignoreReject() {// We rely on rejected promises to be handled by another listener.
+} // Start preloading the modules since we might need them soon.
+// This function doesn't suspend.
+
+
+function preloadModule(metadata) {
+  var chunks = metadata[CHUNKS];
+  var promises = [];
+
+  for (var i = 0; i < chunks.length; i++) {
+    var chunkFilename = chunks[i];
+    var entry = chunkCache.get(chunkFilename);
+
+    if (entry === undefined) {
+      var thenable = loadChunk(chunkFilename);
+      promises.push(thenable); // $FlowFixMe[method-unbinding]
+
+      var resolve = chunkCache.set.bind(chunkCache, chunkFilename, null);
+      thenable.then(resolve, ignoreReject);
+      chunkCache.set(chunkFilename, thenable);
+    } else if (entry !== null) {
+      promises.push(entry);
+    }
+  }
+
+  if (isAsyncImport(metadata)) {
+    if (promises.length === 0) {
+      return requireAsyncModule(metadata[ID]);
+    } else {
+      return Promise.all(promises).then(function () {
+        return requireAsyncModule(metadata[ID]);
+      });
+    }
+  } else if (promises.length > 0) {
+    return Promise.all(promises);
+  } else {
+    return null;
+  }
+} // Actually require the module or suspend if it's not yet ready.
+// Increase priority if necessary.
+
+function requireModule(metadata) {
+  var moduleExports = globalThis.__next_require__(metadata[ID]);
+
+  if (isAsyncImport(metadata)) {
+    if (typeof moduleExports.then !== 'function') ; else if (moduleExports.status === 'fulfilled') {
+      // This Promise should've been instrumented by preloadModule.
+      moduleExports = moduleExports.value;
+    } else {
+      throw moduleExports.reason;
+    }
+  }
+
+  if (metadata[NAME] === '*') {
+    // This is a placeholder value that represents that the caller imported this
+    // as a CommonJS module as is.
+    return moduleExports;
+  }
+
+  if (metadata[NAME] === '') {
+    // This is a placeholder value that represents that the caller accessed the
+    // default property of this if it was an ESM interop module.
+    return moduleExports.__esModule ? moduleExports.default : moduleExports;
+  }
+
+  return moduleExports[metadata[NAME]];
+}
+
+function loadChunk(filename) {
+  return globalThis.__next_chunk_load__(filename);
+}
+
+// The server acts as a Client of itself when resolving Server References.
+var PENDING = 'pending';
+var BLOCKED = 'blocked';
+var RESOLVED_MODEL = 'resolved_model';
+var INITIALIZED = 'fulfilled';
+var ERRORED = 'rejected'; // $FlowFixMe[missing-this-annot]
+
+function Chunk(status, value, reason, response) {
+  this.status = status;
+  this.value = value;
+  this.reason = reason;
+  this._response = response;
+} // We subclass Promise.prototype so that we get other methods like .catch
+
+
+Chunk.prototype = Object.create(Promise.prototype); // TODO: This doesn't return a new Promise chain unlike the real .then
+
+Chunk.prototype.then = function (resolve, reject) {
+  var chunk = this; // If we have resolved content, we try to initialize it first which
+  // might put us back into one of the other states.
+
+  switch (chunk.status) {
+    case RESOLVED_MODEL:
+      initializeModelChunk(chunk);
+      break;
+  } // The status might have changed after initialization.
+
+
+  switch (chunk.status) {
+    case INITIALIZED:
+      resolve(chunk.value);
+      break;
+
+    case PENDING:
+    case BLOCKED:
+      if (resolve) {
+        if (chunk.value === null) {
+          chunk.value = [];
+        }
+
+        chunk.value.push(resolve);
+      }
+
+      if (reject) {
+        if (chunk.reason === null) {
+          chunk.reason = [];
+        }
+
+        chunk.reason.push(reject);
+      }
+
+      break;
+
+    default:
+      reject(chunk.reason);
+      break;
+  }
+};
+
+function getRoot(response) {
+  var chunk = getChunk(response, 0);
+  return chunk;
+}
+
+function createPendingChunk(response) {
+  // $FlowFixMe[invalid-constructor] Flow doesn't support functions as constructors
+  return new Chunk(PENDING, null, null, response);
+}
+
+function wakeChunk(listeners, value) {
+  for (var i = 0; i < listeners.length; i++) {
+    var listener = listeners[i];
+    listener(value);
+  }
+}
+
+function wakeChunkIfInitialized(chunk, resolveListeners, rejectListeners) {
+  switch (chunk.status) {
+    case INITIALIZED:
+      wakeChunk(resolveListeners, chunk.value);
+      break;
+
+    case PENDING:
+    case BLOCKED:
+      chunk.value = resolveListeners;
+      chunk.reason = rejectListeners;
+      break;
+
+    case ERRORED:
+      if (rejectListeners) {
+        wakeChunk(rejectListeners, chunk.reason);
+      }
+
+      break;
+  }
+}
+
+function triggerErrorOnChunk(chunk, error) {
+  if (chunk.status !== PENDING && chunk.status !== BLOCKED) {
+    // We already resolved. We didn't expect to see this.
+    return;
+  }
+
+  var listeners = chunk.reason;
+  var erroredChunk = chunk;
+  erroredChunk.status = ERRORED;
+  erroredChunk.reason = error;
+
+  if (listeners !== null) {
+    wakeChunk(listeners, error);
+  }
+}
+
+function createResolvedModelChunk(response, value) {
+  // $FlowFixMe[invalid-constructor] Flow doesn't support functions as constructors
+  return new Chunk(RESOLVED_MODEL, value, null, response);
+}
+
+function resolveModelChunk(chunk, value) {
+  if (chunk.status !== PENDING) {
+    // We already resolved. We didn't expect to see this.
+    return;
+  }
+
+  var resolveListeners = chunk.value;
+  var rejectListeners = chunk.reason;
+  var resolvedChunk = chunk;
+  resolvedChunk.status = RESOLVED_MODEL;
+  resolvedChunk.value = value;
+
+  if (resolveListeners !== null) {
+    // This is unfortunate that we're reading this eagerly if
+    // we already have listeners attached since they might no
+    // longer be rendered or might not be the highest pri.
+    initializeModelChunk(resolvedChunk); // The status might have changed after initialization.
+
+    wakeChunkIfInitialized(chunk, resolveListeners, rejectListeners);
+  }
+}
+
+function bindArgs$1(fn, args) {
+  return fn.bind.apply(fn, [null].concat(args));
+}
+
+function loadServerReference$1(response, id, bound, parentChunk, parentObject, key) {
+  var serverReference = resolveServerReference(response._bundlerConfig, id); // We expect most servers to not really need this because you'd just have all
+  // the relevant modules already loaded but it allows for lazy loading of code
+  // if needed.
+
+  var preloadPromise = preloadModule(serverReference);
+  var promise;
+
+  if (bound) {
+    promise = Promise.all([bound, preloadPromise]).then(function (_ref) {
+      var args = _ref[0];
+      return bindArgs$1(requireModule(serverReference), args);
+    });
+  } else {
+    if (preloadPromise) {
+      promise = Promise.resolve(preloadPromise).then(function () {
+        return requireModule(serverReference);
+      });
+    } else {
+      // Synchronously available
+      return requireModule(serverReference);
+    }
+  }
+
+  promise.then(createModelResolver(parentChunk, parentObject, key), createModelReject(parentChunk)); // We need a placeholder value that will be replaced later.
+
+  return null;
+}
+
+var initializingChunk = null;
+var initializingChunkBlockedModel = null;
+
+function initializeModelChunk(chunk) {
+  var prevChunk = initializingChunk;
+  var prevBlocked = initializingChunkBlockedModel;
+  initializingChunk = chunk;
+  initializingChunkBlockedModel = null;
+
+  try {
+    var value = JSON.parse(chunk.value, chunk._response._fromJSON);
+
+    if (initializingChunkBlockedModel !== null && initializingChunkBlockedModel.deps > 0) {
+      initializingChunkBlockedModel.value = value; // We discovered new dependencies on modules that are not yet resolved.
+      // We have to go the BLOCKED state until they're resolved.
+
+      var blockedChunk = chunk;
+      blockedChunk.status = BLOCKED;
+      blockedChunk.value = null;
+      blockedChunk.reason = null;
+    } else {
+      var initializedChunk = chunk;
+      initializedChunk.status = INITIALIZED;
+      initializedChunk.value = value;
+    }
+  } catch (error) {
+    var erroredChunk = chunk;
+    erroredChunk.status = ERRORED;
+    erroredChunk.reason = error;
+  } finally {
+    initializingChunk = prevChunk;
+    initializingChunkBlockedModel = prevBlocked;
+  }
+} // Report that any missing chunks in the model is now going to throw this
+// error upon read. Also notify any pending promises.
+
+
+function reportGlobalError(response, error) {
+  response._chunks.forEach(function (chunk) {
+    // If this chunk was already resolved or errored, it won't
+    // trigger an error but if it wasn't then we need to
+    // because we won't be getting any new data to resolve it.
+    if (chunk.status === PENDING) {
+      triggerErrorOnChunk(chunk, error);
+    }
+  });
+}
+
+function getChunk(response, id) {
+  var chunks = response._chunks;
+  var chunk = chunks.get(id);
+
+  if (!chunk) {
+    var prefix = response._prefix;
+    var key = prefix + id; // Check if we have this field in the backing store already.
+
+    var backingEntry = response._formData.get(key);
+
+    if (backingEntry != null) {
+      // We assume that this is a string entry for now.
+      chunk = createResolvedModelChunk(response, backingEntry);
+    } else {
+      // We're still waiting on this entry to stream in.
+      chunk = createPendingChunk(response);
+    }
+
+    chunks.set(id, chunk);
+  }
+
+  return chunk;
+}
+
+function createModelResolver(chunk, parentObject, key) {
+  var blocked;
+
+  if (initializingChunkBlockedModel) {
+    blocked = initializingChunkBlockedModel;
+    blocked.deps++;
+  } else {
+    blocked = initializingChunkBlockedModel = {
+      deps: 1,
+      value: null
+    };
+  }
+
+  return function (value) {
+    parentObject[key] = value;
+    blocked.deps--;
+
+    if (blocked.deps === 0) {
+      if (chunk.status !== BLOCKED) {
+        return;
+      }
+
+      var resolveListeners = chunk.value;
+      var initializedChunk = chunk;
+      initializedChunk.status = INITIALIZED;
+      initializedChunk.value = blocked.value;
+
+      if (resolveListeners !== null) {
+        wakeChunk(resolveListeners, blocked.value);
+      }
+    }
+  };
+}
+
+function createModelReject(chunk) {
+  return function (error) {
+    return triggerErrorOnChunk(chunk, error);
+  };
+}
+
+function getOutlinedModel(response, id) {
+  var chunk = getChunk(response, id);
+
+  if (chunk.status === RESOLVED_MODEL) {
+    initializeModelChunk(chunk);
+  }
+
+  if (chunk.status !== INITIALIZED) {
+    // We know that this is emitted earlier so otherwise it's an error.
+    throw chunk.reason;
+  }
+
+  return chunk.value;
+}
+
+function parseModelString(response, parentObject, key, value) {
+  if (value[0] === '$') {
+    switch (value[1]) {
+      case '$':
+        {
+          // This was an escaped string value.
+          return value.slice(1);
+        }
+
+      case '@':
+        {
+          // Promise
+          var id = parseInt(value.slice(2), 16);
+          var chunk = getChunk(response, id);
+          return chunk;
+        }
+
+      case 'S':
+        {
+          // Symbol
+          return Symbol.for(value.slice(2));
+        }
+
+      case 'F':
+        {
+          // Server Reference
+          var _id = parseInt(value.slice(2), 16); // TODO: Just encode this in the reference inline instead of as a model.
+
+
+          var metaData = getOutlinedModel(response, _id);
+          return loadServerReference$1(response, metaData.id, metaData.bound, initializingChunk, parentObject, key);
+        }
+
+      case 'Q':
+        {
+          // Map
+          var _id2 = parseInt(value.slice(2), 16);
+
+          var data = getOutlinedModel(response, _id2);
+          return new Map(data);
+        }
+
+      case 'W':
+        {
+          // Set
+          var _id3 = parseInt(value.slice(2), 16);
+
+          var _data = getOutlinedModel(response, _id3);
+
+          return new Set(_data);
+        }
+
+      case 'K':
+        {
+          // FormData
+          var stringId = value.slice(2);
+          var formPrefix = response._prefix + stringId + '_';
+
+          var _data2 = new FormData();
+
+          var backingFormData = response._formData; // We assume that the reference to FormData always comes after each
+          // entry that it references so we can assume they all exist in the
+          // backing store already.
+          // $FlowFixMe[prop-missing] FormData has forEach on it.
+
+          backingFormData.forEach(function (entry, entryKey) {
+            if (entryKey.startsWith(formPrefix)) {
+              _data2.append(entryKey.slice(formPrefix.length), entry);
+            }
+          });
+          return _data2;
+        }
+
+      case 'I':
+        {
+          // $Infinity
+          return Infinity;
+        }
+
+      case '-':
+        {
+          // $-0 or $-Infinity
+          if (value === '$-0') {
+            return -0;
+          } else {
+            return -Infinity;
+          }
+        }
+
+      case 'N':
+        {
+          // $NaN
+          return NaN;
+        }
+
+      case 'u':
+        {
+          // matches "$undefined"
+          // Special encoding for `undefined` which can't be serialized as JSON otherwise.
+          return undefined;
+        }
+
+      case 'D':
+        {
+          // Date
+          return new Date(Date.parse(value.slice(2)));
+        }
+
+      case 'n':
+        {
+          // BigInt
+          return BigInt(value.slice(2));
+        }
+
+      default:
+        {
+          // We assume that anything else is a reference ID.
+          var _id4 = parseInt(value.slice(1), 16);
+
+          var _chunk = getChunk(response, _id4);
+
+          switch (_chunk.status) {
+            case RESOLVED_MODEL:
+              initializeModelChunk(_chunk);
+              break;
+          } // The status might have changed after initialization.
+
+
+          switch (_chunk.status) {
+            case INITIALIZED:
+              return _chunk.value;
+
+            case PENDING:
+            case BLOCKED:
+              var parentChunk = initializingChunk;
+
+              _chunk.then(createModelResolver(parentChunk, parentObject, key), createModelReject(parentChunk));
+
+              return null;
+
+            default:
+              throw _chunk.reason;
+          }
+        }
+    }
+  }
+
+  return value;
+}
+
+function createResponse(bundlerConfig, formFieldPrefix) {
+  var backingFormData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new FormData();
+  var chunks = new Map();
+  var response = {
+    _bundlerConfig: bundlerConfig,
+    _prefix: formFieldPrefix,
+    _formData: backingFormData,
+    _chunks: chunks,
+    _fromJSON: function (key, value) {
+      if (typeof value === 'string') {
+        // We can't use .bind here because we need the "this" value.
+        return parseModelString(response, this, key, value);
+      }
+
+      return value;
+    }
+  };
+  return response;
+}
+function resolveField(response, key, value) {
+  // Add this field to the backing store.
+  response._formData.append(key, value);
+
+  var prefix = response._prefix;
+
+  if (key.startsWith(prefix)) {
+    var chunks = response._chunks;
+    var id = +key.slice(prefix.length);
+    var chunk = chunks.get(id);
+
+    if (chunk) {
+      // We were waiting on this key so now we can resolve it.
+      resolveModelChunk(chunk, value);
+    }
+  }
+}
+function resolveFileInfo(response, key, filename, mime) {
+  return {
+    chunks: [],
+    filename: filename,
+    mime: mime
+  };
+}
+function resolveFileChunk(response, handle, chunk) {
+  handle.chunks.push(chunk);
+}
+function resolveFileComplete(response, key, handle) {
+  // Add this file to the backing store.
+  // Node.js doesn't expose a global File constructor so we need to use
+  // the append() form that takes the file name as the third argument,
+  // to create a File object.
+  var blob = new Blob(handle.chunks, {
+    type: handle.mime
+  });
+
+  response._formData.append(key, blob, handle.filename);
+}
+function close(response) {
+  // In case there are any remaining unresolved chunks, they won't
+  // be resolved now. So we need to issue an error to those.
+  // Ideally we should be able to early bail out if we kept a
+  // ref count of pending chunks.
+  reportGlobalError(response, new Error('Connection closed.'));
+}
+
+function bindArgs(fn, args) {
+  return fn.bind.apply(fn, [null].concat(args));
+}
+
+function loadServerReference(bundlerConfig, id, bound) {
+  var serverReference = resolveServerReference(bundlerConfig, id); // We expect most servers to not really need this because you'd just have all
+  // the relevant modules already loaded but it allows for lazy loading of code
+  // if needed.
+
+  var preloadPromise = preloadModule(serverReference);
+
+  if (bound) {
+    return Promise.all([bound, preloadPromise]).then(function (_ref) {
+      var args = _ref[0];
+      return bindArgs(requireModule(serverReference), args);
+    });
+  } else if (preloadPromise) {
+    return Promise.resolve(preloadPromise).then(function () {
+      return requireModule(serverReference);
+    });
+  } else {
+    // Synchronously available
+    return Promise.resolve(requireModule(serverReference));
+  }
+}
+
+function decodeBoundActionMetaData(body, serverManifest, formFieldPrefix) {
+  // The data for this reference is encoded in multiple fields under this prefix.
+  var actionResponse = createResponse(serverManifest, formFieldPrefix, body);
+  close(actionResponse);
+  var refPromise = getRoot(actionResponse); // Force it to initialize
+  // $FlowFixMe
+
+  refPromise.then(function () {});
+
+  if (refPromise.status !== 'fulfilled') {
+    // $FlowFixMe
+    throw refPromise.reason;
+  }
+
+  return refPromise.value;
+}
+
+function decodeAction(body, serverManifest) {
+  // We're going to create a new formData object that holds all the fields except
+  // the implementation details of the action data.
+  var formData = new FormData();
+  var action = null; // $FlowFixMe[prop-missing]
+
+  body.forEach(function (value, key) {
+    if (!key.startsWith('$ACTION_')) {
+      formData.append(key, value);
+      return;
+    } // Later actions may override earlier actions if a button is used to override the default
+    // form action.
+
+
+    if (key.startsWith('$ACTION_REF_')) {
+      var formFieldPrefix = '$ACTION_' + key.slice(12) + ':';
+      var metaData = decodeBoundActionMetaData(body, serverManifest, formFieldPrefix);
+      action = loadServerReference(serverManifest, metaData.id, metaData.bound);
+      return;
+    }
+
+    if (key.startsWith('$ACTION_ID_')) {
+      var id = key.slice(11);
+      action = loadServerReference(serverManifest, id, null);
+      return;
+    }
+  });
+
+  if (action === null) {
+    return null;
+  } // Return the action with the remaining FormData bound to the first argument.
+
+
+  return action.then(function (fn) {
+    return fn.bind(null, formData);
+  });
+}
+
+function createDrainHandler(destination, request) {
+  return function () {
+    return startFlowing(request, destination);
+  };
+}
+
+function renderToPipeableStream(model, turbopackMap, options) {
+  var request = createRequest(model, turbopackMap, options ? options.onError : undefined, options ? options.context : undefined, options ? options.identifierPrefix : undefined, options ? options.onPostpone : undefined);
+  var hasStartedFlowing = false;
+  startWork(request);
+  return {
+    pipe: function (destination) {
+      if (hasStartedFlowing) {
+        throw new Error('React currently only supports piping to one writable stream.');
+      }
+
+      hasStartedFlowing = true;
+      startFlowing(request, destination);
+      destination.on('drain', createDrainHandler(destination, request));
+      return destination;
+    },
+    abort: function (reason) {
+      abort(request, reason);
+    }
+  };
+}
+
+function decodeReplyFromBusboy(busboyStream, turbopackMap) {
+  var response = createResponse(turbopackMap, '');
+  var pendingFiles = 0;
+  var queuedFields = [];
+  busboyStream.on('field', function (name, value) {
+    if (pendingFiles > 0) {
+      // Because the 'end' event fires two microtasks after the next 'field'
+      // we would resolve files and fields out of order. To handle this properly
+      // we queue any fields we receive until the previous file is done.
+      queuedFields.push(name, value);
+    } else {
+      resolveField(response, name, value);
+    }
+  });
+  busboyStream.on('file', function (name, value, _ref) {
+    var filename = _ref.filename,
+        encoding = _ref.encoding,
+        mimeType = _ref.mimeType;
+
+    if (encoding.toLowerCase() === 'base64') {
+      throw new Error("React doesn't accept base64 encoded file uploads because we don't expect " + "form data passed from a browser to ever encode data that way. If that's " + 'the wrong assumption, we can easily fix it.');
+    }
+
+    pendingFiles++;
+    var file = resolveFileInfo(response, name, filename, mimeType);
+    value.on('data', function (chunk) {
+      resolveFileChunk(response, file, chunk);
+    });
+    value.on('end', function () {
+      resolveFileComplete(response, name, file);
+      pendingFiles--;
+
+      if (pendingFiles === 0) {
+        // Release any queued fields
+        for (var i = 0; i < queuedFields.length; i += 2) {
+          resolveField(response, queuedFields[i], queuedFields[i + 1]);
+        }
+
+        queuedFields.length = 0;
+      }
+    });
+  });
+  busboyStream.on('finish', function () {
+    close(response);
+  });
+  busboyStream.on('error', function (err) {
+    reportGlobalError(response, // $FlowFixMe[incompatible-call] types Error and mixed are incompatible
+    err);
+  });
+  return getRoot(response);
+}
+
+function decodeReply(body, turbopackMap) {
+  if (typeof body === 'string') {
+    var form = new FormData();
+    form.append('0', body);
+    body = form;
+  }
+
+  var response = createResponse(turbopackMap, '', body);
+  var root = getRoot(response);
+  close(response);
+  return root;
+}
+
+exports.createClientModuleProxy = createClientModuleProxy;
+exports.decodeAction = decodeAction;
+exports.decodeReply = decodeReply;
+exports.decodeReplyFromBusboy = decodeReplyFromBusboy;
+exports.registerClientReference = registerClientReference;
+exports.registerServerReference = registerServerReference;
+exports.renderToPipeableStream = renderToPipeableStream;
+  })();
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             /**
+ * @license React
+ * react-server-dom-turbopack-server.node.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+'use strict';
+
+if (process.env.NODE_ENV !== "production") {
+  (function() {
+'use strict';
+
+var React = require('react');
+var util = require('util');
+require('crypto');
+var async_hooks = require('async_hooks');
+var ReactDOM = require('react-dom');
+
+var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+
+function error(format) {
+  {
+    {
+      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        args[_key2 - 1] = arguments[_key2];
+      }
+
+      printWarning('error', format, args);
+    }
+  }
+}
+
+function printWarning(level, format, args) {
+  // When changing this logic, you might want to also
+  // update consoleWithStackDev.www.js as well.
+  {
+    var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
+    var stack = ReactDebugCurrentFrame.getStackAddendum();
+
+    if (stack !== '') {
+      format += '%s';
+      args = args.concat([stack]);
+    } // eslint-disable-next-line react-internal/safe-string-coercion
+
+
+    var argsWithFormat = args.map(function (item) {
+      return String(item);
+    }); // Careful: RN currently depends on this prefix
+
+    argsWithFormat.unshift('Warning: ' + format); // We intentionally don't use spread (or .apply) directly because it
+    // breaks IE9: https://github.com/facebook/react/issues/13610
+    // eslint-disable-next-line react-internal/no-production-logging
+
+    Function.prototype.apply.call(console[level], console, argsWithFormat);
+  }
+}
+
+// -----------------------------------------------------------------------------
+var enablePostpone = false;
+
+function scheduleWork(callback) {
+  setImmediate(callback);
+}
+function flushBuffered(destination) {
+  // If we don't have any more data to send right now.
+  // Flush whatever is in the buffer to the wire.
+  if (typeof destination.flush === 'function') {
+    // By convention the Zlib streams provide a flush function for this purpose.
+    // For Express, compression middleware adds this method.
+    destination.flush();
+  }
+}
+var VIEW_SIZE = 2048;
+var currentView = null;
+var writtenBytes = 0;
+var destinationHasCapacity = true;
+function beginWriting(destination) {
+  currentView = new Uint8Array(VIEW_SIZE);
+  writtenBytes = 0;
+  destinationHasCapacity = true;
+}
+
+function writeStringChunk(destination, stringChunk) {
+  if (stringChunk.length === 0) {
+    return;
+  } // maximum possible view needed to encode entire string
+
+
+  if (stringChunk.length * 3 > VIEW_SIZE) {
+    if (writtenBytes > 0) {
+      writeToDestination(destination, currentView.subarray(0, writtenBytes));
+      currentView = new Uint8Array(VIEW_SIZE);
+      writtenBytes = 0;
+    }
+
+    writeToDestination(destination, textEncoder.encode(stringChunk));
+    return;
+  }
+
+  var target = currentView;
+
+  if (writtenBytes > 0) {
+    target = currentView.subarray(writtenBytes);
+  }
+
+  var _textEncoder$encodeIn = textEncoder.encodeInto(stringChunk, target),
+      read = _textEncoder$encodeIn.read,
+      written = _textEncoder$encodeIn.written;
+
+  writtenBytes += written;
+
+  if (read < stringChunk.length) {
+    writeToDestination(destination, currentView.subarray(0, writtenBytes));
+    currentView = new Uint8Array(VIEW_SIZE);
+    writtenBytes = textEncoder.encodeInto(stringChunk.slice(read), currentView).written;
+  }
+
+  if (writtenBytes === VIEW_SIZE) {
+    writeToDestination(destination, currentView);
+    currentView = new Uint8Array(VIEW_SIZE);
+    writtenBytes = 0;
+  }
+}
+
+function writeViewChunk(destination, chunk) {
+  if (chunk.byteLength === 0) {
+    return;
+  }
+
+  if (chunk.byteLength > VIEW_SIZE) {
+    {
+      if (precomputedChunkSet && precomputedChunkSet.has(chunk)) {
+        error('A large precomputed chunk was passed to writeChunk without being copied.' + ' Large chunks get enqueued directly and are not copied. This is incompatible with precomputed chunks because you cannot enqueue the same precomputed chunk twice.' + ' Use "cloneChunk" to make a copy of this large precomputed chunk before writing it. This is a bug in React.');
+      }
+    } // this chunk may overflow a single view which implies it was not
+    // one that is cached by the streaming renderer. We will enqueu
+    // it directly and expect it is not re-used
+
+
+    if (writtenBytes > 0) {
+      writeToDestination(destination, currentView.subarray(0, writtenBytes));
+      currentView = new Uint8Array(VIEW_SIZE);
+      writtenBytes = 0;
+    }
+
+    writeToDestination(destination, chunk);
+    return;
+  }
+
+  var bytesToWrite = chunk;
+  var allowableBytes = currentView.length - writtenBytes;
+
+  if (allowableBytes < bytesToWrite.byteLength) {
+    // this chunk would overflow the current view. We enqueue a full view
+    // and start a new view with the remaining chunk
+    if (allowableBytes === 0) {
+      // the current view is already full, send it
+      writeToDestination(destination, currentView);
+    } else {
+      // fill up the current view and apply the remaining chunk bytes
+      // to a new view.
+      currentView.set(bytesToWrite.subarray(0, allowableBytes), writtenBytes);
+      writtenBytes += allowableBytes;
+      writeToDestination(destination, currentView);
+      bytesToWrite = bytesToWrite.subarray(allowableBytes);
+    }
+
+    currentView = new Uint8Array(VIEW_SIZE);
+    writtenBytes = 0;
+  }
+
+  currentView.set(bytesToWrite, writtenBytes);
+  writtenBytes += bytesToWrite.byteLength;
+
+  if (writtenBytes === VIEW_SIZE) {
+    writeToDestination(destination, currentView);
+    currentView = new Uint8Array(VIEW_SIZE);
+    writtenBytes = 0;
+  }
+}
+
+function writeChunk(destination, chunk) {
+  if (typeof chunk === 'string') {
+    writeStringChunk(destination, chunk);
+  } else {
+    writeViewChunk(destination, chunk);
+  }
+}
+
+function writeToDestination(destination, view) {
+  var currentHasCapacity = destination.write(view);
+  destinationHasCapacity = destinationHasCapacity && currentHasCapacity;
+}
+
+function writeChunkAndReturn(destination, chunk) {
+  writeChunk(destination, chunk);
+  return destinationHasCapacity;
+}
+function completeWriting(destination) {
+  if (currentView && writtenBytes > 0) {
+    destination.write(currentView.subarray(0, writtenBytes));
+  }
+
+  currentView = null;
+  writtenBytes = 0;
+  destinationHasCapacity = true;
+}
+function close$1(destination) {
+  destination.end();
+}
+var textEncoder = new util.TextEncoder();
+function stringToChunk(content) {
+  return content;
+}
+var precomputedChunkSet = new Set() ;
+function byteLengthOfChunk(chunk) {
+  return typeof chunk === 'string' ? Buffer.byteLength(chunk, 'utf8') : chunk.byteLength;
+}
+function closeWithError(destination, error) {
+  // $FlowFixMe[incompatible-call]: This is an Error object or the destination accepts other types.
+  destination.destroy(error);
+}
+
+// eslint-disable-next-line no-unused-vars
+var CLIENT_REFERENCE_TAG = Symbol.for('react.client.reference');
+var SERVER_REFERENCE_TAG = Symbol.for('react.server.reference');
+function isClientReference(reference) {
+  return reference.$$typeof === CLIENT_REFERENCE_TAG;
+}
+function isServerReference(reference) {
+  return reference.$$typeof === SERVER_REFERENCE_TAG;
+}
+function registerClientReference(proxyImplementation, id, exportName) {
+  return registerClientReferenceImpl(proxyImplementation, id + '#' + exportName, false);
+}
+
+function registerClientReferenceImpl(proxyImplementation, id, async) {
+  return Object.defineProperties(proxyImplementation, {
+    $$typeof: {
+      value: CLIENT_REFERENCE_TAG
+    },
+    $$id: {
+      value: id
+    },
+    $$async: {
+      value: async
+    }
+  });
+} // $FlowFixMe[method-unbinding]
+
+
+var FunctionBind = Function.prototype.bind; // $FlowFixMe[method-unbinding]
+
+var ArraySlice = Array.prototype.slice;
+
+function bind() {
+  // $FlowFixMe[unsupported-syntax]
+  var newFn = FunctionBind.apply(this, arguments);
+
+  if (this.$$typeof === SERVER_REFERENCE_TAG) {
+    var args = ArraySlice.call(arguments, 1);
+    return Object.defineProperties(newFn, {
+      $$typeof: {
+        value: SERVER_REFERENCE_TAG
+      },
+      $$id: {
+        value: this.$$id
+      },
+      $$bound: {
+        value: this.$$bound ? this.$$bound.concat(args) : args
+      },
+      bind: {
+        value: bind
+      }
+    });
+  }
+
+  return newFn;
+}
+
+function registerServerReference(reference, id, exportName) {
+  return Object.defineProperties(reference, {
+    $$typeof: {
+      value: SERVER_REFERENCE_TAG
+    },
+    $$id: {
+      value: exportName === null ? id : id + '#' + exportName
+    },
+    $$bound: {
+      value: null
+    },
+    bind: {
+      value: bind
+    }
+  });
+}
+var PROMISE_PROTOTYPE = Promise.prototype;
+var deepProxyHandlers = {
+  get: function (target, name, receiver) {
+    switch (name) {
+      // These names are read by the Flight runtime if you end up using the exports object.
+      case '$$typeof':
+        // These names are a little too common. We should probably have a way to
+        // have the Flight runtime extract the inner target instead.
+        return target.$$typeof;
+
+      case '$$id':
+        return target.$$id;
+
+      case '$$async':
+        return target.$$async;
+
+      case 'name':
+        return target.name;
+
+      case 'displayName':
+        return undefined;
+      // We need to special case this because createElement reads it if we pass this
+      // reference.
+
+      case 'defaultProps':
+        return undefined;
+      // Avoid this attempting to be serialized.
+
+      case 'toJSON':
+        return undefined;
+
+      case Symbol.toPrimitive:
+        // $FlowFixMe[prop-missing]
+        return Object.prototype[Symbol.toPrimitive];
+
+      case 'Provider':
+        throw new Error("Cannot render a Client Context Provider on the Server. " + "Instead, you can export a Client Component wrapper " + "that itself renders a Client Context Provider.");
+    } // eslint-disable-next-line react-internal/safe-string-coercion
+
+
+    var expression = String(target.name) + '.' + String(name);
+    throw new Error("Cannot access " + expression + " on the server. " + 'You cannot dot into a client module from a server component. ' + 'You can only pass the imported name through.');
+  },
+  set: function () {
+    throw new Error('Cannot assign to a client module from a server module.');
+  }
+};
+var proxyHandlers = {
+  get: function (target, name, receiver) {
+    switch (name) {
+      // These names are read by the Flight runtime if you end up using the exports object.
+      case '$$typeof':
+        return target.$$typeof;
+
+      case '$$id':
+        return target.$$id;
+
+      case '$$async':
+        return target.$$async;
+
+      case 'name':
+        return target.name;
+      // We need to special case this because createElement reads it if we pass this
+      // reference.
+
+      case 'defaultProps':
+        return undefined;
+      // Avoid this attempting to be serialized.
+
+      case 'toJSON':
+        return undefined;
+
+      case Symbol.toPrimitive:
+        // $FlowFixMe[prop-missing]
+        return Object.prototype[Symbol.toPrimitive];
+
+      case '__esModule':
+        // Something is conditionally checking which export to use. We'll pretend to be
+        // an ESM compat module but then we'll check again on the client.
+        var moduleId = target.$$id;
+        target.default = registerClientReferenceImpl(function () {
+          throw new Error("Attempted to call the default export of " + moduleId + " from the server " + "but it's on the client. It's not possible to invoke a client function from " + "the server, it can only be rendered as a Component or passed to props of a " + "Client Component.");
+        }, target.$$id + '#', target.$$async);
+        return true;
+
+      case 'then':
+        if (target.then) {
+          // Use a cached value
+          return target.then;
+        }
+
+        if (!target.$$async) {
+          // If this module is expected to return a Promise (such as an AsyncModule) then
+          // we should resolve that with a client reference that unwraps the Promise on
+          // the client.
+          var clientReference = registerClientReferenceImpl({}, target.$$id, true);
+          var proxy = new Proxy(clientReference, proxyHandlers); // Treat this as a resolved Promise for React's use()
+
+          target.status = 'fulfilled';
+          target.value = proxy;
+          var then = target.then = registerClientReferenceImpl(function then(resolve, reject) {
+            // Expose to React.
+            return Promise.resolve(resolve(proxy));
+          }, // If this is not used as a Promise but is treated as a reference to a `.then`
+          // export then we should treat it as a reference to that name.
+          target.$$id + '#then', false);
+          return then;
+        } else {
+          // Since typeof .then === 'function' is a feature test we'd continue recursing
+          // indefinitely if we return a function. Instead, we return an object reference
+          // if we check further.
+          return undefined;
+        }
+
+    }
+
+    var cachedReference = target[name];
+
+    if (!cachedReference) {
+      var reference = registerClientReferenceImpl(function () {
+        throw new Error( // eslint-disable-next-line react-internal/safe-string-coercion
+        "Attempted to call " + String(name) + "() from the server but " + String(name) + " is on the client. " + "It's not possible to invoke a client function from the server, it can " + "only be rendered as a Component or passed to props of a Client Component.");
+      }, target.$$id + '#' + name, target.$$async);
+      Object.defineProperty(reference, 'name', {
+        value: name
+      });
+      cachedReference = target[name] = new Proxy(reference, deepProxyHandlers);
+    }
+
+    return cachedReference;
+  },
+  getPrototypeOf: function (target) {
+    // Pretend to be a Promise in case anyone asks.
+    return PROMISE_PROTOTYPE;
+  },
+  set: function () {
+    throw new Error('Cannot assign to a client module from a server module.');
+  }
+};
+function createClientModuleProxy(moduleId) {
+  var clientReference = registerClientReferenceImpl({}, // Represents the whole Module object instead of a particular import.
+  moduleId, false);
+  return new Proxy(clientReference, proxyHandlers);
+}
+
+function getClientReferenceKey(reference) {
+  return reference.$$async ? reference.$$id + '#async' : reference.$$id;
+}
+function resolveClientReferenceMetadata(config, clientReference) {
+  var modulePath = clientReference.$$id;
+  var name = '';
+  var resolvedModuleData = config[modulePath];
+
+  if (resolvedModuleData) {
+    // The potentially aliased name.
+    name = resolvedModuleData.name;
+  } else {
+    // We didn't find this specific export name but we might have the * export
+    // which contains this name as well.
+    // TODO: It's unfortunate that we now have to parse this string. We should
+    // probably go back to encoding path and name separately on the client reference.
+    var idx = modulePath.lastIndexOf('#');
+
+    if (idx !== -1) {
+      name = modulePath.slice(idx + 1);
+      resolvedModuleData = config[modulePath.slice(0, idx)];
+    }
+
+    if (!resolvedModuleData) {
+      throw new Error('Could not find the module "' + modulePath + '" in the React Client Manifest. ' + 'This is probably a bug in the React Server Components bundler.');
+    }
+  }
+
+  if (clientReference.$$async === true) {
+    return [resolvedModuleData.id, resolvedModuleData.chunks, name, 1];
+  } else {
+    return [resolvedModuleData.id, resolvedModuleData.chunks, name];
+  }
+}
+function getServerReferenceId(config, serverReference) {
+  return serverReference.$$id;
+}
+function getServerReferenceBoundArguments(config, serverReference) {
+  return serverReference.$$bound;
+}
+
+var ReactDOMSharedInternals = ReactDOM.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+
+var ReactDOMFlightServerDispatcher = {
+  prefetchDNS: prefetchDNS,
+  preconnect: preconnect,
+  preload: preload,
+  preloadModule: preloadModule$1,
+  preinitStyle: preinitStyle,
+  preinitScript: preinitScript,
+  preinitModuleScript: preinitModuleScript
+};
+
+function prefetchDNS(href) {
+  {
+    if (typeof href === 'string' && href) {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = 'D|' + href;
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+        emitHint(request, 'D', href);
+      }
+    }
+  }
+}
+
+function preconnect(href, crossOrigin) {
+  {
+    if (typeof href === 'string') {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = "C|" + (crossOrigin == null ? 'null' : crossOrigin) + "|" + href;
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+
+        if (typeof crossOrigin === 'string') {
+          emitHint(request, 'C', [href, crossOrigin]);
+        } else {
+          emitHint(request, 'C', href);
+        }
+      }
+    }
+  }
+}
+
+function preload(href, as, options) {
+  {
+    if (typeof href === 'string') {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHints(request);
+        var key = 'L';
+
+        if (as === 'image' && options) {
+          key += getImagePreloadKey(href, options.imageSrcSet, options.imageSizes);
+        } else {
+          key += "[" + as + "]" + href;
+        }
+
+        if (hints.has(key)) {
+          // duplicate hint
+          return;
+        }
+
+        hints.add(key);
+        var trimmed = trimOptions(options);
+
+        if (trimmed) {
+          emitHint(request, 'L', [href, as, trimmed]);
+        } else {
+          emitHint(request, 'L', [href, as]);
+        }
+      }
+    }
+  }
+}
+
+function preloadModule$1(href, options) {
+  {
+    if (typeof href === 'string') {
+      var request = resolveRequest();
+
+      if (request) {
+        var hints = getHin
