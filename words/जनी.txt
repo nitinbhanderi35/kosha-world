@@ -1,0 +1,888 @@
+odErrorMessage(310));
+      }
+    }
+
+    currentHook = nextCurrentHook;
+    const newHook = {
+      memoizedState: currentHook.memoizedState,
+      baseState: currentHook.baseState,
+      baseQueue: currentHook.baseQueue,
+      queue: currentHook.queue,
+      next: null
+    };
+
+    if (workInProgressHook === null) {
+      // This is the first hook in the list.
+      currentlyRenderingFiber$1.memoizedState = workInProgressHook = newHook;
+    } else {
+      // Append to the end of the list.
+      workInProgressHook = workInProgressHook.next = newHook;
+    }
+  }
+
+  return workInProgressHook;
+} // NOTE: defining two versions of this function to avoid size impact when this feature is disabled.
+// Previously this function was inlined, the additional `memoCache` property makes it not inlined.
+
+
+let createFunctionComponentUpdateQueue;
+
+{
+  createFunctionComponentUpdateQueue = () => {
+    return {
+      lastEffect: null,
+      events: null,
+      stores: null,
+      memoCache: null
+    };
+  };
+}
+
+function useThenable(thenable) {
+  // Track the position of the thenable within this fiber.
+  const index = thenableIndexCounter;
+  thenableIndexCounter += 1;
+
+  if (thenableState === null) {
+    thenableState = createThenableState();
+  }
+
+  const result = trackUsedThenable(thenableState, thenable, index);
+
+  if (currentlyRenderingFiber$1.alternate === null && (workInProgressHook === null ? currentlyRenderingFiber$1.memoizedState === null : workInProgressHook.next === null)) {
+    // Initial render, and either this is the first time the component is
+    // called, or there were no Hooks called after this use() the previous
+    // time (perhaps because it threw). Subsequent Hook calls should use the
+    // mount dispatcher.
+    {
+      ReactCurrentDispatcher$1.current = HooksDispatcherOnMount;
+    }
+  }
+
+  return result;
+}
+
+function use(usable) {
+  if (usable !== null && typeof usable === 'object') {
+    // $FlowFixMe[method-unbinding]
+    if (typeof usable.then === 'function') {
+      // This is a thenable.
+      const thenable = usable;
+      return useThenable(thenable);
+    } else if (usable.$$typeof === REACT_CONTEXT_TYPE || usable.$$typeof === REACT_SERVER_CONTEXT_TYPE) {
+      const context = usable;
+      return readContext(context);
+    }
+  } // eslint-disable-next-line react-internal/safe-string-coercion
+
+
+  throw Error(formatProdErrorMessage(438, String(usable)));
+}
+
+function useMemoCache(size) {
+  let memoCache = null; // Fast-path, load memo cache from wip fiber if already prepared
+
+  let updateQueue = currentlyRenderingFiber$1.updateQueue;
+
+  if (updateQueue !== null) {
+    memoCache = updateQueue.memoCache;
+  } // Otherwise clone from the current fiber
+
+
+  if (memoCache == null) {
+    const current = currentlyRenderingFiber$1.alternate;
+
+    if (current !== null) {
+      const currentUpdateQueue = current.updateQueue;
+
+      if (currentUpdateQueue !== null) {
+        const currentMemoCache = currentUpdateQueue.memoCache;
+
+        if (currentMemoCache != null) {
+          memoCache = {
+            data: currentMemoCache.data.map(array => array.slice()),
+            index: 0
+          };
+        }
+      }
+    }
+  } // Finally fall back to allocating a fresh instance of the cache
+
+
+  if (memoCache == null) {
+    memoCache = {
+      data: [],
+      index: 0
+    };
+  }
+
+  if (updateQueue === null) {
+    updateQueue = createFunctionComponentUpdateQueue();
+    currentlyRenderingFiber$1.updateQueue = updateQueue;
+  }
+
+  updateQueue.memoCache = memoCache;
+  let data = memoCache.data[memoCache.index];
+
+  if (data === undefined) {
+    data = memoCache.data[memoCache.index] = new Array(size);
+
+    for (let i = 0; i < size; i++) {
+      data[i] = REACT_MEMO_CACHE_SENTINEL;
+    }
+  }
+
+  memoCache.index++;
+  return data;
+}
+
+function basicStateReducer(state, action) {
+  // $FlowFixMe[incompatible-use]: Flow doesn't like mixed types
+  return typeof action === 'function' ? action(state) : action;
+}
+
+function mountReducer(reducer, initialArg, init) {
+  const hook = mountWorkInProgressHook();
+  let initialState;
+
+  if (init !== undefined) {
+    initialState = init(initialArg);
+  } else {
+    initialState = initialArg;
+  }
+
+  hook.memoizedState = hook.baseState = initialState;
+  const queue = {
+    pending: null,
+    lanes: NoLanes,
+    dispatch: null,
+    lastRenderedReducer: reducer,
+    lastRenderedState: initialState
+  };
+  hook.queue = queue;
+  const dispatch = queue.dispatch = dispatchReducerAction.bind(null, currentlyRenderingFiber$1, queue);
+  return [hook.memoizedState, dispatch];
+}
+
+function updateReducer(reducer, initialArg, init) {
+  const hook = updateWorkInProgressHook();
+  return updateReducerImpl(hook, currentHook, reducer);
+}
+
+function updateReducerImpl(hook, current, reducer) {
+  const queue = hook.queue;
+
+  if (queue === null) {
+    throw Error(formatProdErrorMessage(311));
+  }
+
+  queue.lastRenderedReducer = reducer; // The last rebase update that is NOT part of the base state.
+
+  let baseQueue = hook.baseQueue; // The last pending update that hasn't been processed yet.
+
+  const pendingQueue = queue.pending;
+
+  if (pendingQueue !== null) {
+    // We have new updates that haven't been processed yet.
+    // We'll add them to the base queue.
+    if (baseQueue !== null) {
+      // Merge the pending queue and the base queue.
+      const baseFirst = baseQueue.next;
+      const pendingFirst = pendingQueue.next;
+      baseQueue.next = pendingFirst;
+      pendingQueue.next = baseFirst;
+    }
+
+    current.baseQueue = baseQueue = pendingQueue;
+    queue.pending = null;
+  }
+
+  const baseState = hook.baseState;
+
+  if (baseQueue === null) {
+    // If there are no pending updates, then the memoized state should be the
+    // same as the base state. Currently these only diverge in the case of
+    // useOptimistic, because useOptimistic accepts a new baseState on
+    // every render.
+    hook.memoizedState = baseState; // We don't need to call markWorkInProgressReceivedUpdate because
+    // baseState is derived from other reactive values.
+  } else {
+    // We have a queue to process.
+    const first = baseQueue.next;
+    let newState = baseState;
+    let newBaseState = null;
+    let newBaseQueueFirst = null;
+    let newBaseQueueLast = null;
+    let update = first;
+
+    do {
+      // An extra OffscreenLane bit is added to updates that were made to
+      // a hidden tree, so that we can distinguish them from updates that were
+      // already there when the tree was hidden.
+      const updateLane = removeLanes(update.lane, OffscreenLane);
+      const isHiddenUpdate = updateLane !== update.lane; // Check if this update was made while the tree was hidden. If so, then
+      // it's not a "base" update and we should disregard the extra base lanes
+      // that were added to renderLanes when we entered the Offscreen tree.
+
+      const shouldSkipUpdate = isHiddenUpdate ? !isSubsetOfLanes(getWorkInProgressRootRenderLanes(), updateLane) : !isSubsetOfLanes(renderLanes, updateLane);
+
+      if (shouldSkipUpdate) {
+        // Priority is insufficient. Skip this update. If this is the first
+        // skipped update, the previous update/state is the new base
+        // update/state.
+        const clone = {
+          lane: updateLane,
+          revertLane: update.revertLane,
+          action: update.action,
+          hasEagerState: update.hasEagerState,
+          eagerState: update.eagerState,
+          next: null
+        };
+
+        if (newBaseQueueLast === null) {
+          newBaseQueueFirst = newBaseQueueLast = clone;
+          newBaseState = newState;
+        } else {
+          newBaseQueueLast = newBaseQueueLast.next = clone;
+        } // Update the remaining priority in the queue.
+        // TODO: Don't need to accumulate this. Instead, we can remove
+        // renderLanes from the original lanes.
+
+
+        currentlyRenderingFiber$1.lanes = mergeLanes(currentlyRenderingFiber$1.lanes, updateLane);
+        markSkippedUpdateLanes(updateLane);
+      } else {
+        // This update does have sufficient priority.
+        // Check if this is an optimistic update.
+        const revertLane = update.revertLane;
+
+        if (revertLane === NoLane) {
+          // This is not an optimistic update, and we're going to apply it now.
+          // But, if there were earlier updates that were skipped, we need to
+          // leave this update in the queue so it can be rebased later.
+          if (newBaseQueueLast !== null) {
+            const clone = {
+              // This update is going to be committed so we never want uncommit
+              // it. Using NoLane works because 0 is a subset of all bitmasks, so
+              // this will never be skipped by the check above.
+              lane: NoLane,
+              revertLane: NoLane,
+              action: update.action,
+              hasEagerState: update.hasEagerState,
+              eagerState: update.eagerState,
+              next: null
+            };
+            newBaseQueueLast = newBaseQueueLast.next = clone;
+          }
+        } else {
+          // This is an optimistic update. If the "revert" priority is
+          // sufficient, don't apply the update. Otherwise, apply the update,
+          // but leave it in the queue so it can be either reverted or
+          // rebased in a subsequent render.
+          if (isSubsetOfLanes(renderLanes, revertLane)) {
+            // The transition that this optimistic update is associated with
+            // has finished. Pretend the update doesn't exist by skipping
+            // over it.
+            update = update.next;
+            continue;
+          } else {
+            const clone = {
+              // Once we commit an optimistic update, we shouldn't uncommit it
+              // until the transition it is associated with has finished
+              // (represented by revertLane). Using NoLane here works because 0
+              // is a subset of all bitmasks, so this will never be skipped by
+              // the check above.
+              lane: NoLane,
+              // Reuse the same revertLane so we know when the transition
+              // has finished.
+              revertLane: update.revertLane,
+              action: update.action,
+              hasEagerState: update.hasEagerState,
+              eagerState: update.eagerState,
+              next: null
+            };
+
+            if (newBaseQueueLast === null) {
+              newBaseQueueFirst = newBaseQueueLast = clone;
+              newBaseState = newState;
+            } else {
+              newBaseQueueLast = newBaseQueueLast.next = clone;
+            } // Update the remaining priority in the queue.
+            // TODO: Don't need to accumulate this. Instead, we can remove
+            // renderLanes from the original lanes.
+
+
+            currentlyRenderingFiber$1.lanes = mergeLanes(currentlyRenderingFiber$1.lanes, revertLane);
+            markSkippedUpdateLanes(revertLane);
+          }
+        } // Process this update.
+
+
+        const action = update.action;
+
+        if (shouldDoubleInvokeUserFnsInHooksDEV) {
+          reducer(newState, action);
+        }
+
+        if (update.hasEagerState) {
+          // If this update is a state update (not a reducer) and was processed eagerly,
+          // we can use the eagerly computed state
+          newState = update.eagerState;
+        } else {
+          newState = reducer(newState, action);
+        }
+      }
+
+      update = update.next;
+    } while (update !== null && update !== first);
+
+    if (newBaseQueueLast === null) {
+      newBaseState = newState;
+    } else {
+      newBaseQueueLast.next = newBaseQueueFirst;
+    } // Mark that the fiber performed work, but only if the new state is
+    // different from the current state.
+
+
+    if (!objectIs(newState, hook.memoizedState)) {
+      markWorkInProgressReceivedUpdate();
+    }
+
+    hook.memoizedState = newState;
+    hook.baseState = newBaseState;
+    hook.baseQueue = newBaseQueueLast;
+    queue.lastRenderedState = newState;
+  }
+
+  if (baseQueue === null) {
+    // `queue.lanes` is used for entangling transitions. We can set it back to
+    // zero once the queue is empty.
+    queue.lanes = NoLanes;
+  }
+
+  const dispatch = queue.dispatch;
+  return [hook.memoizedState, dispatch];
+}
+
+function rerenderReducer(reducer, initialArg, init) {
+  const hook = updateWorkInProgressHook();
+  const queue = hook.queue;
+
+  if (queue === null) {
+    throw Error(formatProdErrorMessage(311));
+  }
+
+  queue.lastRenderedReducer = reducer; // This is a re-render. Apply the new render phase updates to the previous
+  // work-in-progress hook.
+
+  const dispatch = queue.dispatch;
+  const lastRenderPhaseUpdate = queue.pending;
+  let newState = hook.memoizedState;
+
+  if (lastRenderPhaseUpdate !== null) {
+    // The queue doesn't persist past this render pass.
+    queue.pending = null;
+    const firstRenderPhaseUpdate = lastRenderPhaseUpdate.next;
+    let update = firstRenderPhaseUpdate;
+
+    do {
+      // Process this render phase update. We don't have to check the
+      // priority because it will always be the same as the current
+      // render's.
+      const action = update.action;
+      newState = reducer(newState, action);
+      update = update.next;
+    } while (update !== firstRenderPhaseUpdate); // Mark that the fiber performed work, but only if the new state is
+    // different from the current state.
+
+
+    if (!objectIs(newState, hook.memoizedState)) {
+      markWorkInProgressReceivedUpdate();
+    }
+
+    hook.memoizedState = newState; // Don't persist the state accumulated from the render phase updates to
+    // the base state unless the queue is empty.
+    // TODO: Not sure if this is the desired semantics, but it's what we
+    // do for gDSFP. I can't remember why.
+
+    if (hook.baseQueue === null) {
+      hook.baseState = newState;
+    }
+
+    queue.lastRenderedState = newState;
+  }
+
+  return [newState, dispatch];
+}
+
+function mountSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
+  const fiber = currentlyRenderingFiber$1;
+  const hook = mountWorkInProgressHook();
+  let nextSnapshot;
+  const isHydrating = getIsHydrating();
+
+  if (isHydrating) {
+    if (getServerSnapshot === undefined) {
+      throw Error(formatProdErrorMessage(407));
+    }
+
+    nextSnapshot = getServerSnapshot();
+  } else {
+    nextSnapshot = getSnapshot();
+    // Right before committing, we will walk the tree and check if any of the
+    // stores were mutated.
+    //
+    // We won't do this if we're hydrating server-rendered content, because if
+    // the content is stale, it's already visible anyway. Instead we'll patch
+    // it up in a passive effect.
+
+
+    const root = getWorkInProgressRoot();
+
+    if (root === null) {
+      throw Error(formatProdErrorMessage(349));
+    }
+
+    const rootRenderLanes = getWorkInProgressRootRenderLanes();
+
+    if (!includesBlockingLane(root, rootRenderLanes)) {
+      pushStoreConsistencyCheck(fiber, getSnapshot, nextSnapshot);
+    }
+  } // Read the current snapshot from the store on every render. This breaks the
+  // normal rules of React, and only works because store updates are
+  // always synchronous.
+
+
+  hook.memoizedState = nextSnapshot;
+  const inst = {
+    value: nextSnapshot,
+    getSnapshot
+  };
+  hook.queue = inst; // Schedule an effect to subscribe to the store.
+
+  mountEffect(subscribeToStore.bind(null, fiber, inst, subscribe), [subscribe]); // Schedule an effect to update the mutable instance fields. We will update
+  // this whenever subscribe, getSnapshot, or value changes. Because there's no
+  // clean-up function, and we track the deps correctly, we can call pushEffect
+  // directly, without storing any additional state. For the same reason, we
+  // don't need to set a static flag, either.
+
+  fiber.flags |= Passive$1;
+  pushEffect(HasEffect | Passive, updateStoreInstance.bind(null, fiber, inst, nextSnapshot, getSnapshot), createEffectInstance(), null);
+  return nextSnapshot;
+}
+
+function updateSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
+  const fiber = currentlyRenderingFiber$1;
+  const hook = updateWorkInProgressHook(); // Read the current snapshot from the store on every render. This breaks the
+  // normal rules of React, and only works because store updates are
+  // always synchronous.
+
+  let nextSnapshot;
+  const isHydrating = getIsHydrating();
+
+  if (isHydrating) {
+    // Needed for strict mode double render
+    if (getServerSnapshot === undefined) {
+      throw Error(formatProdErrorMessage(407));
+    }
+
+    nextSnapshot = getServerSnapshot();
+  } else {
+    nextSnapshot = getSnapshot();
+  }
+
+  const prevSnapshot = (currentHook || hook).memoizedState;
+  const snapshotChanged = !objectIs(prevSnapshot, nextSnapshot);
+
+  if (snapshotChanged) {
+    hook.memoizedState = nextSnapshot;
+    markWorkInProgressReceivedUpdate();
+  }
+
+  const inst = hook.queue;
+  updateEffect(subscribeToStore.bind(null, fiber, inst, subscribe), [subscribe]); // Whenever getSnapshot or subscribe changes, we need to check in the
+  // commit phase if there was an interleaved mutation. In concurrent mode
+  // this can happen all the time, but even in synchronous mode, an earlier
+  // effect may have mutated the store.
+
+  if (inst.getSnapshot !== getSnapshot || snapshotChanged || // Check if the subscribe function changed. We can save some memory by
+  // checking whether we scheduled a subscription effect above.
+  workInProgressHook !== null && workInProgressHook.memoizedState.tag & HasEffect) {
+    fiber.flags |= Passive$1;
+    pushEffect(HasEffect | Passive, updateStoreInstance.bind(null, fiber, inst, nextSnapshot, getSnapshot), createEffectInstance(), null); // Unless we're rendering a blocking lane, schedule a consistency check.
+    // Right before committing, we will walk the tree and check if any of the
+    // stores were mutated.
+
+    const root = getWorkInProgressRoot();
+
+    if (root === null) {
+      throw Error(formatProdErrorMessage(349));
+    }
+
+    if (!isHydrating && !includesBlockingLane(root, renderLanes)) {
+      pushStoreConsistencyCheck(fiber, getSnapshot, nextSnapshot);
+    }
+  }
+
+  return nextSnapshot;
+}
+
+function pushStoreConsistencyCheck(fiber, getSnapshot, renderedSnapshot) {
+  fiber.flags |= StoreConsistency;
+  const check = {
+    getSnapshot,
+    value: renderedSnapshot
+  };
+  let componentUpdateQueue = currentlyRenderingFiber$1.updateQueue;
+
+  if (componentUpdateQueue === null) {
+    componentUpdateQueue = createFunctionComponentUpdateQueue();
+    currentlyRenderingFiber$1.updateQueue = componentUpdateQueue;
+    componentUpdateQueue.stores = [check];
+  } else {
+    const stores = componentUpdateQueue.stores;
+
+    if (stores === null) {
+      componentUpdateQueue.stores = [check];
+    } else {
+      stores.push(check);
+    }
+  }
+}
+
+function updateStoreInstance(fiber, inst, nextSnapshot, getSnapshot) {
+  // These are updated in the passive phase
+  inst.value = nextSnapshot;
+  inst.getSnapshot = getSnapshot; // Something may have been mutated in between render and commit. This could
+  // have been in an event that fired before the passive effects, or it could
+  // have been in a layout effect. In that case, we would have used the old
+  // snapsho and getSnapshot values to bail out. We need to check one more time.
+
+  if (checkIfSnapshotChanged(inst)) {
+    // Force a re-render.
+    forceStoreRerender(fiber);
+  }
+}
+
+function subscribeToStore(fiber, inst, subscribe) {
+  const handleStoreChange = () => {
+    // The store changed. Check if the snapshot changed since the last time we
+    // read from the store.
+    if (checkIfSnapshotChanged(inst)) {
+      // Force a re-render.
+      forceStoreRerender(fiber);
+    }
+  }; // Subscribe to the store and return a clean-up function.
+
+
+  return subscribe(handleStoreChange);
+}
+
+function checkIfSnapshotChanged(inst) {
+  const latestGetSnapshot = inst.getSnapshot;
+  const prevValue = inst.value;
+
+  try {
+    const nextValue = latestGetSnapshot();
+    return !objectIs(prevValue, nextValue);
+  } catch (error) {
+    return true;
+  }
+}
+
+function forceStoreRerender(fiber) {
+  const root = enqueueConcurrentRenderForLane(fiber, SyncLane);
+
+  if (root !== null) {
+    scheduleUpdateOnFiber(root, fiber, SyncLane);
+  }
+}
+
+function mountStateImpl(initialState) {
+  const hook = mountWorkInProgressHook();
+
+  if (typeof initialState === 'function') {
+    // $FlowFixMe[incompatible-use]: Flow doesn't like mixed types
+    initialState = initialState();
+  }
+
+  hook.memoizedState = hook.baseState = initialState;
+  const queue = {
+    pending: null,
+    lanes: NoLanes,
+    dispatch: null,
+    lastRenderedReducer: basicStateReducer,
+    lastRenderedState: initialState
+  };
+  hook.queue = queue;
+  return hook;
+}
+
+function mountState(initialState) {
+  const hook = mountStateImpl(initialState);
+  const queue = hook.queue;
+  const dispatch = dispatchSetState.bind(null, currentlyRenderingFiber$1, queue);
+  queue.dispatch = dispatch;
+  return [hook.memoizedState, dispatch];
+}
+
+function updateState(initialState) {
+  return updateReducer(basicStateReducer);
+}
+
+function rerenderState(initialState) {
+  return rerenderReducer(basicStateReducer);
+}
+
+function mountOptimistic(passthrough, reducer) {
+  const hook = mountWorkInProgressHook();
+  hook.memoizedState = hook.baseState = passthrough;
+  const queue = {
+    pending: null,
+    lanes: NoLanes,
+    dispatch: null,
+    // Optimistic state does not use the eager update optimization.
+    lastRenderedReducer: null,
+    lastRenderedState: null
+  };
+  hook.queue = queue; // This is different than the normal setState function.
+
+  const dispatch = dispatchOptimisticSetState.bind(null, currentlyRenderingFiber$1, true, queue);
+  queue.dispatch = dispatch;
+  return [passthrough, dispatch];
+}
+
+function updateOptimistic(passthrough, reducer) {
+  const hook = updateWorkInProgressHook();
+  return updateOptimisticImpl(hook, currentHook, passthrough, reducer);
+}
+
+function updateOptimisticImpl(hook, current, passthrough, reducer) {
+  // Optimistic updates are always rebased on top of the latest value passed in
+  // as an argument. It's called a passthrough because if there are no pending
+  // updates, it will be returned as-is.
+  //
+  // Reset the base state to the passthrough. Future updates will be applied
+  // on top of this.
+  hook.baseState = passthrough; // If a reducer is not provided, default to the same one used by useState.
+
+  const resolvedReducer = typeof reducer === 'function' ? reducer : basicStateReducer;
+  return updateReducerImpl(hook, currentHook, resolvedReducer);
+}
+
+function rerenderOptimistic(passthrough, reducer) {
+  // Unlike useState, useOptimistic doesn't support render phase updates.
+  // Also unlike useState, we need to replay all pending updates again in case
+  // the passthrough value changed.
+  //
+  // So instead of a forked re-render implementation that knows how to handle
+  // render phase udpates, we can use the same implementation as during a
+  // regular mount or update.
+  const hook = updateWorkInProgressHook();
+
+  if (currentHook !== null) {
+    // This is an update. Process the update queue.
+    return updateOptimisticImpl(hook, currentHook, passthrough, reducer);
+  } // This is a mount. No updates to process.
+  // Reset the base state to the passthrough. Future updates will be applied
+  // on top of this.
+
+
+  hook.baseState = passthrough;
+  const dispatch = hook.queue.dispatch;
+  return [passthrough, dispatch];
+} // useFormState actions run sequentially, because each action receives the
+// previous state as an argument. We store pending actions on a queue.
+
+
+function dispatchFormState(fiber, actionQueue, setState, payload) {
+  if (isRenderPhaseUpdate(fiber)) {
+    throw Error(formatProdErrorMessage(485));
+  }
+
+  const last = actionQueue.pending;
+
+  if (last === null) {
+    // There are no pending actions; this is the first one. We can run
+    // it immediately.
+    const newLast = {
+      payload,
+      next: null // circular
+
+    };
+    newLast.next = actionQueue.pending = newLast;
+    runFormStateAction(actionQueue, setState, payload);
+  } else {
+    // There's already an action running. Add to the queue.
+    const first = last.next;
+    const newLast = {
+      payload,
+      next: first
+    };
+    actionQueue.pending = last.next = newLast;
+  }
+}
+
+function runFormStateAction(actionQueue, setState, payload) {
+  const action = actionQueue.action;
+  const prevState = actionQueue.state; // This is a fork of startTransition
+
+  const prevTransition = ReactCurrentBatchConfig$3.transition;
+  ReactCurrentBatchConfig$3.transition = {};
+
+  try {
+    const returnValue = action(prevState, payload);
+
+    if (returnValue !== null && typeof returnValue === 'object' && // $FlowFixMe[method-unbinding]
+    typeof returnValue.then === 'function') {
+      const thenable = returnValue; // Attach a listener to read the return state of the action. As soon as
+      // this resolves, we can run the next action in the sequence.
+
+      thenable.then(nextState => {
+        actionQueue.state = nextState;
+        finishRunningFormStateAction(actionQueue, setState);
+      }, () => finishRunningFormStateAction(actionQueue, setState));
+      const entangledResult = requestAsyncActionContext(thenable, null);
+      setState(entangledResult);
+    } else {
+      // This is either `returnValue` or a thenable that resolves to
+      // `returnValue`, depending on whether we're inside an async action scope.
+      const entangledResult = requestSyncActionContext(returnValue, null);
+      setState(entangledResult);
+      const nextState = returnValue;
+      actionQueue.state = nextState;
+      finishRunningFormStateAction(actionQueue, setState);
+    }
+  } catch (error) {
+    // This is a trick to get the `useFormState` hook to rethrow the error.
+    // When it unwraps the thenable with the `use` algorithm, the error
+    // will be thrown.
+    const rejectedThenable = {
+      then() {},
+
+      status: 'rejected',
+      reason: error // $FlowFixMe: Not sure why this doesn't work
+
+    };
+    setState(rejectedThenable);
+    finishRunningFormStateAction(actionQueue, setState);
+  } finally {
+    ReactCurrentBatchConfig$3.transition = prevTransition;
+  }
+}
+
+function finishRunningFormStateAction(actionQueue, setState) {
+  // The action finished running. Pop it from the queue and run the next pending
+  // action, if there are any.
+  const last = actionQueue.pending;
+
+  if (last !== null) {
+    const first = last.next;
+
+    if (first === last) {
+      // This was the last action in the queue.
+      actionQueue.pending = null;
+    } else {
+      // Remove the first node from the circular queue.
+      const next = first.next;
+      last.next = next; // Run the next action.
+
+      runFormStateAction(actionQueue, setState, next.payload);
+    }
+  }
+}
+
+function formStateReducer(oldState, newState) {
+  return newState;
+}
+
+function mountFormState(action, initialStateProp, permalink) {
+  let initialState = initialStateProp;
+
+  if (getIsHydrating()) {
+    const root = getWorkInProgressRoot();
+    const ssrFormState = root.formState; // If a formState option was passed to the root, there are form state
+    // markers that we need to hydrate. These indicate whether the form state
+    // matches this hook instance.
+
+    if (ssrFormState !== null) {
+      const isMatching = tryToClaimNextHydratableFormMarkerInstance();
+
+      if (isMatching) {
+        initialState = ssrFormState[0];
+      }
+    }
+  } // State hook. The state is stored in a thenable which is then unwrapped by
+  // the `use` algorithm during render.
+
+
+  const stateHook = mountWorkInProgressHook();
+  stateHook.memoizedState = stateHook.baseState = initialState; // TODO: Typing this "correctly" results in recursion limit errors
+  // const stateQueue: UpdateQueue<S | Awaited<S>, S | Awaited<S>> = {
+
+  const stateQueue = {
+    pending: null,
+    lanes: NoLanes,
+    dispatch: null,
+    lastRenderedReducer: formStateReducer,
+    lastRenderedState: initialState
+  };
+  stateHook.queue = stateQueue;
+  const setState = dispatchSetState.bind(null, currentlyRenderingFiber$1, stateQueue);
+  stateQueue.dispatch = setState; // Action queue hook. This is used to queue pending actions. The queue is
+  // shared between all instances of the hook. Similar to a regular state queue,
+  // but different because the actions are run sequentially, and they run in
+  // an event instead of during render.
+
+  const actionQueueHook = mountWorkInProgressHook();
+  const actionQueue = {
+    state: initialState,
+    dispatch: null,
+    // circular
+    action,
+    pending: null
+  };
+  actionQueueHook.queue = actionQueue;
+  const dispatch = dispatchFormState.bind(null, currentlyRenderingFiber$1, actionQueue, setState);
+  actionQueue.dispatch = dispatch; // Stash the action function on the memoized state of the hook. We'll use this
+  // to detect when the action function changes so we can update it in
+  // an effect.
+
+  actionQueueHook.memoizedState = action;
+  return [initialState, dispatch];
+}
+
+function updateFormState(action, initialState, permalink) {
+  const stateHook = updateWorkInProgressHook();
+  const currentStateHook = currentHook;
+  return updateFormStateImpl(stateHook, currentStateHook, action);
+}
+
+function updateFormStateImpl(stateHook, currentStateHook, action, initialState, permalink) {
+  const _updateReducerImpl = updateReducerImpl(stateHook, currentStateHook, formStateReducer),
+        actionResult = _updateReducerImpl[0]; // This will suspend until the action finishes.
+
+
+  const state = typeof actionResult === 'object' && actionResult !== null && // $FlowFixMe[method-unbinding]
+  typeof actionResult.then === 'function' ? useThenable(actionResult) : actionResult;
+  const actionQueueHook = updateWorkInProgressHook();
+  const actionQueue = actionQueueHook.queue;
+  const dispatch = actionQueue.dispatch; // Check if a new action was passed. If so, update it in an effect.
+
+  const prevAction = actionQueueHook.memoizedState;
+
+  if (action !== prevAction) {
+    currentlyRenderingFiber$1.flags |= Passive$1;
+    pushEffect(HasEffect | Passive, formStateActionEffect.bind(null, actionQueue, action), createEffectInstance(), null);
+  }
+
+  return [state, dispatch];
+}
+
+function formStateActionEffect(actionQueue, action) {
+  actionQueue.action = action;
+}
+
+function rerenderFormState(action, initialState, permalink) {
+  // Unlike useState, useFormState doesn't support render phase updates.
+  // Also unlike useState, we need to re
