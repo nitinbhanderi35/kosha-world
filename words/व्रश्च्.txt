@@ -1,0 +1,863 @@
+sult = computeTextAlternative(child, {
+	        isEmbeddedInLabel: context.isEmbeddedInLabel,
+	        isReferenced: false,
+	        recursion: true
+	      });
+	      // TODO: Unclear why display affects delimiter
+	      // see https://github.com/w3c/accname/issues/3
+	      var display = isElement$1(child) ? getComputedStyle(child).getPropertyValue("display") : "inline";
+	      var separator = display !== "inline" ? " " : "";
+	      // trailing separator for wpt tests
+	      accumulatedText += "".concat(separator).concat(result).concat(separator);
+	    });
+	    if (isElement$1(node) && computedStyleSupportsPseudoElements) {
+	      var pseudoAfter = getComputedStyle(node, "::after");
+	      var afterContent = getTextualContent(pseudoAfter);
+	      accumulatedText = "".concat(accumulatedText, " ").concat(afterContent);
+	    }
+	    return accumulatedText.trim();
+	  }
+
+	  /**
+	   *
+	   * @param element
+	   * @param attributeName
+	   * @returns A string non-empty string or `null`
+	   */
+	  function useAttribute(element, attributeName) {
+	    var attribute = element.getAttributeNode(attributeName);
+	    if (attribute !== null && !consultedNodes.has(attribute) && attribute.value.trim() !== "") {
+	      consultedNodes.add(attribute);
+	      return attribute.value;
+	    }
+	    return null;
+	  }
+	  function computeTooltipAttributeValue(node) {
+	    if (!isElement$1(node)) {
+	      return null;
+	    }
+	    return useAttribute(node, "title");
+	  }
+	  function computeElementTextAlternative(node) {
+	    if (!isElement$1(node)) {
+	      return null;
+	    }
+
+	    // https://w3c.github.io/html-aam/#fieldset-and-legend-elements
+	    if (isHTMLFieldSetElement(node)) {
+	      consultedNodes.add(node);
+	      var children = arrayFrom(node.childNodes);
+	      for (var i = 0; i < children.length; i += 1) {
+	        var child = children[i];
+	        if (isHTMLLegendElement(child)) {
+	          return computeTextAlternative(child, {
+	            isEmbeddedInLabel: false,
+	            isReferenced: false,
+	            recursion: false
+	          });
+	        }
+	      }
+	    } else if (isHTMLTableElement(node)) {
+	      // https://w3c.github.io/html-aam/#table-element
+	      consultedNodes.add(node);
+	      var _children = arrayFrom(node.childNodes);
+	      for (var _i = 0; _i < _children.length; _i += 1) {
+	        var _child = _children[_i];
+	        if (isHTMLTableCaptionElement(_child)) {
+	          return computeTextAlternative(_child, {
+	            isEmbeddedInLabel: false,
+	            isReferenced: false,
+	            recursion: false
+	          });
+	        }
+	      }
+	    } else if (isSVGSVGElement(node)) {
+	      // https://www.w3.org/TR/svg-aam-1.0/
+	      consultedNodes.add(node);
+	      var _children2 = arrayFrom(node.childNodes);
+	      for (var _i2 = 0; _i2 < _children2.length; _i2 += 1) {
+	        var _child2 = _children2[_i2];
+	        if (isSVGTitleElement(_child2)) {
+	          return _child2.textContent;
+	        }
+	      }
+	      return null;
+	    } else if (getLocalName(node) === "img" || getLocalName(node) === "area") {
+	      // https://w3c.github.io/html-aam/#area-element
+	      // https://w3c.github.io/html-aam/#img-element
+	      var nameFromAlt = useAttribute(node, "alt");
+	      if (nameFromAlt !== null) {
+	        return nameFromAlt;
+	      }
+	    } else if (isHTMLOptGroupElement(node)) {
+	      var nameFromLabel = useAttribute(node, "label");
+	      if (nameFromLabel !== null) {
+	        return nameFromLabel;
+	      }
+	    }
+	    if (isHTMLInputElement(node) && (node.type === "button" || node.type === "submit" || node.type === "reset")) {
+	      // https://w3c.github.io/html-aam/#input-type-text-input-type-password-input-type-search-input-type-tel-input-type-email-input-type-url-and-textarea-element-accessible-description-computation
+	      var nameFromValue = useAttribute(node, "value");
+	      if (nameFromValue !== null) {
+	        return nameFromValue;
+	      }
+
+	      // TODO: l10n
+	      if (node.type === "submit") {
+	        return "Submit";
+	      }
+	      // TODO: l10n
+	      if (node.type === "reset") {
+	        return "Reset";
+	      }
+	    }
+	    var labels = getLabels(node);
+	    if (labels !== null && labels.length !== 0) {
+	      consultedNodes.add(node);
+	      return arrayFrom(labels).map(function (element) {
+	        return computeTextAlternative(element, {
+	          isEmbeddedInLabel: true,
+	          isReferenced: false,
+	          recursion: true
+	        });
+	      }).filter(function (label) {
+	        return label.length > 0;
+	      }).join(" ");
+	    }
+
+	    // https://w3c.github.io/html-aam/#input-type-image-accessible-name-computation
+	    // TODO: wpt test consider label elements but html-aam does not mention them
+	    // We follow existing implementations over spec
+	    if (isHTMLInputElement(node) && node.type === "image") {
+	      var _nameFromAlt = useAttribute(node, "alt");
+	      if (_nameFromAlt !== null) {
+	        return _nameFromAlt;
+	      }
+	      var nameFromTitle = useAttribute(node, "title");
+	      if (nameFromTitle !== null) {
+	        return nameFromTitle;
+	      }
+
+	      // TODO: l10n
+	      return "Submit Query";
+	    }
+	    if (hasAnyConcreteRoles(node, ["button"])) {
+	      // https://www.w3.org/TR/html-aam-1.0/#button-element
+	      var nameFromSubTree = computeMiscTextAlternative(node, {
+	        isEmbeddedInLabel: false,
+	        isReferenced: false
+	      });
+	      if (nameFromSubTree !== "") {
+	        return nameFromSubTree;
+	      }
+	    }
+	    return null;
+	  }
+	  function computeTextAlternative(current, context) {
+	    if (consultedNodes.has(current)) {
+	      return "";
+	    }
+
+	    // 2A
+	    if (!hidden && isHidden(current, getComputedStyle) && !context.isReferenced) {
+	      consultedNodes.add(current);
+	      return "";
+	    }
+
+	    // 2B
+	    var labelAttributeNode = isElement$1(current) ? current.getAttributeNode("aria-labelledby") : null;
+	    // TODO: Do we generally need to block query IdRefs of attributes we have already consulted?
+	    var labelElements = labelAttributeNode !== null && !consultedNodes.has(labelAttributeNode) ? queryIdRefs(current, "aria-labelledby") : [];
+	    if (compute === "name" && !context.isReferenced && labelElements.length > 0) {
+	      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Can't be null here otherwise labelElements would be empty
+	      consultedNodes.add(labelAttributeNode);
+	      return labelElements.map(function (element) {
+	        // TODO: Chrome will consider repeated values i.e. use a node multiple times while we'll bail out in computeTextAlternative.
+	        return computeTextAlternative(element, {
+	          isEmbeddedInLabel: context.isEmbeddedInLabel,
+	          isReferenced: true,
+	          // this isn't recursion as specified, otherwise we would skip
+	          // `aria-label` in
+	          // <input id="myself" aria-label="foo" aria-labelledby="myself"
+	          recursion: false
+	        });
+	      }).join(" ");
+	    }
+
+	    // 2C
+	    // Changed from the spec in anticipation of https://github.com/w3c/accname/issues/64
+	    // spec says we should only consider skipping if we have a non-empty label
+	    var skipToStep2E = context.recursion && isControl(current) && compute === "name";
+	    if (!skipToStep2E) {
+	      var ariaLabel = (isElement$1(current) && current.getAttribute("aria-label") || "").trim();
+	      if (ariaLabel !== "" && compute === "name") {
+	        consultedNodes.add(current);
+	        return ariaLabel;
+	      }
+
+	      // 2D
+	      if (!isMarkedPresentational(current)) {
+	        var elementTextAlternative = computeElementTextAlternative(current);
+	        if (elementTextAlternative !== null) {
+	          consultedNodes.add(current);
+	          return elementTextAlternative;
+	        }
+	      }
+	    }
+
+	    // special casing, cheating to make tests pass
+	    // https://github.com/w3c/accname/issues/67
+	    if (hasAnyConcreteRoles(current, ["menu"])) {
+	      consultedNodes.add(current);
+	      return "";
+	    }
+
+	    // 2E
+	    if (skipToStep2E || context.isEmbeddedInLabel || context.isReferenced) {
+	      if (hasAnyConcreteRoles(current, ["combobox", "listbox"])) {
+	        consultedNodes.add(current);
+	        var selectedOptions = querySelectedOptions(current);
+	        if (selectedOptions.length === 0) {
+	          // defined per test `name_heading_combobox`
+	          return isHTMLInputElement(current) ? current.value : "";
+	        }
+	        return arrayFrom(selectedOptions).map(function (selectedOption) {
+	          return computeTextAlternative(selectedOption, {
+	            isEmbeddedInLabel: context.isEmbeddedInLabel,
+	            isReferenced: false,
+	            recursion: true
+	          });
+	        }).join(" ");
+	      }
+	      if (hasAbstractRole(current, "range")) {
+	        consultedNodes.add(current);
+	        if (current.hasAttribute("aria-valuetext")) {
+	          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe due to hasAttribute guard
+	          return current.getAttribute("aria-valuetext");
+	        }
+	        if (current.hasAttribute("aria-valuenow")) {
+	          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe due to hasAttribute guard
+	          return current.getAttribute("aria-valuenow");
+	        }
+	        // Otherwise, use the value as specified by a host language attribute.
+	        return current.getAttribute("value") || "";
+	      }
+	      if (hasAnyConcreteRoles(current, ["textbox"])) {
+	        consultedNodes.add(current);
+	        return getValueOfTextbox(current);
+	      }
+	    }
+
+	    // 2F: https://w3c.github.io/accname/#step2F
+	    if (allowsNameFromContent(current) || isElement$1(current) && context.isReferenced || isNativeHostLanguageTextAlternativeElement(current) || isDescendantOfNativeHostLanguageTextAlternativeElement()) {
+	      var accumulatedText2F = computeMiscTextAlternative(current, {
+	        isEmbeddedInLabel: context.isEmbeddedInLabel,
+	        isReferenced: false
+	      });
+	      if (accumulatedText2F !== "") {
+	        consultedNodes.add(current);
+	        return accumulatedText2F;
+	      }
+	    }
+	    if (current.nodeType === current.TEXT_NODE) {
+	      consultedNodes.add(current);
+	      return current.textContent || "";
+	    }
+	    if (context.recursion) {
+	      consultedNodes.add(current);
+	      return computeMiscTextAlternative(current, {
+	        isEmbeddedInLabel: context.isEmbeddedInLabel,
+	        isReferenced: false
+	      });
+	    }
+	    var tooltipAttributeValue = computeTooltipAttributeValue(current);
+	    if (tooltipAttributeValue !== null) {
+	      consultedNodes.add(current);
+	      return tooltipAttributeValue;
+	    }
+
+	    // TODO should this be reachable?
+	    consultedNodes.add(current);
+	    return "";
+	  }
+	  return asFlatString(computeTextAlternative(root, {
+	    isEmbeddedInLabel: false,
+	    // by spec computeAccessibleDescription starts with the referenced elements as roots
+	    isReferenced: compute === "description",
+	    recursion: false
+	  }));
+	}
+
+	function _typeof$1(obj) {
+	  "@babel/helpers - typeof";
+
+	  return _typeof$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+	    return typeof obj;
+	  } : function (obj) {
+	    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	  }, _typeof$1(obj);
+	}
+	function ownKeys(object, enumerableOnly) {
+	  var keys = Object.keys(object);
+	  if (Object.getOwnPropertySymbols) {
+	    var symbols = Object.getOwnPropertySymbols(object);
+	    enumerableOnly && (symbols = symbols.filter(function (sym) {
+	      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+	    })), keys.push.apply(keys, symbols);
+	  }
+	  return keys;
+	}
+	function _objectSpread(target) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    var source = null != arguments[i] ? arguments[i] : {};
+	    i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+	      _defineProperty$1(target, key, source[key]);
+	    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+	      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+	    });
+	  }
+	  return target;
+	}
+	function _defineProperty$1(obj, key, value) {
+	  key = _toPropertyKey(key);
+	  if (key in obj) {
+	    Object.defineProperty(obj, key, {
+	      value: value,
+	      enumerable: true,
+	      configurable: true,
+	      writable: true
+	    });
+	  } else {
+	    obj[key] = value;
+	  }
+	  return obj;
+	}
+	function _toPropertyKey(arg) {
+	  var key = _toPrimitive(arg, "string");
+	  return _typeof$1(key) === "symbol" ? key : String(key);
+	}
+	function _toPrimitive(input, hint) {
+	  if (_typeof$1(input) !== "object" || input === null) return input;
+	  var prim = input[Symbol.toPrimitive];
+	  if (prim !== undefined) {
+	    var res = prim.call(input, hint || "default");
+	    if (_typeof$1(res) !== "object") return res;
+	    throw new TypeError("@@toPrimitive must return a primitive value.");
+	  }
+	  return (hint === "string" ? String : Number)(input);
+	}
+
+	/**
+	 * @param root
+	 * @param options
+	 * @returns
+	 */
+	function computeAccessibleDescription(root) {
+	  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	  var description = queryIdRefs(root, "aria-describedby").map(function (element) {
+	    return computeTextAlternative(element, _objectSpread(_objectSpread({}, options), {}, {
+	      compute: "description"
+	    }));
+	  }).join(" ");
+
+	  // TODO: Technically we need to make sure that node wasn't used for the accessible name
+	  //       This causes `description_1.0_combobox-focusable-manual` to fail
+	  //
+	  // https://www.w3.org/TR/html-aam-1.0/#accessible-name-and-description-computation
+	  // says for so many elements to use the `title` that we assume all elements are considered
+	  if (description === "") {
+	    var title = root.getAttribute("title");
+	    description = title === null ? "" : title;
+	  }
+	  return description;
+	}
+
+	/**
+	 * https://w3c.github.io/aria/#namefromprohibited
+	 */
+	function prohibitsNaming(node) {
+	  return hasAnyConcreteRoles(node, ["caption", "code", "deletion", "emphasis", "generic", "insertion", "paragraph", "presentation", "strong", "subscript", "superscript"]);
+	}
+
+	/**
+	 * implements https://w3c.github.io/accname/#mapping_additional_nd_name
+	 * @param root
+	 * @param options
+	 * @returns
+	 */
+	function computeAccessibleName(root) {
+	  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	  if (prohibitsNaming(root)) {
+	    return "";
+	  }
+	  return computeTextAlternative(root, options);
+	}
+
+	var lib = {};
+
+	var ariaPropsMap$1 = {};
+
+	var iterationDecorator$1 = {};
+
+	var iteratorProxy$1 = {};
+
+	Object.defineProperty(iteratorProxy$1, "__esModule", {
+	  value: true
+	});
+	iteratorProxy$1.default = void 0;
+
+	// eslint-disable-next-line no-unused-vars
+	function iteratorProxy() {
+	  var values = this;
+	  var index = 0;
+	  var iter = {
+	    '@@iterator': function iterator() {
+	      return iter;
+	    },
+	    next: function next() {
+	      if (index < values.length) {
+	        var value = values[index];
+	        index = index + 1;
+	        return {
+	          done: false,
+	          value: value
+	        };
+	      } else {
+	        return {
+	          done: true
+	        };
+	      }
+	    }
+	  };
+	  return iter;
+	}
+	var _default$2h = iteratorProxy;
+	iteratorProxy$1.default = _default$2h;
+
+	Object.defineProperty(iterationDecorator$1, "__esModule", {
+	  value: true
+	});
+	iterationDecorator$1.default = iterationDecorator;
+	var _iteratorProxy = _interopRequireDefault$a(iteratorProxy$1);
+	function _interopRequireDefault$a(obj) {
+	  return obj && obj.__esModule ? obj : {
+	    default: obj
+	  };
+	}
+	function _typeof(obj) {
+	  "@babel/helpers - typeof";
+
+	  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+	    return typeof obj;
+	  } : function (obj) {
+	    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+	  }, _typeof(obj);
+	}
+	function iterationDecorator(collection, entries) {
+	  if (typeof Symbol === 'function' && _typeof(Symbol.iterator) === 'symbol') {
+	    Object.defineProperty(collection, Symbol.iterator, {
+	      value: _iteratorProxy.default.bind(entries)
+	    });
+	  }
+	  return collection;
+	}
+
+	Object.defineProperty(ariaPropsMap$1, "__esModule", {
+	  value: true
+	});
+	ariaPropsMap$1.default = void 0;
+	var _iterationDecorator$4 = _interopRequireDefault$9(iterationDecorator$1);
+	function _interopRequireDefault$9(obj) {
+	  return obj && obj.__esModule ? obj : {
+	    default: obj
+	  };
+	}
+	function _slicedToArray$4(arr, i) {
+	  return _arrayWithHoles$4(arr) || _iterableToArrayLimit$4(arr, i) || _unsupportedIterableToArray$4(arr, i) || _nonIterableRest$4();
+	}
+	function _nonIterableRest$4() {
+	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	}
+	function _iterableToArrayLimit$4(arr, i) {
+	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+	  if (_i == null) return;
+	  var _arr = [];
+	  var _n = true;
+	  var _d = false;
+	  var _s, _e;
+	  try {
+	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+	      _arr.push(_s.value);
+	      if (i && _arr.length === i) break;
+	    }
+	  } catch (err) {
+	    _d = true;
+	    _e = err;
+	  } finally {
+	    try {
+	      if (!_n && _i["return"] != null) _i["return"]();
+	    } finally {
+	      if (_d) throw _e;
+	    }
+	  }
+	  return _arr;
+	}
+	function _arrayWithHoles$4(arr) {
+	  if (Array.isArray(arr)) return arr;
+	}
+	function _createForOfIteratorHelper$4(o, allowArrayLike) {
+	  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+	  if (!it) {
+	    if (Array.isArray(o) || (it = _unsupportedIterableToArray$4(o)) || allowArrayLike && o && typeof o.length === "number") {
+	      if (it) o = it;
+	      var i = 0;
+	      var F = function F() {};
+	      return {
+	        s: F,
+	        n: function n() {
+	          if (i >= o.length) return {
+	            done: true
+	          };
+	          return {
+	            done: false,
+	            value: o[i++]
+	          };
+	        },
+	        e: function e(_e2) {
+	          throw _e2;
+	        },
+	        f: F
+	      };
+	    }
+	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	  }
+	  var normalCompletion = true,
+	    didErr = false,
+	    err;
+	  return {
+	    s: function s() {
+	      it = it.call(o);
+	    },
+	    n: function n() {
+	      var step = it.next();
+	      normalCompletion = step.done;
+	      return step;
+	    },
+	    e: function e(_e3) {
+	      didErr = true;
+	      err = _e3;
+	    },
+	    f: function f() {
+	      try {
+	        if (!normalCompletion && it.return != null) it.return();
+	      } finally {
+	        if (didErr) throw err;
+	      }
+	    }
+	  };
+	}
+	function _unsupportedIterableToArray$4(o, minLen) {
+	  if (!o) return;
+	  if (typeof o === "string") return _arrayLikeToArray$4(o, minLen);
+	  var n = Object.prototype.toString.call(o).slice(8, -1);
+	  if (n === "Object" && o.constructor) n = o.constructor.name;
+	  if (n === "Map" || n === "Set") return Array.from(o);
+	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$4(o, minLen);
+	}
+	function _arrayLikeToArray$4(arr, len) {
+	  if (len == null || len > arr.length) len = arr.length;
+	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+	    arr2[i] = arr[i];
+	  }
+	  return arr2;
+	}
+	var properties = [['aria-activedescendant', {
+	  'type': 'id'
+	}], ['aria-atomic', {
+	  'type': 'boolean'
+	}], ['aria-autocomplete', {
+	  'type': 'token',
+	  'values': ['inline', 'list', 'both', 'none']
+	}], ['aria-busy', {
+	  'type': 'boolean'
+	}], ['aria-checked', {
+	  'type': 'tristate'
+	}], ['aria-colcount', {
+	  type: 'integer'
+	}], ['aria-colindex', {
+	  type: 'integer'
+	}], ['aria-colspan', {
+	  type: 'integer'
+	}], ['aria-controls', {
+	  'type': 'idlist'
+	}], ['aria-current', {
+	  type: 'token',
+	  values: ['page', 'step', 'location', 'date', 'time', true, false]
+	}], ['aria-describedby', {
+	  'type': 'idlist'
+	}], ['aria-details', {
+	  'type': 'id'
+	}], ['aria-disabled', {
+	  'type': 'boolean'
+	}], ['aria-dropeffect', {
+	  'type': 'tokenlist',
+	  'values': ['copy', 'execute', 'link', 'move', 'none', 'popup']
+	}], ['aria-errormessage', {
+	  'type': 'id'
+	}], ['aria-expanded', {
+	  'type': 'boolean',
+	  'allowundefined': true
+	}], ['aria-flowto', {
+	  'type': 'idlist'
+	}], ['aria-grabbed', {
+	  'type': 'boolean',
+	  'allowundefined': true
+	}], ['aria-haspopup', {
+	  'type': 'token',
+	  'values': [false, true, 'menu', 'listbox', 'tree', 'grid', 'dialog']
+	}], ['aria-hidden', {
+	  'type': 'boolean',
+	  'allowundefined': true
+	}], ['aria-invalid', {
+	  'type': 'token',
+	  'values': ['grammar', false, 'spelling', true]
+	}], ['aria-keyshortcuts', {
+	  type: 'string'
+	}], ['aria-label', {
+	  'type': 'string'
+	}], ['aria-labelledby', {
+	  'type': 'idlist'
+	}], ['aria-level', {
+	  'type': 'integer'
+	}], ['aria-live', {
+	  'type': 'token',
+	  'values': ['assertive', 'off', 'polite']
+	}], ['aria-modal', {
+	  type: 'boolean'
+	}], ['aria-multiline', {
+	  'type': 'boolean'
+	}], ['aria-multiselectable', {
+	  'type': 'boolean'
+	}], ['aria-orientation', {
+	  'type': 'token',
+	  'values': ['vertical', 'undefined', 'horizontal']
+	}], ['aria-owns', {
+	  'type': 'idlist'
+	}], ['aria-placeholder', {
+	  type: 'string'
+	}], ['aria-posinset', {
+	  'type': 'integer'
+	}], ['aria-pressed', {
+	  'type': 'tristate'
+	}], ['aria-readonly', {
+	  'type': 'boolean'
+	}], ['aria-relevant', {
+	  'type': 'tokenlist',
+	  'values': ['additions', 'all', 'removals', 'text']
+	}], ['aria-required', {
+	  'type': 'boolean'
+	}], ['aria-roledescription', {
+	  type: 'string'
+	}], ['aria-rowcount', {
+	  type: 'integer'
+	}], ['aria-rowindex', {
+	  type: 'integer'
+	}], ['aria-rowspan', {
+	  type: 'integer'
+	}], ['aria-selected', {
+	  'type': 'boolean',
+	  'allowundefined': true
+	}], ['aria-setsize', {
+	  'type': 'integer'
+	}], ['aria-sort', {
+	  'type': 'token',
+	  'values': ['ascending', 'descending', 'none', 'other']
+	}], ['aria-valuemax', {
+	  'type': 'number'
+	}], ['aria-valuemin', {
+	  'type': 'number'
+	}], ['aria-valuenow', {
+	  'type': 'number'
+	}], ['aria-valuetext', {
+	  'type': 'string'
+	}]];
+	var ariaPropsMap = {
+	  entries: function entries() {
+	    return properties;
+	  },
+	  forEach: function forEach(fn) {
+	    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	    var _iterator = _createForOfIteratorHelper$4(properties),
+	      _step;
+	    try {
+	      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+	        var _step$value = _slicedToArray$4(_step.value, 2),
+	          key = _step$value[0],
+	          values = _step$value[1];
+	        fn.call(thisArg, values, key, properties);
+	      }
+	    } catch (err) {
+	      _iterator.e(err);
+	    } finally {
+	      _iterator.f();
+	    }
+	  },
+	  get: function get(key) {
+	    var item = properties.find(function (tuple) {
+	      return tuple[0] === key ? true : false;
+	    });
+	    return item && item[1];
+	  },
+	  has: function has(key) {
+	    return !!ariaPropsMap.get(key);
+	  },
+	  keys: function keys() {
+	    return properties.map(function (_ref) {
+	      var _ref2 = _slicedToArray$4(_ref, 1),
+	        key = _ref2[0];
+	      return key;
+	    });
+	  },
+	  values: function values() {
+	    return properties.map(function (_ref3) {
+	      var _ref4 = _slicedToArray$4(_ref3, 2),
+	        values = _ref4[1];
+	      return values;
+	    });
+	  }
+	};
+	var _default$2g = (0, _iterationDecorator$4.default)(ariaPropsMap, ariaPropsMap.entries());
+	ariaPropsMap$1.default = _default$2g;
+
+	var domMap$1 = {};
+
+	Object.defineProperty(domMap$1, "__esModule", {
+	  value: true
+	});
+	domMap$1.default = void 0;
+	var _iterationDecorator$3 = _interopRequireDefault$8(iterationDecorator$1);
+	function _interopRequireDefault$8(obj) {
+	  return obj && obj.__esModule ? obj : {
+	    default: obj
+	  };
+	}
+	function _slicedToArray$3(arr, i) {
+	  return _arrayWithHoles$3(arr) || _iterableToArrayLimit$3(arr, i) || _unsupportedIterableToArray$3(arr, i) || _nonIterableRest$3();
+	}
+	function _nonIterableRest$3() {
+	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	}
+	function _iterableToArrayLimit$3(arr, i) {
+	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+	  if (_i == null) return;
+	  var _arr = [];
+	  var _n = true;
+	  var _d = false;
+	  var _s, _e;
+	  try {
+	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+	      _arr.push(_s.value);
+	      if (i && _arr.length === i) break;
+	    }
+	  } catch (err) {
+	    _d = true;
+	    _e = err;
+	  } finally {
+	    try {
+	      if (!_n && _i["return"] != null) _i["return"]();
+	    } finally {
+	      if (_d) throw _e;
+	    }
+	  }
+	  return _arr;
+	}
+	function _arrayWithHoles$3(arr) {
+	  if (Array.isArray(arr)) return arr;
+	}
+	function _createForOfIteratorHelper$3(o, allowArrayLike) {
+	  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+	  if (!it) {
+	    if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") {
+	      if (it) o = it;
+	      var i = 0;
+	      var F = function F() {};
+	      return {
+	        s: F,
+	        n: function n() {
+	          if (i >= o.length) return {
+	            done: true
+	          };
+	          return {
+	            done: false,
+	            value: o[i++]
+	          };
+	        },
+	        e: function e(_e2) {
+	          throw _e2;
+	        },
+	        f: F
+	      };
+	    }
+	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	  }
+	  var normalCompletion = true,
+	    didErr = false,
+	    err;
+	  return {
+	    s: function s() {
+	      it = it.call(o);
+	    },
+	    n: function n() {
+	      var step = it.next();
+	      normalCompletion = step.done;
+	      return step;
+	    },
+	    e: function e(_e3) {
+	      didErr = true;
+	      err = _e3;
+	    },
+	    f: function f() {
+	      try {
+	        if (!normalCompletion && it.return != null) it.return();
+	      } finally {
+	        if (didErr) throw err;
+	      }
+	    }
+	  };
+	}
+	function _unsupportedIterableToArray$3(o, minLen) {
+	  if (!o) return;
+	  if (typeof o === "string") return _arrayLikeToArray$3(o, minLen);
+	  var n = Object.prototype.toString.call(o).slice(8, -1);
+	  if (n === "Object" && o.constructor) n = o.constructor.name;
+	  if (n === "Map" || n === "Set") return Array.from(o);
+	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen);
+	}
+	function _arrayLikeToArray$3(arr, len) {
+	  if (len == null || len > arr.length) len = arr.length;
+	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+	    arr2[i] = arr[i];
+	  }
+	  return arr2;
+	}
+	var dom$1 = [['a', {
+	  reserved: false
+	}], ['abbr', {
+	  reserved: false
+	}], ['acronym', {
+	  reserved: false
+	}], ['address', {
+	  reserved: false
+	}], ['applet', {
+	  reserved: false
+	}], ['area', {
+	  reserved: false
+	}], ['article', {
+	  reserved: false
+	}], ['aside', {
+	  reserved: false
+	}], ['audio', {
+	  reserved: false
+	}], ['b', {
+	  reserved: false
+	}], ['base
