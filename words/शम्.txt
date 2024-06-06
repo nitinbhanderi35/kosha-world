@@ -1,0 +1,619 @@
+declare module 'mongoose' {
+
+  /**
+   * [Expressions reference](https://www.mongodb.com/docs/manual/meta/aggregation-quick-reference/#expressions)
+   */
+  type AggregationVariables =
+    SpecialPathVariables |
+    '$$NOW' |
+    '$$CLUSTER_TIME' |
+    '$$DESCEND' |
+    '$$PRUNE' |
+    '$$KEEP';
+
+  type SpecialPathVariables =
+    '$$ROOT' |
+    '$$CURRENT' |
+    '$$REMOVE';
+
+  export namespace Expression {
+    export interface Abs {
+      /**
+       * Returns the absolute value of a number.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/abs/#mongodb-expression-exp.-abs
+       */
+      $abs: Path | ArithmeticExpressionOperator;
+    }
+
+    export interface Add {
+      /**
+       * Adds numbers to return the sum, or adds numbers and a date to return a new date. If adding numbers and a date, treats the numbers as milliseconds. Accepts any number of argument expressions, but at most, one expression can resolve to a date.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/add/#mongodb-expression-exp.-add
+       */
+      $add: Expression[];
+    }
+
+    export interface Ceil {
+      /**
+       * Returns the smallest integer greater than or equal to the specified number.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/ceil/#mongodb-expression-exp.-ceil
+       */
+      $ceil: NumberExpression;
+    }
+
+    export interface Divide {
+      /**
+       * Returns the result of dividing the first number by the second. Accepts two argument expressions.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/divide/#mongodb-expression-exp.-divide
+       */
+      $divide: NumberExpression[];
+    }
+
+    export interface Exp {
+      /**
+       * Raises e to the specified exponent.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/exp/#mongodb-expression-exp.-exp
+       */
+      $exp: NumberExpression;
+    }
+
+    export interface Floor {
+      /**
+       * Returns the largest integer less than or equal to the specified number.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/floor/#mongodb-expression-exp.-floor
+       */
+      $floor: NumberExpression;
+    }
+
+    export interface Ln {
+      /**
+       * Calculates the natural log of a number.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/ln/#mongodb-expression-exp.-ln
+       */
+      $ln: NumberExpression;
+    }
+
+    export interface Log {
+      /**
+       * Calculates the log of a number in the specified base.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/log/#mongodb-expression-exp.-log
+       */
+      $log: [NumberExpression, NumberExpression];
+    }
+
+    export interface Log10 {
+      /**
+       * Calculates the log base 10 of a number.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/log10/#mongodb-expression-exp.-log10
+       */
+      $log10: NumberExpression;
+    }
+
+    export interface Mod {
+      /**
+       * Returns the remainder of the first number divided by the second. Accepts two argument expressions.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/mod/#mongodb-expression-exp.-mod
+       */
+      $mod: [NumberExpression, NumberExpression];
+    }
+    export interface Multiply {
+      /**
+       * Multiplies numbers to return the product. Accepts any number of argument expressions.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/multiply/#mongodb-expression-exp.-multiply
+       */
+      $multiply: NumberExpression[];
+    }
+
+    export interface Pow {
+      /**
+       * Raises a number to the specified exponent.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/pow/#mongodb-expression-exp.-pow
+       */
+      $pow: [NumberExpression, NumberExpression];
+    }
+
+    export interface Round {
+      /**
+       * Rounds a number to to a whole integer or to a specified decimal place.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/round/#mongodb-expression-exp.-round
+       */
+      $round: [NumberExpression, NumberExpression?];
+    }
+
+    export interface Sqrt {
+      /**
+       * Calculates the square root.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/sqrt/#mongodb-expression-exp.-sqrt
+       */
+      $sqrt: NumberExpression;
+    }
+
+    export interface Subtract {
+      /**
+       * Returns the result of subtracting the second value from the first. If the two values are numbers, return the difference. If the two values are dates, return the difference in milliseconds. If the two values are a date and a number in milliseconds, return the resulting date. Accepts two argument expressions. If the two values are a date and a number, specify the date argument first as it is not meaningful to subtract a date from a number.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/subtract/#mongodb-expression-exp.-subtract
+       */
+      $subtract: (NumberExpression | DateExpression)[];
+    }
+
+    export interface Trunc {
+      /**
+       * Truncates a number to a whole integer or to a specified decimal place.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/trunc/#mongodb-expression-exp.-trunc
+       */
+      $trunc: [NumberExpression, NumberExpression?];
+    }
+
+    export interface Sin {
+      /**
+       * Returns the sine of a value that is measured in radians.
+       *
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/sin/#mongodb-expression-exp.-sin
+       */
+      $sin: NumberExpression;
+    }
+
+    export interface Cos {
+      /**
+       * Returns the cosine of a value that is measured in radians.
+       *
+       * @version 4.2
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/cos/#mongodb-expression-exp.-cos
+       */
+      $cos: NumberExpression;
+    }
+
+    export interface Tan {
+      /**
+       * Returns the tangent of a value that is measured in radians.
+       *
+       * @version 4.2
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/tan/#mongodb-expression-exp.-tan
+       */
+      $tan: NumberExpression;
+    }
+
+    export interface Asin {
+      /**
+       * Returns the inverse sin (arc sine) of a value in radians.
+       *
+       * @version 4.2
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/asin/#mongodb-expression-exp.-asin
+       */
+      $asin: NumberExpression;
+    }
+
+    export interface Acos {
+      /**
+       * Returns the inverse cosine (arc cosine) of a value in radians.
+       *
+       * @version 4.2
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/acos/#mongodb-expression-exp.-acos
+       */
+      $acos: NumberExpression;
+    }
+
+    export interface Atan {
+      /**
+       * Returns the inverse tangent (arc tangent) of a value in radians.
+       *
+       * @version 4.2
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/atan/#mongodb-expression-exp.-atan
+       */
+      $atan: NumberExpression;
+    }
+
+    export interface Atan2 {
+      /**
+       * Returns the inverse tangent (arc tangent) of y / x in radians, where y and x are the first and second values passed to the expression respectively.
+       *
+       * @version 4.2
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/atan2/#mongodb-expression-exp.-atan2
+       */
+      $atan2: NumberExpression;
+    }
+
+    export interface Asinh {
+      /**
+       * Returns the inverse hyperbolic sine (hyperbolic arc sine) of a value in radians.
+       *
+       * @version 4.2
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/asinh/#mongodb-expression-exp.-asinh
+       */
+      $asinh: NumberExpression;
+    }
+
+    export interface Acosh {
+      /**
+       * Returns the i"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+self["webpackHotUpdate_N_E"]("pages/harililakalpataru/[...harililakalpataru_id]",{
+
+/***/ "./src/pages/harililakalpataru/[...harililakalpataru_id].js":
+/*!******************************************************************!*\
+  !*** ./src/pages/harililakalpataru/[...harililakalpataru_id].js ***!
+  \******************************************************************/
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+eval(__webpack_require__.ts("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"./node_modules/react/jsx-dev-runtime.js\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/dynamic */ \"./node_modules/next/dynamic.js\");\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_dynamic__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var use_debounce__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! use-debounce */ \"./node_modules/use-debounce/dist/index.module.js\");\n/* harmony import */ var _components_button_NavButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/button/NavButton */ \"./src/components/button/NavButton.js\");\n/* harmony import */ var _barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! __barrel_optimize__?names=FaArrowLeft,FaArrowRight,FaChevronLeft,FaChevronRight,FaEdit,FaHome!=!react-icons/fa */ \"__barrel_optimize__?names=FaArrowLeft,FaArrowRight,FaChevronLeft,FaChevronRight,FaEdit,FaHome!=!./node_modules/react-icons/fa/index.esm.js\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! next/router */ \"./node_modules/next/router.js\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_4__);\n/* harmony import */ var _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/utils/axiosInstance */ \"./src/utils/axiosInstance.js\");\n/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! next/link */ \"./node_modules/next/link.js\");\n/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_6__);\n/* harmony import */ var _utils_function__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/utils/function */ \"./src/utils/function.js\");\n\nvar _s = $RefreshSig$();\n\n\n\n\n\n\n\n\n\nconst CustomEditor = next_dynamic__WEBPACK_IMPORTED_MODULE_2___default()(()=>__webpack_require__.e(/*! import() */ \"src_components_custom-editor_js\").then(__webpack_require__.bind(__webpack_require__, /*! ../../components/custom-editor */ \"./src/components/custom-editor.js\")), {\n    loadableGenerated: {\n        modules: [\n            \"harililakalpataru\\\\[...harililakalpataru_id].js -> \" + \"../../components/custom-editor\"\n        ]\n    },\n    ssr: false\n});\n_c = CustomEditor;\nconst HarililakalpataruId = (param)=>{\n    let { harililakalpataru_id } = param;\n    _s();\n    const router = (0,next_router__WEBPACK_IMPORTED_MODULE_4__.useRouter)();\n    const [currentSkanda, setCurrentSkanda] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({});\n    const [currentAdhyayList, setCurrentAdhyayList] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const [currentAdhyay, setCurrentAdhyay] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const [harililakalpataruSkanda, setHarililakalpataruSkanda] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const [content, setContent] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(\"\");\n    const [status, setStatus] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(\"Saved!\");\n    const [saveContent] = (0,use_debounce__WEBPACK_IMPORTED_MODULE_8__.useDebounce)(content, 500);\n    const [focus, setFocus] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);\n    const [activeTab, setActiveTab] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(\"header\");\n    const [tabs, setTabs] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([\n        {\n            name: \"header\",\n            val: \"header\"\n        },\n        {\n            name: \"footer\",\n            val: \"footer\"\n        }\n    ]);\n    const handleTab = (type)=>{\n        setActiveTab(type);\n    // router.push({\n    //   pathname: `/satsangijeevan/${satsangijeevan_id.join(\"/\")}`,\n    //   query: { tab: type },\n    // });\n    };\n    const getAllSkanda = async ()=>{\n        try {\n            var _response_data;\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/skanda\");\n            setHarililakalpataruSkanda(response === null || response === void 0 ? void 0 : (_response_data = response.data) === null || _response_data === void 0 ? void 0 : _response_data.data);\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    const getCurrentSkanda = async (id)=>{\n        try {\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/skanda\", {\n                params: {\n                    id: id\n                }\n            });\n            setContent(response.data.data[activeTab]);\n            setCurrentSkanda(response.data.data);\n            return;\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    const getCurrentAdhyayList = async (id)=>{\n        try {\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/adhyay\", {\n                params: {\n                    skandaId: id\n                }\n            });\n            setCurrentAdhyayList(response.data.data);\n            return;\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    const getCurrentAdhyay = async (skandaId, id)=>{\n        try {\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/adhyay\", {\n                params: {\n                    skandaId: skandaId,\n                    id: id\n                }\n            });\n            setContent(response.data.data[activeTab]);\n            setCurrentAdhyay(response.data.data);\n            return;\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{\n        getAllSkanda();\n        if (harililakalpataru_id.length >= 1) {\n            getCurrentSkanda(harililakalpataru_id[0]);\n            getCurrentAdhyayList(harililakalpataru_id[0]);\n        }\n        if (harililakalpataru_id.length >= 1) {\n            getCurrentAdhyay(harililakalpataru_id[0], harililakalpataru_id[1]);\n        }\n    }, [\n        router.query,\n        activeTab,\n        harililakalpataru_id\n    ]);\n    // console.log(\"harililakalpataruSkanda----------\", harililakalpataruSkanda);\n    // console.log(\"currentSkanda----------\", currentSkanda);\n    // console.log(\"currentAdhyayList----------\", currentAdhyayList);\n    console.log(\"currentAdhyay----------\", currentAdhyay);\n    // console.log(\"content----------\", content);\n    const handleSave = async ()=>{\n        try {\n            await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].post(\"/harililakalpataru/skanda\", {\n                id: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda._id,\n                body: content,\n                key: activeTab\n            });\n            setStatus(\"Saved!\");\n        } catch (error) {\n            console.error(\"Error inserting data:\", error);\n        }\n    };\n    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{\n        if (focus) {\n            handleSave();\n        }\n    }, [\n        saveContent\n    ]);\n    const handlePage = (page)=>{\n    // if (harililakalpataru_id.length === 1) {\n    //   const currentObject =\n    //     satsangijeevan &&\n    //     satsangijeevan?.data?.find(\n    //       (obj) => obj.adhyayKey == harililakalpataru_id[0]\n    //     );\n    //   const currentIndexInArray = satsangijeevan?.data?.indexOf(currentObject);\n    //   if (page == \"NEXT\") {\n    //     const nextObject = satsangijeevan?.data?.[currentIndexInArray + 1];\n    //     return nextObject ? nextObject.adhyayKey : harililakalpataru_id;\n    //   }\n    //   if (page == \"PREVIOUS\") {\n    //     const nextObject = satsangijeevan?.data?.[currentIndexInArray - 1];\n    //     return nextObject ? nextObject.adhyayKey : harililakalpataru_id;\n    //   }\n    // } else if (harililakalpataru_id.length === 2) {\n    //   const currentObject =\n    //     currentSatsangijeevans &&\n    //     currentSatsangijeevans?.items?.find(\n    //       (obj) => obj.id == harililakalpataru_id[1]\n    //     );\n    //   const currentIndexInArray =\n    //     currentSatsangijeevans?.items?.indexOf(currentObject);\n    //   if (page == \"NEXT\") {\n    //     const nextObject =\n    //       currentSatsangijeevans?.items?.[currentIndexInArray + 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${nextObject.id}`\n    //         : `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}`\n    //     }`;\n    //   }\n    //   if (page == \"PREVIOUS\") {\n    //     const nextObject =\n    //       currentSatsangijeevans?.items?.[currentIndexInArray - 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${nextObject.id}`\n    //         : `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}`\n    //     }`;\n    //   }\n    // } else if (harililakalpataru_id.length === 3) {\n    //   const currentData =\n    //     currentSatsangijeevansVerse &&\n    //     currentSatsangijeevansVerse?.items?.filter((a) => a.id !== -1);\n    //   const currentObject =\n    //     currentData &&\n    //     currentData?.find((obj) => obj.id == harililakalpataru_id[2]);\n    //   const currentIndexInArray = currentData?.indexOf(currentObject);\n    //   if (page == \"NEXT\") {\n    //     const nextObject = currentData?.[currentIndexInArray + 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}/${nextObject.id}?tab=${activeTab}`\n    //         : `${harililakalpataru_id.join(\"/\")}?tab=${activeTab}`\n    //     }`;\n    //   }\n    //   if (page == \"PREVIOUS\") {\n    //     const nextObject = currentData?.[currentIndexInArray - 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}/${nextObject.id}?tab=${activeTab}`\n    //         : `${harililakalpataru_id.join(\"/\")}?tab=${activeTab}`\n    //     }`;\n    //   }\n    // }\n    };\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n        children: [\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"nav\", {\n                className: \"flex justify-between gap-2 items-center z-30 sticky top-0 bg-secondary p-2 -m-4 mb-1\",\n                children: [\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                        className: \"grow-0 gap-2 items-center\",\n                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"flex gap-2 items-center\",\n                            children: [\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_button_NavButton__WEBPACK_IMPORTED_MODULE_3__.NavButton, {\n                                    type: \"link\",\n                                    link: \"/dashboard\",\n                                    label: \"back-btn\",\n                                    className: \"flex\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaHome, {}, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 216,\n                                        columnNumber: 15\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 210,\n                                    columnNumber: 13\n                                }, undefined),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_button_NavButton__WEBPACK_IMPORTED_MODULE_3__.NavButton, {\n                                    type: \"link\",\n                                    link: \"/satsangijeevan/\".concat(harililakalpataru_id.slice(0, -1).join(\"/\")),\n                                    label: \"back-btn\",\n                                    className: \"flex\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaArrowLeft, {}, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 226,\n                                        columnNumber: 15\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 218,\n                                    columnNumber: 13\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 209,\n                            columnNumber: 11\n                        }, undefined)\n                    }, void 0, false, {\n                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                        lineNumber: 208,\n                        columnNumber: 9\n                    }, undefined),\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                        className: \"grow text-primary text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl\",\n                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                            className: \"flex justify-center\",\n                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                className: \"capitalize\",\n                                children: [\n                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                        className: \"hover:underline\",\n                                        href: \"/harililakalpataru\",\n                                        children: \"॥ हरिलीलाकल्पतरु ॥\"\n                                    }, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 233,\n                                        columnNumber: 15\n                                    }, undefined),\n                                    currentSkanda && \" > \",\n                                    currentSkanda && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                        className: \"hover:underline\",\n                                        href: \"/harililakalpataru/\".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id),\n                                        children: currentSkanda && (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.title)\n                                    }, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 239,\n                                        columnNumber: 17\n                                    }, undefined),\n                                    currentAdhyay && \" > \",\n                                    currentAdhyay && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                        className: \"hover:underline\",\n                                        href: \"/harililakalpataru/\".concat(currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.id),\n                                        children: currentAdhyay && (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.title)\n                                    }, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 249,\n                                        columnNumber: 17\n                                    }, undefined)\n                                ]\n                            }, void 0, true, {\n                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                lineNumber: 232,\n                                columnNumber: 13\n                            }, undefined)\n                        }, void 0, false, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 231,\n                            columnNumber: 11\n                        }, undefined)\n                    }, void 0, false, {\n                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                        lineNumber: 230,\n                        columnNumber: 9\n                    }, undefined)\n                ]\n            }, void 0, true, {\n                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                lineNumber: 207,\n                columnNumber: 7\n            }, undefined),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                children: harililakalpataru_id.length === 1 && router.query.edit === \"skanda\" ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                    children: [\n                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"flex justify-between items-center\",\n                            children: [\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                    className: \"grow flex mb-2 overflow-x-auto no-scrollbar gap-2\",\n                                    children: tabs.map((tab, index)=>{\n                                        var _currentSkanda_tab_val, _currentSkanda_tab_val1;\n                                        return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {\n                                            children: tab.val && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                onClick: ()=>handleTab(tab === null || tab === void 0 ? void 0 : tab.val),\n                                                className: \"cursor-pointer flex-shrink-0 flex items-center py-2 mx-1 text-sm md:text-lg  \".concat(activeTab === (tab === null || tab === void 0 ? void 0 : tab.val) ? \"active  text-red  border-b-2 border-red font-bold\" : \" font-bold  text-gray-500\"),\n                                                children: [\n                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                        class: \"inline-flex items-center\",\n                                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"label\", {\n                                                            class: \"relative flex items-center rounded-full cursor-pointer\",\n                                                            htmlFor: \"custom\",\n                                                            children: [\n                                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"input\", {\n                                                                    checked: true,\n                                                                    type: \"checkbox\",\n                                                                    class: \"peer relative appearance-none w-5 h-5  rounded-md  \".concat(((_currentSkanda_tab_val = currentSkanda[tab === null || tab === void 0 ? void 0 : tab.val]) === null || _currentSkanda_tab_val === void 0 ? void 0 : _currentSkanda_tab_val.length) > 0 || activeTab === (tab === null || tab === void 0 ? void 0 : tab.val) && (content === null || content === void 0 ? void 0 : content.length) > 0 ? \"checked:bg-green-500\" : \"checked:bg-red\"),\n                                                                    id: \"custom\"\n                                                                }, void 0, false, {\n                                                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                    lineNumber: 282,\n                                                                    columnNumber: 29\n                                                                }, undefined),\n                                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                                                    class: \"absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100\",\n                                                                    children: ((_currentSkanda_tab_val1 = currentSkanda[tab === null || tab === void 0 ? void 0 : tab.val]) === null || _currentSkanda_tab_val1 === void 0 ? void 0 : _currentSkanda_tab_val1.length) > 0 || activeTab === (tab === null || tab === void 0 ? void 0 : tab.val) && (content === null || content === void 0 ? void 0 : content.length) > 0 ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"svg\", {\n                                                                        xmlns: \"http://www.w3.org/2000/svg\",\n                                                                        class: \"h-3.5 w-3.5\",\n                                                                        viewBox: \"0 0 20 20\",\n                                                                        fill: \"currentColor\",\n                                                                        stroke: \"currentColor\",\n                                                                        \"stroke-width\": \"1\",\n                                                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"path\", {\n                                                                            \"fill-rule\": \"evenodd\",\n                                                                            d: \"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\",\n                                                                            \"clip-rule\": \"evenodd\"\n                                                                        }, void 0, false, {\n                                                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                            lineNumber: 306,\n                                                                            columnNumber: 35\n                                                                        }, undefined)\n                                                                    }, void 0, false, {\n                                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                        lineNumber: 298,\n                                                                        columnNumber: 33\n                                                                    }, undefined) : /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"svg\", {\n                                                                        class: \"h-3.5 w-3.5\",\n                                                                        xmlns: \"http://www.w3.org/2000/svg\",\n                                                                        viewBox: \"0 0 384 512\",\n                                                                        fill: \"currentColor\",\n                                                                        stroke: \"currentColor\",\n                                                                        \"stroke-width\": \"1\",\n                                                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"path\", {\n                                                                            \"fill-rule\": \"evenodd\",\n                                                                            d: \"M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z\",\n                                                                            \"clip-rule\": \"evenodd\"\n                                                                        }, void 0, false, {\n                                                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                            lineNumber: 321,\n                                                                            columnNumber: 35\n                                                                        }, undefined)\n                                                                    }, void 0, false, {\n                                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                        lineNumber: 313,\n                                                                        columnNumber: 33\n                                                                    }, undefined)\n                                                                }, void 0, false, {\n                                                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                    lineNumber: 294,\n                                                                    columnNumber: 29\n                                                                }, undefined)\n                                                            ]\n                                                        }, void 0, true, {\n                                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                            lineNumber: 278,\n                                                            columnNumber: 27\n                                                        }, undefined)\n                                                    }, void 0, false, {\n                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                        lineNumber: 277,\n                                                        columnNumber: 25\n                                                    }, undefined),\n                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                                        className: \"mx-2\",\n                                                        children: tab.name\n                                                    }, void 0, false, {\n                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                        lineNumber: 331,\n                                                        columnNumber: 25\n                                                    }, undefined)\n                                                ]\n                                            }, index, true, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 268,\n                                                columnNumber: 23\n                                            }, undefined)\n                                        }, void 0, false);\n                                    })\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 264,\n                                    columnNumber: 15\n                                }, undefined),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                    className: \"bg-white flex-none h-10 min-w-[200px] flex items-center select-none\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                        className: \"ml-2 flex items-center gap-2\",\n                                        children: [\n                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"b\", {\n                                                children: \"Status:\"\n                                            }, void 0, false, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 339,\n                                                columnNumber: 19\n                                            }, undefined),\n                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                                className: \"\".concat(status === \"Saved!\" ? \"text-green-500\" : \"text-red\"),\n                                                children: status\n                                            }, void 0, false, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 340,\n                                                columnNumber: 19\n                                            }, undefined),\n                                            status === \"Saving...\" && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                class: \"flex justify-center items-center\",\n                                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                    class: \"w-5 h-5 rounded-full border-4 border-gray-400 border-t-orange-500 animate-spin\"\n                                                }, void 0, false, {\n                                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                    lineNumber: 349,\n                                                    columnNumber: 23\n                                                }, undefined)\n                                            }, void 0, false, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 348,\n                                                columnNumber: 21\n                                            }, undefined)\n                                        ]\n                                    }, void 0, true, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 338,\n                                        columnNumber: 17\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 337,\n                                    columnNumber: 15\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 263,\n                            columnNumber: 13\n                        }, undefined),\n                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"overflow-auto\",\n                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                className: \"w-full\",\n                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(CustomEditor, {\n                                    value: content ? content : \"\",\n                                    onChange: setContent,\n                                    setStatus: setStatus,\n                                    onFocus: ()=>setFocus(true),\n                                    onBlur: ()=>setFocus(false)\n                                }, router.query.tab, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 357,\n                                    columnNumber: 17\n                                }, undefined)\n                            }, void 0, false, {\n                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                lineNumber: 356,\n                                columnNumber: 15\n                            }, undefined)\n                        }, void 0, false, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 355,\n                            columnNumber: 13\n                        }, undefined)\n                    ]\n                }, void 0, true, {\n                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                    lineNumber: 262,\n                    columnNumber: 11\n                }, undefined) : harililakalpataru_id.length === 1 ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                    className: \"bg-card border-b\",\n                    children: currentAdhyayList && (currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.map((e, k)=>{\n                        return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"flex items-center border-b border-x border-b_color p-2 sm:p-2 text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full\",\n                            children: [\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                    className: \"grow flex items-center\",\n                                    href: \"/harililakalpataru/\".concat(harililakalpataru_id.join(\"/\"), \"/\").concat(e === null || e === void 0 ? void 0 : e.id),\n                                    children: [\n                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                            className: \"mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle\",\n                                            children: (0,_utils_function__WEBPACK_IMPORTED_MODULE_7__.convertToHindi)(k + 1)\n                                        }, void 0, false, {\n                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                            lineNumber: 381,\n                                            columnNumber: 23\n                                        }, undefined),\n                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                            className: \"break-words text-justify align-baseline text-red font-bold\",\n                                            children: e === null || e === void 0 ? void 0 : e.title\n                                        }, void 0, false, {\n                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                            lineNumber: 384,\n                                            columnNumber: 23\n                                        }, undefined)\n                                    ]\n                                }, k, true, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 374,\n                                    columnNumber: 21\n                                }, undefined),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                    href: \"/harililakalpataru/\".concat(harililakalpataru_id.join(\"/\"), \"/\").concat(e === null || e === void 0 ? void 0 : e.id, \"?edit=adhyay\"),\n                                    className: \"border-2 border-secondary rounded p-2\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaEdit, {}, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 394,\n                                        columnNumber: 23\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 388,\n                                    columnNumber: 21\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 373,\n                            columnNumber: 19\n                        }, undefined);\n                    }))\n                }, void 0, false, {\n                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                    lineNumber: 369,\n                    columnNumber: 11\n                }, undefined) : harililakalpataru_id.length === 2 && router.query.edit === \"skanda\" ? \"adhyay\" : \"hello\"\n            }, void 0, false, {\n                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                lineNumber: 260,\n                columnNumber: 7\n            }, undefined)\n        ]\n    }, void 0, true, {\n        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n        lineNumber: 206,\n        columnNumber: 5\n    }, undefined);\n};\n_s(HarililakalpataruId, \"MiDlCH6V4hJlDc4sLTEPsgyGRfU=\", false, function() {\n    return [\n        next_router__WEBPACK_IMPORTED_MODULE_4__.useRouter,\n        use_debounce__WEBPACK_IMPORTED_MODULE_8__.useDebounce\n    ];\n});\n_c1 = HarililakalpataruId;\nHarililakalpataruId.getInitialProps = async (param)=>{\n    let { query } = param;\n    const { harililakalpataru_id } = query;\n    return {\n        harililakalpataru_id\n    };\n};\n/* harmony default export */ __webpack_exports__[\"default\"] = (HarililakalpataruId);\nvar _c, _c1;\n$RefreshReg$(_c, \"CustomEditor\");\n$RefreshReg$(_c1, \"HarililakalpataruId\");\n\n\n;\n    // Wrapped in an IIFE to avoid polluting the global scope\n    ;\n    (function () {\n        var _a, _b;\n        // Legacy CSS implementations will `eval` browser code in a Node.js context\n        // to extract CSS. For backwards compatibility, we need to check we're in a\n        // browser context before continuing.\n        if (typeof self !== 'undefined' &&\n            // AMP / No-JS mode does not inject these helpers:\n            '$RefreshHelpers$' in self) {\n            // @ts-ignore __webpack_module__ is global\n            var currentExports = module.exports;\n            // @ts-ignore __webpack_module__ is global\n            var prevSignature = (_b = (_a = module.hot.data) === null || _a === void 0 ? void 0 : _a.prevSignature) !== null && _b !== void 0 ? _b : null;\n            // This cannot happen in MainTemplate because the exports mismatch between\n            // templating and execution.\n            self.$RefreshHelpers$.registerExportsForReactRefresh(currentExports, module.id);\n            // A module can be accepted automatically based on its exports, e.g. when\n            // it is a Refresh Boundary.\n            if (self.$RefreshHelpers$.isReactRefreshBoundary(currentExports)) {\n                // Save the previous exports signature on update so we can compare the boundary\n                // signatures. We avoid saving exports themselves since it causes memory leaks (https://github.com/vercel/next.js/pull/53797)\n                module.hot.dispose(function (data) {\n                    data.prevSignature =\n                        self.$RefreshHelpers$.getRefreshBoundarySignature(currentExports);\n                });\n                // Unconditionally accept an update to this module, we'll check if it's\n                // still a Refresh Boundary later.\n                // @ts-ignore importMeta is replaced in the loader\n                module.hot.accept();\n                // This field is set when the previous version of this module was a\n                // Refresh Boundary, letting us know we need to check for invalidation or\n                // enqueue an update.\n                if (prevSignature !== null) {\n                    // A boundary can become ineligible if its exports are incompatible\n                    // with the previous exports.\n                    //\n                    // For example, if you add/remove/change exports, we'll want to\n                    // re-execute the importing modules, and force those components to\n                    // re-render. Similarly, if you convert a class component to a\n                    // function, we want to invalidate the boundary.\n                    if (self.$RefreshHelpers$.shouldInvalidateReactRefreshBoundary(prevSignature, self.$RefreshHelpers$.getRefreshBoundarySignature(currentExports))) {\n                        module.hot.invalidate();\n                    }\n                    else {\n                        self.$RefreshHelpers$.scheduleUpdate();\n                    }\n                }\n            }\n            else {\n                // Since we just executed the code for the module, it's possible that the\n                // new exports made it ineligible for being a boundary.\n                // We only care about the case when we were _previously_ a boundary,\n                // because we already accepted this update (accidental side effect).\n                var isNoLongerABoundary = prevSignature !== null;\n                if (isNoLongerABoundary) {\n                    module.hot.invalidate();\n                }\n            }\n        }\n    })();\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvcGFnZXMvaGFyaWxpbGFrYWxwYXRhcnUvWy4uLmhhcmlsaWxha2FscGF0YXJ1X2lkXS5qcyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFBMkQ7QUFDeEI7QUFDUTtBQUNlO0FBUWxDO0FBQ2dCO0FBQ1U7QUFDckI7QUFDcUI7QUFFbEQsTUFBTWlCLGVBQWViLG1EQUFPQSxDQUFDLElBQU0sdU1BQXdDOzs7Ozs7SUFDekVjLEtBQUs7O0tBREREO0FBSU4sTUFBTUUsc0JBQXNCO1FBQUMsRUFBRUMsb0JBQW9CLEVBQUU7O0lBQ25ELE1BQU1DLFNBQVNSLHNEQUFTQTtJQUN4QixNQUFNLENBQUNTLGVBQWVDLGlCQUFpQixHQUFHcEIsK0NBQVFBLENBQUMsQ0FBQztJQUNwRCxNQUFNLENBQUNxQixtQkFBbUJDLHFCQUFxQixHQUFHdEIsK0NBQVFBLENBQUMsRUFBRTtJQUM3RCxNQUFNLENBQUN1QixlQUFlQyxpQkFBaUIsR0FBR3hCLCtDQUFRQSxDQUFDLEVBQUU7SUFDckQsTUFBTSxDQUFDeUIseUJBQXlCQywyQkFBMkIsR0FBRzFCLCtDQUFRQSxDQUFDLEVBQUU7SUFDekUsTUFBTSxDQUFDMkIsU0FBU0MsV0FBVyxHQUFHNUIsK0NBQVFBLENBQUM7SUFDdkMsTUFBTSxDQUFDNkIsUUFBUUMsVUFBVSxHQUFHOUIsK0NBQVFBLENBQUM7SUFDckMsTUFBTSxDQUFDK0IsWUFBWSxHQUFHN0IseURBQVdBLENBQUN5QixTQUFTO0lBQzNDLE1BQU0sQ0FBQ0ssT0FBT0MsU0FBUyxHQUFHakMsK0NBQVFBLENBQUM7SUFDbkMsTUFBTSxDQUFDa0MsV0FBV0MsYUFBYSxHQUFHbkMsK0NBQVFBLENBQUM7SUFDM0MsTUFBTSxDQUFDb0MsTUFBTUMsUUFBUSxHQUFHckMsK0NBQVFBLENBQUM7UUFDL0I7WUFBRXNDLE1BQU07WUFBVUMsS0FBSztRQUFTO1FBQ2hDO1lBQUVELE1BQU07WUFBVUMsS0FBSztRQUFTO0tBQ2pDO0lBRUQsTUFBTUMsWUFBWSxDQUFD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QUVWLDhEQUFDZTs0Q0FBSUUsV0FBVTtzREFDWnJELCtEQUFjQSxDQUFDc0YsSUFBSTs7Ozs7O3NEQUV0Qiw4REFBQ25DOzRDQUFJRSxXQUFVO3NEQUNaZ0MsY0FBQUEsd0JBQUFBLEVBQUd6QixLQUFLOzs7Ozs7O21DQVROMEI7Ozs7OzhDQVlQLDhEQUFDdkYsa0RBQUlBO29DQUNINEQsTUFBTSw2QkFBc0J2RCxxQkFBcUJxRCxJQUFJLENBQ25ELE1BQ0EsS0FBUyxPQUFONEIsY0FBQUEsd0JBQUFBLEVBQUdqRCxFQUFFLEVBQUM7b0NBQ1hpQixXQUFVOzhDQUVWLDRFQUFDMUQsNklBQU1BOzs7Ozs7Ozs7Ozs7Ozs7O29CQUlmOzs7OztnQ0FFRlMscUJBQXFCcUMsTUFBTSxLQUFLLEtBQUtwQyxPQUFPcUMsS0FBSyxDQUFDbUIsSUFBSSxLQUFLLFdBQVcsV0FDeEU7Ozs7Ozs7Ozs7OztBQUtWO0dBaFlNMUQ7O1FBQ1dOLGtEQUFTQTtRQU9GUixxREFBV0E7OztNQVI3QmM7QUFrWU5BLG9CQUFvQm9GLGVBQWUsR0FBRztRQUFPLEVBQUU3QyxLQUFLLEVBQUU7SUFDcEQsTUFBTSxFQUFFdEMsb0JBQW9CLEVBQUUsR0FBR3NDO0lBQ2pDLE9BQU87UUFBRXRDO0lBQXFCO0FBQ2hDO0FBRUEsK0RBQWVELG1CQUFtQkEsRUFBQyIsInNvdXJjZXMiOlsid2VicGFjazovL19OX0UvLi9zcmMvcGFnZXMvaGFyaWxpbGFrYWxwYXRhcnUvWy4uLmhhcmlsaWxha2FscGF0YXJ1X2lkXS5qcz8zMzZiIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyB1c2VFZmZlY3QsIHVzZVJlZiwgdXNlU3RhdGUgfSBmcm9tIFwicmVhY3RcIjtcclxuaW1wb3J0IGR5bmFtaWMgZnJvbSBcIm5leHQvZHluYW1pY1wiO1xyXG5pbXBvcnQgeyB1c2VEZWJvdW5jZSB9IGZyb20gXCJ1c2UtZGVib3VuY2VcIjtcclxuaW1wb3J0IHsgTmF2QnV0dG9uIH0gZnJvbSBcIkAvY29tcG9uZW50cy9idXR0b24vTmF2QnV0dG9uXCI7XHJcbmltcG9ydCB7XHJcbiAgRmFBcnJvd0xlZnQsXHJcbiAgRmFBcnJvd1JpZ2h0LFxyXG4gIEZhQ2hldnJvbkxlZnQsXHJcbiAgRmFDaGV2cm9uUmlnaHQsXHJcbiAgRmFFZGl0LFxyXG4gIEZhSG9tZSxcclxufSBmcm9tIFwicmVhY3QtaWNvbnMvZmFcIjtcclxuaW1wb3J0IHsgdXNlUm91dGVyIH0gZnJvbSBcIm5leHQvcm91dGVyXCI7XHJcbmltcG9ydCBheGlvc0luc3RhbmNlIGZyb20gXCJAL3V0aWxzL2F4aW9zSW5zdGFuY2VcIjtcclxuaW1wb3J0IExpbmsgZnJvbSBcIm5leHQvbGlua1wiO1xyXG5pbXBvcnQgeyBjb252ZXJ0VG9IaW5kaSB9IGZyb20gXCJAL3V0aWxzL2Z1bmN0aW9uXCI7XHJcblxyXG5jb25zdCBDdXN0b21FZGl0b3IgPSBkeW5hbWljKCgpID0+IGltcG9ydChcIi4uLy4uL2NvbXBvbmVudHMvY3VzdG9tLWVkaXRvclwiKSwge1xyXG4gIHNzcjogZmFsc2UsXHJcbn0pO1xyXG5cclxuY29uc3QgSGFyaWxpbGFrYWxwYXRhcnVJZCA9ICh7IGhhcmlsaWxha2FscGF0YXJ1X2lkIH0pID0+IHtcclxuICBjb25zdCByb3V0ZXIgPSB1c2VSb3V0ZXIoKTtcclxuICBjb25zdCBbY3VycmVudFNrYW5kYSwgc2V0Q3VycmVudFNrYW5kYV0gPSB1c2VTdGF0ZSh7fSk7XHJcbiAgY29uc3QgW2N1cnJlbnRBZGh5YXlMaXN0LCBzZXRDdXJyZW50QWRoeWF5TGlzdF0gPSB1c2VTdGF0ZShbXSk7XHJcbiAgY29uc3QgW2N1cnJlbnRBZGh5YXksIHNldEN1cnJlbnRBZGh5YXldID0gdXNlU3RhdGUoW10pO1xyXG4gIGNvbnN0IFtoYXJpbGlsYWthbHBhdGFydVNrYW5kYSwgc2V0SGFyaWxpbGFrYWxwYXRhcnVTa2FuZGFdID0gdXNlU3RhdGUoW10pO1xyXG4gIGNvbnN0IFtjb250ZW50LCBzZXRDb250ZW50XSA9IHVzZVN0YXRlKFwiXCIpO1xyXG4gIGNvbnN0IFtzdGF0dXMsIHNldFN0YXR1c10gPSB1c2VTdGF0ZShcIlNhdmVkIVwiKTtcclxuICBjb25zdCBbc2F2ZUNvbnRlbnRdID0gdXNlRGVib3VuY2UoY29udGVudCwgNTAwKTtcclxuICBjb25zdCBbZm9jdXMsIHNldEZvY3VzXSA9IHVzZVN0YXRlKGZhbHNlKTtcclxuICBjb25zdCBbYWN0aXZlVGFiLCBzZXRBY3RpdmVUYWJdID0gdXNlU3RhdGUoXCJoZWFkZXJcIik7XHJcbiAgY29uc3QgW3RhYnMsIHNldFRhYnNdID0gdXNlU3RhdGUoW1xyXG4gICAgeyBuYW1lOiBcImhlYWRlclwiLCB2YWw6IFwiaGVhZGVyXCIgfSxcclxuICAgIHsgbmFtZTogXCJmb290ZXJcIiwgdmFsOiBcImZvb3RlclwiIH0sXHJcbiAgXSk7XHJcblxyXG4gIGNvbnN0IGhhbmRsZVRhYiA9ICh0eXBlKSA9PiB7XHJcbiAgICBzZXRBY3RpdmVUYWIodHlwZSk7XHJcbiAgICAvLyByb3V0ZXIucHVzaCh7XHJcbiAgICAvLyAgIHBhdGhuYW1lOiBgL3NhdHNhbmdpamVldmFuLyR7c2F0c2FuZ2lqZWV2YW5faWQuam9pbihcIi9cIil9YCxcclxuICAgIC8vICAgcXVlcnk6IHsgdGFiOiB0eXBlIH0sXHJcbiAgICAvLyB9KTtcclxuICB9O1xyXG5cclxuICBjb25zdCBnZXRBbGxTa2FuZGEgPSBhc3luYyAoKSA9PiB7XHJcbiAgICB0cnkge1xyXG4gICAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGF4aW9zSW5zdGFuY2UuZ2V0KFwiL2hhcmlsaWxha2FscGF0YXJ1L3NrYW5kYVwiKTtcclxuICAgICAgc2V0SGFyaWxpbGFrYWxwYXRhcnVTa2FuZGEocmVzcG9uc2U/LmRhdGE/LmRhdGEpO1xyXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcclxuICAgICAgY29uc29sZS5lcnJvcihcIkVycm9yIGdldGluZyBkYXRhOlwiLCBlcnJvcik7XHJcbiAgICB9XHJcbiAgfTtcclxuXHJcbiAgY29uc3QgZ2V0Q3VycmVudFNrYW5kYSA9IGFzeW5jIChpZCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBheGlvc0luc3RhbmNlLmdldChcIi9oYXJpbGlsYWthbHBhdGFydS9za2FuZGFcIiwge1xyXG4gICAgICAgIHBhcmFtczoge1xyXG4gICAgICAgICAgaWQ6IGlkLFxyXG4gICAgICAgIH0sXHJcbiAgICAgIH0pO1xyXG4gICAgICBzZXRDb250ZW50KHJlc3BvbnNlLmRhdGEuZGF0YVthY3RpdmVUYWJdKTtcclxuICAgICAgc2V0Q3VycmVudFNrYW5kYShyZXNwb25zZS5kYXRhLmRhdGEpO1xyXG4gICAgICByZXR1cm47XHJcbiAgICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgICBjb25zb2xlLmVycm9yKFwiRXJyb3IgZ2V0aW5nIGRhdGE6XCIsIGVycm9yKTtcclxuICAgIH1cclxuICB9O1xyXG5cclxuICBjb25zdCBnZXRDdXJyZW50QWRoeWF5TGlzdCA9IGFzeW5jIChpZCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBheGlvc0luc3RhbmNlLmdldChcIi9oYXJpbGlsYWthbHBhdGFydS9hZGh5YXlcIiwge1xyXG4gICAgICAgIHBhcmFtczoge1xyXG4gICAgICAgICAgc2thbmRhSWQ6IGlkLFxyXG4gICAgICAgIH0sXHJcbiAgICAgIH0pO1xyXG4gICAgICBzZXRDdXJyZW50QWRoeWF5TGlzdChyZXNwb25zZS5kYXRhLmRhdGEpO1xyXG4gICAgICByZXR1cm47XHJcbiAgICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgICBjb25zb2xlLmVycm9yKFwiRXJyb3IgZ2V0aW5nIGRhdGE6XCIsIGVycm9yKTtcclxuICAgIH1cclxuICB9O1xyXG5cclxuICBjb25zdCBnZXRDdXJyZW50QWRoeWF5ID0gYXN5bmMgKHNrYW5kYUlkLCBpZCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBheGlvc0luc3RhbmNlLmdldChcIi9oYXJpbGlsYWthbHBhdGFydS9hZGh5YXlcIiwge1xyXG4gICAgICAgIHBhcmFtczoge1xyXG4gICAgICAgICAgc2thbmRhSWQ6IHNrYW5kYUlkLFxyXG4gICAgICAgICAgaWQ6IGlkLFxyXG4gICAgICAgIH0sXHJcbiAgICAgIH0pO1xyXG4gICAgICBzZXRDb250ZW50KHJlc3BvbnNlLmRhdGEuZGF0YVthY3RpdmVUYWJdKTtcclxuICAgICAgc2V0Q3VycmVudEFkaHlheShyZXNwb25zZS5kYXRhLmRhdGEpO1xyXG4gICAgICByZXR1cm47XHJcbiAgICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgICBjb25zb2xlLmVycm9yKFwiRXJyb3IgZ2V0aW5nIGRhdGE6XCIsIGVycm9yKTtcclxuICAgIH1cclxuICB9O1xyXG5cclxuICB1c2VFZmZlY3QoKCkgPT4ge1xyXG4gICAgZ2V0QWxsU2thbmRhKCk7XHJcbiAgICBpZiAoaGFyaWxpbGFrYWxwYXRhcnVfaWQubGVuZ3RoID49IDEpIHtcclxuICAgICAgZ2V0Q3VycmVudFNrYW5kYShoYXJpbGlsYWthbHBhdGFydV9pZFswXSk7XHJcbiAgICAgIGdldEN1cnJlbnRBZGh5YXlMaXN0KGhhcmlsaWxha2FscGF0YXJ1X2lkWzBdKTtcclxuICAgIH1cclxuICAgIGlmIChoYXJpbGlsYWthbHBhdGFydV9pZC5sZW5ndGggPj0gMSkge1xyXG4gICAgICBnZXRDdXJyZW50QWRoeWF5KGhhcmlsaWxha2FscGF0YXJ1X2lkWzBdLCBoYXJpbGlsYWthbHBhdGFydV9pZFsxXSk7XHJcbiAgICB9XHJcbiAgfSwgW3JvdXRlci5xdWVyeSwgYWN0aXZlVGFiLCBoYXJpbGlsYWthbHBhdGFydV9pZF0pO1xyXG5cclxuICAvLyBjb25zb2xlLmxvZyhcImhhcmlsaWxha2FscGF0YXJ1U2thbmRhLS0tLS0tLS0tLVwiLCBoYXJpbGlsYWthbHBhdGFydVNrYW5kYSk7XHJcbiAgLy8gY29uc29sZS5sb2coXCJjdXJyZW50U2thbmRhLS0tLS0tLS0tLVwiLCBjdXJyZW50U2thbmRhKTtcclxuICAvLyBjb25zb2xlLmxvZyhcImN1cnJlbnRBZGh5YXlMaXN0LS0tLS0tLS0tLVwiLCBjdXJyZW50QWRoeWF5TGlzdCk7XHJcbiAgY29uc29sZS5sb2coXCJjdXJyZW50QWRoeWF5LS0tLS0tLS0tLVwiLCBjdXJyZW50QWRoeWF5KTtcclxuICAvLyBjb25zb2xlLmxvZyhcImNvbnRlbnQtLS0tLS0tLS0tXCIsIGNvbnRlbnQpO1xyXG5cclxuICBjb25zdCBoYW5kbGVTYXZlID0gYXN5bmMgKCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgYXdhaXQgYXhpb3NJbnN0YW5jZS5wb3N0KFwiL2hhcmlsaWxha2FscGF0YXJ1L3NrYW5kYVwiLCB7XHJcbiAgICAgICAgaWQ6IGN1cnJlbnRTa2FuZGE/Ll9pZCxcclxuICAgICAgICBib2R5OiBjb250ZW50LFxyXG4gICAgICAgIGtleTogYWN0aXZlVGFiLFxyXG4gICAgICB9KTtcclxuICAgICAgc2V0U3RhdHVzKFwiU2F2ZWQhXCIpO1xyXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcclxuICAgICAgY29uc29sZS5lcnJvcihcIkVycm9yIGluc2VydGluZyBkYXRhOlwiLCBlcnJvcik7XHJcbiAgICB9XHJcbiAgfTtcclxuXHJcbiAgdXNlRWZmZWN0KCgpID0+IHtcclxuICAgIGlmIChmb2N1cykge1xyXG4gICAgICBoYW5kbGVTYXZlKCk7XHJcbiAgICB9XHJcbiAgfSwgW3NhdmVDb250ZW50XSk7XHJcblxyXG4gIGNvbnN0IGhhbmRsZVBhZ2UgPSAocGFnZSkgPT4ge1xyXG4gICAgLy8gaWYgKGhhcmlsaWxha2FscGF0YXJ1X2lkLmxlbmd0aCA9PT0gMSkge1xyXG4gICAgLy8gICBjb25zdCBjdXJyZW50T2JqZWN0ID1cclxuICAgIC8vICAgICBzYXRzYW5naWplZXZhbiAmJlxyXG4gICAgLy8gICAgIHNhdHNhbmdpamVldmFuPy5kYXRhPy5maW5kKFxyXG4gICAgLy8gICAgICAgKG9iaikgPT4gb2JqLmFkaHlheUtleSA9PSBoYXJpbGlsYWthbHBhdGFydV9pZFswXVxyXG4gICAgLy8gICAgICk7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnRJbmRleEluQXJyYXkgPSBzYXRzYW5naWplZXZhbj8uZGF0YT8uaW5kZXhPZihjdXJyZW50T2JqZWN0KTtcclxuICAgIC8vICAgaWYgKHBhZ2UgPT0gXCJORVhUXCIpIHtcclxuICAgIC8vICAgICBjb25zdCBuZXh0T2JqZWN0ID0gc2F0c2FuZ2lqZWV2YW4/LmRhdGE/LltjdXJyZW50SW5kZXhJbkFycmF5ICsgMV07XHJcbiAgICAvLyAgICAgcmV0dXJuIG5leHRPYmplY3QgPyBuZXh0T2JqZWN0LmFkaHlheUtleSA6IGhhcmlsaWxha2FscGF0YXJ1X2lkO1xyXG4gICAgLy8gICB9XHJcbiAgICAvLyAgIGlmIChwYWdlID09IFwiUFJFVklPVVNcIikge1xyXG4gICAgLy8gICAgIGNvbnN0IG5leHRPYmplY3QgPSBzYXRzYW5naWplZXZhbj8uZGF0YT8uW2N1cnJlbnRJbmRleEluQXJyYXkgLSAxXTtcclxuICAgIC8vICAgICByZXR1cm4gbmV4dE9iamVjdCA/IG5leHRPYmplY3QuYWRoeWF5S2V5IDogaGFyaWxpbGFrYWxwYXRhcnVfaWQ7XHJcbiAgICAvLyAgIH1cclxuICAgIC8vIH0gZWxzZSBpZiAoaGFyaWxpbGFrYWxwYXRhcnVfaWQubGVuZ3RoID09PSAyKSB7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnRPYmplY3QgPVxyXG4gICAgLy8gICAgIGN1cnJlbnRTYXRzYW5naWplZXZhbnMgJiZcclxuICAgIC8vICAgICBjdXJyZW50U2F0c2FuZ2lqZWV2YW5zPy5pdGVtcz8uZmluZChcclxuICAgIC8vICAgICAgIChvYmopID0+IG9iai5pZCA9PSBoYXJpbGlsYWthbHBhdGFydV9pZFsxXVxyXG4gICAgLy8gICAgICk7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnRJbmRleEluQXJyYXkgPVxyXG4gICAgLy8gICAgIGN1cnJlbnRTYXRzYW5naWplZXZhbnM/Lml0ZW1zPy5pbmRleE9mKGN1cnJlbnRPYmplY3QpO1xyXG4gICAgLy8gICBpZiAocGFnZSA9PSBcIk5FWFRcIikge1xyXG4gICAgLy8gICAgIGNvbnN0IG5leHRPYmplY3QgPVxyXG4gICAgLy8gICAgICAgY3VycmVudFNhdHNhbmdpamVldmFucz8uaXRlbXM/LltjdXJyZW50SW5kZXhJbkFycmF5ICsgMV07XHJcbiAgICAvLyAgICAgcmV0dXJuIGAke1xyXG4gICAgLy8gICAgICAgbmV4dE9iamVjdFxyXG4gICAgLy8gICAgICAgICA/IGAke2hhcmlsaWxha2FscGF0YXJ1X2lkWzBdfS8ke25leHRPYmplY3QuaWR9YFxyXG4gICAgLy8gICAgICAgICA6IGAke2hhcmlsaWxha2FscGF0YXJ1X2lkWzBdfS8ke2hhcmlsaWxha2FscGF0YXJ1X2lkWzFdfWBcclxuICAgIC8vICAgICB9YDtcclxuICAgIC8vICAgfVxyXG4gICAgLy8gICBpZiAocGFnZSA9PSBcIlBSRVZJT1VTXCIpIHtcclxuICAgIC8vICAgICBjb25zdCBuZXh0T2JqZWN0ID1cclxuICAgIC8vICAgICAgIGN1cnJlbnRTYXRzYW5naWplZXZhbnM/Lml0ZW1zPy5bY3VycmVudEluZGV4SW5BcnJheSAtIDFdO1xyXG4gICAgLy8gICAgIHJldHVybiBgJHtcclxuICAgIC8vICAgICAgIG5leHRPYmplY3RcclxuICAgIC8vICAgICAgICAgPyBgJHtoYXJpbGlsYWthbHBhdGFydV9pZFswXX0vJHtuZXh0T2JqZWN0LmlkfWBcclxuICAgIC8vICAgICAgICAgOiBgJHtoYXJpbGlsYWthbHBhdGFydV9pZFswXX0vJHtoYXJpbGlsYWthbHBhdGFydV9pZFsxXX1gXHJcbiAgICAvLyAgICAgfWA7XHJcbiAgICAvLyAgIH1cclxuICAgIC8vIH0gZWxzZSBpZiAoaGFyaWxpbGFrYWxwYXRhcnVfaWQubGVuZ3RoID09PSAzKSB7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnREYXRhID1cclxuICAgIC8vICAgICBjdXJyZW50U2F0c2FuZ2lqZWV2YW5zVmVyc2UgJiZcclxuICAgIC8vICAgICBjdXJyZW50U2F0c2FuZ2lqZWV2YW5zVmVyc2U/Lml0ZW1zPy5maWx0ZXIoKGEpID0+IGEuaWQgIT09IC0xKTtcclxuICAgIC8vICAgY29uc3QgY3VycmVudE9iamVjdCA9XHJcbiAgICAvLyAgICAgY3VycmVudERhdGEgJiZcclxuICAgIC8vICAgICBjdXJyZW50RGF0YT8uZmluZCgob2JqKSA9PiBvYmouaWQgPT0gaGFyaWxpbGFrYWxwYXRhcnVfaWRbMl0pO1xyXG4gICAgLy8gICBjb25zdCBjdXJyZW50SW5kZXhJbkFycmF5ID0gY3VycmVudERhdGE/LmluZGV4T2YoY3VycmVudE9iamVjdCk7XHJcbiAgICAvLyAgIGlmIChwYWdlID09IFwiTkVYVFwiKSB7XHJcbiAgICAvLyAgICAgY29uc3QgbmV4dE9iamVjdCA9IGN1cnJlbnREYXRhPy5bY3VycmVudEluZGV4SW5BcnJheSArIDFdO1xyXG4gICAgLy8gICAgIHJldHVybiBgJHtcclxuICAgIC8vICAgICAgIG5leHRPYmplY3RcclxuICAgIC8vICAgICAgICAgPyBgJHtoYXJpbGlsYWthbHBhdGFydV9pZFswXX0vJHtoYXJpbGlsYWthbHBhdGFydV9pZFsxXX0vJHtuZXh0T2JqZWN0LmlkfT90YWI9JHthY3RpdmVUYWJ9YFxyXG4gICAgLy8gICAgICAgICA6IGAke2hhcmlsaWxha2FscGF0YXJ1X2lkLmpvaW4oXCIvXCIpfT90YWI9JHthY3RpdmVUYWJ9YFxyXG4gICAgLy8gICAgIH1gO1xyXG4gICAgLy8gICB9XHJcbiAgICAvLyAgIGlmIChwYWdlID09IFwiUFJFVklPVVNcIikge1xyXG4gICAgLy8gICAgIGNvbnN0IG5leHRPYmplY3QgPSBjdXJyZW50RGF0YT8uW2N1cnJlbnRJbmRleEluQXJyYXkgLSAxXTtcclxuICAgIC8vICAgICByZXR1cm4gYCR7XHJcbiAgICAvLyAgICAgICBuZXh0T2JqZWN0XHJcbiAgICAvLyAgICAgICAgID8gYCR7aGFyaWxpbGFrYWxwYXRhcnVfaWRbMF19LyR7aGFyaWxpbGFrYWxwYXRhcnVfaWRbMV19LyR7bmV4dE9iamVjdC5pZH0/dGFiPSR7YWN0aXZlVGFifWBcclxuICAgIC8vICAgICAgICAgOiBgJHtoYXJpbGlsYWthbHBhdGFydV9pZC5qb2luKFwiL1wiKX0/dGFiPSR7YWN0aXZlVGFifWBcclxuICAgIC8vICAgICB9YDtcclxuICAgIC8vICAgfVxyXG4gICAgLy8gfVxyXG4gIH07XHJcblxyXG4gIHJldHVybiAoXHJcbiAgICA8ZGl2PlxyXG4gICAgICA8bmF2IGNsYXNzTmFtZT1cImZsZXgganVzdGlmeS1iZXR3ZWVuIGdhcC0yIGl0ZW1zLWNlbnRlciB6LTMwIHN0aWNreSB0b3AtMCBiZy1zZWNvbmRhcnkgcC0yIC1tLTQgbWItMVwiPlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3Jvdy0wIGdhcC0yIGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGdhcC0yIGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgICA8TmF2QnV0dG9uXHJcbiAgICAgICAgICAgICAgdHlwZT1cImxpbmtcIlxyXG4gICAgICAgICAgICAgIGxpbms9XCIvZGFzaGJvYXJkXCJcclxuICAgICAgICAgICAgICBsYWJlbD1cImJhY2stYnRuXCJcclxuICAgICAgICAgICAgICBjbGFzc05hbWU9XCJmbGV4XCJcclxuICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgIDxGYUhvbWUgLz5cclxuICAgICAgICAgICAgPC9OYXZCdXR0b24+XHJcbiAgICAgICAgICAgIDxOYXZCdXR0b25cclxuICAgICAgICAgICAgICB0eXBlPVwibGlua1wiXHJcbiAgICAgICAgICAgICAgbGluaz17YC9zYXRzYW5naWplZXZhbi8ke2hhcmlsaWxha2FscGF0YXJ1X2lkXHJcbiAgICAgICAgICAgICAgICAuc2xpY2UoMCwgLTEpXHJcbiAgICAgICAgICAgICAgICAuam9pbihcIi9cIil9YH1cclxuICAgICAgICAgICAgICBsYWJlbD1cImJhY2stYnRuXCJcclxuICAgICAgICAgICAgICBjbGFzc05hbWU9XCJmbGV4XCJcclxuICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgIDxGYUFycm93TGVmdCAvPlxyXG4gICAgICAgICAgICA8L05hdkJ1dHRvbj5cclxuICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgIDwvZGl2PlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3JvdyB0ZXh0LXByaW1hcnkgdGV4dC14cyAyeHM6dGV4dC14cyB4czp0ZXh0LWJhc2UgbWQ6dGV4dC1sZyBsZzp0ZXh0LXhsXCI+XHJcbiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9e2BmbGV4ICR7XCJqdXN0aWZ5LWNlbnRlclwifWB9PlxyXG4gICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJjYXBpdGFsaXplXCI+XHJcbiAgICAgICAgICAgICAgPExpbmsgY2xhc3NOYW1lPVwiaG92ZXI6dW5kZXJsaW5lXCIgaHJlZj17YC9oYXJpbGlsYWthbHBhdGFydWB9PlxyXG4gICAgICAgICAgICAgICAg4KWlIOCkueCksOCkv+CksuClgOCksuCkvuCkleCksuCljeCkquCkpOCksOClgSDgpaVcclxuICAgICAgICAgICAgICA8L0xpbms+XHJcblxyXG4gICAgICAgICAgICAgIHtjdXJyZW50U2thbmRhICYmIFwiID4gXCJ9XHJcbiAgICAgICAgICAgICAge2N1cnJlbnRTa2FuZGEgJiYgKFxyXG4gICAgICAgICAgICAgICAgPExpbmtcclxuICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPVwiaG92ZXI6dW5kZXJsaW5lXCJcclxuICAgICAgICAgICAgICAgICAgaHJlZj17YC9oYXJpbGlsYWthbHBhdGFydS8ke2N1cnJlbnRTa2FuZGE/LmlkfWB9XHJcbiAgICAgICAgICAgICAgICA+XHJcbiAgICAgICAgICAgICAgICAgIHtjdXJyZW50U2thbmRhICYmIGN1cnJlbnRTa2FuZGE/LnRpdGxlfVxyXG4gICAgICAgICAgICAgICAgPC9MaW5rPlxyXG4gICAgICAgICAgICAgICl9XHJcblxyXG4gICAgICAgICAgICAgIHtjdXJyZW50QWRoeWF5ICYmIFwiID4gXCJ9XHJcbiAgICAgICAgICAgICAge2N1cnJlbnRBZGh5YXkgJiYgKFxyXG4gICAgICAgICAgICAgICAgPExpbmtcclxuICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPVwiaG92ZXI6dW5kZXJsaW5lXCJcclxuICAgICAgICAgICAgICAgICAgaHJlZj17YC9oYXJpbGlsYWthbHBhdGFydS8ke2N1cnJlbnRBZGh5YXk/LmlkfWB9XHJcbiAgICAgICAgICAgICAgICA+XHJcbiAgICAgICAgICAgICAgICAgIHtjdXJyZW50QWRoeWF5ICYmIGN1cnJlbnRBZGh5YXk/LnRpdGxlfVxyXG4gICAgICAgICAgICAgICAgPC9MaW5rPlxyXG4gICAgICAgICAgICAgICl9XHJcbiAgICAgICAgICAgIDwvc3Bhbj5cclxuICAgICAgICAgIDwvc3Bhbj5cclxuICAgICAgICA8L2Rpdj5cclxuICAgICAgPC9uYXY+XHJcbiAgICAgIDxkaXY+XHJcbiAgICAgICAge2hhcmlsaWxha2FscGF0YXJ1X2lkLmxlbmd0aCA9PT0gMSAmJiByb3V0ZXIucXVlcnkuZWRpdCA9PT0gXCJza2FuZGFcIiA/IChcclxuICAgICAgICAgIDxkaXY+XHJcbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleCBqdXN0aWZ5LWJldHdlZW4gaXRlbXMtY2VudGVyXCI+XHJcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJncm93IGZsZXggbWItMiBvdmVyZmxvdy14LWF1dG8gbm8tc2Nyb2xsYmFyIGdhcC0yXCI+XHJcbiAgICAgICAgICAgICAgICB7dGFicy5tYXAoKHRhYiwgaW5kZXgpID0+IChcclxuICAgICAgICAgICAgICAgICAgPD5cclxuICAgICAgICAgICAgICAgICAgICB7dGFiLnZhbCAmJiAoXHJcbiAgICAgICAgICAgICAgICAgICAgICA8ZGl2XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIGtleT17aW5kZXh9XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IGhhbmRsZVRhYih0YWI/LnZhbCl9XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT17YGN1cnNvci1wb2ludGVyIGZsZXgtc2hyaW5rLTAgZmxleCBpdGVtcy1jZW50ZXIgcHktMiBteC0xIHRleHQtc20gbWQ6dGV4dC1sZyAgJHtcclxuICAgICAgICAgICAgICAgICAgICAgICAgICBhY3RpdmVUYWIgPT09IHRhYj8udmFsXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA/IFwiYWN0aXZlICB0ZXh0LXJlZCAgYm9yZGVyLWItMiBib3JkZXItcmVkIGZvbnQtYm9sZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA6IFwiIGZvbnQtYm9sZCAgdGV4dC1ncmF5LTUwMFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgIH1gfVxyXG4gICAgICAgICAgICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPVwiaW5saW5lLWZsZXggaXRlbXMtY2VudGVyXCI+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGFzcz1cInJlbGF0aXZlIGZsZXggaXRlbXMtY2VudGVyIHJvdW5kZWQtZnVsbCBjdXJzb3ItcG9pbnRlclwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBodG1sRm9yPVwiY3VzdG9tXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICA+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aW5wdXRcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hlY2tlZFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0eXBlPVwiY2hlY2tib3hcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGFzcz17YHBlZXIgcmVsYXRpdmUgYXBwZWFyYW5jZS1ub25lIHctNSBoLTUgIHJvdW5kZWQtbWQgICR7XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY3VycmVudFNrYW5kYVt0YWI/LnZhbF0/Lmxlbmd0aCA+IDAgfHxcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYWN0aXZlVGFiID09PSB0YWI/LnZhbCAmJiBjb250ZW50Py5sZW5ndGggPiAwKVxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPyBcImNoZWNrZWQ6YmctZ3JlZW4tNTAwXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDogXCJjaGVja2VkOmJnLXJlZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1gfVxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZD1cImN1c3RvbVwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvPlxyXG5cclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPVwiYWJzb2x1dGUgdGV4dC13aGl0ZSB0cmFuc2l0aW9uLW9wYWNpdHkgb3BhY2l0eS0wIHBvaW50ZXItZXZlbnRzLW5vbmUgdG9wLTIvNCBsZWZ0LTIvNCAtdHJhbnNsYXRlLXktMi80IC10cmFuc2xhdGUteC0yLzQgcGVlci1jaGVja2VkOm9wYWNpdHktMTAwXCI+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHtjdXJyZW50U2thbmRhW3RhYj8udmFsXT8ubGVuZ3RoID4gMCB8fFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYWN0aXZlVGFiID09PSB0YWI/LnZhbCAmJlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnRlbnQ/Lmxlbmd0aCA+IDApID8gKFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzdmdcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHhtbG5zPVwiaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmdcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xhc3M9XCJoLTMuNSB3LTMuNVwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2aWV3Qm94PVwiMCAwIDIwIDIwXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGw9XCJjdXJyZW50Q29sb3JcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Ryb2tlPVwiY3VycmVudENvbG9yXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cm9rZS13aWR0aD1cIjFcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID5cclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGwtcnVsZT1cImV2ZW5vZGRcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkPVwiTTE2LjcwNyA1LjI5M2ExIDEgMCAwMTAgMS40MTRsLTggOGExIDEgMCAwMS0xLjQxNCAwbC00LTRhMSAxIDAgMDExLjQxNC0xLjQxNEw4IDEyLjU4Nmw3LjI5My03LjI5M2ExIDEgMCAwMTEuNDE0IDB6XCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xpcC1ydWxlPVwiZXZlbm9kZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA+PC9wYXRoPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvc3ZnPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICApIDogKFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzdmdcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsYXNzPVwiaC0zLjUgdy0zLjVcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgeG1sbnM9XCJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Z1wiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2aWV3Qm94PVwiMCAwIDM4NCA1MTJcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsbD1cImN1cnJlbnRDb2xvclwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJva2U9XCJjdXJyZW50Q29sb3JcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Ryb2tlLXdpZHRoPVwiMVwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPHBhdGhcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsbC1ydWxlPVwiZXZlbm9kZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGQ9XCJNMzQyLjYgMTUwLjZjMTIuNS0xMi41IDEyLjUtMzIuOCAwLTQ1LjNzLTMyLjgtMTIuNS00NS4zIDBMMTkyIDIxMC43IDg2LjYgMTA1LjRjLTEyLjUtMTIuNS0zMi44LTEyLjUtNDUuMyAwcy0xMi41IDMyLjggMCA0NS4zTDE0Ni43IDI1NiA0MS40IDM2MS40Yy0xMi41IDEyLjUtMTIuNSAzMi44IDAgNDUuM3MzMi44IDEyLjUgNDUuMyAwTDE5MiAzMDEuMyAyOTcuNCA0MDYuNmMxMi41IDEyLjUgMzIuOCAxMi41IDQ1LjMgMHMxMi41LTMyLjggMC00NS4zTDIzNy4zIDI1NiAzNDIuNiAxNTAuNnpcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGlwLXJ1bGU9XCJldmVub2RkXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9zdmc+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICl9XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8L3NwYW4+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgPC9sYWJlbD5cclxuICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cIm14LTJcIj57dGFiLm5hbWV9PC9zcGFuPlxyXG4gICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgKX1cclxuICAgICAgICAgICAgICAgICAgPC8+XHJcbiAgICAgICAgICAgICAgICApKX1cclxuICAgICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImJnLXdoaXRlIGZsZXgtbm9uZSBoLTEwIG1pbi13LVsyMDBweF0gZmxleCBpdGVtcy1jZW50ZXIgc2VsZWN0LW5vbmVcIj5cclxuICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cIm1sLTIgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTJcIj5cclxuICAgICAgICAgICAgICAgICAgPGI+U3RhdHVzOjwvYj5cclxuICAgICAgICAgICAgICAgICAgPHNwYW5cclxuICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Ake1xyXG4gICAgICAgICAgICAgICAgICAgICAgc3RhdHVzID09PSBcIlNhdmVkIVwiID8gXCJ0ZXh0LWdyZWVuLTUwMFwiIDogXCJ0ZXh0LXJlZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgfWB9XHJcbiAgICAgICAgICAgICAgICAgID5cclxuICAgICAgICAgICAgICAgICAgICB7c3RhdHVzfVxyXG4gICAgICAgICAgICAgICAgICA8L3NwYW4+XHJcbiAgICAgICAgICAgICAgICAgIHtzdGF0dXMgPT09IFwiU2F2aW5nLi4uXCIgJiYgKFxyXG4gICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9XCJmbGV4IGp1c3RpZnktY2VudGVyIGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz1cInctNSBoLTUgcm91bmRlZC1mdWxsIGJvcmRlci00IGJvcmRlci1ncmF5LTQwMCBib3JkZXItdC1vcmFuZ2UtNTAwIGFuaW1hdGUtc3BpblwiPjwvZGl2PlxyXG4gICAgICAgICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgICAgICApfVxyXG4gICAgICAgICAgICAgICAgPC9zcGFuPlxyXG4gICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJvdmVyZmxvdy1hdXRvXCI+XHJcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ3LWZ1bGxcIj5cclxuICAgICAgICAgICAgICAgIDxDdXN0b21FZGl0b3JcclxuICAgICAgICAgICAgICAgICAga2V5PXtyb3V0ZXIucXVlcnkudGFifVxyXG4gICAgICAgICAgICAgICAgICB2YWx1ZT17Y29udGVudCA/IGNvbnRlbnQgOiBcIlwifVxyXG4gICAgICAgICAgICAgICAgICBvbkNoYW5nZT17c2V0Q29udGVudH1cclxuICAgICAgICAgICAgICAgICAgc2V0U3RhdHVzPXtzZXRTdGF0dXN9XHJcbiAgICAgICAgICAgICAgICAgIG9uRm9jdXM9eygpID0+IHNldEZvY3VzKHRydWUpfVxyXG4gICAgICAgICAgICAgICAgICBvbkJsdXI9eygpID0+IHNldEZvY3VzKGZhbHNlKX1cclxuICAgICAgICAgICAgICAgIC8+XHJcbiAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgKSA6IGhhcmlsaWxha2FscGF0YXJ1X2lkLmxlbmd0aCA9PT0gMSA/IChcclxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiYmctY2FyZCBib3JkZXItYlwiPlxyXG4gICAgICAgICAgICB7Y3VycmVudEFkaHlheUxpc3QgJiZcclxuICAgICAgICAgICAgICBjdXJyZW50QWRoeWF5TGlzdD8ubWFwKChlLCBrKSA9PiB7XHJcbiAgICAgICAgICAgICAgICByZXR1cm4gKFxyXG4gICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggaXRlbXMtY2VudGVyIGJvcmRlci1iIGJvcmRlci14IGJvcmRlci1iX2NvbG9yIHAtMiBzbTpwLTIgdGV4dC14cyAyeHM6dGV4dC14cyB4czp0ZXh0LWJhc2UgbWQ6dGV4dC1sZyBsZzp0ZXh0LXhsIGZvbnQtbWVkaXVtIHRleHQtZm9udCBtYXgtdy1mdWxsXCI+XHJcbiAgICAgICAgICAgICAgICAgICAgPExpbmtcclxuICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImdyb3cgZmxleCBpdGVtcy1jZW50ZXJcIlxyXG4gICAgICAgICAgICAgICAgICAgICAga2V5PXtrfVxyXG4gICAgICAgICAgICAgICAgICAgICAgaHJlZj17YC9oYXJpbGlsYWthbHBhdGFydS8ke2hhcmlsaWxha2FscGF0YXJ1X2lkLmpvaW4oXHJcbiAgICAgICAgICAgICAgICAgICAgICAgIFwiL1wiXHJcbiAgICAgICAgICAgICAgICAgICAgICApfS8ke2U/LmlkfWB9XHJcbiAgICAgICAgICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtci0yIHRleHQtc2Vjb25kYXJ5IGJnLVt1cmwoJy9pbmRleEJHLndlYnAnKV0gYmctY2VudGVyIGJnLWNvdmVyIGlubGluZS1ibG9jayBweC1bMC40ZW1dIHB5LVswLjJlbV0gdGV4dC1jZW50ZXIgcm91bmRlZCB3aGl0ZXNwYWNlLXByZS13cmFwIGFsaWduLW1pZGRsZVwiPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICB7Y29udmVydFRvSGluZGkoayArIDEpfVxyXG4gICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImJyZWFrLXdvcmRzIHRleHQtanVzdGlmeSBhbGlnbi1iYXNlbGluZSB0ZXh0LXJlZCBmb250LWJvbGRcIj5cclxuICAgICAgICAgICAgICAgICAgICAgICAge2U/LnRpdGxlfVxyXG4gICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgPC9MaW5rPlxyXG4gICAgICAgICAgICAgICAgICAgIDxMaW5rXHJcbiAgICAgICAgICAgICAgICAgICAgICBocmVmPXtgL2hhcmlsaWxha2FscGF0YXJ1LyR7aGFyaWxpbGFrYWxwYXRhcnVfaWQuam9pbihcclxuICAgICAgICAgICAgICAgICAgICAgICAgXCIvXCJcclxuICAgICAgICAgICAgICAgICAgICAgICl9LyR7ZT8uaWR9P2VkaXQ9YWRoeWF5YH1cclxuICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImJvcmRlci0yIGJvcmRlci1zZWNvbmRhcnkgcm91bmRlZCBwLTJcIlxyXG4gICAgICAgICAgICAgICAgICAgID5cclxuICAgICAgICAgICAgICAgICAgICAgIDxGYUVkaXQgLz5cclxuICAgICAgICAgICAgICAgICAgICA8L0xpbms+XHJcbiAgICAgICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgICAgKTtcclxuICAgICAgICAgICAgICB9KX1cclxuICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICkgOiBoYXJpbGlsYWthbHBhdGFydV9pZC5sZW5ndGggPT09IDIgJiYgcm91dGVyLnF1ZXJ5LmVkaXQgPT09IFwic2thbmRhXCIgPyBcImFkaHlheVwiOiAoXHJcbiAgICAgICAgICBcImhlbGxvXCJcclxuICAgICAgICApfVxyXG4gICAgICA8L2Rpdj5cclxuICAgIDwvZGl2PlxyXG4gICk7XHJcbn07XHJcblxyXG5IYXJpbGlsYWthbHBhdGFydUlkLmdldEluaXRpYWxQcm9wcyA9IGFzeW5jICh7IHF1ZXJ5IH0pID0+IHtcclxuICBjb25zdCB7IGhhcmlsaWxha2FscGF0YXJ1X2lkIH0gPSBxdWVyeTtcclxuICByZXR1cm4geyBoYXJpbGlsYWthbHBhdGFydV9pZCB9O1xyXG59O1xyXG5cclxuZXhwb3J0IGRlZmF1bHQgSGFyaWxpbGFrYWxwYXRhcnVJZDtcclxuIl0sIm5hbWVzIjpbIlJlYWN0IiwidXNlRWZmZWN0IiwidXNlUmVmIiwidXNlU3RhdGUiLCJkeW5hbWljIiwidXNlRGVib3VuY2UiLCJOYXZCdXR0b24iLCJGYUFycm93TGVmdCIsIkZhQXJyb3dSaWdodCIsIkZhQ2hldnJvbkxlZnQiLCJGYUNoZXZyb25SaWdodCIsIkZhRWRpdCIsIkZhSG9tZSIsInVzZVJvdXRlciIsImF4aW9zSW5zdGFuY2UiLCJMaW5rIiwiY29udmVydFRvSGluZGkiLCJDdXN0b21FZGl0b3IiLCJzc3IiLCJIYXJpbGlsYWthbHBhdGFydUlkIiwiaGFyaWxpbGFrYWxwYXRhcnVfaWQiLCJyb3V0ZXIiLCJjdXJyZW50U2thbmRhIiwic2V0Q3VycmVudFNrYW5kYSIsImN1cnJlbnRBZGh5YXlMaXN0Iiwic2V0Q3VycmVudEFkaHlheUxpc3QiLCJjdXJyZW50QWRoeWF5Iiwic2V0Q3VycmVudEFkaHlheSIsImhhcmlsaWxha2FscGF0YXJ1U2thbmRhIiwic2V0SGFyaWxpbGFrYWxwYXRhcnVTa2FuZGEiLCJjb250ZW50Iiwic2V0Q29udGVudCIsInN0YXR1cyIsInNldFN0YXR1cyIsInNhdmVDb250ZW50IiwiZm9jdXMiLCJzZXRGb2N1cyIsImFjdGl2ZVRhYiIsInNldEFjdGl2ZVRhYiIsInRhYnMiLCJzZXRUYWJzIiwibmFtZSIsInZhbCIsImhhbmRsZVRhYiIsInR5cGUiLCJnZXRBbGxTa2FuZGEiLCJyZXNwb25zZSIsImdldCIsImRhdGEiLCJlcnJvciIsImNvbnNvbGUiLCJnZXRDdXJyZW50U2thbmRhIiwiaWQiLCJwYXJhbXMiLCJnZXRDdXJyZW50QWRoeWF5TGlzdCIsInNrYW5kYUlkIiwiZ2V0Q3VycmVudEFkaHlheSIsImxlbmd0aCIsInF1ZXJ5IiwibG9nIiwiaGFuZGxlU2F2ZSIsInBvc3QiLCJfaWQiLCJib2R5Iiwia2V5IiwiaGFuZGxlUGFnZSIsInBhZ2UiLCJkaXYiLCJuYXYiLCJjbGFzc05hbWUiLCJsaW5rIiwibGFiZWwiLCJzbGljZSIsImpvaW4iLCJzcGFuIiwiaHJlZiIsInRpdGxlIiwiZWRpdCIsIm1hcCIsInRhYiIsImluZGV4Iiwib25DbGljayIsImNsYXNzIiwiaHRtbEZvciIsImlucHV0IiwiY2hlY2tlZCIsInN2ZyIsInhtbG5zIiwidmlld0JveCIsImZpbGwiLCJzdHJva2UiLCJzdHJva2Utd2lkdGgiLCJwYXRoIiwiZmlsbC1ydWxlIiwiZCIsImNsaXAtcnVsZSIsImIiLCJ2YWx1ZSIsIm9uQ2hhbmdlIiwib25Gb2N1cyIsIm9uQmx1ciIsImUiLCJrIiwiZ2V0SW5pdGlhbFByb3BzIl0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./src/pages/harililakalpataru/[...harililakalpataru_id].js\n"));
+
+/***/ })
+
+});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        db-expression-exp.-toBool
+       */
+      $toBool: Expression;
+    }
+
+    export interface ToDecimal {
+      /**
+       * Converts a value to a decimal. If the value cannot be converted to a decimal, $toDecimal errors. If the value
+       * is null or missing, $toDecimal returns null.
+       *
+       * @version 4.0
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toDecimal/#mongodb-expression-exp.-toDecimal
+       */
+      $toDecimal: Expression;
+    }
+
+    export interface ToDouble {
+      /**
+       * Converts a value to a double. If the value cannot be converted to an double, $toDouble errors. If the value is
+       * null or missing, $toDouble returns null.
+       *
+       * @version 4.0
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toDouble/#mongodb-expression-exp.-toDouble
+       */
+      $toDouble: Expression;
+    }
+
+    export interface ToInt {
+      /**
+       * Converts a value to a long. If the value cannot be converted to a long, $toLong errors. If the value is null or
+       * missing, $toLong returns null.
+       *
+       * @version 4.0
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toInt/#mongodb-expression-exp.-toInt
+       */
+      $toInt: Expression;
+    }
+
+    export interface ToLong {
+      /**
+       * Converts a value to a long. If the value cannot be converted to a long, $toLong errors. If the value is null or
+       * missing, $toLong returns null.
+       *
+       * @version 4.0
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toLong/#mongodb-expression-exp.-toLong
+       */
+      $toLong: Expression;
+    }
+
+    export interface ToObjectId {
+      /**
+       * Converts a value to an ObjectId(). If the value cannot be converted to an ObjectId, $toObjectId errors. If the
+       * value is null or missing, $toObjectId returns null.
+       *
+       * @version 4.0
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toObjectId/#mongodb-expression-exp.-toObjectId
+       */
+      $toObjectId: Expression;
+    }
+
+    export interface Top {
+      $top: {
+        sortBy: AnyObject,
+        output: Expression
+      };
+    }
+
+    export interface TopN {
+      $topN: {
+        n: Expression,
+        sortBy: AnyObject,
+        output: Expression
+      };
+    }
+
+    export interface ToString {
+      /**
+       * Converts a value to a string. If the value cannot be converted to a string, $toString errors. If the value is
+       * null or missing, $toString returns null.
+       *
+       * @version 4.0
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toString/#mongodb-expression-exp.-toString
+       */
+      $toString: Expression;
+    }
+
+    export interface Type {
+      /**
+       * Returns a string that specifies the BSON type of the argument.
+       *
+       * @version 3.4
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/type/#mongodb-expression-exp.-type
+       */
+      $type: Expression;
+    }
+
+    export interface BinarySize {
+      /**
+       * Returns the size of a given string or binary data value's content in bytes.
+       *
+       * @version 4.4
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/binarySize/#mongodb-expression-exp.-binarySize
+       */
+      $binarySize: NullExpression | StringExpression | BinaryExpression;
+    }
+
+    export interface BsonSize {
+      /**
+       * Returns the size in bytes of a given document (i.e. bsontype Object) when encoded as BSON. You can use
+       * $bsonSize as an alternative to the Object.bsonSize() method.
+       *
+       * @version 4.4
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/bsonSize/#mongodb-expression-exp.-bsonSize
+       */
+      $bsonSize: NullExpression | ObjectExpression;
+    }
+
+    export interface Function {
+      /**
+       * Defines a custom aggregation function or expression in JavaScript.
+       *
+       * @version 4.4
+       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/function/#mongodb-expression-exp.-function
+       */
+      $function: {
+        /**
+         * 	The function definition. You can specify the function definition as either BSON type Code or String.
+         */
+        body: CodeExpression;
+        /**
+         * Arguments passed to the function body. If the body function does not take an argument, you can specify an
+         * empty array [ ]
+         */
+        args: ArrayExpression;
+        /**
+         * The language used in the body. You must specify lang: "js".
+         */
+        lang: 'js'
+      };
+    }
+  }
+
+  type Path = string;
+
+
+  export type Expression =
+    Path |
+    ArithmeticExpressionOperator |
+    ArrayExpressionOperator |
+    BooleanExpressionOperator |
+    ComparisonExpressionOperator |
+    ConditionalExpressionOperator |
+    CustomAggregationExpressionOperator |
+    DataSizeOperator |
+    DateExpressionOperator |
+    LiteralExpressionOperator |
+    MiscellaneousExpressionOperator |
+    ObjectExpressionOperator |
+    SetExpressionOperator |
+    StringExpressionOperator |
+    TextExpressionOperator |
+    TrigonometryExpressionOperator |
+    TypeExpressionOperator |
+    AccumulatorOperator |
+    VariableExpressionOperator |
+    WindowOperator |
+    Expression.Top |
+    Expression.TopN |
+    any;
+
+  export type NullExpression = null;
+
+  export type CodeExpression =
+    string |
+    Function;
+
+  export type BinaryExpression =
+    Path;
+
+  export type FunctionExpression =
+    Expression.Function;
+
+  export type AnyExpression =
+    ArrayExpression |
+    BooleanExpression |
+    NumberExpression |
+    ObjectExpression |
+    StringExpression |
+    DateExpression |
+    BinaryExpression |
+    FunctionExpression |
+    ObjectIdExpression |
+    ConditionalExpressionOperator |
+    any;
+
+  export type ObjectIdExpression =
+    TypeExpressionOperatorReturningObjectId;
+
+  export type ArrayExpression<T = any> =
+    T[] |
+    Path |
+    ArrayExpressionOperatorReturningAny |
+    ArrayExpressionOperatorReturningArray |
+    StringExpressionOperatorReturningArray |
+    ObjectExpressionOperatorReturningArray |
+    SetExpressionOperatorReturningArray |
+    LiteralExpressionOperatorReturningAny |
+    WindowOperatorReturningArray |
+    CustomAggregationExpressionOperatorReturningAny |
+    WindowOperatorReturningAny;
+
+  export type BooleanExpression =
+    boolean |
+    Path |
+    BooleanExpressionOperator |
+    ArrayExpressionOperatorReturningAny |
+    ComparisonExpressionOperatorReturningBoolean |
+    StringExpressionOperatorReturningBoolean |
+    SetExpressionOperatorReturningBoolean |
+    LiteralExpressionOperatorReturningAny |
+    CustomAggregationExpressionOperatorReturningAny |
+    TypeExpressionOperatorReturningBoolean;
+
+  export type NumberExpression =
+    number |
+    Path |
+    ArrayExpressionOperatorReturningAny |
+    ArrayExpressionOperatorReturningNumber |
+    ArithmeticExpressionOperator |
+    ComparisonExpressionOperatorReturningNumber |
+    TrigonometryExpressionOperator |
+    MiscellaneousExpressionOperatorReturningNumber |
+    StringExpressionOperatorReturningNumber |
+    LiteralExpressionOperatorReturningAny |
+    ObjectExpressionOperator |
+    SetExpressionOperator |
+    WindowOperatorReturningNumber |
+    WindowOperatorReturningAny |
+    DataSizeOperatorReturningNumber |
+    CustomAggregationExpressionOperatorReturningAny |
+    TypeExpressionOperatorReturningNumber |
+    DateExpression |
+    DateExpressionOperatorReturningNumber;
+
+  export type ObjectExpression =
+    Path |
+    ArrayExpressionOperatorReturningAny |
+    DateExpressionOperatorReturningObject |
+    StringExpressionOperatorReturningObject |
+    ObjectExpressionOperatorReturningObject |
+    CustomAggregationExpressionOperatorReturningAny |
+    LiteralExpressionOperatorReturningAny;
+
+  export type StringExpression<T = string> =
+    Path |
+    ArrayExpressionOperatorReturningAny |
+    DateExpressionOperatorReturningString |
+    StringExpressionOperatorReturningString |
+    LiteralExpressionReturningAny |
+    CustomAggregationExpressionOperatorReturningAny |
+    TypeExpressionOperatorReturningString |
+    T;
+
+  export type DateExpression =
+    Path |
+    NativeDate |
+    DateExpressionOperatorReturningDate |
+    TypeExpressionOperatorReturningDate |
+    LiteralExpressionReturningAny;
+
+  export type ArithmeticExpressionOperator =
+    Expression.Abs |
+    Expression.Add |
+    Expression.Ceil |
+    Expression.Divide |
+    Expression.Exp |
+    Expression.Floor |
+    Expression.Ln |
+    Expression.Log |
+    Expression.Log10 |
+    Expression.Mod |
+    Expression.Multiply |
+    Expression.Pow |
+    Expression.Round |
+    Expression.Sqrt |
+    Expression.Subtract |
+    Expression.Trunc;
+
+  export type ArrayExpressionOperator =
+    ArrayExpressionOperatorReturningAny |
+    ArrayExpressionOperatorReturningBoolean |
+    ArrayExpressionOperatorReturningNumber |
+    ArrayExpressionOperatorReturningObject;
+
+  export type LiteralExpressionOperator =
+    Expression.Literal;
+
+  export type LiteralExpressionReturningAny =
+    LiteralExpressionOperatorReturningAny;
+
+  export type LiteralExpressionOperatorReturningAny =
+    Expression.Literal;
+
+  export type MiscellaneousExpressionOperator =
+    Expression.Rand |
+    Expression.SampleRate;
+
+  export type MiscellaneousExpressionOperatorReturningNumber =
+    Expression.Rand;
+
+  export type ArrayExpressionOperatorReturningAny =
+    Expression.ArrayElemAt |
+    Expression.First |
+    Expression.Last |
+    Expression.Reduce;
+
+  export type ArrayExpressionOperatorReturningArray =
+    Expression.ConcatArrays |
+    Expression.Filter |
+    Expression.Map |
+    Expression.ObjectToArray |
+    Expression.Range |
+    Expression.ReverseArray |
+    Expression.Slice |
+    Expression.Zip;
+
+  export type ArrayExpressionOperatorReturningNumber =
+    Expression.IndexOfArray |
+    Expression.Size;
+
+  export type ArrayExpressionOperatorReturningObject =
+    Expression.ArrayToObject;
+
+  export type ArrayExpressionOperatorReturningBoolean =
+    Expression.In |
+    Expression.IsArray;
+
+  export type BooleanExpressionOperator =
+    Expression.And |
+    Expression.Or |
+    Expression.Not;
+
+  export type ComparisonExpressionOperator =
+    ComparisonExpressionOperatorReturningBoolean |
+    ComparisonExpressionOperatorReturningNumber;
+
+  export type ComparisonExpressionOperatorReturningBoolean =
+    Expression.Eq |
+    Expression.Gt |
+    Expression.Gte |
+    Expression.Lt |
+    Expression.Lte |
+    Expression.Ne;
+
+  export type ComparisonExpressionOperatorReturningNumber
