@@ -1,0 +1,1036 @@
+, 'composite'], ['roletype', 'structure', 'section', 'table']]
+	};
+	var _default$1E = gridRole;
+	gridRole$1.default = _default$1E;
+
+	var gridcellRole$1 = {};
+
+	Object.defineProperty(gridcellRole$1, "__esModule", {
+	  value: true
+	});
+	gridcellRole$1.default = void 0;
+	var gridcellRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null,
+	    'aria-readonly': null,
+	    'aria-required': null,
+	    'aria-selected': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      attributes: [{
+	        name: 'role',
+	        value: 'gridcell'
+	      }],
+	      name: 'td'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: ['row'],
+	  requiredContextRole: ['row'],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'widget']]
+	};
+	var _default$1D = gridcellRole;
+	gridcellRole$1.default = _default$1D;
+
+	var groupRole$1 = {};
+
+	Object.defineProperty(groupRole$1, "__esModule", {
+	  value: true
+	});
+	groupRole$1.default = void 0;
+	var groupRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-activedescendant': null,
+	    'aria-disabled': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'details'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'fieldset'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'optgroup'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1C = groupRole;
+	groupRole$1.default = _default$1C;
+
+	var headingRole$1 = {};
+
+	Object.defineProperty(headingRole$1, "__esModule", {
+	  value: true
+	});
+	headingRole$1.default = void 0;
+	var headingRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-level': '2'
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'h1'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'h2'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'h3'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'h4'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'h5'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'h6'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {
+	    'aria-level': '2'
+	  },
+	  superClass: [['roletype', 'structure', 'sectionhead']]
+	};
+	var _default$1B = headingRole;
+	headingRole$1.default = _default$1B;
+
+	var imgRole$1 = {};
+
+	Object.defineProperty(imgRole$1, "__esModule", {
+	  value: true
+	});
+	imgRole$1.default = void 0;
+	var imgRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: true,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [{
+	    concept: {
+	      attributes: [{
+	        constraints: ['set'],
+	        name: 'alt'
+	      }],
+	      name: 'img'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      attributes: [{
+	        constraints: ['undefined'],
+	        name: 'alt'
+	      }],
+	      name: 'img'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'imggroup'
+	    },
+	    module: 'DTB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1A = imgRole;
+	imgRole$1.default = _default$1A;
+
+	var insertionRole$1 = {};
+
+	Object.defineProperty(insertionRole$1, "__esModule", {
+	  value: true
+	});
+	insertionRole$1.default = void 0;
+	var insertionRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['prohibited'],
+	  prohibitedProps: ['aria-label', 'aria-labelledby'],
+	  props: {},
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1z = insertionRole;
+	insertionRole$1.default = _default$1z;
+
+	var linkRole$1 = {};
+
+	Object.defineProperty(linkRole$1, "__esModule", {
+	  value: true
+	});
+	linkRole$1.default = void 0;
+	var linkRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      attributes: [{
+	        name: 'href'
+	      }],
+	      name: 'a'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      attributes: [{
+	        name: 'href'
+	      }],
+	      name: 'area'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      attributes: [{
+	        name: 'href'
+	      }],
+	      name: 'link'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'command']]
+	};
+	var _default$1y = linkRole;
+	linkRole$1.default = _default$1y;
+
+	var listRole$1 = {};
+
+	Object.defineProperty(listRole$1, "__esModule", {
+	  value: true
+	});
+	listRole$1.default = void 0;
+	var listRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'menu'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'ol'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'ul'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [['listitem']],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1x = listRole;
+	listRole$1.default = _default$1x;
+
+	var listboxRole$1 = {};
+
+	Object.defineProperty(listboxRole$1, "__esModule", {
+	  value: true
+	});
+	listboxRole$1.default = void 0;
+	var listboxRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-invalid': null,
+	    'aria-multiselectable': null,
+	    'aria-readonly': null,
+	    'aria-required': null,
+	    'aria-orientation': 'vertical'
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      attributes: [{
+	        constraints: ['>1'],
+	        name: 'size'
+	      }, {
+	        name: 'multiple'
+	      }],
+	      name: 'select'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      attributes: [{
+	        constraints: ['>1'],
+	        name: 'size'
+	      }],
+	      name: 'select'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      attributes: [{
+	        name: 'multiple'
+	      }],
+	      name: 'select'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'datalist'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'list'
+	    },
+	    module: 'ARIA'
+	  }, {
+	    concept: {
+	      name: 'select'
+	    },
+	    module: 'XForms'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [['option', 'group'], ['option']],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
+	};
+	var _default$1w = listboxRole;
+	listboxRole$1.default = _default$1w;
+
+	var listitemRole$1 = {};
+
+	Object.defineProperty(listitemRole$1, "__esModule", {
+	  value: true
+	});
+	listitemRole$1.default = void 0;
+	var listitemRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-level': null,
+	    'aria-posinset': null,
+	    'aria-setsize': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      constraints: ['direct descendant of ol, ul or menu'],
+	      name: 'li'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'item'
+	    },
+	    module: 'XForms'
+	  }],
+	  requireContextRole: ['directory', 'list'],
+	  requiredContextRole: ['directory', 'list'],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1v = listitemRole;
+	listitemRole$1.default = _default$1v;
+
+	var logRole$1 = {};
+
+	Object.defineProperty(logRole$1, "__esModule", {
+	  value: true
+	});
+	logRole$1.default = void 0;
+	var logRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-live': 'polite'
+	  },
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1u = logRole;
+	logRole$1.default = _default$1u;
+
+	var mainRole$1 = {};
+
+	Object.defineProperty(mainRole$1, "__esModule", {
+	  value: true
+	});
+	mainRole$1.default = void 0;
+	var mainRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'main'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$1t = mainRole;
+	mainRole$1.default = _default$1t;
+
+	var marqueeRole$1 = {};
+
+	Object.defineProperty(marqueeRole$1, "__esModule", {
+	  value: true
+	});
+	marqueeRole$1.default = void 0;
+	var marqueeRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1s = marqueeRole;
+	marqueeRole$1.default = _default$1s;
+
+	var mathRole$1 = {};
+
+	Object.defineProperty(mathRole$1, "__esModule", {
+	  value: true
+	});
+	mathRole$1.default = void 0;
+	var mathRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'math'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1r = mathRole;
+	mathRole$1.default = _default$1r;
+
+	var menuRole$1 = {};
+
+	Object.defineProperty(menuRole$1, "__esModule", {
+	  value: true
+	});
+	menuRole$1.default = void 0;
+	var menuRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-orientation': 'vertical'
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'MENU'
+	    },
+	    module: 'JAPI'
+	  }, {
+	    concept: {
+	      name: 'list'
+	    },
+	    module: 'ARIA'
+	  }, {
+	    concept: {
+	      name: 'select'
+	    },
+	    module: 'XForms'
+	  }, {
+	    concept: {
+	      name: 'sidebar'
+	    },
+	    module: 'DTB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [['menuitem', 'group'], ['menuitemradio', 'group'], ['menuitemcheckbox', 'group'], ['menuitem'], ['menuitemcheckbox'], ['menuitemradio']],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
+	};
+	var _default$1q = menuRole;
+	menuRole$1.default = _default$1q;
+
+	var menubarRole$1 = {};
+
+	Object.defineProperty(menubarRole$1, "__esModule", {
+	  value: true
+	});
+	menubarRole$1.default = void 0;
+	var menubarRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-orientation': 'horizontal'
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'toolbar'
+	    },
+	    module: 'ARIA'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [['menuitem', 'group'], ['menuitemradio', 'group'], ['menuitemcheckbox', 'group'], ['menuitem'], ['menuitemcheckbox'], ['menuitemradio']],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'composite', 'select', 'menu'], ['roletype', 'structure', 'section', 'group', 'select', 'menu']]
+	};
+	var _default$1p = menubarRole;
+	menubarRole$1.default = _default$1p;
+
+	var menuitemRole$1 = {};
+
+	Object.defineProperty(menuitemRole$1, "__esModule", {
+	  value: true
+	});
+	menuitemRole$1.default = void 0;
+	var menuitemRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-posinset': null,
+	    'aria-setsize': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'MENU_ITEM'
+	    },
+	    module: 'JAPI'
+	  }, {
+	    concept: {
+	      name: 'listitem'
+	    },
+	    module: 'ARIA'
+	  }, {
+	    concept: {
+	      name: 'menuitem'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'option'
+	    },
+	    module: 'ARIA'
+	  }],
+	  requireContextRole: ['group', 'menu', 'menubar'],
+	  requiredContextRole: ['group', 'menu', 'menubar'],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'command']]
+	};
+	var _default$1o = menuitemRole;
+	menuitemRole$1.default = _default$1o;
+
+	var menuitemcheckboxRole$1 = {};
+
+	Object.defineProperty(menuitemcheckboxRole$1, "__esModule", {
+	  value: true
+	});
+	menuitemcheckboxRole$1.default = void 0;
+	var menuitemcheckboxRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: true,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'menuitem'
+	    },
+	    module: 'ARIA'
+	  }],
+	  requireContextRole: ['group', 'menu', 'menubar'],
+	  requiredContextRole: ['group', 'menu', 'menubar'],
+	  requiredOwnedElements: [],
+	  requiredProps: {
+	    'aria-checked': null
+	  },
+	  superClass: [['roletype', 'widget', 'input', 'checkbox'], ['roletype', 'widget', 'command', 'menuitem']]
+	};
+	var _default$1n = menuitemcheckboxRole;
+	menuitemcheckboxRole$1.default = _default$1n;
+
+	var menuitemradioRole$1 = {};
+
+	Object.defineProperty(menuitemradioRole$1, "__esModule", {
+	  value: true
+	});
+	menuitemradioRole$1.default = void 0;
+	var menuitemradioRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: true,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'menuitem'
+	    },
+	    module: 'ARIA'
+	  }],
+	  requireContextRole: ['group', 'menu', 'menubar'],
+	  requiredContextRole: ['group', 'menu', 'menubar'],
+	  requiredOwnedElements: [],
+	  requiredProps: {
+	    'aria-checked': null
+	  },
+	  superClass: [['roletype', 'widget', 'input', 'checkbox', 'menuitemcheckbox'], ['roletype', 'widget', 'command', 'menuitem', 'menuitemcheckbox'], ['roletype', 'widget', 'input', 'radio']]
+	};
+	var _default$1m = menuitemradioRole;
+	menuitemradioRole$1.default = _default$1m;
+
+	var meterRole$1 = {};
+
+	Object.defineProperty(meterRole$1, "__esModule", {
+	  value: true
+	});
+	meterRole$1.default = void 0;
+	var meterRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: true,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-valuetext': null,
+	    'aria-valuemax': '100',
+	    'aria-valuemin': '0'
+	  },
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {
+	    'aria-valuenow': null
+	  },
+	  superClass: [['roletype', 'structure', 'range']]
+	};
+	var _default$1l = meterRole;
+	meterRole$1.default = _default$1l;
+
+	var navigationRole$1 = {};
+
+	Object.defineProperty(navigationRole$1, "__esModule", {
+	  value: true
+	});
+	navigationRole$1.default = void 0;
+	var navigationRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'nav'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$1k = navigationRole;
+	navigationRole$1.default = _default$1k;
+
+	var noneRole$1 = {};
+
+	Object.defineProperty(noneRole$1, "__esModule", {
+	  value: true
+	});
+	noneRole$1.default = void 0;
+	var noneRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: [],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: []
+	};
+	var _default$1j = noneRole;
+	noneRole$1.default = _default$1j;
+
+	var noteRole$1 = {};
+
+	Object.defineProperty(noteRole$1, "__esModule", {
+	  value: true
+	});
+	noteRole$1.default = void 0;
+	var noteRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1i = noteRole;
+	noteRole$1.default = _default$1i;
+
+	var optionRole$1 = {};
+
+	Object.defineProperty(optionRole$1, "__esModule", {
+	  value: true
+	});
+	optionRole$1.default = void 0;
+	var optionRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: true,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-checked': null,
+	    'aria-posinset': null,
+	    'aria-setsize': null,
+	    'aria-selected': 'false'
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'item'
+	    },
+	    module: 'XForms'
+	  }, {
+	    concept: {
+	      name: 'listitem'
+	    },
+	    module: 'ARIA'
+	  }, {
+	    concept: {
+	      name: 'option'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {
+	    'aria-selected': 'false'
+	  },
+	  superClass: [['roletype', 'widget', 'input']]
+	};
+	var _default$1h = optionRole;
+	optionRole$1.default = _default$1h;
+
+	var paragraphRole$1 = {};
+
+	Object.defineProperty(paragraphRole$1, "__esModule", {
+	  value: true
+	});
+	paragraphRole$1.default = void 0;
+	var paragraphRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['prohibited'],
+	  prohibitedProps: ['aria-label', 'aria-labelledby'],
+	  props: {},
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$1g = paragraphRole;
+	paragraphRole$1.default = _default$1g;
+
+	var presentationRole$1 = {};
+
+	Object.defineProperty(presentationRole$1, "__esModule", {
+	  value: true
+	});
+	presentationRole$1.default = void 0;
+	var presentationRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['prohibited'],
+	  prohibitedProps: ['aria-label', 'aria-labelledby'],
+	  props: {},
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure']]
+	};
+	var _default$1f = presentationRole;
+	presentationRole$1.default = _default$1f;
+
+	var progressbarRole$1 = {};
+
+	Object.defineProperty(progressbarRole$1, "__esModule", {
+	  value: true
+	});
+	progressbarRole$1.default = void 0;
+	var progressbarRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: true,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-valuetext': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'progress'
+	    },
+	    module: 'HTML'
+	  }, {
+	    concept: {
+	      name: 'status'
+	    },
+	    module: 'ARIA'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'range'], ['roletype', 'widget']]
+	};
+	var _default$1e = progressbarRole;
+	progressbarRole$1.default = _default$1e;
+
+	var radioRole$1 = {};
+
+	Object.defineProperty(radioRole$1, "__esModule", {
+	  value: true
+	});
+	radioRole$1.default = void 0;
+	var radioRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: true,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-checked': null,
+	    'aria-posinset': null,
+	    'aria-setsize': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      attributes: [{
+	        name: 'type',
+	        value: 'radio'
+	      }],
+	      name: 'input'
+	    },
+	    module: 'HTML'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {
+	    'aria-checked': null
+	  },
+	  superClass: [['roletype', 'widget', 'input']]
+	};
+	var _default$1d = radioRole;
+	radioRole$1.default = _default$1d;
+
+	var radiogroupRole$1 = {};
+
+	Object.defineProperty(radiogroupRole$1, "__esModule", {
+	  value: true
+	});
+	radiogroupRole$1.default = void 0;
+	var radiogroupRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-errormessage': null,
+	    'aria-invalid': null,
+	    'aria-readonly': null,
+	    'aria-required': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'list'
+	    },
+	    module: 'ARIA'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [['radio']],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
+	};
+	var _default$1c = radiogroupRole;
+	radiogroupRole$1.default = _default$1c;
+
+	var regionRole$1 = {};
+
+	Object.defineProperty(regionRole$1, "__esModule", {
+	  value: true
+	});
+	regionRole$1.de
