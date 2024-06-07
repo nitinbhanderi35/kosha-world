@@ -1,0 +1,461 @@
+eRole;
+	treeRole$1.default = _default$O;
+
+	var treegridRole$1 = {};
+
+	Object.defineProperty(treegridRole$1, "__esModule", {
+	  value: true
+	});
+	treegridRole$1.default = void 0;
+	var treegridRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {},
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [['row'], ['row', 'rowgroup']],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'composite', 'grid'], ['roletype', 'structure', 'section', 'table', 'grid'], ['roletype', 'widget', 'composite', 'select', 'tree'], ['roletype', 'structure', 'section', 'group', 'select', 'tree']]
+	};
+	var _default$N = treegridRole;
+	treegridRole$1.default = _default$N;
+
+	var treeitemRole$1 = {};
+
+	Object.defineProperty(treeitemRole$1, "__esModule", {
+	  value: true
+	});
+	treeitemRole$1.default = void 0;
+	var treeitemRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-expanded': null,
+	    'aria-haspopup': null
+	  },
+	  relatedConcepts: [],
+	  requireContextRole: ['group', 'tree'],
+	  requiredContextRole: ['group', 'tree'],
+	  requiredOwnedElements: [],
+	  requiredProps: {
+	    'aria-selected': null
+	  },
+	  superClass: [['roletype', 'structure', 'section', 'listitem'], ['roletype', 'widget', 'input', 'option']]
+	};
+	var _default$M = treeitemRole;
+	treeitemRole$1.default = _default$M;
+
+	Object.defineProperty(ariaLiteralRoles$1, "__esModule", {
+	  value: true
+	});
+	ariaLiteralRoles$1.default = void 0;
+	var _alertRole = _interopRequireDefault$6(alertRole$1);
+	var _alertdialogRole = _interopRequireDefault$6(alertdialogRole$1);
+	var _applicationRole = _interopRequireDefault$6(applicationRole$1);
+	var _articleRole = _interopRequireDefault$6(articleRole$1);
+	var _bannerRole = _interopRequireDefault$6(bannerRole$1);
+	var _blockquoteRole = _interopRequireDefault$6(blockquoteRole$1);
+	var _buttonRole = _interopRequireDefault$6(buttonRole$1);
+	var _captionRole = _interopRequireDefault$6(captionRole$1);
+	var _cellRole = _interopRequireDefault$6(cellRole$1);
+	var _checkboxRole = _interopRequireDefault$6(checkboxRole$1);
+	var _codeRole = _interopRequireDefault$6(codeRole$1);
+	var _columnheaderRole = _interopRequireDefault$6(columnheaderRole$1);
+	var _comboboxRole = _interopRequireDefault$6(comboboxRole$1);
+	var _complementaryRole = _interopRequireDefault$6(complementaryRole$1);
+	var _contentinfoRole = _interopRequireDefault$6(contentinfoRole$1);
+	var _definitionRole = _interopRequireDefault$6(definitionRole$1);
+	var _deletionRole = _interopRequireDefault$6(deletionRole$1);
+	var _dialogRole = _interopRequireDefault$6(dialogRole$1);
+	var _directoryRole = _interopRequireDefault$6(directoryRole$1);
+	var _documentRole = _interopRequireDefault$6(documentRole$1);
+	var _emphasisRole = _interopRequireDefault$6(emphasisRole$1);
+	var _feedRole = _interopRequireDefault$6(feedRole$1);
+	var _figureRole = _interopRequireDefault$6(figureRole$1);
+	var _formRole = _interopRequireDefault$6(formRole$1);
+	var _genericRole = _interopRequireDefault$6(genericRole$1);
+	var _gridRole = _interopRequireDefault$6(gridRole$1);
+	var _gridcellRole = _interopRequireDefault$6(gridcellRole$1);
+	var _groupRole = _interopRequireDefault$6(groupRole$1);
+	var _headingRole = _interopRequireDefault$6(headingRole$1);
+	var _imgRole = _interopRequireDefault$6(imgRole$1);
+	var _insertionRole = _interopRequireDefault$6(insertionRole$1);
+	var _linkRole = _interopRequireDefault$6(linkRole$1);
+	var _listRole = _interopRequireDefault$6(listRole$1);
+	var _listboxRole = _interopRequireDefault$6(listboxRole$1);
+	var _listitemRole = _interopRequireDefault$6(listitemRole$1);
+	var _logRole = _interopRequireDefault$6(logRole$1);
+	var _mainRole = _interopRequireDefault$6(mainRole$1);
+	var _marqueeRole = _interopRequireDefault$6(marqueeRole$1);
+	var _mathRole = _interopRequireDefault$6(mathRole$1);
+	var _menuRole = _interopRequireDefault$6(menuRole$1);
+	var _menubarRole = _interopRequireDefault$6(menubarRole$1);
+	var _menuitemRole = _interopRequireDefault$6(menuitemRole$1);
+	var _menuitemcheckboxRole = _interopRequireDefault$6(menuitemcheckboxRole$1);
+	var _menuitemradioRole = _interopRequireDefault$6(menuitemradioRole$1);
+	var _meterRole = _interopRequireDefault$6(meterRole$1);
+	var _navigationRole = _interopRequireDefault$6(navigationRole$1);
+	var _noneRole = _interopRequireDefault$6(noneRole$1);
+	var _noteRole = _interopRequireDefault$6(noteRole$1);
+	var _optionRole = _interopRequireDefault$6(optionRole$1);
+	var _paragraphRole = _interopRequireDefault$6(paragraphRole$1);
+	var _presentationRole = _interopRequireDefault$6(presentationRole$1);
+	var _progressbarRole = _interopRequireDefault$6(progressbarRole$1);
+	var _radioRole = _interopRequireDefault$6(radioRole$1);
+	var _radiogroupRole = _interopRequireDefault$6(radiogroupRole$1);
+	var _regionRole = _interopRequireDefault$6(regionRole$1);
+	var _rowRole = _interopRequireDefault$6(rowRole$1);
+	var _rowgroupRole = _interopRequireDefault$6(rowgroupRole$1);
+	var _rowheaderRole = _interopRequireDefault$6(rowheaderRole$1);
+	var _scrollbarRole = _interopRequireDefault$6(scrollbarRole$1);
+	var _searchRole = _interopRequireDefault$6(searchRole$1);
+	var _searchboxRole = _interopRequireDefault$6(searchboxRole$1);
+	var _separatorRole = _interopRequireDefault$6(separatorRole$1);
+	var _sliderRole = _interopRequireDefault$6(sliderRole$1);
+	var _spinbuttonRole = _interopRequireDefault$6(spinbuttonRole$1);
+	var _statusRole = _interopRequireDefault$6(statusRole$1);
+	var _strongRole = _interopRequireDefault$6(strongRole$1);
+	var _subscriptRole = _interopRequireDefault$6(subscriptRole$1);
+	var _superscriptRole = _interopRequireDefault$6(superscriptRole$1);
+	var _switchRole = _interopRequireDefault$6(switchRole$1);
+	var _tabRole = _interopRequireDefault$6(tabRole$1);
+	var _tableRole = _interopRequireDefault$6(tableRole$1);
+	var _tablistRole = _interopRequireDefault$6(tablistRole$1);
+	var _tabpanelRole = _interopRequireDefault$6(tabpanelRole$1);
+	var _termRole = _interopRequireDefault$6(termRole$1);
+	var _textboxRole = _interopRequireDefault$6(textboxRole$1);
+	var _timeRole = _interopRequireDefault$6(timeRole$1);
+	var _timerRole = _interopRequireDefault$6(timerRole$1);
+	var _toolbarRole = _interopRequireDefault$6(toolbarRole$1);
+	var _tooltipRole = _interopRequireDefault$6(tooltipRole$1);
+	var _treeRole = _interopRequireDefault$6(treeRole$1);
+	var _treegridRole = _interopRequireDefault$6(treegridRole$1);
+	var _treeitemRole = _interopRequireDefault$6(treeitemRole$1);
+	function _interopRequireDefault$6(obj) {
+	  return obj && obj.__esModule ? obj : {
+	    default: obj
+	  };
+	}
+	var ariaLiteralRoles = [['alert', _alertRole.default], ['alertdialog', _alertdialogRole.default], ['application', _applicationRole.default], ['article', _articleRole.default], ['banner', _bannerRole.default], ['blockquote', _blockquoteRole.default], ['button', _buttonRole.default], ['caption', _captionRole.default], ['cell', _cellRole.default], ['checkbox', _checkboxRole.default], ['code', _codeRole.default], ['columnheader', _columnheaderRole.default], ['combobox', _comboboxRole.default], ['complementary', _complementaryRole.default], ['contentinfo', _contentinfoRole.default], ['definition', _definitionRole.default], ['deletion', _deletionRole.default], ['dialog', _dialogRole.default], ['directory', _directoryRole.default], ['document', _documentRole.default], ['emphasis', _emphasisRole.default], ['feed', _feedRole.default], ['figure', _figureRole.default], ['form', _formRole.default], ['generic', _genericRole.default], ['grid', _gridRole.default], ['gridcell', _gridcellRole.default], ['group', _groupRole.default], ['heading', _headingRole.default], ['img', _imgRole.default], ['insertion', _insertionRole.default], ['link', _linkRole.default], ['list', _listRole.default], ['listbox', _listboxRole.default], ['listitem', _listitemRole.default], ['log', _logRole.default], ['main', _mainRole.default], ['marquee', _marqueeRole.default], ['math', _mathRole.default], ['menu', _menuRole.default], ['menubar', _menubarRole.default], ['menuitem', _menuitemRole.default], ['menuitemcheckbox', _menuitemcheckboxRole.default], ['menuitemradio', _menuitemradioRole.default], ['meter', _meterRole.default], ['navigation', _navigationRole.default], ['none', _noneRole.default], ['note', _noteRole.default], ['option', _optionRole.default], ['paragraph', _paragraphRole.default], ['presentation', _presentationRole.default], ['progressbar', _progressbarRole.default], ['radio', _radioRole.default], ['radiogroup', _radiogroupRole.default], ['region', _regionRole.default], ['row', _rowRole.default], ['rowgroup', _rowgroupRole.default], ['rowheader', _rowheaderRole.default], ['scrollbar', _scrollbarRole.default], ['search', _searchRole.default], ['searchbox', _searchboxRole.default], ['separator', _separatorRole.default], ['slider', _sliderRole.default], ['spinbutton', _spinbuttonRole.default], ['status', _statusRole.default], ['strong', _strongRole.default], ['subscript', _subscriptRole.default], ['superscript', _superscriptRole.default], ['switch', _switchRole.default], ['tab', _tabRole.default], ['table', _tableRole.default], ['tablist', _tablistRole.default], ['tabpanel', _tabpanelRole.default], ['term', _termRole.default], ['textbox', _textboxRole.default], ['time', _timeRole.default], ['timer', _timerRole.default], ['toolbar', _toolbarRole.default], ['tooltip', _tooltipRole.default], ['tree', _treeRole.default], ['treegrid', _treegridRole.default], ['treeitem', _treeitemRole.default]];
+	var _default$L = ariaLiteralRoles;
+	ariaLiteralRoles$1.default = _default$L;
+
+	var ariaDpubRoles$1 = {};
+
+	var docAbstractRole$1 = {};
+
+	Object.defineProperty(docAbstractRole$1, "__esModule", {
+	  value: true
+	});
+	docAbstractRole$1.default = void 0;
+	var docAbstractRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'abstract [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$K = docAbstractRole;
+	docAbstractRole$1.default = _default$K;
+
+	var docAcknowledgmentsRole$1 = {};
+
+	Object.defineProperty(docAcknowledgmentsRole$1, "__esModule", {
+	  value: true
+	});
+	docAcknowledgmentsRole$1.default = void 0;
+	var docAcknowledgmentsRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'acknowledgments [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$J = docAcknowledgmentsRole;
+	docAcknowledgmentsRole$1.default = _default$J;
+
+	var docAfterwordRole$1 = {};
+
+	Object.defineProperty(docAfterwordRole$1, "__esModule", {
+	  value: true
+	});
+	docAfterwordRole$1.default = void 0;
+	var docAfterwordRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'afterword [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$I = docAfterwordRole;
+	docAfterwordRole$1.default = _default$I;
+
+	var docAppendixRole$1 = {};
+
+	Object.defineProperty(docAppendixRole$1, "__esModule", {
+	  value: true
+	});
+	docAppendixRole$1.default = void 0;
+	var docAppendixRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'appendix [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$H = docAppendixRole;
+	docAppendixRole$1.default = _default$H;
+
+	var docBacklinkRole$1 = {};
+
+	Object.defineProperty(docBacklinkRole$1, "__esModule", {
+	  value: true
+	});
+	docBacklinkRole$1.default = void 0;
+	var docBacklinkRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author', 'content'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-errormessage': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'referrer [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'command', 'link']]
+	};
+	var _default$G = docBacklinkRole;
+	docBacklinkRole$1.default = _default$G;
+
+	var docBiblioentryRole$1 = {};
+
+	Object.defineProperty(docBiblioentryRole$1, "__esModule", {
+	  value: true
+	});
+	docBiblioentryRole$1.default = void 0;
+	var docBiblioentryRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'EPUB biblioentry [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: ['doc-bibliography'],
+	  requiredContextRole: ['doc-bibliography'],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'listitem']]
+	};
+	var _default$F = docBiblioentryRole;
+	docBiblioentryRole$1.default = _default$F;
+
+	var docBibliographyRole$1 = {};
+
+	Object.defineProperty(docBibliographyRole$1, "__esModule", {
+	  value: true
+	});
+	docBibliographyRole$1.default = void 0;
+	var docBibliographyRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'bibliography [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [['doc-biblioentry']],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$E = docBibliographyRole;
+	docBibliographyRole$1.default = _default$E;
+
+	var docBibliorefRole$1 = {};
+
+	Object.defineProperty(docBibliorefRole$1, "__esModule", {
+	  value: true
+	});
+	docBibliorefRole$1.default = void 0;
+	var docBibliorefRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-errormessage': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'biblioref [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'command', 'link']]
+	};
+	var _default$D = docBibliorefRole;
+	docBibliorefRole$1.default = _default$D;
+
+	var docChapterRole$1 = {};
+
+	Object.defineProperty(docChapterRole$1, "__esModule", {
+	  value: true
+	});
+	docChapterRole$1.default = void 0;
+	var docChapterRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'chapter [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$C = docChapterRole;
+	docChapterRole$1.default = _default$

@@ -1,0 +1,594 @@
+': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'credit [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$y = docCreditRole;
+	docCreditRole$1.default = _default$y;
+
+	var docCreditsRole$1 = {};
+
+	Object.defineProperty(docCreditsRole$1, "__esModule", {
+	  value: true
+	});
+	docCreditsRole$1.default = void 0;
+	var docCreditsRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'credits [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$x = docCreditsRole;
+	docCreditsRole$1.default = _default$x;
+
+	var docDedicationRole$1 = {};
+
+	Object.defineProperty(docDedicationRole$1, "__esModule", {
+	  value: true
+	});
+	docDedicationRole$1.default = void 0;
+	var docDedicationRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'dedication [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$w = docDedicationRole;
+	docDedicationRole$1.default = _default$w;
+
+	var docEndnoteRole$1 = {};
+
+	Object.defineProperty(docEndnoteRole$1, "__esModule", {
+	  value: true
+	});
+	docEndnoteRole$1.default = void 0;
+	var docEndnoteRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'rearnote [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: ['doc-endnotes'],
+	  requiredContextRole: ['doc-endnotes'],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'listitem']]
+	};
+	var _default$v = docEndnoteRole;
+	docEndnoteRole$1.default = _default$v;
+
+	var docEndnotesRole$1 = {};
+
+	Object.defineProperty(docEndnotesRole$1, "__esModule", {
+	  value: true
+	});
+	docEndnotesRole$1.default = void 0;
+	var docEndnotesRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'rearnotes [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [['doc-endnote']],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$u = docEndnotesRole;
+	docEndnotesRole$1.default = _default$u;
+
+	var docEpigraphRole$1 = {};
+
+	Object.defineProperty(docEpigraphRole$1, "__esModule", {
+	  value: true
+	});
+	docEpigraphRole$1.default = void 0;
+	var docEpigraphRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'epigraph [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$t = docEpigraphRole;
+	docEpigraphRole$1.default = _default$t;
+
+	var docEpilogueRole$1 = {};
+
+	Object.defineProperty(docEpilogueRole$1, "__esModule", {
+	  value: true
+	});
+	docEpilogueRole$1.default = void 0;
+	var docEpilogueRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'epilogue [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$s = docEpilogueRole;
+	docEpilogueRole$1.default = _default$s;
+
+	var docErrataRole$1 = {};
+
+	Object.defineProperty(docErrataRole$1, "__esModule", {
+	  value: true
+	});
+	docErrataRole$1.default = void 0;
+	var docErrataRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'errata [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$r = docErrataRole;
+	docErrataRole$1.default = _default$r;
+
+	var docExampleRole$1 = {};
+
+	Object.defineProperty(docExampleRole$1, "__esModule", {
+	  value: true
+	});
+	docExampleRole$1.default = void 0;
+	var docExampleRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$q = docExampleRole;
+	docExampleRole$1.default = _default$q;
+
+	var docFootnoteRole$1 = {};
+
+	Object.defineProperty(docFootnoteRole$1, "__esModule", {
+	  value: true
+	});
+	docFootnoteRole$1.default = void 0;
+	var docFootnoteRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'footnote [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section']]
+	};
+	var _default$p = docFootnoteRole;
+	docFootnoteRole$1.default = _default$p;
+
+	var docForewordRole$1 = {};
+
+	Object.defineProperty(docForewordRole$1, "__esModule", {
+	  value: true
+	});
+	docForewordRole$1.default = void 0;
+	var docForewordRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'foreword [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$o = docForewordRole;
+	docForewordRole$1.default = _default$o;
+
+	var docGlossaryRole$1 = {};
+
+	Object.defineProperty(docGlossaryRole$1, "__esModule", {
+	  value: true
+	});
+	docGlossaryRole$1.default = void 0;
+	var docGlossaryRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'glossary [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [['definition'], ['term']],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$n = docGlossaryRole;
+	docGlossaryRole$1.default = _default$n;
+
+	var docGlossrefRole$1 = {};
+
+	Object.defineProperty(docGlossrefRole$1, "__esModule", {
+	  value: true
+	});
+	docGlossrefRole$1.default = void 0;
+	var docGlossrefRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-errormessage': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'glossref [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'command', 'link']]
+	};
+	var _default$m = docGlossrefRole;
+	docGlossrefRole$1.default = _default$m;
+
+	var docIndexRole$1 = {};
+
+	Object.defineProperty(docIndexRole$1, "__esModule", {
+	  value: true
+	});
+	docIndexRole$1.default = void 0;
+	var docIndexRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'index [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
+	};
+	var _default$l = docIndexRole;
+	docIndexRole$1.default = _default$l;
+
+	var docIntroductionRole$1 = {};
+
+	Object.defineProperty(docIntroductionRole$1, "__esModule", {
+	  value: true
+	});
+	docIntroductionRole$1.default = void 0;
+	var docIntroductionRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'introduction [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'landmark']]
+	};
+	var _default$k = docIntroductionRole;
+	docIntroductionRole$1.default = _default$k;
+
+	var docNoterefRole$1 = {};
+
+	Object.defineProperty(docNoterefRole$1, "__esModule", {
+	  value: true
+	});
+	docNoterefRole$1.default = void 0;
+	var docNoterefRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author', 'contents'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-errormessage': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'noteref [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'widget', 'command', 'link']]
+	};
+	var _default$j = docNoterefRole;
+	docNoterefRole$1.default = _default$j;
+
+	var docNoticeRole$1 = {};
+
+	Object.defineProperty(docNoticeRole$1, "__esModule", {
+	  value: true
+	});
+	docNoticeRole$1.default = void 0;
+	var docNoticeRole = {
+	  abstract: false,
+	  accessibleNameRequired: false,
+	  baseConcepts: [],
+	  childrenPresentational: false,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-disabled': null,
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'notice [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole: [],
+	  requiredContextRole: [],
+	  requiredOwnedElements: [],
+	  requiredProps: {},
+	  superClass: [['roletype', 'structure', 'section', 'note']]
+	};
+	var _default$i = docNoticeRole;
+	docNoticeRole$1.default = _default$i;
+
+	var docPagebreakRole$1 = {};
+
+	Object.defineProperty(docPagebreakRole$1, "__esModule", {
+	  value: true
+	});
+	docPagebreakRole$1.default = void 0;
+	var docPagebreakRole = {
+	  abstract: false,
+	  accessibleNameRequired: true,
+	  baseConcepts: [],
+	  childrenPresentational: true,
+	  nameFrom: ['author'],
+	  prohibitedProps: [],
+	  props: {
+	    'aria-errormessage': null,
+	    'aria-expanded': null,
+	    'aria-haspopup': null,
+	    'aria-invalid': null
+	  },
+	  relatedConcepts: [{
+	    concept: {
+	      name: 'pagebreak [EPUB-SSV]'
+	    },
+	    module: 'EPUB'
+	  }],
+	  requireContextRole
