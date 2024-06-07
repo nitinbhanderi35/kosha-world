@@ -1,0 +1,1217 @@
+ null;
+let treeForkCount = 0;
+const idStack = [];
+let idStackIndex = 0;
+let treeContextProvider = null;
+let treeContextId = 1;
+let treeContextOverflow = '';
+function isForkedChild(workInProgress) {
+  return (workInProgress.flags & Forked) !== NoFlags$1;
+}
+function getForksAtLevel(workInProgress) {
+  return treeForkCount;
+}
+function getTreeId() {
+  const overflow = treeContextOverflow;
+  const idWithLeadingBit = treeContextId;
+  const id = idWithLeadingBit & ~getLeadingBit(idWithLeadingBit);
+  return id.toString(32) + overflow;
+}
+function pushTreeFork(workInProgress, totalChildren) {
+  forkStack[forkStackIndex++] = treeForkCount;
+  forkStack[forkStackIndex++] = treeForkProvider;
+  treeForkProvider = workInProgress;
+  treeForkCount = totalChildren;
+}
+function pushTreeId(workInProgress, totalChildren, index) {
+  idStack[idStackIndex++] = treeContextId;
+  idStack[idStackIndex++] = treeContextOverflow;
+  idStack[idStackIndex++] = treeContextProvider;
+  treeContextProvider = workInProgress;
+  const baseIdWithLeadingBit = treeContextId;
+  const baseOverflow = treeContextOverflow; // The leftmost 1 marks the end of the sequence, non-inclusive. It's not part
+  // of the id; we use it to account for leading 0s.
+
+  const baseLength = getBitLength(baseIdWithLeadingBit) - 1;
+  const baseId = baseIdWithLeadingBit & ~(1 << baseLength);
+  const slot = index + 1;
+  const length = getBitLength(totalChildren) + baseLength; // 30 is the max length we can store without overflowing, taking into
+  // consideration the leading 1 we use to mark the end of the sequence.
+
+  if (length > 30) {
+    // We overflowed the bitwise-safe range. Fall back to slower algorithm.
+    // This branch assumes the length of the base id is greater than 5; it won't
+    // work for smaller ids, because you need 5 bits per character.
+    //
+    // We encode the id in multiple steps: first the base id, then the
+    // remaining digits.
+    //
+    // Each 5 bit sequence corresponds to a single base 32 character. So for
+    // example, if the current id is 23 bits long, we can convert 20 of those
+    // bits into a string of 4 characters, with 3 bits left over.
+    //
+    // First calculate how many bits in the base id represent a complete
+    // sequence of characters.
+    const numberOfOverflowBits = baseLength - baseLength % 5; // Then create a bitmask that selects only those bits.
+
+    const newOverflowBits = (1 << numberOfOverflowBits) - 1; // Select the bits, and convert them to a base 32 string.
+
+    const newOverflow = (baseId & newOverflowBits).toString(32); // Now we can remove those bits from the base id.
+
+    const restOfBaseId = baseId >> numberOfOverflowBits;
+    const restOfBaseLength = baseLength - numberOfOverflowBits; // Finally, encode the rest of the bits using the normal algorithm. Because
+    // we made more room, this time it won't overflow.
+
+    const restOfLength = getBitLength(totalChildren) + restOfBaseLength;
+    const restOfNewBits = slot << restOfBaseLength;
+    const id = restOfNewBits | restOfBaseId;
+    const overflow = newOverflow + baseOverflow;
+    treeContextId = 1 << restOfLength | id;
+    treeContextOverflow = overflow;
+  } else {
+    // Normal path
+    const newBits = slot << baseLength;
+    const id = newBits | baseId;
+    const overflow = baseOverflow;
+    treeContextId = 1 << length | id;
+    treeContextOverflow = overflow;
+  }
+}
+function pushMaterializedTreeId(workInProgress) {
+  // in its children.
+
+  const returnFiber = workInProgress.return;
+
+  if (returnFiber !== null) {
+    const numberOfForks = 1;
+    const slotIndex = 0;
+    pushTreeFork(workInProgress, numberOfForks);
+    pushTreeId(workInProgress, numberOfForks, slotIndex);
+  }
+}
+
+function getBitLength(number) {
+  return 32 - clz32(number);
+}
+
+function getLeadingBit(id) {
+  return 1 << getBitLength(id) - 1;
+}
+
+function popTreeContext(workInProgress) {
+  // Restore the previous values.
+  // This is a bit more complicated than other context-like modules in Fiber
+  // because the same Fiber may appear on the stack multiple times and for
+  // different reasons. We have to keep popping until the work-in-progress is
+  // no longer at the top of the stack.
+  while (workInProgress === treeForkProvider) {
+    treeForkProvider = forkStack[--forkStackIndex];
+    forkStack[forkStackIndex] = null;
+    treeForkCount = forkStack[--forkStackIndex];
+    forkStack[forkStackIndex] = null;
+  }
+
+  while (workInProgress === treeContextProvider) {
+    treeContextProvider = idStack[--idStackIndex];
+    idStack[idStackIndex] = null;
+    treeContextOverflow = idStack[--idStackIndex];
+    idStack[idStackIndex] = null;
+    treeContextId = idStack[--idStackIndex];
+    idStack[idStackIndex] = null;
+  }
+}
+function getSuspendedTreeContext() {
+
+  if (treeContextProvider !== null) {
+    return {
+      id: treeContextId,
+      overflow: treeContextOverflow
+    };
+  } else {
+    return null;
+  }
+}
+function restoreSuspendedTreeContext(workInProgress, suspendedContext) {
+  idStack[idStackIndex++] = treeContextId;
+  idStack[idStackIndex++] = treeContextOverflow;
+  idStack[idStackIndex++] = treeContextProvider;
+  treeContextId = suspendedContext.id;
+  treeContextOverflow = suspendedContext.overflow;
+  treeContextProvider = workInProgress;
+}
+
+// This may have been an insertion or a hydration.
+
+let hydrationParentFiber = null;
+let nextHydratableInstance = null;
+let isHydrating = false; // This flag allows for warning supression when we expect there to be mismatches
+
+let hydrationErrors = null;
+let rootOrSingletonContext = false;
+
+function enterHydrationState(fiber) {
+
+  const parentInstance = fiber.stateNode.containerInfo;
+  nextHydratableInstance = getFirstHydratableChildWithinContainer(parentInstance);
+  hydrationParentFiber = fiber;
+  isHydrating = true;
+  hydrationErrors = null;
+  rootOrSingletonContext = true;
+  return true;
+}
+
+function reenterHydrationStateFromDehydratedSuspenseInstance(fiber, suspenseInstance, treeContext) {
+
+  nextHydratableInstance = getFirstHydratableChildWithinSuspenseInstance(suspenseInstance);
+  hydrationParentFiber = fiber;
+  isHydrating = true;
+  hydrationErrors = null;
+  rootOrSingletonContext = false;
+
+  if (treeContext !== null) {
+    restoreSuspendedTreeContext(fiber, treeContext);
+  }
+
+  return true;
+}
+
+function deleteHydratableInstance(returnFiber, instance) {
+  const childToDelete = createFiberFromHostInstanceForDeletion();
+  childToDelete.stateNode = instance;
+  childToDelete.return = returnFiber;
+  const deletions = returnFiber.deletions;
+
+  if (deletions === null) {
+    returnFiber.deletions = [childToDelete];
+    returnFiber.flags |= ChildDeletion;
+  } else {
+    deletions.push(childToDelete);
+  }
+}
+
+function insertNonHydratedInstance(returnFiber, fiber) {
+  fiber.flags = fiber.flags & ~Hydrating | Placement;
+}
+
+function tryHydrateInstance(fiber, nextInstance) {
+  // fiber is a HostComponent Fiber
+  const instance = canHydrateInstance(nextInstance, fiber.type, fiber.pendingProps, rootOrSingletonContext);
+
+  if (instance !== null) {
+    fiber.stateNode = instance;
+    hydrationParentFiber = fiber;
+    nextHydratableInstance = getFirstHydratableChild(instance);
+    rootOrSingletonContext = false;
+    return true;
+  }
+
+  return false;
+}
+
+function tryHydrateText(fiber, nextInstance) {
+  // fiber is a HostText Fiber
+  const text = fiber.pendingProps;
+  const textInstance = canHydrateTextInstance(nextInstance, text, rootOrSingletonContext);
+
+  if (textInstance !== null) {
+    fiber.stateNode = textInstance;
+    hydrationParentFiber = fiber; // Text Instances don't have children so there's nothing to hydrate.
+
+    nextHydratableInstance = null;
+    return true;
+  }
+
+  return false;
+}
+
+function tryHydrateSuspense(fiber, nextInstance) {
+  // fiber is a SuspenseComponent Fiber
+  const suspenseInstance = canHydrateSuspenseInstance(nextInstance, rootOrSingletonContext);
+
+  if (suspenseInstance !== null) {
+    const suspenseState = {
+      dehydrated: suspenseInstance,
+      treeContext: getSuspendedTreeContext(),
+      retryLane: OffscreenLane
+    };
+    fiber.memoizedState = suspenseState; // Store the dehydrated fragment as a child fiber.
+    // This simplifies the code for getHostSibling and deleting nodes,
+    // since it doesn't have to consider all Suspense boundaries and
+    // check if they're dehydrated ones or not.
+
+    const dehydratedFragment = createFiberFromDehydratedFragment(suspenseInstance);
+    dehydratedFragment.return = fiber;
+    fiber.child = dehydratedFragment;
+    hydrationParentFiber = fiber; // While a Suspense Instance does have children, we won't step into
+    // it during the first pass. Instead, we'll reenter it later.
+
+    nextHydratableInstance = null;
+    return true;
+  }
+
+  return false;
+}
+
+function shouldClientRenderOnMismatch(fiber) {
+  return (fiber.mode & ConcurrentMode) !== NoMode && (fiber.flags & DidCapture) === NoFlags$1;
+}
+
+function throwOnHydrationMismatch(fiber) {
+  throw Error(formatProdErrorMessage(418));
+}
+
+function claimHydratableSingleton(fiber) {
+  {
+    if (!isHydrating) {
+      return;
+    }
+
+    const currentRootContainer = getRootHostContainer();
+    const instance = fiber.stateNode = resolveSingletonInstance(fiber.type, fiber.pendingProps, currentRootContainer);
+    hydrationParentFiber = fiber;
+    rootOrSingletonContext = true;
+    nextHydratableInstance = getFirstHydratableChild(instance);
+  }
+}
+
+function tryToClaimNextHydratableInstance(fiber) {
+  if (!isHydrating) {
+    return;
+  }
+
+  const initialInstance = nextHydratableInstance;
+  const nextInstance = nextHydratableInstance;
+
+  if (!nextInstance) {
+    if (shouldClientRenderOnMismatch(fiber)) {
+      throwOnHydrationMismatch();
+    } // Nothing to hydrate. Make it an insertion.
+
+
+    insertNonHydratedInstance(hydrationParentFiber, fiber);
+    isHydrating = false;
+    hydrationParentFiber = fiber;
+    nextHydratableInstance = initialInstance;
+    return;
+  }
+
+  const firstAttemptedInstance = nextInstance;
+
+  if (!tryHydrateInstance(fiber, nextInstance)) {
+    if (shouldClientRenderOnMismatch(fiber)) {
+      throwOnHydrationMismatch();
+    } // If we can't hydrate this instance let's try the next one.
+    // We use this as a heuristic. It's based on intuition and not data so it
+    // might be flawed or unnecessary.
+
+
+    nextHydratableInstance = getNextHydratableSibling(nextInstance);
+    const prevHydrationParentFiber = hydrationParentFiber;
+
+    if (!nextHydratableInstance || !tryHydrateInstance(fiber, nextHydratableInstance)) {
+      // Nothing to hydrate. Make it an insertion.
+      insertNonHydratedInstance(hydrationParentFiber, fiber);
+      isHydrating = false;
+      hydrationParentFiber = fiber;
+      nextHydratableInstance = initialInstance;
+      return;
+    } // We matched the next one, we'll now assume that the first one was
+    // superfluous and we'll delete it. Since we can't eagerly delete it
+    // we'll have to schedule a deletion. To do that, this node needs a dummy
+    // fiber associated with it.
+
+
+    deleteHydratableInstance(prevHydrationParentFiber, firstAttemptedInstance);
+  }
+}
+
+function tryToClaimNextHydratableTextInstance(fiber) {
+  if (!isHydrating) {
+    return;
+  }
+
+  const text = fiber.pendingProps;
+  const isHydratable = isHydratableText(text);
+  const initialInstance = nextHydratableInstance;
+  const nextInstance = nextHydratableInstance;
+
+  if (!nextInstance || !isHydratable) {
+    // We exclude non hydrabable text because we know there are no matching hydratables.
+    // We either throw or insert depending on the render mode.
+    if (shouldClientRenderOnMismatch(fiber)) {
+      throwOnHydrationMismatch();
+    } // Nothing to hydrate. Make it an insertion.
+
+
+    insertNonHydratedInstance(hydrationParentFiber, fiber);
+    isHydrating = false;
+    hydrationParentFiber = fiber;
+    nextHydratableInstance = initialInstance;
+    return;
+  }
+
+  const firstAttemptedInstance = nextInstance;
+
+  if (!tryHydrateText(fiber, nextInstance)) {
+    if (shouldClientRenderOnMismatch(fiber)) {
+      throwOnHydrationMismatch();
+    } // If we can't hydrate this instance let's try the next one.
+    // We use this as a heuristic. It's based on intuition and not data so it
+    // might be flawed or unnecessary.
+
+
+    nextHydratableInstance = getNextHydratableSibling(nextInstance);
+    const prevHydrationParentFiber = hydrationParentFiber;
+
+    if (!nextHydratableInstance || !tryHydrateText(fiber, nextHydratableInstance)) {
+      // Nothing to hydrate. Make it an insertion.
+      insertNonHydratedInstance(hydrationParentFiber, fiber);
+      isHydrating = false;
+      hydrationParentFiber = fiber;
+      nextHydratableInstance = initialInstance;
+      return;
+    } // We matched the next one, we'll now assume that the first one was
+    // superfluous and we'll delete it. Since we can't eagerly delete it
+    // we'll have to schedule a deletion. To do that, this node needs a dummy
+    // fiber associated with it.
+
+
+    deleteHydratableInstance(prevHydrationParentFiber, firstAttemptedInstance);
+  }
+}
+
+function tryToClaimNextHydratableSuspenseInstance(fiber) {
+  if (!isHydrating) {
+    return;
+  }
+
+  const initialInstance = nextHydratableInstance;
+  const nextInstance = nextHydratableInstance;
+
+  if (!nextInstance) {
+    if (shouldClientRenderOnMismatch(fiber)) {
+      throwOnHydrationMismatch();
+    } // Nothing to hydrate. Make it an insertion.
+
+
+    insertNonHydratedInstance(hydrationParentFiber, fiber);
+    isHydrating = false;
+    hydrationParentFiber = fiber;
+    nextHydratableInstance = initialInstance;
+    return;
+  }
+
+  const firstAttemptedInstance = nextInstance;
+
+  if (!tryHydrateSuspense(fiber, nextInstance)) {
+    if (shouldClientRenderOnMismatch(fiber)) {
+      throwOnHydrationMismatch();
+    } // If we can't hydrate this instance let's try the next one.
+    // We use this as a heuristic. It's based on intuition and not data so it
+    // might be flawed or unnecessary.
+
+
+    nextHydratableInstance = getNextHydratableSibling(nextInstance);
+    const prevHydrationParentFiber = hydrationParentFiber;
+
+    if (!nextHydratableInstance || !tryHydrateSuspense(fiber, nextHydratableInstance)) {
+      // Nothing to hydrate. Make it an insertion.
+      insertNonHydratedInstance(hydrationParentFiber, fiber);
+      isHydrating = false;
+      hydrationParentFiber = fiber;
+      nextHydratableInstance = initialInstance;
+      return;
+    } // We matched the next one, we'll now assume that the first one was
+    // superfluous and we'll delete it. Since we can't eagerly delete it
+    // we'll have to schedule a deletion. To do that, this node needs a dummy
+    // fiber associated with it.
+
+
+    deleteHydratableInstance(prevHydrationParentFiber, firstAttemptedInstance);
+  }
+}
+
+function tryToClaimNextHydratableFormMarkerInstance(fiber) {
+  if (!isHydrating) {
+    return false;
+  }
+
+  if (nextHydratableInstance) {
+    const markerInstance = canHydrateFormStateMarker(nextHydratableInstance, rootOrSingletonContext);
+
+    if (markerInstance) {
+      // Found the marker instance.
+      nextHydratableInstance = getNextHydratableSibling(markerInstance); // Return true if this marker instance should use the state passed
+      // to hydrateRoot.
+      // TODO: As an optimization, Fizz should only emit these markers if form
+      // state is passed at the root.
+
+      return isFormStateMarkerMatching(markerInstance);
+    }
+  } // Should have found a marker instance. Throw an error to trigger client
+  // rendering. We don't bother to check if we're in a concurrent root because
+  // useFormState is a new API, so backwards compat is not an issue.
+
+
+  throwOnHydrationMismatch();
+  return false;
+}
+
+function prepareToHydrateHostInstance(fiber, hostContext) {
+
+  const instance = fiber.stateNode;
+  hydrateInstance(instance, fiber.type, fiber.memoizedProps, hostContext, fiber);
+}
+
+function prepareToHydrateHostTextInstance(fiber) {
+
+  const textInstance = fiber.stateNode;
+  const textContent = fiber.memoizedProps;
+  const shouldUpdate = hydrateTextInstance(textInstance, textContent, fiber);
+
+  if (shouldUpdate) {
+    // We assume that prepareToHydrateHostTextInstance is called in a context where the
+    // hydration parent is the parent host component of this host text.
+    const returnFiber = hydrationParentFiber;
+
+    if (returnFiber !== null) {
+      switch (returnFiber.tag) {
+        case HostRoot:
+          {
+            const parentContainer = returnFiber.stateNode.containerInfo;
+            const isConcurrentMode = (returnFiber.mode & ConcurrentMode) !== NoMode;
+            didNotMatchHydratedContainerTextInstance(parentContainer, textInstance, textContent, // TODO: Delete this argument when we remove the legacy root API.
+            isConcurrentMode);
+
+            if (isConcurrentMode && enableClientRenderFallbackOnTextMismatch) {
+              // In concurrent mode we never update the mismatched text,
+              // even if the error was ignored.
+              return false;
+            }
+
+            break;
+          }
+
+        case HostSingleton:
+        case HostComponent:
+          {
+            const parentType = returnFiber.type;
+            const parentProps = returnFiber.memoizedProps;
+            const parentInstance = returnFiber.stateNode;
+            const isConcurrentMode = (returnFiber.mode & ConcurrentMode) !== NoMode;
+            didNotMatchHydratedTextInstance(parentType, parentProps, parentInstance, textInstance, textContent, // TODO: Delete this argument when we remove the legacy root API.
+            isConcurrentMode);
+
+            if (isConcurrentMode && enableClientRenderFallbackOnTextMismatch) {
+              // In concurrent mode we never update the mismatched text,
+              // even if the error was ignored.
+              return false;
+            }
+
+            break;
+          }
+      }
+    }
+  }
+
+  return shouldUpdate;
+}
+
+function prepareToHydrateHostSuspenseInstance(fiber) {
+
+  const suspenseState = fiber.memoizedState;
+  const suspenseInstance = suspenseState !== null ? suspenseState.dehydrated : null;
+
+  if (!suspenseInstance) {
+    throw Error(formatProdErrorMessage(317));
+  }
+
+  hydrateSuspenseInstance(suspenseInstance, fiber);
+}
+
+function skipPastDehydratedSuspenseInstance(fiber) {
+
+  const suspenseState = fiber.memoizedState;
+  const suspenseInstance = suspenseState !== null ? suspenseState.dehydrated : null;
+
+  if (!suspenseInstance) {
+    throw Error(formatProdErrorMessage(317));
+  }
+
+  return getNextHydratableInstanceAfterSuspenseInstance(suspenseInstance);
+}
+
+function popToNextHostParent(fiber) {
+  hydrationParentFiber = fiber.return;
+
+  while (hydrationParentFiber) {
+    switch (hydrationParentFiber.tag) {
+      case HostRoot:
+      case HostSingleton:
+        rootOrSingletonContext = true;
+        return;
+
+      case HostComponent:
+      case SuspenseComponent:
+        rootOrSingletonContext = false;
+        return;
+
+      default:
+        hydrationParentFiber = hydrationParentFiber.return;
+    }
+  }
+}
+
+function popHydrationState(fiber) {
+
+  if (fiber !== hydrationParentFiber) {
+    // We're deeper than the current hydration context, inside an inserted
+    // tree.
+    return false;
+  }
+
+  if (!isHydrating) {
+    // If we're not currently hydrating but we're in a hydration context, then
+    // we were an insertion and now need to pop up reenter hydration of our
+    // siblings.
+    popToNextHostParent(fiber);
+    isHydrating = true;
+    return false;
+  }
+
+  let shouldClear = false;
+
+  {
+    // With float we never clear the Root, or Singleton instances. We also do not clear Instances
+    // that have singleton text content
+    if (fiber.tag !== HostRoot && fiber.tag !== HostSingleton && !(fiber.tag === HostComponent && (!shouldDeleteUnhydratedTailInstances(fiber.type) || shouldSetTextContent(fiber.type, fiber.memoizedProps)))) {
+      shouldClear = true;
+    }
+  }
+
+  if (shouldClear) {
+    let nextInstance = nextHydratableInstance;
+
+    if (nextInstance) {
+      if (shouldClientRenderOnMismatch(fiber)) {
+        warnIfUnhydratedTailNodes();
+        throwOnHydrationMismatch();
+      } else {
+        while (nextInstance) {
+          deleteHydratableInstance(fiber, nextInstance);
+          nextInstance = getNextHydratableSibling(nextInstance);
+        }
+      }
+    }
+  }
+
+  popToNextHostParent(fiber);
+
+  if (fiber.tag === SuspenseComponent) {
+    nextHydratableInstance = skipPastDehydratedSuspenseInstance(fiber);
+  } else {
+    nextHydratableInstance = hydrationParentFiber ? getNextHydratableSibling(fiber.stateNode) : null;
+  }
+
+  return true;
+}
+
+function hasUnhydratedTailNodes() {
+  return isHydrating && nextHydratableInstance !== null;
+}
+
+function warnIfUnhydratedTailNodes(fiber) {
+  let nextInstance = nextHydratableInstance;
+
+  while (nextInstance) {
+    nextInstance = getNextHydratableSibling(nextInstance);
+  }
+}
+
+function resetHydrationState() {
+
+  hydrationParentFiber = null;
+  nextHydratableInstance = null;
+  isHydrating = false;
+}
+
+function upgradeHydrationErrorsToRecoverable() {
+  if (hydrationErrors !== null) {
+    // Successfully completed a forced client render. The errors that occurred
+    // during the hydration attempt are now recovered. We will log them in
+    // commit phase, once the entire tree has finished.
+    queueRecoverableErrors(hydrationErrors);
+    hydrationErrors = null;
+  }
+}
+
+function getIsHydrating() {
+  return isHydrating;
+}
+
+function queueHydrationError(error) {
+  if (hydrationErrors === null) {
+    hydrationErrors = [error];
+  } else {
+    hydrationErrors.push(error);
+  }
+}
+
+// we wait until the current render is over (either finished or interrupted)
+// before adding it to the fiber/hook queue. Push to this array so we can
+// access the queue, fiber, update, et al later.
+
+const concurrentQueues = [];
+let concurrentQueuesIndex = 0;
+let concurrentlyUpdatedLanes = NoLanes;
+function finishQueueingConcurrentUpdates() {
+  const endIndex = concurrentQueuesIndex;
+  concurrentQueuesIndex = 0;
+  concurrentlyUpdatedLanes = NoLanes;
+  let i = 0;
+
+  while (i < endIndex) {
+    const fiber = concurrentQueues[i];
+    concurrentQueues[i++] = null;
+    const queue = concurrentQueues[i];
+    concurrentQueues[i++] = null;
+    const update = concurrentQueues[i];
+    concurrentQueues[i++] = null;
+    const lane = concurrentQueues[i];
+    concurrentQueues[i++] = null;
+
+    if (queue !== null && update !== null) {
+      const pending = queue.pending;
+
+      if (pending === null) {
+        // This is the first update. Create a circular list.
+        update.next = update;
+      } else {
+        update.next = pending.next;
+        pending.next = update;
+      }
+
+      queue.pending = update;
+    }
+
+    if (lane !== NoLane) {
+      markUpdateLaneFromFiberToRoot(fiber, update, lane);
+    }
+  }
+}
+function getConcurrentlyUpdatedLanes() {
+  return concurrentlyUpdatedLanes;
+}
+
+function enqueueUpdate$1(fiber, queue, update, lane) {
+  // Don't update the `childLanes` on the return path yet. If we already in
+  // the middle of rendering, wait until after it has completed.
+  concurrentQueues[concurrentQueuesIndex++] = fiber;
+  concurrentQueues[concurrentQueuesIndex++] = queue;
+  concurrentQueues[concurrentQueuesIndex++] = update;
+  concurrentQueues[concurrentQueuesIndex++] = lane;
+  concurrentlyUpdatedLanes = mergeLanes(concurrentlyUpdatedLanes, lane); // The fiber's `lane` field is used in some places to check if any work is
+  // scheduled, to perform an eager bailout, so we need to update it immediately.
+  // TODO: We should probably move this to the "shared" queue instead.
+
+  fiber.lanes = mergeLanes(fiber.lanes, lane);
+  const alternate = fiber.alternate;
+
+  if (alternate !== null) {
+    alternate.lanes = mergeLanes(alternate.lanes, lane);
+  }
+}
+
+function enqueueConcurrentHookUpdate(fiber, queue, update, lane) {
+  const concurrentQueue = queue;
+  const concurrentUpdate = update;
+  enqueueUpdate$1(fiber, concurrentQueue, concurrentUpdate, lane);
+  return getRootForUpdatedFiber(fiber);
+}
+function enqueueConcurrentHookUpdateAndEagerlyBailout(fiber, queue, update) {
+  // This function is used to queue an update that doesn't need a rerender. The
+  // only reason we queue it is in case there's a subsequent higher priority
+  // update that causes it to be rebased.
+  const lane = NoLane;
+  const concurrentQueue = queue;
+  const concurrentUpdate = update;
+  enqueueUpdate$1(fiber, concurrentQueue, concurrentUpdate, lane); // Usually we can rely on the upcoming render phase to process the concurrent
+  // queue. However, since this is a bail out, we're not scheduling any work
+  // here. So the update we just queued will leak until something else happens
+  // to schedule work (if ever).
+  //
+  // Check if we're currently in the middle of rendering a tree, and if not,
+  // process the queue immediately to prevent a leak.
+
+  const isConcurrentlyRendering = getWorkInProgressRoot() !== null;
+
+  if (!isConcurrentlyRendering) {
+    finishQueueingConcurrentUpdates();
+  }
+}
+function enqueueConcurrentClassUpdate(fiber, queue, update, lane) {
+  const concurrentQueue = queue;
+  const concurrentUpdate = update;
+  enqueueUpdate$1(fiber, concurrentQueue, concurrentUpdate, lane);
+  return getRootForUpdatedFiber(fiber);
+}
+function enqueueConcurrentRenderForLane(fiber, lane) {
+  enqueueUpdate$1(fiber, null, null, lane);
+  return getRootForUpdatedFiber(fiber);
+} // Calling this function outside this module should only be done for backwards
+// compatibility and should always be accompanied by a warning.
+
+function unsafe_markUpdateLaneFromFiberToRoot(sourceFiber, lane) {
+  // NOTE: For Hyrum's Law reasons, if an infinite update loop is detected, it
+  // should throw before `markUpdateLaneFromFiberToRoot` is called. But this is
+  // undefined behavior and we can change it if we need to; it just so happens
+  // that, at the time of this writing, there's an internal product test that
+  // happens to rely on this.
+  const root = getRootForUpdatedFiber(sourceFiber);
+  markUpdateLaneFromFiberToRoot(sourceFiber, null, lane);
+  return root;
+}
+
+function markUpdateLaneFromFiberToRoot(sourceFiber, update, lane) {
+  // Update the source fiber's lanes
+  sourceFiber.lanes = mergeLanes(sourceFiber.lanes, lane);
+  let alternate = sourceFiber.alternate;
+
+  if (alternate !== null) {
+    alternate.lanes = mergeLanes(alternate.lanes, lane);
+  } // Walk the parent path to the root and update the child lanes.
+
+
+  let isHidden = false;
+  let parent = sourceFiber.return;
+  let node = sourceFiber;
+
+  while (parent !== null) {
+    parent.childLanes = mergeLanes(parent.childLanes, lane);
+    alternate = parent.alternate;
+
+    if (alternate !== null) {
+      alternate.childLanes = mergeLanes(alternate.childLanes, lane);
+    }
+
+    if (parent.tag === OffscreenComponent) {
+      // Check if this offscreen boundary is currently hidden.
+      //
+      // The instance may be null if the Offscreen parent was unmounted. Usually
+      // the parent wouldn't be reachable in that case because we disconnect
+      // fibers from the tree when they are deleted. However, there's a weird
+      // edge case where setState is called on a fiber that was interrupted
+      // before it ever mounted. Because it never mounts, it also never gets
+      // deleted. Because it never gets deleted, its return pointer never gets
+      // disconnected. Which means it may be attached to a deleted Offscreen
+      // parent node. (This discovery suggests it may be better for memory usage
+      // if we don't attach the `return` pointer until the commit phase, though
+      // in order to do that we'd need some other way to track the return
+      // pointer during the initial render, like on the stack.)
+      //
+      // This case is always accompanied by a warning, but we still need to
+      // account for it. (There may be other cases that we haven't discovered,
+      // too.)
+      const offscreenInstance = parent.stateNode;
+
+      if (offscreenInstance !== null && !(offscreenInstance._visibility & OffscreenVisible)) {
+        isHidden = true;
+      }
+    }
+
+    node = parent;
+    parent = parent.return;
+  }
+
+  if (isHidden && update !== null && node.tag === HostRoot) {
+    const root = node.stateNode;
+    markHiddenUpdate(root, update, lane);
+  }
+}
+
+function getRootForUpdatedFiber(sourceFiber) {
+  // TODO: We will detect and infinite update loop and throw even if this fiber
+  // has already unmounted. This isn't really necessary but it happens to be the
+  // current behavior we've used for several release cycles. Consider not
+  // performing this check if the updated fiber already unmounted, since it's
+  // not possible for that to cause an infinite update loop.
+  throwIfInfiniteUpdateLoopDetected(); // When a setState happens, we must ensure the root is scheduled. Because
+  let node = sourceFiber;
+  let parent = node.return;
+
+  while (parent !== null) {
+    node = parent;
+    parent = node.return;
+  }
+
+  return node.tag === HostRoot ? node.stateNode : null;
+}
+
+const UpdateState = 0;
+const ReplaceState = 1;
+const ForceUpdate = 2;
+const CaptureUpdate = 3; // Global state that is reset at the beginning of calling `processUpdateQueue`.
+// It should only be read right after calling `processUpdateQueue`, via
+// `checkHasForceUpdateAfterProcessing`.
+
+let hasForceUpdate = false;
+
+function initializeUpdateQueue(fiber) {
+  const queue = {
+    baseState: fiber.memoizedState,
+    firstBaseUpdate: null,
+    lastBaseUpdate: null,
+    shared: {
+      pending: null,
+      lanes: NoLanes,
+      hiddenCallbacks: null
+    },
+    callbacks: null
+  };
+  fiber.updateQueue = queue;
+}
+function cloneUpdateQueue(current, workInProgress) {
+  // Clone the update queue from current. Unless it's already a clone.
+  const queue = workInProgress.updateQueue;
+  const currentQueue = current.updateQueue;
+
+  if (queue === currentQueue) {
+    const clone = {
+      baseState: currentQueue.baseState,
+      firstBaseUpdate: currentQueue.firstBaseUpdate,
+      lastBaseUpdate: currentQueue.lastBaseUpdate,
+      shared: currentQueue.shared,
+      callbacks: null
+    };
+    workInProgress.updateQueue = clone;
+  }
+}
+function createUpdate(lane) {
+  const update = {
+    lane,
+    tag: UpdateState,
+    payload: null,
+    callback: null,
+    next: null
+  };
+  return update;
+}
+function enqueueUpdate(fiber, update, lane) {
+  const updateQueue = fiber.updateQueue;
+
+  if (updateQueue === null) {
+    // Only occurs if the fiber has been unmounted.
+    return null;
+  }
+
+  const sharedQueue = updateQueue.shared;
+
+  if (isUnsafeClassRenderPhaseUpdate()) {
+    // This is an unsafe render phase update. Add directly to the update
+    // queue so we can process it immediately during the current render.
+    const pending = sharedQueue.pending;
+
+    if (pending === null) {
+      // This is the first update. Create a circular list.
+      update.next = update;
+    } else {
+      update.next = pending.next;
+      pending.next = update;
+    }
+
+    sharedQueue.pending = update; // Update the childLanes even though we're most likely already rendering
+    // this fiber. This is for backwards compatibility in the case where you
+    // update a different component during render phase than the one that is
+    // currently renderings (a pattern that is accompanied by a warning).
+
+    return unsafe_markUpdateLaneFromFiberToRoot(fiber, lane);
+  } else {
+    return enqueueConcurrentClassUpdate(fiber, sharedQueue, update, lane);
+  }
+}
+function entangleTransitions(root, fiber, lane) {
+  const updateQueue = fiber.updateQueue;
+
+  if (updateQueue === null) {
+    // Only occurs if the fiber has been unmounted.
+    return;
+  }
+
+  const sharedQueue = updateQueue.shared;
+
+  if (isTransitionLane(lane)) {
+    let queueLanes = sharedQueue.lanes; // If any entangled lanes are no longer pending on the root, then they must
+    // have finished. We can remove them from the shared queue, which represents
+    // a superset of the actually pending lanes. In some cases we may entangle
+    // more than we need to, but that's OK. In fact it's worse if we *don't*
+    // entangle when we should.
+
+    queueLanes = intersectLanes(queueLanes, root.pendingLanes); // Entangle the new transition lane with the other transition lanes.
+
+    const newQueueLanes = mergeLanes(queueLanes, lane);
+    sharedQueue.lanes = newQueueLanes; // Even if queue.lanes already include lane, we don't know for certain if
+    // the lane finished since the last time we entangled it. So we need to
+    // entangle it again, just to be sure.
+
+    markRootEntangled(root, newQueueLanes);
+  }
+}
+function enqueueCapturedUpdate(workInProgress, capturedUpdate) {
+  // Captured updates are updates that are thrown by a child during the render
+  // phase. They should be discarded if the render is aborted. Therefore,
+  // we should only put them on the work-in-progress queue, not the current one.
+  let queue = workInProgress.updateQueue; // Check if the work-in-progress queue is a clone.
+
+  const current = workInProgress.alternate;
+
+  if (current !== null) {
+    const currentQueue = current.updateQueue;
+
+    if (queue === currentQueue) {
+      // The work-in-progress queue is the same as current. This happens when
+      // we bail out on a parent fiber that then captures an error thrown by
+      // a child. Since we want to append the update only to the work-in
+      // -progress queue, we need to clone the updates. We usually clone during
+      // processUpdateQueue, but that didn't happen in this case because we
+      // skipped over the parent when we bailed out.
+      let newFirst = null;
+      let newLast = null;
+      const firstBaseUpdate = queue.firstBaseUpdate;
+
+      if (firstBaseUpdate !== null) {
+        // Loop through the updates and clone them.
+        let update = firstBaseUpdate;
+
+        do {
+          const clone = {
+            lane: update.lane,
+            tag: update.tag,
+            payload: update.payload,
+            // When this update is rebased, we should not fire its
+            // callback again.
+            callback: null,
+            next: null
+          };
+
+          if (newLast === null) {
+            newFirst = newLast = clone;
+          } else {
+            newLast.next = clone;
+            newLast = clone;
+          } // $FlowFixMe[incompatible-type] we bail out when we get a null
+
+
+          update = update.next;
+        } while (update !== null); // Append the captured update the end of the cloned list.
+
+
+        if (newLast === null) {
+          newFirst = newLast = capturedUpdate;
+        } else {
+          newLast.next = capturedUpdate;
+          newLast = capturedUpdate;
+        }
+      } else {
+        // There are no base updates.
+        newFirst = newLast = capturedUpdate;
+      }
+
+      queue = {
+        baseState: currentQueue.baseState,
+        firstBaseUpdate: newFirst,
+        lastBaseUpdate: newLast,
+        shared: currentQueue.shared,
+        callbacks: currentQueue.callbacks
+      };
+      workInProgress.updateQueue = queue;
+      return;
+    }
+  } // Append the update to the end of the list.
+
+
+  const lastBaseUpdate = queue.lastBaseUpdate;
+
+  if (lastBaseUpdate === null) {
+    queue.firstBaseUpdate = capturedUpdate;
+  } else {
+    lastBaseUpdate.next = capturedUpdate;
+  }
+
+  queue.lastBaseUpdate = capturedUpdate;
+}
+
+function getStateFromUpdate(workInProgress, queue, update, prevState, nextProps, instance) {
+  switch (update.tag) {
+    case ReplaceState:
+      {
+        const payload = update.payload;
+
+        if (typeof payload === 'function') {
+
+          const nextState = payload.call(instance, prevState, nextProps);
+
+          return nextState;
+        } // State object
+
+
+        return payload;
+      }
+
+    case CaptureUpdate:
+      {
+        workInProgress.flags = workInProgress.flags & ~ShouldCapture | DidCapture;
+      }
+    // Intentional fallthrough
+
+    case UpdateState:
+      {
+        const payload = update.payload;
+        let partialState;
+
+        if (typeof payload === 'function') {
+
+          partialState = payload.call(instance, prevState, nextProps);
+        } else {
+          // Partial state object
+          partialState = payload;
+        }
+
+        if (partialState === null || partialState === undefined) {
+          // Null and undefined are treated as no-ops.
+          return prevState;
+        } // Merge the partial state and the previous state.
+
+
+        return assign({}, prevState, partialState);
+      }
+
+    case ForceUpdate:
+      {
+        hasForceUpdate = true;
+        return prevState;
+      }
+  }
+
+  return prevState;
+}
+
+function processUpdateQueue(workInProgress, props, instance, renderLanes) {
+  // This is always non-null on a ClassComponent or HostRoot
+  const queue = workInProgress.updateQueue;
+  hasForceUpdate = false;
+
+  let firstBaseUpdate = queue.firstBaseUpdate;
+  let lastBaseUpdate = queue.lastBaseUpdate; // Check if there are pending updates. If so, transfer them to the base queue.
+
+  let pendingQueue = queue.shared.pending;
+
+  if (pendingQueue !== null) {
+    queue.shared.pending = null; // The pending queue is circular. Disconnect the pointer between first
+    // and last so that it's non-circular.
+
+    const lastPendingUpdate = pendingQueue;
+    const firstPendingUpdate = lastPendingUpdate.next;
+    lastPendingUpdate.next = null; // Append pending updates to base queue
+
+    if (lastBaseUpdate === null) {
+      firstBaseUpdate = firstPendingUpdate;
+    } else {
+      lastBaseUpdate.next = firstPendingUpdate;
+    }
+
+    lastBaseUpdate = lastPendingUpdate; // If there's a current queue, and it's different from the base queue, then
+    // we need to transfer the updates to that queue, too. Because the base
+    // queue is a singly-linked list with no cycles, we can append to both
+    // lists and take advantage of structural sharing.
+    // TODO: Pass `current` as argument
+
+    const current = workInProgress.alternate;
+
+    if (current !== null) {
+      // This is always non-null on a ClassComponent or HostRoot
+      const currentQueue = current.updateQueue;
+      const currentLastBaseUpdate = currentQueue.lastBaseUpdate;
+
+      if (currentLastBaseUpdate !== lastBaseUpdate) {
+        if (currentLastBaseUpdate === null) {
+          currentQueue.firstBaseUpdate = firstPendingUpdate;
+        } else {
+          currentLastBaseUpdate.next = firstPendingUpdate;
+        }
+
+        currentQueue.lastBaseUpdate = lastPendingUpdate;
+      }
+    }
+  } // These values may change as we process the queue.
+
+
+  if (firstBaseUpdate !== null) {
+    // Iterate through the list of updates to compute the result.
+    let newState = queue.baseState; // TODO: Don't need to accumulate this. Instead, we can remove renderLanes
+    // from the original lanes.
+
+    let newLanes = NoLanes;
+    let newBaseState = null;
+    let newFirstBaseUpdate = null;
+    let newLastBaseUpdate = null;
+    let update = firstBaseUpdate;
+
+    do {
+      // An extra OffscreenLane bit is added to updates that were made to
+      // a hidden tree, so that we can distinguish them from updates that were
+      // already there when the tree was hidden.
+      const updateLane = removeLanes(update.lane, OffscreenLane);
+      const isHiddenUpdate = updateLane !== update.lane; // Check if this update was made while the tree was hidden. If so, then
+      // it's not a "base" update and we should disregard the extra base lanes
+      // that were added to renderLanes when we entered the Offscreen tree.
+
+      const shouldSkipUpdate = isHiddenUpdate ? !isSubsetOfLanes(getWorkInProgressRootRenderLanes(), updateLane) : !isSubsetOfLanes(renderLanes, updateLane);
+
+      if (shouldSkipUpdate) {
+        // Priority is insufficient. Skip this update. If this is the first
+        // skipped update, the previous update/state is the new base
+        // update/state.
+        const clone = {
+          lane: updateLane,
+          tag: update.tag,
+          payload: update.payload,
+          callback: update.callback,
+          next: null
+        };
+
+        if (newLastBaseUpdate === null) {
+          newFirstBaseUpdate = newLastBaseUpdate = clone;
+          newBaseState = newState;
+        } else {
+          newLastBaseUpdate = newLastBaseUpdate.next = clone;
+        } // Update the remaining priority in the queue.
+
+
+        newLanes = mergeLanes(newLanes, updateLane);
+      } else {
+        // This update does have sufficient priority.
+        if (newLastBaseUpdate !== null) {
+          const clone = {
+            // This update is going to be committed so we never want uncommit
+            // it. Using NoLane works because 0 is a subset of all bitmasks, so
+            // this will never be skipped by the check above.
+            lane: NoLane,
+            tag: update.tag,
+            payload: update.payload,
+            // When this update is rebased, we should not fire its
+            // callback again.
+            callback: null,
+            next: null
+          };
+          newLastBaseUpdate = newLastBaseUpdate.next = clone;
+        } // Process this update.
+
+
+        newState = getStateFromUpdate(workInProgress, queue, update, newState, props, instance);
+        const callback = update.callback;
+
+        if (callback !== null) {
+          workInProgress.flags |= Callback;
+
+          if (isHiddenUpdate) {
+            workInProgress.flags |= Vi
