@@ -1,0 +1,577 @@
+ultA.value);
+	    } else if (!$setHas(b, resultA.value)) {
+	      if (opts.strict) {
+	        return false;
+	      }
+	      if (!setMightHaveLoosePrim(a, b, resultA.value)) {
+	        return false;
+	      }
+	      if (!set) {
+	        set = new $Set();
+	      }
+	      $setAdd(set, resultA.value);
+	    }
+	  }
+	  if (set) {
+	    while ((resultB = iB.next()) && !resultB.done) {
+	      // We have to check if a primitive value is already matching and only if it's not, go hunting for it.
+	      if (resultB.value && typeof resultB.value === 'object') {
+	        if (!setHasEqualElement(set, resultB.value, opts.strict, channel)) {
+	          return false;
+	        }
+	      } else if (!opts.strict && !$setHas(a, resultB.value) && !setHasEqualElement(set, resultB.value, opts.strict, channel)) {
+	        return false;
+	      }
+	    }
+	    return $setSize(set) === 0;
+	  }
+	  return true;
+	}
+	function mapEquiv(a, b, opts, channel) {
+	  if ($mapSize(a) !== $mapSize(b)) {
+	    return false;
+	  }
+	  var iA = getIterator(a);
+	  var iB = getIterator(b);
+	  var resultA;
+	  var resultB;
+	  var set;
+	  var key;
+	  var item1;
+	  var item2;
+	  while ((resultA = iA.next()) && !resultA.done) {
+	    key = resultA.value[0];
+	    item1 = resultA.value[1];
+	    if (key && typeof key === 'object') {
+	      if (!set) {
+	        set = new $Set();
+	      }
+	      $setAdd(set, key);
+	    } else {
+	      item2 = $mapGet(b, key);
+	      if (typeof item2 === 'undefined' && !$mapHas(b, key) || !internalDeepEqual(item1, item2, opts, channel)) {
+	        if (opts.strict) {
+	          return false;
+	        }
+	        if (!mapMightHaveLoosePrim(a, b, key, item1, opts, channel)) {
+	          return false;
+	        }
+	        if (!set) {
+	          set = new $Set();
+	        }
+	        $setAdd(set, key);
+	      }
+	    }
+	  }
+	  if (set) {
+	    while ((resultB = iB.next()) && !resultB.done) {
+	      key = resultB.value[0];
+	      item2 = resultB.value[1];
+	      if (key && typeof key === 'object') {
+	        if (!mapHasEqualEntry(set, a, key, item2, opts, channel)) {
+	          return false;
+	        }
+	      } else if (!opts.strict && (!a.has(key) || !internalDeepEqual($mapGet(a, key), item2, opts, channel)) && !mapHasEqualEntry(set, a, key, item2, assign({}, opts, {
+	        strict: false
+	      }), channel)) {
+	        return false;
+	      }
+	    }
+	    return $setSize(set) === 0;
+	  }
+	  return true;
+	}
+	function objEquiv(a, b, opts, channel) {
+	  /* eslint max-statements: [2, 100], max-lines-per-function: [2, 120], max-depth: [2, 5], max-lines: [2, 400] */
+	  var i, key;
+	  if (typeof a !== typeof b) {
+	    return false;
+	  }
+	  if (a == null || b == null) {
+	    return false;
+	  }
+	  if ($objToString(a) !== $objToString(b)) {
+	    return false;
+	  }
+	  if (isArguments(a) !== isArguments(b)) {
+	    return false;
+	  }
+	  var aIsArray = isArray(a);
+	  var bIsArray = isArray(b);
+	  if (aIsArray !== bIsArray) {
+	    return false;
+	  }
+
+	  // TODO: replace when a cross-realm brand check is available
+	  var aIsError = a instanceof Error;
+	  var bIsError = b instanceof Error;
+	  if (aIsError !== bIsError) {
+	    return false;
+	  }
+	  if (aIsError || bIsError) {
+	    if (a.name !== b.name || a.message !== b.message) {
+	      return false;
+	    }
+	  }
+	  var aIsRegex = isRegex(a);
+	  var bIsRegex = isRegex(b);
+	  if (aIsRegex !== bIsRegex) {
+	    return false;
+	  }
+	  if ((aIsRegex || bIsRegex) && (a.source !== b.source || flags(a) !== flags(b))) {
+	    return false;
+	  }
+	  var aIsDate = isDate(a);
+	  var bIsDate = isDate(b);
+	  if (aIsDate !== bIsDate) {
+	    return false;
+	  }
+	  if (aIsDate || bIsDate) {
+	    // && would work too, because both are true or both false here
+	    if ($getTime(a) !== $getTime(b)) {
+	      return false;
+	    }
+	  }
+	  if (opts.strict && gPO && gPO(a) !== gPO(b)) {
+	    return false;
+	  }
+	  var aWhich = whichTypedArray(a);
+	  var bWhich = whichTypedArray(b);
+	  if ((aWhich || bWhich) && aWhich !== bWhich) {
+	    return false;
+	  }
+	  var aIsBuffer = isBuffer(a);
+	  var bIsBuffer = isBuffer(b);
+	  if (aIsBuffer !== bIsBuffer) {
+	    return false;
+	  }
+	  if (aIsBuffer || bIsBuffer) {
+	    // && would work too, because both are true or both false here
+	    if (a.length !== b.length) {
+	      return false;
+	    }
+	    for (i = 0; i < a.length; i++) {
+	      if (a[i] !== b[i]) {
+	        return false;
+	      }
+	    }
+	    return true;
+	  }
+	  var aIsArrayBuffer = isArrayBuffer(a);
+	  var bIsArrayBuffer = isArrayBuffer(b);
+	  if (aIsArrayBuffer !== bIsArrayBuffer) {
+	    return false;
+	  }
+	  if (aIsArrayBuffer || bIsArrayBuffer) {
+	    // && would work too, because both are true or both false here
+	    if (byteLength(a) !== byteLength(b)) {
+	      return false;
+	    }
+	    return typeof Uint8Array === 'function' && internalDeepEqual(new Uint8Array(a), new Uint8Array(b), opts, channel);
+	  }
+	  var aIsSAB = isSharedArrayBuffer(a);
+	  var bIsSAB = isSharedArrayBuffer(b);
+	  if (aIsSAB !== bIsSAB) {
+	    return false;
+	  }
+	  if (aIsSAB || bIsSAB) {
+	    // && would work too, because both are true or both false here
+	    if (sabByteLength(a) !== sabByteLength(b)) {
+	      return false;
+	    }
+	    return typeof Uint8Array === 'function' && internalDeepEqual(new Uint8Array(a), new Uint8Array(b), opts, channel);
+	  }
+	  if (typeof a !== typeof b) {
+	    return false;
+	  }
+	  var ka = objectKeys(a);
+	  var kb = objectKeys(b);
+	  // having the same number of owned properties (keys incorporates hasOwnProperty)
+	  if (ka.length !== kb.length) {
+	    return false;
+	  }
+
+	  // the same set of keys (although not necessarily the same order),
+	  ka.sort();
+	  kb.sort();
+	  // ~~~cheap key test
+	  for (i = ka.length - 1; i >= 0; i--) {
+	    if (ka[i] != kb[i]) {
+	      return false;
+	    } // eslint-disable-line eqeqeq
+	  }
+
+	  // equivalent values for every corresponding key, and ~~~possibly expensive deep test
+	  for (i = ka.length - 1; i >= 0; i--) {
+	    key = ka[i];
+	    if (!internalDeepEqual(a[key], b[key], opts, channel)) {
+	      return false;
+	    }
+	  }
+	  var aCollection = whichCollection(a);
+	  var bCollection = whichCollection(b);
+	  if (aCollection !== bCollection) {
+	    return false;
+	  }
+	  if (aCollection === 'Set' || bCollection === 'Set') {
+	    // aCollection === bCollection
+	    return setEquiv(a, b, opts, channel);
+	  }
+	  if (aCollection === 'Map') {
+	    // aCollection === bCollection
+	    return mapEquiv(a, b, opts, channel);
+	  }
+	  return true;
+	}
+	var deepEqual = function deepEqual(a, b, opts) {
+	  return internalDeepEqual(a, b, opts, getSideChannel());
+	};
+
+	Object.defineProperty(elementRoleMap$1, "__esModule", {
+	  value: true
+	});
+	elementRoleMap$1.default = void 0;
+	var _deepEqual = _interopRequireDefault$2(deepEqual);
+	var _iterationDecorator$1 = _interopRequireDefault$2(iterationDecorator$1);
+	var _rolesMap$2 = _interopRequireDefault$2(rolesMap$1);
+	function _interopRequireDefault$2(obj) {
+	  return obj && obj.__esModule ? obj : {
+	    default: obj
+	  };
+	}
+	function _slicedToArray$1(arr, i) {
+	  return _arrayWithHoles$1(arr) || _iterableToArrayLimit$1(arr, i) || _unsupportedIterableToArray$1(arr, i) || _nonIterableRest$1();
+	}
+	function _nonIterableRest$1() {
+	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	}
+	function _iterableToArrayLimit$1(arr, i) {
+	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+	  if (_i == null) return;
+	  var _arr = [];
+	  var _n = true;
+	  var _d = false;
+	  var _s, _e;
+	  try {
+	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+	      _arr.push(_s.value);
+	      if (i && _arr.length === i) break;
+	    }
+	  } catch (err) {
+	    _d = true;
+	    _e = err;
+	  } finally {
+	    try {
+	      if (!_n && _i["return"] != null) _i["return"]();
+	    } finally {
+	      if (_d) throw _e;
+	    }
+	  }
+	  return _arr;
+	}
+	function _arrayWithHoles$1(arr) {
+	  if (Array.isArray(arr)) return arr;
+	}
+	function _createForOfIteratorHelper$1(o, allowArrayLike) {
+	  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+	  if (!it) {
+	    if (Array.isArray(o) || (it = _unsupportedIterableToArray$1(o)) || allowArrayLike && o && typeof o.length === "number") {
+	      if (it) o = it;
+	      var i = 0;
+	      var F = function F() {};
+	      return {
+	        s: F,
+	        n: function n() {
+	          if (i >= o.length) return {
+	            done: true
+	          };
+	          return {
+	            done: false,
+	            value: o[i++]
+	          };
+	        },
+	        e: function e(_e2) {
+	          throw _e2;
+	        },
+	        f: F
+	      };
+	    }
+	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	  }
+	  var normalCompletion = true,
+	    didErr = false,
+	    err;
+	  return {
+	    s: function s() {
+	      it = it.call(o);
+	    },
+	    n: function n() {
+	      var step = it.next();
+	      normalCompletion = step.done;
+	      return step;
+	    },
+	    e: function e(_e3) {
+	      didErr = true;
+	      err = _e3;
+	    },
+	    f: function f() {
+	      try {
+	        if (!normalCompletion && it.return != null) it.return();
+	      } finally {
+	        if (didErr) throw err;
+	      }
+	    }
+	  };
+	}
+	function _unsupportedIterableToArray$1(o, minLen) {
+	  if (!o) return;
+	  if (typeof o === "string") return _arrayLikeToArray$1(o, minLen);
+	  var n = Object.prototype.toString.call(o).slice(8, -1);
+	  if (n === "Object" && o.constructor) n = o.constructor.name;
+	  if (n === "Map" || n === "Set") return Array.from(o);
+	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen);
+	}
+	function _arrayLikeToArray$1(arr, len) {
+	  if (len == null || len > arr.length) len = arr.length;
+	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+	    arr2[i] = arr[i];
+	  }
+	  return arr2;
+	}
+	var elementRoles$1 = [];
+	var keys$1 = _rolesMap$2.default.keys();
+	for (var i$1 = 0; i$1 < keys$1.length; i$1++) {
+	  var key = keys$1[i$1];
+	  var role = _rolesMap$2.default.get(key);
+	  if (role) {
+	    var concepts = [].concat(role.baseConcepts, role.relatedConcepts);
+	    for (var k = 0; k < concepts.length; k++) {
+	      var relation = concepts[k];
+	      if (relation.module === 'HTML') {
+	        var concept = relation.concept;
+	        if (concept) {
+	          (function () {
+	            var conceptStr = JSON.stringify(concept);
+	            var elementRoleRelation = elementRoles$1.find(function (relation) {
+	              return JSON.stringify(relation[0]) === conceptStr;
+	            });
+	            var roles = void 0;
+	            if (elementRoleRelation) {
+	              roles = elementRoleRelation[1];
+	            } else {
+	              roles = [];
+	            }
+	            var isUnique = true;
+	            for (var _i = 0; _i < roles.length; _i++) {
+	              if (roles[_i] === key) {
+	                isUnique = false;
+	                break;
+	              }
+	            }
+	            if (isUnique) {
+	              roles.push(key);
+	            }
+	            elementRoles$1.push([concept, roles]);
+	          })();
+	        }
+	      }
+	    }
+	  }
+	}
+	var elementRoleMap = {
+	  entries: function entries() {
+	    return elementRoles$1;
+	  },
+	  forEach: function forEach(fn) {
+	    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	    var _iterator = _createForOfIteratorHelper$1(elementRoles$1),
+	      _step;
+	    try {
+	      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+	        var _step$value = _slicedToArray$1(_step.value, 2),
+	          _key = _step$value[0],
+	          values = _step$value[1];
+	        fn.call(thisArg, values, _key, elementRoles$1);
+	      }
+	    } catch (err) {
+	      _iterator.e(err);
+	    } finally {
+	      _iterator.f();
+	    }
+	  },
+	  get: function get(key) {
+	    var item = elementRoles$1.find(function (tuple) {
+	      return (0, _deepEqual.default)(key, tuple[0]);
+	    });
+	    return item && item[1];
+	  },
+	  has: function has(key) {
+	    return !!elementRoleMap.get(key);
+	  },
+	  keys: function keys() {
+	    return elementRoles$1.map(function (_ref) {
+	      var _ref2 = _slicedToArray$1(_ref, 1),
+	        key = _ref2[0];
+	      return key;
+	    });
+	  },
+	  values: function values() {
+	    return elementRoles$1.map(function (_ref3) {
+	      var _ref4 = _slicedToArray$1(_ref3, 2),
+	        values = _ref4[1];
+	      return values;
+	    });
+	  }
+	};
+	var _default$1 = (0, _iterationDecorator$1.default)(elementRoleMap, elementRoleMap.entries());
+	elementRoleMap$1.default = _default$1;
+
+	var roleElementMap$1 = {};
+
+	Object.defineProperty(roleElementMap$1, "__esModule", {
+	  value: true
+	});
+	roleElementMap$1.default = void 0;
+	var _iterationDecorator = _interopRequireDefault$1(iterationDecorator$1);
+	var _rolesMap$1 = _interopRequireDefault$1(rolesMap$1);
+	function _interopRequireDefault$1(obj) {
+	  return obj && obj.__esModule ? obj : {
+	    default: obj
+	  };
+	}
+	function _slicedToArray(arr, i) {
+	  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+	}
+	function _nonIterableRest() {
+	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	}
+	function _iterableToArrayLimit(arr, i) {
+	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+	  if (_i == null) return;
+	  var _arr = [];
+	  var _n = true;
+	  var _d = false;
+	  var _s, _e;
+	  try {
+	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+	      _arr.push(_s.value);
+	      if (i && _arr.length === i) break;
+	    }
+	  } catch (err) {
+	    _d = true;
+	    _e = err;
+	  } finally {
+	    try {
+	      if (!_n && _i["return"] != null) _i["return"]();
+	    } finally {
+	      if (_d) throw _e;
+	    }
+	  }
+	  return _arr;
+	}
+	function _arrayWithHoles(arr) {
+	  if (Array.isArray(arr)) return arr;
+	}
+	function _createForOfIteratorHelper(o, allowArrayLike) {
+	  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+	  if (!it) {
+	    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+	      if (it) o = it;
+	      var i = 0;
+	      var F = function F() {};
+	      return {
+	        s: F,
+	        n: function n() {
+	          if (i >= o.length) return {
+	            done: true
+	          };
+	          return {
+	            done: false,
+	            value: o[i++]
+	          };
+	        },
+	        e: function e(_e2) {
+	          throw _e2;
+	        },
+	        f: F
+	      };
+	    }
+	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	  }
+	  var normalCompletion = true,
+	    didErr = false,
+	    err;
+	  return {
+	    s: function s() {
+	      it = it.call(o);
+	    },
+	    n: function n() {
+	      var step = it.next();
+	      normalCompletion = step.done;
+	      return step;
+	    },
+	    e: function e(_e3) {
+	      didErr = true;
+	      err = _e3;
+	    },
+	    f: function f() {
+	      try {
+	        if (!normalCompletion && it.return != null) it.return();
+	      } finally {
+	        if (didErr) throw err;
+	      }
+	    }
+	  };
+	}
+	function _unsupportedIterableToArray(o, minLen) {
+	  if (!o) return;
+	  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+	  var n = Object.prototype.toString.call(o).slice(8, -1);
+	  if (n === "Object" && o.constructor) n = o.constructor.name;
+	  if (n === "Map" || n === "Set") return Array.from(o);
+	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+	}
+	function _arrayLikeToArray(arr, len) {
+	  if (len == null || len > arr.length) len = arr.length;
+	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+	    arr2[i] = arr[i];
+	  }
+	  return arr2;
+	}
+	var roleElement = [];
+	var keys = _rolesMap$1.default.keys();
+	var _loop = function _loop(i) {
+	  var key = keys[i];
+	  var role = _rolesMap$1.default.get(key);
+	  if (role) {
+	    var concepts = [].concat(role.baseConcepts, role.relatedConcepts);
+	    for (var k = 0; k < concepts.length; k++) {
+	      var relation = concepts[k];
+	      if (relation.module === 'HTML') {
+	        var concept = relation.concept;
+	        if (concept) {
+	          var roleElementRelation = roleElement.find(function (item) {
+	            return item[0] === key;
+	          });
+	          var relationConcepts = void 0;
+	          if (roleElementRelation) {
+	            relationConcepts = roleElementRelation[1];
+	          } else {
+	            relationConcepts = [];
+	          }
+	          relationConcepts.push(concept);
+	          roleElement.push([key, relationConcepts]);
+	        }
+	      }
+	    }
+	  }
+	};
+	for (var i = 0; i < keys.length; i++) {
+	  _loop(i);
+	}
+	var roleElementMap = {
+	  entries: function entries() {
+	    return roleElement;
+	  },
+	  forEach: function forEach(fn) {
+	    var thisArg = arguments.length > 
