@@ -1,0 +1,631 @@
+tion (element: Element): boolean} options.isSubtreeInaccessible -
+	 * can be used to return cached results from previous isSubtreeInaccessible calls
+	 * @returns {boolean} true if excluded, otherwise false
+	 */
+	function isInaccessible(element, options) {
+	  if (options === void 0) {
+	    options = {};
+	  }
+	  const {
+	    isSubtreeInaccessible: isSubtreeInaccessibleImpl = isSubtreeInaccessible
+	  } = options;
+	  const window = element.ownerDocument.defaultView;
+	  // since visibility is inherited we can exit early
+	  if (window.getComputedStyle(element).visibility === 'hidden') {
+	    return true;
+	  }
+	  let currentElement = element;
+	  while (currentElement) {
+	    if (isSubtreeInaccessibleImpl(currentElement)) {
+	      return true;
+	    }
+	    currentElement = currentElement.parentElement;
+	  }
+	  return false;
+	}
+	function getImplicitAriaRoles(currentNode) {
+	  // eslint bug here:
+	  // eslint-disable-next-line no-unused-vars
+	  for (const {
+	    match,
+	    roles
+	  } of elementRoleList) {
+	    if (match(currentNode)) {
+	      return [...roles];
+	    }
+	  }
+	  return [];
+	}
+	function buildElementRoleList(elementRolesMap) {
+	  function makeElementSelector(_ref) {
+	    let {
+	      name,
+	      attributes
+	    } = _ref;
+	    return "" + name + attributes.map(_ref2 => {
+	      let {
+	        name: attributeName,
+	        value,
+	        constraints = []
+	      } = _ref2;
+	      const shouldNotExist = constraints.indexOf('undefined') !== -1;
+	      if (shouldNotExist) {
+	        return ":not([" + attributeName + "])";
+	      } else if (value) {
+	        return "[" + attributeName + "=\"" + value + "\"]";
+	      } else {
+	        return "[" + attributeName + "]";
+	      }
+	    }).join('');
+	  }
+	  function getSelectorSpecificity(_ref3) {
+	    let {
+	      attributes = []
+	    } = _ref3;
+	    return attributes.length;
+	  }
+	  function bySelectorSpecificity(_ref4, _ref5) {
+	    let {
+	      specificity: leftSpecificity
+	    } = _ref4;
+	    let {
+	      specificity: rightSpecificity
+	    } = _ref5;
+	    return rightSpecificity - leftSpecificity;
+	  }
+	  function match(element) {
+	    let {
+	      attributes = []
+	    } = element;
+
+	    // https://github.com/testing-library/dom-testing-library/issues/814
+	    const typeTextIndex = attributes.findIndex(attribute => attribute.value && attribute.name === 'type' && attribute.value === 'text');
+	    if (typeTextIndex >= 0) {
+	      // not using splice to not mutate the attributes array
+	      attributes = [...attributes.slice(0, typeTextIndex), ...attributes.slice(typeTextIndex + 1)];
+	    }
+	    const selector = makeElementSelector({
+	      ...element,
+	      attributes
+	    });
+	    return node => {
+	      if (typeTextIndex >= 0 && node.type !== 'text') {
+	        return false;
+	      }
+	      return node.matches(selector);
+	    };
+	  }
+	  let result = [];
+
+	  // eslint bug here:
+	  // eslint-disable-next-line no-unused-vars
+	  for (const [element, roles] of elementRolesMap.entries()) {
+	    result = [...result, {
+	      match: match(element),
+	      roles: Array.from(roles),
+	      specificity: getSelectorSpecificity(element)
+	    }];
+	  }
+	  return result.sort(bySelectorSpecificity);
+	}
+	function getRoles(container, _temp) {
+	  let {
+	    hidden = false
+	  } = _temp === void 0 ? {} : _temp;
+	  function flattenDOM(node) {
+	    return [node, ...Array.from(node.children).reduce((acc, child) => [...acc, ...flattenDOM(child)], [])];
+	  }
+	  return flattenDOM(container).filter(element => {
+	    return hidden === false ? isInaccessible(element) === false : true;
+	  }).reduce((acc, node) => {
+	    let roles = [];
+	    // TODO: This violates html-aria which does not allow any role on every element
+	    if (node.hasAttribute('role')) {
+	      roles = node.getAttribute('role').split(' ').slice(0, 1);
+	    } else {
+	      roles = getImplicitAriaRoles(node);
+	    }
+	    return roles.reduce((rolesAcc, role) => Array.isArray(rolesAcc[role]) ? {
+	      ...rolesAcc,
+	      [role]: [...rolesAcc[role], node]
+	    } : {
+	      ...rolesAcc,
+	      [role]: [node]
+	    }, acc);
+	  }, {});
+	}
+	function prettyRoles(dom, _ref6) {
+	  let {
+	    hidden,
+	    includeDescription
+	  } = _ref6;
+	  const roles = getRoles(dom, {
+	    hidden
+	  });
+	  // We prefer to skip generic role, we don't recommend it
+	  return Object.entries(roles).filter(_ref7 => {
+	    let [role] = _ref7;
+	    return role !== 'generic';
+	  }).map(_ref8 => {
+	    let [role, elements] = _ref8;
+	    const delimiterBar = '-'.repeat(50);
+	    const elementsString = elements.map(el => {
+	      const nameString = "Name \"" + computeAccessibleName(el, {
+	        computedStyleSupportsPseudoElements: getConfig().computedStyleSupportsPseudoElements
+	      }) + "\":\n";
+	      const domString = prettyDOM(el.cloneNode(false));
+	      if (includeDescription) {
+	        const descriptionString = "Description \"" + computeAccessibleDescription(el, {
+	          computedStyleSupportsPseudoElements: getConfig().computedStyleSupportsPseudoElements
+	        }) + "\":\n";
+	        return "" + nameString + descriptionString + domString;
+	      }
+	      return "" + nameString + domString;
+	    }).join('\n\n');
+	    return role + ":\n\n" + elementsString + "\n\n" + delimiterBar;
+	  }).join('\n');
+	}
+	const logRoles = function (dom, _temp2) {
+	  let {
+	    hidden = false
+	  } = _temp2 === void 0 ? {} : _temp2;
+	  return console.log(prettyRoles(dom, {
+	    hidden
+	  }));
+	};
+
+	/**
+	 * @param {Element} element -
+	 * @returns {boolean | undefined} - false/true if (not)selected, undefined if not selectable
+	 */
+	function computeAriaSelected(element) {
+	  // implicit value from html-aam mappings: https://www.w3.org/TR/html-aam-1.0/#html-attribute-state-and-property-mappings
+	  // https://www.w3.org/TR/html-aam-1.0/#details-id-97
+	  if (element.tagName === 'OPTION') {
+	    return element.selected;
+	  }
+
+	  // explicit value
+	  return checkBooleanAttribute(element, 'aria-selected');
+	}
+
+	/**
+	 * @param {Element} element -
+	 * @returns {boolean | undefined} - false/true if (not)checked, undefined if not checked-able
+	 */
+	function computeAriaChecked(element) {
+	  // implicit value from html-aam mappings: https://www.w3.org/TR/html-aam-1.0/#html-attribute-state-and-property-mappings
+	  // https://www.w3.org/TR/html-aam-1.0/#details-id-56
+	  // https://www.w3.org/TR/html-aam-1.0/#details-id-67
+	  if ('indeterminate' in element && element.indeterminate) {
+	    return undefined;
+	  }
+	  if ('checked' in element) {
+	    return element.checked;
+	  }
+
+	  // explicit value
+	  return checkBooleanAttribute(element, 'aria-checked');
+	}
+
+	/**
+	 * @param {Element} element -
+	 * @returns {boolean | undefined} - false/true if (not)pressed, undefined if not press-able
+	 */
+	function computeAriaPressed(element) {
+	  // https://www.w3.org/TR/wai-aria-1.1/#aria-pressed
+	  return checkBooleanAttribute(element, 'aria-pressed');
+	}
+
+	/**
+	 * @param {Element} element -
+	 * @returns {boolean | string | null} -
+	 */
+	function computeAriaCurrent(element) {
+	  var _ref9, _checkBooleanAttribut;
+	  // https://www.w3.org/TR/wai-aria-1.1/#aria-current
+	  return (_ref9 = (_checkBooleanAttribut = checkBooleanAttribute(element, 'aria-current')) != null ? _checkBooleanAttribut : element.getAttribute('aria-current')) != null ? _ref9 : false;
+	}
+
+	/**
+	 * @param {Element} element -
+	 * @returns {boolean | undefined} - false/true if (not)expanded, undefined if not expand-able
+	 */
+	function computeAriaExpanded(element) {
+	  // https://www.w3.org/TR/wai-aria-1.1/#aria-expanded
+	  return checkBooleanAttribute(element, 'aria-expanded');
+	}
+	function checkBooleanAttribute(element, attribute) {
+	  const attributeValue = element.getAttribute(attribute);
+	  if (attributeValue === 'true') {
+	    return true;
+	  }
+	  if (attributeValue === 'false') {
+	    return false;
+	  }
+	  return undefined;
+	}
+
+	/**
+	 * @param {Element} element -
+	 * @returns {number | undefined} - number if implicit heading or aria-level present, otherwise undefined
+	 */
+	function computeHeadingLevel(element) {
+	  // https://w3c.github.io/html-aam/#el-h1-h6
+	  // https://w3c.github.io/html-aam/#el-h1-h6
+	  const implicitHeadingLevels = {
+	    H1: 1,
+	    H2: 2,
+	    H3: 3,
+	    H4: 4,
+	    H5: 5,
+	    H6: 6
+	  };
+	  // explicit aria-level value
+	  // https://www.w3.org/TR/wai-aria-1.2/#aria-level
+	  const ariaLevelAttribute = element.getAttribute('aria-level') && Number(element.getAttribute('aria-level'));
+	  return ariaLevelAttribute || implicitHeadingLevels[element.tagName];
+	}
+
+	const normalize = getDefaultNormalizer();
+	function escapeRegExp(string) {
+	  return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+	}
+
+	function getRegExpMatcher(string) {
+	  return new RegExp(escapeRegExp(string.toLowerCase()), 'i');
+	}
+	function makeSuggestion(queryName, element, content, _ref) {
+	  let {
+	    variant,
+	    name
+	  } = _ref;
+	  let warning = '';
+	  const queryOptions = {};
+	  const queryArgs = [['Role', 'TestId'].includes(queryName) ? content : getRegExpMatcher(content)];
+	  if (name) {
+	    queryOptions.name = getRegExpMatcher(name);
+	  }
+	  if (queryName === 'Role' && isInaccessible(element)) {
+	    queryOptions.hidden = true;
+	    warning = "Element is inaccessible. This means that the element and all its children are invisible to screen readers.\n    If you are using the aria-hidden prop, make sure this is the right choice for your case.\n    ";
+	  }
+	  if (Object.keys(queryOptions).length > 0) {
+	    queryArgs.push(queryOptions);
+	  }
+	  const queryMethod = variant + "By" + queryName;
+	  return {
+	    queryName,
+	    queryMethod,
+	    queryArgs,
+	    variant,
+	    warning,
+	    toString() {
+	      if (warning) {
+	        console.warn(warning);
+	      }
+	      let [text, options] = queryArgs;
+	      text = typeof text === 'string' ? "'" + text + "'" : text;
+	      options = options ? ", { " + Object.entries(options).map(_ref2 => {
+	        let [k, v] = _ref2;
+	        return k + ": " + v;
+	      }).join(', ') + " }" : '';
+	      return queryMethod + "(" + text + options + ")";
+	    }
+	  };
+	}
+	function canSuggest(currentMethod, requestedMethod, data) {
+	  return data && (!requestedMethod || requestedMethod.toLowerCase() === currentMethod.toLowerCase());
+	}
+	function getSuggestedQuery(element, variant, method) {
+	  var _element$getAttribute, _getImplicitAriaRoles;
+	  if (variant === void 0) {
+	    variant = 'get';
+	  }
+	  // don't create suggestions for script and style elements
+	  if (element.matches(getConfig().defaultIgnore)) {
+	    return undefined;
+	  }
+
+	  //We prefer to suggest something else if the role is generic
+	  const role = (_element$getAttribute = element.getAttribute('role')) != null ? _element$getAttribute : (_getImplicitAriaRoles = getImplicitAriaRoles(element)) == null ? void 0 : _getImplicitAriaRoles[0];
+	  if (role !== 'generic' && canSuggest('Role', method, role)) {
+	    return makeSuggestion('Role', element, role, {
+	      variant,
+	      name: computeAccessibleName(element, {
+	        computedStyleSupportsPseudoElements: getConfig().computedStyleSupportsPseudoElements
+	      })
+	    });
+	  }
+	  const labelText = getLabels$1(document, element).map(label => label.content).join(' ');
+	  if (canSuggest('LabelText', method, labelText)) {
+	    return makeSuggestion('LabelText', element, labelText, {
+	      variant
+	    });
+	  }
+	  const placeholderText = element.getAttribute('placeholder');
+	  if (canSuggest('PlaceholderText', method, placeholderText)) {
+	    return makeSuggestion('PlaceholderText', element, placeholderText, {
+	      variant
+	    });
+	  }
+	  const textContent = normalize(getNodeText(element));
+	  if (canSuggest('Text', method, textContent)) {
+	    return makeSuggestion('Text', element, textContent, {
+	      variant
+	    });
+	  }
+	  if (canSuggest('DisplayValue', method, element.value)) {
+	    return makeSuggestion('DisplayValue', element, normalize(element.value), {
+	      variant
+	    });
+	  }
+	  const alt = element.getAttribute('alt');
+	  if (canSuggest('AltText', method, alt)) {
+	    return makeSuggestion('AltText', element, alt, {
+	      variant
+	    });
+	  }
+	  const title = element.getAttribute('title');
+	  if (canSuggest('Title', method, title)) {
+	    return makeSuggestion('Title', element, title, {
+	      variant
+	    });
+	  }
+	  const testId = element.getAttribute(getConfig().testIdAttribute);
+	  if (canSuggest('TestId', method, testId)) {
+	    return makeSuggestion('TestId', element, testId, {
+	      variant
+	    });
+	  }
+	  return undefined;
+	}
+
+	// This is so the stack trace the developer sees is one that's
+	// closer to their code (because async stack traces are hard to follow).
+	function copyStackTrace(target, source) {
+	  target.stack = source.stack.replace(source.message, target.message);
+	}
+	function waitFor(callback, _ref) {
+	  let {
+	    container = getDocument(),
+	    timeout = getConfig().asyncUtilTimeout,
+	    showOriginalStackTrace = getConfig().showOriginalStackTrace,
+	    stackTraceError,
+	    interval = 50,
+	    onTimeout = error => {
+	      error.message = getConfig().getElementError(error.message, container).message;
+	      return error;
+	    },
+	    mutationObserverOptions = {
+	      subtree: true,
+	      childList: true,
+	      attributes: true,
+	      characterData: true
+	    }
+	  } = _ref;
+	  if (typeof callback !== 'function') {
+	    throw new TypeError('Received `callback` arg must be a function');
+	  }
+	  return new Promise(async (resolve, reject) => {
+	    let lastError, intervalId, observer;
+	    let finished = false;
+	    let promiseStatus = 'idle';
+	    const overallTimeoutTimer = setTimeout(handleTimeout, timeout);
+	    const usingJestFakeTimers = jestFakeTimersAreEnabled();
+	    if (usingJestFakeTimers) {
+	      const {
+	        unstable_advanceTimersWrapper: advanceTimersWrapper
+	      } = getConfig();
+	      checkCallback();
+	      // this is a dangerous rule to disable because it could lead to an
+	      // infinite loop. However, eslint isn't smart enough to know that we're
+	      // setting finished inside `onDone` which will be called when we're done
+	      // waiting or when we've timed out.
+	      // eslint-disable-next-line no-unmodified-loop-condition
+	      while (!finished) {
+	        if (!jestFakeTimersAreEnabled()) {
+	          const error = new Error("Changed from using fake timers to real timers while using waitFor. This is not allowed and will result in very strange behavior. Please ensure you're awaiting all async things your test is doing before changing to real timers. For more info, please go to https://github.com/testing-library/dom-testing-library/issues/830");
+	          if (!showOriginalStackTrace) copyStackTrace(error, stackTraceError);
+	          reject(error);
+	          return;
+	        }
+	        // we *could* (maybe should?) use `advanceTimersToNextTimer` but it's
+	        // possible that could make this loop go on forever if someone is using
+	        // third party code that's setting up recursive timers so rapidly that
+	        // the user's timer's don't get a chance to resolve. So we'll advance
+	        // by an interval instead. (We have a test for this case).
+	        advanceTimersWrapper(() => {
+	          jest.advanceTimersByTime(interval);
+	        });
+
+	        // It's really important that checkCallback is run *before* we flush
+	        // in-flight promises. To be honest, I'm not sure why, and I can't quite
+	        // think of a way to reproduce the problem in a test, but I spent
+	        // an entire day banging my head against a wall on this.
+	        checkCallback();
+	        if (finished) {
+	          break;
+	        }
+
+	        // In this rare case, we *need* to wait for in-flight promises
+	        // to resolve before continuing. We don't need to take advantage
+	        // of parallelization so we're fine.
+	        // https://stackoverflow.com/a/59243586/971592
+	        // eslint-disable-next-line no-await-in-loop
+	        await advanceTimersWrapper(async () => {
+	          await new Promise(r => {
+	            setTimeout(r, 0);
+	            jest.advanceTimersByTime(0);
+	          });
+	        });
+	      }
+	    } else {
+	      try {
+	        checkContainerType(container);
+	      } catch (e) {
+	        reject(e);
+	        return;
+	      }
+	      intervalId = setInterval(checkRealTimersCallback, interval);
+	      const {
+	        MutationObserver
+	      } = getWindowFromNode(container);
+	      observer = new MutationObserver(checkRealTimersCallback);
+	      observer.observe(container, mutationObserverOptions);
+	      checkCallback();
+	    }
+	    function onDone(error, result) {
+	      finished = true;
+	      clearTimeout(overallTimeoutTimer);
+	      if (!usingJestFakeTimers) {
+	        clearInterval(intervalId);
+	        observer.disconnect();
+	      }
+	      if (error) {
+	        reject(error);
+	      } else {
+	        resolve(result);
+	      }
+	    }
+	    function checkRealTimersCallback() {
+	      if (jestFakeTimersAreEnabled()) {
+	        const error = new Error("Changed from using real timers to fake timers while using waitFor. This is not allowed and will result in very strange behavior. Please ensure you're awaiting all async things your test is doing before changing to fake timers. For more info, please go to https://github.com/testing-library/dom-testing-library/issues/830");
+	        if (!showOriginalStackTrace) copyStackTrace(error, stackTraceError);
+	        return reject(error);
+	      } else {
+	        return checkCallback();
+	      }
+	    }
+	    function checkCallback() {
+	      if (promiseStatus === 'pending') return;
+	      try {
+	        const result = runWithExpensiveErrorDiagnosticsDisabled(callback);
+	        if (typeof (result == null ? void 0 : result.then) === 'function') {
+	          promiseStatus = 'pending';
+	          result.then(resolvedValue => {
+	            promiseStatus = 'resolved';
+	            onDone(null, resolvedValue);
+	          }, rejectedValue => {
+	            promiseStatus = 'rejected';
+	            lastError = rejectedValue;
+	          });
+	        } else {
+	          onDone(null, result);
+	        }
+	        // If `callback` throws, wait for the next mutation, interval, or timeout.
+	      } catch (error) {
+	        // Save the most recent callback error to reject the promise with it in the event of a timeout
+	        lastError = error;
+	      }
+	    }
+	    function handleTimeout() {
+	      let error;
+	      if (lastError) {
+	        error = lastError;
+	        if (!showOriginalStackTrace && error.name === 'TestingLibraryElementError') {
+	          copyStackTrace(error, stackTraceError);
+	        }
+	      } else {
+	        error = new Error('Timed out in waitFor.');
+	        if (!showOriginalStackTrace) {
+	          copyStackTrace(error, stackTraceError);
+	        }
+	      }
+	      onDone(onTimeout(error), null);
+	    }
+	  });
+	}
+	function waitForWrapper(callback, options) {
+	  // create the error here so its stack trace is as close to the
+	  // calling code as possible
+	  const stackTraceError = new Error('STACK_TRACE_MESSAGE');
+	  return getConfig().asyncWrapper(() => waitFor(callback, {
+	    stackTraceError,
+	    ...options
+	  }));
+	}
+
+	/*
+	eslint
+	  max-lines-per-function: ["error", {"max": 200}],
+	*/
+
+	function getElementError(message, container) {
+	  return getConfig().getElementError(message, container);
+	}
+	function getMultipleElementsFoundError(message, container) {
+	  return getElementError(message + "\n\n(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).", container);
+	}
+	function queryAllByAttribute(attribute, container, text, _temp) {
+	  let {
+	    exact = true,
+	    collapseWhitespace,
+	    trim,
+	    normalizer
+	  } = _temp === void 0 ? {} : _temp;
+	  const matcher = exact ? matches : fuzzyMatches;
+	  const matchNormalizer = makeNormalizer({
+	    collapseWhitespace,
+	    trim,
+	    normalizer
+	  });
+	  return Array.from(container.querySelectorAll("[" + attribute + "]")).filter(node => matcher(node.getAttribute(attribute), node, text, matchNormalizer));
+	}
+	function queryByAttribute(attribute, container, text, options) {
+	  const els = queryAllByAttribute(attribute, container, text, options);
+	  if (els.length > 1) {
+	    throw getMultipleElementsFoundError("Found multiple elements by [" + attribute + "=" + text + "]", container);
+	  }
+	  return els[0] || null;
+	}
+
+	// this accepts a query function and returns a function which throws an error
+	// if more than one elements is returned, otherwise it returns the first
+	// element or null
+	function makeSingleQuery(allQuery, getMultipleError) {
+	  return function (container) {
+	    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	      args[_key - 1] = arguments[_key];
+	    }
+	    const els = allQuery(container, ...args);
+	    if (els.length > 1) {
+	      const elementStrings = els.map(element => getElementError(null, element).message).join('\n\n');
+	      throw getMultipleElementsFoundError(getMultipleError(container, ...args) + "\n\nHere are the matching elements:\n\n" + elementStrings, container);
+	    }
+	    return els[0] || null;
+	  };
+	}
+	function getSuggestionError(suggestion, container) {
+	  return getConfig().getElementError("A better query is available, try this:\n" + suggestion.toString() + "\n", container);
+	}
+
+	// this accepts a query function and returns a function which throws an error
+	// if an empty list of elements is returned
+	function makeGetAllQuery(allQuery, getMissingError) {
+	  return function (container) {
+	    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	      args[_key2 - 1] = arguments[_key2];
+	    }
+	    const els = allQuery(container, ...args);
+	    if (!els.length) {
+	      throw getConfig().getElementError(getMissingError(container, ...args), container);
+	    }
+	    return els;
+	  };
+	}
+
+	// this accepts a getter query function and returns a function which calls
+	// waitFor and passing a function which invokes the getter.
+	function makeFindQuery(getter) {
+	  return (container, text, options, waitForOptions) => {
+	    return waitForWrapper(() => {
+	      return getter(container, text, options);
+	    }, {
+	      container,
+	      ...waitForOptions
+	    });
+	  };
+	}
+	const wrapSingleQueryWithSuggestion = (query, queryAllByName, variant) => function (container) {
+	  for (var _len3 = arguments.length, args = new Array
