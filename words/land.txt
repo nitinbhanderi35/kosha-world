@@ -1,272 +1,51 @@
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-
-"use strict";
-
-const FileSystemInfo = require("../FileSystemInfo");
-const ProgressPlugin = require("../ProgressPlugin");
-const { formatSize } = require("../SizeFormatHelpers");
-const SerializerMiddleware = require("../serialization/SerializerMiddleware");
-const LazySet = require("../util/LazySet");
-const makeSerializable = require("../util/makeSerializable");
-const memoize = require("../util/memoize");
-const {
-	createFileSerializer,
-	NOT_SERIALIZABLE
-} = require("../util/serialization");
-
-/** @typedef {import("../../declarations/WebpackOptions").SnapshotOptions} SnapshotOptions */
-/** @typedef {import("../Cache").Etag} Etag */
-/** @typedef {import("../Compiler")} Compiler */
-/** @typedef {import("../FileSystemInfo").ResolveBuildDependenciesResult} ResolveBuildDependenciesResult */
-/** @typedef {import("../FileSystemInfo").Snapshot} Snapshot */
-/** @typedef {import("../logging/Logger").Logger} Logger */
-/** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
-/** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
-/** @typedef {import("../util/fs").IntermediateFileSystem} IntermediateFileSystem */
-
-/** @typedef {Map<string, string | false>} ResolveResults */
-/** @typedef {Set<string>} Items */
-/** @typedef {Set<string>} BuildDependencies */
-/** @typedef {Map<string, PackItemInfo>} ItemInfo */
-
-class PackContainer {
-	/**
-	 * @param {Object} data stored data
-	 * @param {string} version version identifier
-	 * @param {Snapshot} buildSnapshot snapshot of all build dependencies
-	 * @param {BuildDependencies} buildDependencies list of all unresolved build dependencies captured
-	 * @param {ResolveResults} resolveResults result of the resolved build dependencies
-	 * @param {Snapshot} resolveBuildDependenciesSnapshot snapshot of the dependencies of the build dependencies resolving
-	 */
-	constructor(
-		data,
-		version,
-		buildSnapshot,
-		buildDependencies,
-		resolveResults,
-		resolveBuildDependenciesSnapshot
-	) {
-		this.data = data;
-		this.version = version;
-		this.buildSnapshot = buildSnapshot;
-		this.buildDependencies = buildDependencies;
-		this.resolveResults = resolveResults;
-		this.resolveBuildDependenciesSnapshot = resolveBuildDependenciesSnapshot;
-	}
-
-	/**
-	 * @param {ObjectSerializerContext} context context
-	 */
-	serialize({ write, writeLazy }) {
-		write(this.version);
-		write(this.buildSnapshot);
-		write(this.buildDependencies);
-		write(this.resolveResults);
-		write(this.resolveBuildDependenciesSnapshot);
-		/** @type {NonNullable<ObjectSerializerContext["writeLazy"]>} */
-		(writeLazy)(this.data);
-	}
-
-	/**
-	 * @param {ObjectDeserializerContext} context context
-	 */
-	deserialize({ read }) {
-		this.version = read();
-		this.buildSnapshot = read();
-		this.buildDependencies = read();
-		this.resolveResults = read();
-		this.resolveBuildDependenciesSnapshot = read();
-		this.data = read();
-	}
+{
+    "word": "land",
+    "AE": [
+        {
+            "word": "land",
+            "eid": "6031",
+            "pagenum": 250,
+            "content": "<b>Land,</b>¦ <i>s.</i> (Opposed to sea) स्थलं; ‘proceeded by l.’ प्रतस्थे स्थलवर्त्मना (R. IV. 60); ‘the way by 1.’ स्थल- -मार्गः-वर्त्मन् <i>m.</i> <b>2</b> भूः, भूमि <i>f.,</i> प्रदेशः, विषयः, राष्ट्रं. <b>3</b> मृद् <i>f.,</i> मृत्तिका. <b>4</b> क्षेत्रं, क्षेत्रभूमिः; ‘arable l.’ कृष्ट-सीत्य-भूमिः; ‘barren l.’ मरुः, मरुस्थलं-ली, धन्वन् <i>m.;</i> ‘marshy l.’ कच्छभूः, अनूपभूमिः; ‘waste or fallow l.’ खिला-अप्रहता-भूमिः; ‘gift of l.’ भूमि- -दानं; ‘l. -animal’ स्थलचरजंतुः, भूमिचरजंतुः, ‘l.-fight’ स्थलयुद्धं; ‘l.-force’ स्थल- -सैन्यं, स्थलयोधाः; ‘l. -holder’ भू-क्षेत्र, स्वामिन् <i>m.,</i> क्षेत्रपतिः; ‘l. -lord, -lady’ भूक्षेत्र-स्वामी-मिनी, गृहपतिः, गृहेश्वरः-री ‘l.-locked’ भूवेष्टित, भूमिपरिगत; ‘l. lotus’ स्थलारविंदं, स्थलकमलिनी; ‘l. -mark’ सीमाचिह्नं, स्थल-भूमि-सीमा, सीमालिंगं; ‘l. owner’ भूस्वामी, क्षेत्रपतिः-स्वामी; ‘l. scape’ नयनगोचरीभूतः भूप्रदेशः or भूभागः दृष्टिगत-दृष्टिगोचर-प्रदेशः; भूभागः, प्र-देशः; ‘l. -tax’ भू-क्षेत्र-करः; ‘l. - waiter’ शौ- -ल्किकः. <i>-v. t.</i> (पोताद्-नावः) अवतॄ c., अव-रुह् c. (रोपयति); उत्त c., स्थले नि- -विश् c. <i>-v. i.</i> अवतॄ 1 P, अवरुह् 1 P, उत्तॄ, निविश् 6 P. <b>-ed,</b> <i>a.</i> अवतीर्ण, नौकावरूढ, नौकोत्तीर्ण. <b>2</b> भूमिसंपन्न, क्षेत्रवत्, भूमिधनः भू in comp.; ‘l. property’ भूमिद्रव्यं, भूमिः, क्षेत्रं, स्थावरद्रव्यं; ‘l. -proprietors’ भूस्वामिनः. <b>-ing,</b> <i>s.</i> उत्तरणं; ‘l.-place’ तरस्थानं, तरः, तरणस्थानं, घट्टः-ट्टी."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "land",
+            "eid": "13167",
+            "pagenum": 406,
+            "content": "<b>LAND</b>¦ (subs.): <dvsn n='I'>I Opp. to water: स्थलम्, <dvsn n='xe'><i>pro-</i> <i>ceeded by l.:</i></dvsn> <dvsn n='xs'>प्रतस्थे स्थलवर्त्मना,</dvsn> R. iv. 60. </dvsn><dvsn n='I'>II Any portion of it.: भूमिः <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>भूः,</dvsn> <i>grant of l.:</i> भूदानम्, He. </dvsn><dvsn n='I'>III Soil.: q. v.: भूमिः <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>भूः,</dvsn> <dvsn n='xe'><i>shall:</i> <i>till low l. where water accumulates:</i></dvsn> <dvsn n='xs'>निम्नां हि वाह- येद्भूमिं यत्र विश्राम्यते जलम्,</dvsn> Pa. </dvsn><dvsn n='I'>IV L. ed pro-perty: भूः <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>भूमिः।</dvsn> </dvsn><dvsn n='I'>V A country: q. v.: देशः।</dvsn>"
+        },
+        {
+            "word": "land",
+            "eid": "13168",
+            "pagenum": 406,
+            "content": "<b>LAND</b>¦ (adj.): by comp., <dvsn n='xe'><i>L.-lotus:</i></dvsn> <dvsn n='xs'>स्थलपद्मम्;</dvsn> <dvsn n='xe'><i>l.-war:</i></dvsn> <dvsn n='xs'>स्थलविग्रहः,</dvsn> H. iii.; <dvsn n='xe'><i>l.-gods:</i></dvsn> <dvsn n='xs'>भूमिदेवाः,</dvsn> Ma.: for dif.: v. Land (subs.)."
+        },
+        {
+            "word": "land",
+            "eid": "13169",
+            "pagenum": 406,
+            "content": "<b>LAND</b>¦ (v.): <dvsn n='I'>I Trans: अवतारयति (c. of तृ).</dvsn> <dvsn n='I'>II Intrans: अवतरति (तॄ, c. 1.): v. To disembark.</dvsn>"
+        }
+    ],
+    "MWE": [
+        {
+            "word": "land",
+            "eid": "17352",
+            "pagenum": 436,
+            "content": "LAND¦, <i>s.</i> (Country, region) देशः, प्रदेशः, विषयः, राष्ट्रं. — (As opposed to water) स्थलं -ली; ‘land and water,’ स्थलजलं, जलस्थलं; ‘relating to dry land,’ धन्व <i>n.</i> (न्), स्थलीयः -या -यं; ‘produced on it,’ स्थलजः -जा -जं; ‘confusion of land and water through inundation,’ जलस्थलभ्रमः; ‘the way by land,’ स्थलमार्गः; ‘by land,’ स्थलमार्गेण. — (Ground, soil, earth) भूमिः <i>f.,</i> भूः <i>f.,</i> क्षेत्रं, मृत् <i>f.,</i> मृत्तिका; ‘arable land,’ क्षेत्रभूमिः <i>f.;</i> ‘ploughed land,’ कृष्टं, कृष्टभूमिः <i>f.,</i> फालकृष्टं, सीत्यभूमिः; ‘barren land,’ मरुः <i>m.,</i> मरुस्थलं -ली, धन्वा <i>m.</i> (न्), भूर्णिः <i>f.,</i> ऊषः -षरः; ‘marshy land,’ कच्छभूः <i>f.,</i> अनूपभूमिः <i>f.;</i> ‘waste land,’ खिलः; ‘fallow land,’ अप्रहतभूमिः; ‘table land,’ सानुः <i>m.,</i> प्रस्थः, स्नुः <i>m.</i> — (Estate, lands) क्षेत्रं, भूमिः, स्थावरं; ‘paternal lands,’ पैतृक- भूमिः; ‘gift of lands,’ भूमिदानं."
+        },
+        {
+            "word": "land",
+            "eid": "17353",
+            "pagenum": 436,
+            "content": "<i>To</i> LAND¦, <i>v. a.</i> उत्तॄ (c. 10. -तारयति -यितुं), नौकाया अवतॄ or अवरुह् in caus. (-रोपयति -यितुं), स्थलं or कूलम् उपस्था in caus. (-स्थाप- यति -यितुं), नावम् उपश्लिष् (c. 10. -श्लेषयति -यितुं), उत्कूल् (nom. उत्कूलयति -यितुं)."
+        },
+        {
+            "word": "land",
+            "eid": "17354",
+            "pagenum": 436,
+            "content": "<i>To</i> LAND¦, <i>v. n.</i> उत्तॄ (c. 1. -तरति -रितुं -रीतुं), प्रत्युत्तॄ, नौकाया अवतॄ or उत्तॄ or अवरुह् (c. 1. -रोहति -रोढुं), स्थलम् उपस्था (c. 1. -तिष्ठति -स्थातुं)."
+        }
+    ]
 }
-
-makeSerializable(
-	PackContainer,
-	"webpack/lib/cache/PackFileCacheStrategy",
-	"PackContainer"
-);
-
-const MIN_CONTENT_SIZE = 1024 * 1024; // 1 MB
-const CONTENT_COUNT_TO_MERGE = 10;
-const MIN_ITEMS_IN_FRESH_PACK = 100;
-const MAX_ITEMS_IN_FRESH_PACK = 50000;
-const MAX_TIME_IN_FRESH_PACK = 1 * 60 * 1000; // 1 min
-
-class PackItemInfo {
-	/**
-	 * @param {string} identifier identifier of item
-	 * @param {string | null} etag etag of item
-	 * @param {any} value fresh value of item
-	 */
-	constructor(identifier, etag, value) {
-		this.identifier = identifier;
-		this.etag = etag;
-		this.location = -1;
-		this.lastAccess = Date.now();
-		this.freshValue = value;
-	}
-}
-
-class Pack {
-	/**
-	 * @param {Logger} logger a logger
-	 * @param {number} maxAge max age of cache items
-	 */
-	constructor(logger, maxAge) {
-		/** @type {ItemInfo} */
-		this.itemInfo = new Map();
-		/** @type {(string | undefined)[]} */
-		this.requests = [];
-		this.requestsTimeout = undefined;
-		/** @type {ItemInfo} */
-		this.freshContent = new Map();
-		/** @type {(undefined | PackContent)[]} */
-		this.content = [];
-		this.invalid = false;
-		this.logger = logger;
-		this.maxAge = maxAge;
-	}
-
-	/**
-	 * @param {string} identifier identifier
-	 */
-	_addRequest(identifier) {
-		this.requests.push(identifier);
-		if (this.requestsTimeout === undefined) {
-			this.requestsTimeout = setTimeout(() => {
-				this.requests.push(undefined);
-				this.requestsTimeout = undefined;
-			}, MAX_TIME_IN_FRESH_PACK);
-			if (this.requestsTimeout.unref) this.requestsTimeout.unref();
-		}
-	}
-
-	stopCapturingRequests() {
-		if (this.requestsTimeout !== undefined) {
-			clearTimeout(this.requestsTimeout);
-			this.requestsTimeout = undefined;
-		}
-	}
-
-	/**
-	 * @param {string} identifier unique name for the resource
-	 * @param {string | null} etag etag of the resource
-	 * @returns {any} cached content
-	 */
-	get(identifier, etag) {
-		const info = this.itemInfo.get(identifier);
-		this._addRequest(identifier);
-		if (info === undefined) {
-			return undefined;
-		}
-		if (info.etag !== etag) return null;
-		info.lastAccess = Date.now();
-		const loc = info.location;
-		if (loc === -1) {
-			return info.freshValue;
-		} else {
-			if (!this.content[loc]) {
-				return undefined;
-			}
-			return /** @type {PackContent} */ (this.content[loc]).get(identifier);
-		}
-	}
-
-	/**
-	 * @param {string} identifier unique name for the resource
-	 * @param {string | null} etag etag of the resource
-	 * @param {any} data cached content
-	 * @returns {void}
-	 */
-	set(identifier, etag, data) {
-		if (!this.invalid) {
-			this.invalid = true;
-			this.logger.log(`Pack got invalid because of write to: ${identifier}`);
-		}
-		const info = this.itemInfo.get(identifier);
-		if (info === undefined) {
-			const newInfo = new PackItemInfo(identifier, etag, data);
-			this.itemInfo.set(identifier, newInfo);
-			this._addRequest(identifier);
-			this.freshContent.set(identifier, newInfo);
-		} else {
-			const loc = info.location;
-			if (loc >= 0) {
-				this._addRequest(identifier);
-				this.freshContent.set(identifier, info);
-				const content = /** @type {PackContent} */ (this.content[loc]);
-				content.delete(identifier);
-				if (content.items.size === 0) {
-					this.content[loc] = undefined;
-					this.logger.debug("Pack %d got empty and is removed", loc);
-				}
-			}
-			info.freshValue = data;
-			info.lastAccess = Date.now();
-			info.etag = etag;
-			info.location = -1;
-		}
-	}
-
-	getContentStats() {
-		let count = 0;
-		let size = 0;
-		for (const content of this.content) {
-			if (content !== undefined) {
-				count++;
-				const s = content.getSize();
-				if (s > 0) {
-					size += s;
-				}
-			}
-		}
-		return { count, size };
-	}
-
-	/**
-	 * @returns {number} new location of data entries
-	 */
-	_findLocation() {
-		let i;
-		for (i = 0; i < this.content.length && this.content[i] !== undefined; i++);
-		return i;
-	}
-
-	/**
-	 * @private
-	 * @param {Items} items items
-	 * @param {Items} usedItems used items
-	 * @param {number} newLoc new location
-	 */
-	_gcAndUpdateLocation(items, usedItems, newLoc) {
-		let count = 0;
-		let lastGC;
-		const now = Date.now();
-		for (const identifier of items) {
-			const info = /** @type {PackItemInfo} */ (this.itemInfo.get(identifier));
-			if (now - info.lastAccess > this.maxAge) {
-				this.itemInfo.delete(identifier);
-				items.delete(identifier);
-				usedItems.delete(identifier);
-				count++;
-				lastGC = identifier;
-			} else {
-				info.location = newLoc;
-			}
-		}
-		if (count > 0) {
-			this.logger.log(
-				"Garbage Collected %d old items at pack %d (%d items remaining) e. g. %s",
-				count,
-				newLoc,
-				items.size,
-				lastGC
-			);
-		}
-	}
-
-	_persistFreshContent() {
-		const itemsCount = th

@@ -1,706 +1,328 @@
-bjects must have a [Symbol.iterator]() method.");
-	}
-	function _unsupportedIterableToArray$2(o, minLen) {
-	  if (!o) return;
-	  if (typeof o === "string") return _arrayLikeToArray$2(o, minLen);
-	  var n = Object.prototype.toString.call(o).slice(8, -1);
-	  if (n === "Object" && o.constructor) n = o.constructor.name;
-	  if (n === "Map" || n === "Set") return Array.from(o);
-	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen);
-	}
-	function _arrayLikeToArray$2(arr, len) {
-	  if (len == null || len > arr.length) len = arr.length;
-	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-	    arr2[i] = arr[i];
-	  }
-	  return arr2;
-	}
-	function _iterableToArrayLimit$2(arr, i) {
-	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-	  if (_i == null) return;
-	  var _arr = [];
-	  var _n = true;
-	  var _d = false;
-	  var _s, _e;
-	  try {
-	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-	      _arr.push(_s.value);
-	      if (i && _arr.length === i) break;
-	    }
-	  } catch (err) {
-	    _d = true;
-	    _e = err;
-	  } finally {
-	    try {
-	      if (!_n && _i["return"] != null) _i["return"]();
-	    } finally {
-	      if (_d) throw _e;
-	    }
-	  }
-	  return _arr;
-	}
-	function _arrayWithHoles$2(arr) {
-	  if (Array.isArray(arr)) return arr;
-	}
-	var roles$1 = [].concat(_ariaAbstractRoles.default, _ariaLiteralRoles.default, _ariaDpubRoles.default, _ariaGraphicsRoles.default);
-	roles$1.forEach(function (_ref) {
-	  var _ref2 = _slicedToArray$2(_ref, 2),
-	    roleDefinition = _ref2[1];
-	  // Conglomerate the properties
-	  var _iterator = _createForOfIteratorHelper$2(roleDefinition.superClass),
-	    _step;
-	  try {
-	    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-	      var superClassIter = _step.value;
-	      var _iterator2 = _createForOfIteratorHelper$2(superClassIter),
-	        _step2;
-	      try {
-	        var _loop = function _loop() {
-	          var superClassName = _step2.value;
-	          var superClassRoleTuple = roles$1.find(function (_ref3) {
-	            var _ref4 = _slicedToArray$2(_ref3, 1),
-	              name = _ref4[0];
-	            return name === superClassName;
-	          });
-	          if (superClassRoleTuple) {
-	            var superClassDefinition = superClassRoleTuple[1];
-	            for (var _i2 = 0, _Object$keys = Object.keys(superClassDefinition.props); _i2 < _Object$keys.length; _i2++) {
-	              var prop = _Object$keys[_i2];
-	              if (
-	              // $FlowIssue Accessing the hasOwnProperty on the Object prototype is fine.
-	              !Object.prototype.hasOwnProperty.call(roleDefinition.props, prop)) {
-	                Object.assign(roleDefinition.props, _defineProperty({}, prop, superClassDefinition.props[prop]));
-	              }
-	            }
-	          }
-	        };
-	        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-	          _loop();
-	        }
-	      } catch (err) {
-	        _iterator2.e(err);
-	      } finally {
-	        _iterator2.f();
-	      }
-	    }
-	  } catch (err) {
-	    _iterator.e(err);
-	  } finally {
-	    _iterator.f();
-	  }
-	});
-	var rolesMap = {
-	  entries: function entries() {
-	    return roles$1;
-	  },
-	  forEach: function forEach(fn) {
-	    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-	    var _iterator3 = _createForOfIteratorHelper$2(roles$1),
-	      _step3;
-	    try {
-	      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-	        var _step3$value = _slicedToArray$2(_step3.value, 2),
-	          key = _step3$value[0],
-	          values = _step3$value[1];
-	        fn.call(thisArg, values, key, roles$1);
-	      }
-	    } catch (err) {
-	      _iterator3.e(err);
-	    } finally {
-	      _iterator3.f();
-	    }
-	  },
-	  get: function get(key) {
-	    var item = roles$1.find(function (tuple) {
-	      return tuple[0] === key ? true : false;
-	    });
-	    return item && item[1];
-	  },
-	  has: function has(key) {
-	    return !!rolesMap.get(key);
-	  },
-	  keys: function keys() {
-	    return roles$1.map(function (_ref5) {
-	      var _ref6 = _slicedToArray$2(_ref5, 1),
-	        key = _ref6[0];
-	      return key;
-	    });
-	  },
-	  values: function values() {
-	    return roles$1.map(function (_ref7) {
-	      var _ref8 = _slicedToArray$2(_ref7, 2),
-	        values = _ref8[1];
-	      return values;
-	    });
-	  }
-	};
-	var _default$2 = (0, _iterationDecorator$2.default)(rolesMap, rolesMap.entries());
-	rolesMap$1.default = _default$2;
-
-	var elementRoleMap$1 = {};
-
-	var toStr$a = Object.prototype.toString;
-	var isArguments$3 = function isArguments(value) {
-	  var str = toStr$a.call(value);
-	  var isArgs = str === '[object Arguments]';
-	  if (!isArgs) {
-	    isArgs = str !== '[object Array]' && value !== null && typeof value === 'object' && typeof value.length === 'number' && value.length >= 0 && toStr$a.call(value.callee) === '[object Function]';
-	  }
-	  return isArgs;
-	};
-
-	var keysShim$1;
-	if (!Object.keys) {
-	  // modified from https://github.com/es-shims/es5-shim
-	  var has$3 = Object.prototype.hasOwnProperty;
-	  var toStr$9 = Object.prototype.toString;
-	  var isArgs$1 = isArguments$3; // eslint-disable-line global-require
-	  var isEnumerable$1 = Object.prototype.propertyIsEnumerable;
-	  var hasDontEnumBug = !isEnumerable$1.call({
-	    toString: null
-	  }, 'toString');
-	  var hasProtoEnumBug = isEnumerable$1.call(function () {}, 'prototype');
-	  var dontEnums = ['toString', 'toLocaleString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor'];
-	  var equalsConstructorPrototype = function (o) {
-	    var ctor = o.constructor;
-	    return ctor && ctor.prototype === o;
-	  };
-	  var excludedKeys = {
-	    $applicationCache: true,
-	    $console: true,
-	    $external: true,
-	    $frame: true,
-	    $frameElement: true,
-	    $frames: true,
-	    $innerHeight: true,
-	    $innerWidth: true,
-	    $onmozfullscreenchange: true,
-	    $onmozfullscreenerror: true,
-	    $outerHeight: true,
-	    $outerWidth: true,
-	    $pageXOffset: true,
-	    $pageYOffset: true,
-	    $parent: true,
-	    $scrollLeft: true,
-	    $scrollTop: true,
-	    $scrollX: true,
-	    $scrollY: true,
-	    $self: true,
-	    $webkitIndexedDB: true,
-	    $webkitStorageInfo: true,
-	    $window: true
-	  };
-	  var hasAutomationEqualityBug = function () {
-	    /* global window */
-	    if (typeof window === 'undefined') {
-	      return false;
-	    }
-	    for (var k in window) {
-	      try {
-	        if (!excludedKeys['$' + k] && has$3.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
-	          try {
-	            equalsConstructorPrototype(window[k]);
-	          } catch (e) {
-	            return true;
-	          }
-	        }
-	      } catch (e) {
-	        return true;
-	      }
-	    }
-	    return false;
-	  }();
-	  var equalsConstructorPrototypeIfNotBuggy = function (o) {
-	    /* global window */
-	    if (typeof window === 'undefined' || !hasAutomationEqualityBug) {
-	      return equalsConstructorPrototype(o);
-	    }
-	    try {
-	      return equalsConstructorPrototype(o);
-	    } catch (e) {
-	      return false;
-	    }
-	  };
-	  keysShim$1 = function keys(object) {
-	    var isObject = object !== null && typeof object === 'object';
-	    var isFunction = toStr$9.call(object) === '[object Function]';
-	    var isArguments = isArgs$1(object);
-	    var isString = isObject && toStr$9.call(object) === '[object String]';
-	    var theKeys = [];
-	    if (!isObject && !isFunction && !isArguments) {
-	      throw new TypeError('Object.keys called on a non-object');
-	    }
-	    var skipProto = hasProtoEnumBug && isFunction;
-	    if (isString && object.length > 0 && !has$3.call(object, 0)) {
-	      for (var i = 0; i < object.length; ++i) {
-	        theKeys.push(String(i));
-	      }
-	    }
-	    if (isArguments && object.length > 0) {
-	      for (var j = 0; j < object.length; ++j) {
-	        theKeys.push(String(j));
-	      }
-	    } else {
-	      for (var name in object) {
-	        if (!(skipProto && name === 'prototype') && has$3.call(object, name)) {
-	          theKeys.push(String(name));
-	        }
-	      }
-	    }
-	    if (hasDontEnumBug) {
-	      var skipConstructor = equalsConstructorPrototypeIfNotBuggy(object);
-	      for (var k = 0; k < dontEnums.length; ++k) {
-	        if (!(skipConstructor && dontEnums[k] === 'constructor') && has$3.call(object, dontEnums[k])) {
-	          theKeys.push(dontEnums[k]);
-	        }
-	      }
-	    }
-	    return theKeys;
-	  };
-	}
-	var implementation$b = keysShim$1;
-
-	var slice$1 = Array.prototype.slice;
-	var isArgs = isArguments$3;
-	var origKeys = Object.keys;
-	var keysShim = origKeys ? function keys(o) {
-	  return origKeys(o);
-	} : implementation$b;
-	var originalKeys = Object.keys;
-	keysShim.shim = function shimObjectKeys() {
-	  if (Object.keys) {
-	    var keysWorksWithArguments = function () {
-	      // Safari 5.0 bug
-	      var args = Object.keys(arguments);
-	      return args && args.length === arguments.length;
-	    }(1, 2);
-	    if (!keysWorksWithArguments) {
-	      Object.keys = function keys(object) {
-	        // eslint-disable-line func-name-matching
-	        if (isArgs(object)) {
-	          return originalKeys(slice$1.call(object));
-	        }
-	        return originalKeys(object);
-	      };
-	    }
-	  } else {
-	    Object.keys = keysShim;
-	  }
-	  return Object.keys || keysShim;
-	};
-	var objectKeys$2 = keysShim;
-
-	/* eslint complexity: [2, 18], max-statements: [2, 33] */
-	var shams$1 = function hasSymbols() {
-	  if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') {
-	    return false;
-	  }
-	  if (typeof Symbol.iterator === 'symbol') {
-	    return true;
-	  }
-	  var obj = {};
-	  var sym = Symbol('test');
-	  var symObj = Object(sym);
-	  if (typeof sym === 'string') {
-	    return false;
-	  }
-	  if (Object.prototype.toString.call(sym) !== '[object Symbol]') {
-	    return false;
-	  }
-	  if (Object.prototype.toString.call(symObj) !== '[object Symbol]') {
-	    return false;
-	  }
-
-	  // temp disabled per https://github.com/ljharb/object.assign/issues/17
-	  // if (sym instanceof Symbol) { return false; }
-	  // temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
-	  // if (!(symObj instanceof Symbol)) { return false; }
-
-	  // if (typeof Symbol.prototype.toString !== 'function') { return false; }
-	  // if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
-
-	  var symVal = 42;
-	  obj[sym] = symVal;
-	  for (sym in obj) {
-	    return false;
-	  } // eslint-disable-line no-restricted-syntax, no-unreachable-loop
-	  if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) {
-	    return false;
-	  }
-	  if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) {
-	    return false;
-	  }
-	  var syms = Object.getOwnPropertySymbols(obj);
-	  if (syms.length !== 1 || syms[0] !== sym) {
-	    return false;
-	  }
-	  if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) {
-	    return false;
-	  }
-	  if (typeof Object.getOwnPropertyDescriptor === 'function') {
-	    var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
-	    if (descriptor.value !== symVal || descriptor.enumerable !== true) {
-	      return false;
-	    }
-	  }
-	  return true;
-	};
-
-	var origSymbol = typeof Symbol !== 'undefined' && Symbol;
-	var hasSymbolSham = shams$1;
-	var hasSymbols$5 = function hasNativeSymbols() {
-	  if (typeof origSymbol !== 'function') {
-	    return false;
-	  }
-	  if (typeof Symbol !== 'function') {
-	    return false;
-	  }
-	  if (typeof origSymbol('foo') !== 'symbol') {
-	    return false;
-	  }
-	  if (typeof Symbol('bar') !== 'symbol') {
-	    return false;
-	  }
-	  return hasSymbolSham();
-	};
-
-	var test = {
-	  foo: {}
-	};
-	var $Object = Object;
-	var hasProto$1 = function hasProto() {
-	  return {
-	    __proto__: test
-	  }.foo === test.foo && !({
-	    __proto__: null
-	  } instanceof $Object);
-	};
-
-	/* eslint no-invalid-this: 1 */
-
-	var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
-	var slice = Array.prototype.slice;
-	var toStr$8 = Object.prototype.toString;
-	var funcType = '[object Function]';
-	var implementation$a = function bind(that) {
-	  var target = this;
-	  if (typeof target !== 'function' || toStr$8.call(target) !== funcType) {
-	    throw new TypeError(ERROR_MESSAGE + target);
-	  }
-	  var args = slice.call(arguments, 1);
-	  var bound;
-	  var binder = function () {
-	    if (this instanceof bound) {
-	      var result = target.apply(this, args.concat(slice.call(arguments)));
-	      if (Object(result) === result) {
-	        return result;
-	      }
-	      return this;
-	    } else {
-	      return target.apply(that, args.concat(slice.call(arguments)));
-	    }
-	  };
-	  var boundLength = Math.max(0, target.length - args.length);
-	  var boundArgs = [];
-	  for (var i = 0; i < boundLength; i++) {
-	    boundArgs.push('$' + i);
-	  }
-	  bound = Function('binder', 'return function (' + boundArgs.join(',') + '){ return binder.apply(this,arguments); }')(binder);
-	  if (target.prototype) {
-	    var Empty = function Empty() {};
-	    Empty.prototype = target.prototype;
-	    bound.prototype = new Empty();
-	    Empty.prototype = null;
-	  }
-	  return bound;
-	};
-
-	var implementation$9 = implementation$a;
-	var functionBind = Function.prototype.bind || implementation$9;
-
-	var bind$1 = functionBind;
-	var src = bind$1.call(Function.call, Object.prototype.hasOwnProperty);
-
-	var undefined$1;
-	var $SyntaxError$1 = SyntaxError;
-	var $Function = Function;
-	var $TypeError$2 = TypeError;
-
-	// eslint-disable-next-line consistent-return
-	var getEvalledConstructor = function (expressionSyntax) {
-	  try {
-	    return $Function('"use strict"; return (' + expressionSyntax + ').constructor;')();
-	  } catch (e) {}
-	};
-	var $gOPD$2 = Object.getOwnPropertyDescriptor;
-	if ($gOPD$2) {
-	  try {
-	    $gOPD$2({}, '');
-	  } catch (e) {
-	    $gOPD$2 = null; // this is IE 8, which has a broken gOPD
-	  }
-	}
-
-	var throwTypeError = function () {
-	  throw new $TypeError$2();
-	};
-	var ThrowTypeError = $gOPD$2 ? function () {
-	  try {
-	    // eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
-	    arguments.callee; // IE 8 does not throw here
-	    return throwTypeError;
-	  } catch (calleeThrows) {
-	    try {
-	      // IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
-	      return $gOPD$2(arguments, 'callee').get;
-	    } catch (gOPDthrows) {
-	      return throwTypeError;
-	    }
-	  }
-	}() : throwTypeError;
-	var hasSymbols$4 = hasSymbols$5();
-	var hasProto = hasProto$1();
-	var getProto$1 = Object.getPrototypeOf || (hasProto ? function (x) {
-	  return x.__proto__;
-	} // eslint-disable-line no-proto
-	: null);
-	var needsEval = {};
-	var TypedArray = typeof Uint8Array === 'undefined' || !getProto$1 ? undefined$1 : getProto$1(Uint8Array);
-	var INTRINSICS = {
-	  '%AggregateError%': typeof AggregateError === 'undefined' ? undefined$1 : AggregateError,
-	  '%Array%': Array,
-	  '%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined$1 : ArrayBuffer,
-	  '%ArrayIteratorPrototype%': hasSymbols$4 && getProto$1 ? getProto$1([][Symbol.iterator]()) : undefined$1,
-	  '%AsyncFromSyncIteratorPrototype%': undefined$1,
-	  '%AsyncFunction%': needsEval,
-	  '%AsyncGenerator%': needsEval,
-	  '%AsyncGeneratorFunction%': needsEval,
-	  '%AsyncIteratorPrototype%': needsEval,
-	  '%Atomics%': typeof Atomics === 'undefined' ? undefined$1 : Atomics,
-	  '%BigInt%': typeof BigInt === 'undefined' ? undefined$1 : BigInt,
-	  '%BigInt64Array%': typeof BigInt64Array === 'undefined' ? undefined$1 : BigInt64Array,
-	  '%BigUint64Array%': typeof BigUint64Array === 'undefined' ? undefined$1 : BigUint64Array,
-	  '%Boolean%': Boolean,
-	  '%DataView%': typeof DataView === 'undefined' ? undefined$1 : DataView,
-	  '%Date%': Date,
-	  '%decodeURI%': decodeURI,
-	  '%decodeURIComponent%': decodeURIComponent,
-	  '%encodeURI%': encodeURI,
-	  '%encodeURIComponent%': encodeURIComponent,
-	  '%Error%': Error,
-	  '%eval%': eval,
-	  // eslint-disable-line no-eval
-	  '%EvalError%': EvalError,
-	  '%Float32Array%': typeof Float32Array === 'undefined' ? undefined$1 : Float32Array,
-	  '%Float64Array%': typeof Float64Array === 'undefined' ? undefined$1 : Float64Array,
-	  '%FinalizationRegistry%': typeof FinalizationRegistry === 'undefined' ? undefined$1 : FinalizationRegistry,
-	  '%Function%': $Function,
-	  '%GeneratorFunction%': needsEval,
-	  '%Int8Array%': typeof Int8Array === 'undefined' ? undefined$1 : Int8Array,
-	  '%Int16Array%': typeof Int16Array === 'undefined' ? undefined$1 : Int16Array,
-	  '%Int32Array%': typeof Int32Array === 'undefined' ? undefined$1 : Int32Array,
-	  '%isFinite%': isFinite,
-	  '%isNaN%': isNaN,
-	  '%IteratorPrototype%': hasSymbols$4 && getProto$1 ? getProto$1(getProto$1([][Symbol.iterator]())) : undefined$1,
-	  '%JSON%': typeof JSON === 'object' ? JSON : undefined$1,
-	  '%Map%': typeof Map === 'undefined' ? undefined$1 : Map,
-	  '%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols$4 || !getProto$1 ? undefined$1 : getProto$1(new Map()[Symbol.iterator]()),
-	  '%Math%': Math,
-	  '%Number%': Number,
-	  '%Object%': Object,
-	  '%parseFloat%': parseFloat,
-	  '%parseInt%': parseInt,
-	  '%Promise%': typeof Promise === 'undefined' ? undefined$1 : Promise,
-	  '%Proxy%': typeof Proxy === 'undefined' ? undefined$1 : Proxy,
-	  '%RangeError%': RangeError,
-	  '%ReferenceError%': ReferenceError,
-	  '%Reflect%': typeof Reflect === 'undefined' ? undefined$1 : Reflect,
-	  '%RegExp%': RegExp,
-	  '%Set%': typeof Set === 'undefined' ? undefined$1 : Set,
-	  '%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols$4 || !getProto$1 ? undefined$1 : getProto$1(new Set()[Symbol.iterator]()),
-	  '%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined$1 : SharedArrayBuffer,
-	  '%String%': String,
-	  '%StringIteratorPrototype%': hasSymbols$4 && getProto$1 ? getProto$1(''[Symbol.iterator]()) : undefined$1,
-	  '%Symbol%': hasSymbols$4 ? Symbol : undefined$1,
-	  '%SyntaxError%': $SyntaxError$1,
-	  '%ThrowTypeError%': ThrowTypeError,
-	  '%TypedArray%': TypedArray,
-	  '%TypeError%': $TypeError$2,
-	  '%Uint8Array%': typeof Uint8Array === 'undefined' ? undefined$1 : Uint8Array,
-	  '%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined$1 : Uint8ClampedArray,
-	  '%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined$1 : Uint16Array,
-	  '%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined$1 : Uint32Array,
-	  '%URIError%': URIError,
-	  '%WeakMap%': typeof WeakMap === 'undefined' ? undefined$1 : WeakMap,
-	  '%WeakRef%': typeof WeakRef === 'undefined' ? undefined$1 : WeakRef,
-	  '%WeakSet%': typeof WeakSet === 'undefined' ? undefined$1 : WeakSet
-	};
-	if (getProto$1) {
-	  try {
-	    null.error; // eslint-disable-line no-unused-expressions
-	  } catch (e) {
-	    // https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
-	    var errorProto = getProto$1(getProto$1(e));
-	    INTRINSICS['%Error.prototype%'] = errorProto;
-	  }
-	}
-	var doEval = function doEval(name) {
-	  var value;
-	  if (name === '%AsyncFunction%') {
-	    value = getEvalledConstructor('async function () {}');
-	  } else if (name === '%GeneratorFunction%') {
-	    value = getEvalledConstructor('function* () {}');
-	  } else if (name === '%AsyncGeneratorFunction%') {
-	    value = getEvalledConstructor('async function* () {}');
-	  } else if (name === '%AsyncGenerator%') {
-	    var fn = doEval('%AsyncGeneratorFunction%');
-	    if (fn) {
-	      value = fn.prototype;
-	    }
-	  } else if (name === '%AsyncIteratorPrototype%') {
-	    var gen = doEval('%AsyncGenerator%');
-	    if (gen && getProto$1) {
-	      value = getProto$1(gen.prototype);
-	    }
-	  }
-	  INTRINSICS[name] = value;
-	  return value;
-	};
-	var LEGACY_ALIASES = {
-	  '%ArrayBufferPrototype%': ['ArrayBuffer', 'prototype'],
-	  '%ArrayPrototype%': ['Array', 'prototype'],
-	  '%ArrayProto_entries%': ['Array', 'prototype', 'entries'],
-	  '%ArrayProto_forEach%': ['Array', 'prototype', 'forEach'],
-	  '%ArrayProto_keys%': ['Array', 'prototype', 'keys'],
-	  '%ArrayProto_values%': ['Array', 'prototype', 'values'],
-	  '%AsyncFunctionPrototype%': ['AsyncFunction', 'prototype'],
-	  '%AsyncGenerator%': ['AsyncGeneratorFunction', 'prototype'],
-	  '%AsyncGeneratorPrototype%': ['AsyncGeneratorFunction', 'prototype', 'prototype'],
-	  '%BooleanPrototype%': ['Boolean', 'prototype'],
-	  '%DataViewPrototype%': ['DataView', 'prototype'],
-	  '%DatePrototype%': ['Date', 'prototype'],
-	  '%ErrorPrototype%': ['Error', 'prototype'],
-	  '%EvalErrorPrototype%': ['EvalError', 'prototype'],
-	  '%Float32ArrayPrototype%': ['Float32Array', 'prototype'],
-	  '%Float64ArrayPrototype%': ['Float64Array', 'prototype'],
-	  '%FunctionPrototype%': ['Function', 'prototype'],
-	  '%Generator%': ['GeneratorFunction', 'prototype'],
-	  '%GeneratorPrototype%': ['GeneratorFunction', 'prototype', 'prototype'],
-	  '%Int8ArrayPrototype%': ['Int8Array', 'prototype'],
-	  '%Int16ArrayPrototype%': ['Int16Array', 'prototype'],
-	  '%Int32ArrayPrototype%': ['Int32Array', 'prototype'],
-	  '%JSONParse%': ['JSON', 'parse'],
-	  '%JSONStringify%': ['JSON', 'stringify'],
-	  '%MapPrototype%': ['Map', 'prototype'],
-	  '%NumberPrototype%': ['Number', 'prototype'],
-	  '%ObjectPrototype%': ['Object', 'prototype'],
-	  '%ObjProto_toString%': ['Object', 'prototype', 'toString'],
-	  '%ObjProto_valueOf%': ['Object', 'prototype', 'valueOf'],
-	  '%PromisePrototype%': ['Promise', 'prototype'],
-	  '%PromiseProto_then%': ['Promise', 'prototype', 'then'],
-	  '%Promise_all%': ['Promise', 'all'],
-	  '%Promise_reject%': ['Promise', 'reject'],
-	  '%Promise_resolve%': ['Promise', 'resolve'],
-	  '%RangeErrorPrototype%': ['RangeError', 'prototype'],
-	  '%ReferenceErrorPrototype%': ['ReferenceError', 'prototype'],
-	  '%RegExpPrototype%': ['RegExp', 'prototype'],
-	  '%SetPrototype%': ['Set', 'prototype'],
-	  '%SharedArrayBufferPrototype%': ['SharedArrayBuffer', 'prototype'],
-	  '%StringPrototype%': ['String', 'prototype'],
-	  '%SymbolPrototype%': ['Symbol', 'prototype'],
-	  '%SyntaxErrorPrototype%': ['SyntaxError', 'prototype'],
-	  '%TypedArrayPrototype%': ['TypedArray', 'prototype'],
-	  '%TypeErrorPrototype%': ['TypeError', 'prototype'],
-	  '%Uint8ArrayPrototype%': ['Uint8Array', 'prototype'],
-	  '%Uint8ClampedArrayPrototype%': ['Uint8ClampedArray', 'prototype'],
-	  '%Uint16ArrayPrototype%': ['Uint16Array', 'prototype'],
-	  '%Uint32ArrayPrototype%': ['Uint32Array', 'prototype'],
-	  '%URIErrorPrototype%': ['URIError', 'prototype'],
-	  '%WeakMapPrototype%': ['WeakMap', 'prototype'],
-	  '%WeakSetPrototype%': ['WeakSet', 'prototype']
-	};
-	var bind = functionBind;
-	var hasOwn$1 = src;
-	var $concat$1 = bind.call(Function.call, Array.prototype.concat);
-	var $spliceApply = bind.call(Function.apply, Array.prototype.splice);
-	var $replace$1 = bind.call(Function.call, String.prototype.replace);
-	var $strSlice = bind.call(Function.call, String.prototype.slice);
-	var $exec$1 = bind.call(Function.call, RegExp.prototype.exec);
-
-	/* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
-	var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
-	var reEscapeChar = /\\(\\)?/g; /** Used to match backslashes in property paths. */
-	var stringToPath = function stringToPath(string) {
-	  var first = $strSlice(string, 0, 1);
-	  var last = $strSlice(string, -1);
-	  if (first === '%' && last !== '%') {
-	    throw new $SyntaxError$1('invalid intrinsic syntax, expected closing `%`');
-	  } else if (last === '%' && first !== '%') {
-	    throw new $SyntaxError$1('invalid intrinsic syntax, expected opening `%`');
-	  }
-	  var result = [];
-	  $replace$1(string, rePropName, function (match, number, quote, subString) {
-	    result[result.length] = quote ? $replace$1(subString, reEscapeChar, '$1') : number || match;
-	  });
-	  return result;
-	};
-	/* end adaptation */
-
-	var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
-	  var intrinsicName = name;
-	  var alias;
-	  if (hasOwn$1(LEGACY_ALIASES, intrinsicName)) {
-	    alias = LEGACY_ALIASES[intrinsicName];
-	    intrinsicName = '%' + alias[0] + '%';
-	  }
-	  if (hasOwn$1(INTRINSICS, intrinsicName)) {
-	    var value = INTRINSICS[intrinsicName];
-	    if (value === needsEval) {
-	      value = doEval(intrinsicName);
-	    }
-	    if (typeof value === 'undefined' && !allowMissing) {
-	      throw new $TypeError$2('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
-	    }
-	    return {
-	      alias: alias,
-	      name: intrinsicName,
-	      value: value
-	    };
-	  }
-	  throw new $SyntaxError$1('intrinsic ' + name + ' does not exist!');
-	};
-	var getIntrinsic = function GetIntrinsic(name, allowMissing) {
-	  if (typeof name !== 'string' || name.length === 0) {
-	    throw new $TypeError$2('intrinsic name must be a non-empty string');
-	  }
-	  if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
-	    throw new $TypeError$2('"allowMissing" argument must be a boolean');
-	  }
-	  if ($exec$1(/^%?[^%]*%?$/, name) === null) {
-	    throw new $SyntaxError$1('`%` may not be present anywhere but at the beginning and end of the intrinsic name');
-	  }
-	  var parts = stringToPath(name);
-	  var intrinsicBaseName = parts.length > 0 ? parts[0] : '';
-	  var intrinsic = getBaseIntrinsic('%' + intrinsicBaseName + '%', allowMissing);
-	  var intrinsicRealName = intrinsic.name;
-	  var value = intrinsic.value;
-	  var skipFurtherCaching = false;
-	  var alias = intrinsic.alias;
-	  if (alias) {
-	    intrinsicBaseName = alias[0];
-	    $spliceApply(parts, $concat$1([0, 1], alias));
-	  }
-	  for (var i = 1, isOwn = true; i < parts.length; i += 1) {
-	    var part = parts[i];
-	    var first = $strSlice(part, 0, 1);
-	    var last = $strSlice(part, -1);
-	    if ((first === '"' || first === "'" || first === '`' || last === '"' || last === "'" || last === '`') && first !== last) {
-	      throw new $SyntaxError$1('property names with quotes must have matching quotes');
-	    }
-	    if (part === 'constructor' || !isOwn) {
-	      skipFurtherCaching = true;
-	    }
-	    intrinsicBaseName += '.' + part;
-	    intrinsicRealName = '%' + intrinsicBaseName + '%';
-	    if (hasOwn$1(INTRINSICS, intrinsicRealName)) {
-	      value = INTRINSICS[intrinsicRea
+{
+    "word": "समवाय",
+    "ABCH": [
+        {
+            "word": "समवाय",
+            "linga": "पुं",
+            "pagenum": "53",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4214",
+            "group": "1790",
+            "synonyms": [
+                "सङ्घात",
+                "प्रकर",
+                "ओघ",
+                "वार",
+                "निकर",
+                "व्यूह",
+                "समूह",
+                "चय",
+                "सन्दोह",
+                "समुदाय",
+                "राशि",
+                "विसर",
+                "व्रात",
+                "कलाप",
+                "व्रज",
+                "कूट",
+                "मण्डल",
+                "चक्रवाल",
+                "पटल",
+                "स्तोम",
+                "गण",
+                "पेटक",
+                "वृन्द",
+                "चक्र",
+                "कदम्बक",
+                "समुदय",
+                "पुञ्ज",
+                "उत्कर",
+                "संहति",
+                "निकुरुम्ब",
+                "जाल",
+                "निवह",
+                "सञ्चय",
+                "जात"
+            ],
+            "content": "संघाते प्रकरौघवारनिकरव्यूहाः समूहश्चयः\nसंदोहः समुदायराशिविसरव्राताः कलापो व्रजः ।\nकूटं मण्डलचक्रवालपटलस्तोमा गणः पेटकं\nवृन्दं चक्रकदम्बके समुदयः पुञ्जोत्करौ संहतिः ॥ १४११ ॥\nसमवायो निकुरम्बं जालं निवहसंचयौ ।\nजातं तिरश्चां तद्यूथं संघसार्थौ तु देहिनाम् ॥ १४१२ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "समवाय",
+            "eid": "29350",
+            "pagenum": 1095,
+            "content": "समवायः¦ <b>1</b> Combination, union, conjunction, aggregate, collection; सर्वाविनयानामेकैकमप्येषामायतनं किमुत समवायः <ls>K.</ls>; बहूनामप्यसाराणां समवायो हि दुर्जयः <ls>Subhāṣ.</ls> <b>--2</b> A number, multitude, heap. <b>--3</b> Close <lbinfo n='connec+tion'/> connection, cohesion. <b>--4</b> (In <ls>Vaiś.</ls> <ab>phil.</ab>) Intimate union, constant and <lbinfo n='in+separable'/> inseparable connection, inseparable inherence or existence of one thing in another, one of the seven <lbinfo n='cate+gories'/> categories of the Vaiśeṣikas;  <lbinfo n='nityasaM#baMDaH'/> नित्यसंबंधः समवायः <ls>Tarka K.</ls> <b>--Comp.</b>  <lbinfo n='--saM#baMDaH'/> --संबंधः intimate and inseparable <lbinfo n='rela+tion'/> relation."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "समवाय",
+            "eid": "15593",
+            "pagenum": 1010,
+            "content": "समवाय¦ <i>samavāya,</i> <ab>i. e.</ab> <i>sam-ava-i +</i> <i>a,</i> <ab>m.</ab> <b>1.</b> Multitude, <ls>Pañc.</ls> 130, 7; aggregate; meeting, <ls>Daśak.</ls> in <ls>Chr.</ls> 180, 14. <b>2.</b> Assembly, <ls>Man.</ls> 4, 108. <b>3.</b> Intimate and constant relation, <ls>Bhāṣāp.</ls> 1, 58; as of yarn and the cloth made of it, the individual and its species, etc. <b>4.</b> Intimate union, <ls>Śāk.</ls> 108, 10; union, <ls>Pañc.</ls> i. <ab>d.</ab> 376."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "समवाय",
+            "eid": "8289",
+            "pagenum": 369,
+            "content": "समवाय¦ <i>m.</i> (r. इ cum अव praef. सम् s. अ) conventus, congressio, congregatio. HIT. 57. 8."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "समवाय",
+            "eid": "17686",
+            "pagenum": 682,
+            "content": "समवाय¦ <i>samavāya</i> <ab>m.</ab> <i>(ava; aya,</i> de <i>i)</i> réunion, rencontre; assemblage, combinaison. <lbinfo n='7'/> || Une des catégories logiques."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "समवाय",
+            "eid": "35216",
+            "pagenum": 592,
+            "content": "समवाय¦ <lex>m.</lex> meeting with, joining (<ab>gen.</ab> or —°); congress, assembly; union, connection, mixture, aggregate; intimate cohesion, inherence, <ab>adj.</ab> °यिन् (ph.)."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "समवाय",
+            "eid": "26390",
+            "pagenum": 476,
+            "content": "समवाय¦ <i>m.</i> Zusammenkunft, Versammlung, Verbindung, Gemeinschaft; Zusammenhang, Inhärenz <i>(ph.).</i>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "समवाय",
+            "eid": "39739",
+            "pagenum": 758,
+            "content": "samavAya¦ <i>m.</i> 1. Conjunction, union, cohesion, connection; 2. multitude, quantity, concourse, collection, e.g. बहूनामल्पसाराणां समवायो बलावहः; 3. intimate union, constant and inseparable connection, inseparable existence or inherence of one thing in another, (one of the seven categories of the <i>Vaiśeshika</i> system)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "समवाय",
+            "eid": "233884",
+            "pagenum": "1157,3",
+            "content": "sam-avA<srs/>ya ¦ <lex>m.</lex> coming or meeting together, contact, concourse, congress, assemblage, collection, crowd, aggregate (एन or आत्, ‘in combination’; °यं-√ कृ, ‘to meet, combine, flock together’), <ls>GṛS.</ls>; <ls>Gaut.</ls>; <ls>Mn.</ls> &c.<info lex='m'/>"
+        },
+        {
+            "word": "समवाय",
+            "eid": "233885",
+            "pagenum": "1157,3",
+            "content": "¦ conjunction (of heavenly bodies), <ls>MBh.</ls>; <ls>VarBṛS.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समवाय",
+            "eid": "233886",
+            "pagenum": "1157,3",
+            "content": "¦ collision, <ls>ŚrS.</ls>; <ls>Gaut.</ls>; <ls>Sarvad.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समवाय",
+            "eid": "233887",
+            "pagenum": "1157,3",
+            "content": "¦ (in <ab>phil.</ab>) perpetual co-inherence, inner or intimate relation, constant and intimate union, inseparable concomitance (= नित्य-सम्बन्ध, the sixth <s1 slp1='padArTa'>Padārtha</s1> or category of the <s1 slp1='vESezika'>Vaiśeṣika</s1>s, expressing relation which exists between a substance and its qualities, between a whole and its parts [<ab>e.g.</ab> between cloth and the yarn composing it], between a genus and its individuals &c.), <ls>Kap.</ls>; <ls>Jaim.</ls>; <ls>IW. 66</ls>; <ls n='IW.'>69</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समवाय",
+            "eid": "233888",
+            "pagenum": "1158,1",
+            "content": "¦ course, duration (ए, with <ab>gen.</ab>, ‘during’), <ls>MBh. i, 556</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "समवाय",
+            "eid": "49847",
+            "pagenum": 1071,
+            "content": "<i>Sam-avāya, as,</i>¦ m. coming or meeting together, conjunction, close combination or union, mixing together, cohesion, connection; a collection, aggregate, meeting, concourse, congress, assemblage, multitude, quantity; complete or intimate union, constant and inseparable connection or cohesion, inseparable existence or inherence of one thing in another, intimate or material relation (e. g. the relation which exists between a whole and its parts; between cloth and the yarn composing it; between a genus or species and its individuals; between an action or quality and its subject; between particularity and the eternal substances of ether, time, space, soul, &c.; this is one of the seven categories or Padārthas of the Vaiśeṣika system or school of Nyāya philosophy founded by Kaṇāda). <i>—Samavāya-tas,</i> ind. in consequence of constant and intimate connection or relation. <i>—Samavāya-sambandha, as,</i> m. intimate and constant connection, inseparable relation (as described above), connection by inseparable inherence or cohesion."
+        }
+    ],
+    "PW": [
+        {
+            "word": "समवाय",
+            "eid": "120096",
+            "pagenum": 7,
+            "content": "समवाय¦ <lex>m.</lex> <dvsn n='1'>— 1〉 <i>Zusammentreffen, — mit</i> (<ab>Gen.</ab> oder im <ab>Comp.</ab> vorangehend <ls>VARĀH. YOGAY. 5,7</ls>. <ls>GAUT. 6,1. 5</ls>); <i>Zusammenkunft, Versammlung</i> (<ls>GAUT. 12,52</ls>); <i>das Zusammenstehen, Sichberühren; Vereinigung, Verbindung, Gemenge, Aggregat</i>. <ab>Acc.</ab> <ab>Sg.</ab> und <ab>Pl.</ab> mit कर् <i>sich zusammenthun, sich zusammenschaaren</i>. <ab>Instr.</ab> und <ab>Abl.</ab> <i>in Gemeinschaft</i>. <dvsn n='1'>— 2〉 <i>eine Conjunction</i> (von Himmelskörpern). <dvsn n='1'>— 3〉 <i>Zusammenstoss, Collision</i> <ls>GAUT. 28,37</ls>. <ls>JAIM. 4,3,29</ls>. <dvsn n='1'>— 4〉 <i>inniger Zusammenhang, das Ineinandersein, Enthaltensein, Inhärenz</i> <ls>JAIM. 6,4,10</ls>. <ls>KAP. 5,99</ls>. <dvsn n='1'>— 5〉 <i>Verlauf, Dauer</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समवाय",
+            "eid": "105452",
+            "pagenum": 7,
+            "content": "समवाय¦ (von 3. इ mit समव) <lex>m.</lex> <dvsn n='1'> 1) <i>Zusammenkunft, Versammlung: Vereinigung, Verbindung, Gemenge, Aggregat</i> <ls>AK. 2, 5, 40.</ls> <ls n='AK.'>3, 4, 24, 153.</ls> <ls>H. 1412.</ls> <ls>HALĀY. 4, 1.</ls> जनस्य <ls>M. 4, 108.</ls> राज्ञाम् <ls>MBH. 1, 125.</ls> <ls n='MBH. 1,'>4646.</ls> समवायेषु सर्वेषु <ls n='MBH. 1,'>5605.</ls> <ls n='MBH.'>5, 8.</ls> <ls n='MBH.'>13, 4544.</ls> <ls n='MBH. 13,'>7673.</ls> <ls>HARIV. 2351.</ls> <ls n='HARIV.'>3888.</ls> बहूनामप्यसाराणां समवायो बलावहः <ls>Spr. (II) 4425.</ls> <ls>PRAB. 86, 15.</ls> <ls>BHĀG. P. 4, 12, 47.</ls> जन° <ls>ŚĀṄKH. GṚHY. 4, 12.</ls> <ls>MṚCCH. 147, 2.</ls> <ls>DAŚAK. 61, 6.</ls> <ls>Verz. d. Oxf. H. 216,a,25. 31.</ls> <ls>BHĀG. P. 6, 9, 33.</ls> <ls>PAÑCAT. 130, 7. 9. 57, 8.</ls> वटपिप्पल° <i>das Zusammenstehen, Sichberühren</i> <ls>VARĀH. BṚH. S. 54, 96.</ls> स्वराणाम्  <ls>ṚV. PRĀT. 14, 24.</ls> <ls>SUŚR. 1, 4, 1. 31, 12.</ls> पर्युषिताकण्वोदकपिष्ट° <i>ein Teig aus Hefe, Wasser und Mehl</i> <ls n='SUŚR.'>81, 6. 347, 11.</ls> दोषाणाम् <ls n='SUŚR.'>2, 442, 17.</ls> <ls>SARVADARŚANAS. 21, 2. 4.</ls> मिथः <ls>Verz. d. Oxf. H. 104,b,11.</ls> समवायं कर् <i>sich zusammenthun</i> <ls>PAÑCAT. ed. Bomb. I, 88, 1.</ls> समवायांश्च कुर्वते <i>schaaren sich zusammen</i> <ls>MBH. 6, 51.</ls> <ls>R. 6, 11, 37.</ls> समवायेन <i>in Gemeinschaft</i> <ls>YĀJÑ. 2, 259.</ls>  <ls>R. GORR. 2, 90, 11.</ls> <ls>MĀRK. P. 39, 33.</ls> समवायात् dass. <ls>PAÑCAT. 81, 24.</ls> समवाय als Bed. von सप् <ls>DHĀTUP. 11, 6.</ls> <dvsn n='1'>— 2) <i>eine Conjunction des Mondes mit der Sonne, mit Planeten und Sternen</i>: शशिनो भास्करस्य च <ls>MBH. 3, 14272.</ls> शशि° <ls>VARĀH. BṚH. S. 18, 8</ls> (pl.). <dvsn n='1'>— 3) <i>Zusammenstoss, Collision</i>: समवाये भूयसां कल्पः <ls>LĀṬY. 6, 4, 15.</ls> <ls>ANUPADAS. 4, 6</ls> in <ls>Ind. St. 10, 94.</ls> तुल्य° <ls>KĀTY. ŚR. 1, 5, 10. 7, 2. 4, 3, 9.</ls> <ls>Verz. d. Oxf. H. 216,a,32.</ls> <ls>KULL.</ls> zu <ls>M. 2, 117.</ls> <ls>SARVADARŚANAS. 159, 15.</ls> <dvsn n='1'>— 4) <i>inniger Zusammenhang, das Ineinandersein, Inhärenz</i> (eine der sechs, resp. sieben logischen Kategorien) <ls>KAṆ. 1, 1, 4. 26. 2, 1, 26. 4, 1, 8. 11. 7, 2, 26.</ls> <ls>Verz. d. Oxf. H. 240,a,1</ls> v. u. <ls n='Verz. d. Oxf. H.'>259,a,N. 4.</ls>  <ls>Ind. St. 1, 18, 1</ls> v. u. <ls>TARKAS. 1. 11. 57.</ls> <ls>NĪLAK. 93.</ls> <ls>BHĀṢĀP. 1.</ls> <ls>SARVADARŚANAS. 12, 21. 31, 8. fgg. 104, 19. 105, 3. fgg.</ls> <ls>MBH. 1, 2886.</ls> <ls n='MBH.'>2, 137.</ls> <ls n='MBH.'>13, 42.</ls> तेन ह्यृतुसमवायचिह्नं प्रतिपद्यतां लता कुसुमम् <ls>ŚĀK. 108, 10.</ls> <dvsn n='1'>— 5) <i>Verlauf, Dauer</i>: समवाये च युद्धस्य रामस्यागमनम् so v. a. <i>während des Kampfes</i> <ls>MBH. 1, 556.</ls> <dvsn n='v'>— Vgl. संयुक्त° (auch <ls>BHĀṢĀP. 58</ls>), संयुक्तसमवेत°, समावाय und सामवायिक ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समवाय",
+            "eid": "42587",
+            "pagenum": 762,
+            "content": "समवाय¦ m. (-यः) 1. Multitude, assemblage, collection, aggregate, quantity. 2. One of the categories or Padārthas of logic, intimate and constant relation, as of yarn and the cloth made of it. 3. Connection of species in a genus, or parts of a whole. E. सम् and अव before अय् to go, aff. घञ् ।"
+        }
+    ],
+    "STC": [
+        {
+            "word": "समवाय",
+            "eid": "21748",
+            "pagenum": 792,
+            "content": "<b>sam-avāya-</b>¦ <ab>m.</ab> rencontre, réunion, contact <lbinfo n='4'/> ; assemblage, foule ; collision, conflit ; conjonction (des astres) ; relation entre la substance et ses qualités, le tout et ses parties, l'individu et le genre (une des 6 ou 7 catégories <lbinfo n='6'/> logiques) ; durée ; <i>-aṃ</i> ou <i>-ān kṛ-</i> se rencontrer, se combiner, faire foule ; <i>-āt -ena</i> en commun ; <i>-e</i> pendant (<ab>gén.</ab>) ; <i>-in-</i> <ab>a.</ab> inhérent <lbinfo n='4'/> à (<ab>ifc.</ab>) ; <i>-ī-kṛ-</i> réunir, assembler."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "समवाय",
+            "eid": "40562",
+            "pagenum": 895,
+            "content": "समवाय¦ m. (-यः) .²1 Multitude, assemblage, collection, aggregate, quantity. .²2 One of the categories or <i>Padārthas</i> of logic, intimate and constant relation, as of yarn and the cloth made of it. .²3 Connection of species in a genus, or parts of a whole. .E. सम् and अव before अय to go, aff. घञ्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "समवाय",
+            "eid": "40277",
+            "pagenum": 815,
+            "content": "समवाय¦ (यः) 1. <i>m.</i> Co-ordination; multitude, quantity; a category."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समवाय",
+            "eid": "37908",
+            "pagenum": "5-270-b",
+            "content": "समवायः¦, पुं, (समवाय्यते इति । सम् + अव + अय + घञ् ।) समूहः । इत्यमरः ॥ (यथा, मनुः । ४ । १०८ । “अनध्यायो रुद्यमाने समवाये जनस्य च ॥”) सम्बन्धविशेषः । यथा, “घटादीनां कपालादौ द्रव्येषु गुणकर्म्मणोः । तेषु जातेश्च सम्बन्धः समवायः प्रकीर्त्तितः ॥” इति भाषापरिच्छेदः ॥ अवयवावयविनोर्गुणगुणिनोः क्रियाक्रियावतोर्जातिव्यक्त्योर्नित्यद्रव्यविशेषयोच्च यः सम्बन्धः स समवाथः । इति सिद्धान्तमुक्तावली ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "समवाय",
+            "eid": "45273",
+            "pagenum": "5230,a",
+            "content": "समवाय¦ पु० सम् + अव--क्षण--अच् । १ समूहे अमरः २ मेलने न्यायोक्ते नित्यद्रव्यादिषु जात्यादीनां ३ संबन्धभेदे च “घटादीनां कपालादौ द्रव्येषु गुणकर्मणोः । तेषु जातेश्च सम्बन्धः समवायः प्रकीर्त्तितः” भाषा० “समवायं दर्शयति । घटादीनामिति अवयवावयविनोः जातिव्यक्त्योर्गुणगुणिनोः क्रियाक्रियावतोर्नित्यद्रव्यविशेषयोश्च यः सम्बन्धः स स मवायः समवायत्वं नित्यसम्बन्धत्वं तत्र प्रमाणन्तु गुण क्रियादिविशिष्टबुद्धिर्विशेषणविशेष्यसम्बन्धविषया विशिष्टबुद्धित्वात् इत्यनुमाने संयोगादिबाधात् समवायसिद्धिः । न च स्वरूपसम्बन्धेन सिद्धसाधनम् अर्थान्तरं वा, अनन्तस्वरूपाणां सम्बन्धत्वकल्पने गौरवात् लाथवादेकममवायसिद्धिः । न च समवायस्यैकत्वे वायौ रूपवत्ताबुद्धिप्रसङ्गः तत्र रूपसमवायसत्त्वेऽपि रूपाभावात् । न चेवम् अभावस्य वैशिष्ट्यं सम्बन्धान्तरं सिध्येदिति वाच्यं तस्य नित्यत्वे भूतले घटानयनानन्तरमपि घटाभावबुद्धिप्रमङ्गात् घटाभावसम्बन्धस्य तत्र सत्त्वात् तस्य नित्यत्वात् अन्यथा देशान्तरेऽपि तत्प्रतीतिर्न स्यात् वैशिष्ट्यस्य च तत्र सत्त्वात्, मम तु मते घटे पाकरक्ततादशायां श्यामरूपस्य नष्टत्वान्न तद्वत्ताबुद्धिः । वैशिष्ट्यस्यानित्यत्वे त्वनन्तवैशिष्ट्यकल्पने तवैव गौरवम् इत्थञ्च तत्तत्कालीनतत्तद्भूतलादिकं तत्तदभावानां सम्बन्धः” । अयुतसिद्धयोः सम्बन्धः स इति वैशेषिकाः स च सम्बन्धो नाना नित्यश्चेति नव्यनैयायिकाः प्राभाकराश्चाहुः । समवायश्च प्रत्यक्षः “प्रत्यक्षं समवायस्य विशेषणतया भवेत्” भाषा० । अतीन्द्रियोऽनुमेयश्चेति वैशेषिकाः, स्वरूपस्यैव सम्बन्धत्वोपपत्तेः समवायो न पदार्थान्तरमिति भाट्टाः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समवाय",
+            "content": "समवायः पुं. -  सम् + अव + इ + अच् 'सम्मिश्रण, मिलाप, संयोग, समष्टि, संग्रह'"
+        },
+        {
+            "word": "समवाय",
+            "content": "समवायः पुं. -  सम् + अव + इ + अच् 'संख्या, समुच्च्य, राशि'"
+        },
+        {
+            "word": "समवाय",
+            "content": "समवायः पुं. -  सम् + अव + इ + अच् 'घनिष्ठ संबंध, संसक्ति'"
+        },
+        {
+            "word": "समवाय",
+            "content": "समवायः पुं. -  सम् + अव + इ + अच् 'प्रगाढ़ मिलाप, अविच्छिन्न तथा अविच्छेद्य संयोग, अभेद्य संलग्नता या एक वस्तु का दूसरी में अस्तित्व वैशेषिकों के सात पदार्थों में से एक'"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "समवाय",
+            "content": "(I) combination as contrasted with व्यवाय disjunction or separation; (2) the enumeration of the letters of the alphabet in a particular order so as to facilitate their combination, technically termed प्रत्याहार; cf. वृतिसमवायार्थ उपदेशः । का पुनर्वृत्तिः l शास्त्रप्रवृत्तिः । अथ कः समवायः । वर्णानामानुपूर्व्येण संनिवेशः । M. Bh. Ahnika l Vart. 15. cf. also समवायो वर्णगतः क्रमविशेषः । Uddyota on the Bhasya mentioned above; (3) contact; cf रक्तै रागः समवाय स्वराणाम् R. Pr. XIV.24."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "समवाय",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸಮೂಹ",
+            "निष्पत्तिः": "सम् + अव + अय (गतौ)'घञ्' (३-३-१९)",
+            "प्रयोगाः": "'अनध्यायो रुद्यमाने समवाये जनस्य च'",
+            "उल्लेखाः": "मनु० ४-१०८",
+            "content": ""
+        },
+        {
+            "word": "समवाय",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸಂಬಂಧ \\/ಅಯುತಸಿದ್ಧವಾದಗಳ ಸಂಬಂಧ",
+            "विस्तारः": "'घटादीनां कपालादौ द्रव्येषु गुणकर्मणोः । तेषु जातेश्च सम्बन्धः समवायः प्रकीर्तितः ॥'भाषाप० ११",
+            "content": ""
+        },
+        {
+            "word": "समवाय",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಒಟ್ಟುಗೂಡುವುದು \\/ಒಟ್ಟಿಗೆ ಸೇರುವುದು \\/ಒಂದಾಗಿ ಸೇರುವುದು",
+            "प्रयोगाः": "'स्वाविनयानामेकैकमप्येषामायतनं किमुत समवायः'",
+            "उल्लेखाः": "काद०",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "समवाय",
+            "linga": "P",
+            "artha": "समूहः",
+            "synonyms": [
+                "समूह",
+                "निवह",
+                "व्यूह",
+                "सन्दोह",
+                "विसर",
+                "व्रज",
+                "स्तोम",
+                "ओघ",
+                "निकर",
+                "व्रात",
+                "वार",
+                "सङ्घात",
+                "सञ्चय",
+                "समुदाय",
+                "समुदय",
+                "समवाय",
+                "चय",
+                "गण",
+                "संहति",
+                "वृन्द",
+                "निकुरम्ब",
+                "कदम्बक",
+                "पेटक",
+                "वार्धक",
+                "पूग",
+                "ग्राम",
+                "सन्नय",
+                "संस्त्याय",
+                "जाल",
+                "पटल",
+                "राशि"
+            ],
+            "num": "2.5.42",
+            "text": "स्तोमौघनिकरव्रातवारसङ्घातसञ्चयाः । समुदायः समुदयः समवायश्चयो गणः ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "समवाय",
+            "content": "<body><s>samavAya pu° sam + ava—kzaRa—ac . <lb/><b>1</b> samUhe amaraH <lb/><b>2</b> me­lane nyAyokte nityadravyAdizu jAtyAdInAM <lb/><b>3</b> saMbanDaBede ca <q>GawAdInAM kapAlAdO dravyezu guRakarmaRoH . tezu jAteSca sambanDaH samavAyaH prakIrttitaH</q> BAzA° <q>samavAyaM darSayati . GawAdInAmiti avayavAvayavinoH jAtivyaktyorguRagu­RinoH kriyAkriyAvatornityadravyaviSezayoSca yaH sambanDaH sa sa mavAyaH samavAyatvaM nityasambanDatvaM tatra pramARantu guRa kriyAdiviSizwabudDirviSezaRaviSezyasambanDavizayA vi­SizwabudDitvAt ityanumAne saMyogAdibADAt samavAya­sidDiH . na ca svarUpasambanDena sidDasADanam arTAntaraM vA, anantasvarUpARAM sambanDatvakalpane gOravAt lATavA­dekamamavAyasidDiH . na ca samavAyasyEkatve vAyO rUpa­vattAbudDiprasaNgaH tatra rUpasamavAyasattve'pi rUpABAvAt . na cevam aBAvasya vESizwyaM sambanDAntaraM siDyediti vAcyaM tasya nityatve BUtale GawAnayanAnantaramapi GawA­BAvabudDipramaNgAt GawABAvasambanDasya tatra sattvAt tasya nityatvAt anyaTA deSAntare'pi tatpratItirna syAt vE­Sizwyasya ca tatra sattvAt, mama tu mate Gawe pAkaraktatA­daSAyAM SyAmarUpasya nazwatvAnna tadvattAbudDiH . vESizwyasyA­nityatve tvanantavESizwyakalpane tavEva gOravam itTaYca tattatkAlInatattadBUtalAdikaM tattadaBAvAnAM sambanDaH</q> . ayutasidDayoH sambanDaH sa iti vESezikAH sa ca sambanDo nAnA nityaSceti navyanEyAyikAH prABAkarAScAhuH . samavAyaSca pratyakzaH <q>pratyakzaM samavAyasya viSezaRatayA Bavet</q> BAzA° . atIndriyo'numeyaSceti vESezikAH, svarUpasyEva sambanDatvopapatteH samavAyo na padArTAntaramiti BAwwAH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "समवाय",
+            "content": "<H2><h><key1>samavAya</key1><key2>sam-avAya</key2></h><body><s>sam-avA<srs />ya</s>   <lex>m.</lex> coming or meeting together, contact, concourse, congress, assemblage, collection, crowd, aggregate (<s>ena</s> or <s>At</s>, ‘in combination’; <s>°yaM-√ kf</s>, ‘to meet, combine, flock together’), <ls>GṛS.</ls>; <ls>Gaut.</ls>; <ls>Mn.</ls> &amp;c.<info lex=\"m\" /></body><tail><L>233884</L><pc>1157,3</pc></tail></H2>\n <H2A><h><key1>samavAya</key1><key2>sam-avAya</key2></h><body>  conjunction (of heavenly bodies), <ls>MBh.</ls>; <ls>VarBṛS.</ls><info lex=\"inh\" /></body><tail><L>233885</L><pc>1157,3</pc></tail></H2A>\n <H2A><h><key1>samavAya</key1><key2>sam-avAya</key2></h><body>  collision, <ls>ŚrS.</ls>; <ls>Gaut.</ls>; <ls>Sarvad.</ls><info lex=\"inh\" /></body><tail><L>233886</L><pc>1157,3</pc></tail></H2A>\n <H2A><h><key1>samavAya</key1><key2>sam-avAya</key2></h><body>  (in <ab>phil.</ab>) perpetual co-inherence, inner or intimate relation, constant and intimate union, inseparable concomitance (= <s>nitya-sambanDa</s>, the sixth <s1 slp1=\"padArTa\">Padārtha</s1> or category of the <s1 slp1=\"vESezika\">Vaiśeṣika</s1>s, expressing relation which exists between a substance and its qualities, between a whole and its parts [<ab>e.g.</ab> between cloth and the yarn composing it], between a genus and its individuals &amp;c.), <ls>Kap.</ls>; <ls>Jaim.</ls>; <ls>IW. 66</ls>; <ls n=\"IW.\">69</ls><info lex=\"inh\" /></body><tail><L>233887</L><pc>1157,3</pc></tail></H2A>\n <H2A><h><key1>samavAya</key1><key2>sam-avAya</key2></h><body>  course, duration (<s>e</s>, with <ab>gen.</ab>, ‘during’), <ls>MBh. i, 556</ls><info lex=\"inh\" /></body><tail><L>233888</L><pc>1158,1</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समवाय",
+            "content": "<H1><h><key1>samavAya</key1><key2>samavAya</key2></h><body><s>samavAya</s>  <div n=\"1\">m. (<s>-yaH</s>) </div><div n=\"2\"> 1. Multitude, assemblage, collection, aggregate, quan- <lb />tity. </div><div n=\"2\"> 2. One of the categories or Padārthas of logic, intimate and <lb />constant relation, as of yarn and the cloth made of it. </div><div n=\"2\"> 3. Connec- <lb />tion of species in a genus, or parts of a whole.</div><div n=\"E\"> E. <s>sam</s> and <s>ava</s> before <lb /><s>ay</s> to go, aff. <s>GaY .</s></div></body><tail><L>42587</L><pc>762-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "समवाय",
+            "content": "<span lang=\"sa\">समवाय<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಮೂಹ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>सम् + अव + अय (गतौ) - \"घञ्\" (३-३-१९)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"अनध्यायो रुद्यमाने समवाये जनस्य च\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० ४-१०८<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समवाय<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಂಬಂಧ /ಅಯುತಸಿದ್ಧವಾದಗಳ ಸಂಬಂಧ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"घटादीनां कपालादौ द्रव्येषु गुणकर्मणोः । तेषु जातेश्च सम्बन्धः समवायः प्रकीर्तितः ॥\" - भाषाप० ११<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समवाय<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಟ್ಟುಗೂಡುವುದು /ಒಟ್ಟಿಗೆ ಸೇರುವುದು /ಒಂದಾಗಿ ಸೇರುವುದು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"स्वाविनयानामेकैकमप्येषामायतनं किमुत समवायः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>काद०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

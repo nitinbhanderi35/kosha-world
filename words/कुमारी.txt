@@ -1,1 +1,557 @@
-or]" || value instanceof Error);\n    }\n    __name(isError, "isError");\n    function isMap(value) {\n      return kind(value, "object") && Object.prototype.toString.call(value) === "[object Map]";\n    }\n    __name(isMap, "isMap");\n    function isSet(value) {\n      return kind(value, "object") && Object.prototype.toString.call(value) === "[object Set]";\n    }\n    __name(isSet, "isSet");\n    function isBelowBreakLength(output, start, base) {\n      const breakLength = 80;\n      let totalLength = output.length + start;\n      if (totalLength + output.length > breakLength) {\n        return false;\n      }\n      for (let i = 0; i < output.length; i++) {\n        totalLength += output[i].length;\n        if (totalLength > breakLength) {\n          return false;\n        }\n      }\n      return base === "" || !StringPrototypeIncludes.call(base, "\\n");\n    }\n    __name(isBelowBreakLength, "isBelowBreakLength");\n    function reduceToSingleString(output, base, braces) {\n      const start = output.length + braces[0].length + base.length + 10;\n      if (!isBelowBreakLength(output, start, base)) {\n        return (base ? base + " " : "") + braces[0] + "\\n  " + output.join(",\\n  ") + "\\n" + braces[1];\n      }\n      return ((base ? base + " " : "") + braces[0] + " " + output.join(", ") + " " + braces[1]).trim();\n    }\n    __name(reduceToSingleString, "reduceToSingleString");\n    function safeStringify(input) {\n      if (Array.isArray(input)) {\n        input = input.map(\n          (element) => JSON.parse(JSON.stringify(element, makeCircularReplacer()))\n        );\n      }\n      return JSON.stringify(input, makeCircularReplacer());\n    }\n    __name(safeStringify, "safeStringify");\n    function makeCircularReplacer() {\n      const seen = /* @__PURE__ */ new WeakSet();\n      return (key, value) => {\n        if (value !== null && kind(value, "object")) {\n          if (seen.has(value))\n            return "[Circular]";\n          seen.add(value);\n        }\n        return value;\n      };\n    }\n    __name(makeCircularReplacer, "makeCircularReplacer");\n    function getKeys(value, showHidden = false) {\n      let keys;\n      const symbols = ObjectGetOwnPropertySymbols(value);\n      if (showHidden) {\n        keys = ObjectGetOwnPropertyNames(value);\n        if (symbols.length !== 0)\n          ArrayPrototypePush.apply(keys, symbols);\n      } else {\n        try {\n          keys = ObjectKeys(value);\n        } catch (err) {\n          keys = ObjectGetOwnPropertyNames(value);\n        }\n        if (symbols.length !== 0) {\n          const filter = /* @__PURE__ */ __name((key) => ObjectPrototypePropertyIsEnumerable.call(value, key), "filter");\n          ArrayPrototypePush.apply(keys, ArrayPrototypeFilter.call(symbols, filter));\n        }\n      }\n      return keys;\n    }\n    __name(getKeys, "getKeys");\n  }\n});\n\n// src/primitives/console.js\nvar console_exports = {};\n__export(console_exports, {\n  console: () => konsole\n});\nmodule.exports = __toCommonJS(console_exports);\ninit_define_process();\nvar import_format = __toESM(require_dist());\nvar format = (0, import_format.createFormat)();\nvar bareError = console.error.bind(console);\nvar bareLog = console.log.bind(console);\nvar assert = console.assert.bind(console);\nvar time = console.time.bind(console);\nvar timeEnd = console.timeEnd.bind(console);\nvar timeLog = console.timeLog.bind(console);\nvar trace = console.trace.bind(console);\nvar error = /* @__PURE__ */ __name((...args) => bareError(format(...args)), "error");\nvar log = /* @__PURE__ */ __name((...args) => bareLog(format(...args)), "log");\nvar konsole = {\n  assert: (assertion, ...args) => assert(assertion, format(...args)),\n  count: console.count.bind(console),\n  debug: log,\n  dir: console.dir.bind(console),\n  error,\n  info: log,\n  log,\n  time: (...args) => time(format(...args)),\n  timeEnd: (...args) => timeEnd(format(...args)),\n  timeLog,\n  trace,\n  warn: error\n};\n// Annotate the CommonJS export names for ESM import in node:\n0 && (module.exports = {\n  console\n});\n'},827:e=>{e.exports='"use strict";\nvar __defProp = Object.defineProperty;\nvar __getOwnPropDesc = Object.getOwnPropertyDescriptor;\nvar __getOwnPropNames = Object.getOwnPropertyNames;\nvar __hasOwnProp = Object.prototype.hasOwnProperty;\nvar __name = (target, value) => __defProp(target, "name", { value, configurable: true });\nvar __export = (target, all) => {\n  for (var name in all)\n    __defProp(target, name, { get: all[name], enumerable: true });\n};\nvar __copyProps = (to, from, except, desc) => {\n  if (from && typeof from === "object" || typeof from === "function") {\n    for (let key of __getOwnPropNames(from))\n      if (!__hasOwnProp.call(to, key) && key !== except)\n        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });\n  }\n  return to;\n};\nvar __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);\n\n// src/primitives/crypto.js\nvar crypto_exports = {};\n__export(crypto_exports, {\n  Crypto: () => Crypto,\n  CryptoKey: () => CryptoKey,\n  SubtleCrypto: () => SubtleCrypto,\n  crypto: () => crypto\n});\nmodule.exports = __toCommonJS(crypto_exports);\nvar import_node_crypto = require("crypto");\nvar { Crypto, CryptoKey } = import_node_crypto.webcrypto;\nfunction SubtleCrypto() {\n  if (!(this instanceof SubtleCrypto))\n    return new SubtleCrypto();\n  throw TypeError("Illegal constructor");\n}\n__name(SubtleCrypto, "SubtleCrypto");\nvar crypto = new Crypto();\n// Annotate the CommonJS export names for ESM import in node:\n0 && (module.exports = {\n  Crypto,\n  CryptoKey,\n  SubtleCrypto,\n  crypto\n});\n'},319:e=>{e.exports='"use strict";\nvar __defProp = Object.defineProperty;\nvar __getOwnPropDesc = Object.getOwnPropertyDescriptor;\nvar __getOwnPropNames = Object.getOwnPropertyNames;\nvar __hasOwnProp = Object.prototype.hasOwnProperty;\nvar __name = (target, value) => __defProp(target, "name", { value, configurable: true });\nvar __export = (target, all) => {\n  for (var name in all)\n    __defProp(target, name, { get: all[name], enumerable: true });\n};\nvar __copyProps = (to, from, except, desc) => {\n  if (from && typeof from === "object" || typeof from === "function") {\n    for (let key of __getOwnPropNames(from))\n      if (!__hasOwnProp.call(to, key) && key !== except)\n        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });\n  }\n  return to;\n};\nvar __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);\n\n// src/primitives/encoding.js\nvar encoding_exports = {};\n__export(encoding_exports, {\n  atob: () => atob,\n  btoa: () => btoa\n});\nmodule.exports = __toCommonJS(encoding_exports);\nvar atob = /* @__PURE__ */ __name((enc) => Buffer.from(enc, "base64").toString("binary"), "atob");\nvar btoa = /* @__PURE__ */ __name((str) => Buffer.from(str, "binary").toString("base64"), "btoa");\n// Annotate the CommonJS export names for ESM import in node:\n0 && (module.exports = {\n  atob,\n  btoa\n});\n'},921:e=>{e.exports='"use strict";\nvar __defProp = Object.defineProperty;\nvar __getOwnPropDesc = Object.getOwnPropertyDescriptor;\nvar __getOwnPropNames = Object.getOwnPropertyNames;\nvar __hasOwnProp = Object.prototype.hasOwnProperty;\nvar __name = (target, value) => __defProp(target, "name", { value, configurable: true });\nvar __export = (target, all) => {\n  for (var name in all)\n    __defProp(target, name, { get: all[name], enumerable: true });\n};\nvar __copyProps = (to, from, except, desc) => {\n  if (from && typeof from === "object" || typeof from === "function") {\n    for (let key of __getOwnPropNames(from))\n      if (!__hasOwnProp.call(to, key) && key !== except)\n        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });\n  }\n  return to;\n};\nvar __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);\n\n// src/primitives/events.js\nvar events_exports = {};\n__export(events_exports, {\n  FetchEvent: () => FetchEvent,\n  PromiseRejectionEvent: () => PromiseRejectionEvent\n});\nmodule.exports = __toCommonJS(events_exports);\nvar _FetchEvent = class _FetchEvent extends Event {\n  constructor(request) {\n    super("fetch");\n    this.request = request;\n    this.response = null;\n    this.awaiting = /* @__PURE__ */ new Set();\n  }\n  respondWith(response) {\n    this.response = response;\n  }\n  waitUntil(promise) {\n    this.awaiting.add(promise);\n    promise.finally(() => this.awaiting.delete(promise));\n  }\n};\n__name(_FetchEvent, "FetchEvent");\nvar FetchEvent = _FetchEvent;\nvar _PromiseRejectionEvent = class _PromiseRejectionEvent extends Event {\n  constructor(type, init) {\n    super(type, { cancelable: true });\n    this.promise = init.promise;\n    this.reason = init.reason;\n  }\n};\n__name(_PromiseRejectionEvent, "PromiseRejectionEvent");\nvar PromiseRejectionEvent = _PromiseRejectionEvent;\n// Annotate the CommonJS export names for ESM import in node:\n0 && (module.exports = {\n  FetchEvent,\n  PromiseRejectionEvent\n});\n'},634:e=>{e.exports='"use strict";\nvar __create = Object.create;\nvar __defProp = Object.defineProperty;\nvar __getOwnPropDesc = Object.getOwnPropertyDescriptor;\nvar __getOwnPropNames = Object.getOwnPropertyNames;\nvar __getProtoOf = Object.getPrototypeOf;\nvar __hasOwnProp = Object.prototype.hasOwnProperty;\nvar __name = (target, value) => __defProp(target, "name", { value, configurable: true });\nvar __esm = (fn, res) => function __init() {\n  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;\n};\nvar __commonJS = (cb, mod) => function __require() {\n  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;\n};\nvar __export = (target, all) => {\n  for (var name in all)\n    __defProp(target, name, { get: all[name], enumerable: true });\n};\nvar __copyProps = (to, from, except, desc) => {\n  if (from && typeof from === "object" || typeof from === "function") {\n    for (let key of __getOwnPropNames(from))\n      if (!__hasOwnProp.call(to, key) && key !== except)\n        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });\n  }\n  return to;\n};\nvar __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(\n  // If the importer is in node compatibility mode or this is not an ESM\n  // file that has been converted to a CommonJS file using a Babel-\n  // compatible transform (i.e. "__esModule" has not been set), then set\n  // "default" to the CommonJS "module.exports" for node compatibility.\n  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,\n  mod\n));\nvar __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);\nvar __accessCheck = (obj, member, msg) => {\n  if (!member.has(obj))\n    throw TypeError("Cannot " + msg);\n};\nvar __privateGet = (obj, member, getter) => {\n  __accessCheck(obj, member, "read from private field");\n  return getter ? getter.call(obj) : member.get(obj);\n};\nvar __privateAdd = (obj, member, value) => {\n  if (member.has(obj))\n    throw TypeError("Cannot add the same private member more than once");\n  member instanceof WeakSet ? member.add(obj) : member.set(obj, value);\n};\nvar __privateSet = (obj, member, value, setter) => {\n  __accessCheck(obj, member, "write to private field");\n  setter ? setter.call(obj, value) : member.set(obj, value);\n  return value;\n};\nvar __privateMethod = (obj, member, method) => {\n  __accessCheck(obj, member, "access private method");\n  return method;\n};\n\n// <define:process>\nvar define_process_default;\nvar init_define_process = __esm({\n  "<define:process>"() {\n    define_process_default = { env: {}, versions: { node: "16.6.0" } };\n  }\n});\n\n// ../../node_modules/.pnpm/undici@5.23.0/node_modules/undici/lib/fetch/symbols.js\nvar require_symbols = __commonJS({\n  "../../node_modules/.pnpm/undici@5.23.0/node_modules/undici/lib/fetch/symbols.js"(exports, module2) {\n    "use strict";\n    init_define_process();\n    module2.exports = {\n      kUrl: Symbol("url"),\n      kHeaders: Symbol("headers"),\n      kSignal: Symbol("signal"),\n      kState: Symbol("state"),\n      kGuard: Symbol("guard"),\n      kRealm: Symbol("realm")\n    };\n  }\n});\n\n// ../../node_modules/.pnpm/undici@5.23.0/node_modules/undici/lib/core/symbols.js\nvar require_symbols2 = __commonJS({\n  "../../node_modules/.pnpm/undici@5.23.0/node_modules/undici/lib/core/symbols.js"(exports, module2) {\n    "use strict";\n    init_define_process();\n    module2.exports = {\n      kClose: Symbol("close"),\n      kDestroy: Symbol("destroy"),\n      kDispatch: Symbol("dispatch"),\n      kUrl: Symbol("url"),\n      kWriting: Symbol("writing"),\n      kResuming: Symbol("resuming"),\n      kQueue: Symbol("queue"),\n      kConnect: Symbol("connect"),\n      kConnecting: Symbol("connecting"),\n      kHeadersList: Symbol("headers list"),\n      kKeepAliveDefaultTimeout: Symbol("default keep alive timeout"),\n      kKeepAliveMaxTimeout: Symbol("max keep alive timeout"),\n      kKeepAliveTimeoutThreshold: Symbol("keep alive timeout threshold"),\n      kKeepAliveTimeoutValue: Symbol("keep alive timeout"),\n      kKeepAlive: Symbol("keep alive"),\n      kHeadersTimeout: Symbol("headers timeout"),\n      kBodyTimeout: Symbol("body timeout"),\n      kServerName: Symbol("server name"),\n      kLocalAddress: Symbol("local address"),\n      kHost: Symbol("host"),\n      kNoRef: Symbol("no ref"),\n      kBodyUsed: Symbol("used"),\n      kRunning: Symbol("running"),\n      kBlocking: Symbol("blocking"),\n      kPending: Symbol("pending"),\n      kSize: Symbol("size"),\n      kBusy: Symbol("busy"),\n      kQueued: Symbol("queued"),\n      kFree: Symbol("free"),\n      kConnected: Symbol("connected"),\n      kClosed: Symbol("closed"),\n      kNeedDrain: Symbol("need drain"),\n      kReset: Symbol("reset"),\n      kDestroyed: Symbol.for("nodejs.stream.destroyed"),\n      kMaxHeadersSize: Symbol("max headers size"),\n      kRunningIdx: Symbol("running index"),\n      kPendingIdx: Symbol("pending index"),\n      kError: Symbol("error"),\n      kClients: Symbol("clients"),\n      kClient: Symbol("client"),\n      kParser: Symbol("parser"),\n      kOnDestroyed: Symbol("destroy callbacks"),\n      kPipelining: Symbol("pipelining"),\n      kSocket: Symbol("socket"),\n      kHostHeader: Symbol("host header"),\n      kConnector: Symbol("connector"),\n      kStrictContentLength: Symbol("strict content length"),\n      kMaxRedirections: Symbol("maxRedirections"),\n      kMaxRequests: Symbol("maxRequestsPerClient"),\n      kProxy: Symbol("proxy agent options"),\n      kCounter: Symbol("socket request counter"),\n      kInterceptors: Symbol("dispatch interceptors"),\n      kMaxResponseSize: Symbol("max response size")\n    };\n  }\n});\n\n// ../../node_modules/.pnpm/undici@5.23.0/node_modules/undici/lib/core/errors.js\nvar require_errors = __commonJS({\n  "../../node_modules/.pnpm/undici@5.23.0/node_modules/undici/lib/core/errors.js"(exports, module2) {\n    "use strict";\n    init_define_process();\n    var _UndiciError = class _UndiciError extends Error {\n      constructor(message) {\n        super(message);\n        this.name = "UndiciError";\n        this.code = "UND_ERR";\n      }\n    };\n    __name(_UndiciError, "UndiciError");\n    var UndiciError = _UndiciError;\n    var _ConnectTimeoutError = class _ConnectTimeoutError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _ConnectTimeoutError);\n        this.name = "ConnectTimeoutError";\n        this.message = message || "Connect Timeout Error";\n        this.code = "UND_ERR_CONNECT_TIMEOUT";\n      }\n    };\n    __name(_ConnectTimeoutError, "ConnectTimeoutError");\n    var ConnectTimeoutError = _ConnectTimeoutError;\n    var _HeadersTimeoutError = class _HeadersTimeoutError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _HeadersTimeoutError);\n        this.name = "HeadersTimeoutError";\n        this.message = message || "Headers Timeout Error";\n        this.code = "UND_ERR_HEADERS_TIMEOUT";\n      }\n    };\n    __name(_HeadersTimeoutError, "HeadersTimeoutError");\n    var HeadersTimeoutError = _HeadersTimeoutError;\n    var _HeadersOverflowError = class _HeadersOverflowError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _HeadersOverflowError);\n        this.name = "HeadersOverflowError";\n        this.message = message || "Headers Overflow Error";\n        this.code = "UND_ERR_HEADERS_OVERFLOW";\n      }\n    };\n    __name(_HeadersOverflowError, "HeadersOverflowError");\n    var HeadersOverflowError = _HeadersOverflowError;\n    var _BodyTimeoutError = class _BodyTimeoutError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _BodyTimeoutError);\n        this.name = "BodyTimeoutError";\n        this.message = message || "Body Timeout Error";\n        this.code = "UND_ERR_BODY_TIMEOUT";\n      }\n    };\n    __name(_BodyTimeoutError, "BodyTimeoutError");\n    var BodyTimeoutError = _BodyTimeoutError;\n    var _ResponseStatusCodeError = class _ResponseStatusCodeError extends UndiciError {\n      constructor(message, statusCode, headers, body) {\n        super(message);\n        Error.captureStackTrace(this, _ResponseStatusCodeError);\n        this.name = "ResponseStatusCodeError";\n        this.message = message || "Response Status Code Error";\n        this.code = "UND_ERR_RESPONSE_STATUS_CODE";\n        this.body = body;\n        this.status = statusCode;\n        this.statusCode = statusCode;\n        this.headers = headers;\n      }\n    };\n    __name(_ResponseStatusCodeError, "ResponseStatusCodeError");\n    var ResponseStatusCodeError = _ResponseStatusCodeError;\n    var _InvalidArgumentError = class _InvalidArgumentError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _InvalidArgumentError);\n        this.name = "InvalidArgumentError";\n        this.message = message || "Invalid Argument Error";\n        this.code = "UND_ERR_INVALID_ARG";\n      }\n    };\n    __name(_InvalidArgumentError, "InvalidArgumentError");\n    var InvalidArgumentError2 = _InvalidArgumentError;\n    var _InvalidReturnValueError = class _InvalidReturnValueError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _InvalidReturnValueError);\n        this.name = "InvalidReturnValueError";\n        this.message = message || "Invalid Return Value Error";\n        this.code = "UND_ERR_INVALID_RETURN_VALUE";\n      }\n    };\n    __name(_InvalidReturnValueError, "InvalidReturnValueError");\n    var InvalidReturnValueError = _InvalidReturnValueError;\n    var _RequestAbortedError = class _RequestAbortedError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _RequestAbortedError);\n        this.name = "AbortError";\n        this.message = message || "Request aborted";\n        this.code = "UND_ERR_ABORTED";\n      }\n    };\n    __name(_RequestAbortedError, "RequestAbortedError");\n    var RequestAbortedError = _RequestAbortedError;\n    var _InformationalError = class _InformationalError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _InformationalError);\n        this.name = "InformationalError";\n        this.message = message || "Request information";\n        this.code = "UND_ERR_INFO";\n      }\n    };\n    __name(_InformationalError, "InformationalError");\n    var InformationalError = _InformationalError;\n    var _RequestContentLengthMismatchError = class _RequestContentLengthMismatchError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _RequestContentLengthMismatchError);\n        this.name = "RequestContentLengthMismatchError";\n        this.message = message || "Request body length does not match content-length header";\n        this.code = "UND_ERR_REQ_CONTENT_LENGTH_MISMATCH";\n      }\n    };\n    __name(_RequestContentLengthMismatchError, "RequestContentLengthMismatchError");\n    var RequestContentLengthMismatchError = _RequestContentLengthMismatchError;\n    var _ResponseContentLengthMismatchError = class _ResponseContentLengthMismatchError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _ResponseContentLengthMismatchError);\n        this.name = "ResponseContentLengthMismatchError";\n        this.message = message || "Response body length does not match content-length header";\n        this.code = "UND_ERR_RES_CONTENT_LENGTH_MISMATCH";\n      }\n    };\n    __name(_ResponseContentLengthMismatchError, "ResponseContentLengthMismatchError");\n    var ResponseContentLengthMismatchError = _ResponseContentLengthMismatchError;\n    var _ClientDestroyedError = class _ClientDestroyedError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _ClientDestroyedError);\n        this.name = "ClientDestroyedError";\n        this.message = message || "The client is destroyed";\n        this.code = "UND_ERR_DESTROYED";\n      }\n    };\n    __name(_ClientDestroyedError, "ClientDestroyedError");\n    var ClientDestroyedError = _ClientDestroyedError;\n    var _ClientClosedError = class _ClientClosedError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _ClientClosedError);\n        this.name = "ClientClosedError";\n        this.message = message || "The client is closed";\n        this.code = "UND_ERR_CLOSED";\n      }\n    };\n    __name(_ClientClosedError, "ClientClosedError");\n    var ClientClosedError = _ClientClosedError;\n    var _SocketError = class _SocketError extends UndiciError {\n      constructor(message, socket) {\n        super(message);\n        Error.captureStackTrace(this, _SocketError);\n        this.name = "SocketError";\n        this.message = message || "Socket error";\n        this.code = "UND_ERR_SOCKET";\n        this.socket = socket;\n      }\n    };\n    __name(_SocketError, "SocketError");\n    var SocketError = _SocketError;\n    var _NotSupportedError = class _NotSupportedError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _NotSupportedError);\n        this.name = "NotSupportedError";\n        this.message = message || "Not supported error";\n        this.code = "UND_ERR_NOT_SUPPORTED";\n      }\n    };\n    __name(_NotSupportedError, "NotSupportedError");\n    var NotSupportedError = _NotSupportedError;\n    var _BalancedPoolMissingUpstreamError = class _BalancedPoolMissingUpstreamError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, NotSupportedError);\n        this.name = "MissingUpstreamError";\n        this.message = message || "No upstream has been added to the BalancedPool";\n        this.code = "UND_ERR_BPL_MISSING_UPSTREAM";\n      }\n    };\n    __name(_BalancedPoolMissingUpstreamError, "BalancedPoolMissingUpstreamError");\n    var BalancedPoolMissingUpstreamError = _BalancedPoolMissingUpstreamError;\n    var _HTTPParserError = class _HTTPParserError extends Error {\n      constructor(message, code, data) {\n        super(message);\n        Error.captureStackTrace(this, _HTTPParserError);\n        this.name = "HTTPParserError";\n        this.code = code ? `HPE_${code}` : void 0;\n        this.data = data ? data.toString() : void 0;\n      }\n    };\n    __name(_HTTPParserError, "HTTPParserError");\n    var HTTPParserError = _HTTPParserError;\n    var _ResponseExceededMaxSizeError = class _ResponseExceededMaxSizeError extends UndiciError {\n      constructor(message) {\n        super(message);\n        Error.captureStackTrace(this, _ResponseExceededMaxSizeError);\n        this.name = "ResponseExceededMaxSizeError";\n        this.message = message || "Response content exceeded max size";\n        this.code = "UND_ERR_RES_EXCEEDED_MAX_SIZE";\n      }\n    };\n    __name(_ResponseExceededMaxSizeError, "ResponseExceededMaxSizeError");\n    var ResponseExceededMaxSizeError = _ResponseExceededMaxSizeError;\n    module2.exports = {\n      HTTPParserError,\n      UndiciError,\n      HeadersTimeoutError,\n      HeadersOverflowError,\n      BodyTimeoutError,\n      RequestContentLengthMismatchError,\n      ConnectTimeoutError,\n      ResponseStatusCodeError,\n      InvalidArgumentError: InvalidArgumentError2,\n      InvalidReturnValueError,\n      RequestAbortedError,\n      ClientDestroyedError,\n      ClientClosedError,\n      InformationalError,\n      SocketError,\n      NotSupportedError,\n      ResponseContentLengthMismatchError,\n      BalancedPoolMissingUpstreamError,\n      ResponseExceededMaxSizeError\n    };\n  }\n});\n\n// ../../node_modules/.pnpm/undici@5.23.0/node_modules/undici/lib/core/util.js\nvar require_util = __commonJS({\n  "../../node_modules/.pnpm/undici@5.23.0/node_modules/undici/lib/core/util.js"(exports, module2) {\n    "use strict";\n    init_define_process();\n    var assert = require("assert");\n    var { kDestroyed, kBodyUsed } = require_symbols2();\n    var { IncomingMessage } = require("http");\n    var stream = require("stream");\n    var net = require("net");\n    var { InvalidArgumentError: InvalidArgumentError2 } = require_errors();\n    var { Blob: Blob2 } = require("buffer");\n    var nodeUtil = require("util");\n    var { stringify } = require("querystring");\n    var [nodeMajor, nodeMinor] = define_process_default.versions.node.split(".").map((v) => Number(v));\n    function nop() {\n    }\n    __name(nop, "nop");\n    function isStream(obj) {\n      return obj && typeof obj === "object" && typeof obj.pipe === "function" && typeof obj.on === "function";\n    }\n    __name(isStream, "isStream");\n    function isBlobLike(object) {\n      return Blob2 && object instanceof Blob2 || object && typeof object === "object" && (typeof object.stream === "function" || typeof object.arrayBuffer === "function") && /^(Blob|File)$/.test(object[Symbol.toStringTag]);\n    }\n    __name(isBlobLike, "isBlobLike");\n    function buildURL(url, queryParams) {\n      if (url.includes("?") || url.includes("#")) {\n        throw new Error(\'Query params cannot be passed when url already contains "?" or "#".\');\n      }\n      const stringified = stringify(queryParams);\n      if (stringified) {\n        url += "?" + stringified;\n      }\n      return url;\n    }\n    __name(buildURL, "buildURL");\n    function parseURL(url) {\n      if (typeof url === "string") {\n        url = new URL(url);\n        if (!/^https?:/.test(url.origin || url.protocol)) {\n          throw new InvalidArgumentError2("Invalid URL protocol: the URL must start with `http:` or `https:`.");\n        }\n        return url;\n      }\n      if (!url || typeof url !== "object") {\n        throw new InvalidArgumentError2("Invalid URL: The URL argument must be a non-null object.");\n      }\n      if (url.port != null && url.port !== "" && !Number.isFinite(parseInt(url.port))) {\n        throw new InvalidArgumentError2("Invalid URL: port must be a valid integer or a string representation of an integer.");\n      }\n      if (url.path != null && typeof url.path !== "string") {\n        throw new InvalidArgumentError2("Invalid URL path: the path must be a string or null/undefined.");\n      }\n      if (url.pathname != null && typeof url.pathname !== "string") {\n        throw new InvalidArgumentError2("Invalid URL pathname: the pathname must be a string or null/undefined.");\n      }\n      if (url.hostname != null && typeof url.hostname !== "string") {\n        throw new InvalidArgumentError2("Invalid URL hostname: the hostname must be a string or null/undefined.");\n      }\n      if (url.origin != null && typeof url.origin !== "string") {\n        throw new InvalidArgumentError2("Invalid URL origin: the origin must be a string or null/undefined.");\n      }\n      if (!/^https?:/.test(url.origin || url.protocol)) {\n        throw new InvalidArgumentError2("Invalid URL protocol: the URL must start with `http:` or `https:`.");\n      }\n      if (!(url instanceof URL)) {\n        const port = url.port != null ? url.port : url.protocol === "https:" ? 443 : 80;\n        let origin = url.origin != null ? url.origin : `${url.protocol}//${url.hostname}:${port}`;\n        let path = url.path != null ? url.path : `${url.pathname || ""}${url.search || ""}`;\n        if (origin.endsWith("/")) {\n          origin = origin.substring(0, origin.length - 1);\n        }\n        if (path && !path.startsWith("/")) {\n          path = `/${path}`;\n        }\n        url = new URL(origin + path);\n      }\n      return url;\n    }\n    __name(parseURL, "parseURL");\n    function parseOrigin(url) {\n      url = parseURL(url);\n      if (url.pathname !== "/" || url.search || url.hash) {\n        throw new InvalidArgumentError2("invalid url");\n      }\n      return url;\n    }\n    __name(parseOrigin, "parseOrigin");\n    function getHostname(host) {\n      if (host[0] === "[") {\n        const idx2 = host.indexOf("]");\n        assert(idx2 !== -1);\n        return host.substr(1, idx2 - 1);\n      }\n      const idx = host.indexOf(":");\n      if (idx === -1)\n        return host;\n      return host.substr(0, idx);\n    }\n    __name(getHostname, "getHostname");\n    function getServerName(host) {\n      if (!host) {\n        return null;\n      }\n      assert.strictEqual(typeof host, "string");\n      const servername = getHostname(host);\n      if (net.isIP(servername)) {\n        return "";\n      }\n      return servername;\n    }\n    __name(getServerName, "getServerName");\n    function deepClone(obj) {\n      return JSON.parse(JSON.stringify(obj));\n    }\n    __name(deepClone, "deepClone");\n    function isAsyncIterable(obj) {\n      return !!(obj != null && typeof obj[Symbol.asyncIterator] === "function");\n    }\n    __name(isAsyncIterable, "isAsyncIterable");\n    function isIterable(obj) {\n      return !!(obj != null && (typeof obj[Symbol.iterator] === "function" || typeof obj[Symbol.asyncIterator] === "function"));\n    }\n    __name(isIterable, "isIterable");\n    function bodyLength(body) {\n      if (body == null) {\n        return 0;\n      } else if (isStream(body)) {\n        const state = body._readableState;\n        return state && state.ended === true && Number.isFinite(state.length) ? state.length : null;\n      } else if (isBlobLike(body)) {\n        return body.size != null ? body.size : null;\n      } else if (isBuffer(body)) {\n        return body.byteLength;\n      }\n      return null;\n    }\n    __name(bodyLength, "bodyLength");\n    function isDestroyed(stream2) {\n      return !stream2 || !!(stream2.destroyed || stream2[kDestroyed]);\n    }\n    __name(isDestroyed, "isDestroyed");\n    function isReadableAborted(stream2) {\n      const state = stream2 && stream2._readableState;\n      return isDestroyed(stream2) && state && !state.endEmitted;\n    }\n    __name(isReadableAborted, "isReadableAborted");\n    function destroy(stream2, err) {\n      if (!isStream(stream2) || isDestroyed(stream2)) {\n        return;\n      }\n      if (typeof stream2.destroy === "function") {\n        if (Object.getPrototypeOf(stream2).constructor === IncomingMessage) {\n          stream2.socket = null;\n        }\n        stream2.destroy(err);\n      } else if (err) {\n        define_process_default.nextTick((stream3, err2) => {\n          stream3.emit("error", err2);\n        }, stream2, err);\n      }\n      if (stream2.destroyed !== true) {\n        stream2[kDestroyed] = true;\n      }\n    }\n    __name(destroy, "destroy");\n    var KEEPALIVE_TIMEOUT_EXPR = /timeout=(\\d+)/;\n    function parseKeepAliveTimeout(val) {\n      const m = val.toString().match(KEEPALIVE_TIMEOUT_EXPR);\n      return m ? parseInt(m[1], 10) * 1e3 : null;\n    }\n    __name(parseKeepAliveTimeout, "parseKeepAliveTimeout");\n    function parseHeaders(headers, obj = {}) {\n      for (let i = 0; i < headers.length; i += 2) {\n        const key = headers[i].toString().toLowerCase();\n        let val = obj[key];\n        if (!val) {\n          if (Array.isArray(headers[i + 1])) {\n            obj[key] = headers[i + 1];\n          } else {\n            obj[key] = headers[i + 1].toString("utf8");\n          }\n        } else {\n          if (!Array.isArray(val)) {\n            val = [val];\n            obj[key] = val;\n          }\n          val.push(headers[i + 1].toString("utf8"));\n        }\n      }\n      if ("content-length" in obj && "content-disposition" in obj) {\n        obj["content-disposition"] = Buffer.from(obj["content-disposition"]).toString("latin1");\n      }\n      return obj;\n    }\n    __name(parseHeaders, "parseHeaders");\n    function parseRawHeaders(headers) {\n      const ret = [];\n      let hasContentLength = false;\n      let contentDispositionIdx = -1;\n      for (let n = 0; n < headers.length; n += 2) {\n        const key = headers[n + 0].toString();\n        const val = headers[n + 1].toString("utf8");\n        if (key.length === 14 && (key === "content-length" || key.toLowerCase() === "content-length")) {\n          ret.push(key, val);\n          hasContentLength = true;\n        } else if (key.length === 19 && (key === "content-disposition" || key.toLowerCase() === "content-disposition")) {\n          contentDispositionIdx = ret.push(key, val) - 1;\n        } else {\n          ret.push(key, val);\n        }\n      }\n      if (hasContentLength && contentDispositionIdx !== -1) {\n        ret[contentDispositionIdx] = Buffer.from(ret[contentDispositionIdx]).toString("latin1");\n      }\n      return ret;\n    }\n    __name(parseRawHeaders, "parseRawHeaders");\n    function isBuffer(buffer) {\n      return buffer instanceof Uint8Array || Buffer.isBuffer(buffer);\n    }\n    __name(isBuffer, "isBuffer");\n    function validateHandler(handler, method, upgrade) {\n      if (!handler || typeof handler !== "object") {\n        throw new InvalidArgumentError2("handler must be an object");\n      }\n      if (typeof handler.onConnect !== "function") {\n        throw new InvalidArgumentError2("invalid onConnect method");\n      }\n      if (typeof handler.onError !== "function") {\n        throw new InvalidArgumentError2("invalid onError method");\n      }\n      if (typeof handler.onBodySent !== "function" && handler.onBodySent !== void 0) {\n        throw new InvalidArgumentError2("invalid onBodySent method");\n      }\n      if (upgrade || method === "CONNECT") {\n        if (typeof handler.onUpgrade !== "function") {\n          throw new InvalidArgumentError2("invalid onUpgrade method");\n        }\n      } else {\n        if (typeof handler.onHeaders !== "function") {\n          throw new InvalidArgumentError2("invalid onHeaders method");\n        }\n        if (typeof handler.onData !== "function") {\n          throw new InvalidArgumentError2("invalid onData method");\n        }\n        if (typeof handler.onComplete !== "function") {\n          throw new InvalidArgumentError2("invalid onComplete method");\n        }\n      }\n    }\n    __name(validateHandler, "validateHandler");\n    function isDisturbed(body) {\n      return !!(body && (stream.isDisturbed ? stream.isDisturbed(body) || body[kBodyUsed] : body[kBodyUsed] || body.readableDidRead || body._readableState && body._readableState.dataEmitted || isReadableAborted(body)));\n    }\n    __name(isDisturbed, "isDisturbed");\n    function isErrored(body) {\n      return !!(body && (stream.isErrored ? stream.isErrored(body) : /state: \'errored\'/.test(\n        nodeUtil.inspect(body)\n      )));\n    }\n    __name(isErrored, "isErrored");\n    function isReadable(body) {\n      return !!(body && (stream.isReadable ? stream.isReadable(body) : /state: \'readable\'/.test(\n        nodeUtil.inspect(body)\n      )));\n    }\n    __name(isReadable, "isReadable");\n    function getSocketInfo(socket) {\n      return {\n        localAddress: socket.localAddress,\n        localPort: socket.localPort,\n        remoteAddress: socket.remoteAddress,\n        remotePort: socket.remotePort,\n        remoteFamily: socket.remoteFamily,\n        timeout: socket.timeout,\n        bytesWritten: socket.bytesWritten,\n        bytesRead: socket.bytesRead\n      };\n    }\n    __name(getSocketInfo, "getSocketInfo");\n    var ReadableStream;\n    function ReadableStreamFrom(iterable) {\n      if (!ReadableStream) {\n        ReadableStream = require("./streams").ReadableStream;\n      }\n      if (ReadableStream.from) {\n        return ReadableStream.from(iterable);\n      }\n      let iterator;\n      return new ReadableStream(\n        {\n          async start() {\n            iterator = iterable[Symbol.asyncIterator]();\n          },\n          async pull(controller) {\n            const { done, value } = await iterator.next();\n            if (done) {\n              queueMicrotask(() => {\n                controller.close();\n              });\n            } else {\n              const buf = Buffer.isBuffer(value) ? value : Buffer.from(value);\n              controller.enqueue(new Uint8Array(buf));\n 
+{
+    "word": "कुमारी",
+    "ABCH": [
+        {
+            "word": "कुमारी",
+            "linga": "स्त्री",
+            "pagenum": "12",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "679",
+            "group": "165",
+            "synonyms": [
+                "गौरी",
+                "काली",
+                "पार्वती",
+                "मातृमातृ",
+                "अपर्ण",
+                "रुद्राणी",
+                "अम्बिका",
+                "त्र्यम्बका",
+                "उमा",
+                "दुर्गा",
+                "चण्डी",
+                "सिंहयाना",
+                "मृडानी",
+                "कात्यायनी",
+                "दक्षजा",
+                "आर्या",
+                "सती",
+                "शिवा",
+                "महादेवी",
+                "शर्वाणी",
+                "सर्वमङ्गला",
+                "भवानी",
+                "कृष्णस्वसृ",
+                "मैनाकस्वसृ",
+                "मेनाजा",
+                "अद्रिजा",
+                "ईश्वरा",
+                "निशुम्भमथनी",
+                "शुम्भमथनी",
+                "महिषमथनी",
+                "भूतनायिका"
+            ],
+            "content": "गौरी काली पार्वती मातृमातापर्णा रुद्राण्यम्बिका त्र्यम्बकोमा ।\nदुर्गा चण्डी सिंहयाना मृडानीकात्यायन्यौ दक्षजार्या कुमारी ॥ २०३ ॥\nसती शिवा महादेवी शर्वाणी सर्वमङ्गला ।\nभवानी कृष्णमैनाकस्वसा मेनाद्रिजेश्वरा ॥ २०४ ॥\nनिशुम्भशुम्भमहिषमर्दिनी भूतनायिका ।"
+        },
+        {
+            "word": "कुमारी",
+            "linga": "स्त्री",
+            "pagenum": "23",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1596",
+            "group": "528",
+            "synonyms": [
+                "कन्या",
+                "कनी"
+            ],
+            "content": "कन्या कनी कुमारी च गौरी तु नग्निकारजाः ॥ ५१० ॥"
+        }
+    ],
+    "BHS": [
+        {
+            "word": "कुमारी",
+            "eid": "4989",
+            "pagenum": 187,
+            "content": "<b>Kumārī</b>¦, (<b>1</b>), <ab>n.</ab> of four female deities (mahāyakṣiṇyaḥ <ls>Mmk</ls> 〔575.10〕), also called <b>Bhaginī</b>, <ab>q.v.</ab>, and noted only in <ls>Mmk</ls>; they have a brother called Kumāra (but apparently not = Kārttikeya), 〔45.17〕; 〔518.14〕; but his real name seems to have been <b>Tumburu</b> (otherwise known in <lang>Skt.</lang> as a gandharva), 〔537.7〕; 〔538.1〕, <lat><ab>et alibi</ab></lat>; 〔575.10〕; in 〔538.1〕; 〔542.9〕 he is called sārthavāha; otherwise they may be simply bhrātṛ-pañcamāḥ, 〔44.25〕; they are to be portrayed standing on ships and living in the ocean, 〔44.25〕; 〔45.17〕; 〔575.11〕; they are called Kumārī 〔45.17〕; 〔518.14〕; 〔575.10〕, but Bhaginī 〔17.4〕; 〔44.25〕; 〔519.8 ff.〕 The last begins a long passage dealing with them, extending to 〔p. 546〕, in which repeatedly their names appear as Jayā, Vijayā, Ajitā, and Aparājitā (〔523.6 ff.〕; 〔528.2, 9 ff.〕; 〔537.7 ff.〕; 〔539.7, 25〕; 〔540.5〕; 〔543.3 ff.〕); (<b>2</b>) <ab>n.</ab> of one specific yakṣiṇī (hardly one of the above-mentioned four): <ls>Mmk</ls> 〔567.11〕; 〔569.5〕; also called (yakṣa-)Kumārikā <ls>Mmk</ls> 〔569.4〕."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "कुमारी",
+            "eid": "2258",
+            "pagenum": 77,
+            "content": "कुमारी¦ <i>f.</i> (a कुमार signo <i>fem.</i> ई) puella, <i>a decimo usque</i> <i>ad duodecimum annum.</i>"
+        }
+    ],
+    "INM": [
+        {
+            "word": "कुमारी",
+            "eid": "6114",
+            "pagenum": 434,
+            "content": "<b>Kumārī</b><sup>1</sup>,¦ wife of the elder Bhīmasena. § 156 (Pūruvaṃc.): I, <b>95</b>, ††3796 (<i>Kaikeyīṃ</i>, mother of Pratiśravas)."
+        },
+        {
+            "word": "कुमारी",
+            "eid": "6115",
+            "pagenum": 434,
+            "content": "<b>Kumārī</b><sup>2</sup>,¦ wife of Dhanañjaya. § 565 (Gālavacarita): V, <b>117</b>, 3976 (<i>reme…yathā…K°yāñ ca Dhanañjayaḥ</i>)."
+        },
+        {
+            "word": "कुमारी",
+            "eid": "6116",
+            "pagenum": 434,
+            "content": "<b>Kumārī</b><sup>3</sup>,¦ a river. § 574 (Jambūkh.): VI, <b>9</b>λ, 343 (in Bhāratavarṣa)."
+        },
+        {
+            "word": "कुमारी",
+            "eid": "6117",
+            "pagenum": 434,
+            "content": "<b>Kumārī</b><sup>4</sup>,¦ a river in Śākadvīpa. § 575<i>b</i> (Śākadvīpa): VI, <b>11</b>γ, 432."
+        },
+        {
+            "word": "कुमारी",
+            "eid": "6118",
+            "pagenum": 434,
+            "content": "<b>Kumārī</b><sup>5</sup>¦ = Durgā (Umā): IV, 184; VI, 796."
+        },
+        {
+            "word": "कुमारी",
+            "eid": "6119",
+            "pagenum": 434,
+            "content": "<b>Kumārī</b><sup>6</sup>,¦ pl. (<i>°yaḥ</i>), name of a tīrtha. § 377 (Dhaumyatīrthak.): III, <b>88</b>, 8339 (in the country of the Pāṇḍyas)."
+        },
+        {
+            "word": "कुमारी",
+            "eid": "6120",
+            "pagenum": 434,
+            "content": "<b>Kumārī</b><sup>7</sup>,¦ pl. (<i>°yaḥ</i>), a class of demons. § 502 (Manuṣyagrahak.): III, <b>230</b>, 14484."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "कुमारी",
+            "eid": "09736.1",
+            "pagenum": 195,
+            "content": "kumArI¦ <i>f.</i> 1. A young girl, one from 10 to 12 years old; 2. a maiden, a virgin, व्यावर्ततान्योपगमात् कुमारी <ls>R.</ls>vi.69; 3. a daughter; 4. an epithet of Durgā."
+        }
+    ],
+    "MCI": [
+        {
+            "word": "कुमारी",
+            "eid": "1140",
+            "pagenum": 312,
+            "content": "<b>Kumārī<sup>1</sup></b>¦ f. (pl.): Name of a <i>tīrtha.</i> <b>A.</b> Location: Situated in the Pāṇḍya country 3. 86. 11. <b>B.</b> Description: They are famous for their holiness (<i>kumāryaḥ</i> <i>kathitāḥ puṇyāḥ</i>) 3. 86. 11. <b>C.</b> Importance: One who bathes in Kokāmukha, visits Caṇḍālikāśrama and observes other <i>vratas</i> gets the merit of having bathed in the Kumārī <i>tīrtha</i> ten times (?) (<i>kumārīr vindate daśa</i>) 13. 26. 49. [See <b>Kumārikāṇāṃ tīrtham</b>]"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "1141",
+            "pagenum": 312,
+            "content": "<b>Kumārī<sup>2</sup></b>¦ f.: Name of a river. <dvsn n='P'>Listed by Saṃjaya among the rivers of the Bhāratavarṣa; its water used by people for drinking 6. 10. 34, 13; all these rivers are said to be mothers of the universe and very strong (for citation see <b>Atikṛṣṇā</b>) 6. 10. 35."
+        },
+        {
+            "word": "कुमारी",
+            "eid": "1142",
+            "pagenum": 312,
+            "content": "<b>Kumārī<sup>3</sup></b>¦ f.: Name of a river. <dvsn n='P'>One of the rivers of the Śākadvīpa; water of these rivers is holy (<i>nadyaḥ puṇya-</i> <i>jalās tatra</i>) 6. 12, 30, 29, 26."
+        }
+    ],
+    "MD": [
+        {
+            "word": "कुमारी",
+            "eid": "6045",
+            "pagenum": 70,
+            "content": "कुमारी¦ ku-mārī́, <lex>f.</lex> girl, virgin; daughter; 🞄(<b>ī</b>) <b>-pura,</b> <lex>n.</lex> part of harem where girls live; 🞄<b>-bhāga,</b> <lex>m.</lex> daughterʼs portion."
+        }
+    ],
+    "MW": [
+        {
+            "word": "कुमारी",
+            "eid": "52291",
+            "pagenum": "292,1",
+            "content": "कुमारी/ <hom>a</hom> ¦ (ई/), <lex>f.</lex> a young girl, one from ten to twelve years old, maiden, daughter, <ls>AV.</ls>; <ls>AitBr.</ls> &c.<info lex='f'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52292",
+            "pagenum": "292,1",
+            "content": "¦ or (in the <s1 slp1='tantra'>Tantra</s1>s) any virgin up to the age of sixteen or before menstruation has commenced<info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52293",
+            "pagenum": "292,1",
+            "content": "¦ <ab>N.</ab> of certain flags (set up along with <s1 slp1='indra'>Indra</s1>'s banner), <ls>VarBṛS.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52294",
+            "pagenum": "292,1",
+            "content": "¦ <ab>N.</ab> of the wife of <s1 slp1='BIma-sena'>Bhīma-sena</s1> (son of <s1 slp1='parIkzit'>Parīkṣit</s1>), <ls>MBh. i, 3796</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52295",
+            "pagenum": "292,1",
+            "content": "¦ of a daughter of <s1 slp1='vasu-deva'>Vasu-deva</s1> by <s1 slp1='rohiRI'>Rohiṇī</s1>, <ls>Hariv. 1952</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52296",
+            "pagenum": "292,1",
+            "content": "¦ of <s1 slp1='sItA'>Sītā</s1> (<s1 slp1='rAma'>Rāma</s1>'s wife), <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52297",
+            "pagenum": "292,1",
+            "content": "¦ of the goddess <s1 slp1='durgA'>Durgā</s1>, <ls>Hariv. 9425</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52298",
+            "pagenum": "292,1",
+            "content": "¦ of <s1 slp1='dAkzAyaRI'>Dākṣāyaṇī</s1> (in <s1 slp1='mAyA-purI'>Māyā-purī</s1>), <ls>MatsyaP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52299",
+            "pagenum": "292,1",
+            "content": "¦ of a metre (a kind of <s1 slp1='SakvarI'>Śakvarī</s1>, consisting of four lines of sixteen syllables each)<info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52300",
+            "pagenum": "292,1",
+            "content": "¦ the bird commonly called <s1 slp1='SyAmA'>Śyāmā</s1>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52301",
+            "pagenum": "292,1",
+            "content": "¦ the plant <bot>Aloe perfoliata</bot>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52302",
+            "pagenum": "292,1",
+            "content": "¦ the plant <bot>Clitoria ternatea</bot> (= अ-पराजिता), <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52303",
+            "pagenum": "292,1",
+            "content": "¦ the plant <bot>Jasminum Sambac</bot>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52304",
+            "pagenum": "292,1",
+            "content": "¦ the plant commonly called बन्ध्या-कर्कोटकी, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52305",
+            "pagenum": "292,1",
+            "content": "¦ the blossom of the plants <s1 slp1='taruRI'>Taruṇī</s1> and <s1 slp1='modinI'>Modinī</s1>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52306",
+            "pagenum": "292,1",
+            "content": "¦ great cardamoms, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52307",
+            "pagenum": "292,1",
+            "content": "¦ the most southerly of the nine portions of the known continent or of <s1 slp1='jambU-dvIpa'>Jambū-dvīpa</s1> (the southern extremity of the peninsula, whence the modern name Cape Comorin [<s1 slp1='kumArI'>Kumārī</s1>]), <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52308",
+            "pagenum": "292,1",
+            "content": "¦ the central part of the universe (according to <ns>Hindū</ns> geography, <s1 slp1='jambU-dvIpa'>Jambū-dvīpa</s1> or India), <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52309",
+            "pagenum": "292,1",
+            "content": "¦ <ab>N.</ab> of a river flowing from the mountain <s1 slp1='Suktimat'>Śuktimat</s1>, <ls>MBh.</ls>; <ls>Hariv.</ls>; <ls>VP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52310",
+            "pagenum": "292,1",
+            "content": "¦ of another river, <ls>Hcat.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52311",
+            "pagenum": "292,1",
+            "content": "¦ (when a name is given to a pupil to indicate his attachment to any particular master, कुमारी may be prefixed to denote that the pupil's object is to gain the affections of the master's daughter, <ab>e.g.</ab> कुमारी-दाक्ष, <ab>q.v.</ab> <ab>s.v.</ab> कुमारी)<info lex='inh'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52390",
+            "pagenum": "292,2",
+            "content": "कुमारी <hom>b</hom> ¦ <lex>f.</lex> of °र/, <ab>q.v.</ab><info lex='f'/>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "52391",
+            "pagenum": "292,2",
+            "content": "कुमारी ¦ <lex>mfn.</lex> desirous of a daughter, <ls>Pāṇ. i, 4, 3</ls>; <ls>Pat.</ls><info lex='m:f:n'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "कुमारी",
+            "eid": "15220",
+            "pagenum": 237,
+            "content": "<i>Kumārī, ī, ī,</i>¦ m. f. a man or woman desirous of a daughter."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "कुमारी",
+            "eid": "3184",
+            "pagenum": 1,
+            "content": "<i>Kumārī</i> (I)¦ — a daughter of Lalitā aged nine, and trained in military art. Attacked and slew all the sons of Bhaṇḍa to the joy of the Śakti troops;<sup>1</sup> goddess enshrined at Māyāpurī.<sup>2</sup> <F>1) Br. IV. 26. 73-117.</F> <F>2) M. 13. 34.</F>"
+        },
+        {
+            "word": "कुमारी",
+            "eid": "3186",
+            "pagenum": 1,
+            "content": "<i>Kumārī</i> (III)¦ — a R. from the Śuktimat hill. <dvsn n='P'/>Br. II. 16. 38; M. 163. 86."
+        },
+        {
+            "word": "कुमारी",
+            "eid": "3187",
+            "pagenum": 1,
+            "content": "<i>Kumārī</i>¦ (IV) <i>(Siddhā)</i> — a R. of Śākadvīpa. <dvsn n='P'/>Br. II. 19. 96; Vā. 45. 81; 49. 92; Vi. II. 4. 65."
+        },
+        {
+            "word": "कुमारी",
+            "eid": "3188",
+            "pagenum": 1,
+            "content": "<i>Kumārī</i> (V)¦ — noted for Candratīrtha. <dvsn n='P'/>Vā. 77. 28."
+        }
+    ],
+    "PW": [
+        {
+            "word": "कुमारी",
+            "eid": "28829",
+            "pagenum": 2,
+            "content": "*कुमारी¦ <lex>Adj.</lex> <i>nach einem Mädchen Verlangen habend</i>. <ab>Vgl.</ab> auch <ab n='unter'>u.</ab> कुमार."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "कुमारी",
+            "eid": "28529",
+            "pagenum": 393,
+            "content": "<i>kumārī</i>¦ °wagerechter Balken, <ls>Kauṭ.</ls> 136, 2. Vgl. <ls>J. J. Meyer</ls>, S. 217, Anm. 2. {part=N,seq=28898,type=,n=2}"
+        }
+    ],
+    "SNP": [
+        {
+            "word": "कुमारी",
+            "eid": "301",
+            "pagenum": 434,
+            "content": "kumārī¦ <dvsn n='P'/>Aloe vera Linn. (KB 4, p. 2505-2506; DEP 1, p. 183: ghṛtakumārī, p. 186: ghṛtakumārī, kanyā) = A. barbadensis Mill. (Kai.Nigh., oṣadhivarga 1638; Bpn, guḍūcyādivarga 229-230; Chopra: ghṛtakumārī)."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कुमारी",
+            "eid": "8111",
+            "pagenum": "2-146-a",
+            "content": "कुमारी¦, स्त्री, (कुमार + प्रथमवयोवचनत्वात् स्त्रियां ङीष ।) द्वादशवर्षीया कन्या । यथा, “अष्टवर्षा मवेद्गौरी दशवर्षा च कन्यका । सम्प्राप्ते द्वादशे वर्षे कुमारीत्यभिधीयते” ॥ इति स्मृतौ भेदः । इह अभेदोपचारात् कन्या कुमारीत्थमरः ॥ इति भरतः ॥ आगमे तु कुमारीपूजने अजातपुष्पा चेत् तदा षोडशवर्षपर्य्यन्तवयस्का । तस्या वयोभेदेन नामभेदाः । यथा, “एकवर्षा भवेत् सन्ध्या द्विवर्षा च सरस्वती । त्रिवर्षा तु त्रिधामूर्त्तिश्चतुर्व्वर्षा तु कालिका ॥ सुभगा पञ्चवर्षा च षड्वर्षा च उमा भवेत् । सप्तभिर्मालिनी साक्षादष्टवर्षा च कुब्जिका ॥ नवभिः कालसङ्कर्षा दशभिश्चापराजिता । एकादशे तु रुद्राणी द्वादशाब्दे तु भैरवी ॥ त्रयोदशे महालक्ष्मीर्द्विसप्ता पीठनायिका । क्षेत्रज्ञा पञ्चदशभिः षोडशे चान्नदा मता ॥ एवं क्रमेण सम्पूज्या यावत् पुष्पं न जायते । पुष्पितापि च सम्पूज्या तत्पुष्पादानकर्म्मणि” ॥ * ॥ तत्पूजाविधिर्यथा । “अथान्यत् साधनं वक्ष्ये महाचीनक्रमोद्भवम् । येनानुष्ठितमात्रेण शीघ्रं देवी प्रसीदति ॥ अष्टम्याञ्च चतुर्द्दश्यां कुह्वां वा रविसंक्रमे । कुमारीपूजनं कुर्य्याद्यथा विभवमात्मनः ॥ वस्त्रालङ्करणाद्यैश्च भक्ष्यैर्भोज्यैः सुविस्तरैः । पञ्चतत्त्वादिभिः सम्यग्देवीबुद्ध्या सुसाधकः” ॥ इत्यन्नदाकल्पः ॥ * ॥ (स्वनामख्याता परीक्षित्पुत्त्रस्य भीमसेनस्य पत्नी । यथा, -- महाभारते १ । पूरुवंशानुकीर्त्तने ९५ । ४३ । <P>“भीमसेनः खलु कैकेयीमुपयेमे कुमारीं नाम तस्यामस्य जज्ञे प्रतिश्रता नाम” ॥) पार्व्वती । नवमल्लिका । नदीविशेषः । (इयं हि शाकद्वीपान्तर्गतसप्तनदीनामेका । यथा, विष्णुपुराणे २ । ४ । ६५ । “नद्यश्चात्र महापुण्याः सर्व्वपापभयापहा । सुकुमारी कुमारी च नलिनीधेनुका च या” ॥) सहा । घृतकुमारी इति ख्याता । अपराजिता । जम्बुद्वीपः । इति मेदिनी ॥ सीता । इति हेमचन्द्रः ॥ बन्ध्याकर्कोटकी । स्थूलैला । मोदिनीपुष्पम् । तरुणीपुष्पम् । श्यामापक्षी । इति राजनिर्घण्टः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "कुमारी",
+            "eid": "14115",
+            "pagenum": "2111,a",
+            "content": "कुमारी¦ स्त्री कुमार + प्रयमवयोवचनत्वात् स्त्रियां ङीष् । १ अनूढकन्यायां वर्षभेदेन तन्नामभेदाः कालसङ्खर्षाशब्दे उक्ताः तन्त्रसारे तत्पूजाफलसहितानाममेदा अन्यथा उक्ता यया “होमादिकन्तु सकलं कुमारीपूजनं विना । परिपूर्णफलं न स्यात् पूजया तत्द्भवेद्धुवम् । कुमारीपुजया देवि! फल कोटिगुणं भवेत् । पुष्पं कुमार्य्यै यद्दत्तं तन्मेरुसदृशं भवेत् । कुमारी भोजिता येन त्रैलोक्यं तेन भोजितम्” । तत्र कुमारीनिर्णयः जामले “एकवर्षा भवेत् सन्ध्या द्विवर्षा च सरखती । त्रिवर्षा त्रिविधा मूर्त्तिश्चतुर्वर्षा च कालिका । सुभगा पञ्चवर्षा तु । षड्वर्षा च उमाभवेत् । सप्तभिर्म्मालिनी साक्षादष्टवर्षा च कुब्जिका । नवभिः कालसङ्कर्षा दशभिश्चापराजिता । एकादशे च रुद्राणी द्वादशाब्दे तु भैरवी । त्रयोदशे महालक्ष्मी द्विसप्ता पीठनायिकाः । क्षेत्रज्ञा पञ्चदशभिः षोडशे चाम्बिका स्मृता । एबं क्रमेण संपूज्या यावत्पुष्पं न दृश्यते । प्रतिपदादिपूर्णिमान्तं वृद्धिभेदेन पूजयेत् । महापर्व्वसु सर्वेषु विशेषाच्च पवित्रके । महानवम्यां देकेशि! कुमारीञ्च प्रपूजयेत् । “कुमारिका ह्यहं नाथ! सदा त्वंहि कुमारिका । अष्टोत्तरशतं वापि एकां वापि प्रपूजयेत् । पूजिताः प्रतिपूज्यन्ते निर्दहन्त्यवमानिताः । कुमारी योगिनी साक्षात् कुमारी परदेवता । असुरा दुष्टनागाश्च ये च दुष्टग्रहा अपि । भूतवेतालगन्धर्व डाकिनीयक्षराक्षसाः । याश्चान्याः देवताः सर्वा भूर्भुवःखःस्थभैरवाः । पृथिव्यादीनि सर्वाणि व्रह्माण्डं सचराचणम् । ब्रह्मा विष्णुश्च रुद्रश्च ईश्वरश्च सदाशिवः । ते तुष्टा सर्वदेवाश्च यस्तु कन्यां प्रपूजयेत् । विधियुक्तं कुमारीश्च भोजयेच्चैव भैरवीम् । पाद्यमर्घ्यन्तथा धूपं कुङ्गुमञ्चन्दनं शुभम् । भक्तिभावेन संपूज्य कुमारीभ्योनिवेदयेत् । प्रदक्षिणत्रयं कुर्य्यादादौ मध्ये तथान्ततः । पश्चाच्च दक्षिणा देया रजतंखर्णमौक्तिकैः । दक्षिणाश्च कुमारीभ्योदद्यात् प्रक्रमतस्ततः । विवाहयेद्यस्तु कन्यां ब्रह्महत्यां विनश्यति । गोहत्या च स्त्रीहत्या च सर्कपापं प्रणश्यति । यो यच्च पुण्यकाले च कन्यादानं प्रकल्पयेत् । वालुकासागरं ज्ञेयं तावद्वद सहस्रकम् । एकैकं कुलमुद्दिश्य रुद्रलोके महीयते” कन्यादानन्तु तत्तदेवताप्रीतये इति सम्प्रदायः । वस्तुतस्तु तत्तद्वर्षायाः कन्यायास्तत्तद्देवताबुद्ध्या शिवरूपत्वं सम्पदानीये विभाव्य दद्यादिति रहस्मार्थः” कृष्णानन्दः । “सं प्राप्ते द्वादशे वर्षे कुमारीत्यभिधोबते इति स्मृत्युक्तायां २ द्वादशवर्षी यकत्यायाम् ३ पार्वत्याम् ४ नवमल्लिकायां ५ नदीभेदे ६ घृतकुमार्य्याम् तत्पर्य्यायगुणादि भावप्रकाशे उक्तं यथा “कुमारी गृहकन्या च कन्या वृतकुमारिका कुमारी भेदिनी शीता तिक्ता नेत्र्या रसायनी । मधुरा वृंहणी बल्या वृष्या वातविषप्रणुत् । गुल्मप्लीहयकृद्वृद्धिकफज्वरहरी, हरेत् । ग्रन्थ्यग्निदग्धविस्फोटपलितत्वत्वगामयान्” । ७ अपराजितायां ८ जम्बुद्वीपांशभेदे कुमारिकाखण्डे ९ सहायां मेदि० । १० सीतायां हेमच० ११ बन्ध्याकर्कट्याम् १२ स्थूलैलायां १३ मोदिनीपुष्पे । १४ तरुणीपुष्पे १५ श्यामापक्षिणि राजनि० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कुमारी",
+            "content": "कुमारी स्त्री. -  कुमार - ङीष् दस से बारह वर्ष के बीच की लड़की"
+        },
+        {
+            "word": "कुमारी",
+            "content": "कुमारी स्त्री. -  कुमार - ङीष् 'अविवाहित तरुणी, कन्या'"
+        },
+        {
+            "word": "कुमारी",
+            "content": "कुमारी स्त्री. -  कुमार - ङीष् 'लड़की, पुत्री'"
+        },
+        {
+            "word": "कुमारी",
+            "content": "कुमारी स्त्री. -  कुमार - ङीष् दुर्गा"
+        },
+        {
+            "word": "कुमारी",
+            "content": "कुमारी स्त्री. -  कुमार - ङीष् कुछ पौधों के नाम"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಪುತ್ರಿ \\/ಮಗಳು",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಮದುವೆಯಾಗದಿರುವ ಕನ್ಯೆ \\/೧೨ ವರ್ಷ ವಯಸ್ಸಿನ ಕನ್ಯೆ",
+            "प्रयोगाः": "'त्रीणि वर्षाण्युदीक्षेत कुमार्यृतुमती सती'",
+            "उल्लेखाः": "मनु० ९-९०",
+            "विस्तारः": "'सम्प्राप्ते द्वादशे वर्षे कुमारीत्यभिधीयते'स्मृतिः ।",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಸಣ್ಣ ಗೋರಂಟಿ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ನವಮಾಲಿಕೆ \\/ಹೆಜ್ಜಾಜಿ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಪಾರ್ವತಿ \\/ಗೌರಿ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಒಂದು ನದಿ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ವಿಷ್ಣುಕ್ರಾಂತಿ ಗಿಡ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಜಂಬೂದ್ವೀಪ",
+            "विस्तारः": "'कुमारी शैलतनयानवमाल्योर्नदीभिदि । सहापराजिताकन्याजम्बुद्वीपेषु च स्त्रियाम्'मेदि० ।",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಮದುವೆಯಾಗದಿರುವ ಕನ್ಯೆ \\/೧೨ ವರ್ಷ ವಯಸ್ಸಿನ ಕನ್ಯೆ",
+            "निष्पत्तिः": "कुमार'ङीप्' (४-१-२०)",
+            "प्रयोगाः": "'त्रीणि वर्षाण्युदीक्षेत कुमार्यृतुमती सती । ऊर्ध्वं तु कालोदेतस्माद्विन्देत सदृशं पतिम् ॥'",
+            "उल्लेखाः": "मनु० ९-९०",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಒಂದು ನದಿ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಪಾರ್ವತಿ \\/ಗೌರಿ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ನವಮಲ್ಲಿಕೆ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಜಂಬೂದ್ವೀಪ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ವಿಷ್ಣುಕ್ರಾಂತಿ ಗಿಡ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಸಣ್ಣಗೋರಂಟಿ ಗಿಡ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಹೆಜ್ಜಾಜಿ \\/ವೀರಜಾಜಿ",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ದೊಡ್ಡ ಜಾತಿಯ ಯಾಲಕ್ಕಿ",
+            "विस्तारः": "'कुमारः शैलतनयानवमाल्योर्नदीभिदि । सहापराजिताकन्याजम्बुद्वीपेषु च स्त्रियाम्'मेदि० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "कुमारी",
+            "linga": "S",
+            "artha": "कुमारी",
+            "synonyms": [
+                "सहा",
+                "कुमारी",
+                "तरणि"
+            ],
+            "num": "2.4.73",
+            "text": "माध्यं कुन्दं रक्तकस्तु बन्धूको बन्धुजीवकः । सहा कुमारी तरणिरम्लानस्तु महासहा ॥",
+            "content": ""
+        },
+        {
+            "word": "कुमारी",
+            "linga": "S",
+            "artha": "कन्या",
+            "synonyms": [
+                "कन्या",
+                "कुमारी"
+            ],
+            "num": "2.6.8",
+            "text": "कन्या कुमारी गौरी तु नग्निकानागतार्तवा । स्यान्मध्यमा दृष्टरजास्तरुणी युवतिः समे ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "कुमारी",
+            "content": "<lexhead no=\"1197\">\n<dentry>कुमारी</dentry>\n<prAwipaxikam>कुमारी</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[कुमार - ङीष्]</etymology>\n<kind_of>स्त्री</kind_of>\n<jAwi>मनुष्यः</jAwi>\n<kind_of>सूक्ष्मशाखामूलयुक्तवृक्षः</kind_of>\n<jAwi>ओषधिः</jAwi>\n<sense no=\"1\">दस से बारह वर्ष के बीच की लड़की</sense>\n<sense n=\"2\">अविवाहित तरुणी, कन्या Fत्रीणि वर्षाण्युदीक्षेत कुमार्यृतुमति सती<citation>मनु* ९।९०</citation>११।५८, व्यावर्ततान्योपगमात्कुमारी<citation>रघु* ६।६९</citation></sense>\n<sense n=\"3\">लड़की, पुत्री</sense>\n<sense n=\"4\">दुर्गा</sense>\n<sense n=\"5\">कुछ पौधों के नाम</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "कुमारी",
+            "content": "<body><s>kumArI strI kumAra + prayamavayovacanatvAt striyAM NIz . <lb/><b>1</b> anUQakanyAyAM varzaBedena tannAmaBedAH kAlasaNKarzASabde uktAH tantrasAre tatpUjAPalasahitAnAmamedA anyaTA uktA yayA <q>homAdikantu sakalaM kumArIpUjanaM vinA . paripUrRaPalaM na syAt pUjayA tatdBavedDuvam . kumArIpu­jayA devi! Pala kowiguRaM Bavet . puzpaM kumAryyE yaddattaM tanmerusadfSaM Bavet . kumArI BojitA yena trElokyaM tena Bojitam</q> . tatra kumArInirRayaH jAmale <q>ekavarzA Bavet sanDyA dvivarzA ca saraKatI . trivarzA triviDA mUrtti­ScaturvarzA ca kAlikA . suBagA paYcavarzA tu . zaqvarzA ca umABavet . saptaBirmmAlinI sAkzAdazwavarzA ca kubjikA . navaBiH kAlasaNkarzA daSaBiScAparAjitA . ekAdaSe ca rudrARI dvAdaSAbde tu BEravI . trayodaSe mahAlakzmI dvisaptA pIWanAyikAH . kzetrajYA paYcadaSaBiH zoqaSe cA­mbikA smftA . ebaM krameRa saMpUjyA yAvatpuzpaM na dfSyate . pratipadAdipUrRimAntaM vfdDiBedena pUjayet . mahAparvvasu sarvezu viSezAcca pavitrake . mahAnavamyAM dekeSi! kumArIYca prapUjayet . “kumArikA hyahaM nATa! sadA tvaMhi kumArikA . azwottaraSataM vApi ekAM vApi prapUjayet . pUjitAH pratipUjyante nirdahantyavamAni­tAH . kumArI yoginI sAkzAt kumArI paradevatA . asurA duzwanAgASca ye ca duzwagrahA api . BUtave­tAlaganDarva qAkinIyakzarAkzasAH . yAScAnyAH devatAH sarvA BUrBuvaHKaHsTaBEravAH . pfTivyAdIni sarvARi vrahmARqaM sacarAcaRam . brahmA vizRuSca rudraSca ISvaraSca sadASivaH . te tuzwA sarvadevASca yastu kanyAM prapUjayet . viDiyuktaM kumArISca BojayeccEva BEravIm . pAdyamarGyantaTA DUpaM kuNgumaYcandanaM SuBam . BaktiBAvena saMpUjya kumArI­Byonivedayet . pradakziRatrayaM kuryyAdAdO maDye taTA­ntataH . paScAcca dakziRA deyA rajataMKarRamOktikEH . da­kziRASca kumArIByodadyAt prakramatastataH . vivAhayedya­stu kanyAM brahmahatyAM vinaSyati . gohatyA ca strIha­tyA ca sarkapApaM praRaSyati . yo yacca puRyakAle ca kanyAdAnaM prakalpayet . vAlukAsAgaraM jYeyaM tAvadvada sahasrakam . ekEkaM kulamuddiSya rudraloke mahIyate</q> ka­nyAdAnantu tattadevatAprItaye iti sampradAyaH . vastutastu tattadvarzAyAH kanyAyAstattaddevatAbudDyA SivarUpatvaM sampadA­nIye viBAvya dadyAditi rahasmArTaH” kfzRAnandaH . <q>saM prApte dvAdaSe varze kumArItyaBiDobate iti smftyuktAyAM <lb/><b>2</b> dvAdaSavarzI yakatyAyAm <lb/><b>3</b> pArvatyAm <lb/><b>4</b> navamallikAyAM <lb/><b>5</b> nadIBede <lb/><b>6</b> GftakumAryyAm tatparyyAyaguRAdi BAvaprakASe uktaM yaTA “kumArI gfhakanyA ca kanyA vftakumArikA kumArI BedinI SItA tiktA netryA rasAyanI . maDurA vfMhaRI balyA vfzyA vAtavizapraRut . gulmaplIhayakfd­vfdDikaPajvaraharI, haret . granTyagnidagDavisPowa­palitatvatvagAmayAn</q> . <lb/><b>7</b> aparAjitAyAM <lb/><b>8</b> jambudvIpAMSaBede kumArikAKaRqe <lb/><b>9</b> sahAyAM medi° . <lb/><b>1°</b> sItAyAM hemaca° <lb/><b>11</b> banDyAkarkawyAm <lb/><b>12</b> sTUlElAyAM <lb/><b>13</b> modinIpuzpe . <lb/><b>14</b> taruRIpuzpe <lb/><b>15</b> SyAmA­pakziRi rAjani° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "कुमारी",
+            "content": "<H1B><h><key1>kumArI</key1><key2>kumArI/</key2><hom>a</hom></h><body><s>kumArI/</s> <hom>a</hom>   (<s>I/</s>), <lex>f.</lex> a young girl, one from ten to twelve years old, maiden, daughter, <ls>AV.</ls>; <ls>AitBr.</ls> &amp;c.<info lex=\"f\" /></body><tail><L>52291</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  or (in the <s1 slp1=\"tantra\">Tantra</s1>s) any virgin up to the age of sixteen or before menstruation has commenced<info lex=\"inh\" /></body><tail><L>52292</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  <ab>N.</ab> of certain flags (set up along with <s1 slp1=\"indra\">Indra</s1>'s banner), <ls>VarBṛS.</ls><info lex=\"inh\" /></body><tail><L>52293</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  <ab>N.</ab> of the wife of <s1 slp1=\"BIma-sena\">Bhīma-sena</s1> (son of <s1 slp1=\"parIkzit\">Parīkṣit</s1>), <ls>MBh. i, 3796</ls><info lex=\"inh\" /></body><tail><L>52294</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  of a daughter of <s1 slp1=\"vasu-deva\">Vasu-deva</s1> by <s1 slp1=\"rohiRI\">Rohiṇī</s1>, <ls>Hariv. 1952</ls><info lex=\"inh\" /></body><tail><L>52295</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  of <s1 slp1=\"sItA\">Sītā</s1> (<s1 slp1=\"rAma\">Rāma</s1>'s wife), <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52296</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  of the goddess <s1 slp1=\"durgA\">Durgā</s1>, <ls>Hariv. 9425</ls><info lex=\"inh\" /></body><tail><L>52297</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  of <s1 slp1=\"dAkzAyaRI\">Dākṣāyaṇī</s1> (in <s1 slp1=\"mAyA-purI\">Māyā-purī</s1>), <ls>MatsyaP.</ls><info lex=\"inh\" /></body><tail><L>52298</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  of a metre (a kind of <s1 slp1=\"SakvarI\">Śakvarī</s1>, consisting of four lines of sixteen syllables each)<info lex=\"inh\" /></body><tail><L>52299</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  the bird commonly called <s1 slp1=\"SyAmA\">Śyāmā</s1>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52300</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  the plant <bot>Aloe perfoliata</bot>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52301</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  the plant <bot>Clitoria ternatea</bot> (= <s>a-parAjitA</s>), <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52302</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  the plant <bot>Jasminum Sambac</bot>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52303</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  the plant commonly called <s>banDyA-karkowakI</s>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52304</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  the blossom of the plants <s1 slp1=\"taruRI\">Taruṇī</s1> and <s1 slp1=\"modinI\">Modinī</s1>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52305</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  great cardamoms, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52306</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  the most southerly of the nine portions of the known continent or of <s1 slp1=\"jambU-dvIpa\">Jambū-dvīpa</s1> (the southern extremity of the peninsula, whence the modern name Cape Comorin [<s1 slp1=\"kumArI\">Kumārī</s1>]), <ls>W.</ls><info lex=\"inh\" /></body><tail><L>52307</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  the central part of the universe (according to <ns>Hindū</ns> geography, <s1 slp1=\"jambU-dvIpa\">Jambū-dvīpa</s1> or India), <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52308</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  <ab>N.</ab> of a river flowing from the mountain <s1 slp1=\"Suktimat\">Śuktimat</s1>, <ls>MBh.</ls>; <ls>Hariv.</ls>; <ls>VP.</ls><info lex=\"inh\" /></body><tail><L>52309</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  of another river, <ls>Hcat.</ls><info lex=\"inh\" /></body><tail><L>52310</L><pc>292,1</pc></tail></H1B>\n <H1B><h><key1>kumArI</key1><key2>kumArI/</key2></h><body>  (when a name is given to a pupil to indicate his attachment to any particular master, <s>kumArI</s> may be prefixed to denote that the pupil's object is to gain the affections of the master's daughter, <ab>e.g.</ab> <s>kumArI-dAkza</s>, <ab>q.v.</ab> <ab>s.v.</ab> <s>kumArI</s>)<info lex=\"inh\" /></body><tail><L>52311</L><pc>292,1</pc></tail></H1B>\n <H2><h><key1>kumArI</key1><key2>kumArI</key2><hom>b</hom></h><body><s>kumArI</s> <hom>b</hom>   <lex>f.</lex> of <s>°ra/</s>, <ab>q.v.</ab><info lex=\"f\" /></body><tail><L>52390</L><pc>292,2</pc></tail></H2>\n <H2B><h><key1>kumArI</key1><key2>kumArI</key2></h><body><s>kumArI</s>   <lex>mfn.</lex> desirous of a daughter, <ls>Pāṇ. i, 4, 3</ls>; <ls>Pat.</ls><info lex=\"m:f:n\" /></body><tail><L>52391</L><pc>292,2</pc></tail></H2B>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कुमारी",
+            "content": "<span lang=\"sa\">कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪುತ್ರಿ /ಮಗಳು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮದುವೆಯಾಗದಿರುವ ಕನ್ಯೆ /೧೨ ವರ್ಷ ವಯಸ್ಸಿನ ಕನ್ಯೆ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"त्रीणि वर्षाण्युदीक्षेत कुमार्यृतुमती सती\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० ९-९०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"सम्प्राप्ते द्वादशे वर्षे कुमारीत्यभिधीयते\" - स्मृतिः ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಣ್ಣ ಗೋರಂಟಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನವಮಾಲಿಕೆ /ಹೆಜ್ಜಾಜಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪಾರ್ವತಿ /ಗೌರಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಂದು ನದಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿಷ್ಣುಕ್ರಾಂತಿ ಗಿಡ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಜಂಬೂದ್ವೀಪ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"कुमारी शैलतनयानवमाल्योर्नदीभिदि । सहापराजिताकन्याजम्बुद्वीपेषु च स्त्रियाम्\" - मेदि० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮದುವೆಯಾಗದಿರುವ ಕನ್ಯೆ /೧೨ ವರ್ಷ ವಯಸ್ಸಿನ ಕನ್ಯೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>कुमार - \"ङीप्\" (४-१-२०)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"त्रीणि वर्षाण्युदीक्षेत कुमार्यृतुमती सती । ऊर्ध्वं तु कालोदेतस्माद्विन्देत सदृशं पतिम् ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० ९-९०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಂದು ನದಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪಾರ್ವತಿ /ಗೌರಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನವಮಲ್ಲಿಕೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಜಂಬೂದ್ವೀಪ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿಷ್ಣುಕ್ರಾಂತಿ ಗಿಡ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಣ್ಣಗೋರಂಟಿ ಗಿಡ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹೆಜ್ಜಾಜಿ /ವೀರಜಾಜಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमारी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದೊಡ್ಡ ಜಾತಿಯ ಯಾಲಕ್ಕಿ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"कुमारः शैलतनयानवमाल्योर्नदीभिदि । सहापराजिताकन्याजम्बुद्वीपेषु च स्त्रियाम्\" - मेदि० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

@@ -1,400 +1,297 @@
-true
-	});
-	docPrefaceRole$1.default = void 0;
-	var docPrefaceRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'preface [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$e = docPrefaceRole;
-	docPrefaceRole$1.default = _default$e;
-
-	var docPrologueRole$1 = {};
-
-	Object.defineProperty(docPrologueRole$1, "__esModule", {
-	  value: true
-	});
-	docPrologueRole$1.default = void 0;
-	var docPrologueRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'prologue [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$d = docPrologueRole;
-	docPrologueRole$1.default = _default$d;
-
-	var docPullquoteRole$1 = {};
-
-	Object.defineProperty(docPullquoteRole$1, "__esModule", {
-	  value: true
-	});
-	docPullquoteRole$1.default = void 0;
-	var docPullquoteRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'pullquote [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['none']]
-	};
-	var _default$c = docPullquoteRole;
-	docPullquoteRole$1.default = _default$c;
-
-	var docQnaRole$1 = {};
-
-	Object.defineProperty(docQnaRole$1, "__esModule", {
-	  value: true
-	});
-	docQnaRole$1.default = void 0;
-	var docQnaRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'qna [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$b = docQnaRole;
-	docQnaRole$1.default = _default$b;
-
-	var docSubtitleRole$1 = {};
-
-	Object.defineProperty(docSubtitleRole$1, "__esModule", {
-	  value: true
-	});
-	docSubtitleRole$1.default = void 0;
-	var docSubtitleRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'subtitle [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'sectionhead']]
-	};
-	var _default$a = docSubtitleRole;
-	docSubtitleRole$1.default = _default$a;
-
-	var docTipRole$1 = {};
-
-	Object.defineProperty(docTipRole$1, "__esModule", {
-	  value: true
-	});
-	docTipRole$1.default = void 0;
-	var docTipRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'help [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'note']]
-	};
-	var _default$9 = docTipRole;
-	docTipRole$1.default = _default$9;
-
-	var docTocRole$1 = {};
-
-	Object.defineProperty(docTocRole$1, "__esModule", {
-	  value: true
-	});
-	docTocRole$1.default = void 0;
-	var docTocRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'toc [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
-	};
-	var _default$8 = docTocRole;
-	docTocRole$1.default = _default$8;
-
-	Object.defineProperty(ariaDpubRoles$1, "__esModule", {
-	  value: true
-	});
-	ariaDpubRoles$1.default = void 0;
-	var _docAbstractRole = _interopRequireDefault$5(docAbstractRole$1);
-	var _docAcknowledgmentsRole = _interopRequireDefault$5(docAcknowledgmentsRole$1);
-	var _docAfterwordRole = _interopRequireDefault$5(docAfterwordRole$1);
-	var _docAppendixRole = _interopRequireDefault$5(docAppendixRole$1);
-	var _docBacklinkRole = _interopRequireDefault$5(docBacklinkRole$1);
-	var _docBiblioentryRole = _interopRequireDefault$5(docBiblioentryRole$1);
-	var _docBibliographyRole = _interopRequireDefault$5(docBibliographyRole$1);
-	var _docBibliorefRole = _interopRequireDefault$5(docBibliorefRole$1);
-	var _docChapterRole = _interopRequireDefault$5(docChapterRole$1);
-	var _docColophonRole = _interopRequireDefault$5(docColophonRole$1);
-	var _docConclusionRole = _interopRequireDefault$5(docConclusionRole$1);
-	var _docCoverRole = _interopRequireDefault$5(docCoverRole$1);
-	var _docCreditRole = _interopRequireDefault$5(docCreditRole$1);
-	var _docCreditsRole = _interopRequireDefault$5(docCreditsRole$1);
-	var _docDedicationRole = _interopRequireDefault$5(docDedicationRole$1);
-	var _docEndnoteRole = _interopRequireDefault$5(docEndnoteRole$1);
-	var _docEndnotesRole = _interopRequireDefault$5(docEndnotesRole$1);
-	var _docEpigraphRole = _interopRequireDefault$5(docEpigraphRole$1);
-	var _docEpilogueRole = _interopRequireDefault$5(docEpilogueRole$1);
-	var _docErrataRole = _interopRequireDefault$5(docErrataRole$1);
-	var _docExampleRole = _interopRequireDefault$5(docExampleRole$1);
-	var _docFootnoteRole = _interopRequireDefault$5(docFootnoteRole$1);
-	var _docForewordRole = _interopRequireDefault$5(docForewordRole$1);
-	var _docGlossaryRole = _interopRequireDefault$5(docGlossaryRole$1);
-	var _docGlossrefRole = _interopRequireDefault$5(docGlossrefRole$1);
-	var _docIndexRole = _interopRequireDefault$5(docIndexRole$1);
-	var _docIntroductionRole = _interopRequireDefault$5(docIntroductionRole$1);
-	var _docNoterefRole = _interopRequireDefault$5(docNoterefRole$1);
-	var _docNoticeRole = _interopRequireDefault$5(docNoticeRole$1);
-	var _docPagebreakRole = _interopRequireDefault$5(docPagebreakRole$1);
-	var _docPagelistRole = _interopRequireDefault$5(docPagelistRole$1);
-	var _docPartRole = _interopRequireDefault$5(docPartRole$1);
-	var _docPrefaceRole = _interopRequireDefault$5(docPrefaceRole$1);
-	var _docPrologueRole = _interopRequireDefault$5(docPrologueRole$1);
-	var _docPullquoteRole = _interopRequireDefault$5(docPullquoteRole$1);
-	var _docQnaRole = _interopRequireDefault$5(docQnaRole$1);
-	var _docSubtitleRole = _interopRequireDefault$5(docSubtitleRole$1);
-	var _docTipRole = _interopRequireDefault$5(docTipRole$1);
-	var _docTocRole = _interopRequireDefault$5(docTocRole$1);
-	function _interopRequireDefault$5(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-	var ariaDpubRoles = [['doc-abstract', _docAbstractRole.default], ['doc-acknowledgments', _docAcknowledgmentsRole.default], ['doc-afterword', _docAfterwordRole.default], ['doc-appendix', _docAppendixRole.default], ['doc-backlink', _docBacklinkRole.default], ['doc-biblioentry', _docBiblioentryRole.default], ['doc-bibliography', _docBibliographyRole.default], ['doc-biblioref', _docBibliorefRole.default], ['doc-chapter', _docChapterRole.default], ['doc-colophon', _docColophonRole.default], ['doc-conclusion', _docConclusionRole.default], ['doc-cover', _docCoverRole.default], ['doc-credit', _docCreditRole.default], ['doc-credits', _docCreditsRole.default], ['doc-dedication', _docDedicationRole.default], ['doc-endnote', _docEndnoteRole.default], ['doc-endnotes', _docEndnotesRole.default], ['doc-epigraph', _docEpigraphRole.default], ['doc-epilogue', _docEpilogueRole.default], ['doc-errata', _docErrataRole.default], ['doc-example', _docExampleRole.default], ['doc-footnote', _docFootnoteRole.default], ['doc-foreword', _docForewordRole.default], ['doc-glossary', _docGlossaryRole.default], ['doc-glossref', _docGlossrefRole.default], ['doc-index', _docIndexRole.default], ['doc-introduction', _docIntroductionRole.default], ['doc-noteref', _docNoterefRole.default], ['doc-notice', _docNoticeRole.default], ['doc-pagebreak', _docPagebreakRole.default], ['doc-pagelist', _docPagelistRole.default], ['doc-part', _docPartRole.default], ['doc-preface', _docPrefaceRole.default], ['doc-prologue', _docPrologueRole.default], ['doc-pullquote', _docPullquoteRole.default], ['doc-qna', _docQnaRole.default], ['doc-subtitle', _docSubtitleRole.default], ['doc-tip', _docTipRole.default], ['doc-toc', _docTocRole.default]];
-	var _default$7 = ariaDpubRoles;
-	ariaDpubRoles$1.default = _default$7;
-
-	var ariaGraphicsRoles$1 = {};
-
-	var graphicsDocumentRole$1 = {};
-
-	Object.defineProperty(graphicsDocumentRole$1, "__esModule", {
-	  value: true
-	});
-	graphicsDocumentRole$1.default = void 0;
-	var graphicsDocumentRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    module: 'GRAPHICS',
-	    concept: {
-	      name: 'graphics-object'
-	    }
-	  }, {
-	    module: 'ARIA',
-	    concept: {
-	      name: 'img'
-	    }
-	  }, {
-	    module: 'ARIA',
-	    concept: {
-	      name: 'article'
-	    }
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'document']]
-	};
-	var _default$6 = graphicsDocumentRole;
-	graphicsDocumentRole$1.default = _default$6;
-
-	var graphicsObjectRole$1 = {};
-
-	Object.defineProperty(graphicsObjectRole$1, "__esModule", {
-	  value: true
-	});
-	graphicsObjectRole$1.default = void 0;
-	var graphicsObjectRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    module: 'GRAPHICS',
-	    concept: {
-	      name: 'graphics-document'
-	    }
-	  }, {
-	    module: 'ARIA',
-	    concept: {
-	      name: 'group'
-	    }
-	  }, {
-	    module: 'ARIA',
-	    concept: {
-	      name: 'img'
-	    }
-	  }, {
-	    module: 'GRAPHICS',
-	    concept: {
-	      name: 'graphics-symbol'
-	    }
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'group']]
-	};
-	var _default$5 = graphicsObjectRole;
-	graphicsObjectRole$1.default = _default$5;
-
-	var graphicsSymbolRole$1 = {};
-
-	Object.defineProperty(graphicsSymbolRole$1, "__esModule", {
-	  value: true
-	});
-	graphicsSymbolRole$1.default = void 0;
-	var graphicsSymbolRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': n
+{
+    "word": "समस्त",
+    "ABCH": [
+        {
+            "word": "समस्त",
+            "linga": "क्ली",
+            "pagenum": "54",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4296",
+            "group": "1819",
+            "synonyms": [
+                "सर्व",
+                "अन्यून",
+                "समग्र",
+                "सकल",
+                "सम",
+                "विश्व",
+                "अशेष",
+                "अखण्ड",
+                "कृत्स्न",
+                "न्यक्ष",
+                "निखिल",
+                "अखिल"
+            ],
+            "content": "सर्वं समस्तमन्यूनं समग्रं सकलं समम् ।\nविश्वाशेषाखण्डकृत्स्नन्यक्षाणि निखिलाखिले ॥ १४३३ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "समस्त",
+            "eid": "29357",
+            "pagenum": 1095,
+            "content": "समस्त¦ <i><ab>p. p.</ab></i> <b>1</b> Thrown together, combined; <ls>Pt. 1. 383.</ls> <b>--2</b> <lbinfo n='Com+pounded'/> Compounded. <b>--3</b> Pervading the whole of anything. <b>--4</b> Abridged, <lbinfo n='con+tracted'/> contracted, condensed. <b>--5</b> All, whole, entire."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "समस्त",
+            "eid": "8290",
+            "pagenum": 369,
+            "content": "समस्त¦ <i>Adj.</i> (<i>Part. pass.</i> a r. अस् deponere praef. सम्) totus, integer."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "समस्त",
+            "eid": "17693",
+            "pagenum": 682,
+            "content": "समस्त¦ <i>samasta</i> <ab>a.</ab> <i>(as;</i> <ab>sfx.</ab> <i>ta)</i> contracté; <lbinfo n='7'/> || composé, <ab>tg.</ab> || Pris dans son ensemble; <lbinfo n='7'/> <i>pañcasamastās</i> cinq ensemble; || total, intact. -- <ab>S.</ab> <ab>n.</ab> un tout, un ensemble de parties."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "समस्त",
+            "eid": "35230",
+            "pagenum": 592,
+            "content": "समस्त¦ <lex>a.</lex> joined, composed, whole, entire, all."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "समस्त",
+            "eid": "26399",
+            "pagenum": 476,
+            "content": "समस्त¦ <i>s.</i> 2. अस्."
+        }
+    ],
+    "IEG": [
+        {
+            "word": "समस्त",
+            "eid": "5093",
+            "pagenum": 290,
+            "content": "<i>samasta</i>¦ (IE 8-1), corrupt form of <i>saṃvat</i> especially in medieval Orissan records."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "समस्त",
+            "eid": "39745",
+            "pagenum": 758,
+            "content": "samasta¦ <i>a. (f. स्ता)</i> 1. Thrown together; 2. compounded; 3. abridged, condensed; 4. all, whole, entire."
+        }
+    ],
+    "MD": [
+        {
+            "word": "समस्त",
+            "eid": "18867",
+            "pagenum": 337,
+            "content": "समस्त¦ sam-asta, <ab>pp.</ab> (√ <hom>2.</hom> as) united, combined, 🞄<ab>etc.</ab>: <b>-dhātṛ,</b> <lex>m.</lex> Preserver of all (Viṣṇu); 🞄<b>-loka,</b> <lex>m.</lex> whole world."
+        }
+    ],
+    "MW": [
+        {
+            "word": "समस्त",
+            "eid": "233932",
+            "pagenum": "1158,1",
+            "content": "स/म्-अस्त ¦ <lex>mfn.</lex> thrown or put together, combined, united, whole, all, <ls>ŚBr.</ls> &c. &c.<info lex='m:f:n'/>"
+        },
+        {
+            "word": "समस्त",
+            "eid": "233933",
+            "pagenum": "1158,1",
+            "content": "¦ (in <ab>gram.</ab>) compounded, compound<info lex='inh'/>"
+        },
+        {
+            "word": "समस्त",
+            "eid": "233934",
+            "pagenum": "1158,1",
+            "content": "¦ (in <ab>phil.</ab>) inherent in or pervading the whole of anything<info lex='inh'/>"
+        },
+        {
+            "word": "समस्त",
+            "eid": "233935",
+            "pagenum": "1158,1",
+            "content": "¦ abridged, contracted, <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समस्त",
+            "eid": "233936",
+            "pagenum": "1158,1",
+            "content": "स/म्-अस्त ¦ <lex>m.</lex> a whole, the aggregate of all the parts, <ls>ib.</ls><info lex='m'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "समस्त",
+            "eid": "49866",
+            "pagenum": 1071,
+            "content": "<i>Sam-asta, as, ā, am,</i>¦ thrown together, combined, connected, united, compounded, compound; inherent in or pervading the whole of anything; all, the whole, entire, complete [cf. <i>yāvat-s°</i>]; contracted, abbreviated, condensed, concise, succinct, abridged. <i>—Samasta-bala, am,</i> n. a whole army, entire force. <i>—Samasta-loka, as,</i> m. the whole world."
+        }
+    ],
+    "PW": [
+        {
+            "word": "समस्त",
+            "eid": "120147",
+            "pagenum": 7,
+            "content": "समस्त¦ <lex>Adj.</lex> <ab>s. u.</ab> <hom>2.</hom> अस् mit सम्."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समस्त",
+            "eid": "105485",
+            "pagenum": 7,
+            "content": "समस्त¦ <lex>adj.</lex> s. u. 2. अस् mit सम्; in der Bed. <i>verbunden, vereinigt</i> auch <ls>ṚV. PRĀT. 18, 22.</ls> <i>ganz</i> <ls n='ṚV. PRĀT.'>24.</ls> <ls>R. 4, 56, 16.</ls> <dvsn n='v'>— Vgl. सामस्त्य ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समस्त",
+            "eid": "42601",
+            "pagenum": 762,
+            "content": "समस्त¦ mfn. (-स्तः-स्ता-स्तं) 1. All, whole, entire, complete. 2. Compound, compounded. 3. Abridged, contracted. m. (-स्तः) A whole, the aggregate of all the parts. E. सम् together, अस् to throw or direct, aff. क्त ।"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "समस्त",
+            "eid": "40575",
+            "pagenum": 895,
+            "content": "समस्त¦ mfn. (-स्तः-स्ता-स्तं) .²1 All, whole, entire, complete. .²2 Compound, compounded. .²3 Abridged, contracted. m. (-स्तः) A whole, the aggregate of all the parts. .E. सम् together, अस to throw or direct, aff. क्त."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "समस्त",
+            "eid": "40293",
+            "pagenum": 816,
+            "content": "समस्त¦ (स्तः-स्ता-स्तं) <i>a.</i> All, entire; contracted; compound. <i>m.</i> A whole, aggregate."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समस्त",
+            "eid": "37917",
+            "pagenum": "5-270-c",
+            "content": "समस्तं¦, त्रि, (सम् + अस् + क्तः ।) सम्पूर्णम् । तत्पर्य्यायः । समम् २ सर्व्वम् ३ विश्वम् ४ अशेषम् ६ कृत्स्नम् ६ निखिलम् ७ अखिलम् ८ निःशेषम् ९ समग्रम् १० सकलम् ११ पूर्णम् १२ अखण्डम् १३ अनूनकम् १४ । इत्यमरः ॥ अनन्तम् १५ । इति शब्दरत्नावली ॥ अन्यूनम् १६ अनूनम् १७ । इति जटाधरः ॥ (यथा, तिष्णुपुराणे । १ । ४ । ३३ । “सूक्तान्यशेषाणि शटाकलापो घ्राणं समस्तानि हवींषि देव ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "समस्त",
+            "eid": "45282",
+            "pagenum": "5231,a",
+            "content": "समस्त¦ त्रि० सम् + अस--क्त । १ संक्षिप्ते २ सकले अमरः । ३ व्याकरणोक्ते कृतसमासे शब्दभेदे च ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समस्त",
+            "content": "समस्त भू.क.कृ. -  सम् + अस् + क्त 'एक जगह डाला हुआ, सम्मिश्रित'"
+        },
+        {
+            "word": "समस्त",
+            "content": "समस्त भू.क.कृ. -  सम् + अस् + क्त संयुक्त"
+        },
+        {
+            "word": "समस्त",
+            "content": "समस्त भू.क.कृ. -  सम् + अस् + क्त किसी पदार्थ में पूर्णतः व्याप्त"
+        },
+        {
+            "word": "समस्त",
+            "content": "समस्त भू.क.कृ. -  सम् + अस् + क्त 'संक्षिप्त, संकुचित, संक्षेपित'"
+        },
+        {
+            "word": "समस्त",
+            "content": "समस्त भू.क.कृ. -  सम् + अस् + क्त 'सारा, पूर्ण, पूरा'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "समस्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಸಂಪೂರ್ಣ \\/ಸಕಲ \\/ಎಲ್ಲ \\/ನಿಃಶೇಷವಾದ",
+            "निष्पत्तिः": "सम् + असु (क्षेपणे)'क्तः' (३-२-१०२)",
+            "प्रयोगाः": "'सपदि कुमुदिनीभिर्मीलितं हा क्षपापि क्षयमगमदपेतास्तारकास्ताः समस्ताः'",
+            "उल्लेखाः": "माघ० ११-२४",
+            "content": ""
+        },
+        {
+            "word": "समस्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಎಸೆಯಲ್ಪಟ್ಟ",
+            "content": ""
+        },
+        {
+            "word": "समस्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಅನೇಕ ಪದಗಳನ್ನು ಸೇರಿಸಿ ಒಂದಾಗಿ ಮಾಡಲ್ಪಟ್ಟ",
+            "content": ""
+        },
+        {
+            "word": "समस्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಸಂಗ್ರಹಿಸಿ ಹೇಳಲ್ಪಟ್ಟ \\/ಸಂಕ್ಷೇಪವಾಗಿ ಮಾಡಲ್ಪಟ್ಟ",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "समस्त",
+            "linga": "V",
+            "artha": "समग्रम्",
+            "synonyms": [
+                "सम",
+                "सर्व",
+                "विश्व",
+                "अशेष",
+                "कृत्स्न",
+                "समस्त",
+                "निखिल",
+                "अखिल",
+                "निःशेष",
+                "समग्र",
+                "सकल",
+                "पूर्ण",
+                "अखण्ड",
+                "अनूनक",
+                "केवल"
+            ],
+            "num": "3.1.64",
+            "text": "विश्वमशेषं कृत्स्नं समस्तनिखिलाखिलानि निःशेषम् । समग्रं सकलं पूर्णमखण्डं स्यादनूनके ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "समस्त",
+            "content": "<lexhead no=\"688\">\n<dentry>समस्त</dentry>\n<prAwipaxikam>समस्त</prAwipaxikam>\n<grammar>भू* क* कृ*</grammar>\n<etymology>[सम्+अस्+क्त]</etymology>\n<jAwi>परिमाणः</jAwi>\n<sense no=\"1\">एक जगह डाला हुआ, सम्मिश्रित</sense>\n<sense n=\"2\">संयुक्त</sense>\n<sense n=\"3\">किसी पदार्थ में पूर्णतः व्याप्त</sense>\n<sense n=\"4\">संक्षिप्त, संकुचित, संक्षेपित</sense>\n<sense n=\"5\">सारा, पूर्ण, पूरा</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "समस्त",
+            "content": "<body><s>samasta tri° sam + asa—kta . <lb/><b>1</b> saMkzipte <lb/><b>2</b> sakale amaraH . <lb/><b>3</b> vyAkaraRokte kftasamAse SabdaBede ca .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "समस्त",
+            "content": "<H2><h><key1>samasta</key1><key2>sa/m-asta</key2></h><body><s>sa/m-asta</s>   <lex>mfn.</lex> thrown or put together, combined, united, whole, all, <ls>ŚBr.</ls> &amp;c. &amp;c.<info lex=\"m:f:n\" /></body><tail><L>233932</L><pc>1158,1</pc></tail></H2>\n <H2A><h><key1>samasta</key1><key2>sa/m-asta</key2></h><body>  (in <ab>gram.</ab>) compounded, compound<info lex=\"inh\" /></body><tail><L>233933</L><pc>1158,1</pc></tail></H2A>\n <H2A><h><key1>samasta</key1><key2>sa/m-asta</key2></h><body>  (in <ab>phil.</ab>) inherent in or pervading the whole of anything<info lex=\"inh\" /></body><tail><L>233934</L><pc>1158,1</pc></tail></H2A>\n <H2A><h><key1>samasta</key1><key2>sa/m-asta</key2></h><body>  abridged, contracted, <ls>W.</ls><info lex=\"inh\" /></body><tail><L>233935</L><pc>1158,1</pc></tail></H2A>\n <H2B><h><key1>samasta</key1><key2>sa/m-asta</key2></h><body><s>sa/m-asta</s>   <lex>m.</lex> a whole, the aggregate of all the parts, <ls>ib.</ls><info lex=\"m\" /></body><tail><L>233936</L><pc>1158,1</pc></tail></H2B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समस्त",
+            "content": "<H1><h><key1>samasta</key1><key2>samasta</key2></h><body><s>samasta</s>  <div n=\"1\">mfn. (<s>-staH-stA-staM</s>) </div><div n=\"2\"> 1. All, whole, entire, complete. </div><div n=\"2\"> 2. Compound, <lb />compounded. </div><div n=\"2\"> 3. Abridged, contracted. </div><div n=\"1\">m. (<s>-staH</s>) A whole, the aggre- <lb />gate of all the parts.</div><div n=\"E\"> E. <s>sam</s> together, <s>as</s> to throw or direct, aff. <s>kta .</s></div></body><tail><L>42601</L><pc>762-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "समस्त",
+            "content": "<span lang=\"sa\">समस्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಂಪೂರ್ಣ /ಸಕಲ /ಎಲ್ಲ /ನಿಃಶೇಷವಾದ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>सम् + असु (क्षेपणे) - \"क्तः\" (३-२-१०२)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"सपदि कुमुदिनीभिर्मीलितं हा क्षपापि क्षयमगमदपेतास्तारकास्ताः समस्ताः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० ११-२४<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समस्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಎಸೆಯಲ್ಪಟ್ಟ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समस्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅನೇಕ ಪದಗಳನ್ನು ಸೇರಿಸಿ ಒಂದಾಗಿ ಮಾಡಲ್ಪಟ್ಟ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समस्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಂಗ್ರಹಿಸಿ ಹೇಳಲ್ಪಟ್ಟ /ಸಂಕ್ಷೇಪವಾಗಿ ಮಾಡಲ್ಪಟ್ಟ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

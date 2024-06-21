@@ -1,67 +1,263 @@
-row Error("Not implemented.");},getCacheForType:function(){throw Error("Not implemented.");
-}},Jg=Ua.ReactCurrentDispatcher,Kg=Ua.ReactCurrentCache;function Lg(a){console.error(a);return null}function Mg(){}var Ng=null;function Ue(){if(Ng)return Ng;var a=bf.getStore();return a?a:null}function Og(a,b){a.pingedTasks.push(b);1===a.pingedTasks.length&&(a.flushScheduled=null!==a.destination,setImmediate(function(){return Pg(a)}))}
-function Qg(a,b){return{status:0,rootSegmentID:-1,parentFlushed:!1,pendingTasks:0,completedSegments:[],byteSize:0,fallbackAbortableTasks:b,errorDigest:null,resources:{styles:new Set,stylesheets:new Set},trackedContentKeyPath:null,trackedFallbackNode:null}}
-function Rg(a,b,c,d,e,f,g,h,l,m,q,p,r){a.allPendingTasks++;null===e?a.pendingRootTasks++:e.pendingTasks++;var t={replay:null,node:c,childIndex:d,ping:function(){return Og(a,t)},blockedBoundary:e,blockedSegment:f,abortSet:g,keyPath:h,formatContext:l,legacyContext:m,context:q,treeContext:p,componentStack:r,thenableState:b};g.add(t);return t}
-function Sg(a,b,c,d,e,f,g,h,l,m,q,p,r){a.allPendingTasks++;null===f?a.pendingRootTasks++:f.pendingTasks++;c.pendingTasks++;var t={replay:c,node:d,childIndex:e,ping:function(){return Og(a,t)},blockedBoundary:f,blockedSegment:null,abortSet:g,keyPath:h,formatContext:l,legacyContext:m,context:q,treeContext:p,componentStack:r,thenableState:b};g.add(t);return t}
-function Tg(a,b,c,d,e,f){return{status:0,id:-1,index:b,parentFlushed:!1,chunks:[],children:[],parentFormatContext:d,boundary:c,lastPushedText:e,textEmbedded:f}}function Ug(a,b){return{tag:0,parent:a.componentStack,type:b}}
-function Vg(a,b){if(b&&null!==a.trackedPostpones){try{a="";do{switch(b.tag){case 0:a+=Cf(b.type,null,null);break;case 1:a+=Ef(b.type,!1);break;case 2:a+=Ef(b.type,!0)}b=b.parent}while(b);var c=a}catch(d){c="\nError generating stack: "+d.message+"\n"+d.stack}c={componentStack:c}}else c={};return c}function Y(a,b,c){a=a.onError(b,c);if(null==a||"string"===typeof a)return a}
-function Wg(a,b){var c=a.onShellError;c(b);c=a.onFatalError;c(b);null!==a.destination?(a.status=2,a.destination.destroy(b)):(a.status=1,a.fatalError=b)}
-function Xg(a,b,c,d,e){var f=d.render(),g=e.childContextTypes;if(null!==g&&void 0!==g){c=b.legacyContext;if("function"!==typeof d.getChildContext)e=c;else{d=d.getChildContext();for(var h in d)if(!(h in g))throw Error((Af(e)||"Unknown")+'.getChildContext(): key "'+h+'" is not defined in childContextTypes.');e=B({},c,d)}b.legacyContext=e;Z(a,b,null,f,-1);b.legacyContext=c}else e=b.keyPath,b.keyPath=c,Z(a,b,null,f,-1),b.keyPath=e}
-function Yg(a,b,c,d,e,f,g){var h=!1;if(0!==f&&null!==a.formState){var l=b.blockedSegment;if(null!==l){h=!0;l=l.chunks;for(var m=0;m<f;m++)m===g?l.push(gc):l.push(hc)}}f=b.keyPath;b.keyPath=c;e?(c=b.treeContext,b.treeContext=Rf(c,1,0),Zg(a,b,d,-1),b.treeContext=c):h?Zg(a,b,d,-1):Z(a,b,null,d,-1);b.keyPath=f}function $g(a,b){if(a&&a.defaultProps){b=B({},b);a=a.defaultProps;for(var c in a)void 0===b[c]&&(b[c]=a[c]);return b}return b}
-function ah(a,b,c,d,e,f,g){if("function"===typeof e)if(e.prototype&&e.prototype.isReactComponent){d=b.componentStack;b.componentStack={tag:2,parent:b.componentStack,type:e};g=Gf(e,b.legacyContext);var h=e.contextType;h=new e(f,"object"===typeof h&&null!==h?h._currentValue:g);Pf(h,e,f,g);Xg(a,b,c,h,e);b.componentStack=d}else{g=Gf(e,b.legacyContext);h=b.componentStack;b.componentStack={tag:1,parent:b.componentStack,type:e};cg={};dg=b;eg=a;fg=c;kg=jg=0;lg=-1;mg=0;ng=d;d=e(f,g);d=tg(e,f,d,g);var l=0!==
-jg,m=kg,q=lg;"object"===typeof d&&null!==d&&"function"===typeof d.render&&void 0===d.$$typeof?(Pf(d,e,f,g),Xg(a,b,c,d,e)):Yg(a,b,c,d,l,m,q);b.componentStack=h}else if("string"===typeof e){d=b.componentStack;b.componentStack=Ug(b,e);g=b.blockedSegment;if(null===g)g=f.children,h=b.formatContext,l=b.keyPath,b.formatContext=Mb(h,e,f),b.keyPath=c,Zg(a,b,g,-1),b.formatContext=h,b.keyPath=l;else{l=Cc(g.chunks,e,f,a.resumableState,a.renderState,b.formatContext,g.lastPushedText);g.lastPushedText=!1;h=b.formatContext;
-m=b.keyPath;b.formatContext=Mb(h,e,f);b.keyPath=c;Zg(a,b,l,-1);b.formatContext=h;b.keyPath=m;a:{c=g.chunks;a=a.resumableState;switch(e){case "title":case "style":case "script":case "area":case "base":case "br":case "col":case "embed":case "hr":case "img":case "input":case "keygen":case "link":case "meta":case "param":case "source":case "track":case "wbr":break a;case "body":if(1>=h.insertionMode){a.hasBody=!0;break a}break;case "html":if(0===h.insertionMode){a.hasHtml=!0;break a}}c.push(mc(e))}g.lastPushedText=
-!1}b.componentStack=d}else{switch(e){case tf:case rf:case ff:case gf:case ef:e=b.keyPath;b.keyPath=c;Z(a,b,null,f.children,-1);b.keyPath=e;return;case sf:"hidden"!==f.mode&&(e=b.keyPath,b.keyPath=c,Z(a,b,null,f.children,-1),b.keyPath=e);return;case nf:e=b.componentStack;b.componentStack=Ug(b,"SuspenseList");d=b.keyPath;b.keyPath=c;Z(a,b,null,f.children,-1);b.keyPath=d;b.componentStack=e;return;case qf:throw Error("ReactDOMServer does not yet support scope components.");case mf:a:if(null!==b.replay){e=
-b.keyPath;b.keyPath=c;c=f.children;try{Zg(a,b,c,-1)}finally{b.keyPath=e}}else{var p=b.componentStack;e=b.componentStack=Ug(b,"Suspense");var r=b.keyPath;d=b.blockedBoundary;var t=b.blockedSegment;g=f.fallback;var A=f.children;f=new Set;m=Qg(a,f);null!==a.trackedPostpones&&(m.trackedContentKeyPath=c);q=Tg(a,t.chunks.length,m,b.formatContext,!1,!1);t.children.push(q);t.lastPushedText=!1;var F=Tg(a,0,null,b.formatContext,!1,!1);F.parentFlushed=!0;b.blockedBoundary=m;b.blockedSegment=F;a.renderState.boundaryResources=
-m.resources;b.keyPath=c;try{if(Zg(a,b,A,-1),F.lastPushedText&&F.textEmbedded&&F.chunks.push(Nb),F.status=1,bh(m,F),0===m.pendingTasks&&0===m.status){m.status=1;b.componentStack=p;break a}}catch(u){F.status=4,m.status=4,h=Vg(a,b.componentStack),l=Y(a,u,h),m.errorDigest=l,ch(a,m)}finally{a.renderState.boundaryResources=d?d.resources:null,b.blockedBoundary=d,b.blockedSegment=t,b.keyPath=r,b.componentStack=p}h=[c[0],"Suspense Fallback",c[2]];l=a.trackedPostpones;null!==l&&(p=[h[1],h[2],[],null],l.workingMap.set(h,
-p),5===m.status?l.workingMap.get(c)[4]=p:m.trackedFallbackNode=p);b=Rg(a,null,g,-1,d,q,f,h,b.formatContext,b.legacyContext,b.context,b.treeContext,e);a.pingedTasks.push(b)}return}if("object"===typeof e&&null!==e)switch(e.$$typeof){case lf:h=b.componentStack;b.componentStack={tag:1,parent:b.componentStack,type:e.render};e=e.render;cg={};dg=b;eg=a;fg=c;kg=jg=0;lg=-1;mg=0;ng=d;d=e(f,g);f=tg(e,f,d,g);Yg(a,b,c,f,0!==jg,kg,lg);b.componentStack=h;return;case of:e=e.type;f=$g(e,f);ah(a,b,c,d,e,f,g);return;
-case hf:g=f.children;d=b.keyPath;e=e._context;f=f.value;h=e._currentValue;e._currentValue=f;l=Hf;Hf=f={parent:l,depth:null===l?0:l.depth+1,context:e,parentValue:h,value:f};b.context=f;b.keyPath=c;Z(a,b,null,g,-1);a=Hf;if(null===a)throw Error("Tried to pop a Context at the root of the app. This is a bug in React.");c=a.parentValue;a.context._currentValue=c===vf?a.context._defaultValue:c;a=Hf=a.parent;b.context=a;b.keyPath=d;return;case jf:f=f.children;f=f(e._currentValue);e=b.keyPath;b.keyPath=c;Z(a,
-b,null,f,-1);b.keyPath=e;return;case pf:g=b.componentStack;b.componentStack=Ug(b,"Lazy");h=e._init;e=h(e._payload);f=$g(e,f);ah(a,b,c,d,e,f,void 0);b.componentStack=g;return}throw Error("Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: "+((null==e?e:typeof e)+"."));}}
-function dh(a,b,c,d,e){var f=b.replay,g=b.blockedBoundary,h=Tg(a,0,null,b.formatContext,!1,!1);h.id=c;h.parentFlushed=!0;try{b.replay=null,b.blockedSegment=h,Zg(a,b,d,e),h.status=1,null===g?a.completedRootSegment=h:(bh(g,h),g.parentFlushed&&a.partialBoundaries.push(g))}finally{b.replay=f,b.blockedSegment=null}}
-function Z(a,b,c,d,e){if(null!==b.replay&&"number"===typeof b.replay.slots)dh(a,b,b.replay.slots,d,e);else{b.node=d;b.childIndex=e;if("object"===typeof d&&null!==d){switch(d.$$typeof){case cf:var f=d.type,g=d.key,h=d.props,l=d.ref,m=Af(f),q=null==g?-1===e?0:e:g;g=[b.keyPath,m,q];if(null!==b.replay)a:{var p=b.replay;e=p.nodes;for(d=0;d<e.length;d++){var r=e[d];if(q===r[1]){if(4===r.length){if(null!==m&&m!==r[0])throw Error("Expected the resume to render <"+r[0]+"> in this slot but instead it rendered <"+
-m+">. The tree doesn't match so React will fallback to client rendering.");var t=r[2];m=r[3];r=b.node;b.replay={nodes:t,slots:m,pendingTasks:1};try{ah(a,b,g,c,f,h,l);if(1===b.replay.pendingTasks&&0<b.replay.nodes.length)throw Error("Couldn't find all resumable slots by key/index during replaying. The tree doesn't match so React will fallback to client rendering.");b.replay.pendingTasks--}catch(G){if("object"===typeof G&&null!==G&&(G===Wf||"function"===typeof G.then))throw b.node===r&&(b.replay=p),
-G;b.replay.pendingTasks--;h=Vg(a,b.componentStack);g=a;a=b.blockedBoundary;c=G;h=Y(g,c,h);eh(g,a,t,m,c,h)}b.replay=p}else{if(f!==mf)throw Error("Expected the resume to render <Suspense> in this slot but instead it rendered <"+(Af(f)||"Unknown")+">. The tree doesn't match so React will fallback to client rendering.");b:{p=void 0;c=r[5];f=r[2];l=r[3];m=null===r[4]?[]:r[4][2];r=null===r[4]?null:r[4][3];q=b.componentStack;var A=b.componentStack=Ug(b,"Suspense"),F=b.keyPath,u=b.replay,x=b.blockedBoundary,
-da=h.children;h=h.fallback;var U=new Set,w=Qg(a,U);w.parentFlushed=!0;w.rootSegmentID=c;b.blockedBoundary=w;b.replay={nodes:f,slots:l,pendingTasks:1};a.renderState.boundaryResources=w.resources;try{Zg(a,b,da,-1);if(1===b.replay.pendingTasks&&0<b.replay.nodes.length)throw Error("Couldn't find all resumable slots by key/index during replaying. The tree doesn't match so React will fallback to client rendering.");b.replay.pendingTasks--;if(0===w.pendingTasks&&0===w.status){w.status=1;a.completedBoundaries.push(w);
-break b}}catch(G){w.status=4,t=Vg(a,b.componentStack),p=Y(a,G,t),w.errorDigest=p,b.replay.pendingTasks--,a.clientRenderedBoundaries.push(w)}finally{a.renderState.boundaryResources=x?x.resources:null,b.blockedBoundary=x,b.replay=u,b.keyPath=F,b.componentStack=q}b=Sg(a,null,{nodes:m,slots:r,pendingTasks:0},h,-1,x,U,[g[0],"Suspense Fallback",g[2]],b.formatContext,b.legacyContext,b.context,b.treeContext,A);a.pingedTasks.push(b)}}e.splice(d,1);break a}}}else ah(a,b,g,c,f,h,l);return;case df:throw Error("Portals are not currently supported by the server renderer. Render them conditionally so that they only appear on the client render.");
-case pf:h=b.componentStack;b.componentStack=Ug(b,"Lazy");g=d._init;d=g(d._payload);b.componentStack=h;Z(a,b,null,d,e);return}if(Ta(d)){fh(a,b,d,e);return}null===d||"object"!==typeof d?h=null:(h=wf&&d[wf]||d["@@iterator"],h="function"===typeof h?h:null);if(h&&(h=h.call(d))){d=h.next();if(!d.done){g=[];do g.push(d.value),d=h.next();while(!d.done);fh(a,b,g,e)}return}if("function"===typeof d.then)return Z(a,b,null,Dg(d),e);if(d.$$typeof===jf||d.$$typeof===kf)return Z(a,b,null,d._currentValue,e);e=Object.prototype.toString.call(d);
-throw Error("Objects are not valid as a React child (found: "+("[object Object]"===e?"object with keys {"+Object.keys(d).join(", ")+"}":e)+"). If you meant to render a collection of children, use an array instead.");}"string"===typeof d?(e=b.blockedSegment,null!==e&&(e.lastPushedText=Ob(e.chunks,d,a.renderState,e.lastPushedText))):"number"===typeof d&&(e=b.blockedSegment,null!==e&&(e.lastPushedText=Ob(e.chunks,""+d,a.renderState,e.lastPushedText)))}}
-function fh(a,b,c,d){var e=b.keyPath;if(-1!==d&&(b.keyPath=[b.keyPath,"Fragment",d],null!==b.replay)){for(var f=b.replay,g=f.nodes,h=0;h<g.length;h++){var l=g[h];if(l[1]===d){d=l[2];l=l[3];b.replay={nodes:d,slots:l,pendingTasks:1};try{fh(a,b,c,-1);if(1===b.replay.pendingTasks&&0<b.replay.nodes.length)throw Error("Couldn't find all resumable slots by key/index during replaying. The tree doesn't match so React will fallback to client rendering.");b.replay.pendingTasks--}catch(p){if("object"===typeof p&&
-null!==p&&(p===Wf||"function"===typeof p.then))throw p;b.replay.pendingTasks--;c=Vg(a,b.componentStack);var m=b.blockedBoundary,q=p;c=Y(a,q,c);eh(a,m,d,l,q,c)}b.replay=f;g.splice(h,1);break}}b.keyPath=e;return}f=b.treeContext;g=c.length;if(null!==b.replay&&(h=b.replay.slots,null!==h&&"object"===typeof h)){for(d=0;d<g;d++)l=c[d],b.treeContext=Rf(f,g,d),m=h[d],"number"===typeof m?(dh(a,b,m,l,d),delete h[d]):Zg(a,b,l,d);b.treeContext=f;b.keyPath=e;return}for(h=0;h<g;h++)d=c[h],b.treeContext=Rf(f,g,h),
-Zg(a,b,d,h);b.treeContext=f;b.keyPath=e}function ch(a,b){a=a.trackedPostpones;null!==a&&(b=b.trackedContentKeyPath,null!==b&&(b=a.workingMap.get(b),void 0!==b&&(b.length=4,b[2]=[],b[3]=null)))}
-function Zg(a,b,c,d){var e=b.formatContext,f=b.legacyContext,g=b.context,h=b.keyPath,l=b.treeContext,m=b.componentStack,q=b.blockedSegment;if(null===q)try{return Z(a,b,null,c,d)}catch(t){if(ug(),c=t===Wf?$f():t,"object"===typeof c&&null!==c&&"function"===typeof c.then){d=vg();a=Sg(a,d,b.replay,b.node,b.childIndex,b.blockedBoundary,b.abortSet,b.keyPath,b.formatContext,b.legacyContext,b.context,b.treeContext,null!==b.componentStack?b.componentStack.parent:null).ping;c.then(a,a);b.formatContext=e;b.legacyContext=
-f;b.context=g;b.keyPath=h;b.treeContext=l;b.componentStack=m;Nf(g);return}}else{var p=q.children.length,r=q.chunks.length;try{return Z(a,b,null,c,d)}catch(t){if(ug(),q.children.length=p,q.chunks.length=r,c=t===Wf?$f():t,"object"===typeof c&&null!==c&&"function"===typeof c.then){d=vg();q=b.blockedSegment;p=Tg(a,q.chunks.length,null,b.formatContext,q.lastPushedText,!0);q.children.push(p);q.lastPushedText=!1;a=Rg(a,d,b.node,b.childIndex,b.blockedBoundary,p,b.abortSet,b.keyPath,b.formatContext,b.legacyContext,
-b.context,b.treeContext,null!==b.componentStack?b.componentStack.parent:null).ping;c.then(a,a);b.formatContext=e;b.legacyContext=f;b.context=g;b.keyPath=h;b.treeContext=l;b.componentStack=m;Nf(g);return}}}b.formatContext=e;b.legacyContext=f;b.context=g;b.keyPath=h;b.treeContext=l;Nf(g);throw c;}function gh(a){var b=a.blockedBoundary;a=a.blockedSegment;null!==a&&(a.status=3,hh(this,b,a))}
-function eh(a,b,c,d,e,f){for(var g=0;g<c.length;g++){var h=c[g];if(4===h.length)eh(a,b,h[2],h[3],e,f);else{h=h[5];var l=a,m=f,q=Qg(l,new Set);q.parentFlushed=!0;q.rootSegmentID=h;q.status=4;q.errorDigest=m;q.parentFlushed&&l.clientRenderedBoundaries.push(q)}}c.length=0;if(null!==d){if(null===b)throw Error("We should not have any resumable nodes in the shell. This is a bug in React.");4!==b.status&&(b.status=4,b.errorDigest=f,b.parentFlushed&&a.clientRenderedBoundaries.push(b));if("object"===typeof d)for(var p in d)delete d[p]}}
-function ih(a,b,c){var d=a.blockedBoundary,e=a.blockedSegment;null!==e&&(e.status=3);if(null===d){if(d={},1!==b.status&&2!==b.status){a=a.replay;if(null===a){Y(b,c,d);Wg(b,c);return}a.pendingTasks--;0===a.pendingTasks&&0<a.nodes.length&&(d=Y(b,c,d),eh(b,null,a.nodes,a.slots,c,d));b.pendingRootTasks--;0===b.pendingRootTasks&&jh(b)}}else d.pendingTasks--,4!==d.status&&(d.status=4,a=Vg(b,a.componentStack),a=Y(b,c,a),d.errorDigest=a,ch(b,d),d.parentFlushed&&b.clientRenderedBoundaries.push(d)),d.fallbackAbortableTasks.forEach(function(f){return ih(f,
-b,c)}),d.fallbackAbortableTasks.clear();b.allPendingTasks--;0===b.allPendingTasks&&kh(b)}
-function lh(a,b){try{var c=a.renderState,d=c.onHeaders;if(d){var e=c.headers;if(e){c.headers=null;var f=e.preconnects;e.fontPreloads&&(f&&(f+=", "),f+=e.fontPreloads);e.highImagePreloads&&(f&&(f+=", "),f+=e.highImagePreloads);if(!b){var g=c.styles.values(),h=g.next();b:for(;0<e.remainingCapacity&&!h.done;h=g.next())for(var l=h.value.sheets.values(),m=l.next();0<e.remainingCapacity&&!m.done;m=l.next()){var q=m.value,p=q.props,r=p.href,t=q.props,A=Dc(t.href,"style",{crossOrigin:t.crossOrigin,integrity:t.integrity,
-nonce:t.nonce,type:t.type,fetchPriority:t.fetchPriority,referrerPolicy:t.referrerPolicy,media:t.media});if(2<=(e.remainingCapacity-=A.length))c.resets.style[r]=E,f&&(f+=", "),f+=A,c.resets.style[r]="string"===typeof p.crossOrigin||"string"===typeof p.integrity?[p.crossOrigin,p.integrity]:E;else break b}}f?d({Link:f}):d({})}}}catch(F){Y(a,F,{})}}function jh(a){null===a.trackedPostpones&&lh(a,!0);a.onShellError=Mg;a=a.onShellReady;a()}
-function kh(a){lh(a,null===a.trackedPostpones?!0:null===a.completedRootSegment||5!==a.completedRootSegment.status);a=a.onAllReady;a()}function bh(a,b){if(0===b.chunks.length&&1===b.children.length&&null===b.children[0].boundary&&-1===b.children[0].id){var c=b.children[0];c.id=b.id;c.parentFlushed=!0;1===c.status&&bh(a,c)}else a.completedSegments.push(b)}
-function hh(a,b,c){if(null===b){if(null!==c&&c.parentFlushed){if(null!==a.completedRootSegment)throw Error("There can only be one root segment. This is a bug in React.");a.completedRootSegment=c}a.pendingRootTasks--;0===a.pendingRootTasks&&jh(a)}else b.pendingTasks--,4!==b.status&&(0===b.pendingTasks?(0===b.status&&(b.status=1),null!==c&&c.parentFlushed&&1===c.status&&bh(b,c),b.parentFlushed&&a.completedBoundaries.push(b),1===b.status&&(b.fallbackAbortableTasks.forEach(gh,a),b.fallbackAbortableTasks.clear())):
-null!==c&&c.parentFlushed&&1===c.status&&(bh(b,c),1===b.completedSegments.length&&b.parentFlushed&&a.partialBoundaries.push(b)));a.allPendingTasks--;0===a.allPendingTasks&&kh(a)}
-function Pg(a){if(2!==a.status){var b=Hf,c=Jg.current;Jg.current=Hg;var d=Kg.current;Kg.current=Ig;var e=Ng;Ng=a;var f=Gg;Gg=a.resumableState;try{var g=a.pingedTasks,h;for(h=0;h<g.length;h++){var l=g[h],m=a,q=l.blockedBoundary;m.renderState.boundaryResources=q?q.resources:null;var p=l.blockedSegment;if(null===p){var r=m;if(0!==l.replay.pendingTasks){Nf(l.context);try{var t=l.thenableState;l.thenableState=null;Z(r,l,t,l.node,l.childIndex);if(1===l.replay.pendingTasks&&0<l.replay.nodes.length)throw Error("Couldn't find all resumable slots by key/index during replaying. The tree doesn't match so React will fallback to client rendering.");
-l.replay.pendingTasks--;l.abortSet.delete(l);hh(r,l.blockedBoundary,null)}catch(M){ug();var A=M===Wf?$f():M;if("object"===typeof A&&null!==A&&"function"===typeof A.then){var F=l.ping;A.then(F,F);l.thenableState=vg()}else{l.replay.pendingTasks--;l.abortSet.delete(l);var u=Vg(r,l.componentStack);m=void 0;var x=r,da=l.blockedBoundary,U=A,w=l.replay.nodes,G=l.replay.slots;m=Y(x,U,u);eh(x,da,w,G,U,m);r.pendingRootTasks--;0===r.pendingRootTasks&&jh(r);r.allPendingTasks--;0===r.allPendingTasks&&kh(r)}}finally{r.renderState.boundaryResources=
-null}}}else if(r=void 0,x=p,0===x.status){Nf(l.context);var H=x.children.length,ea=x.chunks.length;try{var na=l.thenableState;l.thenableState=null;Z(m,l,na,l.node,l.childIndex);x.lastPushedText&&x.textEmbedded&&x.chunks.push(Nb);l.abortSet.delete(l);x.status=1;hh(m,l.blockedBoundary,x)}catch(M){ug();x.children.length=H;x.chunks.length=ea;var V=M===Wf?$f():M;if("object"===typeof V&&null!==V&&"function"===typeof V.then){var fa=l.ping;V.then(fa,fa);l.thenableState=vg()}else{var ha=Vg(m,l.componentStack);
-l.abortSet.delete(l);x.status=4;var J=l.blockedBoundary;r=Y(m,V,ha);null===J?Wg(m,V):(J.pendingTasks--,4!==J.status&&(J.status=4,J.errorDigest=r,ch(m,J),J.parentFlushed&&m.clientRenderedBoundaries.push(J)));m.allPendingTasks--;0===m.allPendingTasks&&kh(m)}}finally{m.renderState.boundaryResources=null}}}g.splice(0,h);null!==a.destination&&mh(a,a.destination)}catch(M){Y(a,M,{}),Wg(a,M)}finally{Gg=f,Jg.current=c,Kg.current=d,c===Hg&&Nf(b),Ng=e}}}
-function nh(a,b,c){c.parentFlushed=!0;switch(c.status){case 0:c.id=a.nextSegmentId++;case 5:var d=c.id;c.lastPushedText=!1;c.textEmbedded=!1;a=a.renderState;v(b,Gc);v(b,a.placeholderPrefix);a=d.toString(16);v(b,a);return y(b,Hc);case 1:c.status=2;var e=!0;d=c.chunks;var f=0;c=c.children;for(var g=0;g<c.length;g++){for(e=c[g];f<e.index;f++)v(b,d[f]);e=oh(a,b,e)}for(;f<d.length-1;f++)v(b,d[f]);f<d.length&&(e=y(b,d[f]));return e;default:throw Error("Aborted, errored or already flushed boundaries should not be flushed again. This is a bug in React.");
-}}
-function oh(a,b,c){var d=c.boundary;if(null===d)return nh(a,b,c);d.parentFlushed=!0;if(4===d.status)d=d.errorDigest,y(b,Lc),v(b,Nc),d&&(v(b,Pc),v(b,D(d)),v(b,Oc)),y(b,Qc),nh(a,b,c);else if(1!==d.status)0===d.status&&(d.rootSegmentID=a.nextSegmentId++),0<d.completedSegments.length&&a.partialBoundaries.push(d),Rc(b,a.renderState,d.rootSegmentID),nh(a,b,c);else if(d.byteSize>a.progressiveChunkSize)d.rootSegmentID=a.nextSegmentId++,a.completedBoundaries.push(d),Rc(b,a.renderState,d.rootSegmentID),nh(a,b,
-c);else{c=d.resources;var e=a.renderState.boundaryResources;e&&(c.styles.forEach($e,e),c.stylesheets.forEach(af,e));y(b,Ic);d=d.completedSegments;if(1!==d.length)throw Error("A previously unvisited boundary must have exactly one root segment. This is a bug in React.");oh(a,b,d[0])}return y(b,Mc)}function ph(a,b,c){md(b,a.renderState,c.parentFormatContext,c.id);oh(a,b,c);return nd(b,c.parentFormatContext)}
-function qh(a,b,c){a.renderState.boundaryResources=c.resources;for(var d=c.completedSegments,e=0;e<d.length;e++)rh(a,b,c,d[e]);d.length=0;De(b,c.resources,a.renderState);d=a.resumableState;a=a.renderState;e=c.rootSegmentID;c=c.resources;var f=a.stylesToHoist;a.stylesToHoist=!1;var g=0===d.streamingFormat;g?(v(b,a.startInlineScript),f?0===(d.instructions&2)?(d.instructions|=10,v(b,2048<Xd.length?Xd.slice():Xd)):0===(d.instructions&8)?(d.instructions|=8,v(b,Yd)):v(b,Zd):0===(d.instructions&2)?(d.instructions|=
-2,v(b,Vd)):v(b,Wd)):f?v(b,ee):v(b,de);d=e.toString(16);v(b,a.boundaryPrefix);v(b,d);g?v(b,$d):v(b,fe);v(b,a.segmentPrefix);v(b,d);f?g?(v(b,ae),Se(b,c)):(v(b,ge),Te(b,c)):g&&v(b,be);d=g?y(b,ce):y(b,rb);return Fc(b,a)&&d}
-function rh(a,b,c,d){if(2===d.status)return!0;var e=d.id;if(-1===e){if(-1===(d.id=c.rootSegmentID))throw Error("A root segment ID must have been assigned by now. This is a bug in React.");return ph(a,b,d)}if(e===c.rootSegmentID)return ph(a,b,d);ph(a,b,d);c=a.resumableState;a=a.renderState;(d=0===c.streamingFormat)?(v(b,a.startInlineScript),0===(c.instructions&1)?(c.instructions|=1,v(b,od)):v(b,pd)):v(b,sd);v(b,a.segmentPrefix);e=e.toString(16);v(b,e);d?v(b,qd):v(b,Ud);v(b,a.placeholderPrefix);v(b,
-e);b=d?y(b,rd):y(b,rb);return b}
-function mh(a,b){k=new Uint8Array(2048);n=0;qa=!0;try{var c,d=a.completedRootSegment;if(null!==d)if(5!==d.status&&0===a.pendingRootTasks){var e=a.renderState;if((0!==a.allPendingTasks||null!==a.trackedPostpones)&&e.externalRuntimeScript){var f=e.externalRuntimeScript,g=a.resumableState,h=f.src,l=f.chunks;g.scriptResources.hasOwnProperty(h)||(g.scriptResources[h]=null,e.scripts.add(l))}var m=e.htmlChunks,q=e.headChunks;f=0;if(m){for(f=0;f<m.length;f++)v(b,m[f]);if(q)for(f=0;f<q.length;f++)v(b,q[f]);
-else v(b,W("head")),v(b,S)}else if(q)for(f=0;f<q.length;f++)v(b,q[f]);var p=e.charsetChunks;for(f=0;f<p.length;f++)v(b,p[f]);p.length=0;e.preconnects.forEach(Ee,b);e.preconnects.clear();var r=e.preconnectChunks;for(f=0;f<r.length;f++)v(b,r[f]);r.length=0;e.fontPreloads.forEach(Ee,b);e.fontPreloads.clear();e.highImagePreloads.forEach(Ee,b);e.highImagePreloads.clear();e.styles.forEach(Le,b);var t=e.importMapChunks;for(f=0;f<t.length;f++)v(b,t[f]);t.length=0;e.bootstrapScripts.forEach(Ee,b);e.scripts.forEach(Ee,
-b);e.scripts.clear();e.bulkPreloads.forEach(Ee,b);e.bulkPreloads.clear();var A=e.preloadChunks;for(f=0;f<A.length;f++)v(b,A[f]);A.length=0;var F=e.hoistableChunks;for(f=0;f<F.length;f++)v(b,F[f]);F.length=0;m&&null===q&&v(b,mc("head"));oh(a,b,d);a.completedRootSegment=null;Fc(b,a.renderState)}else return;var u=a.renderState;d=0;u.preconnects.forEach(Ee,b);u.preconnects.clear();var x=u.preconnectChunks;for(d=0;d<x.length;d++)v(b,x[d]);x.length=0;u.fontPreloads.forEach(Ee,b);u.fontPreloads.clear();
-u.highImagePreloads.forEach(Ee,b);u.highImagePreloads.clear();u.styles.forEach(Ne,b);u.scripts.forEach(Ee,b);u.scripts.clear();u.bulkPreloads.forEach(Ee,b);u.bulkPreloads.clear();var da=u.preloadChunks;for(d=0;d<da.length;d++)v(b,da[d]);da.length=0;var U=u.hoistableChunks;for(d=0;d<U.length;d++)v(b,U[d]);U.length=0;var w=a.clientRenderedBoundaries;for(c=0;c<w.length;c++){var G=w[c];u=b;var H=a.resumableState,ea=a.renderState,na=G.rootSegmentID,V=G.errorDigest,fa=G.errorMessage,ha=G.errorComponentStack,
-J=0===H.streamingFormat;J?(v(u,ea.startInlineScript),0===(H.instructions&4)?(H.instructions|=4,v(u,he)):v(u,ie)):v(u,me);v(u,ea.boundaryPrefix);v(u,na.toString(16));J&&v(u,je);if(V||fa||ha)J?(v(u,ke),v(u,re(V||""))):(v(u,ne),v(u,D(V||"")));if(fa||ha)J?(v(u,ke),v(u,re(fa||""))):(v(u,oe),v(u,D(fa||"")));ha&&(J?(v(u,ke),v(u,re(ha))):(v(u,pe),v(u,D(ha))));if(J?!y(u,le):!y(u,rb)){a.destination=null;c++;w.splice(0,c);return}}w.splice(0,c);var M=a.completedBoundaries;for(c=0;c<M.length;c++)if(!qh(a,b,M[c])){a.destination=
-null;c++;M.splice(0,c);return}M.splice(0,c);ya(b);k=new Uint8Array(2048);n=0;qa=!0;var ra=a.partialBoundaries;for(c=0;c<ra.length;c++){var sa=ra[c];a:{w=a;G=b;w.renderState.boundaryResources=sa.resources;var ta=sa.completedSegments;for(H=0;H<ta.length;H++)if(!rh(w,G,sa,ta[H])){H++;ta.splice(0,H);var Na=!1;break a}ta.splice(0,H);Na=De(G,sa.resources,w.renderState)}if(!Na){a.destination=null;c++;ra.splice(0,c);return}}ra.splice(0,c);var ia=a.completedBoundaries;for(c=0;c<ia.length;c++)if(!qh(a,b,ia[c])){a.destination=
-null;c++;ia.splice(0,c);return}ia.splice(0,c)}finally{0===a.allPendingTasks&&0===a.pingedTasks.length&&0===a.clientRenderedBoundaries.length&&0===a.completedBoundaries.length?(a.flushScheduled=!1,c=a.resumableState,c.hasBody&&v(b,mc("body")),c.hasHtml&&v(b,mc("html")),ya(b),pa(b),b.end(),a.destination=null):(ya(b),pa(b))}}function sh(a){a.flushScheduled=null!==a.destination;setImmediate(function(){return bf.run(a,Pg,a)});null===a.trackedPostpones&&setImmediate(function(){return bf.run(a,th,a)})}
-function th(a){lh(a,0===a.pendingRootTasks)}function Xe(a){!1===a.flushScheduled&&0===a.pingedTasks.length&&null!==a.destination&&(a.flushScheduled=!0,setImmediate(function(){var b=a.destination;b?mh(a,b):a.flushScheduled=!1}))}function uh(a,b){if(1===a.status)a.status=2,b.destroy(a.fatalError);else if(2!==a.status&&null===a.destination){a.destination=b;try{mh(a,b)}catch(c){Y(a,c,{}),Wg(a,c)}}}
-function vh(a,b){try{var c=a.abortableTasks;if(0<c.size){var d=void 0===b?Error("The render was aborted by the server without a reason."):b;c.forEach(function(e){return ih(e,a,d)});c.clear()}null!==a.destination&&mh(a,a.destination)}catch(e){Y(a,e,{}),Wg(a,e)}}function wh(a,b){return function(){return uh(b,a)}}function xh(a,b){return function(){a.destination=null;vh(a,Error(b))}}
-function yh(a,b){var c=b?b.identifierPrefix:void 0;var d=0;void 0!==(b?b.unstable_externalRuntimeSrc:void 0)&&(d=1);c={idPrefix:void 0===c?"":c,nextFormID:0,streamingFormat:d,bootstrapScriptContent:b?b.bootstrapScriptContent:void 0,bootstrapScripts:b?b.bootstrapScripts:void 0,bootstrapModules:b?b.bootstrapModules:void 0,instructions:0,hasBody:!1,hasHtml:!1,unknownResources:{},dnsResources:{},connectResources:{default:{},anonymous:{},credentials:{}},imageResources:{},styleResources:{},scriptResources:{},
-moduleUnknownResources:{},moduleScriptResources:{}};var e=b?b.nonce:void 0,f=b?b.unstable_externalRuntimeSrc:void 0,g=b?b.importMap:void 0;d=b?b.onHeaders:void 0;var h=b?b.maxHeadersLength:void 0,l=void 0===e?sb:z('<script nonce="'+D(e)+'">'),m=c.idPrefix,q=[],p=null,r=c.bootstrapScriptContent,t=c.bootstrapScripts,A=c.bootstrapModules;void 0!==r&&q.push(l,(""+r).replace(Ab,Bb),tb);void 0!==f&&("string"===typeof f?(p={src:f,chunks:[]},nc(p.chunks,{src:f,async:!0,integrity:void 0,nonce:e})):(p={src:f.src,
-chunks:[]},nc(p.chunks,{src:f.src,async:!0,integrity:f.integrity,nonce:e})));f=[];void 0!==g&&(f.push(Cb),f.push((""+JSON.stringify(g)).replace(Ab,Bb)),f.push(Lb));g=d?{preconnects:"",fontPreloads:"",highImagePreloads:"",remainingCapacity:"number"===typeof h?h:2E3}:null;d={placeholderPrefix:z(m+"P:"),segmentPrefix:z(m+"S:"),boundaryPrefix:z(m+"B:"),startInlineScript:l,htmlChunks:null,headChunks:null,externalRuntimeScript:p,bootstrapChunks:q,onHeaders:d,headers:g,resets:{font:{},dns:{},connect:{default:{},
-anonymous:{},credentials:{}},image:{},style:{}},charsetChunks:[],preconnectChunks:[],importMapChunks:f,preloadChunks:[],hoistableChunks:[],preconnects:new Set,fontPreloads:new Set,highImagePreloads:new Set,styles:new Map,bootstrapScripts:new Set,scripts:new Set,bulkPreloads:new Set,preloads:{images:new Map,stylesheets:new Map,scripts:new Map,moduleScripts:new Map},nonce:e,boundaryResources:null,stylesToHoist:!1};if(void 0!==t)for(l=0;l<t.length;l++)f=t[l],g=p=void 0,h={rel:"preload",as:"script",fetchPriority:"low",
-nonce:e},"string"===typeof f?h.href=m=f:(h.href=m=f.src,h.integrity=g="string"===typeof f.integrity?f.integrity:void 0,h.crossOrigin=p="string"===typeof f||null==f.crossOrigin?void 0:"use-credentials"===f.crossOrigin?"use-credentials":""),f=c,r=m,f.scriptResources[r]=null,f.moduleScriptResources[r]=null,f=[],T(f,h),d.boot
+{
+    "word": "कुसीद",
+    "ABCH": [
+        {
+            "word": "कुसीद",
+            "linga": "पुं",
+            "pagenum": "35",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "2688",
+            "group": "1042",
+            "synonyms": [
+                "अर्थप्रयोग",
+                "वृद्धिजीवन"
+            ],
+            "content": "वृद्ध्याजीवो द्वैगुणिको वार्धुषिकः कुसीदकः ।\nवार्धुषिश्च कुसीदार्थप्रयोगौ वृद्धिजीवने ॥ ८८० ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "कुसीद",
+            "eid": "11294",
+            "pagenum": 414,
+            "content": "कुसी(सि)द¦ <i><ab>a.</ab></i> Lazy, slothful. --दः (also written as कुशी-षी-द) A money-lender, usurer. --दं <b>1</b> Any loan or thing lent to be repaid with interest. <b>--2</b> Lending money, usury, the profession of usury; कुसीदाद् दारिद्र्यं परकरगतग्रंथिशमनात्  <lbinfo n='ls:Pt.+ 1. 11'/> <ls>Pt. 1. 11</ls>; <ls>Ms. 1. 90</ls>; <ls n='Ms.'>8. 410</ls>;  <lbinfo n='ls:Y. 1.+ 119.'/> <ls>Y. 1. 119.</ls> <b>--Comp.</b> --पथः usury, usurious interest; any interest exceeding {5} per cent. --वृद्धिः <i><ab>f.</ab></i> interest on money; कुसीदवृद्धिर्द्वैगुण्यं नात्येति <lbinfo n='sakf#dAhftA'/> सकृदाहृता <ls>Ms. 8. 151.</ls>"
+        }
+    ],
+    "BEN": [
+        {
+            "word": "कुसीद",
+            "eid": "3638",
+            "pagenum": 200,
+            "content": "कुसीद¦ <i>kusīda,</i> probably <i>ku-sad + a</i> (from the base of the <ab>pres.</ab> <i>sīda</i>), <ab>n.</ab> Usury, <ls>Pañc.</ls> i. <ab>d.</ab> 12; with <i>ś</i> for <i>s:</i> <i>kuśīda,</i> <ls>Man.</ls> 8, 410."
+        }
+    ],
+    "BHS": [
+        {
+            "word": "कुसीद",
+            "eid": "5057",
+            "pagenum": 189,
+            "content": "<b>kusīda, kuś°</b>¦, (<b>1</b>) <lex>adj.</lex> (<ab>cf.</ab> kusīda, <ls>TS</ls> 〔7.3.11.1〕, rendered <i>inert</i>, <ls>Keith</ls>; = <lang>Pali</lang> kusīta; <ab>cf.</ab> <b>akuśīda-, kausīdya</b>), <i>slothful</i>. The <ab>mg.</ab> of this essentially <lang>Pali</lang>-<lang>BHS</lang> word is made clear by collocations like <ls>Mv</ls> 〔iii.436.6〕 kuśīdo hīnavīryavān; <ls>Bbh</ls> 〔182.26〕 na kusīdo … na hīnavīryo; <ls>Gv</ls> 〔220.7〕 kusīda-nyasta-prayogān sattvān; and see <ab>s.v.</ab> <b>kausīdya</b>. The spelling with ś seems to be always found in <ls>Mv</ls> (〔i.79.11〕; 〔ii.93.5, 16〕; 〔220.16〕), and occurs also <ls>LV</ls> 〔35.4〕; <ls>Av</ls> 〔ii.107.3〕 (<ab>mss.</ab>, <ls>Speyer</ls> <ab>em.</ab> to s); <ls>RP</ls> 〔18.7〕; 〔34.8〕; <ls>Śikṣ</ls> 〔52.6〕; so also most <ab>mss.</ab> <ls>Sukh</ls> 〔74.3〕 (<ab>ed.</ab> s); otherwise with s, <ls>SP</ls> 〔27.7〕; 〔203.11〕 hīnādhimuktāś ca kusīdarūpā; <ls>Av</ls> 〔i.15.15 ff.〕; 〔216.1〕; <ls>Śikṣ</ls> 〔50.17〕; 〔275.4〕; <ls>Mmk</ls> 〔73.12〕; (<b>2</b>) noun, <lex>m.</lex> or <lex>nt.</lex>, <i>sloth</i> (not so recorded in <lang>Pali</lang>; = <b>kausīdya</b>), clearly in <ls>RP</ls> 〔35.13〕 (<ab>vs</ab>) lābhābhibhūtasya kusīda (<ab>n. sg.</ab>) vardhate, kusīdabhūtasya praṇaṣṭa śraddhā; perhaps also in <ls>Gv</ls> 〔220.7〕, above."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "कुसीद",
+            "eid": "4932",
+            "pagenum": 177,
+            "content": "कुसीद¦ <i>kusīda</i> <ab>a.</ab> qui prête à usure. -- <ab>S.</ab> <ab>n.</ab> prêt usuraire; métier d'usurier.  <P><i>kusīdāyī</i> <ab>f.</ab> usurière.  <P><i>kusīdika</i> <ab>a.</ab> qui prête à usure; <ab>f.</ab> <i>kusīdikī.</i>"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "कुसीद",
+            "eid": "8142",
+            "pagenum": 126,
+            "content": "कु/सीद¦ <lex>a.</lex> lazy, inert; <lex>n.</lex> lending money, loan; also = कुसीदपथ & कुसीद°वृद्धि."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "कुसीद",
+            "eid": "5175",
+            "pagenum": 88,
+            "content": "कु/सीद¦ träge, faul; <i>n.</i> nleihe, Wucher."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "कुसीद",
+            "eid": "09966",
+            "pagenum": 199,
+            "content": "kusI(si)da¦ <i>[Also written as कुशीद or ˚षीद] (I) m.</i> A money-lender, a usurer."
+        },
+        {
+            "word": "कुसीद",
+            "eid": "09967",
+            "pagenum": 199,
+            "content": "kusI(si)da¦ <i>(II) n.</i> 1. Any loan or thing lent to be repaid with interest; 2. lending money, usury, the profession of usury, <ls>Yaj.</ls>i.119, <ls>M.</ls>i.90."
+        }
+    ],
+    "MD": [
+        {
+            "word": "कुसीद",
+            "eid": "6138",
+            "pagenum": 71,
+            "content": "कुसीद¦ kú-sīda, <lex>a.</lex> inert; <lex>n.</lex> usury: <b>-vṛddhi,</b> 🞄<lex>f.</lex> usurerʼs interest."
+        }
+    ],
+    "MW": [
+        {
+            "word": "कुसीद",
+            "eid": "53574",
+            "pagenum": "298,1",
+            "content": "कु/सीद ¦ <lex>mfn.</lex> (<ab>fr.</ab> <hom>1.</hom> कु and √ सद्?; <ab>cf.</ab> कुषीद), lazy, inert (?), <ls>TS. vii</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "कुसीद",
+            "eid": "53575",
+            "pagenum": "298,1",
+            "content": "कु/सीद ¦ <lex>n.</lex> any loan or thing lent to be repaid with interest, lending money upon interest, usury, <ls>TS. iii</ls>; <ls>Gobh.</ls>; <ls>Gaut.</ls>; <ls>Pāṇ.</ls> &c.<info lex='n'/>"
+        },
+        {
+            "word": "कुसीद",
+            "eid": "53576",
+            "pagenum": "298,1",
+            "content": "¦ red sandal wood, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुसीद",
+            "eid": "53577",
+            "pagenum": "298,1",
+            "content": "कु/सीद ¦ <lex>mf.</lex> a money-lender, usurer, <ls>L.</ls><info lex='m:f'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "कुसीद",
+            "eid": "15477",
+            "pagenum": 243,
+            "content": "कुसीद¦ <i>ku-sīda, as, ā, am</i> (see 1. <i>ku</i>), Ved. sitting too long in one spot (?), lazy, slothful, inert; (<i>am</i>), n. any loan or thing lent to be repaid with interest; lending money; usury, the profession of usury; (<i>as, ā</i>), m. f. a money-lender, a usurer. <i>—Kusīda-patha, as,</i> m. usury, usurious interest, any exceeding five per cent. <i>—Kusīda-vṛddhi, is,</i> f. interest on money."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "कुसीद",
+            "eid": "3339",
+            "pagenum": 1,
+            "content": "<i>Kusīda</i>¦ — (Kuśīdi-<i>Br. P.</i>) a pupil of Pauṣyañji; learnt a hundred Sāma samhitās. <dvsn n='P'/>Bhā. XII. 6. 79; Br. II. 35. 40."
+        }
+    ],
+    "PW": [
+        {
+            "word": "कुसीद",
+            "eid": "29539",
+            "pagenum": 2,
+            "content": "कु/सीद¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> wohl <i>träge, faul</i>. <dvsn n='1'>— 2〉 <lex>n.</lex> <dvsn n='2'>— a〉 <i>Anleihe</i>. <dvsn n='2'>— b〉 <i>das Ausleihen von Geld auf Zinsen, Wucher</i> <ls>GAUT. 10,6. 49</ls>. <dvsn n='2'>— c〉 = कुसीदवृद्धि <ls>GAUT. 12,36</ls>. <dvsn n='2'>— d〉 *<i>rothes Sandelholz</i>. <dvsn n='1'>— 3〉 *<lex>m.</lex> <lex>f.</lex> <i>Wucherer</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "कुसीद",
+            "eid": "18336",
+            "pagenum": 2,
+            "content": "कु/सीद¦ (1. कु + सीद von सद्) <dvsn n='1'> 1) <lex>adj.</lex> viell. <i>immer auf einem Fleck sitzend, träge, faul</i>: शरी^रं यज्ञशम\\लं कुसी^द\\ं तस्मि^न्त्सीदतु\\ यो^ ऽस्मान्द्वेष्टि^ <ls>TS. 7, 3, 11, 1.</ls> <i>slothful, inert</i> <ls>WILS.</ls> ohne Angabe einer Autor.; vgl. कुषीद . <dvsn n='1'>— 2) <lex>n.</lex> (parox. nach <ls>Uṇ. 4, 108</ls>) <i>Anlehen (fest sitzend, wovon man sich nicht leicht befreien kann)</i>: कुसी^द\\ं वा ए\\तद्य\\मस्य\\ यज^मान\\ आ द^त्ते <ls>TS. 3, 3, 8, 3.</ls> <ls>GOBH. 4, 4, 20.</ls> <i>das Ausleihen von Geld auf Zinsen, Wucher</i> <ls>AK. 2, 9, 4.</ls> <ls>H. 880.</ls> <ls>an. 3, 330.</ls> <ls>MED. d. 26.</ls> <ls>P. 4, 4, 31.</ls> <ls>M. 1, 90. 8, 410</ls> (कुशीद). <ls n='M.'>10, 116.</ls> <ls>YĀJÑ. 1, 119.</ls> <ls n='YĀJÑ.'>3, 42.</ls> <ls>PAÑCAT. I, 12.</ls> कुसीदपथ <i>Wuchergeschäft</i> <ls>M. 8, 152.</ls> कुसीदवृद्धि <i>der bei einem solchen Geschäft festgesetzte Zins</i> <ls n='M.'>151.</ls> <dvsn n='1'>— 3) <lex>m.</lex> <lex>f.</lex> = कुसीदिक <i>vom Wucher lebend, Wucherer</i> <ls>H. an.</ls> <ls>MED.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "कुसीद",
+            "eid": "11097",
+            "pagenum": 195,
+            "content": "कुसीद¦ n. (-दं) 1. Usury, the profession of usury. 2. Any loan of thing lent to be repaid with interest. mfn. (-दः-दा-दं) 1. A money lender. 2. Slothful, inert. E. कुस् to embrace, ईद Unadi affix; or कु bad, and षद् to go, affix अच्."
+        }
+    ],
+    "STC": [
+        {
+            "word": "कुसीद",
+            "eid": "8174",
+            "pagenum": 202,
+            "content": "<b>kusīda-</b>¦ <ab>nt.</ab> prêt à intérêt, usure.  <P><i>°patha-</i> <ab>m.</ab> intérêt usuraire.  <P><i>°vṛddhi-</i> <ab>f.</ab> intérêt d'une somme prêtée."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "कुसीद",
+            "eid": "11103",
+            "pagenum": 237,
+            "content": "कुसीद¦ n. (-दं) .²1 Usury, the profession of usury. .²2 Any loan or thing lent to be repaid with interest. mfn. (-दः-दा-दं) .²1 A money-lender. .²2 Slothful, inert. .E. कुस to embrace, ईद Uṇādi affix; or कु bad, and षद to go, affix अच्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "कुसीद",
+            "eid": "10548",
+            "pagenum": 201,
+            "content": "कुसीद¦ (दं) 1. <i>n.</i> Usury. <i>m.</i> Usurer."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कुसीद",
+            "eid": "8396",
+            "pagenum": "2-166-b",
+            "content": "कुसीदं¦, क्ली, (कुस् + “कुसेरुम्भोमेदेताः” उणां । ४ १०६ । इति ईदप्रत्ययः । इह सूत्रे तृतीयप्रत्ययो ह्रस्वादिर्दोर्घादिश्चेति तन्त्रेणोपात्तः । वृषाकप्यग्नीति सूत्रे ह्रस्व एवेति वृत्तिकारहरदत्तादयः । यद्वा कुत्सितं निकृष्टरूपवृद्धिदानेनेत्यर्थः सीदतिअधोमर्णो यत्र । पृषोदरात् साधुः । यथा वृहस्पत्युक्तौ “कुत्सितात् सीदतश्चैव निर्विशङ्कैः प्रगृह्यते । चतुर्गुणं वाष्टगुणं कुसीदाख्यमृणन्ततः” ॥) ऋणदानजीविका । वृद्ध्याजीवनम् । सुद् वाडि देओया इत्यादि भाषा । तत्पर्य्यायः । अर्थ प्रयोगः २ वृद्धिजीविका ३ । इत्यमरः । २ । ९ । ४ ॥ यथा, “कुसीदकृषिवाणिज्यं प्रकुर्व्वीतास्वयंकृतम् । आपत्काले स्वयं कुर्व्वन्नैनसा युज्यते द्विजः ॥ बहवो वर्त्तनोपाया ऋषिभिः परिकीर्त्तिताः । सर्व्वेषामपि चैवैषां कुसीदमधिकं विदुः ॥ अनावृष्ट्या राजभयान्मूषिकाद्यैरुपद्रवैः । कृष्यादिके भवेद्बाधा सा कुसीदे न विद्यते ॥ शुक्लपक्षे तथा कृष्णे रजन्यां दिवसेऽपि वा । उष्णे वर्षति शीते वा वर्द्ध्वनं न निवर्त्तते ॥ देशं गतानां या वृद्धिर्नानापण्योपजीविनाम् । कुसीदं सर्व्वतः सम्यक् संस्थितस्यैव जायते ॥ लब्धलाभः पितॄन् देवान् ब्राह्मणांश्चैव पूजयेत् । ते तृप्तास्तस्य तद्दोषं शमयन्ति न संशयः ॥ वणिक् कुसीदो दद्यात्तु वस्त्रं गां काञ्चनादिकम् । कृषीवलोऽन्नपानानि यानशय्यासनानि च ॥ पण्येभ्यो विंशतिं दत्त्वा पशुस्वर्णादिकं शतम् । पादेनायस्य पारक्यं कुर्य्यात् सञ्चयमात्मवान् ॥ अर्द्धेन चात्मभरणं नित्यनैमित्तिकान्वितम् । पादञ्च प्रार्थमायस्य मूलभूतं विवर्द्धयेत् ॥ विद्या शिल्पं भृतिः सेवा गोरक्षं विपणिः कृषिः । वृत्तिर्भैक्षं कुसीदञ्च दश जीवनहेतवः” ॥ इति गारुडे २१५ अध्यायः ॥ * ॥ गोतमः । “कृषिगोरक्षवाणिज्यञ्चास्वयं कृतं कुसीदञ्चेति । कुसीदस्य पृथक् ग्रहणं स्वयंकृतस्याभ्यनुज्ञानार्थम्” ॥ कुसीदं वृद्धिकर्म्मेति प्रदेशान्तरेऽभिधानात् इति कल्पतरुः ॥ वृहस्पतिः । “कुसीदं कृषिवाणिज्यं प्रकुर्व्वीतास्वयं कृतम् । आपत्काले स्वयं कुर्व्वन् नैनसा युज्यते द्विजः ॥ लब्धलाभः पितॄन् देवान् ब्राह्मणांश्चैव भोजयेत् । ते तृप्तास्तस्य तं दोषं शमयन्ति न संशयः ॥ वणिक् कुसीदी दद्यात्तु वस्त्रगोकाञ्चनादिकम् । कृषीवलोऽन्नपानानि यानशय्यासनानि च ॥ पण्येभ्यो विंशकं दत्त्वा पशुस्वर्णादिकं शतम् ॥ वणिक् कुसीद्यदोषः स्यात् ब्राह्मणानाञ्चपूजनात् । राज्ञे दत्त्वा तु षड्भागं देवतानाञ्च विंशकम् ॥ त्रिंशद्भागञ्च विप्राणां कृषिं कृत्वा न दोषभाक्” ॥ तथा, मनुः । “अशीतिभागं गृह्णीयात् मासाद्वार्द्धुषिकः शतात् । द्विकं शतं वा गृह्णीयात् सतां धर्म्ममनुस्मरन् ॥ द्विकं शतञ्च गृह्णानो न भवत्यर्थकिल्विषी । शतकार्षापणे अशीतिभागं विंशतिं पणान्” ॥ द्विकं पुराणद्वयम् । एवंविधनियममतिक्रम्य अनापदि स्वयमन्यद्वारा वा यः स्वाच्छन्द्येन व्यवहरति तस्यैव प्रायश्चित्तम् । आपदि तु स्वयंकरण नियमातिक्रमे च न दोषः । इति प्रायश्चित्तविवेकः । इत्याह्निकाचारतत्त्वम् ॥ कुसीदिके त्रि । इति मेदिनी ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "कुसीद",
+            "eid": "14480",
+            "pagenum": "2159,a",
+            "content": "कुसीद¦ त्रि० कुस--ईद नि० न गुणः “कुसेरुम्भोमेदेता” उणा० सूत्रे तृतीयप्रत्ययः ह्रस्वादिर्दीर्घादिश्चेति वृत्तिकारहरदत्तादयः । १ वृद्ध्यर्थं धनप्रयोगे (सुदखाओया) २ पुनर्ग्राह्यत्वेन प्रयुक्ते धनविशेषे । तत्स्वरूपं नारदेनोक्तं यथा “स्थानलाभनिमित्तं यद्दानग्रहणमिष्यते । तत् कुसीदमिति ज्ञेयम् तेन वृद्धिः कुसीदिनाम्” अस्यार्थः स्थानं मूलधनाऽवस्थानम् लाभोवृद्धिः दानग्रहणपदे कर्मणि ल्युटा साध्ये तेन मूलधनाऽवस्थाने सर्त्यप योलाभस्तदर्थं यद्दानं धनिकेन दीयमानं मूलानम् अधमर्णेन च ग्रहणं तयास्वीकृत्य गृह्यमाणं यत् तटणमिति अवश्यापाकरणीयत्वरूपगुणयोगाद् गौणप्रयोगः । अतएव वाणिज्यार्थप्रयुक्तस्य न ऋणत्वम् इति मिश्राः । तस्यावयवार्थमाह वृहस्पतिः “कुत्सितात् सीदतश्चैव निर्विशङ्कैः प्रगृह्यते । चतुर्गुणं वाष्टगुणं कुसीदाख्यमृणन्ततः” इति अस्यार्थः कुत्सितात् सीदतश्चाधमर्णात् सकलधनं यत् गृह्यते निर्विशङ्कैरुत्तमर्णेः चतुर्गुणं वेति वाकारोऽनास्थायाम् तेनद्वैगुण्यादिलाभः इति । कुसीदे विशेषो गारुडे २१५ अध्याये उक्तः यथा “कुसीदकृषिवाणिज्यं प्रकुर्वीतास्वयंकृतम् । आपत्काले स्वयं कुर्बन् नैनसा युज्यते द्विजः । बहवोवर्त्तनोपाया ऋषिभिः परिकीर्त्तिताः । सर्वेषामपि चैवैषां कुसीदमधिकं विदुः । अनावृष्ट्याराजभयान्मूषिकाद्यैरुपद्रवैः । कृष्यादिके भवेद्बाधा सा कुसीदे न विद्यते । शुक्लपक्षे तथा कृष्णे रजन्यां दिवसेऽपि वा । उष्णे वर्षति शीते वा वर्द्धनं न निवर्त्तते । देशंगतानां या वृद्धिर्नानापण्योपजीविनाम् । कुसीदं सर्वतः सम्यक् संस्थितस्यैव जायते । लब्धलाभः पितॄन् देवान् ब्राह्मणाँश्चैव पूजयेत् । ते तृप्तास्तस्य तद्दोषं शमयन्ति न संशयः । बणिक् कुसीदी दद्यात्तु वस्त्नं गां काञ्चनादिकम् । कृषोवलोऽन्नपानामि यानशय्यासनानि च । पण्येभ्यो विंशतिं दत्त्वा पशुस्वर्णादिकं शतम् । पादेनायस्य पारक्यं कुर्यात् सञ्चयमात्मवान् । अर्द्धेन चात्मभरणं नित्यनैमित्तिकान्वितम् । पादञ्च प्रार्घमानस्य मूल भूतं विवर्द्धयेत् । विद्याशिल्पं भृतिः सेवा गोरक्षा विपणिः कृषिः । वृत्तिर्भैक्ष्यं कुसीदञ्च दश जोवनहेतवः” । तस्य विप्रादिभिः स्वयंकर्त्तव्यता निर्णीता आह्नि० त० तत्र गौतमः <P>“कृषिगोरक्षवाणिज्ये अस्वथंकृते कुसीदञ्चेति” कुसीदस्य पृथग्ग्रहण स्वयं कृतस्याभ्यनुज्ञानार्थं कुसीद वृद्धिकर्म प्रदेशान्तरेऽभिधानादिति कल्पतरुः । वृहस्पतिः “कुसीदकृषिबाणिज्य प्रकुर्वीतास्वयंकृतम् । आपत्काले स्वयं कुर्वन् नैनसा पुज्यते द्विजः लब्धलाभः पितॄन् देवान् व्राह्मणांश्चैव भोजयेत् । ते तृप्ता स्तस्य तं दोषं शमयन्ति न संशयः । बणिक् कुसीदी दद्यात्तु वस्त्रगोकाञ्चनादिकम् । कृषीबलोऽन्नपानानि यानशय्यासनानि च । पण्येभ्यो विंशकं दत्त्वा पशुस्वर्णादिकं शतम् । वणिक् कुषीद्यदोषः स्यात् व्राह्मणानाञ्च पूजनात् । राज्ञे दत्त्वा तु षडभागं देवतानाञ्च विंशकम् । त्रिंशद्भागञ्च विप्राणां कृषिं कृत्वा न दोषभाक्” । वृद्धिभेदः ऋणादानशब्दे १४१९ पृ० उक्तः । २ तद्वति त्रि० तस्य पत्नी ङीप् ऐङ्च् सुग्वबोधः । कुसीदायी वृद्ध्याजीविपत्न्याम् । पाणिन्यादिमते कुसितकुसिदशब्दाभ्यां हृस्वमध्याग्यामेव ङीप् ऐच्च इति भेदः । कुसीदवृद्ध्यर्थद्रव्यं प्रयच्छति ष्ठन्ष्ठचौ । कुसीदिक वृद्ध्यर्थधनदायिनि त्रि० स्त्रियामुभयत्र षित्त्वात् ङीष् । स्वार्थे क । कुसीदक, तत्रार्थे अस्त्वर्थे इनि । कुसीदिन् वृद्ध्यर्थं धनप्रयोक्तरि उत्तमर्ण्णे त्रि० स्त्रियां ङीप्"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कुसीद",
+            "content": "कुसीदः पुं. -  कुस् - ईद साहूकार या सूदखोर"
+        },
+        {
+            "word": "कुसीद",
+            "content": "कुसीदम् नपुं. -  कुस् - ईद वह कर्जा या वस्तु जो ब्याज सहित लौटायी जाय"
+        },
+        {
+            "word": "कुसीद",
+            "content": "कुसीदम् नपुं. -  कुस् - ईद 'उधार देना, सूदखोरी, सूदखोरी का व्यवसाय'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कुसीद",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಬಡ್ಡಿಯಿಂದ ನಡೆಸುವ ಜೀವನ \\/ಸಾಲ ಕೊಟ್ಟು ಅದರಿಂದ ಬರುವ ಬಡ್ಡಿಯ ಹಣದಿಂದ ಜೀವಿಸುವುದು",
+            "content": ""
+        },
+        {
+            "word": "कुसीद",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಬಡ್ಡಿಯ ಹಣದಿಂದ ಜೀವಿಸುವವನು",
+            "विस्तारः": "'कुसीदं वृद्धिजीवने । वृद्ध्याजीवे'हेम० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "कुसीद",
+            "linga": "N",
+            "artha": "ऋणसम्बन्धिकालान्तरद्रव्येण_लोकजीविका",
+            "synonyms": [
+                "अर्थप्रयोग",
+                "कुसीद",
+                "वृद्धिजीविका"
+            ],
+            "num": "2.9.4",
+            "text": "उद्धारोऽर्थप्रयोगस्तु कुसीदं वृद्धिजीविका । याच्ञयाप्तं याचितकं निमयादापमित्यकम् ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "कुसीद",
+            "content": "<body><s>kusIda is an alternate of kuSIda. kuSI(sI)da na° ku + sada—Sa pfzo° vA sasya SaH . vfdDyarTaM Danaprayoge amaraH <q>kuSI(sI)davfdDirdDEguRyaM nAtyeti sakfdAhftA</q> yA° smftiH . 2 raktacandase tantrasA° . <q>sAkzA kuSI(sI)dasindUraM gomayaYca karIzakam . viloqya grawikAM kftvA japarsaKyAYca kArayet</q></s></body> <body><s>kusIda tri° kusa—Ida ni° na guRaH <q>kuserumBomedetA</q> uRA° sUtre tftIyapratyayaH hrasvAdirdIrGAdiSceti vfttikAraha­radattAdayaH . <lb/><b>1</b> vfdDyarTaM Danaprayoge (sudaKAoyA) <lb/><b>2</b> punargrA­hyatvena prayukte DanaviSeze . tatsvarUpaM nAradenoktaM yaTA <q>sTAnalABanimittaM yaddAnagrahaRamizyate . tat kusIda­miti jYeyam tena vfdDiH kusIdinAm</q> asyArTaH sTAnaM mUlaDanA'vasTAnam lABovfdDiH dAnagrahaRa­pade karmaRi lyuwA sADye tena mUlaDanA'vasTAne sartyapa yolABastadarTaM yaddAnaM Danikena dIyamAnaM mUlAnam aDamarRena ca grahaRaM tayAsvIkftya gfhyamARaM yat tawaRa­miti avaSyApAkaraRIyatvarUpaguRayogAd gORapra­yogaH . ataeva vARijyArTaprayuktasya na fRatvam iti miSrAH . tasyAvayavArTamAha vfhaspatiH <q>kutsitAt sIdataScEva nirviSaNkEH pragfhyate . caturguRaM vAzwaguRaM ku­sIdAKyamfRantataH</q> iti asyArTaH kutsitAt sIda­taScADamarRAt sakalaDanaM yat gfhyate nirvi­SaNkEruttamarReH caturguRaM veti vAkAro'nAsTAyAm tena­dvEguRyAdilABaH iti . kusIde viSezo gAruqe 215 aDyAye uktaH yaTA <q>kusIdakfzivARijyaM prakurvItA­svayaMkftam . ApatkAle svayaM kurban nEnasA yujyate dvijaH . bahavovarttanopAyA fziBiH parikIrttitAH . sarvezAmapi cEvEzAM kusIdamaDikaM viduH . anAvfzwyA­rAjaBayAnmUzikAdyErupadravEH . kfzyAdike BavedbADA sA kusIde na vidyate . Suklapakze taTA kfzRe rajanyAM di­vase'pi vA . uzRe varzati SIte vA vardDanaM na nivarttate . deSaMgatAnAM yA vfdDirnAnApaRyopajIvinAm . kusIdaM sarvataH samyak saMsTitasyEva jAyate . labDalABaH pitFn devAn brAhmaRA~ScEva pUjayet . te tfptAstasya taddozaM Sa­mayanti na saMSayaH . baRik kusIdI dadyAttu vastnaM gAM kAYcanAdikam . kfzovalo'nnapAnAmi yAnaSayyAsanAni ca . paRyeByo viMSatiM dattvA paSusvarRAdikaM Satam . pA­denAyasya pArakyaM kuryAt saYcayamAtmavAn . ardDena cAtma­BaraRaM nityanEmittikAnvitam . pAdaYca prArGamAnasya mUla BUtaM vivardDayet . vidyASilpaM BftiH sevA gorakzA vi­paRiH kfziH . vfttirBEkzyaM kusIdaYca daSa jovanahetavaH</q> . tasya viprAdiBiH svayaMkarttavyatA nirRItA Ahni° ta° tatra gOtamaH <q>kfzigorakzavARijye asvaTaMkfte kusIdaYceti</q> kusIdasya pfTaggrahaRa svayaM kftasyAByanujYAnArTaM kusIda vfdDikarma pradeSAntare'BiDAnAditi kalpataruH . vfha­spatiH <q>kusIdakfzibARijya prakurvItAsvayaMkftam . ApatkAle svayaM kurvan nEnasA pujyate dvijaH labDa­lABaH pitFn devAn vrAhmaRAMScEva Bojayet . te tfptA stasya taM dozaM Samayanti na saMSayaH . baRik kusIdI dadyAttu vastragokAYcanAdikam . kfzIbalo'nnapAnAni yAnaSayyAsanAni ca . paRyeByo viMSakaM dattvA paSusvarRA­dikaM Satam . vaRik kuzIdyadozaH syAt vrAhmaRAnAYca pUjanAt . rAjYe dattvA tu zaqaBAgaM devatAnAYca viMSa­kam . triMSadBAgaYca viprARAM kfziM kftvA na dozaBAk</q> . vfdDiBedaH fRAdAnaSabde 1419 pf° uktaH . 2 tadvati tri° tasya patnI NIp ENc sugvaboDaH . kusIdAyI vfdDyAjI­vipatnyAm . pARinyAdimate kusitakusidaSabdAByAM hfsva­maDyAgyAmeva NIp Ecca iti BedaH . kusIdavfdDyarTadravyaM prayacCati zWanzWacO . kusIdika vfdDyarTaDanadAyini tri° striyAmuBayatra zittvAt NIz . svArTe ka . kusIdaka, tatrArTe astvarTe ini . kusIdin vfdDyarTaM Danaprayoktari uttamarRRe tri° striyAM NIp</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "कुसीद",
+            "content": "<H1><h><key1>kusIda</key1><key2>ku/sIda</key2></h><body><s>ku/sIda</s>   <lex>mfn.</lex> (<ab>fr.</ab> <hom>1.</hom> <s>ku</s> and √ <s>sad</s>?; <ab>cf.</ab> <s>kuzIda</s>), lazy, inert (?), <ls>TS. vii</ls><info lex=\"m:f:n\" /></body><tail><L>53574</L><pc>298,1</pc></tail></H1>\n <H1B><h><key1>kusIda</key1><key2>ku/sIda</key2></h><body><s>ku/sIda</s>   <lex>n.</lex> any loan or thing lent to be repaid with interest, lending money upon interest, usury, <ls>TS. iii</ls>; <ls>Gobh.</ls>; <ls>Gaut.</ls>; <ls>Pāṇ.</ls> &amp;c.<info lex=\"n\" /></body><tail><L>53575</L><pc>298,1</pc></tail></H1B>\n <H1B><h><key1>kusIda</key1><key2>ku/sIda</key2></h><body>  red sandal wood, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53576</L><pc>298,1</pc></tail></H1B>\n <H1B><h><key1>kusIda</key1><key2>ku/sIda</key2></h><body><s>ku/sIda</s>   <lex>mf.</lex> a money-lender, usurer, <ls>L.</ls><info lex=\"m:f\" /></body><tail><L>53577</L><pc>298,1</pc></tail></H1B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "कुसीद",
+            "content": "<H1><h><key1>kusIda</key1><key2>kusIda</key2></h><body><s>kusIda</s>  <div n=\"1\">n. (<s>-daM</s>) </div><div n=\"2\"> 1. Usury, the profession of usury. </div><div n=\"2\"> 2. Any loan of thing <lb />lent to be repaid with interest. </div><div n=\"1\">mfn. (<s>-daH-dA-daM</s>) </div><div n=\"2\"> 1. A money lender. <lb />2. Slothful, inert.</div><div n=\"E\"> E. <s>kus</s> to embrace, <s>Ida</s> Unadi affix; or <s>ku</s> bad, <lb />and <s>zad</s> to go, affix <s>ac</s>.</div></body><tail><L>11097</L><pc>195-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कुसीद",
+            "content": "<span lang=\"sa\">कुसीद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬಡ್ಡಿಯಿಂದ ನಡೆಸುವ ಜೀವನ /ಸಾಲ ಕೊಟ್ಟು ಅದರಿಂದ ಬರುವ ಬಡ್ಡಿಯ ಹಣದಿಂದ ಜೀವಿಸುವುದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुसीद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬಡ್ಡಿಯ ಹಣದಿಂದ ಜೀವಿಸುವವನು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"कुसीदं वृद्धिजीवने । वृद्ध्याजीवे\" - हेम० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

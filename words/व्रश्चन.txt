@@ -1,576 +1,251 @@
-ull,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'Device Independence Delivery Unit'
-	    }
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure']]
-	};
-	var _default$1$ = applicationRole;
-	applicationRole$1.default = _default$1$;
-
-	var articleRole$1 = {};
-
-	Object.defineProperty(articleRole$1, "__esModule", {
-	  value: true
-	});
-	articleRole$1.default = void 0;
-	var articleRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-posinset': null,
-	    'aria-setsize': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'article'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'document']]
-	};
-	var _default$1_ = articleRole;
-	articleRole$1.default = _default$1_;
-
-	var bannerRole$1 = {};
-
-	Object.defineProperty(bannerRole$1, "__esModule", {
-	  value: true
-	});
-	bannerRole$1.default = void 0;
-	var bannerRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      constraints: ['direct descendant of document'],
-	      name: 'header'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1Z = bannerRole;
-	bannerRole$1.default = _default$1Z;
-
-	var blockquoteRole$1 = {};
-
-	Object.defineProperty(blockquoteRole$1, "__esModule", {
-	  value: true
-	});
-	blockquoteRole$1.default = void 0;
-	var blockquoteRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1Y = blockquoteRole;
-	blockquoteRole$1.default = _default$1Y;
-
-	var buttonRole$1 = {};
-
-	Object.defineProperty(buttonRole$1, "__esModule", {
-	  value: true
-	});
-	buttonRole$1.default = void 0;
-	var buttonRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-pressed': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'aria-pressed'
-	      }, {
-	        name: 'type',
-	        value: 'checkbox'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'aria-expanded',
-	        value: 'false'
-	      }],
-	      name: 'summary'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'aria-expanded',
-	        value: 'true'
-	      }],
-	      constraints: ['direct descendant of details element with the open attribute defined'],
-	      name: 'summary'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'button'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'image'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'reset'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'submit'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'button'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'trigger'
-	    },
-	    module: 'XForms'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command']]
-	};
-	var _default$1X = buttonRole;
-	buttonRole$1.default = _default$1X;
-
-	var captionRole$1 = {};
-
-	Object.defineProperty(captionRole$1, "__esModule", {
-	  value: true
-	});
-	captionRole$1.default = void 0;
-	var captionRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: ['figure', 'grid', 'table'],
-	  requiredContextRole: ['figure', 'grid', 'table'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1W = captionRole;
-	captionRole$1.default = _default$1W;
-
-	var cellRole$1 = {};
-
-	Object.defineProperty(cellRole$1, "__esModule", {
-	  value: true
-	});
-	cellRole$1.default = void 0;
-	var cellRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-colindex': null,
-	    'aria-colspan': null,
-	    'aria-rowindex': null,
-	    'aria-rowspan': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      constraints: ['descendant of table'],
-	      name: 'td'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: ['row'],
-	  requiredContextRole: ['row'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1V = cellRole;
-	cellRole$1.default = _default$1V;
-
-	var checkboxRole$1 = {};
-
-	Object.defineProperty(checkboxRole$1, "__esModule", {
-	  value: true
-	});
-	checkboxRole$1.default = void 0;
-	var checkboxRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-checked': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-invalid': null,
-	    'aria-readonly': null,
-	    'aria-required': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'checkbox'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'option'
-	    },
-	    module: 'ARIA'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-checked': null
-	  },
-	  superClass: [['roletype', 'widget', 'input']]
-	};
-	var _default$1U = checkboxRole;
-	checkboxRole$1.default = _default$1U;
-
-	var codeRole$1 = {};
-
-	Object.defineProperty(codeRole$1, "__esModule", {
-	  value: true
-	});
-	codeRole$1.default = void 0;
-	var codeRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1T = codeRole;
-	codeRole$1.default = _default$1T;
-
-	var columnheaderRole$1 = {};
-
-	Object.defineProperty(columnheaderRole$1, "__esModule", {
-	  value: true
-	});
-	columnheaderRole$1.default = void 0;
-	var columnheaderRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-sort': null
-	  },
-	  relatedConcepts: [{
-	    attributes: [{
-	      name: 'scope',
-	      value: 'col'
-	    }],
-	    concept: {
-	      name: 'th'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: ['row'],
-	  requiredContextRole: ['row'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'structure', 'section', 'cell', 'gridcell'], ['roletype', 'widget', 'gridcell'], ['roletype', 'structure', 'sectionhead']]
-	};
-	var _default$1S = columnheaderRole;
-	columnheaderRole$1.default = _default$1S;
-
-	var comboboxRole$1 = {};
-
-	Object.defineProperty(comboboxRole$1, "__esModule", {
-	  value: true
-	});
-	comboboxRole$1.default = void 0;
-	var comboboxRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-activedescendant': null,
-	    'aria-autocomplete': null,
-	    'aria-errormessage': null,
-	    'aria-invalid': null,
-	    'aria-readonly': null,
-	    'aria-required': null,
-	    'aria-expanded': 'false',
-	    'aria-haspopup': 'listbox'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'email'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'search'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'tel'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'text'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'url'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'url'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'multiple'
-	      }, {
-	        constraints: ['undefined'],
-	        name: 'size'
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'multiple'
-	      }, {
-	        name: 'size',
-	        value: 1
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'select'
-	    },
-	    module: 'XForms'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-controls': null,
-	    'aria-expanded': 'false'
-	  },
-	  superClass: [['roletype', 'widget', 'input']]
-	};
-	var _default$1R = comboboxRole;
-	comboboxRole$1.default = _default$1R;
-
-	var complementaryRole$1 = {};
-
-	Object.defineProperty(complementaryRole$1, "__esModule", {
-	  value: true
-	});
-	complementaryRole$1.default = void 0;
-	var complementaryRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'aside'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1Q = complementaryRole;
-	complementaryRole$1.default = _default$1Q;
-
-	var contentinfoRole$1 = {};
-
-	Object.defineProperty(contentinfoRole$1, "__esModule", {
-	  value: true
-	});
-	contentinfoRole$1.default = void 0;
-	var contentinfoRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      constraints: ['direct descendant of document'],
-	      name: 'footer'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1P = contentinfoRole;
-	contentinfoRole$1.default = _default$1P;
-
-	var definitionRole$1 = {};
-
-	Object.defineProperty(definitionRole$1, "__esModule", {
-	  value: 
+{
+    "word": "व्रश्चन",
+    "ABCH": [
+        {
+            "word": "व्रश्चन",
+            "linga": "पुं",
+            "pagenum": "36",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "2817",
+            "group": "1102",
+            "synonyms": [
+                "पत्रपरशु"
+            ],
+            "content": "व्रश्चनः पत्रपरशुरीषीका तूलिकेषिका ॥ ९२० ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "व्रश्चन",
+            "eid": "27479",
+            "pagenum": 1026,
+            "content": "व्रश्चनः¦ <b>1</b> A small saw. <b>--2</b> A fine file used by goldsmiths. <b>--3</b> The juice trickling from an incision in a tree. --नं <b>1</b> Cutting, tearing, <lbinfo n='wound+ing'/> wounding. <b>--2</b> A cut, an incision."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "व्रश्चन",
+            "eid": "14325",
+            "pagenum": 923,
+            "content": "व्रश्चन¦ <i>vraśc + ana,</i> <b>I.</b> <ab>m.</ab> A small saw or chisel. <b>II.</b> <ab>n.</ab> Cutting, wounding, <ls>Man.</ls> 5, 5."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "व्रश्चन",
+            "eid": "31527",
+            "pagenum": 532,
+            "content": "व्र/श्चन¦ <lex>a.</lex> & <lex>n.</lex> hewing, felling, cutting."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "व्रश्चन",
+            "eid": "23888",
+            "pagenum": 432,
+            "content": "व्र/श्चन¦ abhauend, fällend."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "व्रश्चन",
+            "eid": "36808",
+            "pagenum": 703,
+            "content": "vraScana¦ <i>(I) m.</i> A fine instrument used by goldsmiths."
+        },
+        {
+            "word": "व्रश्चन",
+            "eid": "36809",
+            "pagenum": 703,
+            "content": "vraScana¦ <i>(II) n.</i> Cutting, wounding."
+        }
+    ],
+    "MD": [
+        {
+            "word": "व्रश्चन",
+            "eid": "17385",
+            "pagenum": 305,
+            "content": "व्रश्चन¦ vráśc-ana, <lex>a.</lex> cutting down; suitable 🞄for cutting down; <lex>n.</lex> cutting down, hewing 🞄in pieces; incision (<i>in a tree</i>); <lex>m.</lex> resin <i>obtained</i> 🞄from incisions <i>in trees</i>."
+        }
+    ],
+    "MW": [
+        {
+            "word": "व्रश्चन",
+            "eid": "210719",
+            "pagenum": "1043,1",
+            "content": "व्र/श्चन ¦ <lex>mfn.</lex> who or what cuts, cutting or for cutting, <ls>Mcar.</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "व्रश्चन",
+            "eid": "210720",
+            "pagenum": "1043,1",
+            "content": "¦ a file or saw or chisel, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "व्रश्चन",
+            "eid": "210721",
+            "pagenum": "1043,1",
+            "content": "¦ the juice flowing from an incision in a tree, <ls>Gaut.</ls>; <ls>Yājñ.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "व्रश्चन",
+            "eid": "210722",
+            "pagenum": "1043,1",
+            "content": "व्र/श्चन ¦ <lex>n.</lex> cutting, wounding, a cut, incision, <ls>ŚBr.</ls>; <ls>Kāṭh.</ls> &c.<info lex='n'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "व्रश्चन",
+            "eid": "45899",
+            "pagenum": 984,
+            "content": "<i>Vraścana, as, ī, am,</i>¦ who or what cuts, cutting; (<i>as</i>), m. a small saw or chisel; a fine file or saw used by goldsmiths, &c.; the juice flowing from an incision in a tree; (<i>am</i>), n. cutting, wounding; a cut, incision. <i>—Vraścana-prabhava, as, ā, am,</i> flowing from an incision (in a tree, as juices &c.)."
+        }
+    ],
+    "PW": [
+        {
+            "word": "व्रश्चन",
+            "eid": "109113",
+            "pagenum": 6,
+            "content": "व्र/श्चन¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>abhauend, fällend, zum Abhauen</i> [Page6-189-b] <ab>u. s. w.</ab> <i>dienend</i> <ls>MAHĀVĪRAC. 42,2</ls>. <dvsn n='1'>— 2〉 <lex>m.</lex> <dvsn n='2'>— a〉 *<i>Säge oder Feile</i>. <dvsn n='2'>— b〉 <i>durch Einschnitte in einen Baum gewonnenes Harz</i> <ls>GAUT.</ls> <dvsn n='1'>— 3〉 <lex>n.</lex> <i>das Abhauen, Spalten, Zerhauen, Einschneiden</i> <ab>u. s. w.</ab>"
+        }
+    ],
+    "PWG": [
+        {
+            "word": "व्रश्चन",
+            "eid": "96931",
+            "pagenum": 6,
+            "content": "व्र/श्चन¦ (von 1. व्रश्च्) <dvsn n='1'> 1) <lex>adj.</lex> <i>abhauend, fällend, zum Abhauen</i> u. s. w. <i>dienend</i>: इध्म° (कुठार) <ls>SIDDH. K. 250,a,6.</ls> <dvsn n='1'>— 2) <lex>m.</lex> <dvsn n='2'> a) <i>Säge</i> oder <i>Feile</i> <ls>AK. 2, 10, 33.</ls> <ls>H. 920.</ls> <dvsn n='2'>— b) <i>durch Einschnitt in einen Baum gewonnenes Harz</i> <ls>YĀJÑ. 1, 171</ls>; vgl. <ls>M. 5, 6</ls> unter 3). <dvsn n='1'>— 3) <lex>n.</lex> <i>das Abhauen, Spalten, Zerhauen, Einschneiden u.s.w.</i> <ls>NIR. 2, 6. 12, 29.</ls> <ls>ŚAT. BR. 3, 6, 4, 7.</ls> वंश° <ls>KĀṬH. 30, 2.</ls> वातरज्जूनाम् <ls>MAITRYUP. 1, 4.</ls> वृक्षनिर्यासान्व्रश्चनप्रभवान् <ls>M. 5, 6.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "व्रश्चन",
+            "eid": "39156",
+            "pagenum": 701,
+            "content": "व्रश्चन¦ m. (-नः) A small saw or chisel. n. (-नं) Cutting. E. व्रश्च to cut, aff. ल्युट् ।"
+        }
+    ],
+    "STC": [
+        {
+            "word": "व्रश्चन",
+            "eid": "19962",
+            "pagenum": 711,
+            "content": "<b>vraścana-</b>¦ <ab>a.</ab> qui coupe, etc., (instrument) qui sert à couper ; <ab>nt.</ab> fait de couper, de fendre ; résine obtenue par l'incision de l'arbre.  <P><i>°prabhava-</i> <ab>a.</ab> qui se produit ou s'obtient par incision."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "व्रश्चन",
+            "eid": "37377",
+            "pagenum": 822,
+            "content": "व्रश्चन¦ m. (-नः) A small saw or chisel. n. (-नं) Cutting. .E. व्रश्च to cut, aff. ल्युट्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "व्रश्चन",
+            "eid": "37011",
+            "pagenum": 740,
+            "content": "व्रश्चन¦ (नः) 1. <i>m.</i> A small saw or chisel. <i>n.</i> Cutting."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "व्रश्चन",
+            "eid": "34591",
+            "pagenum": "4-564-a",
+            "content": "व्रश्चनं¦, क्ली, (व्रश्च + ल्युट् ।) छेदनम् । व्रश्चधातोरनट्प्रत्ययेन निष्पन्नम् ॥ (यथा, शतपथब्राह्मणे । ३ । ६ । ४ । ७ । “स रातमना व्रश्चनाय भवति ॥”)"
+        },
+        {
+            "word": "व्रश्चन",
+            "eid": "34592",
+            "pagenum": "4-564-a",
+            "content": "व्रश्चनः¦, पुं, (व्रश्चति छिनत्ति पतिकृतीरिति । व्रश्च + ल्युः । यद्वा, वृश्चत्यनेनेति करणे ल्युट् ।) स्वर्णादिच्छेदिका । छेनी इति भाषा । तत्पर्य्यायः । पत्रपरशुः २ । इत्यमरः ॥ पत्रपर्शुः ३ । इति शब्दरत्नावली ॥ स्वर्णलोहादिभेदकः ४ । इति जटाधरः ॥ वृक्षच्छेदनजातनिर्यासः । यथा, “देवतार्थं हविः शिग्रुं लोहितान् व्रश्चनांस्तथा । अनुपाकृतमांसानि विड्जानि कवकानि च ॥” इति याज्ञवल्क्यः ॥ व्रश्चनान् वृक्षच्छेदनजातान् लोहितानपि । यथा, मनुः । “लोहितान् वृक्षनिर्यासान् व्रश्चनप्रभवांस्तथा ।” इति मिताक्षरायामाचाराध्यायः ॥ (करणे ल्युटि तस्य कुठारादिवाचकता विशेष्यलिङ्गता च । यथा, कातन्त्रे कृत्सु करणाधिकरणयोश्चेत्यत्र कलापचन्द्रः । “युडन्तश्च शब्दः प्रायो विधेयलिङ्गग्राही यथा व्रश्चनः कुठारो गोदोहनी घटी टङ्कः पाषाणदारण इति ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "व्रश्चन",
+            "eid": "42788",
+            "pagenum": "5071,a",
+            "content": "व्रश्चन¦ पु० वृश्च्यतेऽनेन व्रश्च--ल्यु । (छेनि) १ स्वर्णादिच्छेदनार्थे अस्त्रभेदे अमरः । भावे ल्युट् । २ छेदने न० अमरः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "व्रश्चन",
+            "content": "व्रश्चनः पुं. -  व्रश्च् + ल्युट् छोटी आरी"
+        },
+        {
+            "word": "व्रश्चन",
+            "content": "व्रश्चनः पुं. -  व्रश्च् + ल्युट् बारीक रेती जिसे सुनार काम में लाते हैं"
+        },
+        {
+            "word": "व्रश्चन",
+            "content": "व्रश्चनम् नपुं. - 'काटना, फाड़ना घायल करना'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "व्रश्चन",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಭೇದಿಸುವುದು \\/ಕತ್ತರಿಸುವುದು",
+            "निष्पत्तिः": "ओव्रश्चू (छेदने)'ल्युट्' (३-३-११५)",
+            "content": ""
+        },
+        {
+            "word": "व्रश्चन",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಕತ್ತರಿಸುವ \\/ತುಂಡುಮಾಡುವ (ಸಾಧನ)",
+            "निष्पत्तिः": "ओव्रश्चू (छेदने)कर० 'ल्युट्' (३-३-११७)",
+            "व्युत्पत्तिः": "व्रश्चत्यनेन",
+            "content": ""
+        },
+        {
+            "word": "व्रश्चन",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಮರದ ಹಾಲು \\/ರಸ \\/ಗೋಂದು",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "व्रश्चन",
+            "linga": "P",
+            "artha": "सुवर्णादिच्छेदनद्रव्यम्",
+            "synonyms": [
+                "व्रश्चन",
+                "पत्रपरशु"
+            ],
+            "num": "2.10.33",
+            "text": "व्रश्चनःपत्रपरशुरीषिका तूलिका समे । तैजसावर्तनी मूषा भस्त्रा चर्मप्रसेविका ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "व्रश्चन",
+            "content": "<body><s>vraScana pu° vfScyate'nena vraSca—lyu . (Ceni) <lb/><b>1</b> svarRAdicCedanArTe astraBede amaraH . BAve lyuw . <lb/><b>2</b> Cedane na° amaraH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "व्रश्चन",
+            "content": "<H2><h><key1>vraScana</key1><key2>vra/Scana</key2></h><body><s>vra/Scana</s>   <lex>mfn.</lex> who or what cuts, cutting or for cutting, <ls>Mcar.</ls><info lex=\"m:f:n\" /></body><tail><L>210719</L><pc>1043,1</pc></tail></H2>\n <H2A><h><key1>vraScana</key1><key2>vra/Scana</key2></h><body>  a file or saw or chisel, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>210720</L><pc>1043,1</pc></tail></H2A>\n <H2A><h><key1>vraScana</key1><key2>vra/Scana</key2></h><body>  the juice flowing from an incision in a tree, <ls>Gaut.</ls>; <ls>Yājñ.</ls><info lex=\"inh\" /></body><tail><L>210721</L><pc>1043,1</pc></tail></H2A>\n <H2B><h><key1>vraScana</key1><key2>vra/Scana</key2></h><body><s>vra/Scana</s>   <lex>n.</lex> cutting, wounding, a cut, incision, <ls>ŚBr.</ls>; <ls>Kāṭh.</ls> &amp;c.<info lex=\"n\" /></body><tail><L>210722</L><pc>1043,1</pc></tail></H2B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "व्रश्चन",
+            "content": "<H1><h><key1>vraScana</key1><key2>vraScana</key2></h><body><s>vraScana</s>  <div n=\"1\">m. (<s>-naH</s>) A small saw or chisel. </div><div n=\"1\">n. (<s>-naM</s>) Cutting.</div><div n=\"E\"> E. <s>vraSca</s> to cut, aff. <s>lyuw .</s></div></body><tail><L>39156</L><pc>701-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "व्रश्चन",
+            "content": "<span lang=\"sa\">व्रश्चन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಭೇದಿಸುವುದು /ಕತ್ತರಿಸುವುದು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>ओव्रश्चू (छेदने) - \"ल्युट्\" (३-३-११५)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>व्रश्चन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕತ್ತರಿಸುವ /ತುಂಡುಮಾಡುವ (ಸಾಧನ)<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>ओव्रश्चू (छेदने) - कर० \"ल्युट्\" (३-३-११७)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>व्रश्चत्यनेन<div class=\"h-2\"> </div><div class=\"h-2\"> </div>व्रश्चन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮರದ ಹಾಲು /ರಸ /ಗೋಂದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

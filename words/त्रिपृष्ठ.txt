@@ -1,1 +1,144 @@
-und: var(--ck-color-input-disabled-background);\n\t\t\t}\n\n\t\t\t& > .ck.ck-input-color__button__preview {\n\t\t\t\t@mixin ck-rounded-corners;\n\n\t\t\t\twidth: 20px;\n\t\t\t\theight: 20px;\n\t\t\t\tborder: 1px solid var(--ck-color-input-border);\n\n\t\t\t\t& > .ck.ck-input-color__button__preview__no-color-indicator {\n\t\t\t\t\ttop: -30%;\n\t\t\t\t\tleft: 50%;\n\t\t\t\t\theight: 150%;\n\t\t\t\t\twidth: 8%;\n\t\t\t\t\tbackground: hsl(0, 100%, 50%);\n\t\t\t\t\tborder-radius: 2px;\n\t\t\t\t\ttransform: rotate(45deg);\n\t\t\t\t\ttransform-origin: 50%;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\t& .ck.ck-input-color__remove-color {\n\t\twidth: 100%;\n\t\tpadding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);\n\n\t\tborder-bottom-left-radius: 0;\n\t\tborder-bottom-right-radius: 0;\n\n\t\t&:not(:focus) {\n\t\t\tborder-bottom: 1px solid var(--ck-color-input-border);\n\t\t}\n\n\t\t@mixin ck-dir ltr {\n\t\t\tborder-top-right-radius: 0;\n\t\t}\n\n\t\t@mixin ck-dir rtl {\n\t\t\tborder-top-left-radius: 0;\n\t\t}\n\n\t\t& .ck.ck-icon {\n\t\t\tmargin-right: var(--ck-spacing-standard);\n\n\t\t\t@mixin ck-dir rtl {\n\t\t\t\tmargin-right: 0;\n\t\t\t\tmargin-left: var(--ck-spacing-standard);\n\t\t\t}\n\t\t}\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * Implements rounded corner interface for .ck-rounded-corners class.\n *\n * @see $ck-border-radius\n */\n@define-mixin ck-rounded-corners {\n\tborder-radius: 0;\n\n\t@nest .ck-rounded-corners &,\n\t&.ck-rounded-corners {\n\t\tborder-radius: var(--ck-border-radius);\n\t\t@mixin-content;\n\t}\n}\n"],sourceRoot:""}]);const a=s},6369:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-form{padding:0 0 var(--ck-spacing-large)}.ck.ck-form:focus{outline:none}.ck.ck-form .ck.ck-input-text{min-width:100%;width:0}.ck.ck-form .ck.ck-dropdown{min-width:100%}.ck.ck-form .ck.ck-dropdown .ck-dropdown__button:not(:focus){border:1px solid var(--ck-color-base-border)}.ck.ck-form .ck.ck-dropdown .ck-dropdown__button .ck-button__label{width:100%}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-table/form.css"],names:[],mappings:"AAKA,YACC,mCAyBD,CAvBC,kBAEC,YACD,CAEA,8BACC,cAAe,CACf,OACD,CAEA,4BACC,cAWD,CARE,6DACC,4CACD,CAEA,mEACC,UACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-form {\n\tpadding: 0 0 var(--ck-spacing-large);\n\n\t&:focus {\n\t\t/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */\n\t\toutline: none;\n\t}\n\n\t& .ck.ck-input-text {\n\t\tmin-width: 100%;\n\t\twidth: 0;\n\t}\n\n\t& .ck.ck-dropdown {\n\t\tmin-width: 100%;\n\n\t\t& .ck-dropdown__button {\n\t\t\t&:not(:focus) {\n\t\t\t\tborder: 1px solid var(--ck-color-base-border);\n\t\t\t}\n\n\t\t\t& .ck-button__label {\n\t\t\t\twidth: 100%;\n\t\t\t}\n\t\t}\n\t}\n}\n"],sourceRoot:""}]);const a=s},637:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-form__row{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between}.ck.ck-form__row>:not(.ck-label){flex-grow:1}.ck.ck-form__row.ck-table-form__action-row .ck-button-cancel,.ck.ck-form__row.ck-table-form__action-row .ck-button-save{justify-content:center}.ck.ck-form__row{padding:var(--ck-spacing-standard) var(--ck-spacing-large) 0}[dir=ltr] .ck.ck-form__row>:not(.ck-label)+*{margin-left:var(--ck-spacing-large)}[dir=rtl] .ck.ck-form__row>:not(.ck-label)+*{margin-right:var(--ck-spacing-large)}.ck.ck-form__row>.ck-label{min-width:100%;width:100%}.ck.ck-form__row.ck-table-form__action-row{margin-top:var(--ck-spacing-large)}.ck.ck-form__row.ck-table-form__action-row .ck-button .ck-button__label{color:var(--ck-color-text)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-table/theme/formrow.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-table/formrow.css"],names:[],mappings:"AAKA,iBACC,YAAa,CACb,kBAAmB,CACnB,gBAAiB,CACjB,6BAaD,CAVC,iCACC,WACD,CAGC,wHAEC,sBACD,CCbF,iBACC,4DA2BD,CAvBE,6CAEE,mCAMF,CARA,6CAME,oCAEF,CAGD,2BAEC,cAAe,CADf,UAED,CAEA,2CACC,kCAKD,CAHC,wEACC,0BACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-form__row {\n\tdisplay: flex;\n\tflex-direction: row;\n\tflex-wrap: nowrap;\n\tjustify-content: space-between;\n\n\t/* Ignore labels that work as fieldset legends */\n\t& > *:not(.ck-label) {\n\t\tflex-grow: 1;\n\t}\n\n\t&.ck-table-form__action-row {\n\t\t& .ck-button-save,\n\t\t& .ck-button-cancel {\n\t\t\tjustify-content: center;\n\t\t}\n\t}\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n\n.ck.ck-form__row {\n\tpadding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;\n\n\t/* Ignore labels that work as fieldset legends */\n\t& > *:not(.ck-label) {\n\t\t& + * {\n\t\t\t@mixin ck-dir ltr {\n\t\t\t\tmargin-left: var(--ck-spacing-large);\n\t\t\t}\n\n\t\t\t@mixin ck-dir rtl {\n\t\t\t\tmargin-right: var(--ck-spacing-large);\n\t\t\t}\n\t\t}\n\t}\n\n\t& > .ck-label {\n\t\twidth: 100%;\n\t\tmin-width: 100%;\n\t}\n\n\t&.ck-table-form__action-row {\n\t\tmargin-top: var(--ck-spacing-large);\n\n\t\t& .ck-button .ck-button__label {\n\t\t\tcolor: var(--ck-color-text);\n\t\t}\n\t}\n}\n'],sourceRoot:""}]);const a=s},1710:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck .ck-insert-table-dropdown__grid{display:flex;flex-direction:row;flex-wrap:wrap}:root{--ck-insert-table-dropdown-padding:10px;--ck-insert-table-dropdown-box-height:11px;--ck-insert-table-dropdown-box-width:12px;--ck-insert-table-dropdown-box-margin:1px}.ck .ck-insert-table-dropdown__grid{padding:var(--ck-insert-table-dropdown-padding) var(--ck-insert-table-dropdown-padding) 0;width:calc(var(--ck-insert-table-dropdown-box-width)*10 + var(--ck-insert-table-dropdown-box-margin)*20 + var(--ck-insert-table-dropdown-padding)*2)}.ck .ck-insert-table-dropdown__label,.ck[dir=rtl] .ck-insert-table-dropdown__label{text-align:center}.ck .ck-insert-table-dropdown-grid-box{border:1px solid var(--ck-color-base-border);border-radius:1px;margin:var(--ck-insert-table-dropdown-box-margin);min-height:var(--ck-insert-table-dropdown-box-height);min-width:var(--ck-insert-table-dropdown-box-width);outline:none;transition:none}.ck .ck-insert-table-dropdown-grid-box:focus{box-shadow:none}.ck .ck-insert-table-dropdown-grid-box.ck-on{background:var(--ck-color-focus-outer-shadow);border-color:var(--ck-color-focus-border)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-table/theme/inserttable.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-table/inserttable.css"],names:[],mappings:"AAKA,oCACC,YAAa,CACb,kBAAmB,CACnB,cACD,CCJA,MACC,uCAAwC,CACxC,0CAA2C
+{
+    "word": "त्रिपृष्ठ",
+    "ABCH": [
+        {
+            "word": "त्रिपृष्ठ",
+            "linga": "पुं",
+            "pagenum": "29",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "2098",
+            "group": "774",
+            "synonyms": [
+                "प्राजापत्य"
+            ],
+            "content": "प्राजापत्यस्त्रिपृष्ठोऽथ द्विपृष्ठो ब्रह्मसंभवः ।"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "12889",
+            "pagenum": 212,
+            "content": "त्रिपृष्ठ/¦ <lex>a.</lex> having three backs or summits."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "9044",
+            "pagenum": 161,
+            "content": "त्रिपृष्ठ¦ drei Rücken habend; <i>Bein. Viṣṇu's.</i>"
+        }
+    ],
+    "GRA": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "3945",
+            "pagenum": 558,
+            "content": "<b>tri-pṛṣṭhá,</b>¦ <ab>a.</ab>, <i>drei Rücken</i> oder <i>Hervorragungen</i> [pṛsthá] <i>habend,</i> in bildlichem Sinne vom Wagen, Stiere, Rosse, aber überall sofern Soma mit ihnen verglichen wird, welcher als der mit drei Milchstoffen bedeckte [Page559] oder vermischte [tríāśir] wol zu jenen Vergleichen Anlass gab. Nur einmal ({553,1}) wird es vom Soma gebraucht, ohne dass ein solcher Vergleich hervortritt. <dvsn n='TS'>-ás {787,3} (vorher acikradat); vṛ́ṣā {783,7}. <dvsn n='TS'>-ám vṛ́ṣaṇam {802,2}; vājínam {818,11}. <dvsn n='TS'>-é ráthe {774,17}; neben trivandhuré. <dvsn n='TS'>-aís {553,1} sávaneṣu sómais."
+        }
+    ],
+    "MD": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "8875",
+            "pagenum": 113,
+            "content": "त्रिपृष्ठ¦ tri-pṛṣṭha, <lex>a.</lex> having <i>or</i> occupying 🞄three backs, ridges, <i>or</i> heights; <lex>m.</lex> Viṣṇu; 🞄<b>-prakāra,</b> <lex>a.</lex> threefold; <b>-phala,</b> <lex>a.</lex> bearing 🞄three fruits; <b>-bāhu,</b> <lex>a.</lex> three-armed; <b>-bhāga,</b> 🞄<lex>m.</lex> third part (<ab>esp.</ab> <i>of the eye in a side-glance</i>); 🞄<b>-bhuvana,</b> <lex>n.</lex> the three worlds: <i>heaven, sky 🞄or lower regions, and earth</i>; <lex>m.</lex> <ab>N.</ab>: <b>-guru,</b> 🞄<lex>m.</lex> <ab>ep.</ab> <i>of</i> Śiva, <b>-pati,</b> <lex>m.</lex> <ab>ep.</ab> <i>of</i> Viṣṇu; 🞄<b>-bhauma,</b> <lex>a.</lex> three-storied; <b>-madhu,</b> <lex>a.</lex> who 🞄knows <i>or</i> recites the three verses <i>beginning 🞄with</i> madhu (<ls>RV. I, xc, 6-8</ls>); <b>-mātra,</b> <lex>a.</lex> 🞄containing three <i>morae</i>; <b>-mārga-gā,</b> <lex>f.</lex> <ab>ep.</ab> 🞄<i>of the Ganges</i>; <b>-mūrti,</b> <lex>a.</lex> having three forms; 🞄<ab>°—</ab>, the trinity, <ab>i. e.</ab> Brahma, Viṣṇu, Śiva."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "88035",
+            "pagenum": "459,3",
+            "content": "त्रि—पृष्ठ/ ¦ <lex>mfn.</lex> having 3 backs or surfaces (<s1 slp1='soma'>Soma</s1> compared with a chariot or bull or horse), <ls>RV. vii</ls>, <ls n='RV.'>ix</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "88036",
+            "pagenum": "459,3",
+            "content": "त्रि—पृष्ठ/ ¦ <lex>m.</lex> <s1 slp1='vizRu'>Viṣṇu</s1>, <ls>BhP. vii f.</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "88037",
+            "pagenum": "459,3",
+            "content": "¦ the first of the black <s1 slp1='vAsu-deva'>Vāsu-deva</s1>s, <ls>Jain.</ls>; <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "88038",
+            "pagenum": "459,3",
+            "content": "त्रि—पृष्ठ/ ¦ <lex>n.</lex> = -दिव/, <ls>AV. ix, 5, 10</ls>; <ls>BhP. i f.</ls><info lex='n'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "47619",
+            "pagenum": 3,
+            "content": "त्रिपृष्ठ/¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>drei Rücken, Höhen oder Flächen habend oder einnehmend</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <dvsn n='2'>— a〉 <ab>Bein.</ab> <is>Viṣṇu</is>ʼs. <dvsn n='2'>— b〉 *<ab>N. pr.</ab> des ersten der schwarzen <is>Vāsudeva</is> bei den <is>Jaina</is>. <dvsn n='1'>— 3〉 <lex>n.</lex> <i>der oberste der drei Himmel, der höchste Himmel</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "31042",
+            "pagenum": 3,
+            "content": "त्रिपृष्ठ¦ (त्रि + पृष्ठ) <lex>m.</lex> N. pr. des ersten der schwarzen <is>Vāsudeva</is> bei den <is>Jaina</is> <ls>H. 695.</ls> — Die anderen Bedd. des Wortes s. u. पृष्ठ ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "18105",
+            "pagenum": 325,
+            "content": "त्रिपृष्ठ¦ m. (-ष्ठः) A king, and one of the Vasudevas, or descendants of VASUDEVA, according the Jainas."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "18122",
+            "pagenum": 390,
+            "content": "त्रिपृष्ठ¦ m. (-ष्ठः) A king, and one of the <i>Vāsudevas,</i> or descendants of VASUDEVA, according to the Jains."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "17598",
+            "pagenum": 346,
+            "content": "त्रि-पृष्ठ¦ (ष्ठः) 1. <i>m.</i> A kind, a descendant of <i>Vasudeva.</i>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "15584",
+            "pagenum": "2-660-b",
+            "content": "त्रिपृष्ठः¦, पुं, (त्रयो वंश्याः पृष्ठे पश्चिमप्रदेशेऽस्येति ।) राजभेदः । तत्पर्य्यायः । प्राजापत्यः २ । इति हेमचन्द्रः । ३ । ३५९ ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिपृष्ठ",
+            "eid": "23716",
+            "pagenum": "3374,b",
+            "content": "त्रिपृष्ठ¦ न० त्रयाणां लोकानां पृष्ठः समाहारः । त्रिपृष्ठस्थिते सत्यलोके हेमच० ।"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिपृष्ठ",
+            "content": "<body><s>tripfzWa na° trayARAM lokAnAM pfzWaH samAhAraH . tripfzWasTite satyaloke hemaca° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिपृष्ठ",
+            "content": "<H1><h><key1>tripfzWa</key1><key2>tripfzWa</key2></h><body><s>tripfzWa</s>  <div n=\"1\">m. (<s>-zWaH</s>) A king, and one of the Vasudevas, or descendants of <lb />VASUDEVA, according the Jainas.</div></body><tail><L>18105</L><pc>325-a</pc></tail></H1>\n"
+        }
+    ]
+}

@@ -1,5 +1,459 @@
-ixcImRcIjpcIk0xMiAxOUMxNi45NzA2IDE5IDIxIDE0Ljk3MDYgMjEgMTBDMjEgNS4wMjk0NCAxNi45NzA2IDEgMTIgMUM3LjAyOTQ0IDEgMyA1LjAyOTQ0IDMgMTBDMyAxNC45NzA2IDcuMDI5NDQgMTkgMTIgMTlaXCIsXCJzdHJva2VXaWR0aFwiOlwiMlwifX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZmlsbFJ1bGVcIjpcImV2ZW5vZGRcIixcImNsaXBSdWxlXCI6XCJldmVub2RkXCIsXCJkXCI6XCJNMTIgMTZDMTUuMzEzNyAxNiAxOCAxMy4zMTM3IDE4IDEwQzE4IDYuNjg2MjkgMTUuMzEzNyA0IDEyIDRDOC42ODYyOSA0IDYgNi42ODYyOSA2IDEwQzYgMTMuMzEzNyA4LjY4NjI5IDE2IDEyIDE2WlwiLFwic3Ryb2tlV2lkdGhcIjpcIjJcIn19LHtcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImZpbGxSdWxlXCI6XCJldmVub2RkXCIsXCJjbGlwUnVsZVwiOlwiZXZlbm9kZFwiLFwiZFwiOlwiTTEyIDE0QzE0LjIwOTEgMTQgMTYgMTIuMjA5MSAxNiAxMEMxNiA3Ljc5MDg2IDE0LjIwOTEgNiAxMiA2QzkuNzkwODYgNiA4IDcuNzkwODYgOCAxMEM4IDEyLjIwOTEgOS43OTA4NiAxNCAxMiAxNFpcIixcInN0cm9rZVdpZHRoXCI6XCIyXCJ9fSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJmaWxsUnVsZVwiOlwiZXZlbm9kZFwiLFwiY2xpcFJ1bGVcIjpcImV2ZW5vZGRcIixcImRcIjpcIk0xMiAxMUMxMi41NTIzIDExIDEzIDEwLjU1MjMgMTMgMTBDMTMgOS40NDc3MiAxMi41NTIzIDkgMTIgOUMxMS40NDc3IDkgMTEgOS40NDc3MiAxMSAxMEMxMSAxMC41NTIzIDExLjQ0NzcgMTEgMTIgMTFaXCIsXCJzdHJva2VXaWR0aFwiOlwiMlwifX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBHcldlY2hhdCAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJub25lXCIsXCJ2aWV3Qm94XCI6XCIwIDAgMjQgMjRcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJmaWxsUnVsZVwiOlwiZXZlbm9kZFwiLFwiZFwiOlwiTTIxLjUwMiAxOS4yMjhDMjMuMDI2IDE4LjEyMyAyNCAxNi40OSAyNCAxNC42NzRjMC0zLjMyNi0zLjIzNy02LjAyMy03LjIyOS02LjAyM3MtNy4yMjkgMi42OTctNy4yMjkgNi4wMjNjMCAzLjMyNyAzLjIzNyA2LjAyNCA3LjIyOSA2LjAyNC44MjUgMCAxLjYyMS0uMTE3IDIuMzYtLjMzbC4yMTItLjAzMmMuMTM5IDAgLjI2NS4wNDMuMzg0LjExMWwxLjU4My45MTQuMTM5LjA0NWEuMjQxLjI0MSAwIDAgMCAuMjQxLS4yNDFsLS4wMzktLjE3Ni0uMzI2LTEuMjE1LS4wMjUtLjE1NGEuNDguNDggMCAwIDEgLjIwMi0uMzkyWk04LjY3NSAyQzMuODg0IDIgMCA1LjIzNiAwIDkuMjI5YzAgMi4xNzggMS4xNjggNC4xMzkgMi45OTcgNS40NjRhLjU3NS41NzUgMCAwIDEgLjI0My40NzFsLS4wMy4xODQtLjM5MSAxLjQ1OC0uMDQ3LjIxMWMwIC4xNi4xMy4yOS4yODkuMjlsLjE2OC0uMDU0IDEuODk5LTEuMDk3YS45MDguOTA4IDAgMCAxIC40Ni0uMTMzbC4yNTUuMDM4Yy44ODYuMjU1IDEuODQyLjM5NyAyLjgzMi4zOTdsLjQ3Ni0uMDEyYTUuNTg2IDUuNTg2IDAgMCAxLS4yOTEtMS43NzFjMC0zLjY0MSAzLjU0Mi02LjU5MyA3LjkxMS02LjU5M2wuNDcxLjAxMkMxNi41ODkgNC42NDEgMTMuMDAyIDIgOC42NzUgMlptNS42ODYgMTEuNzExYS45NjQuOTY0IDAgMSAxIC4wMDEtMS45MjcuOTY0Ljk2NCAwIDAgMS0uMDAxIDEuOTI3Wm00LjgyIDBhLjk2NC45NjQgMCAxIDEgMC0xLjkyOC45NjQuOTY0IDAgMCAxIDAgMS45MjhaTTUuNzgzIDguMDcyYTEuMTU2IDEuMTU2IDAgMSAxIDAtMi4zMTIgMS4xNTYgMS4xNTYgMCAwIDEgMCAyLjMxMlptNS43ODMgMGExLjE1NiAxLjE1NiAwIDEgMSAwLTIuMzEyIDEuMTU2IDEuMTU2IDAgMCAxIDAgMi4zMTJaXCIsXCJjbGlwUnVsZVwiOlwiZXZlbm9kZFwifX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBHcldoYXRzYXBwIChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcImZpbGxcIjpcIm5vbmVcIixcInZpZXdCb3hcIjpcIjAgMCAyNCAyNFwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwiZ1wiLFwiYXR0clwiOntcImNsaXBQYXRoXCI6XCJ1cmwoI2EpXCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwibS4wNTcgMjQgMS42ODctNi4xNjNhMTEuODY3IDExLjg2NyAwIDAgMS0xLjU4Ny01Ljk0NkMuMTYgNS4zMzUgNS40OTUgMCAxMi4wNSAwYTExLjgxNyAxMS44MTcgMCAwIDEgOC40MTMgMy40ODggMTEuODI0IDExLjgyNCAwIDAgMSAzLjQ4IDguNDE0Yy0uMDAzIDYuNTU3LTUuMzM4IDExLjg5Mi0xMS44OTMgMTEuODkyYTExLjkgMTEuOSAwIDAgMS01LjY4OC0xLjQ0OEwuMDU3IDI0Wm02LjU5Ny0zLjgwN2MxLjY3Ni45OTUgMy4yNzYgMS41OTEgNS4zOTIgMS41OTIgNS40NDggMCA5Ljg4Ni00LjQzNCA5Ljg4OS05Ljg4NS4wMDItNS40NjItNC40MTUtOS44OS05Ljg4MS05Ljg5Mi01LjQ1MiAwLTkuODg3IDQuNDM0LTkuODkgOS44ODQgMCAyLjIyNS42NTIgMy44OTEgMS43NDcgNS42MzRsLTEgMy42NDggMy43NDMtLjk4MVptMTEuMzg3LTUuNDY0Yy0uMDc0LS4xMjQtLjI3Mi0uMTk4LS41Ny0uMzQ3LS4yOTctLjE0OS0xLjc1OC0uODY4LTIuMDMxLS45NjctLjI3Mi0uMDk5LS40Ny0uMTQ5LS42Ny4xNDktLjE5Ny4yOTctLjc2Ny45NjctLjk0IDEuMTY1LS4xNzMuMTk4LS4zNDcuMjIzLS42NDQuMDc0LS4yOTctLjE0OS0xLjI1NS0uNDYyLTIuMzktMS40NzUtLjg4My0uNzg4LTEuNDgtMS43NjEtMS42NTMtMi4wNTktLjE3My0uMjk3LS4wMTgtLjQ1OC4xMy0uNjA2LjEzNC0uMTMzLjI5Ny0uMzQ3LjQ0Ni0uNTIxLjE1LS4xNzIuMi0uMjk2LjMtLjQ5NS4wOTktLjE5OC4wNS0uMzcyLS4wMjUtLjUyMS0uMDc1LS4xNDgtLjY3LTEuNjExLS45MTYtMi4yMDYtLjI0Mi0uNTc5LS40ODctLjUwMS0uNjctLjUxbC0uNTctLjAxYy0uMTk3IDAtLjUyLjA3NC0uNzkxLjM3Mi0uMjcyLjI5OC0xLjA0IDEuMDE2LTEuMDQgMi40NzlzMS4wNjUgMi44NzYgMS4yMTMgMy4wNzRjLjE0OS4xOTggMi4wOTUgMy4yIDUuMDc2IDQuNDg3LjcwOS4zMDYgMS4yNjMuNDg5IDEuNjk0LjYyNi43MTIuMjI2IDEuMzYuMTk0IDEuODcyLjExOC41Ny0uMDg1IDEuNzU4LS43MTkgMi4wMDYtMS40MTMuMjQ4LS42OTUuMjQ4LTEuMjkuMTczLTEuNDE0WlwifX1dfSx7XCJ0YWdcIjpcImRlZnNcIixcImF0dHJcIjp7fSxcImNoaWxkXCI6W3tcInRhZ1wiOlwiY2xpcFBhdGhcIixcImF0dHJcIjp7XCJpZFwiOlwiYVwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0wIDBoMjR2MjRIMHpcIn19XX1dfV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEdyV2hlZWxjaGFpckFjdGl2ZSAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJ2aWV3Qm94XCI6XCIwIDAgMjQgMjRcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJub25lXCIsXCJzdHJva2VMaW5lY2FwXCI6XCJyb3VuZFwiLFwic3Ryb2tlTGluZWpvaW5cIjpcInJvdW5kXCIsXCJzdHJva2VXaWR0aFwiOlwiMlwiLFwiZFwiOlwiTTcsNiBMMTAsMyBMMTcsNiBMMTcsOCBMMTQsMTEgTTksMjIgQzEyLjMxMzcwODUsMjIgMTUsMTkuMzEzNzA4NSAxNSwxNiBDMTUsMTIuNjg2MjkxNSAxMi4zMTM3MDg1LDEwIDksMTAgQzUuNjg2MjkxNSwxMCAzLDEyLjY4NjI5MTUgMywxNiBDMywxOS4zMTM3MDg1IDUuNjg2MjkxNSwyMiA5LDIyIFogTTksMTcgQzkuNTUyMjg0NzUsMTcgMTAsMTYuNTUyMjg0NyAxMCwxNiBDMTAsMTUuNDQ3NzE1MyA5LjU1MjI4NDc1LDE1IDksMTUgQzguNDQ3NzE1MjUsMTUgOCwxNS40NDc3MTUzIDgsMTYgQzgsMTYuNTUyMjg0NyA4LjQ0NzcxNTI1LDE3IDksMTcgWiBNMTQsMTIgTDE5LDE1IEwxNywyMSBNMTksNCBDMTkuNTUyMjg0Nyw0IDIwLDMuNTUyMjg0NzUgMjAsMyBDMjAsMi40NDc3MTUyNSAxOS41NTIyODQ3LDIgMTksMiBDMTguNDQ3NzE1MywyIDE4LDIuNDQ3NzE1MjUgMTgsMyBDMTgsMy41NTIyODQ3NSAxOC40NDc3MTUzLDQgMTksNCBaIE0xMywxMCBMMTcsNiBNMTEsMTAgTDE1LDZcIn19XX0pKHByb3BzKTtcbn07XG5leHBvcnQgZnVuY3Rpb24gR3JXaGVlbGNoYWlyIChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcInZpZXdCb3hcIjpcIjAgMCAyNCAyNFwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImZpbGxcIjpcIm5vbmVcIixcInN0cm9rZUxpbmVjYXBcIjpcInJvdW5kXCIsXCJzdHJva2VMaW5lam9pblwiOlwicm91bmRcIixcInN0cm9rZVdpZHRoXCI6XCIyXCIsXCJkXCI6XCJNMTAsMyBMMTAsMTIgTDE3LDEyIEwxOSwxOCBMMjEsMTggTTE1LDkgTDksOSBDNS42ODYyOTE1LDkgMywxMS42ODYyOTE1IDMsMTUgQzMsMTguMzEzNzA4NSA1LjY4NjI5MTUsMjEgOSwyMSBDMTIuMzEzNzA4NSwyMSAxNSwxOC4zMTM3MDg1IDE1LDE1IE0xMSw0IEMxMS41NTIyODQ3LDQgMTIsMy41NTIyODQ3NSAxMiwzIEMxMiwyLjQ0NzcxNTI1IDExLjU1MjI4NDcsMiAxMSwyIEMxMC40NDc3MTUzLDIgMTAsMi40NDc3MTUyNSAxMCwzIEMxMCwzLjU1MjI4NDc1IDEwLjQ0NzcxNTMsNCAxMSw0IFpcIn19XX0pKHByb3BzKTtcbn07XG5leHBvcnQgZnVuY3Rpb24gR3JXaWZpTG93IChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcInZpZXdCb3hcIjpcIjAgMCAyNCAyNFwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwiZ1wiLFwiYXR0clwiOntcImZpbGxcIjpcIm5vbmVcIixcImZpbGxSdWxlXCI6XCJldmVub2RkXCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wic3Ryb2tlV2lkdGhcIjpcIjJcIixcImRcIjpcIk0xMiwyMCBDMTMuMTA0NTY5NSwyMCAxNCwxOS4xMDQ1Njk1IDE0LDE4IEMxNCwxNi44OTU0MzA1IDEzLjEwNDU2OTUsMTYgMTIsMTYgQzEwLjg5NTQzMDUsMTYgMTAsMTYuODk1NDMwNSAxMCwxOCBDMTAsMTkuMTA0NTY5NSAxMC44OTU0MzA1LDIwIDEyLDIwIFogTTcuNzU3MzU5MzEsMTMuNzU3MzU5MyBDMTAuMTAwNTA1MSwxMS40MTQyMTM2IDEzLjg5OTQ5NDksMTEuNDE0MjEzNiAxNi4yNDI2NDA3LDEzLjc1NzM1OTNcIn19LHtcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcInN0cm9rZU9wYWNpdHlcIjpcIi4yXCIsXCJzdHJva2VXaWR0aFwiOlwiMlwiLFwiZFwiOlwiTTQuOTI4OTMyMTksMTAuOTI4OTMyMiBDOC44MzQxNzUxMSw3LjAyMzY4OTI3IDE1LjE2NTgyNDksNy4wMjM2ODkyNyAxOS4wNzEwNjc4LDEwLjkyODkzMjIgTTIuMTAwNTA1MDYsOC4xMDA1MDUwNiBDNy41Njc4NDUxNSwyLjYzMzE2NDk4IDE2LjQzMjE1NDksMi42MzMxNjQ5OCAyMS44OTk0OTQ5LDguMTAwNTA1MDZcIixcIm9wYWNpdHlcIjpcIi44XCJ9fV19XX0pKHByb3BzKTtcbn07XG5leHBvcnQgZnVuY3Rpb24gR3JXaWZpTWVkaXVtIChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcInZpZXdCb3hcIjpcIjAgMCAyNCAyNFwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwiZ1wiLFwiYXR0clwiOntcImZpbGxcIjpcIm5vbmVcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJzdHJva2VXaWR0aFwiOlwiMlwiLFwiZFwiOlwiTTEyLDIwIEMxMy4xMDQ1Njk1LDIwIDE0LDE5LjEwNDU2OTUgMTQsMTggQzE0LDE2Ljg5NTQzMDUgMTMuMTA0NTY5NSwxNiAxMiwxNiBDMTAuODk1NDMwNSwxNiAxMCwxNi44OTU0MzA1IDEwLDE4IEMxMCwxOS4xMDQ1Njk1IDEwLjg5NTQzMDUsMjAgMTIsMjAgWiBNNy43NTczNTkzMSwxMy43NTczNTkzIEMxMC4xMDA1MDUxLDExLjQxNDIxMzYgMTMuODk5NDk0OSwxMS40MTQyMTM2IDE2LjI0MjY0MDcsMTMuNzU3MzU5MyBNNC45Mjg5MzIxOSwxMC45Mjg5MzIyIEM4LjgzNDE3NTExLDcuMDIzNjg5MjcgMTUuMTY1ODI0OSw3LjAyMzY4OTI3IDE5LjA3MTA2NzgsMTAuOTI4OTMyMlwifX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wic3Ryb2tlT3BhY2l0eVwiOlwiLjJcIixcInN0cm9rZVdpZHRoXCI6XCIyXCIsXCJkXCI6XCJNMi4xMDA1MDUwNiw4LjEwMDUwNTA2IEM3LjU2Nzg0NTE1LDIuNjMzMTY0OTggMTYuNDMyMTU0OSwyLjYzMzE2NDk4IDIxLjg5OTQ5NDksOC4xMDA1MDUwNlwiLFwib3BhY2l0eVwiOlwiLjhcIn19XX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBHcldpZmlOb25lIChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcInZpZXdCb3hcIjpcIjAgMCAyNCAyNFwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwiZ1wiLFwiYXR0clwiOntcImZpbGxcIjpcIm5vbmVcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcImNpcmNsZVwiLFwiYXR0clwiOntcImN4XCI6XCIxMlwiLFwiY3lcIjpcIjE4XCIsXCJyXCI6XCIyXCIsXCJzdHJva2VXaWR0aFwiOlwiMlwifX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wic3Ryb2tlT3BhY2l0eVwiOlwiLjJcIixcInN0cm9rZVdpZHRoXCI6XCIyXCIsXCJkXCI6XCJNNy43NTczNTkzMSwxMy43NTczNTkzIEMxMC4xMDA1MDUxLDExLjQxNDIxMzYgMTMuODk5NDk0OSwxMS40MTQyMTM2IDE2LjI0MjY0MDcsMTMuNzU3MzU5MyBNNC45Mjg5MzIxOSwxMC45Mjg5MzIyIEM4LjgzNDE3NTExLDcuMDIzNjg5MjcgMTUuMTY1ODI0OSw3LjAyMzY4OTI3IDE5LjA3MTA2NzgsMTAuOTI4OTMyMiBNMi4xMDA1MDUwNiw4LjEwMDUwNTA2IEM3LjU2Nzg0NTE1LDIuNjMzMTY0OTggMTYuNDMyMTU0OSwyLjYzMzE2NDk4IDIxLjg5OTQ5NDksOC4xMDA1MDUwNlwiLFwib3BhY2l0eVwiOlwiLjhcIn19XX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBHcldpZmkgKHByb3BzKSB7XG4gIHJldHVybiBHZW5JY29uKHtcInRhZ1wiOlwic3ZnXCIsXCJhdHRyXCI6e1widmlld0JveFwiOlwiMCAwIDI0IDI0XCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZmlsbFwiOlwibm9uZVwiLFwic3Ryb2tlV2lkdGhcIjpcIjJcIixcImRcIjpcIk0xMiwyMCBDMTMuMTA0NTY5NSwyMCAxNCwxOS4xMDQ1Njk1IDE0LDE4IEMxNCwxNi44OTU0MzA1IDEzLjEwNDU2OTUsMTYgMTIsMTYgQzEwLjg5NTQzMDUsMTYgMTAsMTYuODk1NDMwNSAxMCwxOCBDMTAsMTkuMTA0NTY5NSAxMC44OTU0MzA1LDIwIDEyLDIwIFogTTcuNzU3MzU5MzEsMTMuNzU3MzU5MyBDMTAuMTAwNTA1MSwxMS40MTQyMTM2IDEzLjg5OTQ5NDksMTEuNDE0MjEzNiAxNi4yNDI2NDA3LDEzLjc1NzM1OTMgTTQuOTI4OTMyMTksMTAuOTI4OTMyMiBDOC44MzQxNzUxMSw3LjAyMzY4OTI3IDE1LjE2NTgyNDksNy4wMjM2ODkyNyAxOS4wNzEwNjc4LDEwLjkyODkzMjIgTTIuMTAwNTA1MDYsOC4xMDA1MDUwNiBDNy41Njc4NDUxNSwyLjYzMzE2NDk4IDE2LjQzMjE1NDksMi42MzMxNjQ5OCAyMS44OTk0OTQ5LDguMTAwNTA1MDZcIn19XX0pKHByb3BzKTtcbn07XG5leHBvcnQgZnVuY3Rpb24gR3JXaW5kb3dzTGVnYWN5IChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcInZpZXdCb3hcIjpcIjAgMCAyNCAyNFwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwiZ1wiLFwiYXR0clwiOntcImZpbGxcIjpcIm5vbmVcIixcImZpbGxSdWxlXCI6XCJldmVub2RkXCIsXCJ0cmFuc2Zvcm1cIjpcInRyYW5zbGF0ZSgwIDEpXCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTIuNjEzNDE3NTcsOS4wOTYyOTg0MSBDMi43MTU4MTc4LDguNzM4Mjk3NiAyLjgwNTAxOCw4LjQyNDU2MzU1IDIuODk1NDE4MjEsOC4xMTEzNjI4NCBDMy41NjA3NTMwNSw1LjgwOTg5MDk2IDQuMjI2NjIxMjIsMy41MDgyODU3NSA0Ljg5MTI4OTQsMS4yMDY1NDcyIEM0LjkxNzE1NjEyLDEuMTE2MjgwMzIgNC45NDQ4ODk1MiwxLjA0MzQ4MDE2IDUuMDQ3OTU2NDIsMS4wMDIwMTM0IEM2LjE5ODg5MjM2LDAuNTQwNjc5MDIgNy4zNzQ3NjE2OSwwLjE3Njk0NDg2MyA4LjYxMzQzMTE3LDAuMDQzMDc3ODkyNSBDMTAuMjc5MDM0OSwtMC4xMzcxODkxODMgMTEuODA3ODM4NCwwLjI1MjI3ODM2NyAxMy4yMTk4NDE2LDEuMTM2OTQ3MDQgQzEzLjQwMzcwODcsMS4yNTIyODA2MyAxMy41ODE1NzU4LDEuMzc2ODE0MjUgMTMuNzY5NTc2MiwxLjQ4NDE0NzgzIEMxMy44ODk0NDMxLDEuNTUyOTQ3OTggMTMuOTA2Mzc2NSwxLjYyNTYxNDgxIDEzLjg2Nzg0MzEsMS43NTYwMTUxMSBDMTMuMzE1MzA4NSwzLjY1MjY4NjA3IDEyLjc2ODEwNzIsNS41NTE0OTAzOCAxMi4yMTk1NzI3LDcuNDQ5NjI4MDEgQzEyLjAyODIzODksOC4xMTEzNjI4NCAxMS44MzE1NzE4LDguNzcyMjk3NjggMTEuNjQ2MzcxNCw5LjQzNjI5OTE4IEMxMS42MDUxNzEzLDkuNTg0MDMyODUgMTEuNTcxMDM3OSw5LjYwODk2NjI0IDExLjQzNDYzNzYsOS41MTU3NjYwMyBDMTAuNjIxMDM1Nyw4Ljk2MzA5ODExIDkuNzYyNzY3MSw4LjQ5OTQ5NzA2IDguODAyMDk4MjYsOC4yNTI1NjMxNiBDNy41ODk5NjIxOCw3Ljk0MTA5NTc5IDYuMzc5NDI2MSw4LjAwMzYyOTI3IDUuMTY5OTU2Nyw4LjI2ODQyOTg3IEM0LjMwODIyMTQxLDguNDU3MDk2OTYgMy40Nzc2ODYxOSw4Ljc0MTg5NzYxIDIuNjEzNDE3NTcsOS4wOTYyOTg0MVwifX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTE3LjI3NzE4NDEsMTIuMDI1MjExNyBDMTUuNzQ4MTE0LDEyLjAzNTYxMTcgMTQuMzk5NDQ0MywxMS40OTg2NzcyIDEzLjE0MzMwODEsMTAuNjczNzQyIEMxMi43ODgyNDA2LDEwLjQzOTc0MTUgMTIuNzg4NjQwNiwxMC40NDIyNzQ4IDEyLjkwNTMwNzYsMTAuMDM5MjA3MiBDMTMuNjE2NTA5Miw3LjU4MDUzNDk3IDE0LjMyNjExMDgsNS4xMjExOTYwNyAxNS4wMzk0NDU3LDIuNjYyOTIzODMgQzE1LjEwOTA0NTksMi40MjE5ODk5NSAxNS4wNTc1NzkxLDIuMzc3OTg5ODUgMTUuMzI4MTEzMSwyLjU1OTMyMzYgQzE2LjIyNDExNTEsMy4xNTg5MjQ5NSAxNy4xNjc3MTcyLDMuNjUyNTI2MDcgMTguMjM2NTE5NiwzLjg2OTA1OTkgQzE5LjM2NDkyMjIsNC4wOTc0NjA0MSAyMC40ODUxOTE0LDQuMDE5NDYwMjQgMjEuNTk4NzkzOSwzLjc3MDI1OTY3IEMyMi4yOTkwNjIyLDMuNjEzNDU5MzIgMjIuOTc5MTk3MSwzLjM5MzQ1ODgyIDIzLjY0NzA2NTIsMy4xMzU0NTgyMyBDMjMuNzQzMzMyMSwzLjA5ODUyNDgyIDIzLjg0MTk5OSwzLjAzNjY1ODAxIDIzLjk0MTA2NTksMy4xMjgyNTgyMiBDMjQuMDM3ODY2MSwzLjIxNzcyNTA5IDIzLjk5MzA2NiwzLjMxODM5MTk4IDIzLjk2MzE5OTMsMy40MjA5MjU1NSBDMjMuMjQ5OTk3Nyw1Ljg4NjEzMTEzIDIyLjUzNzE5NjEsOC4zNTEzMzY3MiAyMS44Mjg5Mjc4LDEwLjgxNzg3NTYgQzIxLjc5NjM5NDQsMTAuOTMzMDc1OSAyMS43MzYxMjc2LDEwLjk4OTM0MjcgMjEuNjI5NTk0LDExLjAzMjAwOTUgQzIwLjQ2NzE5MTQsMTEuNDk3MzQzOSAxOS4yNzc4NTUzLDExLjg2MzM0NDcgMTguMDI0NTE5MiwxMS45ODI5NDUgQzE3Ljc3NjUxODYsMTIuMDA2Njc4MyAxNy41MjY2NTE0LDEyLjAxMTYxMTcgMTcuMjc3MTg0MSwxMi4wMjUyMTE3XCJ9fSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMjEuMzc3NDYwMSwxMi4zNTE3NzI1IEMyMS4yMjE0NTk3LDEyLjg5MTY0MDMgMjEuMDc4MTI2MSwxMy4zODgzMDgxIDIwLjkzNDUyNTgsMTMuODg1MTA5MyBDMjAuMzMzMzI0NCwxNS45NjU3ODA2IDE5LjcyOTQ1NjQsMTguMDQ2NzE4NyAxOS4xMzM4NTUsMjAuMTI5NjU2NyBDMTkuMDg0OTIxNiwyMC4yOTk1MjM4IDE4Ljk5OTE4OCwyMC4zODY4NTczIDE4LjgzNTU4NzcsMjAuNDQ5OTI0MSBDMTcuODEwMTE4NywyMC44NDUzOTE3IDE2Ljc2NzE4MywyMS4xNzA0NTkxIDE1LjY3MzA0NzIsMjEuMzI0MTkyOCBDMTMuOTc5ODQzMywyMS41NjE1MjY3IDEyLjQwNTAzOTgsMjEuMjQxNTI1OSAxMC45NDI5MDMxLDIwLjM2MDU5MDYgQzEwLjcwMTAzNTksMjAuMjE1MTIzNiAxMC40Njc1Njg3LDIwLjA1NDU4OTkgMTAuMjIzODM0OCwxOS45MTE5MjI5IEMxMC4xMDM0MzQ1LDE5Ljg0MTI1NjEgMTAuMDkyMTAxMiwxOS43NjY4NTU5IDEwLjEzMDEwMTMsMTkuNjM4OTg5IEMxMC42NTMwMzU4LDE3Ljg0Mjg1MTYgMTEuMTcwNTAzNiwxNi4wNDQ1ODA4IDExLjY5MDIzODEsMTQuMjQ3MjQzNCBDMTEuOTAxMzA1MywxMy41MTU2NDE4IDEyLjExMzE3MjQsMTIuNzgzNzczNCAxMi4zMjQ3NzI5LDEyLjA1MjgzODQgQzEyLjM5MjIzOTcsMTEuODIyMzA0NiAxMi4zOTMwMzk3LDExLjgyMzM3MTMgMTIuNjA0MjQwMiwxMS45NjIzMDQ5IEMxMy4zNjQyNDE5LDEyLjQ2NDAzOTQgMTQuMTU2MTEwNCwxMi44OTg1NzM3IDE1LjAzODc3OTEsMTMuMTQ4OTc0MyBDMTYuMzExODQ4NiwxMy41MDkzNzUxIDE3LjU4NTg1MTUsMTMuNDQ5OTA4MyAxOC44NjEzMjExLDEzLjE2NzEwNzYgQzE5LjcwOTg1NjMsMTIuOTc5NTA3MiAyMC41Mjg1MjQ4LDEyLjY5NTM3MzIgMjEuMzc3NDYwMSwxMi4zNTE3NzI1XCJ9fSx7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMTEuMTc4OTMwMywxMS4wNDY1Njk1IEMxMS4wNTA2NjM0LDExLjQ4ODU3MDUgMTAuOTMxNzI5OCwxMS44OTgzMDQ4IDEwLjgxMzE5NjIsMTIuMzA4MTcyNCBDMTAuMTg5NzI4MSwxNC40NjQxNzcyIDkuNTY0MjU5OTksMTYuNjIwMzE1NSA4Ljk0Njc5MTkyLDE4Ljc3ODMyMDQgQzguODkzMTkxOCwxOC45NjMzODc0IDguODQzODU4MzYsMTguOTY3NjU0MSA4LjY5NDI1ODAyLDE4Ljg2NTUyMDUgQzcuODM3MTg5NDEsMTguMjgwOTg1OSA2LjkyOTcyMDY4LDE3LjgwMDk4NDggNS45MDc0NTE3LDE3LjU2ODA1MDkgQzQuNzQ5ODQ5MDgsMTcuMzAzNjUwMyAzLjU5ODM3OTgsMTcuMzc0OTgzOCAyLjQ0OTA0Mzg2LDE3LjYyNjg1MTEgQzEuNzI5MTc1NTYsMTcuNzg0NDUxNCAxLjAzMDUwNzMxLDE4LjAxMTM4NTMgMC4zNDI5MDU3NTYsMTguMjc1Nzg1OSBDMC4yNTI1MDU1NTEsMTguMzEwNDUyNiAwLjE1OTk3MjAwOCwxOC4zNjA1ODYxIDAuMDY1ODM4NDYxNiwxOC4yODM1MTkyIEMtMC4wMzk0OTUxMTA0LDE4LjE5NzY1MjQgMC4wMDYyMzgzMjY1NywxOC4wOTI4NTIxIDAuMDM1MTcxNzI1NSwxNy45OTI4NTE5IEMwLjc0NjUwNjY3MSwxNS41MzQwNDYzIDEuNDU4Mzc0OTUsMTMuMDc1NTA3NCAyLjE2ODEwOTg5LDEwLjYxNjMwMTkgQzIuMTk4Mzc2NjMsMTAuNTEzNzY4MyAyLjI0OTcxMDA4LDEwLjQ1NDQzNDggMi4zNTI5MTAzMSwxMC40MTMxMDE0IEMzLjUzMzcxMjk5LDkuOTM4MDMzNjUgNC43NDE3MTU3Myw5LjU2OTA5OTQ4IDYuMDE1NzE4NjEsOS40NTEyMzI1NSBDNy41ODcwNTU1MSw5LjMwNjU2NTU1IDkuMDQyMjU4OCw5LjY2MzM2NjM2IDEwLjM4ODI2MTksMTAuNDc5OTAxNSBDMTAuNjE4MTI5LDEwLjYxOTUwMTkgMTAuODQ1MTk2MiwxMC43NjQ4MzU1IDExLjA3MjM5NjcsMTAuOTEwMDM1OSBDMTEuMTMwMjYzNSwxMC45NDc1MDI2IDExLjIxMDM5NzEsMTAuOTgwMDM2IDExLjE3ODkzMDMsMTEuMDQ2NTY5NVwifX1dfV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEdyV2luZG93cyAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJ2aWV3Qm94XCI6XCIwIDAgMjQgMjRcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJmaWxsUnVsZVwiOlwiZXZlbm9kZFwiLFwiZFwiOlwiTTIzLjkyMywwIEwxMC45NTksMS44OTMgTDEwLjk1OSwxMS40ODEgTDIzLjkyMywxMS4zNzkgTDIzLjkyMywwIFogTTAsMy4zOTggTDAuMDA5LDExLjU1MyBMOS43ODIsMTEuNDk4IEw5Ljc3OCwyLjA2NiBMMCwzLjM5OCBaIE0wLjAwOCwyMC42ODEgTDkuNzgxLDIyLjAyNSBMOS43NzMsMTIuNTg1IEwwLjAwNywxMi41MjIgTDAuMDA4LDIwLjY4MSBaIE0xMC45NTksMjIuMTcxIEwyMy45MjMsMjQgTDIzLjkyNywxMi42NzQgTDEwLjk0MSwxMi42NTIgTDEwLjk1OSwyMi4xNzEgWlwifX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBHcldvcmRwcmVzcyAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJ2aWV3Qm94XCI6XCIwIDAgMjQgMjRcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJmaWxsUnVsZVwiOlwiZXZlbm9kZFwiLFwiZFwiOlwiTTAsMTEuOTk5MjUgQzAsMTYuNzQ5IDIuNzYsMjAuODUzNzUgNi43NjI3NSwyMi43OTg1IEwxLjAzODc1LDcuMTE2IEMwLjM3MzUsOC42MDc3NSAwLDEwLjI1OTI1IDAsMTEuOTk5MjUgTTIwLjEwMDE1LDExLjM5NCBDMjAuMTAwMTUsOS45MTA1IDE5LjU2NjksOC44ODM3NSAxOS4xMTA5LDguMDg1IEMxOC41MDI2NSw3LjA5NTc1IDE3LjkzMTksNi4yNTg3NSAxNy45MzE5LDUuMjcwMjUgQzE3LjkzMTksNC4xNjcgMTguNzY4MTUsMy4xNDAyNSAxOS45NDcxNSwzLjE0MDI1IEMyMC4wMDA0LDMuMTQwMjUgMjAuMDUwNjUsMy4xNDcgMjAuMTAyNCwzLjE1IEMxNy45Njc5LDEuMTk0IDE1LjEyMzE1LDAgMTEuOTk5NCwwIEM3LjgwNjksMCA0LjExOTE1LDIuMTUxIDEuOTczNCw1LjQwODI1IEMyLjI1NTQsNS40MTcyNSAyLjUyMDksNS40MjI1IDIuNzQ1OSw1LjQyMjUgQzQuMDAwNjUsNS40MjI1IDUuOTQzOSw1LjI3MDI1IDUuOTQzOSw1LjI3MDI1IEM2LjU5MDQsNS4yMzIgNi42NjY5LDYuMTgzIDYuMDIwNCw2LjI1ODc1IEM2LjAyMDQsNi4yNTg3NSA1LjM3MDE1LDYuMzM1MjUgNC42NDcxNSw2LjM3MzUgTDkuMDE2NjUsMTkuMzcxIEwxMS42NDMxNSwxMS40OTUyNSBMOS43NzQxNSw2LjM3MzUgQzkuMTI3NjUsNi4zMzUyNSA4LjUxNDksNi4yNTg3NSA4LjUxNDksNi4yNTg3NSBDNy44Njg0LDYuMjIwNSA3Ljk0NDE1LDUuMjMyIDguNTkxNCw1LjI3MDI1IEM4LjU5MTQsNS4yNzAyNSAxMC41NzI5LDUuNDIyNSAxMS43NTE5LDUuNDIyNSBDMTMuMDA2NjUsNS40MjI1IDE0Ljk0OTksNS4yNzAyNSAxNC45NDk5LDUuMjcwMjUgQzE1LjU5NzE1LDUuMjMyIDE1LjY3MjksNi4xODMgMTUuMDI2NCw2LjI1ODc1IEMxNS4wMjY0LDYuMjU4NzUgMTQuMzc1NCw2LjMzNTI1IDEzLjY1MzE1LDYuMzczNSBMMTcuOTg5NjUsMTkuMjcyIEwxOS4xODc0LDE1LjI3MyBDMTkuNzA0OSwxMy42MTI1IDIwLjEwMDE1LDEyLjQyMDc1IDIwLjEwMDE1LDExLjM5NCBNMTIuMjEwMTUsMTMuMDQ4OTUgTDguNjA5NCwyMy41MTA3IEM5LjY4NDksMjMuODI3MiAxMC44MjE5LDIzLjk5OTcgMTEuOTk5NCwyMy45OTk3IEMxMy4zOTY2NSwyMy45OTk3IDE0LjczNjksMjMuNzU4MiAxNS45ODQxNSwyMy4zMTk0NSBDMTUuOTUyNjUsMjMuMjY3NyAxNS45MjI2NSwyMy4yMTM3IDE1Ljg5ODY1LDIzLjE1NDQ1IEwxMi4yMTAxNSwxMy4wNDg5NSBaIE0yMi41MjkyNSw2LjI0MjQ3NSBDMjIuNTgxLDYuNjI0OTc1IDIyLjYxMDI1LDcuMDM0NDc1IDIyLjYxMDI1LDcuNDc2MjI1IEMyMi42MTAyNSw4LjY5MzQ3NSAyMi4zODIyNSwxMC4wNjIyMjUgMjEuNjk3NSwxMS43NzQ0NzUgTDE4LjAzMjI1LDIyLjM3MTIyNSBDMjEuNiwyMC4yOTE0NzUgMjMuOTk5MjUsMTYuNDI1OTc1IDIzLjk5OTI1LDExLjk5OTQ3NSBDMjMuOTk5MjUsOS45MTI5NzUgMjMuNDY2LDcuOTUxNzI1IDIyLjUyOTI1LDYuMjQyNDc1XCJ9fV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEdyV29ya3Nob3AgKHByb3BzKSB7XG4gIHJldHVybiBHZW5JY29uKHtcInRhZ1wiOlwic3ZnXCIsXCJhdHRyXCI6e1widmlld0JveFwiOlwiMCAwIDI0IDI0XCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZmlsbFwiOlwibm9uZVwiLFwic3Ryb2tlV2lkdGhcIjpcIjJcIixcImRcIjpcIk0xOSw3IEMxOSw3IDE0LDE0IDYuNSwxNCBDNC41LDE0IDEsMTUgMSwxOSBMMSwyMyBMMTIsMjMgTDEyLDE5IEMxMiwxNi41IDE1LDE4IDE5LDExIEwxNy41LDkuNSBNMyw1IEwzLDIgTDIzLDIgTDIzLDE2IEwyMCwxNiBNMTEsMSBMMTUsMSBMMTUsMyBMMTEsMyBMMTEsMSBaIE02LjUsMTQgQzguNDMyOTk2NjIsMTQgMTAsMTIuNDMyOTk2NiAxMCwxMC41IEMxMCw4LjU2NzAwMzM4IDguNDMyOTk2NjIsNyA2LjUsNyBDNC41NjcwMDMzOCw3IDMsOC41NjcwMDMzOCAzLDEwLjUgQzMsMTIuNDMyOTk2NiA0LjU2NzAwMzM4LDE0IDYuNSwxNCBaXCJ9fV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEdyWCAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJub25lXCIsXCJ2aWV3Qm94XCI6XCIwIDAgMjQgMjRcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJtLjA1OCAxIDkuMjY3IDEyLjM5TDAgMjMuNDYyaDIuMDk5bDguMTYzLTguODIgNi41OTYgOC44MkgyNGwtOS43ODgtMTMuMDg3TDIyLjg5MiAxaC0yLjFsLTcuNTE3IDguMTIyTDcuMiAxSC4wNThabTMuMDg3IDEuNTQ2aDMuMjhsMTQuNDg4IDE5LjM3aC0zLjI4TDMuMTQ1IDIuNTQ3WlwifX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBHclhpbmcgKHByb3BzKSB7XG4gIHJldHVybiBHZW5JY29uKHtcInRhZ1wiOlwic3ZnXCIsXCJhdHRyXCI6e1wiZmlsbFwiOlwibm9uZVwiLFwidmlld0JveFwiOlwiMCAwIDI0IDI0XCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJnXCIsXCJhdHRyXCI6e1wiY2xpcFBhdGhcIjpcInVybCgjYSlcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJkXCI6XCJNMy44NiA0Ljc0Yy0uMjA5IDAtLjM4NC4wNzQtLjQ3Mi4yMTctLjA5Mi4xNDctLjA3OC4zMzguMDIuNTNsMi4zNCA0LjA1MmMuMDA0LjAwOC4wMDQuMDEzIDAgLjAybC0zLjY3OCA2LjQ5Yy0uMDk2LjE5LS4wOTEuMzgzIDAgLjUzYS41MS41MSAwIDAgMCAuNDUzLjIzN2gzLjQ2MWMuNTE3IDAgLjc2Ny0uMzUuOTQ0LS42NjlsMy43MzctNi42MDgtMi4zOC00LjE1Yy0uMTcyLS4zMDYtLjQzMy0uNjQ5LS45NjMtLjY0OUgzLjg2WlwifX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTE4LjQwMSAwYy0uNTE3IDAtLjc0LjMyNi0uOTI3LjY2IDAgMC03LjQ1NiAxMy4yMjQtNy43MDIgMTMuNjU4bDQuOTE4IDkuMDIzYy4xNzIuMzA3LjQzNy42NTkuOTY3LjY1OWgzLjQ1N2MuMjA5IDAgLjM3Mi0uMDc4LjQ2LS4yMjEuMDkyLS4xNDguMDktLjM0My0uMDA3LS41MzVsLTQuODgtOC45MTVhLjAyLjAyIDAgMCAxIDAtLjAyM0wyMi4zNTEuNzU2Yy4wOTYtLjE5Mi4wOTgtLjM4Ny4wMDctLjUzNUMyMi4yNy4wOCAyMi4xMDYgMCAyMS44OTggMEgxOC40WlwifX1dfSx7XCJ0YWdcIjpcImRlZnNcIixcImF0dHJcIjp7fSxcImNoaWxkXCI6W3tcInRhZ1wiOlwiY2xpcFBhdGhcIixcImF0dHJcIjp7XCJpZFwiOlwiYVwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk0wIDBoMjR2MjRIMHpcIn19XX1dfV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEdyWW9nYSAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJ2aWV3Qm94XCI6XCIwIDAgMjQgMjRcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJub25lXCIsXCJzdHJva2VMaW5lY2FwXCI6XCJyb3VuZFwiLFwic3Ryb2tlTGluZWpvaW5cIjpcInJvdW5kXCIsXCJzdHJva2VXaWR0aFwiOlwiMlwiLFwiZFwiOlwiTTEyLDExIEwxMSwxNCBMMTIsMTcgTDEwLjUsMTcgTDksMTQgTDkuNSw5LjUgTDEyLDExIFogTTEzLDIgTDksNiBMOSwxMSBMOSwxNCBMMTAsMTcgTDYsMTcgTDMsMjIgTTIwLjUsMjIgTDE1LjUsMTguNSBMMTIsMTcgTDExLDE0IEwxMiwxMSBMMTUuNSwxMyBMMTUuNSwxOC41IE0xNCw4LjUgQzEzLjQ0NzcxNTMsOC41IDEzLDguMDUyMjg0NzUgMTMsNy41IEMxMyw2Ljk0NzcxNTI1IDEzLjQ0NzcxNTMsNi41IDE0LDYuNSBDMTQuNTUyMjg0Nyw2LjUgMTUsNi45NDc3MTUyNSAxNSw3LjUgQzE1LDguMDUyMjg0NzUgMTQuNTUyMjg0Nyw4LjUgMTQsOC41IFogTTExLDEwLjUgTDEwLDE3IEwxMCwxMy41IEwxMSwxMC41IFpcIn19XX0pKHByb3BzKTtcbn07XG5leHBvcnQgZnVuY3Rpb24gR3JZb3V0dWJlIChwcm9wcykge1xuICByZXR1cm4gR2VuSWNvbih7XCJ0YWdcIjpcInN2Z1wiLFwiYXR0clwiOntcInZpZXdCb3hcIjpcIjAgMCAyNCAyNFwifSxcImNoaWxkXCI6W3tcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImZpbGxSdWxlXCI6XCJldmVub2RkXCIsXCJkXCI6XCJNOS41MjIsMTUuNTUzIEw5LjUyMTI1LDguODA5NzUgTDE2LjAwNTc1LDEyLjE5MyBMOS41MjIsMTUuNTUzIFogTTIzLjc2LDcuNjQxMjUgQzIzLjc2LDcuNjQxMjUgMjMuNTI1MjUsNS45ODc1IDIyLjgwNiw1LjI1OTI1IEMyMS44OTMyNSw0LjMwMyAyMC44NzAyNSw0LjI5ODUgMjAuNDAxNSw0LjI0MyBDMTcuMDQzLDQgMTIuMDA1MjUsNCAxMi4wMDUyNSw0IEwxMS45OTQ3NSw0IEMxMS45OTQ3NSw0IDYuOTU3LDQgMy41OTg1LDQuMjQzIEMzLjEyOSw0LjI5ODUgMi4xMDY3NSw0LjMwMyAxLjE5MzI1LDUuMjU5MjUgQzAuNDc0LDUuOTg3NSAwLjI0LDcuNjQxMjUgMC4yNCw3LjY0MTI1IEMwLjI0LDcuNjQxMjUgMCw5LjU4Mzc1IDAsMTEuNTI1NSBMMCwxMy4zNDY1IEMwLDE1LjI4OSAwLjI0LDE3LjIzMDc1IDAuMjQsMTcuMjMwNzUgQzAuMjQsMTcuMjMwNzUgMC40NzQsMTguODg0NSAxLjE5MzI1LDE5LjYxMjc1IEMyLjEwNjc1LDIwLjU2OSAzLjMwNiwyMC41MzkgMy44NCwyMC42Mzg3NSBDNS43NiwyMC44MjMyNSAxMiwyMC44ODAyNSAxMiwyMC44ODAyNSBDMTIsMjAuODgwMjUgMTcuMDQzLDIwLjg3Mjc1IDIwLjQwMTUsMjAuNjI5NzUgQzIwLjg3MDI1LDIwLjU3MzUgMjEuODkzMjUsMjAuNTY5IDIyLjgwNiwxOS42MTI3NSBDMjMuNTI1MjUsMTguODg0NSAyMy43NiwxNy4yMzA3NSAyMy43NiwxNy4yMzA3NSBDMjMuNzYsMTcuMjMwNzUgMjQsMTUuMjg5IDI0LDEzLjM0NjUgTDI0LDExLjUyNTUgQzI0LDkuNTgzNzUgMjMuNzYsNy42NDEyNSAyMy43Niw3LjY0MTI1IEwyMy43Niw3LjY0MTI1IFpcIn19XX0pKHByb3BzKTtcbn07XG5leHBvcnQgZnVuY3Rpb24gR3Jab29tSW4gKHByb3BzKSB7XG4gIHJldHVybiBHZW5JY29uKHtcInRhZ1wiOlwic3ZnXCIsXCJhdHRyXCI6e1widmlld0JveFwiOlwiMCAwIDI0IDI0XCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZmlsbFwiOlwibm9uZVwiLFwic3Ryb2tlV2lkdGhcIjpcIjJcIixcImRcIjpcIk0xNiwxNiBMMjMsMjMgTDE2LDE2IFogTTEwLDE4IEMxNC40MTgyNzgsMTggMTgsMTQuNDE4Mjc4IDE4LDEwIEMxOCw1LjU4MTcyMiAxNC40MTgyNzgsMiAxMCwyIEM1LjU4MTcyMiwyIDIsNS41ODE3MjIgMiwxMCBDMiwxNC40MTgyNzggNS41ODE3MjIsMTggMTAsMTggWiBNMTAsMTUgTDEwLDUgTTUsMTAgTDE1LDEwXCJ9fV19KShwcm9wcyk7XG59O1xuZXhwb3J0IGZ1bmN0aW9uIEdyWm9vbU91dCAocHJvcHMpIHtcbiAgcmV0dXJuIEdlbkljb24oe1widGFnXCI6XCJzdmdcIixcImF0dHJcIjp7XCJ2aWV3Qm94XCI6XCIwIDAgMjQgMjRcIn0sXCJjaGlsZFwiOlt7XCJ0YWdcIjpcInBhdGhcIixcImF0dHJcIjp7XCJmaWxsXCI6XCJub25lXCIsXCJzdHJva2VXaWR0aFwiOlwiMlwiLFwiZFwiOlwiTTE2LDE2IEwyMywyMyBMMTYsMTYgWiBNMTAsMTggQzE0LjQxODI3OCwxOCAxOCwxNC40MTgyNzggMTgsMTAgQzE4LDUuNTgxNzIyIDE0LjQxODI3OCwyIDEwLDIgQzUuNTgxNzIyLDIgMiw1LjU4MTcyMiAyLDEwIEMyLDE0LjQxODI3OCA1LjU4MTcyMiwxOCAxMCwxOCBaIE01LDEwIEwxNSwxMFwifX1dfSkocHJvcHMpO1xufTtcbmV4cG9ydCBmdW5jdGlvbiBHclpvb20gKHByb3BzKSB7XG4gIHJldHVybiBHZW5JY29uKHtcInRhZ1wiOlwic3ZnXCIsXCJhdHRyXCI6e1widmlld0JveFwiOlwiMCAwIDI0IDI0XCIsXCJmaWxsXCI6XCJub25lXCJ9LFwiY2hpbGRcIjpbe1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTAgOEMwIDMuNTgxNzIgMy41ODE3MiAwIDggMEgxNkMyMC40MTgzIDAgMjQgMy41ODE3MiAyNCA4VjE2QzI0IDIwLjQxODMgMjAuNDE4MyAyNCAxNiAyNEg4QzMuNTgxNzIgMjQgMCAyMC40MTgzIDAgMTZWOFpcIn19LHtcInRhZ1wiOlwicGF0aFwiLFwiYXR0clwiOntcImRcIjpcIk01IDlDNSA4LjQ0NzcyIDUuNDQ3NzIgOCA2IDhIMTJDMTMuNjU2OSA4IDE1IDkuMzQzMTUgMTUgMTFWMTVDMTUgMTUuNTUyMyAxNC41NTIzIDE2IDE0IDE2SDhDNi4zNDMxNSAxNiA1IDE0LjY1NjkgNSAxM1Y5WlwifX0se1widGFnXCI6XCJwYXRoXCIsXCJhdHRyXCI6e1wiZFwiOlwiTTE1LjUgMTEuNzUxNUMxNS41IDExLjI2NzEgMTUuNjc1OCAxMC43OTkxIDE1Ljk5NDggMTAuNDM0NUwxNy42ODU2IDguNTAyMjZDMTguMTQxNiA3Ljk4MTA4IDE5IDguMzAzNjEgMTkgOC45OTYxM1YxNS4wMDRDMTkgMTUuNjk2NSAxOC4xNDE2IDE2LjAxOSAxNy42ODU2IDE1LjQ5NzhMMTUuOTk0OCAxMy41NjU2QzE1LjY3NTggMTMuMjAxIDE1LjUgMTIuNzMzIDE1LjUgMTIuMjQ4NlYxMS43NTE1WlwifX1dfSkocHJvcHMpO1xufTtcbiJdLCJuYW1lcyI6W10sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./node_modules/react-icons/gr/index.esm.js\n"));
-
-/***/ })
-
-});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+{
+    "word": "श्रेयस्",
+    "ABCH": [
+        {
+            "word": "श्रेयस्",
+            "linga": "पुं",
+            "pagenum": "5",
+            "kanda": "",
+            "varga": "",
+            "eid": "27",
+            "group": "3",
+            "synonyms": [
+                "श्रेयांस"
+            ],
+            "content": "ऋषभो वृषभः श्रेयाञ्श्रेयांसः स्यादनन्तजिदनन्तः ।"
+        },
+        {
+            "word": "श्रेयस्",
+            "linga": "क्ली",
+            "pagenum": "6",
+            "kanda": "",
+            "varga": "",
+            "eid": "298",
+            "group": "23",
+            "synonyms": [
+                "महानन्द",
+                "अमृत",
+                "सिद्धि",
+                "कैवल्य",
+                "अपुनर्भव",
+                "शिव",
+                "निःश्रेयस्",
+                "निर्वाण",
+                "ब्रह्मन्",
+                "निर्वृति",
+                "महोदय",
+                "सर्वदुःखक्षय",
+                "निर्याण",
+                "अक्षर",
+                "मुक्ति",
+                "मोक्ष",
+                "अपवर्ग"
+            ],
+            "content": "महानन्दोऽमृतं सिद्धिः कैवल्यमपुनर्भवः ।\nशिवं निःश्रेयसं श्रेयो निर्वाणं ब्रह्म निर्वृतिः ॥ ७४ ॥\nमहोदयः सर्वदुःखक्षयो निर्याणमक्षरम् ।\nमुक्तिर्मोक्षोऽपवर्गोऽथ मुमुक्षुः श्रमणो यतिः ॥ ७५ ॥\nवाचंयमो व्रती साधुरनगार ऋषिर्मुनिः ।\nनिर्ग्रन्थो भिक्षुरस्य स्वं तपोयोगशमादयः ॥ ७६ ॥"
+        },
+        {
+            "word": "श्रेयस्",
+            "linga": "क्ली",
+            "pagenum": "7",
+            "kanda": "",
+            "varga": "",
+            "eid": "340",
+            "group": "41",
+            "synonyms": [
+                "श्वःश्रेयस",
+                "शुभ",
+                "शिव",
+                "कल्याण",
+                "श्वोवसीयस्",
+                "क्षेम",
+                "भावुक",
+                "भविक",
+                "कुशल",
+                "मङ्गल",
+                "भद्र",
+                "मद्र",
+                "शस्त"
+            ],
+            "content": "श्वःश्रेयसं शुभशिवे कल्याणं श्वोवसीयसं श्रेयः ।\nक्षेमं भावुकभविककुशलमङ्गलभद्रमद्रशस्तानि ॥ ८६ ॥"
+        },
+        {
+            "word": "श्रेयस्",
+            "linga": "क्ली",
+            "pagenum": "52",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4120",
+            "group": "1752",
+            "synonyms": [
+                "धर्म",
+                "पुण्य",
+                "वृष",
+                "सुकृत"
+            ],
+            "content": "धर्मः पुण्यं वृषः श्रेयः सुकृते नियतौ विधिः ।\nदैवं भाग्यं भागधेयं दिष्टं चायस्तु तच्छुभम् ॥ १३७९ ॥"
+        },
+        {
+            "word": "श्रेयस्",
+            "linga": "वा",
+            "pagenum": "54",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4308",
+            "group": "1826",
+            "synonyms": [
+                "श्रेष्ठ",
+                "सत्तम",
+                "पुष्कल"
+            ],
+            "content": "मुख्यं प्रकृष्टं प्रमुखं प्रबर्हं वर्यं वरेण्यं प्रवरं पुरोगम् ।\nअनुत्तरं प्राग्रहरं प्रवेकं प्रधानमग्रेसरमुत्तमाग्रे ॥ १४३८ ॥\nग्रामण्यग्रण्यग्रिमजात्याग्र्यानुत्तमान्यनवरार्ध्यवरे ।\nप्रेष्ठपरार्ध्यपराणि श्रेयसि तु श्रेष्ठसत्तमे पुष्कलवत् ॥ १४३९ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "श्रेयस्",
+            "eid": "28415",
+            "pagenum": 1061,
+            "content": "श्रेयस्¦ <i><ab>a.</ab></i> [अतिशयेन प्रशस्यं इयसु <lbinfo n='SrA#deSaH'/> श्रादेशः] <b>1</b> Better, preferable, superior; वर्धनाद्रक्षणं श्रेयः <ls>H. 3. 3</ls>, <ls n='H. 3.'>33</ls>;  <lbinfo n='ls:Bg. 3.+ 35'/> <ls>Bg. 3. 35</ls>, <ls n='Bg.'>2. 5.</ls> <b>--2</b> Best, most excellent, quite desirable; <ls>Māl. 1. 13.</ls> <b>--3</b> More happy or fortunate. <b>--4</b> More blessed, dearer (<ab>compar.</ab> of प्रशस्व <ab>q. v.</ab>). <i>--<ab>n.</ab></i> <b>1</b> Virtue, righteous deeds, moral or religious merit. <b>--2</b> Bliss, good fortune, blessing, good’ welfare, felicity, a good or <lbinfo n='auspi+cious'/> auspicious result; पूर्वावधीरितं श्रेयोदुःखं हि परिवर्तते <ls>Ś. 7. 13</ls>; धिङ् <lbinfo n='mAmupasTita#SreyovamAninaM'/> मामुपस्थितश्रेयोवमानिनं <ls>Ś. 6</ls>; प्रतिबध्नाति हि श्रेयः पूज्यपूजाव्यतिक्रमः <ls>R. 1. 79</ls>;  <lbinfo n='ls:U. 5.+ 27'/> <ls>U. 5. 27</ls>, <ls n='U.'>7. 20</ls>; <ls>R. 5. 34.</ls> <b>--3</b> Any good or auspicious occasion; <ls>Ś. 7.</ls> <b>--4</b> Final beatitude, absolution. <b>--Comp.</b> --अर्थिन् <i><ab>a.</ab></i> {1} seeking happiness, <lbinfo n='de+sirous'/> desirous of felicity. {2} wishing well. --कर <i><ab>a.</ab></i> {1} promoting happiness, <lbinfo n='fav+ourable'/> favourable. {2} propitious, auspicious. --परिश्रमः striving after absolution."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "श्रेयस्",
+            "eid": "8047",
+            "pagenum": 358,
+            "content": "श्रेयस्¦ (ut mihi videtur, a श्रील vel श्रीमत् felix, cum <i>gunâ</i> vocalis ई, abjecto suffixo ल vel मत्, suff. यस् pro ई- यस्, v. gr. min. ed. 2. §. 226. 3) et 227.; ita superl. श्रेष्ठ e श्रे + ष्ठ pro इष्ठ) 1) <i>Adj.</i> melior. BR. 1. 35. 2) <i>Subst.</i> <i>n.</i> salus, felicitas. IN. 3. 7. N. 12. 89. BH. 3. 8."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "श्रेयस्",
+            "eid": "17130",
+            "pagenum": 662,
+            "content": "श्रेयस्¦ <i>śreyas</i> <ab>a.</ab> (<ab>comp.</ab> de <i>śrī)</i> meilleur. -- <ab>S.</ab> <ab>n.</ab> bonheur; || le salut, le bonheur final; || vertu, mérite. -- <ab>S.</ab> <ab>f.</ab> <i>śreyasī</i> pothos <lbinfo n='4'/> officinalis; cissampelos hexandra; myrobalan <lbinfo n='7'/> jaune; <ab>bot.</ab> <ab>M§</ab> 49."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "श्रेयस्",
+            "eid": "9008",
+            "pagenum": 1431,
+            "content": "<b>śréyas,</b>¦ <ab>a.</ab>, <ab>Compar.</ab> vom Verbale śrī́, 1〉 <i>schöner, glänzender;</i> 2〉 <i>herrlicher;</i> 3〉 <i>heilsamer, dienlicher</i> zu, mit doppeltem <ab>Dat.</ab> <dvsn n='TS'>-ān 1〉 2〉 sá 〰 bhavati jā́yamānas {242,4}. — 3〉 ayám (sómas) 〰 cikitúṣe ráṇāya {482,4}. <dvsn n='TS'>-āṃsam 2〉 dákṣam {857,2}. <dvsn n='TS'>-āṃsas 1〉 śriyé 〰 (marútas) {414,4}."
+        }
+    ],
+    "INM": [
+        {
+            "word": "श्रेयस्",
+            "eid": "2700",
+            "pagenum": 215,
+            "content": "<b>Śreyas</b>¦ = Viṣṇu (1000 names)."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "श्रेयस्",
+            "eid": "38640",
+            "pagenum": 734,
+            "content": "Sreyas¦ <i>(I) a. (f. सी)</i> 1. Better, preferable, श्रेयो भोक्तुं भैक्ष्यमपीह लोके <ls>Bg.</ls>ii.5; 2. more fortunate; 3. more beloved; 4. excellent, best, (compar. of प्रशस्य q.v.)."
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "38641",
+            "pagenum": 734,
+            "content": "Sreyas¦ <i>(II) n.</i> 1. Virtue, moral merit; 2. prosperity, bliss, happiness, प्रतिबध्नाति हि श्रेयः पूज्यपूजाव्यतिक्रमः <ls>R.</ls>i.79; 3. final emancipation or beatitude."
+        }
+    ],
+    "MD": [
+        {
+            "word": "श्रेयस्",
+            "eid": "18314",
+            "pagenum": 322,
+            "content": "श्रेयस्¦ śré-yas, <ab>cpv.</ab> [<ab>fr.</ab> śrī] <ab>RV.</ab>: more 🞄beautiful (<i>rare</i>); <ab>V.</ab>, <ab>C.</ab>: better, preferable, 🞄superior, more excellent; <ab>C.</ab>: more 🞄distinguished <i>or</i> illustrious; excellent, distinguished 🞄(<i>rare</i>); well-disposed to (<ab>g.</ab>), 🞄[Page322-2] 🞄propitious (<i>rare</i>): <b>śreyān,</b> <lex>m.</lex> <ab>gnly.</ab> <b>śreyas,</b> 🞄<lex>n.</lex> (<i>irrespective of the subject</i>) — <b>na,</b> better — 🞄than (<i>like</i> varam — na); <lex>n.</lex> (<ab>C.</ab>) better condition 🞄<i>or</i> fortune; welfare, good fortune, bliss."
+        }
+    ],
+    "MW": [
+        {
+            "word": "श्रेयस्",
+            "eid": "223723",
+            "pagenum": "1102,2",
+            "content": "श्रे/यस् ¦ <lex>mfn.</lex> (either <ab>compar.</ab> of श्री, or rather <ab>accord.</ab> to native authorities of श्री-मत् or प्रशस्य; <ab>cf.</ab> <ab>Gk.</ab> <lang n='greek'>κρείων</lang>) more splendid or beautiful, more excellent or distinguished, superior, preferable, better, better than (with <ab>abl.</ab> or with न See below), <ls>RV.</ls> &c. &c.<info lex='m:f:n'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223724",
+            "pagenum": "1102,2",
+            "content": "¦ most excellent, best, <ls>MBh. iii, 1256</ls><info lex='inh'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223725",
+            "pagenum": "1102,2",
+            "content": "¦ propitious, well disposed to (<ab>gen.</ab>), <ls>ib.</ls> <ls n='MBh.'>i, 3020</ls><info lex='inh'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223726",
+            "pagenum": "1102,2",
+            "content": "¦ auspicious, fortunate, conducive to welfare or prosperity, <ls>Kāv.</ls>; <ls>Hit.</ls>; <ls>MārkP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223727",
+            "pagenum": "1102,2",
+            "content": "श्रे/यस् ¦ <lex>m.</lex> (in <ab>astron.</ab>) <ab>N.</ab> of the second <s1 slp1='muhUrta'>Muhūrta</s1><info lex='m'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223728",
+            "pagenum": "1102,2",
+            "content": "¦ of the third month (<ab>accord.</ab> to a <ab>partic.</ab> reckoning)<info lex='inh'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223729",
+            "pagenum": "1102,2",
+            "content": "¦ (with <s1 slp1='jEna'>Jaina</s1>s) <ab>N.</ab> of the 11th <s1 slp1='arhat'>Arhat</s1> of the present <s1 slp1='avasarpiRI'>Avasarpiṇī</s1>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223732",
+            "pagenum": "1102,2",
+            "content": "श्रे/यस् ¦ (अस्), <lex>n.</lex> the better state, the better fortune or condition (sometimes used when the subject of a sentence would seem to require the masc. form), <ls>AV.</ls>; <ls>TS.</ls>; <ls>Br.</ls>; <ls>Kauś.</ls><info lex='n'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223733",
+            "pagenum": "1102,2",
+            "content": "¦ good (as <ab>opp.</ab> to ‘evil’), welfare, bliss, fortune, happiness, <ls>KaṭhUp.</ls>; <ls>MBh.</ls> &c.<info lex='inh'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223734",
+            "pagenum": "1102,2",
+            "content": "¦ the bliss of final emancipation, felicity (See श्रेयः-परिश्राम, <ab>col.</ab> 3)<info lex='inh'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223735",
+            "pagenum": "1102,2",
+            "content": "श्रे/यस् ¦ <lex>ind.</lex> better, rather, rather than (used like वरम् [<ab>q.v.</ab>] with न; <ab>e.g.</ab> श्रेयो मृतं न जीवितम्, ‘better is death and not life’ or ‘rather than life’, or ‘death is better than life’), <ls>MBh.</ls>; <ls>R.</ls> &c.<info lex='ind'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223736",
+            "pagenum": "1102,2",
+            "content": "¦ = धर्म, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "श्रेयस्",
+            "eid": "223737",
+            "pagenum": "1102,2",
+            "content": "¦ <ab>N.</ab> of a <s1 slp1='sAman'>Sāman</s1>, <ls>ĀrṣBr.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "श्रेयस्",
+            "eid": "47493",
+            "pagenum": 1028,
+            "content": "श्रेयस्¦ <i>śreyas, ān, asī, as</i> (considered as compar. of either <i>śrī-mat</i> or <i>praśasya</i>), better, more excellent, superior, preferable; best, excellent, most excellent; more fortunate, very fortunate, more prosperous, very prosperous; most beloved; (<i>as</i>), ind. well, most excellent, rather, (<i>śreyas — na,</i> rather — than); (<i>as</i>), n. virtue, moral merit; an act leading to the chief temporal good; good fortune, auspiciousness, prosperity, bliss, final happiness or beatitude; (<i>ān</i>), m., N. of the eleventh Arhat, (see below); epithet of the second Muhūrta; N. of the third month (according to a particular reckoning); (<i>asī</i>), f. a plant resembling pepper, Pothos Officinalis; the shrub Cissampelos Hexandra; yellow myrobalan; other plants <i>(= pāṭhā; = rāsnā)</i>. <i>—Śreyaḥ-pari-</i> <i>śrāma, as, ā, am,</i> toiling after final emancipation. <i>—Śreyas-kara, as, ī, am,</i> making better or superior; effecting happiness, ensuring felicity, conferring future felicity; auspicious, propitious. <i>—Śre-</i> <i>yas-kāma, as, ā, am,</i> desiring final felicity, &c. <i>—Śreyas-tara, as, ā, am,</i> very much better. <i>—Śreyas-tva, am,</i> n. betterness, superiority; final felicity, &c. <i>—Śreyo-'rthin (°yas-ar°), ī, inī, i,</i> desirous of the good (of others), wishing well; seeking happiness, desirous of felicity, seeking merit in the performance of religious rites &c., ambitious."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "श्रेयस्",
+            "eid": "25398",
+            "pagenum": 349,
+            "content": "<i>śreyas</i>¦ n. = <i>dharma</i>, <ls>Śuk.</ls> t. o. p. 3, 22; <ls>Amit.</ls> XIII, 14. {part=,seq=25741,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "श्रेयस्",
+            "eid": "41166",
+            "pagenum": 736,
+            "content": "श्रेयस्¦ mfn. (-यान्-यसी-यः) Best, excellent, most excellent. Ind. Well, most excellent. n. (-यः) 1. Virtue, moral merit. 2. Final happiness. 3. Good fortune, auspiciousness, prosperity. m. (-यान्) The 11th Jina or Jaina pontiff. f. (-यसी) 1. A plant resembling pepper, (Pothos officinalis.) 2. A shrub, (Cissampelos hexandra.) 3. Yellow myrobalan. E. श्र substituted for प्रशस्त good, and ईयसुन् aff. of the irr. superlative."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "श्रेयस्",
+            "eid": "39266",
+            "pagenum": 865,
+            "content": "श्रेयस्¦ mfn. (-यान्-यसी-यः) Best, excellent, most excellent, <i>ind.</i> Well, most excellent. n. (-यः) .²1 Virtue, moral merit. .²2 Final happiness. .²3 Good fortune, auspiciousness, prosperity. m. (-प्रान्) The 11th <i>Jina</i> or <i>Jaina</i> pontiff. f. (-यसी) .²1 A plant resembling pepper, (<bot>Pothos officinalis</bot>.) .²2 A shrub, (<bot>Cissampelos hexandra</bot>.) .²3 Yellow myrobalan. .E. श्र substituted for प्रशस्त good, and ईयसुन् aff. of the irr. superlative."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "श्रेयस्",
+            "eid": "38925",
+            "pagenum": 784,
+            "content": "श्रेयस्¦ (यान्-यसी-यः) <i>n.</i> Virtue; final bliss; prosperity. <i>m.</i> A <i>Jaina</i> pontiff. <i>f.</i> (ई) A plant like pepper, &c. <i>a.</i> Best, excellent."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "श्रेयस्",
+            "eid": "44286",
+            "pagenum": "5156,b",
+            "content": "श्रेयस्¦ न० अतिशयेन प्रशस्यम् इयसु श्रादेशः । १ धर्मे २ मोक्षे अमरः । ३ शुभे न० ४ अतिप्रशस्ते त्रि० मेदि० स्त्रियां ङीप् । सा च ५ हरीतक्यां ६ पाठायां ७ गजपिप्पल्याम् अमरः ८ रास्नायां विश्वः । ९ शुभयुक्ते त्रि० अमरः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "श्रेयस्",
+            "content": "श्रेयस् वि. -  'अतिशयेन प्रशस्यम्-ईयसुन्, श्रादेशः' 'अपेक्षाकृत अच्छा, वरीयम्, श्रीष्ठतर'"
+        },
+        {
+            "word": "श्रेयस्",
+            "content": "श्रेयस् वि. -  'अतिशयेन प्रशस्यम्-ईयसुन्, श्रादेशः' 'सर्वोत्तम, श्रेष्ठतम'"
+        },
+        {
+            "word": "श्रेयस्",
+            "content": "श्रेयस् वि. -  'अतिशयेन प्रशस्यम्-ईयसुन्, श्रादेशः' अधिक सुखी या सौभाग्यशाली"
+        },
+        {
+            "word": "श्रेयस्",
+            "content": "श्रेयस् वि. -  'अतिशयेन प्रशस्यम्-ईयसुन्, श्रादेशः' 'अधिक आनन्ददायक, प्रियतर'"
+        },
+        {
+            "word": "श्रेयस्",
+            "content": "श्रेयस् पुं. - 'सद्गुण, पुण्यकर्म, नैतिक गुण, धार्मिक गुण'"
+        },
+        {
+            "word": "श्रेयस्",
+            "content": "श्रेयस् पुं. - 'आनन्द, सौभाग्य, मंगल, शुभ, कल्याण, आशीर्वाद, शुभ परिणाम'"
+        },
+        {
+            "word": "श्रेयस्",
+            "content": "श्रेयस् पुं. - शुभ अवसर"
+        },
+        {
+            "word": "श्रेयस्",
+            "content": "श्रेयस् पुं. - 'मोक्ष, मुक्ति'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "श्रेयस्",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮೋಕ್ಷ \\/ಮುಕ್ತಿ",
+            "निष्पत्तिः": "प्रशस्य'ईयसुन्' (५-३-५७) । प्रशस्यस्य श्रः (५-३-६०) इति श्रः ।",
+            "व्युत्पत्तिः": "अतिशयेन प्रशस्यम्",
+            "विस्तारः": "'मुक्तिः कैवल्यनिर्वाणश्रेयोनिःश्रेयसामृतम्'अम०",
+            "content": ""
+        },
+        {
+            "word": "श्रेयस्",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಧರ್ಮ \\/ತ್ರಿವರ್ಗ",
+            "विस्तारः": "'धर्मार्थावुच्यते श्रेयः कामार्थौ धर्म एव वा । अर्थ एवेह वा श्रेयः त्रिवर्ग इति तु स्थितिः'मनु० २-२२४",
+            "content": ""
+        },
+        {
+            "word": "श्रेयस्",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಅಭ್ಯುದಯ \\/ಅಭಿವೃದ್ಧಿ \\/ಏಳಿಗೆ",
+            "प्रयोगाः": "'इत्युदीरितगिरं नृपस्त्ययि श्रेयसि स्थितवति स्थिरा मम'",
+            "उल्लेखाः": "माघ० १४-१७",
+            "content": ""
+        },
+        {
+            "word": "श्रेयस्",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಶುಭ \\/ಕಲ್ಯಾಣ \\/ಮಂಗಳ",
+            "प्रयोगाः": "'प्रतिबध्नाति हि श्रेयः पूज्यपूजाव्यतिक्रमः'",
+            "उल्लेखाः": "रघु० १-७९",
+            "content": ""
+        },
+        {
+            "word": "श्रेयस्",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಪ್ರಶಸ್ತವಾದ \\/ಶ್ರೇಷ್ಠವಾದ",
+            "प्रयोगाः": "'श्रेयो ह्यस्माकमेवं हि प्रतार्यौ राजनन्दनौ'",
+            "उल्लेखाः": "मालती० १-१६",
+            "content": ""
+        },
+        {
+            "word": "श्रेयस्",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಇಬ್ಬರಲ್ಲಿ ಉತ್ತಮನಾದ ಒಬ್ಬ \\/ಮೇಲಾದವನು",
+            "विस्तारः": "'श्रेयान् श्रेष्ठः पुष्कलः स्यात्'अम०",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "श्रेयस्",
+            "linga": "N",
+            "artha": "धर्मः",
+            "synonyms": [
+                "धर्म",
+                "पुण्य",
+                "श्रेयस्",
+                "सुकृत",
+                "वृष",
+                "उपनिषद्",
+                "उष्ण"
+            ],
+            "num": "1.4.25",
+            "text": "कलुषं वृजिनैनोऽघमंहो दुरितदुष्कृतम् । स्याद्धर्ममस्त्रियां पुण्यश्रेयसी सुकृतं वृषः ॥",
+            "content": ""
+        },
+        {
+            "word": "श्रेयस्",
+            "linga": "N",
+            "artha": "मोक्षः",
+            "synonyms": [
+                "मुक्ति",
+                "कैवल्य",
+                "निर्वाण",
+                "श्रेयस्",
+                "निःश्रेयस",
+                "अमृत",
+                "मोक्ष",
+                "अपवर्ग",
+                "अक्षर"
+            ],
+            "num": "1.5.7",
+            "text": "मोक्षे धीर्ज्ञानमन्यत्र विज्ञानं शिल्पशास्त्रयोः । मुक्तिः कैवल्यनिर्वाणश्रेयोनिःश्रेयसामृतम् ॥",
+            "content": ""
+        },
+        {
+            "word": "श्रेयस्",
+            "linga": "V",
+            "artha": "अतिशोभनः",
+            "synonyms": [
+                "श्रेयस्",
+                "श्रेष्ठ",
+                "पुष्कल",
+                "सत्तम",
+                "अतिशोभन"
+            ],
+            "num": "3.1.58",
+            "text": "परार्ध्याग्रप्राग्रहरप्राग्र्याग्र्याग्रीयमग्रियम् । श्रेयाञ्श्रेष्ठः पुष्कलः स्यात्सत्तमश्चातिशोभने ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "श्रेयस्",
+            "content": "<lexhead no=\"1080\">\n<dentry>श्रेयस्</dentry>\n<prAwipaxikam>श्रेयस्</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">श्रेयस्</prAwipaxikam>\n<etymology>[अतिशयेन प्रशस्यम्-ईयसुन्, श्रादेशः]</etymology>\n<jAwi>द्रव्यम्</jAwi>\n<is_a_part>धर्मार्थकाममोक्षचतुर्वर्गः</is_a_part>\n<kind_of>बुद्धिः</kind_of>\n<jAwi>अवस्था</jAwi>\n<is_a_part>धर्मार्थकाममोक्षचतुर्वर्गः</is_a_part>\n<jAwi>अदृष्टम्</jAwi>\n<sense no=\"1\">अपेक्षाकृत अच्छा, वरीयम्, श्रीष्ठतर, वर्धनाद्रक्षणं श्रेयं<citation>हि* ३/३</citation><citation>भग* ३/३५</citation>२/५</sense>\n<sense n=\"2\">सर्वोत्तम, श्रेष्ठतम</sense>\n<sense n=\"3\">अधिक सुखी या सौभाग्यशाली</sense>\n<sense n=\"4\">अधिक आनन्ददायक, प्रियतर</sense>\n<sense n=\"5\">सद्गुण, पुण्यकर्म, नैतिक गुण, धार्मिक गुण</sense>\n<sense n=\"6\">आनन्द, सौभाग्य, मंगल, शुभ, कल्याण, आशीर्वाद, शुभ परिणामपूर्वावधीरितं श्रेयो दुखं हि परिवर्तते<citation>श* ७/१३</citation>प्रतिबध्नाति हि श्रेयः पूज्यपूजाव्यतिक्रमः<citation>रघु* १/७९</citation><citation>उत्तर* ५/२७</citation>७/२०<citation>रघु* ५/३४</citation></sense>\n<sense n=\"7\">शुभ अवसर<citation>श* ७</citation></sense>\n<sense n=\"8\">मोक्ष, मुक्ति</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "श्रेयस्",
+            "content": "<body><s>Sreyas na° atiSayena praSasyam iyasu SrAdeSaH . <lb/><b>1</b> Darme <lb/><b>2</b> mokze amaraH . <lb/><b>3</b> SuBe na° <lb/><b>4</b> atipraSaste tri° medi° striyAM NIp . sA ca <lb/><b>5</b> harItakyAM <lb/><b>6</b> pAWAyAM <lb/><b>7</b> gajapippalyAm amaraH <lb/><b>8</b> rAsnAyAM viSvaH . <lb/><b>9</b> SuBayukte tri° amaraH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "श्रेयस्",
+            "content": "<H1><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body><s>Sre/yas</s>   <lex>mfn.</lex> (either <ab>compar.</ab> of <s>SrI</s>, or rather <ab>accord.</ab> to native authorities of <s>SrI-mat</s> or <s>praSasya</s>; <ab>cf.</ab> <lang>Gk.</lang> <gk>κρείων</gk>) more splendid or beautiful, more excellent or distinguished, superior, preferable, better, better than (with <ab>abl.</ab> or with <s>na</s> See below), <ls>RV.</ls> &amp;c. &amp;c.<info lex=\"m:f:n\" /></body><tail><L>223723</L><pc>1102,2</pc></tail></H1>\n <H1A><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body>  most excellent, best, <ls>MBh. iii, 1256</ls><info lex=\"inh\" /></body><tail><L>223724</L><pc>1102,2</pc></tail></H1A>\n <H1A><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body>  propitious, well disposed to (<ab>gen.</ab>), <ls>ib.</ls> <ls n=\"MBh.\">i, 3020</ls><info lex=\"inh\" /></body><tail><L>223725</L><pc>1102,2</pc></tail></H1A>\n <H1A><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body>  auspicious, fortunate, conducive to welfare or prosperity, <ls>Kāv.</ls>; <ls>Hit.</ls>; <ls>MārkP.</ls><info lex=\"inh\" /></body><tail><L>223726</L><pc>1102,2</pc></tail></H1A>\n <H1B><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body><s>Sre/yas</s>   <lex>m.</lex> (in <ab>astron.</ab>) <ab>N.</ab> of the second <s1 slp1=\"muhUrta\">Muhūrta</s1><info lex=\"m\" /></body><tail><L>223727</L><pc>1102,2</pc></tail></H1B>\n <H1B><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body>  of the third month (<ab>accord.</ab> to a <ab>partic.</ab> reckoning)<info lex=\"inh\" /></body><tail><L>223728</L><pc>1102,2</pc></tail></H1B>\n <H1B><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body>  (with <s1 slp1=\"jEna\">Jaina</s1>s) <ab>N.</ab> of the 11th <s1 slp1=\"arhat\">Arhat</s1> of the present <s1 slp1=\"avasarpiRI\">Avasarpiṇī</s1>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>223729</L><pc>1102,2</pc></tail></H1B>\n <H1B><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body><s>Sre/yas</s>   (<s>as</s>), <lex>n.</lex> the better state, the better fortune or condition (sometimes used when the subject of a sentence would seem to require the masc. form), <ls>AV.</ls>; <ls>TS.</ls>; <ls>Br.</ls>; <ls>Kauś.</ls><info lex=\"n\" /></body><tail><L>223732</L><pc>1102,2</pc></tail></H1B>\n <H1B><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body>  good (as <ab>opp.</ab> to ‘evil’), welfare, bliss, fortune, happiness, <ls>KaṭhUp.</ls>; <ls>MBh.</ls> &amp;c.<info lex=\"inh\" /></body><tail><L>223733</L><pc>1102,2</pc></tail></H1B>\n <H1B><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body>  the bliss of final emancipation, felicity (See <s>SreyaH-pariSrAma</s>, <ab>col.</ab> 3)<info lex=\"inh\" /></body><tail><L>223734</L><pc>1102,2</pc></tail></H1B>\n <H1B><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body><s>Sre/yas</s>   <lex>ind.</lex> better, rather, rather than (used like <s>varam</s> [<ab>q.v.</ab>] with <s>na</s>; <ab>e.g.</ab> <s>Sreyo mftaM na jIvitam</s>, ‘better is death and not life’ or ‘rather than life’, or ‘death is better than life’), <ls>MBh.</ls>; <ls>R.</ls> &amp;c.<info lex=\"ind\" /></body><tail><L>223735</L><pc>1102,2</pc></tail></H1B>\n <H1B><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body>  = <s>Darma</s>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>223736</L><pc>1102,2</pc></tail></H1B>\n <H1B><h><key1>Sreyas</key1><key2>Sre/yas</key2></h><body>  <ab>N.</ab> of a <s1 slp1=\"sAman\">Sāman</s1>, <ls>ĀrṣBr.</ls><info lex=\"inh\" /></body><tail><L>223737</L><pc>1102,2</pc></tail></H1B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "श्रेयस्",
+            "content": "<H1><h><key1>Sreyas</key1><key2>Sreyas</key2></h><body><s>Sreyas</s>  <div n=\"1\">mfn. (<s>-yAn-yasI-yaH</s>) Best, excellent, most excellent. Ind. Well, most <lb />excellent. </div><div n=\"1\">n. (<s>-yaH</s>) </div><div n=\"2\"> 1. Virtue, moral merit. </div><div n=\"2\"> 2. Final happiness. </div><div n=\"2\"> 3. <lb />Good fortune, auspiciousness, prosperity. </div><div n=\"1\">m. (<s>-yAn</s>) The 11th Jina <lb />or Jaina pontiff. </div><div n=\"1\">f. (<s>-yasI</s>) </div><div n=\"2\"> 1. A plant resembling pepper, (Pothos <lb />officinalis.) </div><div n=\"2\"> 2. A shrub, (Cissampelos hexandra.) </div><div n=\"2\"> 3. Yellow myro- <lb />balan.</div><div n=\"E\"> E. <s>Sra</s> substituted for <s>praSasta</s> good, and <s>Iyasun</s> aff. of the irr. <lb />superlative.</div></body><tail><L>41166</L><pc>736-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "श्रेयस्",
+            "content": "<span lang=\"sa\">श्रेयस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೋಕ್ಷ /ಮುಕ್ತಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>प्रशस्य - \"ईयसुन्\" (५-३-५७) । प्रशस्यस्य श्रः (५-३-६०) इति श्रः ।<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>अतिशयेन प्रशस्यम्<div class=\"h-2\"> </div><b>विस्तारः - </b>\"मुक्तिः कैवल्यनिर्वाणश्रेयोनिःश्रेयसामृतम्\" - अम०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>श्रेयस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಧರ್ಮ /ತ್ರಿವರ್ಗ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"धर्मार्थावुच्यते श्रेयः कामार्थौ धर्म एव वा । अर्थ एवेह वा श्रेयः त्रिवर्ग इति तु स्थितिः\" - मनु० २-२२४<div class=\"h-2\"> </div><div class=\"h-2\"> </div>श्रेयस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಭ್ಯುದಯ /ಅಭಿವೃದ್ಧಿ /ಏಳಿಗೆ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"इत्युदीरितगिरं नृपस्त्ययि श्रेयसि स्थितवति स्थिरा मम\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० १४-१७<div class=\"h-2\"> </div><div class=\"h-2\"> </div>श्रेयस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶುಭ /ಕಲ್ಯಾಣ /ಮಂಗಳ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"प्रतिबध्नाति हि श्रेयः पूज्यपूजाव्यतिक्रमः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० १-७९<div class=\"h-2\"> </div><div class=\"h-2\"> </div>श्रेयस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪ್ರಶಸ್ತವಾದ /ಶ್ರೇಷ್ಠವಾದ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"श्रेयो ह्यस्माकमेवं हि प्रतार्यौ राजनन्दनौ\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मालती० १-१६<div class=\"h-2\"> </div><div class=\"h-2\"> </div>श्रेयस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಇಬ್ಬರಲ್ಲಿ ಉತ್ತಮನಾದ ಒಬ್ಬ /ಮೇಲಾದವನು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"श्रेयान् श्रेष्ठः पुष्कलः स्यात्\" - अम०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

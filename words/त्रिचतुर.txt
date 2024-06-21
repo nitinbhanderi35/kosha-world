@@ -1,1 +1,139 @@
-e]=this.config.get(e));return t}static create(t){return new Promise((e=>{const n=new this(t);e(n.initPlugins().then((()=>n)))}))}}class hr extends(K()){constructor(t){super(),this.context=t}destroy(){this.stopListening()}static get isContextPlugin(){return!0}}var ur=i(5072),pr=i.n(ur),gr=i(1920),mr={injectType:"singletonStyleTag",attributes:{"data-cke":!0},insert:"head",singleton:!0};pr()(gr.A,mr);gr.A.locals;const kr=new WeakMap;let fr=!1;function br({view:t,element:e,text:n,isDirectHost:o=!0,keepOnFocus:i=!1}){const r=t.document;function s(n){kr.get(r).set(e,{text:n,isDirectHost:o,keepOnFocus:i,hostElement:o?e:null}),t.change((t=>Cr(r,t)))}kr.has(r)||(kr.set(r,new Map),r.registerPostFixer((t=>Cr(r,t))),r.on("change:isComposing",(()=>{t.change((t=>Cr(r,t)))}),{priority:"high"})),e.is("editableElement")&&e.on("change:placeholder",((t,e,n)=>{s(n)})),e.placeholder?s(e.placeholder):n&&s(n),n&&function(){fr||C("enableplaceholder-deprecated-text-option");fr=!0}()}function wr(t,e){return!e.hasClass("ck-placeholder")&&(t.addClass("ck-placeholder",e),!0)}function _r(t,e){return!!e.hasClass("ck-placeholder")&&(t.removeClass("ck-placeholder",e),!0)}function Ar(t,e){if(!t.isAttached())return!1;const n=Array.from(t.getChildren()).some((t=>!t.is("uiElement")));if(n)return!1;const o=t.document,i=o.selection.anchor;return(!o.isComposing||!i||i.parent!==t)&&(!!e||(!o.isFocused||!!i&&i.parent!==t))}function Cr(t,e){const n=kr.get(t),o=[];let i=!1;for(const[t,r]of n)r.isDirectHost&&(o.push(t),vr(e,t,r)&&(i=!0));for(const[t,r]of n){if(r.isDirectHost)continue;const n=yr(t);n&&(o.includes(n)||(r.hostElement=n,vr(e,t,r)&&(i=!0)))}return i}function vr(t,e,n){const{text:o,isDirectHost:i,hostElement:r}=n;let s=!1;r.getAttribute("data-placeholder")!==o&&(t.setAttribute("data-placeholder",o,r),s=!0);return(i||1==e.childCount)&&Ar(r,n.keepOnFocus)?wr(t,r)&&(s=!0):_r(t,r)&&(s=!0),s}function yr(t){if(t.childCount){const e=t.getChild(0);if(e.is("element")&&!e.is("uiElement")&&!e.is("attributeElement"))return e}return null}class xr{is(){throw new Error("is() method is abstract")}}const Er=function(t){return Co(t,4)};class Br extends(P(xr)){constructor(t){super(),this.document=t,this.parent=null}get index(){let t;if(!this.parent)return null;if(-1==(t=this.parent.getChildIndex(this)))throw new A("view-node-not-found-in-parent",this);return t}get nextSibling(){const t=this.index;return null!==t&&this.parent.getChild(t+1)||null}get previousSibling(){const t=this.index;return null!==t&&this.parent.getChild(t-1)||null}get root(){let t=this;for(;t.parent;)t=t.parent;return t}isAttached(){return this.root.is("rootElement")}getPath(){const t=[];let e=this;for(;e.parent;)t.unshift(e.index),e=e.parent;return t}getAncestors(t={}){const e=[];let n=t.includeSelf?this:this.parent;for(;n;)e[t.parentFirst?"push":"unshift"](n),n=n.parent;return e}getCommonAncestor(t,e={}){const n=this.getAncestors(e),o=t.getAncestors(e);let i=0;for(;n[i]==o[i]&&n[i];)i++;return 0===i?null:n[i-1]}isBefore(t){if(this==t)return!1;if(this.root!==t.root)return!1;const e=this.getPath(),n=t.getPath(),o=tt(e,n);switch(o){case"prefix":return!0;case"extension":return!1;default:return e[o]<n[o]}}isAfter(t){return this!=t&&(this.root===t.root&&!this.isBefore(t))}_remove(){this.parent._removeChildren(this.index)}_fireChange(t,e){this.fire(`change:${t}`,e),this.parent&&this.parent._fireChange(t,e)}toJSON(){const t=Er(this);return delete t.parent,t}}Br.prototype.is=function(t){return"node"===t||"view:node"===t};class Dr extends Br{constructor(t,e){super(t),this._textData=e}get data(){return this._textData}get _data(){return this.data}set _data(t){this._fireChange("text",this),this._textData=t}isSimilar(t){return t instanceof Dr&&(this===t||this.data===t.data)}_clone(){return new Dr(this.document,this.data)}}Dr.prototype.is=function(t){return"$text"===t||"view:$text"===t||"text"===t||"view:text"===t||"node"===t||"view:node"===t};class Sr extends xr{constructor(t,e,n){if(super(),this.textNode=t,e<0||e>t.data.length)throw new A("view-textproxy-wrong-offsetintext",this);if(n<0||e+n>t.data.length)throw new A("view-textproxy-wrong-length",this);this.data=t.data.substring(e,e+n),this.offsetInText=e}get offsetSize(){return this.data.length}get isPartial(){return this.data.length!==this.textNode.data.length}get parent(){return this.textNode.parent}get root(){return this.textNode.root}get document(){return this.textNode.document}getAncestors(t={}){const e=[];let n=t.includeSelf?this.textNode:this.parent;for(;null!==n;)e[t.parentFirst?"push":"unshift"](n),n=n.parent;return e}}Sr.prototype.is=function(t){return"$textProxy"===t||"view:$textProxy"===t||"textProxy"===t||"view:textProxy"===t};class Tr{constructor(...t){this._patterns=[],this.add(...t)}add(...t){for(let e of t)("string"==typeof e||e instanceof RegExp)&&(e={name:e}),this._patterns.push(e)}match(...t){for(const e of t)for(const t of this._patterns){const n=Pr(e,t);if(n)return{element:e,pattern:t,match:n}}return null}matchAll(...t){const e=[];for(const n of t)for(const t of this._patterns){const o=Pr(n,t);o&&e.push({element:n,pattern:t,match:o})}return e.length>0?e:null}getElement
+{
+    "word": "त्रिचतुर",
+    "BEN": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "6147",
+            "pagenum": 378,
+            "content": "त्रिचतुर¦ <i>tri-catur + a,</i> <ab>pl.</ab> Three or four, <ls>Daśak.</ls> in <ls>Chr.</ls> 187, 3."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "12837",
+            "pagenum": 211,
+            "content": "त्रिचतुर¦ <ab>pl.</ab> three or four."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "8999",
+            "pagenum": 160,
+            "content": "त्रिचतुर¦ <i>Pl.</i> drei oder vier."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "16086",
+            "pagenum": 318,
+            "content": "tri-catura¦ <i>a. pl.</i> three or four, e.g. गत्वा जवात्त्रिचतुराणि पदानि सीता."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "87687",
+            "pagenum": "458,2",
+            "content": "त्रि—चतुर ¦ <lex>mfn.</lex> (<ls>Pāṇ. v, 4, 77</ls>, <ab>Vārtt.</ab>) 3 or 4 <ls>Daś. vii</ls>; <ls>Kathās.</ls>; <ls>Sāh.</ls><info lex='m:f:n'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "47423",
+            "pagenum": 3,
+            "content": "त्रिचतुर¦ <lex>Adj.</lex> <ab>Pl.</ab> <i>drei oder vier</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "30913",
+            "pagenum": 3,
+            "content": "त्रिचतुर/¦ (त्रि + चतुर = चत्वर्) pl. <i>drei oder vier</i> <ls>P. 5, 4, 77</ls>, <is>Vārtt</is>. <ls>VOP. 6, 29.</ls> गत्वा जवात्त्रिचतुराणि पदानि <ls>SĀH. D. 65, 15.</ls> <ls>DAŚAK.</ls> in <ls>BENF. Chr. 187, 3.</ls>"
+        },
+        {
+            "word": "त्रिचतुर",
+            "eid": "75275",
+            "pagenum": 5,
+            "content": "त्रिचतुर¦ <ls>KATHĀS. 56, 20.</ls> <ls n='KATHĀS.'>69, 56.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "18036",
+            "pagenum": 324,
+            "content": "त्रिचतुर¦ mfn. plur. (-राः-राः-राणि) Three or four. E. त्रि, and चतुर् four, अच added."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "18053",
+            "pagenum": 389,
+            "content": "त्रिचतुर¦ mfn. <i>plur.</i> (-राः-राः-राणि) Three or four. .E. त्रि, and चतुर four, अच् added."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "17529",
+            "pagenum": 344,
+            "content": "त्रि-चतुर¦ (राः-राः-राणि) <i>a.</i> Three or four, indefinitely."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिचतुर",
+            "eid": "23612",
+            "pagenum": "3365,a",
+            "content": "त्रिचतुर¦ त्रि० । त्रयो वा चत्वारो वा विकल्पार्थे बहु० डच् समा० । विकल्पेन त्रित्वचतुष्कसंख्यान्विते(तिन वा चार) अर्थे । “सद्यः पुरीपरिसरे च शिरीषमृद्वी गत्वा जवात् त्रिचतुराणि पदानि सीता” सा० द० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिचतुर",
+            "content": "त्रिचतुर 'वि . , ब.व . '  त्रि-चतुर  - तीन या चार"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिचतुर",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಮೂರು ಅಥವಾ ನಾಲ್ಕು",
+            "निष्पत्तिः": "अजन्तो निपा० (वा० ५-४-७७)",
+            "व्युत्पत्तिः": "त्रयो वा चत्वारो वा",
+            "प्रयोगाः": "'सद्यः पुरीपरिसरेऽपि शिरीषमृद्वि सीता जवात् त्रिचतुराणि पदानि गत्वा'",
+            "उल्लेखाः": "सा० द०",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रिचतुर",
+            "content": "<segmenthd>\n<dentry>त्रिचतुर</dentry>\n<prAwipaxikam>त्रिचतुर</prAwipaxikam>\n<seg>त्रि-चतुर</seg>\n<grammar>वि*</grammar><num>ब* व*</num>\n<prAwipaxikam gen=\"स्त्री\">त्रिचतुर</prAwipaxikam>\n<sense no=\"1\">तीन या चारगत्वा जवात् त्रिचतुराणि पदानि सीता<citation>बालरा* ६।३४</citation></sense></segmenthd>\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिचतुर",
+            "content": "<body><s>tricatura tri° . trayo vA catvAro vA vikalpArTe bahu° qac samA° . vikalpena tritvacatuzkasaMKyAnvite(tina vA cAra) arTe . <q>sadyaH purIparisare ca SirIzamfdvI gatvA javAt tricaturARi padAni sItA</q> sA° da° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिचतुर",
+            "content": "<H1><h><key1>tricatura</key1><key2>tricatura</key2></h><body><s>tricatura</s>  mfn. plur. (<s>-rAH-rAH-rARi</s>) Three or four.<div n=\"E\"> E. <s>tri,</s> and <s>catur</s> four, <lb /><s>aca</s> added.</div></body><tail><L>18036</L><pc>324-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिचतुर",
+            "content": "<span lang=\"sa\">त्रिचतुर<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ಅಥವಾ ನಾಲ್ಕು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>अजन्तो निपा० (वा० ५-४-७७)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रयो वा चत्वारो वा<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"सद्यः पुरीपरिसरेऽपि शिरीषमृद्वि सीता जवात् त्रिचतुराणि पदानि गत्वा\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>सा० द०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

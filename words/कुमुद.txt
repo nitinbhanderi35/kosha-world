@@ -1,1 +1,672 @@
-(()=>{var __webpack_modules__={45:e=>{e.exports='"use strict";\nvar __defProp = Object.defineProperty;\nvar __getOwnPropDesc = Object.getOwnPropertyDescriptor;\nvar __getOwnPropNames = Object.getOwnPropertyNames;\nvar __hasOwnProp = Object.prototype.hasOwnProperty;\nvar __name = (target, value) => __defProp(target, "name", { value, configurable: true });\nvar __export = (target, all) => {\n  for (var name in all)\n    __defProp(target, name, { get: all[name], enumerable: true });\n};\nvar __copyProps = (to, from, except, desc) => {\n  if (from && typeof from === "object" || typeof from === "function") {\n    for (let key of __getOwnPropNames(from))\n      if (!__hasOwnProp.call(to, key) && key !== except)\n        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });\n  }\n  return to;\n};\nvar __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);\n\n// src/primitives/abort-controller.js\nvar abort_controller_exports = {};\n__export(abort_controller_exports, {\n  AbortController: () => AbortController,\n  AbortSignal: () => AbortSignal,\n  DOMException: () => DOMException\n});\nmodule.exports = __toCommonJS(abort_controller_exports);\nvar kSignal = Symbol("kSignal");\nvar kAborted = Symbol("kAborted");\nvar kReason = Symbol("kReason");\nvar kName = Symbol("kName");\nvar kOnabort = Symbol("kOnabort");\nvar _DOMException = class _DOMException extends Error {\n  constructor(message, name) {\n    super(message);\n    this[kName] = name;\n  }\n  get name() {\n    return this[kName];\n  }\n};\n__name(_DOMException, "DOMException");\nvar DOMException = _DOMException;\nfunction createAbortSignal() {\n  const signal = new EventTarget();\n  Object.setPrototypeOf(signal, AbortSignal.prototype);\n  signal[kAborted] = false;\n  signal[kReason] = void 0;\n  signal[kOnabort] = void 0;\n  return signal;\n}\n__name(createAbortSignal, "createAbortSignal");\nfunction abortSignalAbort(signal, reason) {\n  if (typeof reason === "undefined") {\n    reason = new DOMException("The operation was aborted.", "AbortError");\n  }\n  if (signal.aborted) {\n    return;\n  }\n  signal[kReason] = reason;\n  signal[kAborted] = true;\n  signal.dispatchEvent(new Event("abort"));\n}\n__name(abortSignalAbort, "abortSignalAbort");\nvar _AbortController = class _AbortController {\n  constructor() {\n    this[kSignal] = createAbortSignal();\n  }\n  get signal() {\n    return this[kSignal];\n  }\n  abort(reason) {\n    abortSignalAbort(this.signal, reason);\n  }\n};\n__name(_AbortController, "AbortController");\nvar AbortController = _AbortController;\nvar _AbortSignal = class _AbortSignal extends EventTarget {\n  constructor() {\n    throw new TypeError("Illegal constructor.");\n  }\n  get aborted() {\n    return this[kAborted];\n  }\n  get reason() {\n    return this[kReason];\n  }\n  get onabort() {\n    return this[kOnabort];\n  }\n  set onabort(value) {\n    if (this[kOnabort]) {\n      this.removeEventListener("abort", this[kOnabort]);\n    }\n    if (value) {\n      this[kOnabort] = value;\n      this.addEventListener("abort", this[kOnabort]);\n    }\n  }\n  throwIfAborted() {\n    if (this[kAborted]) {\n      throw this[kReason];\n    }\n  }\n  static abort(reason) {\n    const signal = createAbortSignal();\n    abortSignalAbort(signal, reason);\n    return signal;\n  }\n  static timeout(milliseconds) {\n    const signal = createAbortSignal();\n    setTimeout(() => {\n      abortSignalAbort(\n        signal,\n        new DOMException("The operation timed out.", "TimeoutError")\n      );\n    }, milliseconds);\n    return signal;\n  }\n};\n__name(_AbortSignal, "AbortSignal");\nvar AbortSignal = _AbortSignal;\n// Annotate the CommonJS export names for ESM import in node:\n0 && (module.exports = {\n  AbortController,\n  AbortSignal,\n  DOMException\n});\n'},153:e=>{e.exports='"use strict";\nvar __create = Object.create;\nvar __defProp = Object.defineProperty;\nvar __getOwnPropDesc = Object.getOwnPropertyDescriptor;\nvar __getOwnPropNames = Object.getOwnPropertyNames;\nvar __getProtoOf = Object.getPrototypeOf;\nvar __hasOwnProp = Object.prototype.hasOwnProperty;\nvar __name = (target, value) => __defProp(target, "name", { value, configurable: true });\nvar __esm = (fn, res) => function __init() {\n  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;\n};\nvar __commonJS = (cb, mod) => function __require() {\n  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;\n};\nvar __export = (target, all) => {\n  for (var name in all)\n    __defProp(target, name, { get: all[name], enumerable: true });\n};\nvar __copyProps = (to, from, except, desc) => {\n  if (from && typeof from === "object" || typeof from === "function") {\n    for (let key of __getOwnPropNames(from))\n      if (!__hasOwnProp.call(to, key) && key !== except)\n        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });\n  }\n  return to;\n};\nvar __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(\n  // If the importer is in node compatibility mode or this is not an ESM\n  // file that has been converted to a CommonJS file using a Babel-\n  // compatible transform (i.e. "__esModule" has not been set), then set\n  // "default" to the CommonJS "module.exports" for node compatibility.\n  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,\n  mod\n));\nvar __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);\n\n// <define:process>\nvar init_define_process = __esm({\n  "<define:process>"() {\n  }\n});\n\n// ../../node_modules/.pnpm/blob-polyfill@7.0.20220408/node_modules/blob-polyfill/Blob.js\nvar require_Blob = __commonJS({\n  "../../node_modules/.pnpm/blob-polyfill@7.0.20220408/node_modules/blob-polyfill/Blob.js"(exports) {\n    "use strict";\n    init_define_process();\n    (function(global2) {\n      (function(factory) {\n        if (typeof define === "function" && define.amd) {\n          define(["exports"], factory);\n        } else if (typeof exports === "object" && typeof exports.nodeName !== "string") {\n          factory(exports);\n        } else {\n          factory(global2);\n        }\n      })(function(exports2) {\n        "use strict";\n        var BlobBuilder = global2.BlobBuilder || global2.WebKitBlobBuilder || global2.MSBlobBuilder || global2.MozBlobBuilder;\n        var URL = global2.URL || global2.webkitURL || function(href, a) {\n          a = document.createElement("a");\n          a.href = href;\n          return a;\n        };\n        var origBlob = global2.Blob;\n        var createObjectURL = URL.createObjectURL;\n        var revokeObjectURL = URL.revokeObjectURL;\n        var strTag = global2.Symbol && global2.Symbol.toStringTag;\n        var blobSupported = false;\n        var blobSupportsArrayBufferView = false;\n        var blobBuilderSupported = BlobBuilder && BlobBuilder.prototype.append && BlobBuilder.prototype.getBlob;\n        try {\n          blobSupported = new Blob(["\\xE4"]).size === 2;\n          blobSupportsArrayBufferView = new Blob([new Uint8Array([1, 2])]).size === 2;\n        } catch (e) {\n        }\n        function mapArrayBufferViews(ary) {\n          return ary.map(function(chunk) {\n            if (chunk.buffer instanceof ArrayBuffer) {\n              var buf = chunk.buffer;\n              if (chunk.byteLength !== buf.byteLength) {\n                var copy = new Uint8Array(chunk.byteLength);\n                copy.set(new Uint8Array(buf, chunk.byteOffset, chunk.byteLength));\n                buf = copy.buffer;\n              }\n              return buf;\n            }\n            return chunk;\n          });\n        }\n        __name(mapArrayBufferViews, "mapArrayBufferViews");\n        function BlobBuilderConstructor(ary, options) {\n          options = options || {};\n          var bb = new BlobBuilder();\n          mapArrayBufferViews(ary).forEach(function(part) {\n            bb.append(part);\n          });\n          return options.type ? bb.getBlob(options.type) : bb.getBlob();\n        }\n        __name(BlobBuilderConstructor, "BlobBuilderConstructor");\n        function BlobConstructor(ary, options) {\n          return new origBlob(mapArrayBufferViews(ary), options || {});\n        }\n        __name(BlobConstructor, "BlobConstructor");\n        if (global2.Blob) {\n          BlobBuilderConstructor.prototype = Blob.prototype;\n          BlobConstructor.prototype = Blob.prototype;\n        }\n        function stringEncode(string) {\n          var pos = 0;\n          var len = string.length;\n          var Arr = global2.Uint8Array || Array;\n          var at = 0;\n          var tlen = Math.max(32, len + (len >> 1) + 7);\n          var target = new Arr(tlen >> 3 << 3);\n          while (pos < len) {\n            var value = string.charCodeAt(pos++);\n            if (value >= 55296 && value <= 56319) {\n              if (pos < len) {\n                var extra = string.charCodeAt(pos);\n                if ((extra & 64512) === 56320) {\n                  ++pos;\n                  value = ((value & 1023) << 10) + (extra & 1023) + 65536;\n                }\n              }\n              if (value >= 55296 && value <= 56319) {\n                continue;\n              }\n            }\n            if (at + 4 > target.length) {\n              tlen += 8;\n              tlen *= 1 + pos / string.length * 2;\n              tlen = tlen >> 3 << 3;\n              var update = new Uint8Array(tlen);\n              update.set(target);\n              target = update;\n            }\n            if ((value & 4294967168) === 0) {\n              target[at++] = value;\n              continue;\n            } else if ((value & 4294965248) === 0) {\n              target[at++] = value >> 6 & 31 | 192;\n            } else if ((value & 4294901760) === 0) {\n              target[at++] = value >> 12 & 15 | 224;\n              target[at++] = value >> 6 & 63 | 128;\n            } else if ((value & 4292870144) === 0) {\n              target[at++] = value >> 18 & 7 | 240;\n              target[at++] = value >> 12 & 63 | 128;\n              target[at++] = value >> 6 & 63 | 128;\n            } else {\n              continue;\n            }\n            target[at++] = value & 63 | 128;\n          }\n          return target.slice(0, at);\n        }\n        __name(stringEncode, "stringEncode");\n        function stringDecode(buf) {\n          var end = buf.length;\n          var res = [];\n          var i = 0;\n          while (i < end) {\n            var firstByte = buf[i];\n            var codePoint = null;\n            var bytesPerSequence = firstByte > 239 ? 4 : firstByte > 223 ? 3 : firstByte > 191 ? 2 : 1;\n            if (i + bytesPerSequence <= end) {\n              var secondByte, thirdByte, fourthByte, tempCodePoint;\n              switch (bytesPerSequence) {\n                case 1:\n                  if (firstByte < 128) {\n                    codePoint = firstByte;\n                  }\n                  break;\n                case 2:\n                  secondByte = buf[i + 1];\n                  if ((secondByte & 192) === 128) {\n                    tempCodePoint = (firstByte & 31) << 6 | secondByte & 63;\n                    if (tempCodePoint > 127) {\n                      codePoint = tempCodePoint;\n                    }\n                  }\n                  break;\n                case 3:\n                  secondByte = buf[i + 1];\n                  thirdByte = buf[i + 2];\n                  if ((secondByte & 192) === 128 && (thirdByte & 192) === 128) {\n                    tempCodePoint = (firstByte & 15) << 12 | (secondByte & 63) << 6 | thirdByte & 63;\n                    if (tempCodePoint > 2047 && (tempCodePoint < 55296 || tempCodePoint > 57343)) {\n                      codePoint = tempCodePoint;\n                    }\n                  }\n                  break;\n                case 4:\n                  secondByte = buf[i + 1];\n                  thirdByte = buf[i + 2];\n                  fourthByte = buf[i + 3];\n                  if ((secondByte & 192) === 128 && (thirdByte & 192) === 128 && (fourthByte & 192) === 128) {\n                    tempCodePoint = (firstByte & 15) << 18 | (secondByte & 63) << 12 | (thirdByte & 63) << 6 | fourthByte & 63;\n                    if (tempCodePoint > 65535 && tempCodePoint < 1114112) {\n                      codePoint = tempCodePoint;\n                    }\n                  }\n              }\n            }\n            if (codePoint === null) {\n              codePoint = 65533;\n              bytesPerSequence = 1;\n            } else if (codePoint > 65535) {\n              codePoint -= 65536;\n              res.push(codePoint >>> 10 & 1023 | 55296);\n              codePoint = 56320 | codePoint & 1023;\n            }\n            res.push(codePoint);\n            i += bytesPerSequence;\n          }\n          var len = res.length;\n          var str = "";\n          var j = 0;\n          while (j < len) {\n            str += String.fromCharCode.apply(String, res.slice(j, j += 4096));\n          }\n          return str;\n        }\n        __name(stringDecode, "stringDecode");\n        var textEncode = typeof TextEncoder === "function" ? TextEncoder.prototype.encode.bind(new TextEncoder()) : stringEncode;\n        var textDecode = typeof TextDecoder === "function" ? TextDecoder.prototype.decode.bind(new TextDecoder()) : stringDecode;\n        function FakeBlobBuilder() {\n          function bufferClone(buf) {\n            var view = new Array(buf.byteLength);\n            var array = new Uint8Array(buf);\n            var i = view.length;\n            while (i--) {\n              view[i] = array[i];\n            }\n            return view;\n          }\n          __name(bufferClone, "bufferClone");\n          function array2base64(input) {\n            var byteToCharMap = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";\n            var output = [];\n            for (var i = 0; i < input.length; i += 3) {\n              var byte1 = input[i];\n              var haveByte2 = i + 1 < input.length;\n              var byte2 = haveByte2 ? input[i + 1] : 0;\n              var haveByte3 = i + 2 < input.length;\n              var byte3 = haveByte3 ? input[i + 2] : 0;\n              var outByte1 = byte1 >> 2;\n              var outByte2 = (byte1 & 3) << 4 | byte2 >> 4;\n              var outByte3 = (byte2 & 15) << 2 | byte3 >> 6;\n              var outByte4 = byte3 & 63;\n              if (!haveByte3) {\n                outByte4 = 64;\n                if (!haveByte2) {\n                  outByte3 = 64;\n                }\n              }\n              output.push(\n                byteToCharMap[outByte1],\n                byteToCharMap[outByte2],\n                byteToCharMap[outByte3],\n                byteToCharMap[outByte4]\n              );\n            }\n            return output.join("");\n          }\n          __name(array2base64, "array2base64");\n          var create = Object.create || function(a) {\n            function c() {\n            }\n            __name(c, "c");\n            c.prototype = a;\n            return new c();\n          };\n          function getObjectTypeName(o) {\n            return Object.prototype.toString.call(o).slice(8, -1);\n          }\n          __name(getObjectTypeName, "getObjectTypeName");\n          function isPrototypeOf(c, o) {\n            return typeof c === "object" && Object.prototype.isPrototypeOf.call(c.prototype, o);\n          }\n          __name(isPrototypeOf, "isPrototypeOf");\n          function isDataView(o) {\n            return getObjectTypeName(o) === "DataView" || isPrototypeOf(global2.DataView, o);\n          }\n          __name(isDataView, "isDataView");\n          var arrayBufferClassNames = [\n            "Int8Array",\n            "Uint8Array",\n            "Uint8ClampedArray",\n            "Int16Array",\n            "Uint16Array",\n            "Int32Array",\n            "Uint32Array",\n            "Float32Array",\n            "Float64Array",\n            "ArrayBuffer"\n          ];\n          function includes(a, v) {\n            return a.indexOf(v) !== -1;\n          }\n          __name(includes, "includes");\n          function isArrayBuffer(o) {\n            return includes(arrayBufferClassNames, getObjectTypeName(o)) || isPrototypeOf(global2.ArrayBuffer, o);\n          }\n          __name(isArrayBuffer, "isArrayBuffer");\n          function concatTypedarrays(chunks) {\n            var size = 0;\n            var j = chunks.length;\n            while (j--) {\n              size += chunks[j].length;\n            }\n            var b = new Uint8Array(size);\n            var offset = 0;\n            for (var i = 0; i < chunks.length; i++) {\n              var chunk = chunks[i];\n              b.set(chunk, offset);\n              offset += chunk.byteLength || chunk.length;\n            }\n            return b;\n          }\n          __name(concatTypedarrays, "concatTypedarrays");\n          function Blob3(chunks, opts) {\n            chunks = chunks ? chunks.slice() : [];\n            opts = opts == null ? {} : opts;\n            for (var i = 0, len = chunks.length; i < len; i++) {\n              var chunk = chunks[i];\n              if (chunk instanceof Blob3) {\n                chunks[i] = chunk._buffer;\n              } else if (typeof chunk === "string") {\n                chunks[i] = textEncode(chunk);\n              } else if (isDataView(chunk)) {\n                chunks[i] = bufferClone(chunk.buffer);\n              } else if (isArrayBuffer(chunk)) {\n                chunks[i] = bufferClone(chunk);\n              } else {\n                chunks[i] = textEncode(String(chunk));\n              }\n            }\n            this._buffer = global2.Uint8Array ? concatTypedarrays(chunks) : [].concat.apply([], chunks);\n            this.size = this._buffer.length;\n            this.type = opts.type || "";\n            if (/[^\\u0020-\\u007E]/.test(this.type)) {\n              this.type = "";\n            } else {\n              this.type = this.type.toLowerCase();\n            }\n          }\n          __name(Blob3, "Blob");\n          Blob3.prototype.arrayBuffer = function() {\n            return Promise.resolve(this._buffer.buffer || this._buffer);\n          };\n          Blob3.prototype.text = function() {\n            return Promise.resolve(textDecode(this._buffer));\n          };\n          Blob3.prototype.slice = function(start, end, type) {\n            var slice = this._buffer.slice(start || 0, end || this._buffer.length);\n            return new Blob3([slice], { type });\n          };\n          Blob3.prototype.toString = function() {\n            return "[object Blob]";\n          };\n          function File2(chunks, name, opts) {\n            opts = opts || {};\n            var a = Blob3.call(this, chunks, opts) || this;\n            a.name = name.replace(/\\//g, ":");\n            a.lastModifiedDate = opts.lastModified ? new Date(opts.lastModified) : /* @__PURE__ */ new Date();\n            a.lastModified = +a.lastModifiedDate;\n            return a;\n          }\n          __name(File2, "File");\n          File2.prototype = create(Blob3.prototype);\n          File2.prototype.constructor = File2;\n          if (Object.setPrototypeOf) {\n            Object.setPrototypeOf(File2, Blob3);\n          } else {\n            try {\n              File2.__proto__ = Blob3;\n            } catch (e) {\n            }\n          }\n          File2.prototype.toString = function() {\n            return "[object File]";\n          };\n          function FileReader2() {\n            if (!(this instanceof FileReader2)) {\n              throw new TypeError("Failed to construct \'FileReader\': Please use the \'new\' operator, this DOM object constructor cannot be called as a function.");\n            }\n            var delegate = document.createDocumentFragment();\n            this.addEventListener = delegate.addEventListener;\n            this.dispatchEvent = function(evt) {\n              var local = this["on" + evt.type];\n              if (typeof local === "function")\n                local(evt);\n              delegate.dispatchEvent(evt);\n            };\n            this.removeEventListener = delegate.removeEventListener;\n          }\n          __name(FileReader2, "FileReader");\n          function _read(fr, blob2, kind) {\n            if (!(blob2 instanceof Blob3)) {\n              throw new TypeError("Failed to execute \'" + kind + "\' on \'FileReader\': parameter 1 is not of type \'Blob\'.");\n            }\n            fr.result = "";\n            setTimeout(function() {\n              this.readyState = FileReader2.LOADING;\n              fr.dispatchEvent(new Event("load"));\n              fr.dispatchEvent(new Event("loadend"));\n            });\n          }\n          __name(_read, "_read");\n          FileReader2.EMPTY = 0;\n          FileReader2.LOADING = 1;\n          FileReader2.DONE = 2;\n          FileReader2.prototype.error = null;\n          FileReader2.prototype.onabort = null;\n          FileReader2.prototype.onerror = null;\n          FileReader2.prototype.onload = null;\n          FileReader2.prototype.onloadend = null;\n          FileReader2.prototype.onloadstart = null;\n          FileReader2.prototype.onprogress = null;\n          FileReader2.prototype.readAsDataURL = function(blob2) {\n            _read(this, blob2, "readAsDataURL");\n            this.result = "data:" + blob2.type + ";base64," + array2base64(blob2._buffer);\n          };\n          FileReader2.prototype.readAsText = function(blob2) {\n            _read(this, blob2, "readAsText");\n            this.result = textDecode(blob2._buffer);\n          };\n          FileReader2.prototype.readAsArrayBuffer = function(blob2) {\n            _read(this, blob2, "readAsText");\n            this.result = (blob2._buffer.buffer || blob2._buffer).slice();\n          };\n          FileReader2.prototype.abort = function() {\n          };\n          URL.createObjectURL = function(blob2) {\n            return blob2 instanceof Blob3 ? "data:" + blob2.type + ";base64," + array2base64(blob2._buffer) : createObjectURL.call(URL, blob2);\n          };\n          URL.revokeObjectURL = function(url) {\n            revokeObjectURL && revokeObjectURL.call(URL, url);\n          };\n          var _send = global2.XMLHttpRequest && global2.XMLHttpRequest.prototype.send;\n          if (_send) {\n            XMLHttpRequest.prototype.send = function(data) {\n              if (data instanceof Blob3) {\n                this.setRequestHeader("Content-Type", data.type);\n                _send.call(this, textDecode(data._buffer));\n              } else {\n                _send.call(this, data);\n              }\n            };\n          }\n          exports2.Blob = Blob3;\n          exports2.File = File2;\n          exports2.FileReader = FileReader2;\n          exports2.URL = URL;\n        }\n        __name(FakeBlobBuilder, "FakeBlobBuilder");\n        function fixFileAndXHR() {\n          var isIE = !!global2.ActiveXObject || "-ms-scroll-limit" in document.documentElement.style && "-ms-ime-align" in document.documentElement.style;\n          var _send = global2.XMLHttpRequest && global2.XMLHttpRequest.prototype.send;\n          if (isIE && _send) {\n            XMLHttpRequest.prototype.send = function(data) {\n              if (data instanceof Blob) {\n                this.setRequestHeader("Content-Type", data.type);\n                _send.call(this, data);\n              } else {\n                _send.call(this, data);\n              }\n            };\n          }\n          try {\n            new File([], "");\n            exports2.File = global2.File;\n            exports2.FileReader = global2.FileReader;\n          } catch (e) {\n            try {\n              exports2.File = new Function(\n                \'class File extends Blob {constructor(chunks, name, opts) {opts = opts || {};super(chunks, opts || {});this.name = name.replace(/\\\\//g, ":");this.lastModifiedDate = opts.lastModified ? new Date(opts.lastModified) : new Date();this.lastModified = +this.lastModifiedDate;}};return new File([], ""), File\'\n              )();\n            } catch (e2) {\n              exports2.File = function(b, d, c) {\n                var blob2 = new Blob(b, c);\n                var t = c && void 0 !== c.lastModified ? new Date(c.lastModified) : /* @__PURE__ */ new Date();\n                blob2.name = d.replace(/\\//g, ":");\n                blob2.lastModifiedDate = t;\n                blob2.lastModified = +t;\n                blob2.toString = function() {\n                  return "[object File]";\n                };\n                if (strTag) {\n                  blob2[strTag] = "File";\n                }\n                return blob2;\n              };\n            }\n          }\n        }\n        __name(fixFileAndXHR, "fixFileAndXHR");\n        if (blobSupported) {\n          fixFileAndXHR();\n          exports2.Blob = blobSupportsArrayBufferView ? global2.Blob : BlobConstructor;\n        } else if (blobBuilderSupported) {\n          fixFileAndXHR();\n          exports2.Blob = BlobBuilderConstructor;\n        } else {\n          FakeBlobBuilder();\n        }\n        if (strTag) {\n          if (!exports2.File.prototype[strTag])\n            exports2.File.prototype[strTag] = "File";\n          if (!exports2.Blob.prototype[strTag])\n            exports2.Blob.prototype[strTag] = "Blob";\n          if (!exports2.FileReader.prototype[strTag])\n            exports2.FileReader.prototype[strTag] = "FileReader";\n        }\n        var blob = exports2.Blob.prototype;\n        var stream;\n        try {\n          new ReadableStream({ type: "bytes" });\n          stream = /* @__PURE__ */ __name(function stream2() {\n            var position = 0;\n            var blob2 = this;\n            return new ReadableStream({\n              type: "bytes",\n              autoAllocateChunkSize: 524288,\n              pull: function(controller) {\n                var v = controller.byobRequest.view;\n                var chunk = blob2.slice(position, position + v.byteLength);\n                return chunk.arrayBuffer().then(function(buffer) {\n                  var uint8array = new Uint8Array(buffer);\n                  var bytesRead = uint8array.byteLength;\n                  position += bytesRead;\n                  v.set(uint8array);\n                  controller.byobRequest.respond(bytesRead);\n                  if (position >= blob2.size)\n                    controller.close();\n                });\n              }\n            });\n          }, "stream");\n        } catch (e) {\n          try {\n            new ReadableStream({});\n            stream = /* @__PURE__ */ __name(function stream2(blob2) {\n              var position = 0;\n              return new ReadableStream({\n                pull: function(controller) {\n                  var chunk = blob2.slice(position, position + 524288);\n                  return chunk.arrayBuffer().then(function(buffer) {\n                    position += buffer.byteLength;\n                    var uint8array = new Uint8Array(buffer);\n                    controller.enqueue(uint8array);\n                    if (position == blob2.size)\n                      controller.close();\n                  });\n                }\n              });\n            }, "stream");\n          } catch (e2) {\n            try {\n              new Response("").body.getReader().read();\n              stream = /* @__PURE__ */ __name(function stream2() {\n                return new Response(this).body;\n              }, "stream");\n            } catch (e3) {\n              stream = /* @__PURE__ */ __name(function stream2() {\n                throw new Error("Include https://github.com/MattiasBuelens/web-streams-polyfill");\n              }, "stream");\n            }\n          }\n        }\n        function promisify(obj) {\n          return new Promise(function(resolve, reject) {\n            obj.onload = obj.onerror = function(evt) {\n              obj.onload = obj.onerror = null;\n              evt.type === "load" ? resolve(obj.result || obj) : reject(new Error("Failed to read the blob/file"));\n            };\n          });\n        }\n        __name(promisify, "promisify");\n        if (!blob.arrayBuffer) {\n          blob.arrayBuffer = /* @__PURE__ */ __name(function arrayBuffer() {\n            var fr = new FileReader();\n            fr.readAsArrayBuffer(this);\n            return promisify(fr);\n          }, "arrayBuffer");\n        }\n        if (!blob.text) {\n          blob.text = /* @__PURE__ */ __name(function text() {\n            var fr = new FileReader();\n            fr.readAsText(this);\n            return promisify(fr);\n          }, "text");\n        }\n        if (!blob.stream) {\n          blob.stream = stream;\n        }\n      });\n    })(\n      typeof self !== "undefined" && self || typeof window !== "undefined" && window || typeof global !== "undefined" && global || exports\n    );\n  }\n});\n\n// src/primitives/blob.js\nvar blob_exports = {};\n__export(blob_exports, {\n  Blob: () => import_blob_polyfill.Blob\n});\nmodule.exports = __toCommonJS(blob_exports);\ninit_define_process();\nvar import_blob_polyfill = __toESM(require_Blob());\n// Annotate the CommonJS export names for ESM import in node:\n0 && (module.exports = {\n  Blob\n});\n'},638:e=>{e.exports='"use strict";\nvar __create = Object.create;\nvar __defProp = Object.defineProperty;\nvar __getOwnPropDesc = Object.getOwnPropertyDescriptor;\nvar __getOwnPropNames = Object.getOwnPropertyNames;\nvar __getProtoOf = Object.getPrototypeOf;\nvar __hasOwnProp = Object.prototype.hasOwnProperty;\nvar __name = (target, value) => __defProp(target, "name", { value, configurable: true });\nvar __esm = (fn, res) => function __init() {\n  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;\n};\nvar __commonJS = (cb, mod) => function __require() {\n  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;\n};\nvar __export = (target, all) => {\n  for (var name in all)\n    __defProp(target, name, { get: all[name], enumerable: true });\n};\nvar __copyProps = (to, from, except, desc) => {\n  if (from && typeof from === "object" || typeof from === "function") {\n    for (let key of __getOwnPropNames(from))\n      if (!__hasOwnProp.call(to, key) && key !== except)\n        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });\n  }\n  return to;\n};\nvar __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(\n  // If the importer is in node compatibility mode or this is not an ESM\n  // file that has been converted to a CommonJS file using a Babel-\n  // compatible transform (i.e. "__esModule" has not been set), then set\n  // "default" to the CommonJS "module.exports" for node compatibility.\n  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,\n  mod\n));\nvar __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);\n\n// <define:process>\nvar init_define_process = __esm({\n  "<define:process>"() {\n  }\n});\n\n// ../format/dist/index.js\nvar require_dist = __commonJS({\n  "../format/dist/index.js"(exports, module2) {\n    "use strict";\n    init_define_process();\n    var __defProp2 = Object.defineProperty;\n    var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;\n    var __getOwnPropNames2 = Object.getOwnPropertyNames;\n    var __hasOwnProp2 = Object.prototype.hasOwnProperty;\n    var __export2 = /* @__PURE__ */ __name((target, all) => {\n      for (var name in all)\n        __defProp2(target, name, { get: all[name], enumerable: true });\n    }, "__export");\n    var __copyProps2 = /* @__PURE__ */ __name((to, from, except, desc) => {\n      if (from && typeof from === "object" || typeof from === "function") {\n        for (let key of __getOwnPropNames2(from))\n          if (!__hasOwnProp2.call(to, key) && key !== except)\n            __defProp2(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc2(from, key)) || desc.enumerable });\n      }\n      return to;\n    }, "__copyProps");\n    var __toCommonJS2 = /* @__PURE__ */ __name((mod) => __copyProps2(__defProp2({}, "__esModule", { value: true }), mod), "__toCommonJS");\n    var src_exports = {};\n    __export2(src_exports, {\n      createFormat: () => createFormat2\n    });\n    module2.exports = __toCommonJS2(src_exports);\n    var ReflectGetOwnPropertyDescriptor = Reflect.getOwnPropertyDescriptor;\n    function GetOwnGetter(target, key) {\n      const descriptor = ReflectGetOwnPropertyDescriptor(target, key);\n      return descriptor ? descriptor.get : void 0;\n    }\n    __name(GetOwnGetter, "GetOwnGetter");\n    var ReflectGetPrototypeOf = Reflect.getPrototypeOf;\n    var TypedArray = ReflectGetPrototypeOf(Uint8Array);\n    var ArrayPrototypeFilter = Array.prototype.filter;\n    var ArrayPrototypePush = Array.prototype.push;\n    var DatePrototypeGetTime = Date.prototype.getTime;\n    var DatePrototypeToISOString = Date.prototype.toISOString;\n    var ObjectGetOwnPropertyDescriptors = Object.getOwnPropertyDescriptors;\n    var ObjectGetOwnPropertyNames = Object.getOwnPropertyNames;\n    var ObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;\n    var ObjectKeys = Object.keys;\n    var ObjectPrototypePropertyIsEnumerable = Object.prototype.propertyIsEnumerable;\n    var ObjectPrototypeToString = Object.prototype.toString;\n    var MapPrototypeGetSize = GetOwnGetter(Map.prototype, "size");\n    var SetPrototypeGetSize = GetOwnGetter(Set.prototype, "size");\n    var StringPrototypeIncludes = String.prototype.includes;\n    var SymbolIterator = Symbol.iterator;\n    var SymbolPrototypeToString = Symbol.prototype.toString;\n    var TypedArrayPrototypeGetLength = GetOwnGetter(\n      TypedArray.prototype,\n      "length"\n    );\n    var typedArrayStrings = /* @__PURE__ */ new Set([\n      "[object BigInt64Array]",\n      "[object BigUint64Array]",\n      "[object Float32Array]",\n      "[object Float64Array]",\n      "[object Int8Array]",\n      "[object Int16Array]",\n      "[object Int32Array]",\n      "[object Uint8Array]",\n      "[object Uint8ClampedArray]",\n      "[object Uint16Array]",\n      "[object Uint32Array]"\n    ]);\n    function getOwnNonIndexProperties(object, filter) {\n      const indexes = Array.isArray(object) || isTypedArray(object) ? new Set([...object.keys()].map((v) => v.toString())) : void 0;\n      return Object.entries(ObjectGetOwnPropertyDescriptors(object)).filter(([key, desc]) => {\n        if (indexes && indexes.has(key)) {\n          return false;\n        }\n        if (filter === 1 && !desc.enumerable) {\n          return false;\n        }\n        return true;\n      }).map(([key]) => key);\n    }\n    __name(getOwnNonIndexProperties, "getOwnNonIndexProperties");\n    var isTypedArray = /* @__PURE__ */ __name((value) => kind(value, "object") && typedArrayStrings.has(ObjectPrototypeToString.call(value)), "isTypedArray");\n    function kind(value, type) {\n      return typeof value === type;\n    }\n    __name(kind, "kind");\n    var getConstructorName = /* @__PURE__ */ __name((object) => {\n      var _a;\n      return (_a = object.constructor) == null ? void 0 : _a.name;\n    }, "getConstructorName");\n    var getPrefix = /* @__PURE__ */ __name((constructor = "", size = "") => `${constructor}${size} `, "getPrefix");\n    function createFormat2(opts = {}) {\n      if (opts.customInspectSymbol === void 0) {\n        opts.customInspectSymbol = Symbol.for("edge-runtime.inspect.custom");\n      }\n      if (opts.formatError === void 0) {\n        opts.formatError = (error2) => `[${Error.prototype.toString.call(error2)}]`;\n      }\n      const { formatError, customInspectSymbol } = opts;\n      function format2(...args) {\n        const [firstArg] = args;\n        if (!kind(firstArg, "string")) {\n          if (hasCustomSymbol(firstArg, customInspectSymbol)) {\n            return format2(firstArg[customInspectSymbol]({ format: format2 }));\n          } else {\n            return args.map((item) => inspect(item, { customInspectSymbol })).join(" ");\n          }\n        }\n        let index = 1;\n        let str = String(firstArg).replace(/%[sjdOoif%]/g, (token) => {\n          if (token === "%%")\n            return "%";\n          if (index >= args.length)\n            return token;\n          switch (token) {\n            case "%s": {\n              const arg = args[index++];\n              if (hasCustomSymbol(arg, customInspectSymbol)) {\n                return format2(arg[customInspectSymbol]({ format: format2 }));\n              } else if (isDate(arg) || isError(arg) || kind(arg, "bigint")) {\n                return format2(arg);\n              } else {\n                return String(arg);\n              }\n            }\n            case "%j":\n              return safeStringify(args[index++]);\n            case "%d": {\n              const arg = args[index++];\n              if (kind(arg, "bigint")) {\n                return format2(arg);\n              } else {\n                return String(Number(arg));\n              }\n            }\n            case "%O":\n              return inspect(args[index++], { customInspectSymbol });\n            case "%o":\n              return inspect(args[index++], {\n                customInspectSymbol,\n                showHidden: true,\n                depth: 4\n              });\n            case "%i": {\n              const arg = args[index++];\n              if (kind(arg, "bigint")) {\n                return format2(arg);\n              } else {\n                return String(parseInt(arg, 10));\n              }\n            }\n            case "%f":\n              return String(parseFloat(args[index++]));\n            default:\n              return token;\n          }\n        });\n        for (let arg = args[index]; index < args.length; arg = args[++index]) {\n          if (arg === null || !kind(arg, "object")) {\n            str += " " + arg;\n          } else {\n            str += " " + inspect(arg);\n          }\n        }\n        return str;\n      }\n      __name(format2, "format");\n      function formatValue(ctx, value, recurseTimes) {\n        if (hasCustomSymbol(value, customInspectSymbol)) {\n          return format2(value[customInspectSymbol]({ format: format2 }));\n        }\n        const formattedPrimitive = formatPrimitive(value);\n        if (formattedPrimitive !== void 0) {\n          return formattedPrimitive;\n        }\n        if (ctx.seen.includes(value)) {\n          let index = 1;\n          if (ctx.circular === void 0) {\n            ctx.circular = /* @__PURE__ */ new Map();\n            ctx.circular.set(value, index);\n          } else {\n            index = ctx.circular.get(value);\n            if (index === void 0) {\n              index = ctx.circular.size + 1;\n              ctx.circular.set(value, index);\n            }\n          }\n          return `[Circular *${index}]`;\n        }\n        return formatRaw(ctx, value, recurseTimes);\n      }\n      __name(formatValue, "formatValue");\n      function formatRaw(ctx, value, recurseTimes) {\n        let keys = [];\n        const constructor = getConstructorName(value);\n        let base = "";\n        let formatter = /* @__PURE__ */ __name(() => [], "formatter");\n        let braces = ["", ""];\n        let noIterator = true;\n        const filter = ctx.showHidden ? 0 : 1;\n        if (SymbolIterator in value) {\n          noIterator = false;\n          if (Array.isArray(value)) {\n            const prefix = constructor !== "Array" ? getPrefix(constructor, `(${value.length})`) : "";\n            keys = getOwnNonIndexProperties(value, filter);\n            braces = [`${prefix}[`, "]"];\n            if (value.length === 0 && keys.length === 0) {\n              return `${braces[0]}]`;\n            }\n            formatter = formatArray;\n          } else if (isSet(value)) {\n            const size = SetPrototypeGetSize.call(value);\n            const prefix = getPrefix(constructor, `(${size})`);\n            keys = getKeys(value, ctx.showHidden);\n            formatter = formatSet;\n            if (size === 0 && keys.length === 0) {\n              return `${prefix}{}`;\n            }\n            braces = [`${prefix}{`, "}"];\n          } else if (isMap(value)) {\n            const size = MapPrototypeGetSize.call(value);\n            const prefix = getPrefix(constructor, `(${size})`);\n            keys = getKeys(value, ctx.showHidden);\n            formatter = formatMap;\n            if (size === 0 && keys.length === 0) {\n              return `${prefix}{}`;\n            }\n            braces = [`${prefix}{`, "}"];\n          } else if (isTypedArray(value)) {\n            keys = getOwnNonIndexProperties(value, filter);\n            const size = TypedArrayPrototypeGetLength.call(value);\n            const prefix = getPrefix(constructor, `(${size})`);\n            braces = [`${prefix}[`, "]"];\n            if (value.length === 0 && keys.length === 0)\n              return `${braces[0]}]`;\n            formatter = formatTypedArray.bind(null, size);\n          } else {\n            noIterator = true;\n          }\n        }\n        if (noIterator) {\n          keys = getKeys(value, ctx.showHidden);\n          braces = ["{", "}"];\n          if (constructor === void 0) {\n            if (keys.length === 0) {\n              return `[Object: null prototype] {}`;\n            }\n          } else if (constructor === "Object") {\n            if (keys.length === 0) {\n              return `{}`;\n            }\n          } else if (kind(value, "function")) {\n            base = `[Function${value.name ? ": " + value.name : ""}]`;\n            if (keys.length === 0) {\n              return base;\n            }\n          } else if (isRegExp(value)) {\n            base = RegExp.prototype.toString.call(value);\n            if (keys.length === 0) {\n              return base;\n            }\n            base = " " + base;\n          } else if (isDate(value)) {\n            base = Number.isNaN(DatePrototypeGetTime.call(value)) ? Date.prototype.toString.call(value) : DatePrototypeToISOString.call(value);\n            if (keys.length === 0) {\n              return base;\n            }\n            base = " " + base;\n          } else if (isError(value)) {\n            base = formatError(value);\n            if (keys.length === 0) {\n              return base;\n            }\n            base = " " + base;\n          } else if (hasCustomSymbol(value, ctx.customInspectSymbol)) {\n            base = format2(value[ctx.customInspectSymbol]({ format: format2 }));\n            if (keys.length === 0) {\n              return base;\n            }\n            base = " " + base;\n          } else {\n            braces[0] = `${getPrefix(constructor)}{`;\n          }\n        }\n        if (recurseTimes && recurseTimes < 0) {\n          return isRegExp(value) ? RegExp.prototype.toString.call(value) : "[Object]";\n        }\n        ctx.seen.push(value);\n        const visibleKeys = new Set(keys);\n        const output = formatter(ctx, value, recurseTimes, visibleKeys, keys);\n        for (let i = 0; i < keys.length; i++) {\n          output.push(\n            formatProperty(\n              ctx,\n              value,\n              recurseTimes,\n              visibleKeys,\n              keys[i],\n              false\n            )\n          );\n        }\n        if (ctx.circular !== void 0) {\n          const index = ctx.circular.get(value);\n          if (index !== void 0) {\n            const reference = `<ref *${index}>`;\n            base = base === "" ? reference : `${reference} ${base}`;\n          }\n        }\n        ctx.seen.pop();\n        return reduceToSingleString(output, base, braces);\n      }\n      __name(formatRaw, "formatRaw");\n      function inspect(value, opts2) {\n        opts2 = Object.assign({ seen: [], depth: 2 }, opts2);\n        return formatValue(opts2, value, opts2.depth);\n      }\n      __name(inspect, "inspect");\n      function formatProperty(ctx, value, recurseTimes, visibleKeys, key, isArray) {\n        let name;\n        let str;\n        const desc = Object.getOwnPropertyDescriptor(value, key) || {\n          value: value[key]\n        };\n        if (desc.value !== void 0) {\n          str = formatValue(ctx, desc.value, recurseTimes);\n        } else if (desc.get) {\n          str = desc.set ? "[Getter/Setter]" : "[Getter]";\n        } else if (desc.set) {\n          str = "[Setter]";\n        } else {\n          str = "undefined";\n        }\n        if (isArray) {\n          return str;\n        }\n        if (kind(key, "symbol")) {\n          name = `[${SymbolPrototypeToString.call(key)}]`;\n        } else if (!visibleKeys.has(key)) {\n          name = "[" + key + "]";\n        } else {\n          name = key;\n        }\n        return `${name}: ${str}`;\n      }\n      __name(formatProperty, "formatProperty");\n      function formatArray(ctx, value, recurseTimes, visibleKeys) {\n        const output = [];\n        for (let index = 0; index < value.length; ++index) {\n          if (Object.prototype.hasOwnProperty.call(value, String(index))) {\n            output.push(\n              formatProperty(\n                ctx,\n                value,\n                recurseTimes,\n                visibleKeys,\n                String(index),\n                true\n              )\n            );\n          } else {\n            output.push("");\n          }\n        }\n        return output;\n      }\n      __name(formatArray, "formatArray");\n      function formatTypedArray(length, ctx, value, recurseTimes) {\n        const output = new Array(length);\n        for (let i = 0; i < length; ++i) {\n          output[i] = value.length > 0 && kind(value[0], "number") ? String(value[i]) : formatBigInt(value[i]);\n        }\n        if (ctx.showHidden) {\n          for (const key of [\n            "BYTES_PER_ELEMENT",\n            "length",\n            "byteLength",\n            "byteOffset",\n            "buffer"\n          ]) {\n            const str = formatValue(ctx, value[key], recurseTimes);\n            ArrayPrototypePush.call(output, `[${String(key)}]: ${str}`);\n          }\n        }\n        return output;\n      }\n      __name(formatTypedArray, "formatTypedArray");\n      function formatSet(ctx, value, recurseTimes) {\n        const output = [];\n        for (const v of value) {\n          ArrayPrototypePush.call(output, formatValue(ctx, v, recurseTimes));\n        }\n        return output;\n      }\n      __name(formatSet, "formatSet");\n      function formatMap(ctx, value, recurseTimes) {\n        const output = [];\n        for (const { 0: k, 1: v } of value) {\n          output.push(\n            `${formatValue(ctx, k, recurseTimes)} => ${formatValue(\n              ctx,\n              v,\n              recurseTimes\n            )}`\n          );\n        }\n        return output;\n      }\n      __name(formatMap, "formatMap");\n      return format2;\n    }\n    __name(createFormat2, "createFormat");\n    var formatBigInt = /* @__PURE__ */ __name((bigint) => `${bigint}n`, "formatBigInt");\n    function formatPrimitive(value) {\n      if (value === null)\n        return "null";\n      if (value === void 0)\n        return "undefined";\n      if (kind(value, "string")) {\n        return `\'${JSON.stringify(value).replace(/^"|"$/g, "").replace(/\'/g, "\\\\\'").replace(/\\\\"/g, \'"\')}\'`;\n      }\n      if (kind(value, "boolean"))\n        return "" + value;\n      if (kind(value, "number"))\n        return "" + value;\n      if (kind(value, "bigint"))\n        return formatBigInt(value);\n      if (kind(value, "symbol"))\n        return value.toString();\n    }\n    __name(formatP
+{
+    "word": "कुमुद",
+    "ABCH": [
+        {
+            "word": "कुमुद",
+            "linga": "पुं",
+            "pagenum": "11",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "590",
+            "group": "135",
+            "synonyms": [],
+            "content": "ऐरावतः पुण्डरीको वामनः कुमुदोऽञ्जनः ।\nपुष्पदन्तः सार्वभौमः सुप्रतीकश्च दिग्गजाः ॥ १७० ॥"
+        },
+        {
+            "word": "कुमुद",
+            "linga": "पुंक्ली",
+            "pagenum": "45",
+            "kanda": "तिर्यक्काण्डः",
+            "varga": "वनस्पतिकायः",
+            "eid": "3486",
+            "group": "1455",
+            "synonyms": [
+                "कैरव",
+                "गर्दभाह्वय"
+            ],
+            "content": "श्वेते तु तत्र कुमुदं कैरवं गर्दभाह्वयम् ।"
+        }
+    ],
+    "ACC": [
+        {
+            "word": "कुमुद",
+            "eid": "4393",
+            "pagenum": 1,
+            "content": "कुमुद¦ poet. Śp. p. 17."
+        }
+    ],
+    "AP90": [
+        {
+            "word": "कुमुद",
+            "eid": "11161",
+            "pagenum": 410,
+            "content": "कुमुदः, --दं¦ [कौ मोदते इति कुमुदं] <b>1</b> The white water-lily said to open at moon-rise; नोच्छ्वसिति <lbinfo n='tapanakiraREScaM#drasyevASuBiH'/> तपनकिरणैश्चंद्रस्येवाशुभिः कुमुदं <ls>V. 3. 16</ls>; so  <lbinfo n='ls:Ś. 5.+ 28'/> <ls>Ś. 5. 28</ls>; <ls>Rs. 3. 2</ls>, <ls n='Rs. 3.'>21</ls>, <ls n='Rs. 3.'>23</ls>; <ls>Me. 40.</ls> <b>--2</b> A red lotus. --दं Silver. --दः <b>1</b> An epithet of Viṣṇu. <b>--2</b> <ab>N.</ab> of the elephant supposed to guard the south. <b>--3</b> Camphor. <b>--4</b> A species of monkey. <b>--5</b> <ab>N.</ab> of a Nāga who gave his younger sister कुमुद्वती to Kuśa, son of Rāma; see <ls>R. 16. 79.</ls> <ls n='R. 16.'>86.</ls> <b>--Comp.</b> --अभिख्यं silver. --आकरः, --आवासः a pond full of <lbinfo n='lo+tuses'/> lotuses. --ईशः the moon. --खंडं an assemblage of lotuses. --नाथः, --पतिः --बंधुः, --बांधवः, --सुहृद् <i><ab>m.</ab></i> the moon."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "कुमुद",
+            "eid": "3562",
+            "pagenum": 195,
+            "content": "कुमुद¦ <i>ku-mud + a,</i> <b>I.</b> <ab>m.</ab> and <ab>n.</ab> The white esculent water-lily, Nymphæa esculenta, <ls>Pañc.</ls> 50, 10. <b>II.</b> <ab>m.</ab> The name of a Nāga or serpent, <ls>MBh.</ls> 1, 1560; of a celestial being, <ls>Bhāg. P.</ls> 7, 8, 39; of a monkey, <ls>Rām.</ls> 4, 39, 37; of a mountain, <ls>Bhāg. P.</ls> 5, 16, 12; of a man, <ls>Rājat.</ls> 5, 422."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "कुमुद",
+            "eid": "7991",
+            "pagenum": 124,
+            "content": "कु/मुद¦ <lex>n.</lex> the flower of the white water-lily."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "कुमुद",
+            "eid": "5063",
+            "pagenum": 86,
+            "content": "कुमुद¦ <i>n.</i> Nachtlotusblüte <i>(weiß).</i>"
+        }
+    ],
+    "INM": [
+        {
+            "word": "कुमुद",
+            "eid": "6140",
+            "pagenum": 434,
+            "content": "<b>Kumuda</b><sup>1</sup>,¦ a serpent. § 47 (Sarpanāmak.): I, <b>35</b>, 1560 (enumeration).—§ 564 (Mātalīyop.): V, <b>103</b>γ, 3629 (do.).— § 793 (Mausalap.): XVI, <b>4</b>η, †119."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "6141",
+            "pagenum": 434,
+            "content": "<b>Kumuda</b><sup>2</sup>,¦ a monkey. § 541 (Indrajidvadha): III, <b>289</b>α, 16468 (follower of Sugrīva)."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "6142",
+            "pagenum": 434,
+            "content": "<b>Kumuda</b><sup>3</sup>,¦ an elephant. § 564 (Mātalīyop.): V, <b>99</b>, 3561 (of Supratīka's race)."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "6143",
+            "pagenum": 434,
+            "content": "<b>Kumuda</b><sup>4</sup>,¦ a Suparṇa, son of Garuḍa. § 564 (Mātalīyop.): V, <b>101</b>β, 3597."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "6144",
+            "pagenum": 434,
+            "content": "<b>Kumuda</b><sup>5</sup>,¦ a mountain in Kuśadvīpa. § 575 (Bhūmip.): VI, <b>12</b>ε, 451."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "6145",
+            "pagenum": 434,
+            "content": "<b>Kumuda</b><sup>6</sup>,¦ a companion of Skanda. § 615<i>u</i> (Skanda): IX, <b>45</b>ζ, 2541 (given to Skanda by Dhātṛ)."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "6146",
+            "pagenum": 434,
+            "content": "<b>Kumuda</b><sup>7</sup>,¦ a warrior of Skanda. § 615<i>u</i> (Skanda): IX, <b>45</b>η, 2558."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "6147",
+            "pagenum": 434,
+            "content": "<b>Kumuda</b><sup>8</sup>¦ = Viṣṇu (1000 names)."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "कुमुद",
+            "eid": "09744",
+            "pagenum": 195,
+            "content": "kumuda¦ <i>(I) m.n.</i> 1. The white water-lily which opens at moon-rise, कुमुदैः सरांसि <ls>Rt.</ls>iii.2, 21, 22, 23, 26, <ls>Megh.</ls>i.40; 2. red lotus."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "09745",
+            "pagenum": 195,
+            "content": "kumuda¦ <i>(II) n.</i> Silver."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "09746",
+            "pagenum": 195,
+            "content": "kumuda¦ <i>(III) m.</i> 1. An epithet of Vishṇu; 2. name of the elephant that guards the south; 3. camphor; 4. a species of monkey; 5. name of a Nāga, <ls>R.</ls>xvi.76, 81, 86."
+        }
+    ],
+    "MCI": [
+        {
+            "word": "कुमुद",
+            "eid": "82",
+            "pagenum": 13,
+            "content": "<b>Kumuda<sup>1</sup></b>¦ m.: A mythical serpent, living in Bhogavatī Purī 5. 101. 13, 1. <dvsn n='P'>Son of Surasā and Kaśyapa 5. 101. 4, 17; description 5. 101. 5-7; also listed by Sūta among the sons of Kadrū 1. 31. 15; he, with other serpents, received the white snake issuing from the mouth of Balarāma and entering the ocean 16. 5. 14, 12."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "83",
+            "pagenum": 13,
+            "content": "<b>Kumuda<sup>2</sup></b>¦ m.: A mythical bird, living in the world of Suparṇas 5. 99. 12, 1. <dvsn n='P'>Born in the <i>kula</i> of Vainateya (Garuḍa), in the <i>vaṃśa</i> of Kaśyapa; marked with <i>śrī-</i> <i>vatsa,</i> his deity is Viṣṇu; feeding on serpents; by action a Kṣatriya not obtaining Brahminhood because engaged in destroying kinsmen 5. 99. 2-8."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "84",
+            "pagenum": 13,
+            "content": "<b>Kumuda<sup>3</sup></b>¦ m.: A mythical lordly elephant (<i>vāraṇasattama</i>), living in <i>pātāla</i> 5. 97. 1. <dvsn n='P'>Born in the <i>vaṃśa</i> of Supratīka, pointed out by Nārada to Mātali 5. 97. 15."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "85",
+            "pagenum": 13,
+            "content": "<b>Kumuda<sup>4</sup></b>¦ m.: A monkey-chief. <dvsn n='P'>Kept watch, with Sugrīva and others, over the bodies of Rāma and Lakṣmaṇa, fallen on the ground, tied with arrows by Indrajit 3. 273. 4, 1-3."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "1143",
+            "pagenum": 312,
+            "content": "<b>Kumuda</b>¦ m.: Name of a mountain. <dvsn n='P'>One of the six mountains of the Kuśadvīpa; the mountain is, indeed, lustrous (<i>? dyutimān nāma;</i> or is Dyutimant another name of the mountain Kumuda ?) all the six mountains are described as excellent mountains (<i>parvatottamāḥ</i>); the distance between them doubles as one moves from the one to the other (<i>teṣām antaraviṣkambho dviguṇaḥ</i> <i>pravibhāgaśaḥ</i>) 6. 13. 10-11."
+        }
+    ],
+    "MD": [
+        {
+            "word": "कुमुद",
+            "eid": "6047",
+            "pagenum": 70,
+            "content": "कुमुद¦ kú-muda, <lex>n.</lex> (<i>white</i>) night lotus; <lex>m.</lex> <ab>N.</ab> 🞄<i>of a Nāga; <ab>N.</ab> of a man</i>: <b>-nātha,</b> <lex>m.</lex> moon; 🞄<b>-maya,</b> <lex>a.</lex> consisting entirely of white lotuses; 🞄<b>-ākara,</b> <lex>m.</lex> lotus group: <b>-tā,</b> <lex>f.</lex> <ab>abst. ɴ.</ab>."
+        }
+    ],
+    "MW": [
+        {
+            "word": "कुमुद",
+            "eid": "51129",
+            "pagenum": "286,2",
+            "content": "कु—मुद <hom>a</hom> ¦ See <ab>s.v.</ab>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52411",
+            "pagenum": "292,3",
+            "content": "कु/-मुद <hom>b</hom> ¦ <lex>n.</lex> [अस् <lex type='hwalt'>m.</lex>, <ls>L.</ls>], ‘exciting what joy’, the esculent white water-lily (<bot>Nymphaea esculenta</bot>), <ls>AV. iv, 34, 5</ls>; <ls>Suśr.</ls>; <ls>Śak.</ls> &c.<info lex='m:n'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52412",
+            "pagenum": "292,3",
+            "content": "¦ the red lotus (<bot>Nymphaea rubra</bot>), <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52413",
+            "pagenum": "292,3",
+            "content": "कु/-मुद ¦ <lex>m.</lex> camphor, <ls>Bhpr.</ls><info lex='m'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52414",
+            "pagenum": "292,3",
+            "content": "¦ (in music) <ab>N.</ab> of a <s1 slp1='Druvaka'>Dhruvaka</s1><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52415",
+            "pagenum": "292,3",
+            "content": "¦ <ab>N.</ab> of a particular comet, <ls>VarBṛS.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52416",
+            "pagenum": "292,3",
+            "content": "¦ of a <s1 slp1='nAga'>Nāga</s1>, <ls>MBh.</ls>; <ls>Ragh.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52417",
+            "pagenum": "292,3",
+            "content": "¦ of an attendant of <s1 slp1='skanda'>Skanda</s1> [<ls>MBh. ix, 2558</ls>] or of <s1 slp1='vizRu'>Viṣṇu</s1> [<ls>BhP.</ls>]<info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52418",
+            "pagenum": "292,3",
+            "content": "¦ of the elephant of the south-west or southern quarter, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52419",
+            "pagenum": "292,3",
+            "content": "¦ of a <s1 slp1='dEtya'>Daitya</s1>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52420",
+            "pagenum": "292,3",
+            "content": "¦ of a son of <s1 slp1='gada'>Gada</s1> by <s1 slp1='bfhatI'>Bṛhatī</s1>, <ls>Hariv. 9193</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52421",
+            "pagenum": "292,3",
+            "content": "¦ of a confidant of king <s1 slp1='unmattAvanti'>Unmattāvanti</s1>, <ls>Rājat.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52422",
+            "pagenum": "292,3",
+            "content": "¦ of a monkey-hero, <ls>MBh.</ls>; <ls>R.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52423",
+            "pagenum": "292,3",
+            "content": "¦ of a poet<info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52424",
+            "pagenum": "292,3",
+            "content": "¦ of a pupil of <s1 slp1='paTya'>Pathya</s1>, <ls>BhP. xii, 7, 2</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52425",
+            "pagenum": "292,3",
+            "content": "¦ of a mountain, <ls>BhP.</ls>; <ls>VP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52426",
+            "pagenum": "292,3",
+            "content": "¦ of one of the smaller <s1 slp1='dvIpa'>Dvīpa</s1>s, <ls>VP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52434",
+            "pagenum": "292,3",
+            "content": "कु/-मुद ¦ <lex>n.</lex> camphor, <ls>L.</ls><info lex='n'/>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "52435",
+            "pagenum": "292,3",
+            "content": "¦ silver, <ls>L.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "कुमुद",
+            "eid": "15227",
+            "pagenum": 238,
+            "content": "<i>Ku-muda, as, am,</i>¦ m. n. the esculent white waterlily, Nymphæa Esculenta (‘exciting what joy!’); red lotus, Nymphæa Rubra; (<i>am</i>), n. silver; (<i>as</i>), m. camphor; N. of a Nāga; N. of the elephant of the south-west or southern quarter; N. of a Daitya; N. of an attendant of Viṣṇu; N. of a son of Gada by Vṛhatī; N. of a confidant of king Unmattāvanti; one of the monkey-heroes of the Rāmāyaṇa; N. of a poet; N. of a mountain; N. of one of the smaller Dvīpas; (<i>ā</i>), f. several plants, Gmelina Arborea; Pistia Stratiotes; Desmodium Gangeticum; Grislea Tomentosa; N. of another plant, commonly called Kaṭphala; N. of a deity; (<i>ī</i>), f. a plant, commonly called Kaṭphala. <i>—Kumuda-khaṇḍa, am,</i> n. an assemblage of Kumudas. <i>—Kumuda-ghnī,</i> f., N. of a plant containing a poisonous milky juice. <i>—Ku-</i> <i>muda-pattrābha (°tra-ābha), as, ā, am,</i> resembling the leaves of the white water-lily. <i>—Kumuda-</i> <i>bandhu, us,</i> m. or <i>kumuda-bāndhava, as,</i> m. the moon (‘friend of the lotus;’ the white esculent lotus expanding its petals during the night and closing them in the day time; hence other similar appellations of the moon, as <i>kumuda-priya,</i> &c.). <i>—Ku-</i> <i>muda-vatī,</i> f. an assemblage of Kumudas, a place abounding in them, &c. <i>—Kumuda-suhṛd, t,</i> m. the moon; [cf. <i>kumuda-bandhu.</i>] <i>—Kumudākara</i> <i>(°da-āk°), as,</i> m. a number of water-lilies or place abounding in them. <i>—Kumudākṣa (°da-ak°), as,</i> m., N. of a Nāga; also of an attendant of Viṣṇu. <i>—Kumudādi (°da-ādi), is,</i> m., N. of a pupil of Pathya. <i>—Kumudāvāsa (°da-āv°), as, ā, am,</i> abounding or richly furnished with Kumudas; (<i>as</i>), m. a pool abounding in them. <i>—Kumudeśa (°da-</i> <i>īśa), as,</i> m. an epithet of the moon, ‘lord of the lotus.’"
+        }
+    ],
+    "PUI": [
+        {
+            "word": "कुमुद",
+            "eid": "3192",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (I)¦ — an attendant on Hari.<sup>1</sup> Attacked Asura followers of Bali.<sup>2</sup> <F>1) Bhā. VII. 8. 38-39; XI. 27. 28.</F> <F>2) Ib. VIII. 21. 16.</F>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3193",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (II)¦ — a disciple of Pathya. <dvsn n='P'/>Bhā. XII. 7. 2."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3194",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (III)¦ — a chief Vānara. <dvsn n='P'/>Br. III. 7. 242."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3195",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (IV)¦ — a son of Irāvatī. <dvsn n='P'/>Br. III. 7. 292."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3196",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (V)¦ — a Nāga from Cāndramasa Sāma. <dvsn n='P'/>Br. III. 7. 345."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3197",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (VI)¦ — a son of Maṇivara. <dvsn n='P'/>Vā. 69. 160."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3198",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (VII)¦ — a son of Bṛhatī. <dvsn n='P'/>Vā. 96. 247."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3199",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (VIII)¦ — a Mt. on one side of Meru west of Śitoda. Here is the celestial Banian Tree Śatabalū's from which flow rivers to Nilāvṛta. The tree would yield whatever was desired of it.<sup>1</sup> One of the seven hills of Śālmaladvīpa.<sup>2</sup> Residence of the Kinnaras.<sup>3</sup> <F>1) Bhā. V. 16. 11 and 24; Vā. 36. 28; 38. 45; 42. 51.</F> <F>2) Br. II. 19. 35; Vā. 49. 32-3; Vi. II. 4. 26.</F> <F>3) Vi. 39. 59.</F>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3200",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (IX)¦ — a Mt. in Kuśadvīpa. <dvsn n='P'/>M. 122. 52."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3201",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (X)¦ — a Mt. in Gomedaka. <dvsn n='P'/>M. 123. 3."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3202",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (XI)¦ — a Cakravāka in Mānasa; a son of Kauśika in previous birth. <dvsn n='P'/>M. 20. 18."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3203",
+            "pagenum": 1,
+            "content": "<i>Kumuda</i> (XII)¦ — one of the eight <i>nidhis</i> of Kubera. <dvsn n='P'/>Vā. 41. 10."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "3204",
+            "pagenum": 1,
+            "content": "<i>Kumudas</i>¦ — a Janapada of the Bhadra continent. <dvsn n='P'/>Vā. 43. 21."
+        }
+    ],
+    "PW": [
+        {
+            "word": "कुमुद",
+            "eid": "28851",
+            "pagenum": 2,
+            "content": "कु/मुद¦ <dvsn n='1'>— 1〉 (*<lex>m.</lex>) <lex>n.</lex> <i>die weisse Blüthe einer in der Nacht sich öffnenden Nymphaea</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <dvsn n='2'>— a〉 <i>eine [Page2-078-a] Art Bdellion</i> <ls>BHĀVAPR. 1,86</ls>. <dvsn n='2'>— b〉 <i>ein <ab>best.</ab></i> <is>Dhruvaka</is> (<ab>musik.</ab>) <dvsn n='2'>— c〉 <i>ein <ab>best.</ab> Komet</i>. <dvsn n='2'>— d〉 <ab>N. pr.</ab> <dvsn n='3'>— α〉 eines Schlangendämons. <dvsn n='3'>— β〉 eines Wesens im Gefolge <is>Skanda</is>ʼs und auch <is>Viṣṇu</is>ʼs. <dvsn n='3'>— γ〉 *eines <is>Daitya</is>. <dvsn n='3'>— δ〉 *eines Weltelephanten. <dvsn n='3'>— ε〉 eines Affen. <dvsn n='3'>— ζ〉 verschiedener Männer. <dvsn n='3'>— η〉 verschiedener Berge. <dvsn n='3'>— ϑ〉 eines kleineren <is>Dvīpa</is>. <dvsn n='1'>— 3〉 <lex>f.</lex> आ <dvsn n='2'>— a〉 <i>eine <ab>best.</ab> Wasserader</i>. <dvsn n='2'>— b〉 <i>eine Form der</i> <is>Durgā</is>. <dvsn n='2'>— c〉 *<i><bot>Gmelina arborea</bot>, *<bot>Pistia Stratiotes</bot>, *<bot>Desmodium gangeticum</bot>, *<bot>Grislea tomentosa</bot> und *<bot>Myrica sapida</bot></i> (<ls>RĀJAN. 9,20</ls>). <dvsn n='1'>— 4〉 *<lex>f.</lex> ई <i><bot>Myrica sapida</bot></i> <ls>RĀJAN. 9,20</ls>. <dvsn n='1'>— 5〉 *<lex>n.</lex> <dvsn n='2'>— a〉 <i>Kampher</i> <ls>RĀJAN. 12,61</ls>. <dvsn n='2'>— b〉 <i>Silber</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "कुमुद",
+            "eid": "17866",
+            "pagenum": 2,
+            "content": "कुमुद¦ (1. कु + मुदा) <is>gaṇa</is> मूलविभुजादि zu <ls>P. 3, 2, 5</ls>, <is>Vārtt</is>. 2. <dvsn n='1'> 1) <lex>m.</lex> <lex>n.</lex> <is>gaṇa</is> अर्धर्चादि zu <ls>P. 2, 4, 31.</ls> <ls>TRIK. 3, 5, 10.</ls> Zu belegen nur das neutr. (<i>eine ausserordentliche Freude verursachend) die weisse essbare Wasserlilie, Nymphaea esculenta</i> <ls>AK. 1, 2, 3, 36.</ls> <ls>H. 1164.</ls> <ls>an. 3, 329.</ls> <ls>MED. d. 25.</ls> <i>Nymphaea rubra</i> <ls>MED.</ls> = अब्ज <ls>TRIK. 3, 3, 205.</ls> Blüht in der Nacht und tritt hierdurch in nahe Beziehung zum Monde. कु/मुद <ls>AV. 4, 34, 5.</ls> कुमुद/ <ls>Sch.</ls> zu <ls>P. 6, 1, 161.</ls> <ls n='P. 6,'>2, 2.</ls> (रसातलम्) सचन्द्रकुमुदम् <i>den Mond zum</i> <is>Kumuda</is> <i>habend</i> <ls>R. 5, 55, 1.</ls> <ls>SUŚR. 1, 22, 21. 41, 10. 141, 21. 145, 22. 223, 15. 2, 439, 4.</ls> कुमुदान्येव शशाङ्कः सविता बोधयति पङ्कजान्येव <ls>ŚĀK. 124.</ls> <ls>PAÑCAT. 50, 10.</ls> <ls>ṚT. 3, 2. 21. 25. 27.</ls> कुमुदरुचिरहासा <ls n='ṚT.'>28.</ls> कुमुदविशदानि (प्रेक्षितानि) <ls>MEGH. 41.</ls> कुमुद/श्येनी <i>weiss wie ein</i> <is>Kumuda</is> <ls>P. 6, 2, 2</ls>, <ls>Sch.</ls>  <dvsn n='1'>— 2) <lex>n.</lex> <i>Silber</i> (nach der Aehnlichkeit in der Farbe) <ls>H. 1043.</ls> <dvsn n='1'>— 3) <lex>m.</lex> <i>Kampher</i> <ls>RĀJAN.</ls> im <ls>ŚKDR.</ls> <dvsn n='1'>— 4) <lex>m.</lex> N. pr. <dvsn n='2'> a) eines <is>Nāga</is> <ls>H. an.</ls> <ls>MED.</ls> <ls>MBH. 1, 1560.</ls> <ls>RAGH. 16, 76. 81. 86.</ls> <dvsn n='2'>— b) eines Weltelephanten <ls>TRIK.</ls> <ls>H. an.</ls> <ls>MED.</ls> <ls>HĀR. 147.</ls> des Südwestens <ls>AK. 1, 1, 2, 5.</ls> <ls>H. 170.</ls> des Südens <ls>BHĀGURI</ls> beim <ls>Sch.</ls> zu <ls>H. 170.</ls> <dvsn n='2'>— c) eines <is>Daitya</is> <ls>H. an.</ls> <dvsn n='2'>— d) eines Wesens im Gefolge von <is>Viṣṇu</is> <ls>BHĀG. P. 7, 8, 39. 8, 21, 16.</ls> <dvsn n='2'>— e) eines Sohnes von <is>Gada</is> und der <is>Vṛhatī</is> <ls>HARIV. 9193.</ls> <dvsn n='2'>— f) eines Vertrauten des Königs <is>Unmattāvanti</is> <ls>RĀJA-TAR. 5, 422. 433.</ls> <dvsn n='2'>— g) eines Affen <ls>TRIK.</ls> <ls>H. an.</ls> <ls>MED.</ls> <ls>MBH. 3, 16468.</ls> <ls>R. 4, 39, 37.</ls> <ls n='R.'>6, 2, 28</ls> <ls n='R. 6,'>22, 2.</ls> <dvsn n='2'>— h) eines Berges <ls>BHĀG. P. 5, 16, 12. 20, 10.</ls> <ls>VP. 168,</ls> <ls>N. 6.</ls> <dvsn n='2'>— i) eines kleinern <is>Dvīpa</is> <ls>VP. 175,</ls> <ls>N. 3.</ls> <dvsn n='1'>— 4) <lex>f.</lex> कुमुदा N. verschiedener Pflanzen: <dvsn n='2'> a) <i>Gmelina arborea Roxb.</i> (गम्भारी) <ls>TRIK.</ls> <ls>H. an.</ls> <ls>MED.</ls> <dvsn n='2'>— b) <i>Pistia Stratiotes Lin.</i> (कुम्भी, कुम्भिका) <ls>H. an.</ls> <ls>MED.</ls> <dvsn n='2'>— c) <i>Desmodium gangeticum Dec.</i> (शालपर्णी). <dvsn n='2'>— d) <i>Grislea tomentosa Roxb.</i> (धातकी). <dvsn n='2'>— e) = कट्फल <ls>RĀJAN.</ls> im <ls>ŚKDR.</ls> Vgl. कुमुदिका . <dvsn n='1'>— 5) <lex>f.</lex> कुमुदी = कट्फल <ls>ŚABDAR.</ls> im <ls>ŚKDR.</ls>"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "71061",
+            "pagenum": 5,
+            "content": "कुमुद¦ <dvsn n='1'> 1) <i>die Blüthe</i> (nicht die Pflanze, welche कुमुदिनी heisst). विनिद्रो निशि पाण्डुरः । दिवा संकुचितस्तस्थावालम्ब्य कुमुदव्रतम् ॥ <ls>KATHĀS. 72, 287.</ls> कुमुदाकारतां (so ist zu lesen) भेजे <ls n='KATHĀS.'>95, 20.</ls> <dvsn n='1'>— 4) N. <i>eines best.</i> <is>Ketu</is> (<i>Kometen</i>) <ls>VARĀH. BṚH. S. 11, 43.</ls> N. pr. eines Wesens im Gefolge <is>Skanda's</is> <ls>MBH. 9, 2558.</ls> — N. pr. eines Schülers des <is>Pathya</is> (vgl. कुमुदादि) <ls>BHĀG. P. 12, 7, 2.</ls> eines Dichters <ls>Verz. d. Oxf. H. 123,b,30.</ls> - Z. 5 vom Schluss des Artikels lies 5) st. 4); Z. 1 vom Schluss lies 6) st. 5).  <dvsn n='1'>— 7) <lex>m.</lex> <i>eine Art Bdellion</i>; s. u. गुग्गुलु . <dvsn n='1'>— 8) <lex>m.</lex> Bez. <i>eines best.</i> <is>Dhruvaka</is> (s. ध्रुवक 3. ) <ls>SAM̃GĪTADĀM.</ls> im <ls>ŚKDR.</ls> <dvsn n='1'>— 9) <lex>f.</lex> आ <dvsn n='2'> a) Bez. <i>einer best. Wasserader</i> <ls>VARĀH. BṚH. S. 54, 23.</ls> <dvsn n='2'>— b) <i>eine Form der</i> <is>Durgā</is> <ls>Verz. d. Oxf. H. 39,a,33.</ls> <ls>BHĀG. P. 10,2,12.</ls> <dvsn n='v'>— Vgl. महा° ."
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "कुमुद",
+            "eid": "8821",
+            "pagenum": 6,
+            "content": "कुमुद¦ 2〉d〉δ〉 <ls>MBH. 5,99,15</ls>."
+        },
+        {
+            "word": "कुमुद",
+            "eid": "16210",
+            "pagenum": 7,
+            "content": "कुमुद¦ II. 6."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "कुमुद",
+            "eid": "10859",
+            "pagenum": 150,
+            "content": "<i>kumuda</i>¦ 2. d)d) <ls>MBh.</ls> 5, 99, 15. [<ls>H</ls> 31, 30; <ls>S</ls> I, 78, 2 <i>(nairṛtyadiggaja)</i>.] {part=,seq=11021,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "कुमुद",
+            "eid": "10805",
+            "pagenum": 189,
+            "content": "कुमुद¦ n. (-दं) 1. The white esculent water lily, (Mymphæa esculenta.) 2. The red lotus, (Nrubra.) 3. silver. m. (-दः) 1. The elephant of the south-west quarter. 2. One of the monkey heroes of the Ramayana. 3. One of the Naga or serpent race. 4. A Danava or infernal deity. 5. Camphor. f. (-दा) 1. An aquatic plant, (Pistia stratiotes.) 2. A tree, (Gmelina arborea:) see गम्भारी. (-दी) A medicinal and aromatic shrub, commonly Kayaphal. E. कु the earth &c. मुद् to be pleased, and क aff."
+        }
+    ],
+    "SNP": [
+        {
+            "word": "कुमुद",
+            "eid": "302",
+            "pagenum": 434,
+            "content": "kumuda¦ <dvsn n='P'/>(1) Nymphaea alba Linn. (see Hooker 1, p. 114) (Sharma; Gul; Bpn, puṣpavarga 15; Nadk. 1, nr. 1723; Bt.; KB 1, p. 111-113); <dvsn n='P'/>(2) N. lotus Linn. (see Hooker, ibid.) (HK; HB; Nadk. 1, nr. 1726); <dvsn n='P'/>(3) N. stellata Willd. (see Hooker, ibid.) (Nadk. 1, nr. 1726)."
+        }
+    ],
+    "STC": [
+        {
+            "word": "कुमुद",
+            "eid": "8110",
+            "pagenum": 198,
+            "content": "<b>kumuda-</b>¦ <ab>nt.</ab> = <i>kumud-</i> ; <ab>m.</ab> <ab>n.</ab> d'un Nāga ; d'un personnage à la suite de Viṣṇu, de Skanda ; d'un singe ; d'un élève de Pathya ; d'une montagne ; <i>-ā-</i> <ab>f.</ab> une des formes de Durgā ; <i>-ikā-</i> <ab>f.</ab> <ab>n.</ab> d'une femme ; <i>-maya- -ī-</i> <ab>a.</ab> qui consiste en nénufars blancs.  <P><i>°nātha-</i> <ab>m.</ab> lune.  <P><i>kumudākara-</i> <ab>m.</ab> masse de nénufars.  <P><i>kumudākṣa-</i> <ab>m.</ab> <ab>n.</ab> d'un Nāga ; d'un serviteur <lbinfo n='6'/> de Viṣṇu.  <P><i>kumudottara-</i> <ab>m.</ab> <ab>n.</ab> d'un Varṣa."
+        }
+    ],
+    "VEI": [
+        {
+            "word": "कुमुद",
+            "eid": "637",
+            "pagenum": 1,
+            "content": "<b>Ku-muda</b>¦ is the name of a plant mentioned with other water plants in one passage of the Atharvaveda.<sup>1</sup> It is no doubt the white water-lily (<i>Nymphœa esculenta</i>), being the name of that plant in post-Vedic Sanskrit also. <F>1) iv. 34. 5. <i>Cf.</i> Zimmer, <i>Altindisches Leben,</i> 70.</F>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "कुमुद",
+            "eid": "10811",
+            "pagenum": 230,
+            "content": "कुमुद¦ n. (-दं) .²1 The white esculent water lily, (<bot>Nymphaea esculenta</bot>.) .²2 The red lotus, (N. rubra.) .²3 Silver. m. (-दः) .²1 The elephant of the south-west quarter. .²2 One of the monkey heroes of the <i>Rāmāyaṇa.</i> .²3 One of the <i>Nāga</i> or serpent race. .²4 A <i>Dānava</i> or infernal deity. .²5 Camphor. f. (-दा) .²1 An aquatic plant, (<bot>Pistia stratiotes</bot>.) .²2 A tree, (<bot>Gmelina arborea</bot>:) see गम्भारी. (-दी) A medicinal and aromatic shrub, commonly <i>Kāyaphal.</i> .E. कु the earth, &c. मुद to be pleased, and क aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "कुमुद",
+            "eid": "10257",
+            "pagenum": 195,
+            "content": "कुमुद¦ (दं) 1. <i>n.</i> The white esculent water-lily; red lotus; silver; camphor. <i>m.</i> Elephant of the southwest quarter. <i>f.</i> (दी) An aquatic plant."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कुमुद",
+            "eid": "8116",
+            "pagenum": "2-146-c",
+            "content": "कुमुदं¦, क्ली, (कौ मोदते । मुद् “इगुपधेति” । ३ । १ । १३५ । कः ।) श्वेतोत्पलम् । हेला सुँदि इत्यादि भाषा ॥ (यथा, रामायणे ५ । ५५ । १ । “सचन्द्रकुमुदं रम्यं सार्ककारण्डवं शुभम् । पुष्पश्रवणकादम्बमभ्रशैवलशाद्वलम्” ॥) तत्पर्य्यायः । कैरवम् २ । इत्यमरः । १ । १० । ३७ । चन्द्रकान्तम् ३ गर्द्दभम् ४ कुमुत् ५ । इति रत्नमाला ॥ धवलोत्पलम् ६ कह्लारम् ७ शीतलकम् ८ शशिकान्तम् ९ इन्दुकमलम् १० चन्द्रिकाम्बुजम् ११ गन्धसोमम् १२ । इति शब्दरत्नावली ॥ अपि च । “श्वेतं कुवलयं प्रोक्तं कुमुदं कैरवं तथा । कुमुदं पिच्छिलं स्निग्धं मधुरं ह्लादि शीतलम्” ॥ इति भावप्रकाशः ॥ अस्य गुणाः । शीतलत्वम् । स्वादुत्वम् । पाके तिक्तत्वम् । कफरक्तदोषदाहश्रमपित्तनाशित्वञ्च । इति राजनिर्घण्टः । रक्तपद्मम् । इति मेदिनी ॥ रूप्यम् ॥ इति हेमचन्द्रः ॥"
+        },
+        {
+            "word": "कुमुद",
+            "eid": "8117",
+            "pagenum": "2-146-c",
+            "content": "कुमुदः¦, पुं, (कुत्सिते नैरृतकोणे मोदते इति । कु + मुद् + कः ।) नैरृतकोणस्थदिघस्ती । इत्यमरः । १ । ३ । ३ ॥ वानरविशेषः । (अयं खलु रामचन्द्रस्य सेनापतिवानराणां एकतमः । यथा, रामायणे । ६ । २ । २८ । “नाम्ना संकोचलो नाम नानाद्विजयुतो गिरिः । तत्र राज्यं प्रशास्त्येष कुमुदो नाम वानरः । योऽसौ शतसहस्राणि सहस्रं परिकर्षति” ॥) नागविशेषः । (यथा, महाभारते । १ । ३५ । १५ । “कुठरः कुञ्जरश्चैव तथा नागः प्रभाकरः । कुमुदः कुमुदाक्षश्च तित्तिरिर्हलिकस्तथा” ॥) दैत्यभेदः । सितोत्पलम् । इति हेमचन्द्रः ॥ कर्पूरः । इति राजनिर्घण्टः ॥ ध्रुवकभेदः । यथा, “एकाविंशतिवर्णाङ्घ्रिर्मवेत् शृङ्गारके रसे । कुमुदोऽभोष्टदश्चैव ताले तुरगलीलके” ॥ इति सङ्गीतदामोदरः ॥ (कुं पृथ्वीं भूमिं वा मोदयति । अन्तर्भूतणिजन्तात् मुदः कः । विष्णुः । यथा, महाभारते । १३ । १४९ । ७६ । “शुभाङ्गः शान्तिदः स्रष्टा कुमुदः कुवलेशयः” ॥ विष्णुपार्श्वदः । यथा, भागवते । ८ । २१ । १० । “कुमुदः कुमुदाक्षश्च विश्वक्सेनः पतत्रिराट्” ॥ मेरोरुपष्टम्भगिरिविशेषः । स चायुतयोजनविस्तृतः । यथा, भागवते ५ । १६ । १२ । “मन्दरो मेरुमन्दरः सुपार्श्वः कुमुद इति । अयुतयोजनविस्तारोन्नाहा मेरोश्चतुर्द्दिशमवष्टम्भगिरय उपकॢप्ताः” ॥ शाल्मलद्वीपान्तर्गतप्रथमपर्व्वतः । यथा, विष्णुपुराणे २ । ४ । २६ । “कुमुदश्चान्नतश्चैव तृतीयश्च वलाहकः” ॥ आनूपजन्तुविशेषः । यथा, “हंससारसचक्राद्याः कुमुदाश्च कपिञ्जलाः । आनूपास्तेषु विज्ञेयाः श्लेष्मला वातकोपनाः” ॥ इति हारीते प्रथमेस्थाने ११ अध्यायः ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "कुमुद",
+            "eid": "14122",
+            "pagenum": "2112,a",
+            "content": "कुमुद¦ न० कौ मोदते कुद--क ७ त० । (सुँदि) कैरवे अमरः । “कुमुदान्येव शशाङ्कः सविता बोधयति पङ्कजान्येव” पञ्चत० । “कुमुदं पिच्छिलं स्निग्धं मधुरं ह्रादि शीतलम्” भाव० प्र० तद्गुणा उक्ताः । २ रक्तपद्मे मेदि० ३ रूप्ये हेमच० । ४ कर्पूरे पु० राजनि० अयमर्द्धचादि ५ शाल्मलिद्वीपस्थे वर्षपर्वतभेदे । कुन्दशब्दे उदा० । ६ दक्षिणदिग्गजे अमरः तस्य श्वेतोत्पलनिभत्वात्तथात्वम् । कु भूमि मोदयति मुद--अन्तर्भूतण्यर्थेक । ७ विष्णौ “कुमुदः कुन्दरः कुन्दः पर्जन्यः पावकोऽनिलः” विष्णुस० । ८ पद्मे न० त्रिका० । “यस्य बाला बहुव्यासा दीर्घलाङ्गूलमाश्रिताः । ताम्राः पीता शीताश्चैव प्रकीर्ण्णा घोरकर्म्मणः” रामा० उक्त लक्षणे ९ वानरभेदे । “मुषेणमैन्दद्विविदैः कुमुदेनाङ्गदेन च” भा० व० २८८ अ० । १० विष्णुपारिषदभेदे । “प्रहस्यानुचरा विष्णोः प्रत्यपेधन्नुदायुधाः” इत्युपक्रमे कुमुदः कुमुदाक्षश्च विष्यक्सेनः पतत्त्रिराट्” भाग० ८, २१, १० । ११ मेरोरुपष्टम्भगिरिभेदे पु० । “मन्दरोमेरुमन्दरः सुपार्श्वः कुमुद इत्ययुतयोजनविस्तारोन्नतामेरोश्चतुर्द्दिशमवष्टम्भगिरय उपक्लप्ताः” भा० ५, १६, १ “एवं कुमुदनिरूढोयः शतवल्लोनाम वटस्तस्य स्कन्धेभ्योनीचानाः पयोदधिमधुगुडान्नाद्यम्बरमद्यासनाभरणादयः सर्व्वएव कामदुवा नदाः कुमुदाग्रात् पतन्तस्तदुत्तरेणावृतमुपयोजयन्ति” तत्रैव १२ सर्पभेदे कुमुद्घतीशब्दे रघुवाक्यम् । “कुमुदः कुमुदाक्षश्च तित्तिरः इलिकस्तथा० भा० आ ३५ अ० १३ दैत्यभेदे च । ततः कुमुदा० चतुरर्थ्यां ष्ठक् । कौमुदिक तत्सन्निकृष्टादौ त्रि० । तत्रार्थे ष्ठच् । कुमुदिक तत्रार्थे त्रि"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् सफेद कुमुदिनी"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् लाल कमल"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदम् नपुं. -  कौ मोदते इति कुमुदम् सफेद कुमुदिनी"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदम् नपुं. -  कौ मोदते इति कुमुदम् लाल कमल"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदम् नपुं. -  कौ मोदते इति कुमुदम् चाँदी"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् विष्णु का विशेषण"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् दक्षिण दिशा के दिग्गज का नाम"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् कपूर"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् बन्दरों की एक जाति"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् एक नाग जिसने अपनी छोटी बहन कुमुद्वती को राम के पुत्र कुश को प्रदान किया"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् सफेद कमल जो चन्द्रोदय होने पर खिलता कहा जाता है"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् लाल कमल"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् विष्णु का विशेषण"
+        },
+        {
+            "word": "कुमुद",
+            "content": "कुमुदः पुं. -  कौ मोदते इति कुमुदम् कपूर"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कुमुद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ವಿಷ್ಣು",
+            "निष्पत्तिः": "मुद (हर्षे)'कः' (वा० ३-२-५)",
+            "व्युत्पत्तिः": "कौ प्रकृतिमण्डल एव तैः सह मोदते",
+            "प्रयोगाः": "'कुमुदः कुन्दरः कुन्दः'",
+            "उल्लेखाः": "वि० स०",
+            "विस्तारः": "'प्राकृते मण्डले भूमौ मोदनाच्च महात्मभिः । मुक्तिभूमिप्रदानाद्वा कुमुदः परिकीर्तितः ॥'निरुक्तिः ।",
+            "content": ""
+        },
+        {
+            "word": "कुमुद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಒಬ್ಬ ನಾಗರಾಜ \\/ಕುಶಮಹಾರಾಜನ ಪತ್ನಿಯಾದ ಕುಮುದ್ವತಿಯ ಸಹೋದರ",
+            "प्रयोगाः": "'नागेन लौल्यात् कुमुदेन नुनमुपात्तमन्तर्ह्रदवासिना तत्'",
+            "उल्लेखाः": "रघु० १६-७६",
+            "content": ""
+        },
+        {
+            "word": "कुमुद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ದಕ್ಷಿಣ ದಿಗ್ಗಜ",
+            "content": ""
+        },
+        {
+            "word": "कुमुद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಒಬ್ಬ ವಾನರ",
+            "content": ""
+        },
+        {
+            "word": "कुमुद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಕರ್ಪೂರ",
+            "content": ""
+        },
+        {
+            "word": "कुमुद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಶಾಲ್ಮಲಿದ್ವೀಪದ ಒಂದು ಅಪರ್ವತ",
+            "content": ""
+        },
+        {
+            "word": "कुमुद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಒಬ್ಬ ದೈತ್ಯ",
+            "content": ""
+        },
+        {
+            "word": "कुमुद",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಬಿಳಿನೈದಿಲೆ",
+            "निष्पत्तिः": "मुद (हर्षे)'कः' (३-१-१३५) । (वा० ३-२-५)",
+            "व्युत्पत्तिः": "कौ मोदते",
+            "प्रयोगाः": "'कलरवमुपगीते षट्पदौघेन धत्तः कुमुदकमलखण्डे तुल्यरूपामवस्थाम्'",
+            "उल्लेखाः": "माघ० ११-१५",
+            "content": ""
+        },
+        {
+            "word": "कुमुद",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ರಕ್ತೋತ್ಪಲ \\/ಕೆಂದಾವರೆ",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "कुमुद",
+            "linga": "P",
+            "artha": "नैरृतदिग्गजः",
+            "synonyms": [
+                "कुमुद"
+            ],
+            "num": "1.3.5",
+            "text": "बुधो बृहस्पतिश्चेति दिशां चैव तथा ग्रहाः । ऐरावतः पुण्डरीको वामनः कुमुदोऽञ्जनः ॥",
+            "content": ""
+        },
+        {
+            "word": "कुमुद",
+            "linga": "PN",
+            "artha": "शुक्लोत्पलम्",
+            "synonyms": [
+                "कुमुद",
+                "कैरव"
+            ],
+            "num": "1.10.38",
+            "text": "इन्दीवरं च नीलेऽस्मिन्सिते कुमुदकैरवे । शालूकमेषां कन्दः स्याद्वारिपर्णी तु कुम्भिका ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "कुमुद",
+            "content": "<body><s>kumuda na° kO modate kuda—ka 7 ta° . (su~di) kErave amaraH . <q>kumudAnyeva SaSANkaH savitA boDayati paNkajAnyeva</q> paYcata° . <q>kumudaM picCilaM snigDaM maDuraM hrAdi SIta­lam</q> BAva° pra° tadguRA uktAH . 2 raktapadme medi° 3 rUpye hemaca° . 4 karpUre pu° rAjani° ayamardDacAdi 5 SAlmalidvIpasTe varzaparvataBede . kundaSabde udA° . 6 dakziRadiggaje amaraH tasya SvetotpalaniBatvA­ttaTAtvam . ku BUmi modayati muda—antarBUtaRyarTe­ka . 7 vizRO <q>kumudaH kundaraH kundaH parjanyaH pAvako'nilaH</q> vizRusa° . 8 padme na° trikA° . <q>yasya bAlA bahuvyAsA dIrGalANgUlamASritAH . tAmrAH pItA SItAScEva prakIrRRA GorakarmmaRaH</q> rAmA° ukta lakzaRe 9 vAnaraBede . <q>muzeRamEndadvividEH kumudenANgadena ca</q> BA° va° 288 a° . 1° vizRupArizadaBede . <q>prahasyA­nucarA vizRoH pratyapeDannudAyuDAH</q> ityupakrame kumudaH ku­mudAkzaSca vizvaksenaH patattrirAw” BAga° 8, 21, 1° . 11 merorupazwamBagiriBede pu° . <q>mandaromerumandaraH supArSvaH kumuda ityayutayojanavistAronnatAmeroScaturddiSamavazwamBa­giraya upaklaptAH</q> BA° 5, 16, <lb/><b>1</b> <q>evaM kumudanirUQoyaH SatavallonAma vawastasya skanDeByonIcAnAH payodaDimaDu­guqAnnAdyambaramadyAsanABaraRAdayaH sarvvaeva kAmaduvA nadAH kumudAgrAt patantastaduttareRAvftamupayojayanti</q> tatrEva 12 sarpaBede kumudGatISabde raGuvAkyam . “kumudaH kumudA­kzaSca tittiraH ilikastaTA° BA° A 35 a° 13 dEtyaBede ca . tataH kumudA° caturarTyAM zWak . kOmudika tatsanni­kfzwAdO tri° . tatrArTe zWac . kumudika tatrArTe tri°</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "कुमुद",
+            "content": "<H3><h><key1>kumuda</key1><key2>ku—muda</key2><hom>a</hom></h><body><s>ku—muda</s> <hom>a</hom>   See <ab>s.v.</ab></body><tail><L>51129</L><pc>286,2</pc></tail></H3>\n <H2><h><key1>kumuda</key1><key2>ku/-muda</key2><hom>b</hom></h><body><s>ku/-muda</s> <hom>b</hom>   <lex>n.</lex> [<s>as</s> <lex type=\"hwalt\">m.</lex>, <ls>L.</ls>], ‘exciting what joy’, the esculent white water-lily (<bot>Nymphaea esculenta</bot>), <ls>AV. iv, 34, 5</ls>; <ls>Suśr.</ls>; <ls>Śak.</ls> &amp;c.<info lex=\"m:n\" /></body><tail><L>52411</L><pc>292,3</pc></tail></H2>\n <H2A><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  the red lotus (<bot>Nymphaea rubra</bot>), <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52412</L><pc>292,3</pc></tail></H2A>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body><s>ku/-muda</s>   <lex>m.</lex> camphor, <ls>Bhpr.</ls><info lex=\"m\" /></body><tail><L>52413</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  (in music) <ab>N.</ab> of a <s1 slp1=\"Druvaka\">Dhruvaka</s1><info lex=\"inh\" /></body><tail><L>52414</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  <ab>N.</ab> of a particular comet, <ls>VarBṛS.</ls><info lex=\"inh\" /></body><tail><L>52415</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of a <s1 slp1=\"nAga\">Nāga</s1>, <ls>MBh.</ls>; <ls>Ragh.</ls><info lex=\"inh\" /></body><tail><L>52416</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of an attendant of <s1 slp1=\"skanda\">Skanda</s1> [<ls>MBh. ix, 2558</ls>] or of <s1 slp1=\"vizRu\">Viṣṇu</s1> [<ls>BhP.</ls>]<info lex=\"inh\" /></body><tail><L>52417</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of the elephant of the south-west or southern quarter, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52418</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of a <s1 slp1=\"dEtya\">Daitya</s1>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52419</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of a son of <s1 slp1=\"gada\">Gada</s1> by <s1 slp1=\"bfhatI\">Bṛhatī</s1>, <ls>Hariv. 9193</ls><info lex=\"inh\" /></body><tail><L>52420</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of a confidant of king <s1 slp1=\"unmattAvanti\">Unmattāvanti</s1>, <ls>Rājat.</ls><info lex=\"inh\" /></body><tail><L>52421</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of a monkey-hero, <ls>MBh.</ls>; <ls>R.</ls><info lex=\"inh\" /></body><tail><L>52422</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of a poet<info lex=\"inh\" /></body><tail><L>52423</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of a pupil of <s1 slp1=\"paTya\">Pathya</s1>, <ls>BhP. xii, 7, 2</ls><info lex=\"inh\" /></body><tail><L>52424</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of a mountain, <ls>BhP.</ls>; <ls>VP.</ls><info lex=\"inh\" /></body><tail><L>52425</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  of one of the smaller <s1 slp1=\"dvIpa\">Dvīpa</s1>s, <ls>VP.</ls><info lex=\"inh\" /></body><tail><L>52426</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body><s>ku/-muda</s>   <lex>n.</lex> camphor, <ls>L.</ls><info lex=\"n\" /></body><tail><L>52434</L><pc>292,3</pc></tail></H2B>\n <H2B><h><key1>kumuda</key1><key2>ku/-muda</key2></h><body>  silver, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>52435</L><pc>292,3</pc></tail></H2B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "कुमुद",
+            "content": "<H1><h><key1>kumuda</key1><key2>kumuda</key2></h><body><s>kumuda</s>  <div n=\"1\">n. (<s>-daM</s>) </div><div n=\"2\"> 1. The white esculent water lily, (Mymphæa escu- <lb />lenta.) </div><div n=\"2\"> 2. The red lotus, (Nrubra.) </div><div n=\"2\"> 3. silver. </div><div n=\"1\">m. (<s>-daH</s>) </div><div n=\"2\"> 1. The ele- <lb />phant of the south-west quarter. </div><div n=\"2\"> 2. One of the monkey heroes of <lb />the Ramayana. </div><div n=\"2\"> 3. One of the Naga or serpent race. </div><div n=\"2\"> 4. A Danava <lb />or infernal deity. </div><div n=\"2\"> 5. Camphor. </div><div n=\"1\">f. (<s>-dA</s>) </div><div n=\"2\"> 1. An aquatic plant, (Pistia <lb />stratiotes.) </div><div n=\"2\"> 2. A tree, (Gmelina arborea:) see <s>gamBArI</s>.<s> (-dI)</s> A medi- <lb />cinal and aromatic shrub, commonly Kayaphal.</div><div n=\"E\"> E. <s>ku</s> the earth <lb />&amp;c. <s>mud</s> to be pleased, and <s>ka</s> aff.</div></body><tail><L>10805</L><pc>189-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कुमुद",
+            "content": "<span lang=\"sa\">कुमुद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿಷ್ಣು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>मुद (हर्षे) - \"कः\" (वा० ३-२-५)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>कौ प्रकृतिमण्डल एव तैः सह मोदते<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"कुमुदः कुन्दरः कुन्दः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>वि० स०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"प्राकृते मण्डले भूमौ मोदनाच्च महात्मभिः । मुक्तिभूमिप्रदानाद्वा कुमुदः परिकीर्तितः ॥\" - निरुक्तिः ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमुद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಬ್ಬ ನಾಗರಾಜ /ಕುಶಮಹಾರಾಜನ ಪತ್ನಿಯಾದ ಕುಮುದ್ವತಿಯ ಸಹೋದರ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"नागेन लौल्यात् कुमुदेन नुनमुपात्तमन्तर्ह्रदवासिना तत्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० १६-७६<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमुद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದಕ್ಷಿಣ ದಿಗ್ಗಜ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमुद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಬ್ಬ ವಾನರ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमुद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕರ್ಪೂರ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमुद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶಾಲ್ಮಲಿದ್ವೀಪದ ಒಂದು ಅಪರ್ವತ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमुद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಬ್ಬ ದೈತ್ಯ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमुद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬಿಳಿನೈದಿಲೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>मुद (हर्षे) - \"कः\" (३-१-१३५) । (वा० ३-२-५)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>कौ मोदते<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"कलरवमुपगीते षट्पदौघेन धत्तः कुमुदकमलखण्डे तुल्यरूपामवस्थाम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० ११-१५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुमुद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ರಕ್ತೋತ್ಪಲ /ಕೆಂದಾವರೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

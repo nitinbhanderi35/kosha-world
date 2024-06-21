@@ -1,640 +1,641 @@
-import ts from 'typescript';
-
-/**
- * Callback type used for {@link forEachComment}.
- *
- * @category Callbacks
- */
-type ForEachCommentCallback = (fullText: string, comment: ts.CommentRange) => void;
-/**
- * Iterates over all comments owned by `node` or its children.
- *
- * @category Nodes - Other Utilities
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * forEachComment(node, (fullText, comment) => {
- *    console.log(`Found comment at position ${comment.pos}: '${fullText}'.`);
- * });
- * ```
- */
-declare function forEachComment(node: ts.Node, callback: ForEachCommentCallback, sourceFile?: ts.SourceFile): void;
-
-/**
- * An option that can be tested with {@link isCompilerOptionEnabled}.
- *
- * @category Compiler Options
- */
-type BooleanCompilerOptions = keyof {
-    [K in keyof ts.CompilerOptions as NonNullable<ts.CompilerOptions[K]> extends boolean ? K : never]: unknown;
-};
-/**
- * Checks if a given compiler option is enabled.
- * It handles dependencies of options, e.g. `declaration` is implicitly enabled by `composite` or `strictNullChecks` is enabled by `strict`.
- * However, it does not check dependencies that are already checked and reported as errors, e.g. `checkJs` without `allowJs`.
- * This function only handles boolean flags.
- *
- * @category Compiler Options
- * @example
- * ```ts
- * const options = {
- * 	allowJs: true,
- * };
- *
- * isCompilerOptionEnabled(options, "allowJs"); // true
- * isCompilerOptionEnabled(options, "allowSyntheticDefaultImports"); // false
- * ```
- */
-declare function isCompilerOptionEnabled(options: ts.CompilerOptions, option: BooleanCompilerOptions): boolean;
-/**
- * An option that can be tested with {@link isStrictCompilerOptionEnabled}.
- *
- * @category Compiler Options
- */
-type StrictCompilerOption = "alwaysStrict" | "noImplicitAny" | "noImplicitThis" | "strictBindCallApply" | "strictFunctionTypes" | "strictNullChecks" | "strictPropertyInitialization";
-/**
- * Checks if a given compiler option is enabled, accounting for whether all flags
- * (except `strictPropertyInitialization`) have been enabled by `strict: true`.
- *
- * @category Compiler Options
- * @example
- * ```ts
- * const optionsLenient = {
- * 	noImplicitAny: true,
- * };
- *
- * isStrictCompilerOptionEnabled(optionsLenient, "noImplicitAny"); // true
- * isStrictCompilerOptionEnabled(optionsLenient, "noImplicitThis"); // false
- * ```
- * @example
- * ```ts
- * const optionsStrict = {
- * 	noImplicitThis: false,
- * 	strict: true,
- * };
- *
- * isStrictCompilerOptionEnabled(optionsStrict, "noImplicitAny"); // true
- * isStrictCompilerOptionEnabled(optionsStrict, "noImplicitThis"); // false
- * ```
- */
-declare function isStrictCompilerOptionEnabled(options: ts.CompilerOptions, option: StrictCompilerOption): boolean;
-
-/**
- * Test if the given node has the given `ModifierFlags` set.
- *
- * @category Nodes - Flag Utilities
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isModifierFlagSet(node, ts.ModifierFlags.Abstract)) {
- *   // ...
- * }
- * ```
- */
-declare function isModifierFlagSet(node: ts.Declaration, flag: ts.ModifierFlags): boolean;
-/**
- * Test if the given node has the given `NodeFlags` set.
- *
- * @category Nodes - Flag Utilities
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isNodeFlagSet(node, ts.NodeFlags.AwaitContext)) {
- *   // ...
- * }
- * ```
- */
-declare const isNodeFlagSet: (node: ts.Node, flag: ts.NodeFlags) => boolean;
-/**
- * Test if the given node has the given `ObjectFlags` set.
- *
- * @category Nodes - Flag Utilities
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isObjectFlagSet(node, ts.ObjectFlags.Anonymous)) {
- *   // ...
- * }
- * ```
- */
-declare function isObjectFlagSet(objectType: ts.ObjectType, flag: ts.ObjectFlags): boolean;
-/**
- * Test if the given node has the given `SymbolFlags` set.
- *
- * @category Nodes - Flag Utilities
- * @example
- * ```ts
- * declare const symbol: ts.Symbol;
- *
- * if (isSymbolFlagSet(symbol, ts.SymbolFlags.Accessor)) {
- *   // ...
- * }
- * ```
- */
-declare const isSymbolFlagSet: (symbol: ts.Symbol, flag: ts.SymbolFlags) => boolean;
-/**
- * Test if the given node has the given `TypeFlags` set.
- *
- * @category Nodes - Flag Utilities
- * @example
- * ```ts
- * declare const type: ts.Type;
- *
- * if (isTypeFlagSet(type, ts.TypeFlags.Any)) {
- *   // ...
- * }
- * ```
- */
-declare const isTypeFlagSet: (type: ts.Type, flag: ts.TypeFlags) => boolean;
-
-/**
- * Test if the given iterable includes a modifier of any of the given kinds.
- *
- * @category Modifier Utilities
- * @example
- * ```ts
- * declare const modifiers: ts.Modifier[];
- *
- * includesModifier(modifiers, ts.SyntaxKind.AbstractKeyword);
- * ```
- */
-declare function includesModifier(modifiers: Iterable<ts.ModifierLike> | undefined, ...kinds: ts.ModifierSyntaxKind[]): boolean;
-
-/**
- * An `AssertionExpression` that is declared as const.
- *
- * @category Node Types
- */
-type ConstAssertionExpression = ts.AssertionExpression & {
-    type: ts.TypeReferenceNode;
-    typeName: ConstAssertionIdentifier;
-};
-/**
- * An `Identifier` with an `escapedText` value of `"const"`.
- *
- * @category Node Types
- */
-type ConstAssertionIdentifier = ts.Identifier & {
-    escapedText: ts.__String & "const";
-};
-/**
- * Test if a node is a {@link ConstAssertionExpression}.
- *
- * @category Nodes - Type Guards
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isConstAssertionExpression(node)) {
- *   // ...
- * }
- * ```
- * @returns Whether the given node appears to be a {@link ConstAssertionExpression}.
- */
-declare function isConstAssertionExpression(node: ts.AssertionExpression): node is ConstAssertionExpression;
-/**
- * Test if a node is an `IterationStatement`.
- *
- * @category Nodes - Type Guards
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isIterationStatement(node)) {
- *   // ...
- * }
- * ```
- * @returns Whether the given node appears to be an `IterationStatement`.
- */
-declare function isIterationStatement(node: ts.Node): node is ts.IterationStatement;
-/**
- * Test if a node is a `JSDocNamespaceDeclaration`.
- *
- * @category Nodes - Type Guards
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isJSDocNamespaceDeclaration(node)) {
- *   // ...
- * }
- * ```
- * @returns Whether the given node appears to be a `JSDocNamespaceDeclaration`.
- */
-declare function isJSDocNamespaceDeclaration(node: ts.Node): node is ts.JSDocNamespaceDeclaration;
-/**
- * Test if a node is a `JsxTagNamePropertyAccess`.
- *
- * @category Nodes - Type Guards
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isJsxTagNamePropertyAccess(node)) {
- *   // ...
- * }
- * ```
- * @returns Whether the given node appears to be a `JsxTagNamePropertyAccess`.
- */
-declare function isJsxTagNamePropertyAccess(node: ts.Node): node is ts.JsxTagNamePropertyAccess;
-/**
- * a `NamedDeclaration` that definitely has a name.
- *
- * @category Node Types
- */
-interface NamedDeclarationWithName extends ts.NamedDeclaration {
-    name: ts.DeclarationName;
+{
+    "word": "हि",
+    "KRM": [
+        {
+            "word": "हि",
+            "eid": "1999",
+            "pagenum": 1414,
+            "content": "(2000) <b>“हि गतौ वृद्धौ च”</b>¦ (V-स्वादिः-1257. सक-अक. अनि. पर.) <dvsn n='NI'>हायकः-यिका, हायकः-यिका, <sup>1</sup> जिघीषकः-षिका, <sup>2</sup> जेघीयकः-यिका; इत्यादीनि रूपाणि सर्वाणि पिधातुवत् (991) बोध्यानि । <sup>3</sup> प्रहिण्वन्-ती, <sup>4</sup> प्रजिघाययिषन्-न्ती, <sup>5</sup> सहितम्-संहितम्, संहिता, <sup>6</sup> हयः-हयी, <sup>7</sup> हेतिः, <sup>8</sup> हेतुः, इति विशेषरूपाणि । <F>1. सनि ‘अज्झनगमां सनि’ (6-4-16) इति दीर्घः । ‘हेरचङि’ (7-3-56) इति अभ्यासादुत्तरस्य कुत्वेन घकारः । एवं सन्नन्तेऽत्र धातौ सर्वत्र बोध्यम् ।</F> <F>2. यङन्तेऽपि ‘हेरचङि’ (7-3-56) इति कुत्वं बोध्यम् ।</F> <F>3. शतरि, स्वादित्वात् श्नुप्रत्ययः, गुणनिषेधः । ‘हिनुमीना’ (8-4-15) इति णत्वम् ।</F> <F>4. ण्यधिकस्यापि ‘हेरचङि’ (7-3-56) इति कुत्वम् । अत्र णिजन्तात् सन् । तदन्तात् शता ।</F> <F>5. सम्पूर्वकात् अस्मात् निष्ठायाम् ‘समो वा हिततयोः’ (वा. 6-1-144) इति समो मकारस्य लोपविकल्पः । ‘संहिता’ इति तु ‘क्तिच्क्तौ च संज्ञायाम्’ (3-3-74) इति क्तान्तः वेदसंहितावाचिका ।</F> <F>6. पचाद्यचि हयः = अश्वः । अतिशयेन गच्छतीत्यर्थः । हयी इति तु गौरादिङीषन्तः ।</F> <F>7. ‘ऊतियूतिजूतिसातिहेतिकीर्तयश्च’ (3-3-97) इति निपातनात् क्तिनि प्रकृतेर्गुणः । हेतिः = आयुधम् ।</F> <F>8. औणादिके (द. उ. 1-125) तुन्प्रत्यये रूपम् । हेतुः = कारणम् ।</F>"
+        }
+    ],
+    "ACPH": [
+        {
+            "word": "हि",
+            "linga": "अ",
+            "pagenum": "8",
+            "kanda": "सामान्यकाण्डः",
+            "varga": "द्वित्रिचतुष्पञ्चेन्द्रियाः",
+            "eid": "5086",
+            "group": "150",
+            "synonyms": [
+                "पादपूरण"
+            ],
+            "content": "तु हि च स्म ह वै  पादपूरणे पूजने स्वती ॥ १९७ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "हि",
+            "eid": "31397",
+            "pagenum": 1171,
+            "content": "हि¦ <i><ab>ind.</ab></i> (Never used at the beginning of a sentence) It has the following senses:-- <b>1</b> For, because (expressing a strict or <lbinfo n='logi+cal'/> logical reason); अग्निरिहास्ति धूमो हि <lbinfo n='df#Syate'/> दृश्यते <ls>G. M.</ls>; <ls>R. 5. 10.</ls> <b>--2</b> Indeed, surely; देव प्रयोगप्रधानं हि नाट्यशास्त्रं <ls>M. 1</ls>; न हि कमलिनीं दृष्ठ्वा ग्राहमवेक्षते मतंगजः <ls>M. 3.</ls> <b>--3</b> For instance, as is well known; प्रजानामेव भूत्यर्थं स ताभ्यो बलिमग्रहीत् । सहस्रगुणमुत्स्रष्टुमादत्ते हि रसं रविः <ls>R. 1. 18.</ls> <b>--4</b> Only, alone (to emphasize an idea); मूढो हि <lbinfo n='madanenA#yAsyate'/> मदनेनायास्यते <ls>K. 155.</ls> <b>--5</b> Sometimes it is used merely as an expletive."
+        },
+        {
+            "word": "हि",
+            "eid": "31398",
+            "pagenum": 1171,
+            "content": "हि¦ {c5c} <ab>P.</ab> (हिनोति, हित; <i><ab>caus.</ab></i>  <lbinfo n='hAya#yati'/> हाययति; <i><ab>desid.</ab></i> जिघीषति) <b>1</b> To send forth, impel. <b>--2</b> To cast, throw, discharge, shoot; गदा शक्रजिता जिघ्ये <ls>Bk. 14. 36.</ls> <b>--3</b> To excite, incite, urge. <b>--4</b> To promote, further. <b>--5</b> To gratify, please, exhilarate. <b>--6</b> To go or proceed."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "हि",
+            "eid": "17103",
+            "pagenum": 1113,
+            "content": "1. हि¦ <i>HI,</i> ii. 5, <i>hinu,</i> <ab>Par.</ab> <b>1.</b> To go. <b>2.</b> To send. <b>3.</b> To discharge, as an arrow from a bow, to throw, <ls>Bhaṭṭ.</ls> 14, 36. -- With प्र <i>pra, hiṇu,</i> <b>1.</b> To send, <ls>Pañc.</ls> 161, 19; <ls>Daśak.</ls> in <ls>Chr.</ls> 184, 19. <b>2.</b> To discharge, to throw, <ls>Chr.</ls> 40, 12 (<ab>anomal.</ab> <i>°hiṇvam</i>). <i>prahita,</i> <b>1.</b> Dispatched, <ls>Hit.</ls> 92, 20. <b>2.</b> Stretched out, extended. -- With अनुप्र <i>anu-pra,</i> <i>anuprahita,</i> Dispatched after (something), <ls>Utt. Rāmac.</ls> 39, 13."
+        },
+        {
+            "word": "हि",
+            "eid": "17104",
+            "pagenum": 1113,
+            "content": "2. हि¦ <i>hi,</i> <b>I.</b> A particle, <b>1.</b> Because, <ls>Utt. Rāmac.</ls> 167, 8; for, <ls>Chr.</ls> 4, 16; on account of; with preceding <i>tathā,</i> Namely, to wit, <ls>Śāk.</ls> <ab>d.</ab> 31; <ls>Pañc.</ls> 221, 6. <b>2.</b> Assuredly (assertion), Matsyop. 22; <ls>Chr.</ls> 288, 11 = <ls>Rigv.</ls> i. 48, 11. <b>3.</b> Indeed (interrogation), <ls>Hiḍ.</ls> 3, 17. <b>4.</b> But, <ls>Chr.</ls> 10, 2; <ls>Daśak.</ls> in <ls>Chr.</ls> 180, 20. <b>II.</b> An interjection, <b>1.</b> Of grief, Ah! alas! <b>2.</b> Of envy and hurry."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "हि",
+            "eid": "8865",
+            "pagenum": 400,
+            "content": "1. हि¦ 5. <i>P.</i> (anom. v. gr. 443. 444. 572. गतौ <i>K.</i> गतौ वर्द्ध- ने <i>V.</i>) 1) ire. 2) mittere. RIGV. 34. 11.: वज्रं हि- न्वन्ति; BHATT. 14. 36.: गदा शक्रजिता जिघ्ये (schol. प्रहिता, प्रेषिता). <i>Vid. praef.</i> प्र. 3) augere, amplificare. RIGV. 23. 17.: ता नो हिन्वन्त्व् अध्वरम्. 4) tueri. RIGV. 18. 4. (Cf. 2. हा, गा; fortasse lat. <i>cieo</i>, gr. <lang n='greek'>ϰίω</lang> cum <i>c</i>, <lang n='greek'>ϰ</lang> = ह् sicut in <i>cor</i>, <lang n='greek'>ϰέαϱ</lang>; v. हिम.) <dvsn n='pfx'>c. प्र प्रहिणोमि (v. gr. min. 94^<i>b</i>). annot.) mittere. A. 8. 30.: तान् अहम्…प्राहिण्वं यमसादनम्; 8. 8.: अस्त्रम्… प्राहिणवम्; 9. 17. IN. 4. 2. -- MAH. 2. 1244.: स दूतान् प्राहिणोत्; RAGH. 12. 84.: रथन् तस्मै प्रजिघाय पु- रन्दरः."
+        },
+        {
+            "word": "हि",
+            "eid": "8866",
+            "pagenum": 400,
+            "content": "2. हि¦ <i>Conj.</i> 1) enim. BR. 1. 16. BH. 3. 5. 2) <i>particula inter-</i> <i>rogativa.</i> H. 3. 17. 3) quidem, certe. M. 6. 22. 26. 27."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "हि",
+            "eid": "19606",
+            "pagenum": 753,
+            "content": "हि¦ <i>hi</i> [<ab>conj.</ab>] car, en effet, -- <ab>Interj.</ab> ah! oh!"
+        },
+        {
+            "word": "हि",
+            "eid": "19607",
+            "pagenum": 753,
+            "content": "*हि¦ <i>hi.</i> <i>hinomi</i> 5; <ab>p.</ab> <i>jighāya;</i> <ab>f1.</ab> <i>hetāsmi;</i> <lbinfo n='8'/> <ab>f2.</ab> <i>heṣyāmi;</i> <ab>a1.</ab> <i>ahaiṣam.</i> Aller, s'avancer. <lbinfo n='7'/> || Jeter, lancer, <i>vajram</i> la foudre, <ab>Vd.</ab>, || au <ab>fig.</ab> exciter, mener. || Accroître, aider: <i>na somo hinoti</i> <i>vṛjinam</i> le <s1 slp1='soma'>soma</s1> n'est pas favorable à la tristesse, <ab>Vd.</ab>"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "हि",
+            "eid": "39628",
+            "pagenum": 662,
+            "content": "1 हि¦ हिनो/ति हिनुते हि/न्वति <vlex type='root'/> (ह/यति), <ab>pp.</ab> हित/ impel, urge on, set in motion, hurl, send forth (<ab>M.</ab> intr. hasten, speed); further, help to (<ab>dat.</ab>); get, procure. आ <ab>M.</ab> bring near. प्र (हिणोति) urge on, impel, hurl, cast, turn upon (<ab>dat.</ab> or <ab>loc.</ab>); call upon, summon; send out, dismiss, dispatch to (<ab>dat.</ab>, <ab>gen.</ab> ±अन्तिकम् or पार्श्वम्, <ab>acc.</ab> ±प्रति), in order to (<ab>dat.</ab> or <ab>infin.</ab>); bring near, get, procure, furnish. अनुप्र send after. अभिप्र send hither. उपप्र send to (<ab>acc.</ab>). प्रतिप्र send or drive back. सम् send out; bring together, join, combine, compose."
+        },
+        {
+            "word": "हि",
+            "eid": "39629",
+            "pagenum": 662,
+            "content": "2 हि/¦ (<ab>indecl.</ab>) for, because, namely; surely, verily, indeed; well, pray (with an <ab>imper.</ab>, <ab>conj.</ab>, or optat.)."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "हि",
+            "eid": "29391",
+            "pagenum": 532,
+            "content": "1. हि,¦ हिनो/ति, हिनुते, हि/न्वति (जिघ्यति, ह/यति) in Bewegung setzen <i>(Med. auch</i> <i>refl.)</i>, antreiben, fördern; schleudern, werfen, schicken, herbeischaffen. <i>p. p.</i> हित/ <i>s. bes.</i> आ herbeischaffen, bringen. प्र (प्रहिणोति) erregen, anreiben, schleudern, <lbinfo n='5'/> werfen, herbeischaffen, zustellen, hinreichen; auuschicken, verjagen, senden, entlassen. <i>p. p.</i> प्र/हित angetrieben, geworfen, <lbinfo n='7'/> gerichtet <i>(Augen)</i>, bingschafft, gebraucht;' abgeschickt, entsandt, fortgejagt. <lbinfo n='7'/> उपप्र hinschicken zu <i>(Dat.).</i>"
+        },
+        {
+            "word": "हि",
+            "eid": "29392",
+            "pagenum": 532,
+            "content": "2. हि/¦ <i>(indecl.)</i> denn, ja, nämlich, allerdings, wohl; so—denn, doch <i>(auffordern beim</i> <i>Imperat. o. opt.); oft nur explet. nie</i> <i>am Anfang eines Satzes.</i>"
+        }
+    ],
+    "GRA": [
+        {
+            "word": "हि",
+            "eid": "10644",
+            "pagenum": 1661,
+            "content": "<b>√hi,</b>¦ „vorwärtsschaffen“, theils von sinnlicher Bewegung, theils in geistigem Sinne ein Werk, eine Sache oder eine Person „fördern“. Also 1〉 <i>treiben, vorwärtstreiben,</i> Ross, Wagen [<ab>A.</ab>], Kühe = Wasser [{265,5}], Milch [{104,4}]; insbesondere 2〉 bildlich den Soma, welcher dann meist einem Rosse verglichen ist, <i>entsenden, vorwärtstreiben;</i> 3〉 <i>schleudern</i> [<ab>A.</ab>]; 4〉 die Stimme [<ab>A.</ab>] <i>entsenden;</i> 5〉 jemandem [<ab>D.</ab>] etwas [<ab>A.</ab>] <i>senden, zutreiben, zurichten,</i> namentlich 6〉 Opfer, Gaben; 7〉 Gut [<ab>A.</ab>] <i>senden, herbeischaffen;</i> 8〉 Opfer, Gebet <ab>u. s. w.</ab> [<ab>A.</ab>] <i>fördern, bereiten, zurichten;</i> 9〉 jemand [<ab>A.</ab>] wozu [<ab>D.</ab>] <i>anregen, antreiben,</i> oder 10〉 ihn dazu <i>gelangen lassen;</i> 11〉 <ab>me.</ab>, auch mit tanúas ({854,12}) <i>sich beeilen, eilen</i> auch mit <ab>Loc.</ab> (wohin) oder <ab>Dat.</ab> (wozu); 12〉 jemand [<ab>A.</ab>] <i>fördern, unterstützen, begünstigen, lieben;</i> insbesondere 13〉 hitá lieb; 14〉 jemand [<ab>A.</ab>] wodurch [<ab>I.</ab>] <i>fördern,</i> womit <i>segnen;</i> 15〉 Götter [<ab>A.</ab>] <i>verherrlichen, ehren,</i> auch mit <ab>Instr.</ab> (wodurch); 16〉 den Agni [<ab>A.</ab>] <i>anregen, antreiben</i> (durch Anzünden, Opfergaben <ab>u. s. w.</ab>). <dvsn n='Pf'>Mit <b>ánu</b> <i>hintreiben</i> Rosse [<ab>A.</ab>] zu [<ab>A.</ab>]. <dvsn n='Pf'><b>ā́</b> jemandem [<ab>D.</ab>] <i>zusenden</i>. [Page1662] <dvsn n='Pf'><b>pári</b> jemandem [<ab>D.</ab>] etwas [<ab>A.</ab>] <i>umlegen</i> (Gebet wie einen Leibgurt). <dvsn n='Pf'><b>prá</b> 1〉 einen Boten [<ab>A.</ab>] <i>senden;</i> 3〉 jemand, etwas [<ab>A.</ab>] <i>hinsenden</i> zu [<ab>D.</ab>]; 3〉 den Agni wie ein Ross [<ab>A.</ab>] <i>vorwärtstreiben, antreiben;</i> 4〉 die Somawelle [<ab>A.</ab>] <i>vorwärtstreiben,</i> oder 5〉 sie einem Gotte [<ab>D.</ab>] <i>zutreiben;</i> 6〉 Gottesdienst [<ab>A.</ab>] <i>fördern</i>. <dvsn n='Pf'><b>sám</b> 1〉 jemandem [<ab>D.</ab>] etwas [<ab>A.</ab>] <i>zubereiten, fertig machen</i> (Soma, Loblied wie einen Wagen); 2〉 jemand [<ab>A.</ab>] durch Opferwerk [<ab>I.</ab>] <i>verherrlichen;</i> 3〉 <i>zubereiten, zurüsten</i> [<ab>A.</ab>]. <dvsn n='H'>Stamm I. <b>hinu:</b> <dvsn n='TS'>-ómi <b>pari</b> vām hótrām {620,6}. <dvsn n='TS'>-omi 1〉 bildlich tuā́m (vājínam) {223,3}. — 6〉 adhvarám śúcibhyas {572,12}. — <b>prá</b> 1〉 agním {842,9} (dūrám). <b>sám</b> 1〉 asmaí stómam 〰 rátham ná táṣṭā‿ iva tátsināya {61,4}. — 2〉 vām kármaṇā iṣā́ {510,1}. <dvsn n='TS'>-óṣi 10〉 yám dhánāya {680,5}. — 12〉 yám mártiam {624,16}. — 14〉 yám rāyā́ {454,3}. <dvsn n='TS'>-óti 12〉 yám mártiam {18,4}. — 15〉 vām {153,3} (saparyán). <dvsn n='TS'>-oti 12〉 ná sómas vṛjinám {620,13}. <dvsn n='TS'>-vánti 1〉 áśvam {287,24}. — 2〉 {777,1} (sū́ram) = {779,9}; {809,57} (daśábhis kṣípābhis); hárim {777,8} (ádribhis); {811,2} (yā́tave). — 15〉 kavím (agním) {522,2}; tvā (sómam) {720,4} (dhītáyas); (índram) {946,9}. <dvsn n='TS'>-vanti 2〉 {713,8}; {738,6}; {818,12}; {819,13} (yáthā rátham). _{819,24}; hárim {738,5}; hárim 〰 ádribhis {742,5}; {744,2}; {750,2}; {751,6}; {762,3}; {765,4}; (apás) dhánutrīs {265,16}. — 3〉 vájram sā́yakam {84,11}. — 6〉 sómam te {280,5}; túbhyam dhāsím {663,29}. — 8〉 yajñám {813,3}. — 10〉 tám krátave {853,16}. — 15〉 tám (agním) dhītáyas {144,5}; tuā́m (agním) cíttibhis {664,19}; sakṣáṇim (sómam) {790,3}; enam {897,5}. <dvsn n='TS'>-van [<ab>Co.</ab>] 5〉 sthirā́ya hárī {922,7}. <dvsn n='TS'>-u 10〉 asmā́n rāyé {486,30}; krátve dákṣāya nas {748,3}. <dvsn n='TS'>-uhi 1〉 rátham {486,14}. — 15〉 agním gīrbhís {143,4}. <dvsn n='TS'>-utāt [<pe>2.</pe> <ab>s.</ab>] <b>prá</b> 3〉 enam pitṛ́bhyas {842,1}. <dvsn n='TS'>-otam 8〉 stómam {184,4}. <dvsn n='TS'>-óta 8〉 yajñám {550,6}; adhvarám, bráhma {856,11} (sanáye dhánānām). <dvsn n='TS'>-ota 2〉 sómam {809,4} (mahaté dhánāya); hárim {774,18} (vā́jāya yā́tave). — 8〉 yajñám {550,5}. — 15〉 índram {205,4}; aśvínā {431,2} (neben yajadhvam). — <b>prá</b> 2〉 áśvam (agním) {1014,1}. — 5〉 asmai mádhumantam ūrmím {856,8}. <dvsn n='TS'>-otana <b>prá</b> 5〉 índrāya mádhumantam ūrmím {856,7}. <dvsn n='TS'>-vantu 1〉 agním sáptim āśúm iva‿ājíṣu {982,1}. — 8〉 adhvarám {23,17}. — 10〉 nas sātáye {111,4}. — 12〉 nas {225,12}. <dvsn n='TS'>-vé [<pe>3.</pe> <ab>s.</ab> <ab>me.</ab> passivisch] 1〉 árvā (agnís) {303,11}. <dvsn n='TS'>-ve [<ab>dass.</ab>] 2〉 sómas 〰 parāváti {756,2}. <dvsn n='TS'>-váte [<pe>3.</pe> <ab>p.</ab>] 11〉 vā́cam īráyati (sóme) {784,1}. <dvsn n='TS'>-viré 6〉 tvā (sómam) devátātaye {777,27}. — 11〉 tanúas sóme {854,12}. <dvsn n='TS'>-vire 7〉 vásu {710,6}. — 9〉 agním admasádyāya {663,19}. — 11〉 té 〰 té [Page1663] invire {360,6}; ké vā́jāya {876,3}. — 15〉 tvā́m (índram) {635,8}. — ā́ kakṣī́vate {786,8} (gónām?). <dvsn n='TS'>-avā [<pe>1.</pe> <ab>s.</ab> <ab>Iv.</ab> <ls>Pada</ls> falsch -ava] <b>prá</b> 3〉 tád te {921,13}. <dvsn n='H'><ab>Imperf.</ab> <b>ahinu:</b> <dvsn n='TS'>-van 1〉 vīḍaú satī́s (gā́s, apás) {265,5}. <dvsn n='H'>Stamm II. <b>hinvá</b> [aus Stamm I. entsprungen]: <dvsn n='TS'>-a 5〉 tā́m (sénām) nas {982,2}. <dvsn n='TS'>-é [<pe>1.</pe> <ab>s.</ab>] 2〉 〰 vā́jeṣu vājínam {777,11}. <dvsn n='TS'>-atu 10〉 nas dhiyé vā́jāya {27,11}. <dvsn n='H'>Doppelstamm <b>hiṣa:</b> <dvsn n='TS'>-e [<pe>1.</pe> <ab>s.</ab> <ab>me.</ab>] <b>prá</b> 2〉 agním áśvam ná {523,1}. <dvsn n='H'>Aorist <b>áhi</b> (betont {667,6}; {589,3}): <dvsn n='TS'>-ema [unter <hom>1.</hom> ah zu streichen], 6〉 te ucátham {210,7}. — 8〉 yajñám {589,3}. — 15〉 tvā matíbhis {914,5}. <dvsn n='TS'>-etana 12〉 yám {667,6} (ādityās). <dvsn n='TS'>-yan 2〉 tám (sómam) {738,3}. _{738,4}. — <b>sám</b> 1〉 tám (sómam) te {481,2}. <dvsn n='H'><b>hi:</b> <dvsn n='TS'>-eta <b>prá</b> 4〉 indrapā́ṇam ūrmím {856,9} (sindhavas). <dvsn n='H'><ab>Aor.</ab> <b>aheṣ:</b> <dvsn n='TS'>-ata [<pe>3.</pe> <ab>p.</ab>] 11〉 vājínas {734,1}; mahiṣā́s {785,2}; {798,25}. — <b>sám</b> 3〉 rátham ná (sómam) {783,5} (dáśa svásāras). <dvsn n='H'><ab>Part.</ab> <b>hinvát</b> [von Stamm I.]: <dvsn n='TS'>-án <b>ánu</b> árvatas {390,2}. — 8〉 ṛtásya dī́dhitim {814,1}. _{814,8}. <dvsn n='TS'>-ántas 1〉 hárī {922,2}. <dvsn n='TS'>-atī́s 15〉 (tvā dhībhís) {778,8}. <dvsn n='H'><b>hinvāná</b> in medialem Sinne: <dvsn n='TS'>-ás 4〉 vā́cam {809,32}; {796,4}. — 6〉 túbhyam gā́s apás {227,1}. — 8〉 dhíyas {526,1}; {965,5}. — 12〉 mā́nuṣā yugā́ {724,7}; ā́piam {774,10}; mā́nuṣīs apás {775,7}. — <b>prá</b> 6〉 ṛtám {819,15}. <dvsn n='TS'>-ā́ [<ab>du.</ab>] 12〉 mithás tanúā {891,2}. <dvsn n='TS'>-ā́s 1〉 páyas {104,4}. — 8〉 dhíyas {212,5}. <dvsn n='TS'>-ā́sas 11〉 {33,8}. <dvsn n='H'><b>hinvāná</b> passivisch: <dvsn n='TS'>-ás 2〉 sómas {724,8}; {746,1}; {760,5}; {776,9}. _{776,29} (neben hetṛ́bhis yatás); {777,25} (gós ádhi tvací); {789,4}; {788,2}; {802,1}; {817,2}. <dvsn n='TS'>-ám 2〉 (sómam) 〰 ná vājayúm {621,19}. <dvsn n='TS'>-ā́sas 1〉 ráthās ná (sómās) {722,2}; 〰 ná sáptayas {777,26}. — 2〉 índavas {776,16}. <dvsn n='H'><b>háyat</b> [von Stamm háya]: <dvsn n='TS'>-antā 12〉 ohne Objekt {116,18} (aśvínā). <dvsn n='H'><ab>Part.</ab> <ab>Aor.</ab> <b>hiyāná</b> (passivisch): <dvsn n='TS'>-ás 1〉 2〉 ráthas ná {804,1}; átyas ná {798,3}. — 2〉 índus {810,2}; indus 〰 sotṛ́bhis {742,2}; {819,26}. <dvsn n='TS'>-ás (zu sprechen hyānás) 1〉 2〉 〰 áśvas ná sotṛ́bhis {1018,5}. <dvsn n='TS'>-ásya 16〉 dákṣos (agnés) {195,4}. <dvsn n='TS'>-ā́s (zu sprechen hyānā́s) 1〉 2〉 átyās 〰 ná hetṛ́bhis {725,6}. <dvsn n='H'><ab>Part.</ab> II. <b>hitá</b> [<ab>vgl.</ab> <hom>1.</hom> dhā]: <dvsn n='TS'>-ás 1〉 {897,10}(?). — 2〉 {727,3}; {737,2}; {756,2}; {774,10}; {810,2}; {740,1} (vājī́ nṛ́bhis); {782,10} [Page1664] (〰 ná sáptis); {778,23} (átyas); {798,13} (śakunás yáthā). — 15〉 (agnís) {669,4} = {966,3} (dhītíbhis); (sómas) {721,4} (dhītíbhis). <dvsn n='TS'>-ám [<ab>m.</ab>] 1〉 agním máryam ná vājínam {663,25}. — 2〉 sómam {786,4}; {927,7} (oder <ab>n.</ab> und dhánam zu ergänzen, also dann von dhā). — 15〉 (sómam) {780,7} (dhītíbhis). <dvsn n='TS'>-ám [<ab>n.</ab>] 5〉 vām pūrvapéyam {135,4}. — 8〉 tád ukthiam {105,12}. — 13〉 yádi tátra te {842,3}. <dvsn n='TS'>-éna 13〉 kṣétrasya pátinā {353,1}. <dvsn n='TS'>-é 13〉 mitré {958,5}; toké 〰 tánaye {337,6}. <dvsn n='TS'>-ā́s 13〉 marútas 〰 iva {166,3}. <dvsn n='TS'>-ā́ni 7〉 vásūni {396,3}. <dvsn n='H'><b>hita</b> [<ab>vgl.</ab> á-hita <ab>u. s. w.</ab>]: <dvsn n='TS'>-as <b>prá</b> 1〉 dūtás {991,4}. <dvsn n='H'><ab>Part.</ab> IV. <b>hétua:</b> <dvsn n='TS'>-as 1〉 sáptis {559,2}. <dvsn n='H'><ab>Inf.</ab> <b>hí:</b> <dvsn n='TS'>-íe [<ab>D.</ab>] <b>pra</b> 1〉 dūtā́ya {935,3}."
+        },
+        {
+            "word": "हि",
+            "eid": "10645",
+            "pagenum": 1664,
+            "content": "<b>hí</b>¦ (bis _{109,1} sind alle Stellen berücksichtigt, von da an nur einzelne); 1〉 <i>denn,</i> in Behauptungen (<ab>Indic.</ab>) a〉 meist hinter des erste Wort des Satzes gestellt, so hinter: evā́ {8,8}—_{8,10}; enā́ {30,3}; nā́nā {102,5}; yūyám {15,2}; tuám {15,3}; {97,6}; yuvā́ku {17,4}; vayám {30,21}; yuvós {34,1}. _{34,10}; sá {52,3}; {55,6}; {70,5}; {77,3}; {87,4}; tā́ {28,7}; {109,3}; té {90,2}; tā́n {94,3}; suté {16,4}; gántāras {17,2}; ugrā́s {23,10}; urúm {24,8}; śúnaḥśépas {24,13}; suagnáyas {26,8}; samānáyojanas {30,18}; sthirám {37,9}; ásāmi {39,9}; júṣṭas {44,2}; pátis {44,9}; śruṣṭīvā́nas {45,2}; víśvasya {48,10}; vinchántī {49,4}; ṛtásya {73,6}; ródasī {85,1}; purvī́bhis {86,6}; ṛtásya {94,1}; rā́jā {98,1}; so auch nach Verben: vádhīs {33,4}; ásti {36,12}; {37,15}; ási {81,2}; vidmā́ {10,10}; {81,8}; cakrā́the {108,3}; áśravam {109,2}, oder nach Richtungswörtern: párā {25,4}; ā́ {26,3}; sám {44,7}; so auch bei Sätzen, die in ein Versglied eingeschaltet sind, hinter: ráthas {54,3}; nṛmṇám {80,3}; ápa {205,3}; bahávas {209,3}; b〉 hinter dem zweiten Worte des Satzes, wenn dies mit dem ersten eng zusammengehört, so hinter: yád cid {24,4}; {26,6}; {28,5}; {84,9}; yé cid {180,14}; nū́ cid {53,1}; yuvā́m cid {180,8}; vayám cid {180,7}; táva ‿íd {15,5}; tuā́m íd {40,2}; hradám ná {52,7}; máde-made {81,7}; ákṣan ámīmadanta {82,2}; índreṇa sám {6,7}; c〉 hinter späteren Gliedern des Satzes, wenn die ersten Glieder hervorgehoben werden sollen, so hinter: ā́ {32,6}; sámk {140,8}; priyé {47,10}; dadárśa {105,18}; índavas vām uśánti {2,4}. <dvsn n='P'>2〉 hí bezeichnet die Thatsache (nicht als Grund der vorher erwähnten wie in 1, sondern) als allbekannte, etwa wie im Deutschen das eingeschaltete <i>ja</i>. So besonders im Eingange eines Liedes nach: itthā́ {80,1}; índrāya {131,1}; té {160,1}; tuám {442,1}; {443,1}; ví {109,1} (ákhyam); yád cid {25,1}; {29,1}; márutas yásya {86,1}. <dvsn n='P'>3〉 bei Sätzen die eine Aufforderung enthalten, um die Erfüllung derselben als eine [Page1665] erwartete oder erwünschte zu bezeichnen, deutsch: <i>doch, so — denn,</i> a〉 bei Imperativsätzen: yukṣvā́ 〰 {10,3}; {14,12}; {92,15}; ā 〰 yātám {108,6}—_{108,12}; vásiṣvā {26,1}; vā́jam 〰 váṃsua {48,11}; suśármaṇā suávasā 〰 bhūtám {93,7}; b〉 bei conjunctivischen Sätzen: asmā́n ca tā́n ca prá 〰 nési vásyas ā́ {192,16}; antár 〰 khyás {81,9}; c〉 bei Optativsātzen: juṣéta 〰 {131,6}; bhágavatī 〰 bhūyā́s {164,40}. <dvsn n='P'>4〉 nabhí siehe für sich. <dvsn n='P'>Anmerkung. Das Verb des Satzes, zu dem hí gehört, ist stets betont; scheinbare Ausnahmen beruhen auf Druckfehlern (<ab>z. B.</ab> bei <ls>Aufr.</ls> {163,13}; {241,7})."
+        }
+    ],
+    "IEG": [
+        {
+            "word": "हि",
+            "eid": "2235",
+            "pagenum": 129,
+            "content": "<i>hi</i>¦ (IE 8-1), abbreviation of <i>hiraṇya,</i> ‘cash’ or ‘revenue income in cash’. Cf. <i>sāṃ-hi.</i>"
+        }
+    ],
+    "LAN": [
+        {
+            "word": "हि",
+            "eid": "4897",
+            "pagenum": 286,
+            "content": "<b>√hi</b>¦ (<b>hinóti, hinuté; jighā́ya; áhaiṣīt;</b> <b>heṣyáti; hitá</b>). set in motion, drive, impel. <dvsn n='p'/><b>+ pra,</b> send off <i>or</i> away; deliver over."
+        },
+        {
+            "word": "हि",
+            "eid": "4898",
+            "pagenum": 286,
+            "content": "<b>hí,</b>¦ <i>particle.</i> <dvsn n='2'/><b>—1.</b> <i>asseverative:</i> surely, verily, indeed, <ls n='lan,18,22, 23'>18<sup>22, 23</sup></ls>, <ls n='lan,22,20'>22<sup>20</sup></ls>, <ls n='lan,23,21'>23<sup>21</sup></ls>, <ls n='lan,28,15'>28<sup>15</sup></ls>, <ls n='lan,35,21'>35<sup>21</sup></ls>, <ls n='lan,83,1'>83<sup>1</sup></ls>, <ab>etc.</ab>; <dvsn n='2'/><b>—2.</b> <i>giving a reason:</i> because; for, <ls n='lan,3,19'>3<sup>19</sup></ls>, <ab>etc.</ab>, <ls n='lan,53,2'>53<sup>2</sup></ls>, <ls n='lan,70,11'>70<sup>11</sup></ls>; <dvsn n='2'/><b>—3.</b> <i><ab>w.</ab></i> <i>interrogatives,</i> pray, <ls n='lan,11,1'>11<sup>1</sup></ls>, <ls n='lan,13,14'>13<sup>14</sup></ls>; <i>--finite verb</i> <i>accented <ab>w.</ab></i> <b>hí</b> [<ls n='wg,595'>595d</ls>], <ls n='lan,72,18'>72<sup>18</sup></ls>; <b>hí</b> <i>never at begof </i> <lbinfo n='beg-of'/> <i>sentence.</i>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "हि",
+            "eid": "43214",
+            "pagenum": 832,
+            "content": "hi¦ <i>ind. (never used at the beginning of a sentence)</i> A particle expressing- (1) for, because, अग्निर्ह्यस्ति धूमो हि दृश्यते <ls>G.M.</ls>; (2) indeed, surely, न हि कमलिनीं दृष्ट्वा ग्राहमवेक्षते मतंगजः <ls>Mal.</ls>iii.; (3) for instance, सहस्रगुणमुत्स्रष्टुमादत्ते हि रसं रविः <ls>R.</ls>i.18; (4) only, alone, मूढो हि मदनेनायास्यते <ls>Kad.</ls> <P>(This particle is sometimes used as a mere expletive.)"
+        },
+        {
+            "word": "हि",
+            "eid": "43215",
+            "pagenum": 832,
+            "content": "hi¦ <i>vt. 5P (pp. हित; pres. हिनोति; pass. हीयते; desid. जिघीषति)</i> 1. To send, to send forth; 2. to discharge, to throw, गदा शक्रजिता जिघ्ये <ls>Bt.</ls>xiv.36; 3. to excite, to urge; 4. to further, to promote; 5. to please, to gratify; 6. to go.<P>With प्र-, 1. to discharge, to throw, रक्षस्तस्मिन्महोत्पलं प्रजिघाय <ls>R.</ls>xv.21, <ls>Bt.</ls>xv.121; 2. to send, to send forth, <ls>R.</ls>xii.84, viii.79, <ls>Bt.</ls>xv.104, xiv.1."
+        }
+    ],
+    "MD": [
+        {
+            "word": "हि",
+            "eid": "20508",
+            "pagenum": 377,
+            "content": "हि¦ HI, <ab>V.</ab> <b>hinó, hinu,</b> <ab>V.</ab>: set in motion, 🞄urge on, further; be set in motion <i>or</i> urged 🞄on, hasten (<lex>Ā.</lex>); incite <i>or</i> assist to (<ab>d.</ab>); 🞄convey; <ab>V.</ab>, <ab>C.</ab>: cast, hurl; <ab>P.</ab> (= √ <hom>2.</hom> hā): forsake, 🞄abandon; get rid of: <ab>pr.</ab> <ab>pt.</ab> <b>hinvāná,</b> 🞄speeding <ab>etc.</ab>; <ab>pp.</ab> <b>hitá,</b> (<ab>V.</ab>) urged on, speeding; 🞄called upon, invoked. <b>pari,</b> bring, offer 🞄(<ab>RV.</ab>). <b>pra</b> (<b>-hiṇoti</b>), urge on, incite (<ab>RV.</ab>); 🞄<ab>V.</ab>, <ab>C.</ab>: convey <i>or</i> send to, bestow on (<ab>d.</ab>); 🞄despatch (<i>messengers</i>); drive away, dismiss, 🞄send, — away, to (<i>any one</i>, <ab>ac.</ab> ± prati, <ab>d.</ab>, <ab>g.</ab>, 🞄antikam <i>or</i> pārśvam <ab>w.</ab> <ab>g.</ab>; to <i>a place</i>, <ab>ac.</ab> ± 🞄prati; in order to, <ab>d.</ab>, <ab>inf.</ab>; <ab>ord. mg.</ab>); <ab>C.</ab>: 🞄cast, hurl, discharge, at (<ab>d.</ab>, <ab>lc.</ab>); direct (<i>the 🞄gaze</i>) towards (<ab>ac.</ab>); forsake (<i>very rare</i> = 🞄pra-hā); <b>-jighya-ti, -tu,</b> (<ab>Br.</ab>) <ab>perh.</ab> <ab>incorr.</ab> 🞄<i>for</i> <b>-jigā-ti, -tu</b>: <ab>pp.</ab> <b>práhita,</b> <ab>P.</ab>: urged on, 🞄incited; <ab>C.</ab>: hurled, discharged, at (<ab>lc.</ab>); cast, 🞄directed (<i>eye, gaze, mind</i>) towards (<ab>—°</ab>); imbedded 🞄(<i>nails</i>); conveyed, sent (<i>things</i>); sent 🞄away, expelled; <ab>V.</ab>, <ab>C.</ab>: sent out, despatched 🞄(<i>messengers</i> <ab>etc.</ab>), to <i>any one</i> (pārśve <ab>w.</ab> <ab>g.</ab>): 🞄<b>-vat,</b> <ab>pp.</ab> <ab>act.</ab> = <i>finite</i> <ab>vb.</ab> (he) sent out. 🞄<b>anu-pra,</b> <ab>pp.</ab> sent after. <b>sam,</b> compose, contrive 🞄(<ab>RV.</ab>)."
+        },
+        {
+            "word": "हि",
+            "eid": "20509",
+            "pagenum": 377,
+            "content": "हि¦ hí, <ab>pcl.</ab> (<i>never at <ab>beg.</ab> of a sentence, but</i> 🞄<ab>gnly.</ab> <i>following the first word</i>; <i>also in other 🞄positions after the emphatic word</i>; <i>the <ab>vb.</ab> of 🞄the sentence is always accented</i>), <ab>V.</ab>, <ab>C.</ab>: for, 🞄because (<i>aften after demonstratives, relatives, 🞄interrogatives</i>); just, pray (<i>with <ab>impv.</ab> or</i> <ab>pot.</ab>; 🞄<ab>sts.</ab> <ab>ind.</ab>, <ab>e. g.</ab> paśyāmo hi, we will just see); 🞄verily, surely, indeed; <ab>C.</ab>: <i>often mere verse-filler</i>, 🞄<ab>esp.</ab> <i>to avoid the hiatus or to obtain a 🞄long vowel, <ab>sts.</ab> even twice in the same sentence</i>; 🞄hi — tu, hi — punar, it is true — but."
+        }
+    ],
+    "MW": [
+        {
+            "word": "हि",
+            "eid": "262717",
+            "pagenum": "1297,2",
+            "content": "<hom>1.</hom> हि ¦ (<ab>cf.</ab> √ हय्) <ab>cl.</ab> 5. <ab>P.</ab> (<ls>Dhātup. xxvii, 11</ls>) हिनो/ति (<ab>Ved.</ab> also हिनुते/, हि/न्वति and हिन्व/ति, °ते; <ab>p.</ab> हिन्वान/ [with <ab>act.</ab> and <ab>pass.</ab> sense] <ls>RV.</ls>; ह/यत्, <ls>RV.</ls>; <ls>TS.</ls>; 1. <ab>sg.</ab> हिषे, <ls>RV.</ls>; <ab>pf.</ab> जिघाय, जिघ्युः, <ls>Br.</ls> &c.; जिघ्ये [with <ab>pass.</ab> sense] <ls>Bhaṭṭ.</ls>; <ab>aor.</ab> अ/हेम, अह्यन्, हेत <ab>p.</ab> हियान/ [with <ab>pass.</ab> sense] <ls>RV.</ls>; अह्यम् [?], अ/हैत्, <ls>AV.</ls>; अहैषीत्, <ls>Br.</ls>; अहेषत, <ls>RV.</ls>; <ab>fut.</ab> हेता <ab>Gr.</ab>; हेष्यति, <ls>MBh.</ls> &c.; <ab>inf.</ab> -ह्ये/, <ls>RV.</ls>), <dvsn n='to'/>to send forth, set in motion, impel, urge on, hasten on (<ab>Ā.</ab> also <ab>intrans.</ab>), <ls>RV.</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls>; <ls>KātyŚr.</ls>; <dvsn n='to'/>to stimulate or incite to (<ab>dat.</ab>), <ls>RV.</ls>; <dvsn n='to'/>to assist or help to (<ab>dat.</ab>), <ls>ib.</ls>; <dvsn n='to'/>to discharge, hurl, cast, shoot, <ls>RV.</ls>; <dvsn n='to'/>to convey, bring, procure, <ls>ib.</ls>; <ls>ŚBr.</ls>; <dvsn n='to'/>to forsake, abandon, get rid of <ls>Bhaṭṭ.</ls>; <dvsn n='to'/> (हिन्वति) to gladden, delight, <ls>Dhātup. xv, 82</ls> : <dvsn n='vp'/><ab>Pass.</ab> हीयते (<ab>aor.</ab> अहायि) <ab>Gr.</ab>: <dvsn n='vp'/><ab>Caus.</ab> हाययति (<ab>aor.</ab> अजीहयत्), <ls>ib.</ls> : <dvsn n='vp'/><ab>Desid.</ab> of <ab>Caus.</ab> जिहापयिषति, <ls>ib.</ls> : <dvsn n='vp'/><ab>Desid.</ab> जिघीषति, <ls>ib.</ls> : <dvsn n='vp'/><ab>Intens.</ab> जेघीयते, जेघयीति, जेघेति, <ls>ib.</ls><info westergaard='hi,27.11,05.0012;hivi,15.82,01.0380'/><info whitneyroots='hi,205'/><info verb='genuineroot' cp='5P,5Ā'/>"
+        },
+        {
+            "word": "हि",
+            "eid": "262729",
+            "pagenum": "1297,3",
+            "content": "<hom>2.</hom> हि/ ¦ <lex>ind.</lex> (used as a particle [<ab>cf.</ab> ह and घ] and usually denoting) for, because, on account of (never standing first in a sentence, but generally after the first word and used enclitically, sometimes after pronouns; <ab>e.g.</ab> स/र्वो हि/ पृ/तना जिगीषति, ‘for everybody wishes to win battles’; भवान् हि प्रमाणम्, ‘for your honour is the authority’; तथा हि, ‘for example’, ‘accordingly’; न/ हि/ or नहि/, ‘for not’, ‘not at all’), <ls>RV.</ls> &c. &c.<info lex='ind'/>"
+        },
+        {
+            "word": "हि",
+            "eid": "262729.1",
+            "pagenum": "1297,3",
+            "content": "¦ just, pray, do (with an <ab>Impv.</ab> or <ab>Pot.</ab> emphatically; sometimes with <ab>Indic.</ab>, <ab>e.g.</ab> पश्यामो हि, ‘we will just see’), <ls>ib.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हि",
+            "eid": "262729.2",
+            "pagenum": "1297,3",
+            "content": "¦ indeed, assuredly, surely, of course, certainly (हि/ वै/, ‘most assuredly’; हि-तु or हि-पुनर्, ‘indeed-but’; often a mere expletive, <ab>esp.</ab> to avoid a hiatus, sometimes repeated in the same sentence; हि is also said to be an interjection of ‘envy’, ‘contempt’, ‘hurry’ &c.), <ls>ib.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "हि",
+            "eid": "54122",
+            "pagenum": 1171,
+            "content": "हि 1¦. <i>hi</i> (connected with rt. <i>hinv,</i> to which some of the forms in the examples given below are referred by Sāy.), cl. 5. P. <i>hinoti</i> (Ved. also A. <i>hinute</i>), <i>jighāya, heṣyati, ahai-</i> <i>ṣīt, hetum,</i> to send, send forth, impel, (<i>hinvanti</i> <i>= prerayanti,</i> Ṛg-veda VIII. 43, 29); to discharge, throw, cast, shoot (as an arrow &c.); to urge, incite, excite; to further, promote, advance; to protect, favour, benefit, prosper (Ved.); to please, gratify, exhilarate, satisfy, (<i>hinvire = prīṇayanti,</i> Ṛg-veda VIII. 43, 19); to go, proceed: Pass. <i>hīyate,</i> Aor. <i>ahāyi:</i> Caus. <i>hāyayati, -yitum,</i> Aor. <i>ajīhayat:</i> Desid. of Caus. <i>jighāpayiṣati:</i> Desid. <i>jighīṣati:</i> Intens. <i>jeghīyate, jeghayīti, jegheti;</i> [cf. perhaps Gr. <lang n='greek'>κίω;</lang> Lat. <nsi>cieo.</nsi>]"
+        },
+        {
+            "word": "हि",
+            "eid": "54137",
+            "pagenum": 1171,
+            "content": "हि 2¦. <i>hi,</i> ind. (probably to be connected with rt. 1. <i>hi;</i> cf. <i>hetu</i>), for, because, on account of (used enclitically so as not to stand first in a sentence, e. g. <i>pramāṇaṃ hi bhavān,</i> for your honour is the authority; <i>tathā hi,</i> for example, for instance, accordingly); assuredly, certainly; indeed, surely, (in these senses used emphatically and, according to some, also interrogatively; but sometimes to be treated as redundant and a mere expletive); but; ah! alas! (said to be also an interjection of envy, of contempt, of hurry, &c.)"
+        }
+    ],
+    "PW": [
+        {
+            "word": "हि",
+            "eid": "134538",
+            "pagenum": 7,
+            "content": "<hom>1.</hom> √हि¦ हिनो/ति (गतौ वृद्धौ; <ab>Med.</ab> हिन्वे/ <ab>u. s. w.</ab>) <dvsn n='1'>— 1〉 <ab>Act.</ab> <ab>Med.</ab> <i>in Bewegung setzen, antreiben, anfeuern, reizen</i>. Hierher wohl auch ह/यन्त् <ab>Partic.</ab> <ab>Med.</ab> <i>sich in Bewegung setzen, angefeuert werden</i> <ab>u. s. w.</ab>, <i>sich beeifern, beeilen</i>. <dvsn n='1'>— 2〉 <i>veranlassen zu</i> (<ab>Dat.</ab>). <dvsn n='1'>— 3〉 <i>fördern, unterstützen, verhelfen zu</i> (<ab>Dat.</ab>). <dvsn n='1'>— 4〉 <i>her-, hinbefördern, herbeischaffen</i>. <dvsn n='1'>— 5〉 <i>schleudern</i>. हिन्वानो/ वा/चम् <i>die Stimme hinauslassend, — entsendend</i>. <dvsn n='1'>— 6〉 = <hom>2.</hom> हा <ls>BHĀG. P.</ls> <dvsn n='2'>— a〉 <i>verlassen, aufgeben</i>. <dvsn n='2'>— b〉 Etwas loswerden, sich befreien von. <dvsn n='1'>— 7〉 हित/ <dvsn n='2'>— a〉 getrieben, gespornt, im Lauf befindlich. <dvsn n='2'>— b〉 <i>angewiesen, aufgefordert</i>. <dvsn n='m'>— <ab>Caus.</ab> <ab>Aor.</ab> अजीहयत्. <dvsn n='m'>— <ab>Desid.</ab> जिघीषति. <dvsn n='m'>— <ab>Intens.</ab> जेघीयते. <dvsn n='p'>— Mit अप <i>abwerfen, sich befreien von</i> (<ab>Acc.</ab>) <ls>BHĀG. P.</ls> <dvsn n='p'>— Mit अपि <i>herausfordern zu</i> (<ab>Loc.</ab>) <ls>ṚV. 10,71,5</ls>. <dvsn n='p'>— Mit आ <ab>Med.</ab> <i>herbeischaffen</i>. <dvsn n='p'>— Mit परि परिहिनो/मि <i>hinbefördern, verbringen</i>. <dvsn n='p'>— Mit प्र प्रहिणोति <dvsn n='1'>— 1〉 <i>antreiben, anregen</i>. <dvsn n='1'>— 2〉 auffordern, anweisen. <dvsn n='1'>— 3〉 <i>schleudern, — auf</i> (<ab>Dat.</ab> oder <ab>Loc.</ab>), den Blick <i>richten auf</i> (<ab>Acc.</ab>) <ls>KĀD. 31,24 (56,5)</ls>. <dvsn n='1'>— 4〉 <i>absenden</i> (Boten), <i>entsenden, entlassen, weg schicken, vertreiben, absenden</i> <ab>u. s. w.</ab> <i>zu Jmd</i> (<ab>Dat.</ab>, <ab>Gen.</ab>, <ab>Acc.</ab> mit प्रति) <ab>Gen.</ab> mit अन्तिकम् oder पार्श्वम् <i>nach oder an</i> einen Ort (<ab>Acc.</ab> oder <ab>Acc.</ab> mit प्रति) <i>um zu</i> (<ab>Dat.</ab> oder <ab>Infin.</ab>). <dvsn n='1'>— 5〉 <i>herbei-, hinschaffen zu, liefern, Jmd</i> (<ab>Dat.</ab>) <i>Etwas zustellen, zukommen lassen</i>. <dvsn n='1'>— 6〉 <ab>Med.</ab> <i>da hinfahren</i>. <dvsn n='1'>— 7〉 = <hom>2.</hom> हा mit प्र <i>verlassen, im Stich lassen</i> <ls>BHĀG. P.</ls> <dvsn n='1'>— 8〉 प्रजिध्यति und प्रजिघ्यतु <ls>AIT. BR. 8,28</ls> wohl fehlerhaft für प्रजिगाति und प्रजिगातु. <dvsn n='1'>— 9〉 प्र/हित <dvsn n='2'>— a〉 <i>angetrieben, angefeuert</i>. <dvsn n='2'>— b〉 <i>geschleudert, — auf</i> (<ab>Loc.</ab>). <dvsn n='2'>— c〉 <i>geschleudert,</i> so <ab>v. a.</ab> <i>rasch vorgestreckt</i> (Arm). <dvsn n='2'>— d〉 <i>geworfen, gerichtet, — auf</i> (im <ab>Comp.</ab> vorangehend) vom Auge, Blick, Geist. <dvsn n='2'>— e〉 <i>eingestossen, eingegraben</i> (Fingernagel). <dvsn n='2'>— f〉 <i>hingeschafft, zugestellt, zugesandt</i> (Sachen). <dvsn n='2'>— g〉 <i>ausgesandt, — zu</i> (<ab>Gen.</ab> mit पार्श्वे) <i>gegen</i> (<ab>Dat.</ab>), <i>zu Etwas</i> (<ab>Dat.</ab>), <i>fortgeschickt, fortgejagt, — in oder nach</i> (<ab>Dat.</ab>). <dvsn n='2'>— h〉 <i>hingeschickt zu</i> (<ab>Loc.</ab>), so <ab>v. a.</ab> <i>mit der Sorge um beauftragt</i>. <dvsn n='1'>— 10〉 प्रहितवान् = प्रजिघाय <i>sandte aus</i>. <dvsn n='m'>— <ab>Caus.</ab> <ab>Aor.</ab> प्राजीहयत्. <dvsn n='m'>— <ab>Desid.</ab> vom <ab>Caus.</ab> प्राजिघाययिपति (प्रजिघापयिषति fehlerhaft). [Page7-273-a] <dvsn n='p'>— Mit अनुप्र, °हित <i>nachgesandt</i>. <dvsn n='p'>— Mit अभिप्र अभिप्रहित <i>hergeschickt</i>. <dvsn n='p'>— Mit उपप्र <i>hinsenden zu Jmd</i> (<ab>Acc.</ab> oder <ab>Dat.</ab>). <dvsn n='p'>— Mit प्रतिप्र <i>zurücksenden, — jagen</i>. <dvsn n='p'>— Mit संप्र <dvsn n='1'>— 1〉 <i>schleudern</i>. °हित <i>geschleudert</i>. <dvsn n='1'>— 2〉 <i>absenden</i>. संप्रहितवान् <ls>R. ed. Bomb. 4,32,12</ls>. <dvsn n='p'>— Mit सम् <dvsn n='1'>— 1〉 <i>absenden</i>. <dvsn n='1'>— 2〉 <i>zusammenbringen, -setzen, verfertigen, zuwege —, zurecht bringen</i>."
+        },
+        {
+            "word": "हि",
+            "eid": "134539",
+            "pagenum": 7,
+            "content": "<hom>2.</hom> हि/¦ <lex>Indecl.</lex> (nie am Anfange eines Satzes; das Verbum <ab>fin.</ab> dabei orthotornirt) <dvsn n='1'>— 1〉 begründend und bestätigend; <i>denn, ja, nämlich</i>. Häufig nach Demonstrativen, Relativen und Interrogativen. In <ls>VS. PRĀT.</ls> bezeichnet es den Schluss eines Abschnitt. <dvsn n='1'>— 2〉 aufmunternd beim Imperativ oder Potentialis <i>doch</i>. Ebenso पश्यामो हि <i>wir wollen doch sehen</i>. <dvsn n='1'>— 3〉 <i>allerdings, jawohl, in der That</i>. हि — तु oder हि — पुनर् (<ls>BĀLAR. 296,4</ls>) <i>wohl — aber</i>. <dvsn n='1'>— 4〉 häufig blosser Versfüller, <ab>insbes.</ab> zwischen zwei Vocalen zur Entfernung des Hiatus oder zur Gewinnung einer Länge. Erscheint in einem und demselben Satze sogar doppelt."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "हि",
+            "eid": "116886",
+            "pagenum": 7,
+            "content": "1. हि¦, हिनो/ति <ls>DHĀTUP. 27, 11</ls> (गतौ वृद्धौ). (प्र) हिण्मसि <ls>AV.</ls> अहेतन, अहेम, अह्यम्, अह्यन्, (प्र) अहैत्, (प्र) अहैषीत्, (प्र) जिघाय <ls>P. 7, 3, 56.</ls> <ls>VOP. 12, 4.</ls> जिध्युस्, (प्र) हेष्यामि . med. हिन्वे, हिन्व/ते, हिन्विरे/, (प्र) हिषे, अहेषत 3. pl., हिन्वान/; partic. हित s. bes. <dvsn n='1'> 1) <i>in Bewegung setzen, antreiben, anfeuern, reizen; veranlassen zu</i> (dat.): das Ross <ls>ṚV. 3, 53, 24.</ls> <ls n='ṚV.'>5, 36, 2.</ls> Wagen <ls n='ṚV.'>6, 45, 14.</ls> अ\\ग्निं गी\\र्भिर्हि^नुहि <ls n='ṚV.'>1, 143, 4.</ls> <ls n='ṚV. 1,'>144, 5.</ls> <ls n='ṚV.'>8, 44, 19.</ls> <ls n='ṚV.'>10, 88, 5.</ls> <is>Indra</is> <ls n='ṚV.'>2, 14, 4.</ls> उ\\चथ^म् <ls n='ṚV. 6,'>19, 7.</ls> (unter 1. अह् zu streichen). स्तोम^म् <ls n='ṚV.'>1, 184, 4.</ls> य\\ज्ञम् <ls n='ṚV.'>7, 34, 6.</ls> <ls n='ṚV. 7,'>56, 12.</ls> den <is>Soma</is> <ls n='ṚV.'>9, 26, 3.</ls> <ls n='ṚV. 9, 26,'>4.</ls> <ls n='ṚV.'>3, 31, 5.</ls> प्रा\\तर्य^जध्वम\\श्विना^ हिनोत <i>beeilt es</i> <ls n='ṚV.'>5, 77, 2.</ls> <ls n='ṚV.'>7, 34, 5.</ls> अ\\द्म\\सद्या^य <ls n='ṚV.'>8, 43, 19.</ls> नैन^ं हिन्व\\न्त्यपि\\ वाजि^नेषु <i>herausfordern zu</i> <ls n='ṚV.'>10, 71, 5.</ls> आतु^रम् <i>reizen</i> <ls>AV. 6, 101, 2.</ls> <ls>ŚAT. BR. 14, 1, 2, 19.</ls> med. <i>sich in Bewegung setzen, angefeuert werden</i> u. s. w., <i>sich beeifern</i>: तुभ्य^ं हिन्वा\\नो व^सिष्ट\\ गा अ\\पः <ls>ṚV. 2, 36, 1.</ls> न हिन्वा\\नास^स्तितिरु\\स्त इन्द्र^म् <i>eilig, heftig</i> <ls n='ṚV.'>1, 33, 8.</ls> हि\\न्वे अर्वा^ <ls n='ṚV.'>4, 7, 11.</ls> हि\\न्वा\\नं न वा^ज\\युम् <ls n='ṚV.'>8, 1, 19.</ls> <ls n='ṚV.'>9, 44, 2.</ls> <ls n='ṚV. 9,'>73, 2.</ls> <ls n='ṚV. 9,'>86, 25.</ls> रथा^ः <ls n='ṚV. 9,'>10, 2.</ls> <ls n='ṚV.'>10, 65, 2.</ls> med. in activer Bed.: धियो^ हिन्वा\\ना उ\\शिजो^ मनी\\षिण^ः <ls>ṚV. 2, 21, 5.</ls> <ls n='ṚV.'>7, 10, 1.</ls> उद्वाच^मी\\रय^ति (°य^न्ति) हि\\न्वते^ म\\ती (मतीः) <ls n='ṚV.'>9, 72, 1.</ls> पयो^ हिन्वा\\नाः <ls n='ṚV.'>1, 104, 4.</ls> partic. praes.: संदृ^ष्टिरस्य हिया\\नस्य\\ दक्षो^ः <ls>ṚV. 2, 4, 4.</ls> अत्या^ हिया\\ना न हे\\तृभि^ः <i>concitatus</i> <ls n='ṚV.'>9, 13, 6.</ls> इन्दु^र्हिया\\नः सो\\तृभि^ः <ls n='ṚV. 9,'>30, 2.</ls> <ls n='ṚV. 9,'>98, 2.</ls> Abgeleitete Form imperat. हि/न्व in der Formel हिन्व^ मे\\ गात्रा^ <ls>TS. 3, 2, 5, 3.</ls> <ls>KĀTY. ŚR. 9, 12, 4.</ls> हिन्व्, हि/न्वति <ls>DHĀTUP. 15, 82</ls> (प्रीणनार्थ); vgl. इन्, इन्व् . <dvsn n='1'>— 2) <i>schleudern</i>: वज्र^ं हिन्वन्ति\\ साय^कम् <ls>ṚV. 1, 84, 11.</ls> कस्मान्न हिनोषि वज्रम् <ls>BHĀG. P. 6, 11, 19.</ls> शूलमहिनोत् <ls n='BHĀG. P.'>8, 10, 55.</ls> pass.: गदा शक्रजिता जिध्ये <ls>BHAṬṬ. 14, 36.</ls> med.: हि\\न्वा\\नो वाच^म् <i>die Stimme hinauslassend</i> <ls>ṚV. 9, 84, 4.</ls> <dvsn n='1'>— 3) <i>fördern, unterstützen, verhelfen zu</i> (dat.) <ls>ṚV. 1, 18, 4.</ls> धि\\ये <ls n='ṚV. 1,'>27, 11.</ls> अ\\स्मान्रा\\ये म\\हे हि^नु <ls n='ṚV.'>6, 45, 30.</ls> धना^य <ls n='ṚV.'>8, 60, 5.</ls> क्रत^वे <ls n='ṚV.'>10, 27, 16.</ls> <ls n='ṚV.'>9, 36, 3.</ls> न वा उ\\ सोमो^ वृजि\\नं हि^नोति <ls n='ṚV.'>7, 104, 13.</ls> <ls n='ṚV.'>8, 4, 16.</ls> <ls n='ṚV. 8,'>47, 6.</ls> <ls>AV. 4, 8, 7.</ls> <dvsn n='1'>— 4) <i>her —, hinbefördern, herbeischaffen</i>: सोम^म् <ls>ṚV. 3, 46, 5.</ls> धा\\सिमत्त^वे <ls n='ṚV.'>8, 43, 29.</ls> देवेभ्यः <ls>ŚAT. BR. 3, 5, 1, 35.</ls> <dvsn n='1'>— 5) = 2. हा <i>verlassen, aufgeben</i>: पदवीं न हिन्वन्ति <ls>BHĀG. P. 5, 1, 5.</ls> यावदिदं (कलेवरं) हिनोम्यहम् <ls n='BHĀG. P.'>1, 9, 24.</ls> कर्म हिन्वन् <ls n='BHĀG. P.'>7, 10, 11.</ls> <i>loswerden, sich befreien von</i> <ls n='BHĀG. P.'>10, 77, 32.</ls> <dvsn n='1'>— 6) als ungewöhnliche Form könnte hierher gehören हय^न्ता du. <i>concitantes</i> sc. <i>equos</i> <ls>ṚV. 1, 116, 18</ls> und अ\\पां नपा^तमश्विना\\ हय^न्तम् (हय^तम्, wie unsre Hdschr. liest, wäre <i>treibet an</i>) <ls>TS. 1, 6, 12, 4.</ls> der Text ist aber unsicher, wie <ls>AV. 19, 42, 4</ls> zeigt. = ऐर्श्वसंगमयितारम् Comm.  <dvsn n='p'>— caus. aor. अजीहयत् <ls>P. 7, 3, 56</ls>, Schol. <ls>VOP. 18, 1.</ls>  <dvsn n='p'>— desid. जिघीषति <ls>P. 7, 3, 56</ls>, Schol.  <dvsn n='p'>— intens. जेघीयते ebend.  <dvsn n='p'>— अप <i>abwerfen, sich befreien von</i>: हृद्रोगम् <ls>BHĀG. P. 10, 33, 40.</ls>  <dvsn n='p'>— आ med. <i>herbeischaffen</i> <ls>ṚV. 9, 74, 8.</ls>  <dvsn n='p'>— परि <i>hinbefördern, verbringen</i>: यां वां होत्रा^ं परिहि\\नोमि^ ( <ls>AV. PRĀT. 3, 88</ls>) मे\\धया^ <ls>ṚV. 7, 104, 6.</ls>  <dvsn n='p'>— प्र, प्रहिणोमि u.s.w. <ls>VS. PRĀT. 3, 87.</ls> <ls>AV. PRĀT. 4, 95.</ls> <ls>TS. PRĀT. 13, 12.</ls> <ls>P. 8, 4, 15.</ls> <ls>VOP. 8, 22. 12, 3.</ls> <dvsn n='1'> 1) <i>antreiben, erregen</i>: प्र वो^ दे\\वमश्व\\ं न वा\\जिन^ं हिषे <ls>ṚV. 7, 7, 1.</ls> हि\\न्वन्नृ\\तस्य\\ दीधि^ति\\ं प्राध्व\\रे <ls n='ṚV.'>9, 102, 8.</ls> <dvsn n='1'>— 2) <i>schleudern</i>: चक्रं तस्मै प्राहिणवम् <ls>MBH. 3, 880.</ls> <ls n='MBH. 3,'>12139.</ls> <ls n='MBH.'>5, 7209.</ls> प्राहिण्वम् <ls n='MBH. 5,'>7278.</ls> <ls n='MBH. 5,'>7205.</ls> <ls>HARIV. 11087</ls> (S. 792). तस्मै महोपलम् <ls>RAGH. 15, 21.</ls> <ls>BHĀG. P. 6, 12, 24. 8, 11, 30.</ls> चक्रं विक्रमसेने <ls>PAÑCAT. ed. orn. 58, 9.</ls> प्राहैषीत् <ls>BHAṬṬ. 15, 121.</ls> <ls>PAÑCAT. 40, 18.</ls> अशोकाय पादम् <ls>MĀLAV. 38, 11.</ls> <dvsn n='1'>— 3) <i>herbei —, hinschaffen, liefern, Jmd Etwas zustellen, zukommen lassen</i>: पि\\तृभ्य^ः <ls>ṚV. 10, 16, 1.</ls> ऊ\\र्मि^ं दे^व\\माद^नम् <ls n='ṚV. 10,'>30, 7.</ls> <ls n='ṚV. 10, 30,'>8.</ls> प्र हे^त 9. प्र तत्ते^ हिनवा\\ यत्ते^ अ\\स्मे <ls n='ṚV. 10,'>95, 13.</ls> यो वै वेदांश्च प्रहिणोति तस्मै <ls>ŚVETĀŚV. UP. 6, 18.</ls> रथं तस्मै प्रजिघाय <ls>RAGH. 12, 84.</ls> तस्मै सुवर्णादि <ls>KATHĀS. 10, 100.</ls> <ls n='KATHĀS.'>21, 89.</ls> अस्याम्भः <ls n='KATHĀS.'>25, 132. 43, 92.</ls> प्राभृतं प्रहेष्यामि <ls n='KATHĀS.'>121, 224.</ls> <ls>RĀJA-TAR. 3, 250. 321.</ls> <ls>BHĀG. P. 9, 4, 34.</ls> <dvsn n='1'>— 4) <i>absenden</i> (einen Boten), <i>wegschicken,</i> <i>vertreiben, verjagen zu Jmd</i> (dat.), <i>zu - in Etwas</i> (acc.): क्र\\व्याद^म् <ls>ṚV. 10, 16, 9.</ls> <ls>AV. 5, 22, 4.</ls> <ls n='AV. 5,'>31, 10.</ls> <ls n='AV.'>6, 130, 1.</ls> <ls n='AV.'>7, 115, 3.</ls> स\\मु\\द्रम् <ls n='AV.'>10, 5, 23.</ls> कृ\\त्याः क\\र्त्रे <ls n='AV. 5,'>1, 30.</ls> <ls n='AV.'>19, 57, 3.</ls> न दू\\ताय^ प्र\\ह्ये^ (infin.) तस्थ ए\\षा <ls>ṚV. 10, 109, 3.</ls> <ls>ŚAT. BR. 3, 2, 4, 3.</ls> <ls>TS. 2, 2, 6, 5.</ls> <ls>TBR. 3, 10, 9, 3.</ls> <ls>AIT. BR. 6, 34. 36.</ls> <ls>KAUŚ. 75.</ls> <ls>KAUṢ. UP. 2, 3.</ls> तस्मात्प्रहेष्याम्यद्य त्वां (पृथे) हीनः प्रजननात्स्वयम् । सदृशाच्छ्रेयसो वा त्वं विद्ध्यपत्यम् <i>senden</i> (zu einem andern Manne) <ls>MBH. 1, 4676.</ls> दूतान् <ls n='MBH.'>2, 1244.</ls> <ls n='MBH.'>4, 281.</ls> कुशलार्थं तव <i>Jmd absenden um sich nach deinem Wohlbefinden zu erkundigen</i> <ls>R. 1, 17, 38</ls> (<ls n='GORR. 1, 17,'>26</ls> <ls>GORR.</ls>). चारम् <ls>KATHĀS. 16, 57. 17, 55. 61. 41, 20. 44, 172. 48, 103. 57, 125. 120, 98.</ls> प्रहेष्याम्यर्चितामिमाम् <i>entlassen</i> <ls n='KATHĀS.'>122, 50.</ls> <ls>RĀJA-TAR. 5, 56. 302.</ls> प्राहैष्टाम् <ls>BHAṬṬ. 15, 104.</ls> तस्मै स्वां भार्याम् <ls>MBH. 1, 4211.</ls> <ls>RAGH. 8, 78.</ls> <ls n='RAGH.'>11, 49.</ls> <ls>KATHĀS. 37, 101.</ls> <ls n='KATHĀS.'>75, 114.</ls> <ls>DAŚAK. 68, 3.</ls> दूतान् - श्वशुरयोस्तयोः <i>zu</i> <ls>KATHĀS. 10, 195.</ls> वाराणसीं प्रति ब्रह्मदत्तस्य <ls n='KATHĀS.'>19, 61.</ls> मां त्वां प्रति <ls n='KATHĀS.'>67, 28.</ls> अन्तिकं तस्य <ls n='KATHĀS.'>8, 11.</ls> पार्श्वं तस्य <ls>RĀJA-TAR. 5, 467.</ls> निजं गृहम् <ls>KATHĀS. 22, 69.</ls> <ls>RĀJA-TAR. 3, 405. 6, 35.</ls> तान्प्राहिण्वं यमसादनम् <ls>MBH. 3, 12160.</ls> <ls n='MBH.'>4, 821.</ls> तान्बाणाः प्राहिण्वन्यमसादनम् <ls n='MBH.'>3, 12178.</ls> यातव्याय दूतम् <ls>KĀM. NĪTIS. 12, 1.</ls> यात्रायै <ls>KATHĀS. 42, 83.</ls> सोमदत्तस्य बन्धाय <ls n='KATHĀS.'>20, 16. 29, 38.</ls> विघ्नाय तस्य <ls n='KATHĀS.'>45, 89.</ls> विन्ध्याकान्तारं काणभूतिमवेक्षितुम् <ls n='KATHĀS.'>2, 3. 27, 110. 43, 111.</ls> योद्धुम् <ls>BHAṬṬ. 14, 1.</ls> pass. प्रहीयताम् <ls>KATHĀS. 101, 113.</ls> <dvsn n='1'>— 5) so v. a. प्रेषयति <i>auffordern, anweisen</i> <ls>LĀṬY. 1, 1, 13. 8, 3, 2.</ls> पुत्रं श्वेतकेतुं प्रजिघाय याजयेति <ls>KAUṢ. UP. 1, 1.</ls> <dvsn n='1'>— 6) med. <i>dahinfahren</i>: रथा^ इव\\ प्र सर्गा^ अहेषत <ls>ṚV. 9, 22, 1.</ls> <dvsn n='1'>— 7) hierher die Form प्रजिध्यतु <i>davonlaufen</i>: अत एव पराङ्प्रजि° (= गच्छतु <ls>SĀY.</ls>) <ls>AIT. BR. 8, 28.</ls> <dvsn n='1'>— 8) = 2. हा mit प्र <i>verlassen, im Stich lassen</i>: तमपण्डितम् । ते ऽकृतार्थं प्रहिण्वन्ति प्राणा रायः सुतादयः <ls>Spr. (II) 4151</ls> (<ls>BHĀG. P.).</ls> <dvsn n='1'>— 9) partic. प्र/हित <dvsn n='2'> a) <i>angetrieben, angefeuert</i>: पार्थ° <ls>BHĀG. P. 3, 1, 9.</ls> काल° <ls n='BHĀG. P.'>7, 2, 56.</ls> दैव° <ls n='BHĀG. P.'>8, 20, 14. 9, 6, 29. 22, 16.</ls> <dvsn n='2'>— b) <i>geschleudert</i> <ls>AK. 2, 8, 2, 56.</ls> <ls>H. 779.</ls> चक्रं मत्करप्रहितम् <ls>HARIV. 15746.</ls> <ls>R. 5, 80, 32.</ls> प्रहितास्त्रवृष्टि <ls>RAGH. 3, 58.</ls> <ls>MĀRK. P. 134, 45.</ls> <ls>BHĀG. P. 3, 19, 18.</ls> साधुषु प्रहितं तेजः प्रहर्तुः कुरुते ऽशिवम् <ls n='BHĀG. P.'>9, 4, 70.</ls> वेगेन प्रहितं बाहुम् so v. a. <i>mit Gewalt ausgestreckt</i> <ls>MBH. 1, 6000.</ls> प्रहितनखरेष्वङ्गकेषु so v. a. <i>eingegraben</i> <ls>SĀH. D. 71, 1.</ls> <i>geworfen, gerichtet</i> von Augen, Blicken <ls>MEGH. 72.</ls> <ls>RAGH. 2, 27. 13, 42. 15, 84.</ls> <ls>BHĀG. P. 3, 3, 7.</ls> विचारमार्गप्रहितेन चेतसा <ls>KUMĀRAS. 5, 42.</ls> <dvsn n='2'>— c) <i>hingeschafft, zugestellt, zugesandt</i> (von Sachen) <ls>KATHĀS. 12, 192.</ls> <ls n='KATHĀS.'>21, 91.</ls> लेख <ls n='KATHĀS.'>42, 109. 124, 198.</ls> माला <ls n='KATHĀS.'>50, 136.</ls> <ls>DAŚAK. 87, 8.</ls> <ls>PAÑCAT. ed. orn. 55, 7.</ls> कुशल ad <ls>MEGH. 112.</ls> <dvsn n='2'>— d) <i>ausgesandt</i> <ls>H. 1492.</ls> Boten u.s.w. <ls>ṚV. 10, 165, 4.</ls> <ls>AV. 2, 29, 4.</ls> <ls n='AV.'>6, 29, 2.</ls> <ls n='AV.'>8, 2, 11.</ls> <ls n='AV.'>18, 4, 65.</ls> <ls>ŚAT. BR. 3, 2, 4, 15.</ls> अध्वानं प्रहित एति <ls n='ŚAT. BR.'>5, 3, 1, 11.</ls> <ls>KĀTY. ŚR. 14, 5, 30.</ls> <ls n='KĀTY. ŚR.'>15, 7, 24.</ls> <ls>YĀJÑ. 2, 190.</ls> <ls n='YĀJÑ.'>8, 283.</ls> <ls>MBH. 3, 1801.</ls> <ls n='MBH.'>12, 2606.</ls> <ls n='MBH.'>14, 226.</ls> <ls>R. 2, 91, 42</ls> (<ls n='GORR. 2,'>100, 43</ls> <ls>GORR.</ls>). <ls n='R.'>3, 66, 17.</ls> <ls n='R.'>5, 39, 8.</ls> <ls n='R.'>6, 1, 23.</ls> <ls>KATHĀS. 14, 67.</ls> <ls n='KATHĀS.'>17, 12.</ls> <ls n='KATHĀS.'>20, 205.</ls> <ls>RĀJA-TAR. 4, 222. 338. 340.</ls> दौत्येन <ls>PRAB. 85, 8.</ls> <ls n='PRAB.'>97, 10.</ls> <ls>HIT. 92, 20.</ls> <ls>VET. in LA. (III) 29, 16.</ls> Inschr. in <ls>Journ. of the Am. Or. S. 7, 7, Śl. 24.</ls> तव पार्श्वे <ls>PAÑCAT. 161, 19.</ls> कर्णाय <i>gegen</i> (in einer Schlacht) <ls>MBH. 7, 8292.</ls> जयाय <ls>R. 6, 77, 27.</ls> <i>fortgeschickt, fortgejagt</i>: वनवासाय <ls>R. 2, 46, 2.</ls> <ls>KATHĀS. 27, 54.</ls> <ls>MĀRK. P. 114, 6.</ls> <dvsn n='2'>— e) <i>hingeschickt zu</i> (loc.) so v. a. <i>mit der Sorge um - beauftragt</i>: अहं हि सततं गोषु भवता प्रहितः पुरा <ls>MBH. 4, 69.</ls> <dvsn n='1'>— 10) partic. प्रहितवन्त् <i>der ausgesandt hat</i>, st. des verbi finiti <ls>R. 4, 32, 12.</ls> <ls>KATHĀS. 45, 10.</ls> <ls n='KATHĀS.'>48, 102.</ls> — caus. aor. प्राजीहयत् <ls>PAT.</ls> in <ls>MAHĀBH. lith. Ausg. 7,118,b.</ls> — desid. vom caus. प्रजिघाययिषति ebend. <ls n='MAHĀBH. lith. Ausg.'>119,a.</ls> प्रजिघाप°  <ls>P.</ls> <ls>ed. Calc.</ls> <ls n='P.'>7, 3, 56.</ls> <dvsn n='v'>— Vgl. प्रहाय्य, प्रहितंगम, प्रहेतर् fgg.  <dvsn n='p'>— अनुप्र, partic. °हित <i>nachgesandt</i> <ls>UTTARAR. 30, 2. 3 (39, 13).</ls>  <dvsn n='p'>— अभिप्र, partic. °हित <i>hergeschickt</i> <ls>AV. 10, 1, 15.</ls>  <dvsn n='p'>— उपप्र <i>hinsenden zu</i> (acc.) <ls>AV. 18, 4, 40.</ls> <ls>ŚAT. BR. 11, 5, 1, 11.</ls>  <dvsn n='p'>— प्रतिप्र <i>zurücksenden, - jagen</i> <ls>ŚAT. BR. 3, 5, 1, 16.</ls> <ls>AV. 10, 1, 5.</ls> <ls n='AV. 10, 1,'>15.</ls>  <dvsn n='p'>— संप्र, partic. °हित <i>geschleudert</i>: शराः <ls>MBH. 8, 4074.</ls>  <dvsn n='p'>— सम् <dvsn n='1'> 1) <i>absenden</i> <ls>BHĀG. P. 9, 10, 18.</ls> <dvsn n='1'>— 2) <i>zusammenbringen, - setzen, verfertigen</i>: सं वा\\ं कर्म^णा हिनोमि so v. a. <i>zuwege —, zurechtbringen</i> <ls>ṚV. 6, 69, 1.</ls> स्तोम\\ं सं हिनोमि\\ रथ\\ं न तष्टा^ <ls n='ṚV.'>1, 61, 4.</ls> समी\\ रथ\\ं न भु\\रिजो^रहेषत <ls n='ṚV.'>9, 71, 5.</ls> तमु^ ते\\ गावो\\ नर\\ आपो\\ अद्रि\\रिन्दु\\ं सम^ह्यन् <ls n='ṚV.'>6, 40, 2.</ls> hierher auch <ls n='ṚV.'>1, 94, 1.</ls>, wo समहेम st. सं महेम zu lesen ist, und eben so wohl auch <ls n='ṚV. 1,'>111, 3.</ls> Darnach unter 1. अह् zu berichtigen."
+        },
+        {
+            "word": "हि",
+            "eid": "116887",
+            "pagenum": 7,
+            "content": "2. हि/¦ indecl. Einfluss auf ein folgendes स <ls>VS. PRĀT. 3, 66.</ls> <ls>AV. PRĀT. 2, 101.</ls>  <ls>TS. PRĀT. 3, 8.</ls> <ls n='TS. PRĀT.'>6, 2.</ls> wann <is>pluta</is> <ls>P. 6, 1, 130.</ls> <ls n='P.'>8, 2, 93.</ls> das verbum finitum orthotonirt <ls>VS. PRĀT. 6, 15.</ls> fg. <ls>Ind. St. 10, 413. 420.</ls> <ls>P. 8, 1, 34. fg.</ls> <ls n='P. 8, 1,'>56.</ls> gewöhnlich auf das erste Wort des Satzes folgend, aber auch an andern Stellen bei dem Worte, auf welchem der Nachdruck liegt. हेतौ <ls>AK. 3, 4, 32 (28), 18.</ls> <ls>H. an. 7, 17.</ls> <ls>HALĀY. 5, 95.</ls> <ls>MED. <is>avy</is>. 86.</ls> हेत्वपदेशे <ls>MED.</ls> अवधारणे <ls>AK.</ls> <ls>H. an.</ls> <ls>MED.</ls> विशेषे <ls>H. an.</ls> <ls>MED.</ls> विशेषणे <ls>HALĀY.</ls> पादपूरणे (°पूर्तौ) <ls>AK. 3, 5, 5.</ls> <ls>H. an.</ls> <ls>MED.</ls> प्रश्ने, संभ्रमे, असूयायाम् <ls>MED.</ls> विस्मये <ls>MALLIN.</ls> zu <ls>ŚIŚ. 11, 64</ls> mit Berufung auf <ls>AK. 3, 5, 9</ls>, wo aber unsere Ausgg. ऽहो ही st. हि हौ lesen. शोके <ls>ŚABDAR.</ls> im <ls>ŚKDR.</ls> Nie am Anfange eines Satzes. <dvsn n='1'> 1) begründend und bestätigend: <i>denn, ja, nämlich</i>: इन्द^वो वामु\\शन्ति\\ हि <ls>ṚV. 1, 2, 4.</ls> <ls n='ṚV. 1,'>15, 2.</ls> <ls n='ṚV. 1, 2,'>3.</ls> <ls n='ṚV. 1,'>24, 4.</ls> वधी\\र्हि दस्यु^म् <ls n='ṚV. 1,'>33, 4.</ls> ह्र\\दं न हि u.s.w. <ls n='ṚV. 1,'>52, 7.</ls> स हि <ls n='ṚV. 1,'>55, 6.</ls> <ls n='ṚV. 1,'>77, 3.</ls> <ls n='ṚV. 1,'>93, 7.</ls> पथा\\ यन्त^ं द\\दर्श\\ हि <ls n='ṚV. 1,'>105, 18.</ls> नू\\नं दे\\वेभ्यो\\ वि हि धाति\\ रत्न^म् <ls n='ṚV.'>2, 38, 1.</ls> स य\\ज्ञाना\\मथ\\ हि षः <ls n='ṚV.'>3, 13, 3.</ls> <ls n='ṚV.'>7, 21, 8.</ls> ते चि\\द्धि <ls n='ṚV.'>7, 48, 3.</ls> <ls n='ṚV. 7,'>99, 3.</ls> <ls>AV. 3, 22, 6.</ls> <ls n='AV.'>8, 9, 24.</ls> <ls n='AV.'>12, 2, 55.</ls> <ls>ŚAT. BR. 14, 7, 2, 20.</ls> <ls>LĀṬY. 5, 5, 13. 7, 11, 6. 17. 21</ls> (überhaupt besonders oft in diesem Buche). <ls>ĀŚV. GṚHY. 1, 21, 3.</ls> Auch im ersten Satze eines Liedes u.s.w. <ls>ṚV. 1, 25, 1.</ls> <ls n='ṚV. 1,'>109, 1.</ls> <ls n='ṚV.'>6, 1, 1.</ls> <ls n='ṚV. 6,'>2, 1.</ls> <ls>AV. 4, 14, 1.</ls> <ls n='AV.'>5, 13, 1.</ls> कथं हि करिष्यसि <ls>ŚAT. BR. 12, 9, 3, 7.</ls> ह्यङ्ग <ls>AV. 5, 11, 5.</ls> <ls n='AV. 5, 11,'>7.</ls> हि क^म् gewöhnlich am <is>Pāda</is>-Ende <ls>NAIGH. 3, 12.</ls> <ls>ṚV. 1, 47, 10.</ls> <ls n='ṚV.'>2, 28, 8.</ls> <ls n='ṚV. 2,'>37, 5.</ls> <ls n='ṚV.'>6, 51, 14.</ls> <ls n='ṚV.'>8, 11, 10.</ls> <ls n='ṚV. 8,'>44, 24.</ls> <ls n='ṚV.'>9, 49, 4.</ls> <ls>AV. 3, 13, 3.</ls> in der Mitte <ls>ṚV. 1, 98, 1.</ls> nach इत् <ls n='ṚV. 1,'>15, 5.</ls> <ls n='ṚV. 1,'>40, 2.</ls> एव <ls n='ṚV. 1,'>8, 8. fgg.</ls> अधा <ls n='ṚV.'>5, 66, 4.</ls> <ls n='ṚV.'>6, 2, 7.</ls> <ls n='ṚV.'>8, 87, 7.</ls> <ls>AV. 5, 22, 2.</ls> इति <ls>LĀṬY. 1, 6, 37. 2, 10, 18</ls> und oft. न/ हि/ (sonst नहि/; s. d.) <ls>TS. 5, 1, 7, 7.</ls> <ls>ŚAT. BR. 2, 4, 2, 6.</ls> bezeichnet in <ls>VS. PRĀT.</ls> den Schluss eines Abschnitts <ls n='VS. PRĀT.'>3, 4. 4, 10. 123.</ls> — <ls>M. 1, 3. 99. 101. 2, 7. 55.</ls> एतदिच्छाम्यहं श्रोतुं परं कौतूहलं हि मे <ls>R. 1, 1, 7.</ls> <ls>MEGH. 5. 10. 20.</ls> <ls>RAGH. 1, 10. 18. 69. 72.</ls> <ls>ŚĀK. 5, 14.</ls> <ls n='ŚĀK.'>8, 3.</ls> <ls>Spr. (II) 1249.</ls> <ls n='Spr. (II)'>1440.</ls> <ls n='Spr. (II)'>3804.</ls> सत्यं सत्यं हि नारद <ls n='Spr. (II)'>7135.</ls> <ls>KATHĀS. 4, 15. 28. 18, 126.</ls> <ls>HIT. 19, 19.</ls> nach verschiedenen Demonstrativis: स हि <ls>M. 1, 98. 7, 93. 186. 10, 81. 122.</ls> <ls>R. 1, 9, 66.</ls> <ls>RAGH. 4, 8.</ls> तं हि <ls>M. 1, 94.</ls> <ls n='M.'>4, 147.</ls> तद्धि <ls n='M.'>14. 8, 104. 9, 307. 12, 85.</ls> तस्य हि <ls n='M.'>7, 12.</ls> तेन हि <ls>ŚĀK. 5, 15.</ls> तौ हि <ls>M. 8, 418.</ls> तयोर्हि <ls n='M.'>9, 133.</ls> ते हि <ls n='M.'>313.</ls> एतद्धि <ls n='M.'>1, 59. 9, 306. 308. 12, 93.</ls> <ls>KATHĀS. 18, 236.</ls> एतेभ्यो हि <ls>M. 11, 3.</ls> एषां हि <ls n='M.'>7, 71.</ls> इमं हि <ls n='M.'>9, 6.</ls> इमौ हि <ls>R. 1, 4, 31.</ls> तथा हि <ls>ŚĀK. 31.</ls> <ls>PAÑCAT. 221, 6.</ls> <ls>HIT. 7, 5.</ls> <ls n='HIT.'>12, 11.</ls> <ls>SARVADARŚANAS. 9, 21. 163, 11. 174, 18.</ls> इति हि <ls>Spr. (II) 3053.</ls> nach Relativis: यो हि <ls>M. 3, 212.</ls> <ls n='M.'>4, 81.</ls> <ls n='M.'>5, 75.</ls> <ls>Spr. (II) 5656.</ls> -- <ls n='Spr. (II)'>5678.</ls> यद्धि यत् <ls n='Spr. (II)'>370.</ls> यद्यद्धि <ls>M. 2, 4.</ls> यं यं हि <ls>MBH. 3, 2202.</ls> यथा हि <ls>SARVADARŚANAS. 10, 5.</ls> यथा यथा हि <ls>M. 4, 20.</ls> <ls n='M.'>10, 128.</ls> <ls>MBH. 3, 2285.</ls> यदि हि <ls>M. 3, 61.</ls> nach oder mit Interrogativis: को हि <ls>MBH. 1, 5957.</ls> <ls n='MBH. 1,'>5978.</ls>  <ls>R. GORR. 1, 1, 2.</ls> <ls>KATHĀS. 18, 346.</ls> किं हि <ls>MBH. 12, 8973.</ls> किमर्थं हि <ls>R. 1, 73, 15.</ls> कथं हि <ls>MBH. 3, 2175.</ls> <ls n='MBH. 3,'>2203.</ls> किं कुपितो ह्यसि <ls>R. 2, 64, 29.</ls> <ls>Spr. (II) 371.</ls> <ls n='Spr. (II)'>5610.</ls> nach अपि <ls>M. 2, 113. 3, 14. 9, 100. 139. 336. 10, 129.</ls> <ls>MBH. 1, 3346.</ls> <ls>R. 1, 4, 16.</ls> <ls n='R. 1, 4,'>24</ls> <ls>Spr. (II) 3594.</ls> <ls n='Spr. (II)'>3990.</ls> <ls n='Spr. (II)'>7395.</ls> <ls>VARĀH. BṚH. S. 69, 18.</ls> nach एव <ls>M. 2, 230. 7, 66. 8, 413. 11, 84.</ls> <ls>BHAG. 1, 11.</ls> <ls>R. 1, 52, 18.</ls> <ls n='R. 1,'>53, 23.</ls> <ls>Spr. (II) 3703.</ls> <ls n='Spr. (II)'>5276.</ls> <ls>SARVADARŚANAS. 7, 16.</ls> nach चैव <ls>M. 2, 105. 3, 116. 207. 212. 232. 4, 25. 5, 9. 7, 120. 11, 184.</ls> <ls>MBH. 3, 2179.</ls> <ls>SARVADARŚANAS. 75, 8. 14</ls> (im Verse). nach इव <ls>Spr. (II) 706.</ls> <ls n='Spr. (II)'>6896.</ls> nach einem verbum finitum am Ende eines Verses <ls>M. 6, 89.</ls> <ls>MBH. 2, 808.</ls> <ls n='MBH.'>3, 1273.</ls> <ls>SARVADARŚANAS. 99, 5. 14.</ls> in zwei auf einander folgenden Sätzen: गत्वा हि वरयिष्ये त्वां मनो हि मम तां गतम् <ls>MBH. 3, 2241.</ls> <ls>R. 1, 64, 19.</ls> <dvsn n='1'>— 2) aufmunternd beim Imperativ oder Potentialis <i>doch</i>: यु\\क्ष्वा हि के\\शिना\\ हरी^ <ls>ṚV. 1, 10, 3.</ls> <ls n='ṚV. 1,'>14, 12.</ls> वसि^ष्वा\\ हि वस्त्रा^णि <ls n='ṚV. 1,'>26, 1.</ls> <ls n='ṚV. 1,'>48, 11.</ls> स म^न्दस्वा\\ ह्यन्ध^सः <ls n='ṚV.'>3, 41, 6.</ls> तद्धि दर्शय <ls>R. 1, 56, 3.</ls> मय्येव प्रहरेर्हि <ls>MBH. 1, 5985.</ls> <ls n='MBH.'>3, 2891.</ls> <ls>Spr. (II) 2513.</ls> पश्यामो हि <i>wir wollen doch sehen</i> <ls>KATHĀS. 18, 266.</ls> <dvsn n='1'>— 3) <i>allerdings, ja wohl, in der That</i>: यु\\वं हि पर्ष^थो\\ अति\\ द्विष^ः <ls>ṚV. 8, 26, 5.</ls> ताव^ब्रवीदस्तु\\ मे ऽत्रापीत्यस्तु\\ ही३त्य^ब्रूताम् <ls>TS. 7, 1, 6, 11.</ls> <ls>ŚAT. BR. 3, 8, 3, 4.</ls> <ls n='ŚAT. BR.'>14, 5, 1, 14.</ls> <ls>P. 8, 2, 93.</ls> देवीं वाचमुपासते हि बहवः सारं तु u. s. w. <i>wohl - aber</i> <ls>Spr. (II) 2954.</ls> <dvsn n='1'>— 4) häufig blosser Versfüller, z. B. <ls>MBH. 5, 6023.</ls> <ls>RAGH. 1, 69.</ls> insbesondere zwischen Vocalen zur Entfernung eines Hiatus <ls>M. 1, 83.</ls> <ls n='M.'>2, 52.</ls> <ls n='M.'>12, 66.</ls> <ls>MBH. 3, 2894.</ls> <ls>R. 1, 1, 87.</ls> am Ende eines <is>Pāda</is>: पश्याम्यस्मिन्वने ह्यमनुष्यनिषेविते <ls>MBH. 3, 2528.</ls> <ls n='MBH. 3,'>2716.</ls> (<ls>ed. Bomb.</ls> सु st. हि). <ls>VARĀH. BṚH. S. 105, 6.</ls> <ls>H. 131.</ls> zur Gewinnung einer Länge <ls>H. 57.</ls> erscheint im selben Satze sogar doppelt: आत्मा ह्येको हि <ls>MBH. 1, 6124.</ls> योगक्षेमो हि राज्ञो हि <ls n='MBH.'>12, 2808.</ls> अन्यो हि नाश्नाति कृतं हि कर्म मनुष्यलोके मनुजस्य कश्चित् <ls>Spr. (II) 388.</ls> भार्या हि परमो ह्यर्थः <ls n='Spr. (II)'>4577.</ls> गुह्याद्गुह्यतरस्त्वं हि ह्येवमाह पितामहः <ls>R. 7, 37, 5, 47.</ls> स्वल्पं हि नहि नः सुखम् <ls n='R. 7,'>73, 14.</ls>"
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "हि",
+            "eid": "22057",
+            "pagenum": 7,
+            "content": "<hom>1.</hom> हि¦ mit अनुप्र VII. °हित <i>abgeschossen</i> <ls>KIR. 17,93</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "हि",
+            "eid": "27566",
+            "pagenum": 378,
+            "content": "1. <i>hi</i>¦ mit <i>anupra, °hita</i> abgeschossen, <ls>Kir.</ls> 17, 33. {part=,seq=27937,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "हि",
+            "eid": "46869",
+            "pagenum": 832,
+            "content": "हि¦ r. 5th cl. (हिनीति) 1. To go. 2. To send. 3. To grow or increase. 4. To be in pain. 5. To Throw. 6. To excite, to urge. 7. To promote, to further. 8. To please, to gratify. With प्र, 1. To discharge, to throw. 2. To send forth."
+        },
+        {
+            "word": "हि",
+            "eid": "46870",
+            "pagenum": 832,
+            "content": "हि¦ Ind. A particle expressing:--1. Because, for, on account of. 2. Assuredly, certainly, (assertion.). 3. Indeed, surely, (interrogation.) 4. For instance. 5. Only, alone. 6. A particle, implying difference or distinction. 7. An expletive. 8. Ah, alas. 9. An interjection of envy or contempt. 10. An interjection of hurry. E. हि to go, विच् aff; or हा to abandon, or हि to go, डि aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "हि",
+            "eid": "24440",
+            "pagenum": 888,
+            "content": "<b>1 HI-</b>¦ <i>-hinoti hinvati ; jighāya ; heṣyati ; hīyate ; 1 hita-</i> mettre en mouvement, lancer, émettre, exciter."
+        },
+        {
+            "word": "हि",
+            "eid": "24441",
+            "pagenum": 888,
+            "content": "<b>2 hi</b>¦ particule <ab>encl.</ab> car, en effet ; justement, donc ; en fait ; <ab>qqf.</ab> explétif. <i>-tathā hi</i> par exemple, <i>-na hi</i> nullement."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "हि",
+            "eid": "44199",
+            "pagenum": 974,
+            "content": "हि¦ r. 5th cl. (हिनोति) .²1 To go. .²2 To send. .²3 To grow or increase. .²4 To be in pain."
+        },
+        {
+            "word": "हि",
+            "eid": "44200",
+            "pagenum": 974,
+            "content": "हि¦ <i>ind.</i> .²1 Because, for, on account of. .²2 Assembly, certainly, (assertion.) .²3 Indeed, surely, (interrogation.) .²4 A particle, implying difference or distinction. .²5 An expletive. .²6 Ah, alas. .²7 An interjection of envy or contempt. .²8 An interjection of hurry. .E. हि to go, विच् aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "हि",
+            "eid": "44025",
+            "pagenum": 899,
+            "content": "हि¦ (न) हिनोति 5. <i>a.</i> To go; send; grow; be in pain."
+        },
+        {
+            "word": "हि",
+            "eid": "44026",
+            "pagenum": 899,
+            "content": "हि¦ <i>expletive,</i> Certainly, indeed. <i>in-</i> <i>terj.</i> Expressive of grief, hurry, or contempt."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "हि",
+            "eid": "41734",
+            "pagenum": "5-533-c",
+            "content": "हि¦, न वर्द्धने । गतौ इति कविकल्पद्रुमः । (भ्वा०पर०-सक०-अनिट् ।) गतिरिह अन्तर्भूतञ्यर्थत्वात् गतिप्रेरणम् । न, प्रहिणु स्वसूनुमिति भट्टिः । वर्द्धने विरलप्रयोगः । इति दुर्गादासः ॥"
+        },
+        {
+            "word": "हि",
+            "eid": "41735",
+            "pagenum": "5-534-a",
+            "content": "हि¦, व्य, हेतुः । (यथा, शाकुन्तले । १ अङ्के । “अशंसयं क्षत्त्रपरिग्रहक्षमा यदार्य्यमस्यामभिलाषि मे मनः । सतां हि सन्देहपदेषु वस्तुषु प्रमाणमन्तःकरणप्रवृत्तयः ॥”) अवधारणम् । इत्यमरः । ३ । ४ । २५६ ; ३ । ४ । ५ ॥ पादपूरणम् । विशेषः । प्रश्नः । (यथा, रामायणे । २ । ६४ । ३० । “नाभिवादयसे माद्य न च मामभिभाषसे । किञ्च शेषे तु भूमौ त्वं वत्स ! किं कुपितो ह्यसि ॥”) हेत्वपदेशः । सम्भ्रमः । असूया । इति मेदिनी ॥ शोकः इति शब्दरत्नावली ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "हि",
+            "eid": "48031",
+            "pagenum": "5425,a",
+            "content": "हि¦ बर्द्धने गतौ च स्वा० पर० सक० अनिट् । हिनोति अहैपीत् जिघाय ।"
+        },
+        {
+            "word": "हि",
+            "eid": "48032",
+            "pagenum": "5425,a",
+            "content": "हि¦ अव्य० हा--हि--वा डि । १ हेतौ २ अवधारणे अमरः । ३ विशेषे ४ प्रश्ने ५ सम्भ्रमे ६ हेतूपदेशे ७ असूयायां च मेदि० ८ पादपूरणे ९ शोके च शब्दर० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "हि",
+            "content": "हि अव्य. - '(इसका प्रयोग वाक्य के आरम्भ में कभी नहीं होता) इसके अर्थ निम्नांकित हैः- इसलिए कि, क्योंकि (तर्कसंगत युक्ति का निर्देश करना)'"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - 'निस्सन्देह, निश्चय ही'"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - 'उदाहरणस्वरूप, जैसा की सुविदित है, '"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - 'केवल, अकेला (किसी विचार पर बल देने के लिए) '"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - कभी कभी यह केवल पूरक की भांति ही प्रयुक्त होता है"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - 'भेजना, उकसाना'"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - 'डाल देना, फेंकना, (तीर) चलाना (बन्दुक) दागना'"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - 'उत्तेजित करना, भड़काना, उकसाना'"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - 'उन्नत करना, आगे बढ़ाना '"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - 'तृप्त करना, प्रसन्न करना, उल्लसित करना '"
+        },
+        {
+            "word": "हि",
+            "content": "हि अव्य. - 'जाना, प्रगति करना'"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "हि",
+            "content": "(I) personal-ending of the second pers. sing. substituted for सि in the imperative mood; cf. सेर्ह्यपिच्च P. III. 4.87; (2) a sign-word used in the Vajasaneyi-pratisakhya to mark the termination of the words of the Adhikarasutra V. Pr.III.5, IV.11."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "हि",
+            "पदविभागः": "अव्यय",
+            "कन्नडार्थः": "ಹೇತು \\/ಕಾರಣ",
+            "प्रयोगाः": "'विदितेङ्गिते हि पुर एव जनै सपदीरिताः खलु लगन्ति गिरः'",
+            "उल्लेखाः": "माघ० ९-६९",
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "पदविभागः": "अव्यय",
+            "कन्नडार्थः": "ಅವಧಾರಣ \\/ನಿಶ್ಚಯ",
+            "प्रयोगाः": "'न हि कमलिनीं दृष्ट्वा ग्राहमवेक्षते मतङ्गजः'",
+            "उल्लेखाः": "माल० ३",
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "पदविभागः": "अव्यय",
+            "कन्नडार्थः": "ಪಾದಪೂರಣ \\/ಪಾದವನ್ನು ಪೂರ್ಣಗೊಳಿಸುವ ಒಂದು ಅವ್ಯಯ",
+            "विस्तारः": "'तु हि च स्म ह वै पादपूरणे' अम०",
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "पदविभागः": "अव्यय",
+            "कन्नडार्थः": "ಪ್ರಶ್ನಾರ್ಥಕ",
+            "प्रयोगाः": "'किं च शेषे तु भूमौ त्वं वत्स किं कुपितोह्यसि'",
+            "उल्लेखाः": "रामा०",
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "पदविभागः": "अव्यय",
+            "कन्नडार्थः": "ಉದಾಹರಣೆ",
+            "प्रयोगाः": "'सहस्रगुणमुत्स्रष्टुमादत्ते हि रसं रविः'",
+            "उल्लेखाः": "रघु० १-१८",
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "पदविभागः": "अव्यय",
+            "कन्नडार्थः": "ಸಂಭ್ರಮ",
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "पदविभागः": "अव्यय",
+            "कन्नडार्थः": "ಅಸೂಯೆ",
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "पदविभागः": "अव्यय",
+            "कन्नडार्थः": "ವಿಶೇಷ",
+            "विस्तारः": "'हि पादपूरणे हेतौ विशेषेऽप्यवधारणे। प्रश्ने हेत्वपदेशे च सम्भ्रमासूययोरपि' मेदि०",
+            "content": ""
+        }
+    ],
+    "UPSC": [
+        {
+            "word": "हि",
+            "upasarga": "प्र",
+            "dhatu": "हि",
+            "artha": "हि गतौ वृद्धौ च",
+            "baseindex": "05.0012",
+            "examples": [
+                "'प्राहिणोच्चन्द्रसङ्काशान् कुपितानिव तान् हयान्' (भा॰वि॰५७.४)। <hl>प्राहिणोत्=प्राचोदयत्। प्राजत्।</hl>",
+                "'खड्गं सहदेवाय प्राहिणोत्' (भा॰शल्य॰२८.३८)। <hl>खड्गेन सहदेवे प्राहरदित्यर्थः।</hl>",
+                "'विषदिग्धमिषुं प्राहिणोत्' (तन्त्रा॰२.३)। <hl>प्रास्यदित्यर्थः।</hl>",
+                "'बृहस्पतेरञ्जलिं प्राहिणोत्सः' (भा॰आश्व॰९.२२)।",
+                "'तेऽकृतार्थं प्रहिण्वन्ति प्राणा रायः सुतादयः' (भा॰पु॰१०.४९.२३)। <hl>विहाय गच्छन्तीति विवक्षति कविः। तदस्य स्वातन्त्र्यम्।</hl>",
+                "'वेगेन प्रहितं बाहुं निजग्राह हसन्निव' (भा॰आदि॰१५३.३९)। <hl>प्रहितमुत्क्षिप्तम्।</hl>",
+                "'यातुधाना हेती रक्षांसि प्रहेतिः' (वा॰सं॰१५.१६)। <hl>प्रकृष्टा हेतिः प्रहेतिः।</hl>  <hl>यस्मिन्नस्त्रे मुक्ते रावणसेनेव परस्परं रिपवो घ्नन्ति सा प्रहेतिः। प्रहेतिर्बाणप्रासादि प्रहरमिति कश्चित्।</hl>",
+                "'ततस्तां प्रहितां देवीमिन्द्राणीं सा समन्वगात्' (भा॰उ॰१४.५)। <hl>प्रहिता=प्रस्थिता। हि गतौ वृद्धौ चेति प्राकृतेऽर्थे प्रयोगः, अन्यत्रान्तर्भूतण्यर्थको हिनोतिः प्रयुक्तो दृश्यते।</hl>",
+                "'प्रहीयमाणः प्रवरश्च वादिकैः' (रा॰२.१६.४६)। <hl>प्रेर्यमाण इत्याह। राम इति कर्तृपदमुद्देश्यम्।</hl>",
+                "'भिनत्ति सम्यक् प्रहितो भेदः स्थिरमतीनपि' (तन्त्रा॰१.१२.१२९)। <hl>प्रहितः प्रयुक्तः प्रणीतः।</hl>",
+                "'अहं हि सततं गोषु भवतां प्रहितः पुरा' (भा॰वि॰३.१०)। <hl>प्रहितोऽधिकृतः।</hl>",
+                "'प्रहितोऽश्वोऽश्वतर उपतिष्ठति' (जै० ब्रा० १।३८)। <hl>प्रहितः प्राजितः।</hl>",
+                "'इयमद्य निशा पूर्वा सौमित्रे प्रहिता वनम्। वनवासस्य…' (रा० २।४६।२)॥ <hl>प्रहिता गतप्रायेति गोविन्दराजः। एवं वनमित्यनन्वयं तिष्ठति। वनं प्रहिता वने प्राप्तेति रामानुजीयं व्याख्यानम्। एवमपि वनमिति द्वितीया नोपपत्तिमती भवति। अहं तु मन्ये वनं प्रहिता वयम् इति मध्येवाक्यमवान्तरवाक्यं प्रक्षिप्तम् इति।</hl>",
+                "'इत ऊती वो अजरं प्रहेतारमप्रहितम्। आशुं जेतारं हेतारं रथीतमम्…' (अथर्व० २०।१०५।३)॥ <hl>प्रहेतारम् प्रेरयितारम्। अप्रहितम् अन्येनाप्रेरितम्।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "upasarga": "अप",
+            "dhatu": "हि",
+            "artha": "हि गतौ वृद्धौ च",
+            "baseindex": "05.0012",
+            "examples": [
+                "'भक्तिं परां भगवति प्रतिलभ्य कामं हृद्रोगमाश्वपहिनोत्यचिरेण धीरः' (भा॰पु॰१०.३३.४०)। <hl>अपहिनोति=अपगमयति। अपपूर्वस्य हिनोतेरत्रैव प्रयोगः। ऋषिरिव नियोगपर्यनुयोगानर्हः स्वतन्त्र एष कविः।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "upasarga": "सम्",
+            "dhatu": "हि",
+            "artha": "हि गतौ वृद्धौ च",
+            "baseindex": "05.0012",
+            "examples": [
+                "'अस्मा इदु स्तोमं संहिनोमि' (ऋ० १।६१।४, अथर्व० २०।३५।४)।"
+            ],
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "upasarga": "आङ्",
+            "dhatu": "हि",
+            "artha": "हि गतौ वृद्धौ च",
+            "baseindex": "05.0012",
+            "examples": [
+                "'तत्र त्वं मम नैवासि रामश्च वनमाहितः' (रा० २।६१।२५)। <hl>वनमाहितो वनं प्रहितः, वनं प्रस्थापितः।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "upasarga": "अति",
+            "dhatu": "हि",
+            "artha": "हि गतौ वृद्धौ च",
+            "baseindex": "05.0012",
+            "examples": [
+                "'आयुर्यत्ते अतिहितं पराचैः' (अथर्व० ७।५५।३)। <hl>पराचैरतिहितं पराङ् अतिगतम्।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "upasarga": "प्रति + प्र",
+            "dhatu": "हि",
+            "artha": "हि गतौ वृद्धौ च",
+            "baseindex": "05.0012",
+            "examples": [
+                "'प्रत्यक् प्रतिप्रहिण्मो यथा कृत्याकृतं हनत्' (अथर्व० १०।१।५)। <hl>अत्र प्रतिशब्दस्य प्रत्यक्छब्देन गतार्थता नातितिरोहिता। अन्यत्रापि च्छन्दस्येवंविधा शैली दृश्यते।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "upasarga": "उप + आङ्",
+            "dhatu": "हि",
+            "artha": "हि गतौ वृद्धौ च",
+            "baseindex": "05.0012",
+            "examples": [
+                "'पुरं दिदृक्षुभि र्जानपदैरुपाहितैः' (रा० २।६।२८)। <hl>उपाहितैः समेतैः।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "upasarga": "उप + प्र",
+            "dhatu": "हि",
+            "artha": "हि गतौ वृद्धौ च",
+            "baseindex": "05.0012",
+            "examples": [
+                "'अथेमेनं प्र हिणुतात् पितॄँ रुप' (अथर्व० १८।२।४)। <hl>उप प्रहिणुतात् समीपे प्रेषयेत्याह।</hl>",
+                "'तद्ध स्म श्रोत्रियायोप प्रहित्य' (जै० ब्रा० २।५५)। <hl>उक्तोऽर्थः।</hl>"
+            ],
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "हि",
+            "linga": "A",
+            "artha": "अवधारणम्",
+            "synonyms": [
+                "मात्र",
+                "तु",
+                "यावत्_तावत्",
+                "ननु",
+                "हि"
+            ],
+            "num": "3.3.272",
+            "text": "अहहेत्यद्भुते खेदे हि हेताववधारणे । \" ॥",
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "linga": "A",
+            "artha": "कारणम्",
+            "synonyms": [
+                "हेतु",
+                "कारण",
+                "बीज",
+                "प्रमाण",
+                "निमित्त",
+                "प्रत्यय",
+                "इति",
+                "हि",
+                "यत्_तत्",
+                "यतः_ततः"
+            ],
+            "num": "3.3.272",
+            "text": "अहहेत्यद्भुते खेदे हि हेताववधारणे । \" ॥",
+            "content": ""
+        },
+        {
+            "word": "हि",
+            "linga": "A",
+            "artha": "पादपूरणम्",
+            "synonyms": [
+                "तु",
+                "हि",
+                "च",
+                "स्म",
+                "ह",
+                "वै"
+            ],
+            "num": "3.4.5",
+            "text": "आहो उताहो किमुत विकल्पे किं किमूत च । तु हि च स्म ह वै पादपूरणे पूजने स्वति ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "हि",
+            "content": "<lexhead no=\"175\">\n<dentry>हि</dentry>\n<prAwipaxikam>हि</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<jAwi>वर्णात्मकः</jAwi>\n<upAXi>कारणम्</upAXi>\n<jAwi>क्रिया</jAwi>\n<sense no=\"1\">(इसका प्रयोग वाक्य के आरम्भ में कभी नहीं होता) इसके अर्थ निम्नांकित हैः- इसलिए कि, क्योंकि (तर्कसंगत युक्ति का निर्देश करना), अग्निरिहास्ति धूमो हि दृश्यते<citation>गण*</citation>रघु* ५/१०</sense>\n<sense n=\"2\">निस्सन्देह, निश्चय हीदेवप्रयोगप्रधानं हि नाट्यशास्त्रम्<citation>मालवि* १</citation>न कमलिनीं दृष्टवा ग्राहमवेक्षते मतङ्गजः<citation>मालवि* ३</citation></sense>\n<sense n=\"3\">उदाहरणस्वरूप, जैसा की सुविदित है, प्रजानामेव भूत्यर्थं स ताभ्यो बलिमग्रहीत्। सहस्रगुणमुत्स्रष्टुमादत्ते हिं रसं रविः<citation>रघु* १/१८</citation></sense>\n<sense n=\"4\">केवल, अकेला (किसी विचार पर बल देने के लिए) मूढो हि मदनेनायास्यते<citation>का* १५५</citation></sense>\n<sense n=\"5\">कभी कभी यह केवल पूरक की भांति ही प्रयुक्त होता है</sense>\n<sense n=\"6\">भेजना, उकसाना</sense>\n<sense n=\"7\">डाल देना, फेंकना, (तीर) चलाना (बन्दुक) दागनागदाशक्रजिता जिध्ये<citation>भट्टि* १४/३६</citation></sense>\n<sense n=\"8\">उत्तेजित करना, भड़काना, उकसाना</sense>\n<sense n=\"9\">उन्नत करना, आगे बढ़ाना</sense>\n<sense n=\"10\">तृप्त करना, प्रसन्न करना, उल्लसित करना</sense>\n<sense n=\"11\">जाना, प्रगति करना</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "हि",
+            "content": "<body><s>hi bardDane gatO ca svA° para° saka° aniw . hinoti ahEpIt jiGAya .</s></body> <body><s>hi avya° hA—hi—vA qi . <lb/><b>1</b> hetO <lb/><b>2</b> avaDAraRe amaraH . <lb/><b>3</b> viSeze <lb/><b>4</b> praSne <lb/><b>5</b> samBrame <lb/><b>6</b> hetUpadeSe <lb/><b>7</b> asUyAyAM ca medi° <lb/><b>8</b> pAdapUraRe <lb/><b>9</b> Soke ca Sabdara° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "हि",
+            "content": "<H1><h><key1>hi</key1><key2>hi</key2><hom>1</hom></h><body><hom>1.</hom> <s>hi</s>   (<ab>cf.</ab> √ <s>hay</s>) <ab>cl.</ab> 5. <ab>P.</ab> (<ls>Dhātup. xxvii, 11</ls>) <s>hino/ti</s> (<lang>Ved.</lang> also <s>hinute/</s>, <s>hi/nvati</s> and <s>hinva/ti</s>, <s>°te</s>; <ab>p.</ab> <s>hinvAna/</s> [with <ab>act.</ab> and <ab>pass.</ab> sense] <ls>RV.</ls>; <s>ha/yat</s>, <ls>RV.</ls>; <ls>TS.</ls>; 1. <ab>sg.</ab> <s>hize</s>, <ls>RV.</ls>; <ab>pf.</ab> <s>jiGAya</s>, <s>jiGyuH</s>, <ls>Br.</ls> &amp;c.; <s>jiGye</s> [with <ab>pass.</ab> sense] <ls>Bhaṭṭ.</ls>; <ab>aor.</ab> <s>a/hema</s>, <s>ahyan</s>, <s>heta</s> <ab>p.</ab> <s>hiyAna/</s> [with <ab>pass.</ab> sense] <ls>RV.</ls>; <s>ahyam</s> [?], <s>a/hEt</s>, <ls>AV.</ls>; <s>ahEzIt</s>, <ls>Br.</ls>; <s>ahezata</s>, <ls>RV.</ls>; <ab>fut.</ab> <s>hetA</s> <ab>Gr.</ab>; <s>hezyati</s>, <ls>MBh.</ls> &amp;c.; <ab>inf.</ab> <s>-hye/</s>, <ls>RV.</ls>), <div n=\"to\" />to send forth, set in motion, impel, urge on, hasten on (<ab>Ā.</ab> also <ab>intrans.</ab>), <ls>RV.</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls>; <ls>KātyŚr.</ls>; <div n=\"to\" />to stimulate or incite to (<ab>dat.</ab>), <ls>RV.</ls>; <div n=\"to\" />to assist or help to (<ab>dat.</ab>), <ls>ib.</ls>; <div n=\"to\" />to discharge, hurl, cast, shoot, <ls>RV.</ls>; <div n=\"to\" />to convey, bring, procure, <ls>ib.</ls>; <ls>ŚBr.</ls>; <div n=\"to\" />to forsake, abandon, get rid of <ls>Bhaṭṭ.</ls>; <div n=\"to\" /> (<s>hinvati</s>) to gladden, delight, <ls>Dhātup. xv, 82</ls> : <div n=\"vp\" /><ab>Pass.</ab> <s>hIyate</s> (<ab>aor.</ab> <s>ahAyi</s>) <ab>Gr.</ab>: <div n=\"vp\" /><ab>Caus.</ab> <s>hAyayati</s> (<ab>aor.</ab> <s>ajIhayat</s>), <ls>ib.</ls> : <div n=\"vp\" /><ab>Desid.</ab> of <ab>Caus.</ab> <s>jihApayizati</s>, <ls>ib.</ls> : <div n=\"vp\" /><ab>Desid.</ab> <s>jiGIzati</s>, <ls>ib.</ls> : <div n=\"vp\" /><ab>Intens.</ab> <s>jeGIyate</s>, <s>jeGayIti</s>, <s>jeGeti</s>, <ls>ib.</ls><info westergaard=\"hi,27.11,05.0012;hivi,15.82,01.0380\" /><info whitneyroots=\"hi,205\" /><info verb=\"genuineroot\" cp=\"5P,5Ā\" /></body><tail><L>262717</L><pc>1297,2</pc></tail></H1>\n <H1><h><key1>hi</key1><key2>hi/</key2><hom>2</hom></h><body><hom>2.</hom> <s>hi/</s>   <lex>ind.</lex> (used as a particle [<ab>cf.</ab> <s>ha</s> and <s>Ga</s>] and usually denoting) for, because, on account of (never standing first in a sentence, but generally after the first word and used enclitically, sometimes after pronouns; <ab>e.g.</ab> <s>sa/rvo hi/ pf/tanA jigIzati</s>, ‘for everybody wishes to win battles’; <s>BavAn hi pramARam</s>, ‘for your honour is the authority’; <s>taTA hi</s>, ‘for example’, ‘accordingly’; <s>na/ hi/</s> or <s>nahi/</s>, ‘for not’, ‘not at all’), <ls>RV.</ls> &amp;c. &amp;c.<info lex=\"ind\" /></body><tail><L>262729</L><pc>1297,3</pc></tail></H1>\n <H1A><h><key1>hi</key1><key2>hi/</key2></h><body>  just, pray, do (with an <ab>Impv.</ab> or <ab>Pot.</ab> emphatically; sometimes with <ab>Indic.</ab>, <ab>e.g.</ab> <s>paSyAmo hi</s>, ‘we will just see’), <ls>ib.</ls><info lex=\"inh\" /></body><tail><L>262729.1</L><pc>1297,3</pc></tail></H1A>\n <H1A><h><key1>hi</key1><key2>hi/</key2></h><body>  indeed, assuredly, surely, of course, certainly (<s>hi/ vE/</s>, ‘most assuredly’; <s>hi-tu</s> or <s>hi-punar</s>, ‘indeed-but’; often a mere expletive, <ab>esp.</ab> to avoid a hiatus, sometimes repeated in the same sentence; <s>hi</s> is also said to be an interjection of ‘envy’, ‘contempt’, ‘hurry’ &amp;c.), <ls>ib.</ls><info lex=\"inh\" /></body><tail><L>262729.2</L><pc>1297,3</pc></tail></H1A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "हि",
+            "content": "<H1><h><key1>hi</key1><key2>hi</key2></h><body><s>hi</s> <div n=\"1\">r. 5th cl. (<s>hinIti</s>) </div><div n=\"2\"> 1. To go. </div><div n=\"2\"> 2. To send. </div><div n=\"2\"> 3. To grow or increase. </div><div n=\"2\"> 4. <lb />To be in pain. </div><div n=\"2\"> 5. To Throw. </div><div n=\"2\"> 6. To excite, to urge. </div><div n=\"2\"> 7. To promote, <lb />to further. </div><div n=\"2\"> 8. To please, to gratify.</div><div n=\"1\">With <s>pra,</s> </div><div n=\"2\"> 1. To discharge, to <lb />throw. </div><div n=\"2\"> 2. To send forth.</div></body><tail><L>46869</L><pc>832-b</pc></tail></H1>\n <H1><h><key1>hi</key1><key2>hi</key2></h><body><s>hi</s>  Ind. A particle expressing:--1. Because, for, on account of. <div n=\"2\"> 2. <lb />Assuredly, certainly, (assertion.). </div><div n=\"2\"> 3. Indeed, surely, (interrogation.) <lb />4. For instance. </div><div n=\"2\"> 5. Only, alone. </div><div n=\"2\"> 6. A particle, implying difference <lb />or distinction. </div><div n=\"2\"> 7. An expletive. </div><div n=\"2\"> 8. Ah, alas. </div><div n=\"2\"> 9. An interjection of <lb />envy or contempt. </div><div n=\"2\"> 10. An interjection of hurry.</div><div n=\"E\"> E. <s>hi</s> to go, <s>vic</s> <lb />aff; or <s>hA</s> to abandon, or <s>hi</s> to go, <s>qi</s> aff.</div></body><tail><L>46870</L><pc>832-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "हि",
+            "content": "<span lang=\"sa\">हि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्यय<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹೇತು /ಕಾರಣ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"विदितेङ्गिते हि पुर एव जनै सपदीरिताः खलु लगन्ति गिरः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० ९-६९<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्यय<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅವಧಾರಣ /ನಿಶ್ಚಯ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"न हि कमलिनीं दृष्ट्वा ग्राहमवेक्षते मतङ्गजः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माल० ३<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्यय<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪಾದಪೂರಣ /ಪಾದವನ್ನು ಪೂರ್ಣಗೊಳಿಸುವ ಒಂದು ಅವ್ಯಯ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"तु हि च स्म ह वै पादपूरणे\" अम०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्यय<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪ್ರಶ್ನಾರ್ಥಕ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"किं च शेषे तु भूमौ त्वं वत्स किं कुपितोह्यसि\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रामा०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्यय<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಉದಾಹರಣೆ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"सहस्रगुणमुत्स्रष्टुमादत्ते हि रसं रविः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० १-१८<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्यय<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಂಭ್ರಮ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्यय<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಸೂಯೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्यय<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿಶೇಷ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"हि पादपूरणे हेतौ विशेषेऽप्यवधारणे। प्रश्ने हेत्वपदेशे च सम्भ्रमासूययोरपि\" मेदि०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-/**
- * Test if a node is a {@link NamedDeclarationWithName}.
- *
- * @category Nodes - Type Guards
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isNamedDeclarationWithName(node)) {
- *   // ...
- * }
- * ```
- * @returns Whether the given node appears to be a {@link NamedDeclarationWithName}.
- */
-declare function isNamedDeclarationWithName(node: ts.Declaration): node is NamedDeclarationWithName;
-/**
- * Test if a node is a `NamespaceDeclaration`.
- *
- * @category Nodes - Type Guards
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isNamespaceDeclaration(node)) {
- *   // ...
- * }
- * ```
- * @returns Whether the given node appears to be a `NamespaceDeclaration`.
- */
-declare function isNamespaceDeclaration(node: ts.Node): node is ts.NamespaceDeclaration;
-/**
- * A number or string-like literal.
- *
- * @category Node Types
- */
-type NumericOrStringLikeLiteral = ts.NumericLiteral | ts.StringLiteralLike;
-/**
- * Test if a node is a {@link NumericOrStringLikeLiteral}.
- *
- * @category Nodes - Type Guards
- * @example
- * ```ts
- * declare const node: ts.Node;
- *
- * if (isNumericOrStringLikeLiteral(node)) {
- *   // ...
- * }
- * ```
- * @returns Whether the given node appears to be a {@link NumericOrStringLikeLiteral}.
- */
-declare funct"use strict";
-/*
- * ATTENTION: An "eval-source-map" devtool has been used.
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-self["webpackHotUpdate_N_E"]("pages/harililakalpataru/[...harililakalpataru_id]",{
-
-/***/ "./src/pages/harililakalpataru/[...harililakalpataru_id].js":
-/*!******************************************************************!*\
-  !*** ./src/pages/harililakalpataru/[...harililakalpataru_id].js ***!
-  \******************************************************************/
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-eval(__webpack_require__.ts("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"./node_modules/react/jsx-dev-runtime.js\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/dynamic */ \"./node_modules/next/dynamic.js\");\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_dynamic__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var use_debounce__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! use-debounce */ \"./node_modules/use-debounce/dist/index.module.js\");\n/* harmony import */ var _components_button_NavButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/button/NavButton */ \"./src/components/button/NavButton.js\");\n/* harmony import */ var _barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! __barrel_optimize__?names=FaArrowLeft,FaArrowRight,FaChevronLeft,FaChevronRight,FaEdit,FaHome!=!react-icons/fa */ \"__barrel_optimize__?names=FaArrowLeft,FaArrowRight,FaChevronLeft,FaChevronRight,FaEdit,FaHome!=!./node_modules/react-icons/fa/index.esm.js\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! next/router */ \"./node_modules/next/router.js\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_4__);\n/* harmony import */ var _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/utils/axiosInstance */ \"./src/utils/axiosInstance.js\");\n/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! next/link */ \"./node_modules/next/link.js\");\n/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_6__);\n\nvar _s = $RefreshSig$();\n\n\n\n\n\n\n\n\nconst CustomEditor = next_dynamic__WEBPACK_IMPORTED_MODULE_2___default()(()=>__webpack_require__.e(/*! import() */ \"src_components_custom-editor_js\").then(__webpack_require__.bind(__webpack_require__, /*! ../../components/custom-editor */ \"./src/components/custom-editor.js\")), {\n    loadableGenerated: {\n        modules: [\n            \"harililakalpataru\\\\[...harililakalpataru_id].js -> \" + \"../../components/custom-editor\"\n        ]\n    },\n    ssr: false\n});\n_c = CustomEditor;\nconst HarililakalpataruId = (param)=>{\n    let { harililakalpataru_id } = param;\n    _s();\n    const router = (0,next_router__WEBPACK_IMPORTED_MODULE_4__.useRouter)();\n    const [currentSkanda, setCurrentSkanda] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({});\n    const [currentAdhyayList, setCurrentAdhyayList] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const [harililakalpataruSkanda, setHarililakalpataruSkanda] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const [content, setContent] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(\"\");\n    const [status, setStatus] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(\"Saved!\");\n    const [saveContent] = (0,use_debounce__WEBPACK_IMPORTED_MODULE_7__.useDebounce)(content, 500);\n    const [focus, setFocus] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);\n    const [activeTab, setActiveTab] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(\"header\");\n    const [tabs, setTabs] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([\n        {\n            name: \"header\",\n            val: \"header\"\n        },\n        {\n            name: \"footer\",\n            val: \"footer\"\n        }\n    ]);\n    const handleTab = (type)=>{\n        setActiveTab(type);\n    // router.push({\n    //   pathname: `/satsangijeevan/${satsangijeevan_id.join(\"/\")}`,\n    //   query: { tab: type },\n    // });\n    };\n    const getAllSkanda = async ()=>{\n        try {\n            var _response_data;\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/skanda\");\n            setHarililakalpataruSkanda(response === null || response === void 0 ? void 0 : (_response_data = response.data) === null || _response_data === void 0 ? void 0 : _response_data.data);\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    const getCurrentSkandaItem = async (id)=>{\n        try {\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/skanda\", {\n                params: {\n                    id: id\n                }\n            });\n            setContent(response.data.data[activeTab]);\n            setCurrentSkanda(response.data.data);\n            return;\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    const getCurrentAdhyayList = async (id)=>{\n        try {\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/adhyay\", {\n                params: {\n                    skandaId: id\n                }\n            });\n            setContent(response.data.data[activeTab]);\n            setCurrentAdhyayList(response.data.data);\n            return;\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{\n        getAllSkanda();\n        if (harililakalpataru_id.length >= 1) {\n            getCurrentSkandaItem(harililakalpataru_id[0]);\n            getCurrentAdhyayList(harililakalpataru_id[0]);\n        }\n    }, [\n        router.query,\n        activeTab,\n        harililakalpataru_id\n    ]);\n    // console.log(\"harililakalpataruSkanda----------\", harililakalpataruSkanda);\n    // console.log(\"currentSkanda----------\", currentSkanda);\n    console.log(\"currentAdhyayList----------\", currentAdhyayList);\n    // console.log(\"content----------\", content);\n    const handleSave = async ()=>{\n        try {\n            await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].post(\"/harililakalpataru/skanda\", {\n                id: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda._id,\n                body: content,\n                key: activeTab\n            });\n            setStatus(\"Saved!\");\n        } catch (error) {\n            console.error(\"Error inserting data:\", error);\n        }\n    };\n    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{\n        if (focus) {\n            handleSave();\n        }\n    }, [\n        saveContent\n    ]);\n    const handlePage = (page)=>{\n    // if (harililakalpataru_id.length === 1) {\n    //   const currentObject =\n    //     satsangijeevan &&\n    //     satsangijeevan?.data?.find(\n    //       (obj) => obj.adhyayKey == harililakalpataru_id[0]\n    //     );\n    //   const currentIndexInArray = satsangijeevan?.data?.indexOf(currentObject);\n    //   if (page == \"NEXT\") {\n    //     const nextObject = satsangijeevan?.data?.[currentIndexInArray + 1];\n    //     return nextObject ? nextObject.adhyayKey : harililakalpataru_id;\n    //   }\n    //   if (page == \"PREVIOUS\") {\n    //     const nextObject = satsangijeevan?.data?.[currentIndexInArray - 1];\n    //     return nextObject ? nextObject.adhyayKey : harililakalpataru_id;\n    //   }\n    // } else if (harililakalpataru_id.length === 2) {\n    //   const currentObject =\n    //     currentSatsangijeevans &&\n    //     currentSatsangijeevans?.items?.find(\n    //       (obj) => obj.id == harililakalpataru_id[1]\n    //     );\n    //   const currentIndexInArray =\n    //     currentSatsangijeevans?.items?.indexOf(currentObject);\n    //   if (page == \"NEXT\") {\n    //     const nextObject =\n    //       currentSatsangijeevans?.items?.[currentIndexInArray + 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${nextObject.id}`\n    //         : `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}`\n    //     }`;\n    //   }\n    //   if (page == \"PREVIOUS\") {\n    //     const nextObject =\n    //       currentSatsangijeevans?.items?.[currentIndexInArray - 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${nextObject.id}`\n    //         : `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}`\n    //     }`;\n    //   }\n    // } else if (harililakalpataru_id.length === 3) {\n    //   const currentData =\n    //     currentSatsangijeevansVerse &&\n    //     currentSatsangijeevansVerse?.items?.filter((a) => a.id !== -1);\n    //   const currentObject =\n    //     currentData &&\n    //     currentData?.find((obj) => obj.id == harililakalpataru_id[2]);\n    //   const currentIndexInArray = currentData?.indexOf(currentObject);\n    //   if (page == \"NEXT\") {\n    //     const nextObject = currentData?.[currentIndexInArray + 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}/${nextObject.id}?tab=${activeTab}`\n    //         : `${harililakalpataru_id.join(\"/\")}?tab=${activeTab}`\n    //     }`;\n    //   }\n    //   if (page == \"PREVIOUS\") {\n    //     const nextObject = currentData?.[currentIndexInArray - 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}/${nextObject.id}?tab=${activeTab}`\n    //         : `${harililakalpataru_id.join(\"/\")}?tab=${activeTab}`\n    //     }`;\n    //   }\n    // }\n    };\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n        children: [\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"nav\", {\n                className: \"flex justify-between gap-2 items-center z-30 sticky top-0 bg-secondary p-2 -m-4 mb-1\",\n                children: [\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                        className: \"grow-0 gap-2 items-center\",\n                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"flex gap-2 items-center\",\n                            children: [\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_button_NavButton__WEBPACK_IMPORTED_MODULE_3__.NavButton, {\n                                    type: \"link\",\n                                    link: \"/dashboard\",\n                                    label: \"back-btn\",\n                                    className: \"flex\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_8__.FaHome, {}, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 194,\n                                        columnNumber: 15\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 188,\n                                    columnNumber: 13\n                                }, undefined),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_button_NavButton__WEBPACK_IMPORTED_MODULE_3__.NavButton, {\n                                    type: \"link\",\n                                    link: \"/satsangijeevan/\".concat(harililakalpataru_id.slice(0, -1).join(\"/\")),\n                                    label: \"back-btn\",\n                                    className: \"flex\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_8__.FaArrowLeft, {}, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 204,\n                                        columnNumber: 15\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 196,\n                                    columnNumber: 13\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 187,\n                            columnNumber: 11\n                        }, undefined)\n                    }, void 0, false, {\n                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                        lineNumber: 186,\n                        columnNumber: 9\n                    }, undefined),\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                        className: \"grow text-primary text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl\",\n                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                            className: \"flex justify-center\",\n                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                className: \"capitalize\",\n                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                    className: \"hover:underline\",\n                                    href: \"/harililakalpataru\",\n                                    children: currentSkanda && (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.title)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 211,\n                                    columnNumber: 15\n                                }, undefined)\n                            }, void 0, false, {\n                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                lineNumber: 210,\n                                columnNumber: 13\n                            }, undefined)\n                        }, void 0, false, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 209,\n                            columnNumber: 11\n                        }, undefined)\n                    }, void 0, false, {\n                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                        lineNumber: 208,\n                        columnNumber: 9\n                    }, undefined)\n                ]\n            }, void 0, true, {\n                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                lineNumber: 185,\n                columnNumber: 7\n            }, undefined),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                children: harililakalpataru_id.length === 1 && router.query.edit === \"skanda\" ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                    children: [\n                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"flex justify-between items-center\",\n                            children: [\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                    className: \"grow flex mb-2 overflow-x-auto no-scrollbar gap-2\",\n                                    children: tabs.map((tab, index)=>{\n                                        var _currentSkanda_tab_val, _currentSkanda_tab_val1;\n                                        return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {\n                                            children: tab.val && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                onClick: ()=>handleTab(tab === null || tab === void 0 ? void 0 : tab.val),\n                                                className: \"cursor-pointer flex-shrink-0 flex items-center py-2 mx-1 text-sm md:text-lg  \".concat(activeTab === (tab === null || tab === void 0 ? void 0 : tab.val) ? \"active  text-red  border-b-2 border-red font-bold\" : \" font-bold  text-gray-500\"),\n                                                children: [\n                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                        class: \"inline-flex items-center\",\n                                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"label\", {\n                                                            class: \"relative flex items-center rounded-full cursor-pointer\",\n                                                            htmlFor: \"custom\",\n                                                            children: [\n                                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"input\", {\n                                                                    checked: true,\n                                                                    type: \"checkbox\",\n                                                                    class: \"peer relative appearance-none w-5 h-5  rounded-md  \".concat(((_currentSkanda_tab_val = currentSkanda[tab === null || tab === void 0 ? void 0 : tab.val]) === null || _currentSkanda_tab_val === void 0 ? void 0 : _currentSkanda_tab_val.length) > 0 || activeTab === (tab === null || tab === void 0 ? void 0 : tab.val) && (content === null || content === void 0 ? void 0 : content.length) > 0 ? \"checked:bg-green-500\" : \"checked:bg-red\"),\n                                                                    id: \"custom\"\n                                                                }, void 0, false, {\n                                                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                    lineNumber: 240,\n                                                                    columnNumber: 29\n                                                                }, undefined),\n                                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                                                    class: \"absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100\",\n                                                                    children: ((_currentSkanda_tab_val1 = currentSkanda[tab === null || tab === void 0 ? void 0 : tab.val]) === null || _currentSkanda_tab_val1 === void 0 ? void 0 : _currentSkanda_tab_val1.length) > 0 || activeTab === (tab === null || tab === void 0 ? void 0 : tab.val) && (content === null || content === void 0 ? void 0 : content.length) > 0 ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"svg\", {\n                                                                        xmlns: \"http://www.w3.org/2000/svg\",\n                                                                        class: \"h-3.5 w-3.5\",\n                                                                        viewBox: \"0 0 20 20\",\n                                                                        fill: \"currentColor\",\n                                                                        stroke: \"currentColor\",\n                                                                        \"stroke-width\": \"1\",\n                                                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"path\", {\n                                                                            \"fill-rule\": \"evenodd\",\n                                                                            d: \"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\",\n                                                                            \"clip-rule\": \"evenodd\"\n                                                                        }, void 0, false, {\n                                                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                            lineNumber: 264,\n                                                                            columnNumber: 35\n                                                                        }, undefined)\n                                                                    }, void 0, false, {\n                                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                        lineNumber: 256,\n                                                                        columnNumber: 33\n                                                                    }, undefined) : /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"svg\", {\n                                                                        class: \"h-3.5 w-3.5\",\n                                                                        xmlns: \"http://www.w3.org/2000/svg\",\n                                                                        viewBox: \"0 0 384 512\",\n                                                                        fill: \"currentColor\",\n                                                                        stroke: \"currentColor\",\n                                                                        \"stroke-width\": \"1\",\n                                                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"path\", {\n                                                                            \"fill-rule\": \"evenodd\",\n                                                                            d: \"M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z\",\n                                                                            \"clip-rule\": \"evenodd\"\n                                                                        }, void 0, false, {\n                                                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                            lineNumber: 279,\n                                                                            columnNumber: 35\n                                                                        }, undefined)\n                                                                    }, void 0, false, {\n                                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                        lineNumber: 271,\n                                                                        columnNumber: 33\n                                                                    }, undefined)\n                                                                }, void 0, false, {\n                                                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                    lineNumber: 252,\n                                                                    columnNumber: 29\n                                                                }, undefined)\n                                                            ]\n                                                        }, void 0, true, {\n                                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                            lineNumber: 236,\n                                                            columnNumber: 27\n                                                        }, undefined)\n                                                    }, void 0, false, {\n                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                        lineNumber: 235,\n                                                        columnNumber: 25\n                                                    }, undefined),\n                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                                        className: \"mx-2\",\n                                                        children: tab.name\n                                                    }, void 0, false, {\n                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                        lineNumber: 289,\n                                                        columnNumber: 25\n                                                    }, undefined)\n                                                ]\n                                            }, index, true, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 226,\n                                                columnNumber: 23\n                                            }, undefined)\n                                        }, void 0, false);\n                                    })\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 222,\n                                    columnNumber: 15\n                                }, undefined),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                    className: \"bg-white flex-none h-10 min-w-[200px] flex items-center select-none\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                        className: \"ml-2 flex items-center gap-2\",\n                                        children: [\n                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"b\", {\n                                                children: \"Status:\"\n                                            }, void 0, false, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 297,\n                                                columnNumber: 19\n                                            }, undefined),\n                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                                className: \"\".concat(status === \"Saved!\" ? \"text-green-500\" : \"text-red\"),\n                                                children: status\n                                            }, void 0, false, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 298,\n                                                columnNumber: 19\n                                            }, undefined),\n                                            status === \"Saving...\" && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                class: \"flex justify-center items-center\",\n                                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                    class: \"w-5 h-5 rounded-full border-4 border-gray-400 border-t-orange-500 animate-spin\"\n                                                }, void 0, false, {\n                                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                    lineNumber: 307,\n                                                    columnNumber: 23\n                                                }, undefined)\n                                            }, void 0, false, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 306,\n                                                columnNumber: 21\n                                            }, undefined)\n                                        ]\n                                    }, void 0, true, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 296,\n                                        columnNumber: 17\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 295,\n                                    columnNumber: 15\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 221,\n                            columnNumber: 13\n                        }, undefined),\n                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"overflow-auto\",\n                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                className: \"w-full\",\n                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(CustomEditor, {\n                                    value: content ? content : \"\",\n                                    onChange: setContent,\n                                    setStatus: setStatus,\n                                    onFocus: ()=>setFocus(true),\n                                    onBlur: ()=>setFocus(false)\n                                }, router.query.tab, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 315,\n                                    columnNumber: 17\n                                }, undefined)\n                            }, void 0, false, {\n                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                lineNumber: 314,\n                                columnNumber: 15\n                            }, undefined)\n                        }, void 0, false, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 313,\n                            columnNumber: 13\n                        }, undefined)\n                    ]\n                }, void 0, true, {\n                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                    lineNumber: 220,\n                    columnNumber: 11\n                }, undefined) : harililakalpataru_id.length === 1 && router.query.edit === \"skanda\" ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                    children: \"hello\"\n                }, void 0, false, {\n                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                    lineNumber: 328,\n                    columnNumber: 11\n                }, undefined) : \"\"\n            }, void 0, false, {\n                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                lineNumber: 218,\n                columnNumber: 7\n            }, undefined)\n        ]\n    }, void 0, true, {\n        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n        lineNumber: 184,\n        columnNumber: 5\n    }, undefined);\n};\n_s(HarililakalpataruId, \"SHKMDGnAvb7w9ZSRz2N467rGkM0=\", false, function() {\n    return [\n        next_router__WEBPACK_IMPORTED_MODULE_4__.useRouter,\n        use_debounce__WEBPACK_IMPORTED_MODULE_7__.useDebounce\n    ];\n});\n_c1 = HarililakalpataruId;\nHarililakalpataruId.getInitialProps = async (param)=>{\n    let { query } = param;\n    const { harililakalpataru_id } = query;\n    return {\n        harililakalpataru_id\n    };\n};\n/* harmony default export */ __webpack_exports__[\"default\"] = (HarililakalpataruId);\nvar _c, _c1;\n$RefreshReg$(_c, \"CustomEditor\");\n$RefreshReg$(_c1, \"HarililakalpataruId\");\n\n\n;\n    // Wrapped in an IIFE to avoid polluting the global scope\n    ;\n    (function () {\n        var _a, _b;\n        // Legacy CSS implementations will `eval` browser code in a Node.js context\n        // to extract CSS. For backwards compatibility, we need to check we're in a\n        // browser context before continuing.\n        if (typeof self !== 'undefined' &&\n            // AMP / No-JS mode does not inject these helpers:\n            '$RefreshHelpers$' in self) {\n            // @ts-ignore __webpack_module__ is global\n            var currentExports = module.exports;\n            // @ts-ignore __webpack_module__ is global\n            var prevSignature = (_b = (_a = module.hot.data) === null || _a === void 0 ? void 0 : _a.prevSignature) !== null && _b !== void 0 ? _b : null;\n            // This cannot happen in MainTemplate because the exports mismatch between\n            // templating and execution.\n            self.$RefreshHelpers$.registerExportsForReactRefresh(currentExports, module.id);\n            // A module can be accepted automatically based on its exports, e.g. when\n            // it is a Refresh Boundary.\n            if (self.$RefreshHelpers$.isReactRefreshBoundary(currentExports)) {\n                // Save the previous exports signature on update so we can compare the boundary\n                // signatures. We avoid saving exports themselves since it causes memory leaks (https://github.com/vercel/next.js/pull/53797)\n                module.hot.dispose(function (data) {\n                    data.prevSignature =\n                        self.$RefreshHelpers$.getRefreshBoundarySignature(currentExports);\n                });\n                // Unconditionally accept an update to this module, we'll check if it's\n                // still a Refresh Boundary later.\n                // @ts-ignore importMeta is replaced in the loader\n                module.hot.accept();\n                // This field is set when the previous version of this module was a\n                // Refresh Boundary, letting us know we need to check for invalidation or\n                // enqueue an update.\n                if (prevSignature !== null) {\n                    // A boundary can become ineligible if its exports are incompatible\n                    // with the previous exports.\n                    //\n                    // For example, if you add/remove/change exports, we'll want to\n                    // re-execute the importing modules, and force those components to\n                    // re-render. Similarly, if you convert a class component to a\n                    // function, we want to invalidate the boundary.\n                    if (self.$RefreshHelpers$.shouldInvalidateReactRefreshBoundary(prevSignature, self.$RefreshHelpers$.getRefreshBoundarySignature(currentExports))) {\n                        module.hot.invalidate();\n                    }\n                    else {\n                        self.$RefreshHelpers$.scheduleUpdate();\n                    }\n                }\n            }\n            else {\n                // Since we just executed the code for the module, it's possible that the\n                // new exports made it ineligible for being a boundary.\n                // We only care about the case when we were _previously_ a boundary,\n                // because we already accepted this update (accidental side effect).\n                var isNoLongerABoundary = prevSignature !== null;\n                if (isNoLongerABoundary) {\n                    module.hot.invalidate();\n                }\n            }\n        }\n    })();\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvcGFnZXMvaGFyaWxpbGFrYWxwYXRhcnUvWy4uLmhhcmlsaWxha2FscGF0YXJ1X2lkXS5qcyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7OztBQUEyRDtBQUN4QjtBQUNRO0FBQ2U7QUFRbEM7QUFDZ0I7QUFDVTtBQUNyQjtBQUU3QixNQUFNZ0IsZUFBZVosbURBQU9BLENBQUMsSUFBTSx1TUFBd0M7Ozs7OztJQUN6RWEsS0FBSzs7S0FEREQ7QUFJTixNQUFNRSxzQkFBc0I7UUFBQyxFQUFFQyxvQkFBb0IsRUFBRTs7SUFDbkQsTUFBTUMsU0FBU1Asc0RBQVNBO0lBQ3hCLE1BQU0sQ0FBQ1EsZUFBZUMsaUJBQWlCLEdBQUduQiwrQ0FBUUEsQ0FBQyxDQUFDO0lBQ3BELE1BQU0sQ0FBQ29CLG1CQUFtQkMscUJBQXFCLEdBQUdyQiwrQ0FBUUEsQ0FBQyxFQUFFO0lBQzdELE1BQU0sQ0FBQ3NCLHlCQUF5QkMsMkJBQTJCLEdBQUd2QiwrQ0FBUUEsQ0FBQyxFQUFFO0lBQ3pFLE1BQU0sQ0FBQ3dCLFNBQVNDLFdBQVcsR0FBR3pCLCtDQUFRQSxDQUFDO0lBQ3ZDLE1BQU0sQ0FBQzBCLFFBQVFDLFVBQVUsR0FBRzNCLCtDQUFRQSxDQUFDO0lBQ3JDLE1BQU0sQ0FBQzRCLFlBQVksR0FBRzFCLHlEQUFXQSxDQUFDc0IsU0FBUztJQUMzQyxNQUFNLENBQUNLLE9BQU9DLFNBQVMsR0FBRzlCLCtDQUFRQSxDQUFDO0lBQ25DLE1BQU0sQ0FBQytCLFdBQVdDLGFBQWEsR0FBR2hDLCtDQUFRQSxDQUFDO0lBQzNDLE1BQU0sQ0FBQ2lDLE1BQU1DLFFBQVEsR0FBR2xDLCtDQUFRQSxDQUFDO1FBQy9CO1lBQUVtQyxNQUFNO1lBQVVDLEtBQUs7UUFBUztRQUNoQztZQUFFRCxNQUFNO1lBQVVDLEtBQUs7UUFBUztLQUNqQztJQUVELE1BQU1DLFlBQVksQ0FBQ0M7UUFDakJOLGFBQWFNO0lBQ2IsZ0JBQWdCO0lBQ2hCLGdFQUFnRTtJQUNoRSwwQkFBMEI7SUFDMUIsTUFBTTtJQUNSO0lBRUEsTUFBTUMsZUFBZTtRQUNuQixJQUFJO2dCQUV5QkM7WUFEM0IsTUFBTUEsV0FBVyxNQUFNN0IsZ0VBQWlCLENBQUM7WUFDekNZLDJCQUEyQmlCLHFCQUFBQSxnQ0FBQUEsaUJBQUFBLFNBQVVFLElBQUksY0FBZEYscUNBQUFBLGVBQWdCRSxJQUFJO1FBQ2pELEVBQUUsT0FBT0MsT0FBTztZQUNkQyxRQUFRRCxLQUFLLENBQUMsc0JBQXNCQTtRQUN0QztJQUNGO0lBRUEsTUFBTUUsdUJBQXVCLE9BQU9DO1FBQ2xDLElBQUk7WUFDRixNQUFNTixXQUFXLE1BQU03QixnRUFBaUIsQ0FBQyw2QkFBNkI7Z0JBQ3BFb0MsUUFBUTtvQkFDTkQsSUFBSUE7Z0JBQ047WUFDRjtZQUNBckIsV0FBV2UsU0FBU0UsSUFBSSxDQUFDQSxJQUFJLENBQUNYLFVBQVU7WUFDeENaLGlCQUFpQnFCLFNBQVNFLElBQUksQ0FBQ0EsSUFBSTtZQUNuQztRQUNGLEVBQUUsT0FBT0MsT0FBTztZQUNkQyxRQUFRRCxLQUFLLENBQUMsc0JBQXNCQTtRQUN0QztJQUNGO0lBQ0EsTUFBTUssdUJBQXVCLE9BQU9GO1FBQ2xDLElBQUk7WUFDRixNQUFNTixXQUFXLE1BQU03QixnRUFBaUIsQ0FBQyw2QkFBNkI7Z0JBQ3BFb0MsUUFBUTtvQkFDTkUsVUFBVUg7Z0JBQ1o7WUFDRjtZQUNBckIsV0FBV2UsU0FBU0UsSUFBSSxDQUFDQSxJQUFJLENBQUNYLFVBQVU7WUFDeENWLHFCQUFxQm1CLFNBQVNFLElBQUksQ0FBQ0EsSUFBSTtZQUN2QztRQUNGLEVBQUUsT0FBT0MsT0FBTztZQUNkQyxRQUFRRCxLQUFLLENBQUMsc0JBQXNCQTtRQUN0QztJQUNGO0lBRUE3QyxnREFBU0EsQ0FBQztRQUNSeUM7UUFDQSxJQUFJdkIscUJBQXFCa0MsTUFBTSxJQUFJLEdBQUc7WUFDcENMLHFCQUFxQjdCLG9CQUFvQixDQUFDLEVBQUU7WUFDNUNnQyxxQkFBcUJoQyxvQkFBb0IsQ0FBQyxFQUFFO1FBQzlDO0lBQ0YsR0FBRztRQUFDQyxPQUFPa0MsS0FBSztRQUFFcEI7UUFBV2Y7S0FBcUI7SUFFbEQsNkVBQTZFO0lBQzdFLHlEQUF5RDtJQUN6RDRCLFFBQVFRLEdBQUcsQ0FBQywrQkFBK0JoQztJQUMzQyw2Q0FBNkM7SUFFN0MsTUFBTWlDLGFBQWE7UUFDakIsSUFBSTtZQUNGLE1BQU0xQyxpRUFBa0IsQ0FBQyw2QkFBNkI7Z0JBQ3BEbUMsRUFBRSxFQUFFNUIsMEJBQUFBLG9DQUFBQSxjQUFlcUMsR0FBRztnQkFDdEJDLE1BQU1oQztnQkFDTmlDLEtBQUsxQjtZQUNQO1lBQ0FKLFVBQVU7UUFDWixFQUFFLE9BQU9nQixPQUFPO1lBQ2RDLFFBQVFELEtBQUssQ0FBQyx5QkFBeUJBO1FBQ3pDO0lBQ0Y7SUFFQTdDLGdEQUFTQSxDQUFDO1FBQ1IsSUFBSStCLE9BQU87WUFDVHdCO1FBQ0Y7SUFDRixHQUFHO1FBQUN6QjtLQUFZO0lBRWhCLE1BQU04QixhQUFhLENBQUNDO0lBQ2xCLDJDQUEyQztJQUMzQywwQkFBMEI7SUFDMUIsd0JBQXdCO0lBQ3hCLGtDQUFrQztJQUNsQywwREFBMEQ7SUFDMUQsU0FBUztJQUNULDhFQUE4RTtJQUM5RSwwQkFBMEI7SUFDMUIsMEVBQTBFO0lBQzFFLHVFQUF1RTtJQUN2RSxNQUFNO0lBQ04sOEJBQThCO0lBQzlCLDBFQUEwRTtJQUMxRSx1RUFBdUU7SUFDdkUsTUFBTTtJQUNOLGtEQUFrRDtJQUNsRCwwQkFBMEI7SUFDMUIsZ0NBQWdDO0lBQ2hDLDJDQUEyQztJQUMzQyxtREFBbUQ7SUFDbkQsU0FBUztJQUNULGdDQUFnQztJQUNoQyw2REFBNkQ7SUFDN0QsMEJBQTBCO0lBQzFCLHlCQUF5QjtJQUN6QixrRUFBa0U7SUFDbEUsaUJBQWlCO0lBQ2pCLG1CQUFtQjtJQUNuQiwwREFBMEQ7SUFDMUQsb0VBQW9FO0lBQ3BFLFVBQVU7SUFDVixNQUFNO0lBQ04sOEJBQThCO0lBQzlCLHlCQUF5QjtJQUN6QixrRUFBa0U7SUFDbEUsaUJBQWlCO0lBQ2pCLG1CQUFtQjtJQUNuQiwwREFBMEQ7SUFDMUQsb0VBQW9FO0lBQ3BFLFVBQVU7SUFDVixNQUFNO0lBQ04sa0RBQWtEO0lBQ2xELHdCQUF3QjtJQUN4QixxQ0FBcUM7SUFDckMsc0VBQXNFO0lBQ3RFLDBCQUEwQjtJQUMxQixxQkFBcUI7SUFDckIscUVBQXFFO0lBQ3JFLHFFQUFxRTtJQUNyRSwwQkFBMEI7SUFDMUIsaUVBQWlFO0lBQ2pFLGlCQUFpQjtJQUNqQixtQkFBbUI7SUFDbkIsc0dBQXNHO0lBQ3RHLGlFQUFpRTtJQUNqRSxVQUFVO0lBQ1YsTUFBTTtJQUNOLDhCQUE4QjtJQUM5QixpRUFBaUU7SUFDakUsaUJBQWlCO0lBQ2pCLG1CQUFtQjtJQUNuQixzR0FBc0c7SUFDdEcsaUVBQWlFO0lBQ2pFLFVBQVU7SUFDVixNQUFNO0lBQ04sSUFBSTtJQUNOO0lBRUEscUJBQ0UsOERBQUNDOzswQkFDQyw4REFBQ0M7Z0JBQUlDLFdBQVU7O2tDQUNiLDhEQUFDRjt3QkFBSUUsV0FBVTtrQ0FDYiw0RUFBQ0Y7NEJBQUlFLFdBQVU7OzhDQUNiLDhEQUFDM0QsbUVBQVNBO29DQUNSbUMsTUFBSztvQ0FDTHlCLE1BQUs7b0NBQ0xDLE9BQU07b0NBQ05GLFdBQVU7OENBRVYsNEVBQUNyRCw2SUFBTUE7Ozs7Ozs7Ozs7OENBRVQsOERBQUNOLG1FQUFTQTtvQ0FDUm1DLE1BQUs7b0NBQ0x5QixNQUFNLG1CQUVPLE9BRlkvQyxxQkFDdEJpRCxLQUFLLENBQUMsR0FBRyxDQUFDLEdBQ1ZDLElBQUksQ0FBQztvQ0FDUkYsT0FBTTtvQ0FDTkYsV0FBVTs4Q0FFViw0RUFBQzFELGtKQUFXQTs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O2tDQUlsQiw4REFBQ3dEO3dCQUFJRSxXQUFVO2tDQUNiLDRFQUFDSzs0QkFBS0wsV0FBWTtzQ0FDaEIsNEVBQUNLO2dDQUFLTCxXQUFVOzBDQUNkLDRFQUFDbEQsa0RBQUlBO29DQUFDa0QsV0FBVTtvQ0FBa0JNLE1BQU87OENBQ3RDbEQsa0JBQWlCQSwwQkFBQUEsb0NBQUFBLGNBQWVtRCxLQUFLOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7MEJBTWhELDhEQUFDVDswQkFDRTVDLHFCQUFxQmtDLE1BQU0sS0FBSyxLQUFLakMsT0FBT2tDLEtBQUssQ0FBQ21CLElBQUksS0FBSyx5QkFDMUQsOERBQUNWOztzQ0FDQyw4REFBQ0E7NEJBQUlFLFdBQVU7OzhDQUNiLDhEQUFDRjtvQ0FBSUUsV0FBVTs4Q0FDWjdCLEtBQUtzQyxHQUFHLENBQUMsQ0FBQ0MsS0FBS0M7NENBcUJBdkQsd0JBU0RBOzZEQTdCYjtzREFDR3NELElBQUlwQyxHQUFHLGtCQUNOLDhEQUFDd0I7Z0RBRUNjLFNBQVMsSUFBTXJDLFVBQVVtQyxnQkFBQUEsMEJBQUFBLElBQUtwQyxHQUFHO2dEQUNqQzBCLFdBQVcsZ0ZBSVYsT0FIQy9CLGVBQWN5QyxnQkFBQUEsMEJBQUFBLElBQUtwQyxHQUFHLElBQ2xCLHNEQUNBOztrRUFHTiw4REFBQ3dCO3dEQUFJZSxPQUFNO2tFQUNULDRFQUFDWDs0REFDQ1csT0FBTTs0REFDTkMsU0FBUTs7OEVBRVIsOERBQUNDO29FQUNDQyxPQUFPO29FQUNQeEMsTUFBSztvRUFDTHFDLE9BQU8sc0RBS04sT0FKQ3pELEVBQUFBLHlCQUFBQSxhQUFhLENBQUNzRCxnQkFBQUEsMEJBQUFBLElBQUtwQyxHQUFHLENBQUMsY0FBdkJsQiw2Q0FBQUEsdUJBQXlCZ0MsTUFBTSxJQUFHLEtBQ2pDbkIsZUFBY3lDLGdCQUFBQSwwQkFBQUEsSUFBS3BDLEdBQUcsS0FBSVosQ0FBQUEsb0JBQUFBLDhCQUFBQSxRQUFTMEIsTUFBTSxJQUFHLElBQ3pDLHlCQUNBO29FQUVOSixJQUFHOzs7Ozs7OEVBR0wsOERBQUNxQjtvRUFBS1EsT0FBTTs4RUFDVHpELEVBQUFBLDBCQUFBQSxhQUFhLENBQUNzRCxnQkFBQUEsMEJBQUFBLElBQUtwQyxHQUFHLENBQUMsY0FBdkJsQiw4Q0FBQUEsd0JBQXlCZ0MsTUFBTSxJQUFHLEtBQ2xDbkIsZUFBY3lDLGdCQUFBQSwwQkFBQUEsSUFBS3BDLEdBQUcsS0FDckJaLENBQUFBLG9CQUFBQSw4QkFBQUEsUUFBUzBCLE1BQU0sSUFBRyxrQkFDbEIsOERBQUM2Qjt3RUFDQ0MsT0FBTTt3RUFDTkwsT0FBTTt3RUFDTk0sU0FBUTt3RUFDUkMsTUFBSzt3RUFDTEMsUUFBTzt3RUFDUEMsZ0JBQWE7a0ZBRWIsNEVBQUNDOzRFQUNDQyxhQUFVOzRFQUNWQyxHQUFFOzRFQUNGQyxhQUFVOzs7Ozs7Ozs7O2tHQUlkLDhEQUFDVDt3RUFDQ0osT0FBTTt3RUFDTkssT0FBTTt3RUFDTkMsU0FBUTt3RUFDUkMsTUFBSzt3RUFDTEMsUUFBTzt3RUFDUEMsZ0JBQWE7a0ZBRWIsNEVBQUNDOzRFQUNDQyxhQUFVOzRFQUNWQyxHQUFFOzRFQUNGQyxhQUFVOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7a0VBT3RCLDhEQUFDckI7d0RBQUtMLFdBQVU7a0VBQVFVLElBQUlyQyxJQUFJOzs7Ozs7OytDQTlEM0JzQzs7Ozs7Ozs7Ozs7OzhDQW9FZiw4REFBQ2I7b0NBQUlFLFdBQVU7OENBQ2IsNEVBQUNLO3dDQUFLTCxXQUFVOzswREFDZCw4REFBQzJCOzBEQUFFOzs7Ozs7MERBQ0gsOERBQUN0QjtnREFDQ0wsV0FBVyxHQUVWLE9BRENwQyxXQUFXLFdBQVcsbUJBQW1COzBEQUcxQ0E7Ozs7Ozs0Q0FFRkEsV0FBVyw2QkFDViw4REFBQ2tDO2dEQUFJZSxPQUFNOzBEQUNULDRFQUFDZjtvREFBSWUsT0FBTTs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztzQ0FNckIsOERBQUNmOzRCQUFJRSxXQUFVO3NDQUNiLDRFQUFDRjtnQ0FBSUUsV0FBVTswQ0FDYiw0RUFBQ2pEO29DQUVDNkUsT0FBT2xFLFVBQVVBLFVBQVU7b0NBQzNCbUUsVUFBVWxFO29DQUNWRSxXQUFXQTtvQ0FDWGlFLFNBQVMsSUFBTTlELFNBQVM7b0NBQ3hCK0QsUUFBUSxJQUFNL0QsU0FBUzttQ0FMbEJiLE9BQU9rQyxLQUFLLENBQUNxQixHQUFHOzs7Ozs7Ozs7Ozs7Ozs7Ozs7OztnQ0FVM0J4RCxxQkFBcUJrQyxNQUFNLEtBQUssS0FDbENqQyxPQUFPa0MsS0FBSyxDQUFDbUIsSUFBSSxLQUFLLHlCQUN0Qiw4REFBQ1Y7OEJBQUk7Ozs7O2dDQUVMOzs7Ozs7Ozs7Ozs7QUFLVjtHQTFUTTdDOztRQUNXTCxrREFBU0E7UUFNRlIscURBQVdBOzs7TUFQN0JhO0FBNFROQSxvQkFBb0IrRSxlQUFlLEdBQUc7UUFBTyxFQUFFM0MsS0FBSyxFQUFFO0lBQ3BELE1BQU0sRUFBRW5DLG9CQUFvQixFQUFFLEdBQUdtQztJQUNqQyxPQUFPO1FBQUVuQztJQUFxQjtBQUNoQztBQUVBLCtEQUFlRCxtQkFBbUJBLEVBQUMiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9fTl9FLy4vc3JjL3BhZ2VzL2hhcmlsaWxha2FscGF0YXJ1L1suLi5oYXJpbGlsYWthbHBhdGFydV9pZF0uanM/MzM2YiJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgUmVhY3QsIHsgdXNlRWZmZWN0LCB1c2VSZWYsIHVzZVN0YXRlIH0gZnJvbSBcInJlYWN0XCI7XHJcbmltcG9ydCBkeW5hbWljIGZyb20gXCJuZXh0L2R5bmFtaWNcIjtcclxuaW1wb3J0IHsgdXNlRGVib3VuY2UgfSBmcm9tIFwidXNlLWRlYm91bmNlXCI7XHJcbmltcG9ydCB7IE5hdkJ1dHRvbiB9IGZyb20gXCJAL2NvbXBvbmVudHMvYnV0dG9uL05hdkJ1dHRvblwiO1xyXG5pbXBvcnQge1xyXG4gIEZhQXJyb3dMZWZ0LFxyXG4gIEZhQXJyb3dSaWdodCxcclxuICBGYUNoZXZyb25MZWZ0LFxyXG4gIEZhQ2hldnJvblJpZ2h0LFxyXG4gIEZhRWRpdCxcclxuICBGYUhvbWUsXHJcbn0gZnJvbSBcInJlYWN0LWljb25zL2ZhXCI7XHJcbmltcG9ydCB7IHVzZVJvdXRlciB9IGZyb20gXCJuZXh0L3JvdXRlclwiO1xyXG5pbXBvcnQgYXhpb3NJbnN0YW5jZSBmcm9tIFwiQC91dGlscy9heGlvc0luc3RhbmNlXCI7XHJcbmltcG9ydCBMaW5rIGZyb20gXCJuZXh0L2xpbmtcIjtcclxuXHJcbmNvbnN0IEN1c3RvbUVkaXRvciA9IGR5bmFtaWMoKCkgPT4gaW1wb3J0KFwiLi4vLi4vY29tcG9uZW50cy9jdXN0b20tZWRpdG9yXCIpLCB7XHJcbiAgc3NyOiBmYWxzZSxcclxufSk7XHJcblxyXG5jb25zdCBIYXJpbGlsYWthbHBhdGFydUlkID0gKHsgaGFyaWxpbGFrYWxwYXRhcnVfaWQgfSkgPT4ge1xyXG4gIGNvbnN0IHJvdXRlciA9IHVzZVJvdXRlcigpO1xyXG4gIGNvbnN0IFtjdXJyZW50U2thbmRhLCBzZXRDdXJyZW50U2thbmRhXSA9IHVzZVN0YXRlKHt9KTtcclxuICBjb25zdCBbY3VycmVudEFkaHlheUxpc3QsIHNldEN1cnJlbnRBZGh5YXlMaXN0XSA9IHVzZVN0YXRlKFtdKTtcclxuICBjb25zdCBbaGFyaWxpbGFrYWxwYXRhcnVTa2FuZGEsIHNldEhhcmlsaWxha2FscGF0YXJ1U2thbmRhXSA9IHVzZVN0YXRlKFtdKTtcclxuICBjb25zdCBbY29udGVudCwgc2V0Q29udGVudF0gPSB1c2VTdGF0ZShcIlwiKTtcclxuICBjb25zdCBbc3RhdHVzLCBzZXRTdGF0dXNdID0gdXNlU3RhdGUoXCJTYXZlZCFcIik7XHJcbiAgY29uc3QgW3NhdmVDb250ZW50XSA9IHVzZURlYm91bmNlKGNvbnRlbnQsIDUwMCk7XHJcbiAgY29uc3QgW2ZvY3VzLCBzZXRGb2N1c10gPSB1c2VTdGF0ZShmYWxzZSk7XHJcbiAgY29uc3QgW2FjdGl2ZVRhYiwgc2V0QWN0aXZlVGFiXSA9IHVzZVN0YXRlKFwiaGVhZGVyXCIpO1xyXG4gIGNvbnN0IFt0YWJzLCBzZXRUYWJzXSA9IHVzZVN0YXRlKFtcclxuICAgIHsgbmFtZTogXCJoZWFkZXJcIiwgdmFsOiBcImhlYWRlclwiIH0sXHJcbiAgICB7IG5hbWU6IFwiZm9vdGVyXCIsIHZhbDogXCJmb290ZXJcIiB9LFxyXG4gIF0pO1xyXG5cclxuICBjb25zdCBoYW5kbGVUYWIgPSAodHlwZSkgPT4ge1xyXG4gICAgc2V0QWN0aXZlVGFiKHR5cGUpO1xyXG4gICAgLy8gcm91dGVyLnB1c2goe1xyXG4gICAgLy8gICBwYXRobmFtZTogYC9zYXRzYW5naWplZXZhbi8ke3NhdHNhbmdpamVldmFuX2lkLmpvaW4oXCIvXCIpfWAsXHJcbiAgICAvLyAgIHF1ZXJ5OiB7IHRhYjogdHlwZSB9LFxyXG4gICAgLy8gfSk7XHJcbiAgfTtcclxuXHJcbiAgY29uc3QgZ2V0QWxsU2thbmRhID0gYXN5bmMgKCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBheGlvc0luc3RhbmNlLmdldChcIi9oYXJpbGlsYWthbHBhdGFydS9za2FuZGFcIik7XHJcbiAgICAgIHNldEhhcmlsaWxha2FscGF0YXJ1U2thbmRhKHJlc3BvbnNlPy5kYXRhPy5kYXRhKTtcclxuICAgIH0gY2F0Y2ggKGVycm9yKSB7XHJcbiAgICAgIGNvbnNvbGUuZXJyb3IoXCJFcnJvciBnZXRpbmcgZGF0YTpcIiwgZXJyb3IpO1xyXG4gICAgfVxyXG4gIH07XHJcblxyXG4gIGNvbnN0IGdldEN1cnJlbnRTa2FuZGFJdGVtID0gYXN5bmMgKGlkKSA9PiB7XHJcbiAgICB0cnkge1xyXG4gICAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGF4aW9zSW5zdGFuY2UuZ2V0KFwiL2hhcmlsaWxha2FscGF0YXJ1L3NrYW5kYVwiLCB7XHJcbiAgICAgICAgcGFyYW1zOiB7XHJcbiAgICAgICAgICBpZDogaWQsXHJcbiAgICAgICAgfSxcclxuICAgICAgfSk7XHJcbiAgICAgIHNldENvbnRlbnQocmVzcG9uc2UuZGF0YS5kYXRhW2FjdGl2ZVRhYl0pO1xyXG4gICAgICBzZXRDdXJyZW50U2thbmRhKHJlc3BvbnNlLmRhdGEuZGF0YSk7XHJcbiAgICAgIHJldHVybjtcclxuICAgIH0gY2F0Y2ggKGVycm9yKSB7XHJcbiAgICAgIGNvbnNvbGUuZXJyb3IoXCJFcnJvciBnZXRpbmcgZGF0YTpcIiwgZXJyb3IpO1xyXG4gICAgfVxyXG4gIH07XHJcbiAgY29uc3QgZ2V0Q3VycmVudEFkaHlheUxpc3QgPSBhc3luYyAoaWQpID0+IHtcclxuICAgIHRyeSB7XHJcbiAgICAgIGNvbnN0IHJlc3BvbnNlID0gYXdhaXQgYXhpb3NJbnN0YW5jZS5nZXQoXCIvaGFyaWxpbGFrYWxwYXRhcnUvYWRoeWF5XCIsIHtcclxuICAgICAgICBwYXJhbXM6IHtcclxuICAgICAgICAgIHNrYW5kYUlkOiBpZCxcclxuICAgICAgICB9LFxyXG4gICAgICB9KTtcclxuICAgICAgc2V0Q29udGVudChyZXNwb25zZS5kYXRhLmRhdGFbYWN0aXZlVGFiXSk7XHJcbiAgICAgIHNldEN1cnJlbnRBZGh5YXlMaXN0KHJlc3BvbnNlLmRhdGEuZGF0YSk7XHJcbiAgICAgIHJldHVybjtcclxuICAgIH0gY2F0Y2ggKGVycm9yKSB7XHJcbiAgICAgIGNvbnNvbGUuZXJyb3IoXCJFcnJvciBnZXRpbmcgZGF0YTpcIiwgZXJyb3IpO1xyXG4gICAgfVxyXG4gIH07XHJcblxyXG4gIHVzZUVmZmVjdCgoKSA9PiB7XHJcbiAgICBnZXRBbGxTa2FuZGEoKTtcclxuICAgIGlmIChoYXJpbGlsYWthbHBhdGFydV9pZC5sZW5ndGggPj0gMSkge1xyXG4gICAgICBnZXRDdXJyZW50U2thbmRhSXRlbShoYXJpbGlsYWthbHBhdGFydV9pZFswXSk7XHJcbiAgICAgIGdldEN1cnJlbnRBZGh5YXlMaXN0KGhhcmlsaWxha2FscGF0YXJ1X2lkWzBdKTtcclxuICAgIH1cclxuICB9LCBbcm91dGVyLnF1ZXJ5LCBhY3RpdmVUYWIsIGhhcmlsaWxha2FscGF0YXJ1X2lkXSk7XHJcblxyXG4gIC8vIGNvbnNvbGUubG9nKFwiaGFyaWxpbGFrYWxwYXRhcnVTa2FuZGEtLS0tLS0tLS0tXCIsIGhhcmlsaWxha2FscGF0YXJ1U2thbmRhKTtcclxuICAvLyBjb25zb2xlLmxvZyhcImN1cnJlbnRTa2FuZGEtLS0tLS0tLS0tXCIsIGN1cnJlbnRTa2FuZGEpO1xyXG4gIGNvbnNvbGUubG9nKFwiY3VycmVudEFkaHlheUxpc3QtLS0tLS0tLS0tXCIsIGN1cnJlbnRBZGh5YXlMaXN0KTtcclxuICAvLyBjb25zb2xlLmxvZyhcImNvbnRlbnQtLS0tLS0tLS0tXCIsIGNvbnRlbnQpO1xyXG5cclxuICBjb25zdCBoYW5kbGVTYXZlID0gYXN5bmMgKCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgYXdhaXQgYXhpb3NJbnN0YW5jZS5wb3N0KFwiL2hhcmlsaWxha2FscGF0YXJ1L3NrYW5kYVwiLCB7XHJcbiAgICAgICAgaWQ6IGN1cnJlbnRTa2FuZGE/Ll9pZCxcclxuICAgICAgICBib2R5OiBjb250ZW50LFxyXG4gICAgICAgIGtleTogYWN0aXZlVGFiLFxyXG4gICAgICB9KTtcclxuICAgICAgc2V0U3RhdHVzKFwiU2F2ZWQhXCIpO1xyXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcclxuICAgICAgY29uc29sZS5lcnJvcihcIkVycm9yIGluc2VydGluZyBkYXRhOlwiLCBlcnJvcik7XHJcbiAgICB9XHJcbiAgfTtcclxuXHJcbiAgdXNlRWZmZWN0KCgpID0+IHtcclxuICAgIGlmIChmb2N1cykge1xyXG4gICAgICBoYW5kbGVTYXZlKCk7XHJcbiAgICB9XHJcbiAgfSwgW3NhdmVDb250ZW50XSk7XHJcblxyXG4gIGNvbnN0IGhhbmRsZVBhZ2UgPSAocGFnZSkgPT4ge1xyXG4gICAgLy8gaWYgKGhhcmlsaWxha2FscGF0YXJ1X2lkLmxlbmd0aCA9PT0gMSkge1xyXG4gICAgLy8gICBjb25zdCBjdXJyZW50T2JqZWN0ID1cclxuICAgIC8vICAgICBzYXRzYW5naWplZXZhbiAmJlxyXG4gICAgLy8gICAgIHNhdHNhbmdpamVldmFuPy5kYXRhPy5maW5kKFxyXG4gICAgLy8gICAgICAgKG9iaikgPT4gb2JqLmFkaHlheUtleSA9PSBoYXJpbGlsYWthbHBhdGFydV9pZFswXVxyXG4gICAgLy8gICAgICk7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnRJbmRleEluQXJyYXkgPSBzYXRzYW5naWplZXZhbj8uZGF0YT8uaW5kZXhPZihjdXJyZW50T2JqZWN0KTtcclxuICAgIC8vICAgaWYgKHBhZ2UgPT0gXCJORVhUXCIpIHtcclxuICAgIC8vICAgICBjb25zdCBuZXh0T2JqZWN0ID0gc2F0c2FuZ2lqZWV2YW4/LmRhdGE/LltjdXJyZW50SW5kZXhJbkFycmF5ICsgMV07XHJcbiAgICAvLyAgICAgcmV0dXJuIG5leHRPYmplY3QgPyBuZXh0T2JqZWN0LmFkaHlheUtleSA6IGhhcmlsaWxha2FscGF0YXJ1X2lkO1xyXG4gICAgLy8gICB9XHJcbiAgICAvLyAgIGlmIChwYWdlID09IFwiUFJFVklPVVNcIikge1xyXG4gICAgLy8gICAgIGNvbnN0IG5leHRPYmplY3QgPSBzYXRzYW5naWplZXZhbj8uZGF0YT8uW2N1cnJlbnRJbmRleEluQXJyYXkgLSAxXTtcclxuICAgIC8vICAgICByZXR1cm4gbmV4dE9iamVjdCA/IG5leHRPYmplY3QuYWRoeWF5S2V5IDogaGFyaWxpbGFrYWxwYXRhcnVfaWQ7XHJcbiAgICAvLyAgIH1cclxuICAgIC8vIH0gZWxzZSBpZiAoaGFyaWxpbGFrYWxwYXRhcnVfaWQubGVuZ3RoID09PSAyKSB7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnRPYmplY3QgPVxyXG4gICAgLy8gICAgIGN1cnJlbnRTYXRzYW5naWplZXZhbnMgJiZcclxuICAgIC8vICAgICBjdXJyZW50U2F0c2FuZ2lqZWV2YW5zPy5pdGVtcz8uZmluZChcclxuICAgIC8vICAgICAgIChvYmopID0+IG9iai5pZCA9PSBoYXJpbGlsYWthbHBhdGFydV9pZFsxXVxyXG4gICAgLy8gICAgICk7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnRJbmRleEluQXJyYXkgPVxyXG4gICAgLy8gICAgIGN1cnJlbnRTYXRzYW5naWplZXZhbnM/Lml0ZW1zPy5pbmRleE9mKGN1cnJlbnRPYmplY3QpO1xyXG4gICAgLy8gICBpZiAocGFnZSA9PSBcIk5FWFRcIikge1xyXG4gICAgLy8gICAgIGNvbnN0IG5leHRPYmplY3QgPVxyXG4gICAgLy8gICAgICAgY3VycmVudFNhdHNhbmdpamVldmFucz8uaXRlbXM/LltjdXJyZW50SW5kZXhJbkFycmF5ICsgMV07XHJcbiAgICAvLyAgICAgcmV0dXJuIGAke1xyXG4gICAgLy8gICAgICAgbmV4dE9iamVjdFxyXG4gICAgLy8gICAgICAgICA/IGAke2hhcmlsaWxha2FscGF0YXJ1X2lkWzBdfS8ke25leHRPYmplY3QuaWR9YFxyXG4gICAgLy8gICAgICAgICA6IGAke2hhcmlsaWxha2FscGF0YXJ1X2lkWzBdfS8ke2hhcmlsaWxha2FscGF0YXJ1X2lkWzFdfWBcclxuICAgIC8vICAgICB9YDtcclxuICAgIC8vICAgfVxyXG4gICAgLy8gICBpZiAocGFnZSA9PSBcIlBSRVZJT1VTXCIpIHtcclxuICAgIC8vICAgICBjb25zdCBuZXh0T2JqZWN0ID1cclxuICAgIC8vICAgICAgIGN1cnJlbnRTYXRzYW5naWplZXZhbnM/Lml0ZW1zPy5bY3VycmVudEluZGV4SW5BcnJheSAtIDFdO1xyXG4gICAgLy8gICAgIHJldHVybiBgJHtcclxuICAgIC8vICAgICAgIG5leHRPYmplY3RcclxuICAgIC8vICAgICAgICAgPyBgJHtoYXJpbGlsYWthbHBhdGFydV9pZFswXX0vJHtuZXh0T2JqZWN0LmlkfWBcclxuICAgIC8vICAgICAgICAgOiBgJHtoYXJpbGlsYWthbHBhdGFydV9pZFswXX0vJHtoYXJpbGlsYWthbHBhdGFydV9pZFsxXX1gXHJcbiAgICAvLyAgICAgfWA7XHJcbiAgICAvLyAgIH1cclxuICAgIC8vIH0gZWxzZSBpZiAoaGFyaWxpbGFrYWxwYXRhcnVfaWQubGVuZ3RoID09PSAzKSB7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnREYXRhID1cclxuICAgIC8vICAgICBjdXJyZW50U2F0c2FuZ2lqZWV2YW5zVmVyc2UgJiZcclxuICAgIC8vICAgICBjdXJyZW50U2F0c2FuZ2lqZWV2YW5zVmVyc2U/Lml0ZW1zPy5maWx0ZXIoKGEpID0+IGEuaWQgIT09IC0xKTtcclxuICAgIC8vICAgY29uc3QgY3VycmVudE9iamVjdCA9XHJcbiAgICAvLyAgICAgY3VycmVudERhdGEgJiZcclxuICAgIC8vICAgICBjdXJyZW50RGF0YT8uZmluZCgob2JqKSA9PiBvYmouaWQgPT0gaGFyaWxpbGFrYWxwYXRhcnVfaWRbMl0pO1xyXG4gICAgLy8gICBjb25zdCBjdXJyZW50SW5kZXhJbkFycmF5ID0gY3VycmVudERhdGE/LmluZGV4T2YoY3VycmVudE9iamVjdCk7XHJcbiAgICAvLyAgIGlmIChwYWdlID09IFwiTkVYVFwiKSB7XHJcbiAgICAvLyAgICAgY29uc3QgbmV4dE9iamVjdCA9IGN1cnJlbnREYXRhPy5bY3VycmVudEluZGV4SW5BcnJheSArIDFdO1xyXG4gICAgLy8gICAgIHJldHVybiBgJHtcclxuICAgIC8vICAgICAgIG5leHRPYmplY3RcclxuICAgIC8vICAgICAgICAgPyBgJHtoYXJpbGlsYWthbHBhdGFydV9pZFswXX0vJHtoYXJpbGlsYWthbHBhdGFydV9pZFsxXX0vJHtuZXh0T2JqZWN0LmlkfT90YWI9JHthY3RpdmVUYWJ9YFxyXG4gICAgLy8gICAgICAgICA6IGAke2hhcmlsaWxha2FscGF0YXJ1X2lkLmpvaW4oXCIvXCIpfT90YWI9JHthY3RpdmVUYWJ9YFxyXG4gICAgLy8gICAgIH1gO1xyXG4gICAgLy8gICB9XHJcbiAgICAvLyAgIGlmIChwYWdlID09IFwiUFJFVklPVVNcIikge1xyXG4gICAgLy8gICAgIGNvbnN0IG5leHRPYmplY3QgPSBjdXJyZW50RGF0YT8uW2N1cnJlbnRJbmRleEluQXJyYXkgLSAxXTtcclxuICAgIC8vICAgICByZXR1cm4gYCR7XHJcbiAgICAvLyAgICAgICBuZXh0T2JqZWN0XHJcbiAgICAvLyAgICAgICAgID8gYCR7aGFyaWxpbGFrYWxwYXRhcnVfaWRbMF19LyR7aGFyaWxpbGFrYWxwYXRhcnVfaWRbMV19LyR7bmV4dE9iamVjdC5pZH0/dGFiPSR7YWN0aXZlVGFifWBcclxuICAgIC8vICAgICAgICAgOiBgJHtoYXJpbGlsYWthbHBhdGFydV9pZC5qb2luKFwiL1wiKX0/dGFiPSR7YWN0aXZlVGFifWBcclxuICAgIC8vICAgICB9YDtcclxuICAgIC8vICAgfVxyXG4gICAgLy8gfVxyXG4gIH07XHJcblxyXG4gIHJldHVybiAoXHJcbiAgICA8ZGl2PlxyXG4gICAgICA8bmF2IGNsYXNzTmFtZT1cImZsZXgganVzdGlmeS1iZXR3ZWVuIGdhcC0yIGl0ZW1zLWNlbnRlciB6LTMwIHN0aWNreSB0b3AtMCBiZy1zZWNvbmRhcnkgcC0yIC1tLTQgbWItMVwiPlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3Jvdy0wIGdhcC0yIGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGdhcC0yIGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgICA8TmF2QnV0dG9uXHJcbiAgICAgICAgICAgICAgdHlwZT1cImxpbmtcIlxyXG4gICAgICAgICAgICAgIGxpbms9XCIvZGFzaGJvYXJkXCJcclxuICAgICAgICAgICAgICBsYWJlbD1cImJhY2stYnRuXCJcclxuICAgICAgICAgICAgICBjbGFzc05hbWU9XCJmbGV4XCJcclxuICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgIDxGYUhvbWUgLz5cclxuICAgICAgICAgICAgPC9OYXZCdXR0b24+XHJcbiAgICAgICAgICAgIDxOYXZCdXR0b25cclxuICAgICAgICAgICAgICB0eXBlPVwibGlua1wiXHJcbiAgICAgICAgICAgICAgbGluaz17YC9zYXRzYW5naWplZXZhbi8ke2hhcmlsaWxha2FscGF0YXJ1X2lkXHJcbiAgICAgICAgICAgICAgICAuc2xpY2UoMCwgLTEpXHJcbiAgICAgICAgICAgICAgICAuam9pbihcIi9cIil9YH1cclxuICAgICAgICAgICAgICBsYWJlbD1cImJhY2stYnRuXCJcclxuICAgICAgICAgICAgICBjbGFzc05hbWU9XCJmbGV4XCJcclxuICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgIDxGYUFycm93TGVmdCAvPlxyXG4gICAgICAgICAgICA8L05hdkJ1dHRvbj5cclxuICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgIDwvZGl2PlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3JvdyB0ZXh0LXByaW1hcnkgdGV4dC14cyAyeHM6dGV4dC14cyB4czp0ZXh0LWJhc2UgbWQ6dGV4dC1sZyBsZzp0ZXh0LXhsXCI+XHJcbiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9e2BmbGV4ICR7XCJqdXN0aWZ5LWNlbnRlclwifWB9PlxyXG4gICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJjYXBpdGFsaXplXCI+XHJcbiAgICAgICAgICAgICAgPExpbmsgY2xhc3NOYW1lPVwiaG92ZXI6dW5kZXJsaW5lXCIgaHJlZj17YC9oYXJpbGlsYWthbHBhdGFydWB9PlxyXG4gICAgICAgICAgICAgICAge2N1cnJlbnRTa2FuZGEgJiYgY3VycmVudFNrYW5kYT8udGl0bGV9XHJcbiAgICAgICAgICAgICAgPC9MaW5rPlxyXG4gICAgICAgICAgICA8L3NwYW4+XHJcbiAgICAgICAgICA8L3NwYW4+XHJcbiAgICAgICAgPC9kaXY+XHJcbiAgICAgIDwvbmF2PlxyXG4gICAgICA8ZGl2PlxyXG4gICAgICAgIHtoYXJpbGlsYWthbHBhdGFydV9pZC5sZW5ndGggPT09IDEgJiYgcm91dGVyLnF1ZXJ5LmVkaXQgPT09IFwic2thbmRhXCIgPyAoXHJcbiAgICAgICAgICA8ZGl2PlxyXG4gICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXgganVzdGlmeS1iZXR3ZWVuIGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3JvdyBmbGV4IG1iLTIgb3ZlcmZsb3cteC1hdXRvIG5vLXNjcm9sbGJhciBnYXAtMlwiPlxyXG4gICAgICAgICAgICAgICAge3RhYnMubWFwKCh0YWIsIGluZGV4KSA9PiAoXHJcbiAgICAgICAgICAgICAgICAgIDw+XHJcbiAgICAgICAgICAgICAgICAgICAge3RhYi52YWwgJiYgKFxyXG4gICAgICAgICAgICAgICAgICAgICAgPGRpdlxyXG4gICAgICAgICAgICAgICAgICAgICAgICBrZXk9e2luZGV4fVxyXG4gICAgICAgICAgICAgICAgICAgICAgICBvbkNsaWNrPXsoKSA9PiBoYW5kbGVUYWIodGFiPy52YWwpfVxyXG4gICAgICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2BjdXJzb3ItcG9pbnRlciBmbGV4LXNocmluay0wIGZsZXggaXRlbXMtY2VudGVyIHB5LTIgbXgtMSB0ZXh0LXNtIG1kOnRleHQtbGcgICR7XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgYWN0aXZlVGFiID09PSB0YWI/LnZhbFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgPyBcImFjdGl2ZSAgdGV4dC1yZWQgIGJvcmRlci1iLTIgYm9yZGVyLXJlZCBmb250LWJvbGRcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgOiBcIiBmb250LWJvbGQgIHRleHQtZ3JheS01MDBcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICB9YH1cclxuICAgICAgICAgICAgICAgICAgICAgID5cclxuICAgICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz1cImlubGluZS1mbGV4IGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgIDxsYWJlbFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xhc3M9XCJyZWxhdGl2ZSBmbGV4IGl0ZW1zLWNlbnRlciByb3VuZGVkLWZ1bGwgY3Vyc29yLXBvaW50ZXJcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgaHRtbEZvcj1cImN1c3RvbVwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgPGlucHV0XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNoZWNrZWRcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdHlwZT1cImNoZWNrYm94XCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xhc3M9e2BwZWVyIHJlbGF0aXZlIGFwcGVhcmFuY2Utbm9uZSB3LTUgaC01ICByb3VuZGVkLW1kICAke1xyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGN1cnJlbnRTa2FuZGFbdGFiPy52YWxdPy5sZW5ndGggPiAwIHx8XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGFjdGl2ZVRhYiA9PT0gdGFiPy52YWwgJiYgY29udGVudD8ubGVuZ3RoID4gMClcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID8gXCJjaGVja2VkOmJnLWdyZWVuLTUwMFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA6IFwiY2hlY2tlZDpiZy1yZWRcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9YH1cclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWQ9XCJjdXN0b21cIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgLz5cclxuXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz1cImFic29sdXRlIHRleHQtd2hpdGUgdHJhbnNpdGlvbi1vcGFjaXR5IG9wYWNpdHktMCBwb2ludGVyLWV2ZW50cy1ub25lIHRvcC0yLzQgbGVmdC0yLzQgLXRyYW5zbGF0ZS15LTIvNCAtdHJhbnNsYXRlLXgtMi80IHBlZXItY2hlY2tlZDpvcGFjaXR5LTEwMFwiPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICB7Y3VycmVudFNrYW5kYVt0YWI/LnZhbF0/Lmxlbmd0aCA+IDAgfHxcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGFjdGl2ZVRhYiA9PT0gdGFiPy52YWwgJiZcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb250ZW50Py5sZW5ndGggPiAwKSA/IChcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8c3ZnXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB4bWxucz1cImh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsYXNzPVwiaC0zLjUgdy0zLjVcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmlld0JveD1cIjAgMCAyMCAyMFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmaWxsPVwiY3VycmVudENvbG9yXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cm9rZT1cImN1cnJlbnRDb2xvclwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJva2Utd2lkdGg9XCIxXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8cGF0aFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmaWxsLXJ1bGU9XCJldmVub2RkXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZD1cIk0xNi43MDcgNS4yOTNhMSAxIDAgMDEwIDEuNDE0bC04IDhhMSAxIDAgMDEtMS40MTQgMGwtNC00YTEgMSAwIDAxMS40MTQtMS40MTRMOCAxMi41ODZsNy4yOTMtNy4yOTNhMSAxIDAgMDExLjQxNCAwelwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsaXAtcnVsZT1cImV2ZW5vZGRcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPjwvcGF0aD5cclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8L3N2Zz5cclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKSA6IChcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8c3ZnXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGFzcz1cImgtMy41IHctMy41XCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHhtbG5zPVwiaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmdcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmlld0JveD1cIjAgMCAzODQgNTEyXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGw9XCJjdXJyZW50Q29sb3JcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Ryb2tlPVwiY3VycmVudENvbG9yXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cm9rZS13aWR0aD1cIjFcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID5cclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGwtcnVsZT1cImV2ZW5vZGRcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkPVwiTTM0Mi42IDE1MC42YzEyLjUtMTIuNSAxMi41LTMyLjggMC00NS4zcy0zMi44LTEyLjUtNDUuMyAwTDE5MiAyMTAuNyA4Ni42IDEwNS40Yy0xMi41LTEyLjUtMzIuOC0xMi41LTQ1LjMgMHMtMTIuNSAzMi44IDAgNDUuM0wxNDYuNyAyNTYgNDEuNCAzNjEuNGMtMTIuNSAxMi41LTEyLjUgMzIuOCAwIDQ1LjNzMzIuOCAxMi41IDQ1LjMgMEwxOTIgMzAxLjMgMjk3LjQgNDA2LjZjMTIuNSAxMi41IDMyLjggMTIuNSA0NS4zIDBzMTIuNS0zMi44IDAtNDUuM0wyMzcuMyAyNTYgMzQyLjYgMTUwLjZ6XCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xpcC1ydWxlPVwiZXZlbm9kZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvc3ZnPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICApfVxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9zcGFuPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgIDwvbGFiZWw+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJteC0yXCI+e3RhYi5uYW1lfTwvc3Bhbj5cclxuICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgICAgICAgICl9XHJcbiAgICAgICAgICAgICAgICAgIDwvPlxyXG4gICAgICAgICAgICAgICAgKSl9XHJcbiAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJiZy13aGl0ZSBmbGV4LW5vbmUgaC0xMCBtaW4tdy1bMjAwcHhdIGZsZXggaXRlbXMtY2VudGVyIHNlbGVjdC1ub25lXCI+XHJcbiAgICAgICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJtbC0yIGZsZXggaXRlbXMtY2VudGVyIGdhcC0yXCI+XHJcbiAgICAgICAgICAgICAgICAgIDxiPlN0YXR1czo8L2I+XHJcbiAgICAgICAgICAgICAgICAgIDxzcGFuXHJcbiAgICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPXtgJHtcclxuICAgICAgICAgICAgICAgICAgICAgIHN0YXR1cyA9PT0gXCJTYXZlZCFcIiA/IFwidGV4dC1ncmVlbi01MDBcIiA6IFwidGV4dC1yZWRcIlxyXG4gICAgICAgICAgICAgICAgICAgIH1gfVxyXG4gICAgICAgICAgICAgICAgICA+XHJcbiAgICAgICAgICAgICAgICAgICAge3N0YXR1c31cclxuICAgICAgICAgICAgICAgICAgPC9zcGFuPlxyXG4gICAgICAgICAgICAgICAgICB7c3RhdHVzID09PSBcIlNhdmluZy4uLlwiICYmIChcclxuICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPVwiZmxleCBqdXN0aWZ5LWNlbnRlciBpdGVtcy1jZW50ZXJcIj5cclxuICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9XCJ3LTUgaC01IHJvdW5kZWQtZnVsbCBib3JkZXItNCBib3JkZXItZ3JheS00MDAgYm9yZGVyLXQtb3JhbmdlLTUwMCBhbmltYXRlLXNwaW5cIj48L2Rpdj5cclxuICAgICAgICAgICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgICAgICAgICAgKX1cclxuICAgICAgICAgICAgICAgIDwvc3Bhbj5cclxuICAgICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwib3ZlcmZsb3ctYXV0b1wiPlxyXG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidy1mdWxsXCI+XHJcbiAgICAgICAgICAgICAgICA8Q3VzdG9tRWRpdG9yXHJcbiAgICAgICAgICAgICAgICAgIGtleT17cm91dGVyLnF1ZXJ5LnRhYn1cclxuICAgICAgICAgICAgICAgICAgdmFsdWU9e2NvbnRlbnQgPyBjb250ZW50IDogXCJcIn1cclxuICAgICAgICAgICAgICAgICAgb25DaGFuZ2U9e3NldENvbnRlbnR9XHJcbiAgICAgICAgICAgICAgICAgIHNldFN0YXR1cz17c2V0U3RhdHVzfVxyXG4gICAgICAgICAgICAgICAgICBvbkZvY3VzPXsoKSA9PiBzZXRGb2N1cyh0cnVlKX1cclxuICAgICAgICAgICAgICAgICAgb25CbHVyPXsoKSA9PiBzZXRGb2N1cyhmYWxzZSl9XHJcbiAgICAgICAgICAgICAgICAvPlxyXG4gICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICkgOiBoYXJpbGlsYWthbHBhdGFydV9pZC5sZW5ndGggPT09IDEgJiZcclxuICAgICAgICAgIHJvdXRlci5xdWVyeS5lZGl0ID09PSBcInNrYW5kYVwiID8gKFxyXG4gICAgICAgICAgPGRpdj5oZWxsbzwvZGl2PlxyXG4gICAgICAgICkgOiAoXHJcbiAgICAgICAgICBcIlwiXHJcbiAgICAgICAgKX1cclxuICAgICAgPC9kaXY+XHJcbiAgICA8L2Rpdj5cclxuICApO1xyXG59O1xyXG5cclxuSGFyaWxpbGFrYWxwYXRhcnVJZC5nZXRJbml0aWFsUHJvcHMgPSBhc3luYyAoeyBxdWVyeSB9KSA9PiB7XHJcbiAgY29uc3QgeyBoYXJpbGlsYWthbHBhdGFydV9pZCB9ID0gcXVlcnk7XHJcbiAgcmV0dXJuIHsgaGFyaWxpbGFrYWxwYXRhcnVfaWQgfTtcclxufTtcclxuXHJcbmV4cG9ydCBkZWZhdWx0IEhhcmlsaWxha2FscGF0YXJ1SWQ7XHJcbiJdLCJuYW1lcyI6WyJSZWFjdCIsInVzZUVmZmVjdCIsInVzZVJlZiIsInVzZVN0YXRlIiwiZHluYW1pYyIsInVzZURlYm91bmNlIiwiTmF2QnV0dG9uIiwiRmFBcnJvd0xlZnQiLCJGYUFycm93UmlnaHQiLCJGYUNoZXZyb25MZWZ0IiwiRmFDaGV2cm9uUmlnaHQiLCJGYUVkaXQiLCJGYUhvbWUiLCJ1c2VSb3V0ZXIiLCJheGlvc0luc3RhbmNlIiwiTGluayIsIkN1c3RvbUVkaXRvciIsInNzciIsIkhhcmlsaWxha2FscGF0YXJ1SWQiLCJoYXJpbGlsYWthbHBhdGFydV9pZCIsInJvdXRlciIsImN1cnJlbnRTa2FuZGEiLCJzZXRDdXJyZW50U2thbmRhIiwiY3VycmVudEFkaHlheUxpc3QiLCJzZXRDdXJyZW50QWRoeWF5TGlzdCIsImhhcmlsaWxha2FscGF0YXJ1U2thbmRhIiwic2V0SGFyaWxpbGFrYWxwYXRhcnVTa2FuZGEiLCJjb250ZW50Iiwic2V0Q29udGVudCIsInN0YXR1cyIsInNldFN0YXR1cyIsInNhdmVDb250ZW50IiwiZm9jdXMiLCJzZXRGb2N1cyIsImFjdGl2ZVRhYiIsInNldEFjdGl2ZVRhYiIsInRhYnMiLCJzZXRUYWJzIiwibmFtZSIsInZhbCIsImhhbmRsZVRhYiIsInR5cGUiLCJnZXRBbGxTa2FuZGEiLCJyZXNwb25zZSIsImdldCIsImRhdGEiLCJlcnJvciIsImNvbnNvbGUiLCJnZXRDdXJyZW50U2thbmRhSXRlbSIsImlkIiwicGFyYW1zIiwiZ2V0Q3VycmVudEFkaHlheUxpc3QiLCJza2FuZGFJZCIsImxlbmd0aCIsInF1ZXJ5IiwibG9nIiwiaGFuZGxlU2F2ZSIsInBvc3QiLCJfaWQiLCJib2R5Iiwia2V5IiwiaGFuZGxlUGFnZSIsInBhZ2UiLCJkaXYiLCJuYXYiLCJjbGFzc05hbWUiLCJsaW5rIiwibGFiZWwiLCJzbGljZSIsImpvaW4iLCJzcGFuIiwiaHJlZiIsInRpdGxlIiwiZWRpdCIsIm1hcCIsInRhYiIsImluZGV4Iiwib25DbGljayIsImNsYXNzIiwiaHRtbEZvciIsImlucHV0IiwiY2hlY2tlZCIsInN2ZyIsInhtbG5zIiwidmlld0JveCIsImZpbGwiLCJzdHJva2UiLCJzdHJva2Utd2lkdGgiLCJwYXRoIiwiZmlsbC1ydWxlIiwiZCIsImNsaXAtcnVsZSIsImIiLCJ2YWx1ZSIsIm9uQ2hhbmdlIiwib25Gb2N1cyIsIm9uQmx1ciIsImdldEluaXRpYWxQcm9wcyJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///./src/pages/harililakalpataru/[...harililakalpataru_id].js\n"));
-
-/***/ })
-
-});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             r.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\path-browserify\index.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\punycode\punycode.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\build\polyfills\process.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\querystring-es3\index.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\stream-browserify\index.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\string_decoder\string_decoder.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\util\util.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\timers-browserify\main.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\tty-browserify\index.js��H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\vm-browserify\index.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\browserify-zlib\index.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\events\events.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\setimmediate\setImmediate.js��`�cacheable�parsed�fileDependencies�contextDependencies�missingDependencies�buildDependencies�valueDependencies��assets�assetsInfo�topLevelDeclarations�snapshot�webpack/lib/util/LazySet�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\mini-css-extract-plugin\loader.js�webpack/DefinePlugin_hash�c7e3f085�f8862f259a3eacf2� @	    �1�Q�xB	�H:\DHRUVIK\sardhar-ashtadhyayi\src\styles\globals.css�H:\DHRUVIK\sardhar-ashtadhyayi\tailwind.config.js�! ���xB p��xB�7de8469189353492�! @�Z��xB 0�Z��xB�2ba9351341b3f2c5	�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next�next@13.3.4�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\build\webpack\loaders\css-loader\src\runtime\api.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\package.json`A  �1�Q�xB	�H:\DHRUVIK\sardhar-ashtadhyayi\src\components�H:\DHRUVIK\sardhar-ashtadhyayi\src\app���timestampHash�  ����xB�85c6ef059b6160f4�f22a2647fd0a73ba�  �s�Q�xB�f157e03fc768ef03�601498405f7d3cbd�mini-css-extract-plugin/dist/CssDependencyM  H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[1].oneOf[13].use[1]!H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[1].oneOf[13].use[2]!H:\DHRUVIK\sardhar-ashtadhyayi\src\styles\globals.css� /*
-! tailwindcss v3.3.2 | MIT License | https://tailwindcss.com
-*//*
-1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
-2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
-*/
-
-*,
-::before,
-::after {
-  box-sizing: border-box; /* 1 */
-  border-width: 0; /* 2 */
-  border-style: solid; /* 2 */
-  border-color: #e5e7eb; /* 2 */
-}
-
-::before,
-::after {
-  --tw-content: '';
-}
-
-/*
-1. Use a consistent sensible line-height in all browsers.
-2. Prevent adjustments of font size after orientation changes in iOS.
-3. Use a more readable tab size.
-4. Use the user's configured `sans` font-family by default.
-5. Use the user's configured `sans` font-feature-settings by default.
-6. Use the user's configured `sans` font-variation-settings by default.
-*/
-
-html {
-  line-height: 1.5; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
-  -moz-tab-size: 4; /* 3 */
-  -o-tab-size: 4;
-     tab-size: 4; /* 3 */
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
-  font-feature-settings: normal; /* 5 */
-  font-variation-settings: normal; /* 6 */
-}
-
-/*
-1. Remove the margin in all browsers.
-2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
-*/
-
-body {
-  margin: 0; /* 1 */
-  line-height: inherit; /* 2 */
-}
-
-/*
-1. Add the correct height in Firefox.
-2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
-3. Ensure horizontal rules are visible by default.
-*/
-
-hr {
-  height: 0; /* 1 */
-  color: inherit; /* 2 */
-  border-top-width: 1px; /* 3 */
-}
-
-/*
-Add the correct text decoration in Chrome, Edge, and Safari.
-*/
-
-abbr:where([title]) {
-  -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
-}
-
-/*
-Remove the default font size and weight for headings.
-*/
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-/*
-Reset links to optimize for opt-in styling instead of opt-out.
-*/
-
-a {
-  color: inherit;
-  text-decoration: inherit;
-}
-
-/*
-Add the correct font weight in Edge and Safari.
-*/
-
-b,
-strong {
-  font-weight: bolder;
-}
-
-/*
-1. Use the user's configured `mono` font family by default.
-2. Correct the odd `em` font sizing in all browsers.
-*/
-
-code,
-kbd,
-samp,
-pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* 1 */
-  font-size: 1em; /* 2 */
-}
-
-/*
-Add the correct font size in all browsers.
-*/
-
-small {
-  font-size: 80%;
-}
-
-/*
-Prevent `sub` and `sup` elements from affecting the line height in all browsers.
-*/
-
-sub,
-sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
-
-sub {
-  bottom: -0.25em;
-}
-
-sup {
-  top: -0.5em;
-}
-
-/*
-1. Remove text indentation from table contents in Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=999088, https://bugs.webkit.org/show_bug.cgi?id=201297)
-2. Correct table border color inheritance in all Chrome and Safari. (https://bugs.chromium.org/p/chromium/issues/detail?id=935729, https://bugs.webkit.org/show_bug.cgi?id=195016)
-3. Remove gaps between table borders by default.
-*/
-
-table {
-  text-indent: 0; /* 1 */
-  border-color: inherit; /* 2 */
-  border-collapse: collapse; /* 3 */
-}
-
-/*
-1. Change the font styles in all browsers.
-2. Remove the margin in Firefox and Safari.
-3. Remove default padding in all browsers.
-*/
-
-button,
-input,
-optgroup,
-select,
-textarea {
-  font-family: inherit; /* 1 */
-  font-size: 100%; /* 1 */
-  font-weight: inherit; /* 1 */
-  line-height: inherit; /* 1 */
-  color: inherit; /* 1 */
-  margin: 0; /* 2 */
-  padding: 0; /* 3 */
-}
-
-/*
-Remove the inheritance of text transform in Edge and Firefox.
-*/
-
-button,
-select {
-  text-transform: none;
-}
-
-/*
-1. Correct the inability to style clickable types in iOS and Safari.
-2. Remove default button styles.
-*/
-
-button,
-[type='button'],
-[type='reset'],
-[type='submit'] {
-  -webkit-appearance: button; /* 1 */
-  background-color: transparent; /* 2 */
-  background-image: none; /* 2 */
-}
-
-/*
-Use the modern Firefox focus style for all focusable elements.
-*/
-
-:-moz-focusring {
-  outline: auto;
-}
-
-/*
-Remove the additional `:invalid` styles in Firefox. (https://github.com/mozilla/gecko-dev/blob/2f9eacd9d3d995c937b4251a5557d95d494c9be1/layout/style/res/forms.css#L728-L737)
-*/
-
-:-moz-ui-invalid {
-  box-shadow: none;
-}
-
-/*
-Add the correct vertical alignment in Chrome and Firefox.
-*/
-
-progress {
-  vertical-align: baseline;
-}
-
-/*
-Correct the cursor style of increment and decrement buttons in Safari.
-*/
-
-::-webkit-inner-spin-button,
-::-webkit-outer-spin-button {
-  height: auto;
-}
-
-/*
-1. Correct the odd appearance in Chrome and Safari.
-2. Correct the outline style in Safari.
-*/
-
-[type='search'] {
-  -webkit-appearance: textfield; /* 1 */
-  outline-offset: -2px; /* 2 */
-}
-
-/*
-Remove the inner padding in Chrome and Safari on macOS.
-*/
-
-::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
-
-/*
-1. Correct the inability to style clickable types in iOS and Safari.
-2. Change font properties to `inherit` in Safari.
-*/
-
-::-webkit-file-upload-button {
-  -webkit-appearance: button; /* 1 */
-  font: inherit; /* 2 */
-}
-
-/*
-Aperties: {
-        [K in RequiredKeys<T>]: JTDSchemaType<T[K], D>;
-    };
-}) & ([OptionalKeys<Exclude<T, null>>] extends [never] ? {
-    optionalProperties?: Record<string, never>;
-} : {
-    optionalProperties: {
-        [K in OptionalKeys<T>]: JTDSchemaType<Exclude<T[K], undefined>, D>;
-    };
-}) & {
-    additionalProperties?: boolean;
-} : true extends IsRecord<T, true> ? {
-    [K in keyof Exclude<T, null>]-?: Exclude<T, null>[K] extends string ? {
-        discriminator: K;
-        mapping: {
-            [M in Exclude<T, null>[K]]: JTDSchemaType<Omit<T extends {
-                [C in K]: M;
-            } ? T : never, K>, D>;
-        };
-    } : never;
-}[keyof Exclude<T, null>] : never) & (null extends T ? {
-    nullable: true;
-} : {
-    nullable?: false;
-}))) & {
-    metadata?: Record<string, unknown>;
-    definitions?: {
-        [K in keyof D]: JTDSchemaType<D[K], D>;
-    };
-};
-declare type JTDDataDef<S, D extends Record<string, unknown>> = (S extends {
-    ref: string;
-} ? D extends {
-    [K in S["ref"]]: infer V;
-} ? JTDDataDef<V, D> : never : S extends {
-    type: NumberType;
-} ? number : S extends {
-    type: "boolean";
-} ? boolean : S extends {
-    type: "string";
-} ? string : S extends {
-    type: "timestamp";
-} ? string | Date : S extends {
-    enum: readonly (infer E)[];
-} ? string extends E ? never : [E] extends [string] ? E : never : S extends {
-    elements: infer E;
-} ? JTDDataDef<E, D>[] : S extends {
-    properties: Record<string, unknown>;
-    optionalProperties?: Record<string, unknown>;
-    additionalProperties?: boolean;
-} ? {
-    -readonly [K in keyof S["properties"]]-?: JTDDataDef<S["properties"][K], D>;
-} & {
-    -readonly [K in keyof S["optionalProperties"]]+?: JTDDataDef<S["optionalProperties"][K], D>;
-} & ([S["additionalProperties"]] extends [true] ? Record<string, unknown> : unknown) : S extends {
-  

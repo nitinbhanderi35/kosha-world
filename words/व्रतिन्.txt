@@ -1,707 +1,303 @@
-ildrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1J = emphasisRole;
-	emphasisRole$1.default = _default$1J;
-
-	var feedRole$1 = {};
-
-	Object.defineProperty(feedRole$1, "__esModule", {
-	  value: true
-	});
-	feedRole$1.default = void 0;
-	var feedRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['article']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'list']]
-	};
-	var _default$1I = feedRole;
-	feedRole$1.default = _default$1I;
-
-	var figureRole$1 = {};
-
-	Object.defineProperty(figureRole$1, "__esModule", {
-	  value: true
-	});
-	figureRole$1.default = void 0;
-	var figureRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'figure'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1H = figureRole;
-	figureRole$1.default = _default$1H;
-
-	var formRole$1 = {};
-
-	Object.defineProperty(formRole$1, "__esModule", {
-	  value: true
-	});
-	formRole$1.default = void 0;
-	var formRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'aria-label'
-	      }],
-	      name: 'form'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'aria-labelledby'
-	      }],
-	      name: 'form'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'name'
-	      }],
-	      name: 'form'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1G = formRole;
-	formRole$1.default = _default$1G;
-
-	var genericRole$1 = {};
-
-	Object.defineProperty(genericRole$1, "__esModule", {
-	  value: true
-	});
-	genericRole$1.default = void 0;
-	var genericRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'span'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'div'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure']]
-	};
-	var _default$1F = genericRole;
-	genericRole$1.default = _default$1F;
-
-	var gridRole$1 = {};
-
-	Object.defineProperty(gridRole$1, "__esModule", {
-	  value: true
-	});
-	gridRole$1.default = void 0;
-	var gridRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-multiselectable': null,
-	    'aria-readonly': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'role',
-	        value: 'grid'
-	      }],
-	      name: 'table'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['row'], ['row', 'rowgroup']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'composite'], ['roletype', 'structure', 'section', 'table']]
-	};
-	var _default$1E = gridRole;
-	gridRole$1.default = _default$1E;
-
-	var gridcellRole$1 = {};
-
-	Object.defineProperty(gridcellRole$1, "__esModule", {
-	  value: true
-	});
-	gridcellRole$1.default = void 0;
-	var gridcellRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null,
-	    'aria-readonly': null,
-	    'aria-required': null,
-	    'aria-selected': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'role',
-	        value: 'gridcell'
-	      }],
-	      name: 'td'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: ['row'],
-	  requiredContextRole: ['row'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'widget']]
-	};
-	var _default$1D = gridcellRole;
-	gridcellRole$1.default = _default$1D;
-
-	var groupRole$1 = {};
-
-	Object.defineProperty(groupRole$1, "__esModule", {
-	  value: true
-	});
-	groupRole$1.default = void 0;
-	var groupRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-activedescendant': null,
-	    'aria-disabled': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'details'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'fieldset'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'optgroup'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1C = groupRole;
-	groupRole$1.default = _default$1C;
-
-	var headingRole$1 = {};
-
-	Object.defineProperty(headingRole$1, "__esModule", {
-	  value: true
-	});
-	headingRole$1.default = void 0;
-	var headingRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-level': '2'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'h1'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h2'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h3'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h4'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h5'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h6'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-level': '2'
-	  },
-	  superClass: [['roletype', 'structure', 'sectionhead']]
-	};
-	var _default$1B = headingRole;
-	headingRole$1.default = _default$1B;
-
-	var imgRole$1 = {};
-
-	Object.defineProperty(imgRole$1, "__esModule", {
-	  value: true
-	});
-	imgRole$1.default = void 0;
-	var imgRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'alt'
-	      }],
-	      name: 'img'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'alt'
-	      }],
-	      name: 'img'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'imggroup'
-	    },
-	    module: 'DTB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1A = imgRole;
-	imgRole$1.default = _default$1A;
-
-	var insertionRole$1 = {};
-
-	Object.defineProperty(insertionRole$1, "__esModule", {
-	  value: true
-	});
-	insertionRole$1.default = void 0;
-	var insertionRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1z = insertionRole;
-	insertionRole$1.default = _default$1z;
-
-	var linkRole$1 = {};
-
-	Object.defineProperty(linkRole$1, "__esModule", {
-	  value: true
-	});
-	linkRole$1.default = void 0;
-	var linkRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'href'
-	      }],
-	      name: 'a'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'href'
-	      }],
-	      name: 'area'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'href'
-	      }],
-	      name: 'link'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command']]
-	};
-	var _default$1y = linkRole;
-	linkRole$1.default = _default$1y;
-
-	var listRole$1 = {};
-
-	Object.defineProperty(listRole$1, "__esModule", {
-	  value: true
-	});
-	listRole$1.default = void 0;
-	var listRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'menu'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'ol'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'ul'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['listitem']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1x = listRole;
-	listRole$1.default = _default$1x;
-
-	var listboxRole$1 = {};
-
-	Object.defineProperty(listboxRole$1, "__esModule", {
-	  value: true
-	});
-	listboxRole$1.default = void 0;
-	var listboxRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-invalid': null,
-	    'aria-multiselectable': null,
-	    'aria-readonly': null,
-	    'aria-required': null,
-	    'aria-orientation': 'vertical'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['>1'],
-	        name: 'size'
-	      }, {
-	        name: 'multiple'
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['>1'],
-	        name: 'size'
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'multiple'
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'datalist'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'list'
-	    },
-	    module: 'ARIA'
-	  }, {
-	    concept: {
-	      name: 'select'
-	    },
-	    module: 'XForms'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['option', 'group'], ['option']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
-	};
-	var _default$1w = listboxRole;
-	listboxRole$1.default = _default$1w;
-
-	var listitemRole$1 = {};
-
-	Object.defineProperty(listitemRole$1, "__esModule", {
-	  value: true
-	});
-	listitemRole$1.default = void 0;
-	var listitemRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-level': null,
-	    'aria-posinset': null,
-	    'aria-setsize': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      constraints: ['direct descendant of ol, ul or menu'],
-	      name: 'li'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'item'
-	    },
-	    module: 'XForms'
-	  }],
-	  requireContextRole: ['directory', 'list'],
-	  requiredContextRole: ['directory', 'list'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1v = listitemRole;
-	listitemRole$1.default = _default$1v;
-
-	var logRole$1 = {};
-
-	Object.defineProperty(logRole$1, "__esModule", {
-	  value: true
-	});
-	logRole$1.default = void 0;
-	var logRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-live': 'polite'
-	  },
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1u = logRole;
-	logRole$1.default = _default$1u;
-
-	var mainRole$1 = {};
-
-	Object.defineProperty(mainRole$1, "__esModule", {
-	  value: true
-	});
-	mainRole$1.default = void 0;
-	var mainRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'main'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1t = mainRole;
-	mainRole$1.default = _default$1t;
-
-	var marqueeRole$1 = {};
-
-	Object.defineProperty(marqueeRole$1, "__esModule", {
-	  value: true
-	});
-	marqueeRole$1.default = void 0;
-	var marqueeRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1s = marqueeRole;
-	marqueeRole$1.default = _default$1s;
-
-	var mathRole$1 = {};
-
-	Object.defineProperty(mathRole$1, "__esModule", {
-	  value: true
-	});
-	mathRole$1.default = void 0;
-	var mathRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'math'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole
+{
+    "word": "व्रतिन्",
+    "ABCH": [
+        {
+            "word": "व्रतिन्",
+            "linga": "पुं",
+            "pagenum": "6",
+            "kanda": "",
+            "varga": "",
+            "eid": "299",
+            "group": "23",
+            "synonyms": [
+                "मुमुक्षु",
+                "श्रमण",
+                "यति",
+                "वाचंयम",
+                "साधु",
+                "अनगार",
+                "ऋषि",
+                "मुनि",
+                "निर्ग्रन्थ",
+                "भिक्षु"
+            ],
+            "content": "महानन्दोऽमृतं सिद्धिः कैवल्यमपुनर्भवः ।\nशिवं निःश्रेयसं श्रेयो निर्वाणं ब्रह्म निर्वृतिः ॥ ७४ ॥\nमहोदयः सर्वदुःखक्षयो निर्याणमक्षरम् ।\nमुक्तिर्मोक्षोऽपवर्गोऽथ मुमुक्षुः श्रमणो यतिः ॥ ७५ ॥\nवाचंयमो व्रती साधुरनगार ऋषिर्मुनिः ।\nनिर्ग्रन्थो भिक्षुरस्य स्वं तपोयोगशमादयः ॥ ७६ ॥"
+        },
+        {
+            "word": "व्रतिन्",
+            "linga": "पुं",
+            "pagenum": "33",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "2480",
+            "group": "947",
+            "synonyms": [
+                "यष्टृ",
+                "आदेष्टृ",
+                "याजक",
+                "यजमान"
+            ],
+            "content": "श्रोत्रियश्छान्दसो यष्टा त्वादेष्टा स्यान्मखे व्रती ।\nयाजको यजमानश्च सोमयाजी तु दीक्षितः ॥ ८१७ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "व्रतिन्",
+            "eid": "27474",
+            "pagenum": 1026,
+            "content": "व्रतिन्¦ <i><ab>a.</ab></i> Observing a vow, <lbinfo n='prac+tising'/> practising penance, devout, pious;  <lbinfo n='ls:Pt.+1'/> <ls>Pt. 1. 416</ls>. <i>--<ab>m.</ab></i> <b>1</b> A religious student. <b>--2</b> An ascetic, a devotee; <ls>Ś. 5. 9.</ls> <b>--3</b> One who institutes a sacrifice; <ab>cf.</ab> यजमान."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "व्रतिन्",
+            "eid": "14322",
+            "pagenum": 923,
+            "content": "व्रतिन्¦ <i>vratin,</i> <ab>i. e.</ab> <i>vrata + in,</i> <b>I.</b> <ab>adj.</ab> Engaged in a religious vow or obligation, pious, <ls>Pañc.</ls> i. <ab>d.</ab> 467. <b>II.</b> <ab>m.</ab> <b>1.</b> An employer of priests. <b>2.</b> An ascetic. <b>3.</b> A religious student, <ls>Man.</ls> 2, 189; 4, 91; 11, 121. <b> -- <ab>Comp.</ab></b> <i>Go-,</i> <ab>m.</ab> the name of a sort of anchorite, <ls>MBh.</ls> 5, 3559 (<ab>cf.</ab> <i>go-vrata</i>). <i>Deva-,</i> <ab>adj.</ab> worshipping the deities, <ls>MBh.</ls> 13, 3534 (<ab>cf.</ab> <i>deva</i> <i>-vrata</i>). <i>Mahā-,</i> <ab>m.</ab> 1. a devotee, an ascetic (<ab>cf.</ab> <i>mahā-vrata</i>). 2. a name of Śiva. <i>Vaka-,</i> <ab>adj.</ab> acting like a crane, hypocritic, <ls>Man.</ls> 4, 197."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "व्रतिन्",
+            "eid": "16456",
+            "pagenum": 630,
+            "content": "व्रतिन्¦ <i>vratin</i> <ab>m.</ab> <i>(vrata)</i> noyice; || dévot, <lbinfo n='4'/> ascète; || personne pieuse, faisant des vœux."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "व्रतिन्",
+            "eid": "31519",
+            "pagenum": 532,
+            "content": "व्रति/न्¦ <lex>a.</lex> = व्रतवन्त्, also observing, honouring, behaving like (—°)."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "व्रतिन्",
+            "eid": "23881",
+            "pagenum": 432,
+            "content": "व्रति/न्¦ = व्रतवन्त्, <i>auch</i> sich benehmend wie (—°); <i>m.</i> Büßer."
+        }
+    ],
+    "INM": [
+        {
+            "word": "व्रतिन्",
+            "eid": "12262",
+            "pagenum": 752,
+            "content": "<b>Vratin</b>¦ = Śiva: VIII, 1449."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "व्रतिन्",
+            "eid": "36805",
+            "pagenum": 702,
+            "content": "vratin¦ <i>m.</i> 1. One who institutes a sacrifice; 2. a religious student; 3. an ascetic."
+        }
+    ],
+    "MD": [
+        {
+            "word": "व्रतिन्",
+            "eid": "17381",
+            "pagenum": 305,
+            "content": "व्रतिन्¦ vrat-ín, <lex>a.</lex> engaged in a religious observance, 🞄practising a vow; <ab>—°</ab>, practising; 🞄worshipping; behaving like."
+        }
+    ],
+    "MW": [
+        {
+            "word": "व्रतिन्",
+            "eid": "210692",
+            "pagenum": "1043,1",
+            "content": "व्रति/न् ¦ <lex>mfn.</lex> observing a vow, engaged in a religious observance &c., <ls>TS.</ls>; <ls>ŚBr.</ls>; <ls>Kauś.</ls> &c.<info lex='m:f:n'/>"
+        },
+        {
+            "word": "व्रतिन्",
+            "eid": "210693",
+            "pagenum": "1043,1",
+            "content": "¦ (<ab>ifc.</ab>) engaged in, worshipping, behaving like, <ls>MBh.</ls>; <ls>BhP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "व्रतिन्",
+            "eid": "210694",
+            "pagenum": "1043,1",
+            "content": "व्रति/न् ¦ <lex>m.</lex> an ascetic, devotee, <ls>MW.</ls><info lex='m'/>"
+        },
+        {
+            "word": "व्रतिन्",
+            "eid": "210695",
+            "pagenum": "1043,1",
+            "content": "¦ a religious student, <ls>ib.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "व्रतिन्",
+            "eid": "210696",
+            "pagenum": "1043,1",
+            "content": "¦ one who institutes a sacrifice and employs priests (= यजमान), <ls>ib.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "व्रतिन्",
+            "eid": "210697",
+            "pagenum": "1043,1",
+            "content": "¦ <ab>N.</ab> of a <s1 slp1='muni'>Muni</s1>, <ls>Cat.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "व्रतिन्",
+            "eid": "45887",
+            "pagenum": 984,
+            "content": "<i>Vratin, ī, inī, i,</i>¦ observing a vow (of continence, fasting, &c.), relating to a vow, practising any penance or religious observance, engaged in a sacrifice, devout, pious; (<i>ī</i>), m. an ascetic, devotee; a religious student; one who institutes a sacrifice and employs priests (<i>=</i> <i>yajamāna</i>); N. of a Muni."
+        }
+    ],
+    "PW": [
+        {
+            "word": "व्रतिन्",
+            "eid": "109096",
+            "pagenum": 6,
+            "content": "व्रति/न्¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>in Erfüllung einer Observanz</i> <ab>u. s. w.</ab> <i>begriffen</i> <ls>VAITĀN.</ls> Am Ende eines <ab>Comp.</ab> auch <i>obliegend, verehrend, sich benehmend wie</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <ab>N. pr.</ab> eines <is>Muni</is>. <dvsn n='1'>— 3〉 <lex>f.</lex> व्रतिनी <i>Nonne</i> <ls>HEM. PAR. 1,387</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "व्रतिन्",
+            "eid": "96918",
+            "pagenum": 6,
+            "content": "व्रति/न्¦ (wie eben) <dvsn n='1'> 1) <lex>adj.</lex> <i>in Erfüllung einer Observanz</i> u. s. w. <i>begriffen</i>, = यति u.s.w. <ls>H. 76, v. l.</ls> <ls>HALĀY. 2,189. 254.</ls> <ls>Verz. d. Oxf. H. 186,b,28.</ls> = आदेष्टाध्वरे <ls>AK. 2, 7, 7.</ls> <ls>H. 817.</ls> <ls>HALĀY. 2, 265.</ls> - <ls>TS. 1, 3, 4, 3.</ls> <ls>KAUŚ. 82.</ls> <ls>M. 2, 188. 5, 91. 99. 11, 121. 224.</ls> <ls>YĀJÑ. 3, 15. 28.</ls> <ls>MBH. 1, 5120.</ls> <ls n='MBH.'>13, 440.</ls> <ls n='MBH. 13,'>4573.</ls> <ls>HARIV. 2078</ls> (fem.). <ls>R. GORR. 2, 3, 23.</ls> <ls n='R. GORR.'>5, 22, 26.</ls> <ls>ŚĀK. 106.</ls> <ls>Spr. 2223.</ls> <ls>KATHĀS. 26, 202.</ls> <ls n='KATHĀS.'>37, 68.</ls> <ls>RĀJA-TAR. 1, 233. 2, 49. 4,518.</ls> <ls>WEBER, KṚṢṆAJ. 228. 309.</ls> <ls>PAÑCAR. 1, 9, 26.</ls> व्रतिनो जटा <ls>AK. 2, 6, 2, 48.</ls> <ls>HALĀY. 2, 377.</ls> व्रतिनामासनम् <ls>AK. 2, 7, 45.</ls> दण्डः <ls>TRIK. 3, 3, 117.</ls> <ls>HALĀY. 2, 256.</ls> स्थानम् <ls n='HALĀY.'>143.</ls> वेश्म <ls>H. 994.</ls> अ° <ls>MBH. 13, 1601.</ls>  <ls>R. GORR. 1, 13, 8.</ls> उपसद्ब्रतिन् <ls>ŚAT. BR. 14, 9, 3, 2.</ls> पाशुपत° <ls>RĀJA-TAR. 3, 267.</ls> आर्य° so v. a. <i>sich wie ein</i> <is>Ārya</is> <i>benehmend</i> <ls>MBH. 7, 643.</ls> अतिथि° <i>Gastfreundschaft übend</i> <ls n='MBH.'>3, 15408.</ls> मिथुन° <i>obliegend</i> <ls>BHĀG. P. 9, 6, 51.</ls> ईश° <i>verehrend</i> ebend. <dvsn n='1'>— 2) <lex>m.</lex> N. pr. eines <is>Muni</is> <ls>Verz. d. Oxf. H. 80,a,12.</ls> <dvsn n='v'>— Vgl. गो°, देव°, बक°, भ्राष्ट्र°, महा° (in der ersten Bed. auch <ls>KATHĀS. 25, 81. 26, 196. 43, 175</ls>), मूल°, मौन°, राम° ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "व्रतिन्",
+            "eid": "39152",
+            "pagenum": 701,
+            "content": "व्रतिन्¦ mfn. (-ती-तिनी-ति) Engaged in or observing a religious vow or obligation. m. (-ती) 1. An employer of priests. 2. An ascetic, a devotee, one engaged in the observance of a vow or penance. 3. The religious student. E. व्रत a vow, इनि aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "व्रतिन्",
+            "eid": "19959",
+            "pagenum": 711,
+            "content": "<b>vratin-</b>¦ <ab>a.</ab> qui observe un vœu, etc. ; <ab>ifc.</ab> adepte de, se conduisant. comme."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "व्रतिन्",
+            "eid": "37373",
+            "pagenum": 822,
+            "content": "व्रतिन्¦ mfn. (-ती-तिनी-ति) Engaged in or observing a religious vow or obligation. m. (-ती) .²1 An employer of priests. .²2 An ascetic, a devotee, one engaged in the observance of a vow or penance. .²3 The religious student. .E. व्रत a vow, and इनि aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "व्रतिन्",
+            "eid": "37007",
+            "pagenum": 740,
+            "content": "व्रतिन्¦ (ती-तिनी-ति) <i>m.</i> An employer of priests; a devotee, a religious student."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "व्रतिन्",
+            "eid": "42786",
+            "pagenum": "5070,b",
+            "content": "व्रतिन्¦ पु० व्रतमस्यास्ति इनि । १ व्रतधारके २ यजमाने च । अमरः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "व्रतिन्",
+            "content": "व्रतिन् वि. -  व्रत + इनि 'प्रतिज्ञा पालन करने वाला, भक्त, पुण्यात्मा'"
+        },
+        {
+            "word": "व्रतिन्",
+            "content": "व्रतिन् पुं. -  व्रत + इनि ब्रह्मचारी"
+        },
+        {
+            "word": "व्रतिन्",
+            "content": "व्रतिन् पुं. -  व्रत + इनि 'संन्यासी, भक्त'"
+        },
+        {
+            "word": "व्रतिन्",
+            "content": "व्रतिन् पुं. -  व्रत + इनि जो यज्ञ का उपक्रम करता है"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "व्रतिन्",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಬ್ರಹ್ಮಚಾರಿ",
+            "निष्पत्तिः": "'इनिः' (५-२-११५)",
+            "व्युत्पत्तिः": "व्रतमस्यास्ति",
+            "प्रयोगाः": "'भैक्षेण व्रतयेन्नित्यं नैकान्नादीभवेद्व्रती । भैक्षेण व्रतिनो वृत्तिरुपवाससमा स्मृता ॥'",
+            "content": ""
+        },
+        {
+            "word": "व्रतिन्",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಯಜಮಾನ",
+            "content": ""
+        },
+        {
+            "word": "व्रतिन्",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ನಿಯಮದಲ್ಲಿರುವ \\/ವ್ರತವನ್ನು ಆಚರಿಸುವ",
+            "content": ""
+        },
+        {
+            "word": "व्रतिन्",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ತಪಸ್ಸನ್ನಾಚರಿಸುವ \\/ತಪಸ್ಸು ಉಪವಾಸ ಮೊದಲಾದ ವ್ರತಗಳ ಅನುಷ್ಠಾನದಲ್ಲಿರುವ",
+            "प्रयोगाः": "'किं तावद्व्रतिनामुपोढतपसाम्'",
+            "उल्लेखाः": "शाकु० ५-९",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "व्रतिन्",
+            "linga": "P",
+            "artha": "यागे_यजमानः",
+            "synonyms": [
+                "व्रतिन्",
+                "यष्टृ",
+                "यजमान"
+            ],
+            "num": "2.7.9",
+            "text": "उपाध्यायोऽध्यापकोऽथ स्यान्निषेकादिकृद्गुरुः । मन्त्रव्याख्याकृदाचार्य आदेष्टा त्वध्वरे व्रती ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "व्रतिन्",
+            "content": "<lexhead no=\"2779\">\n<dentry>व्रतिन्</dentry>\n<prAwipaxikam>व्रतिन्</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">व्रतिन्</prAwipaxikam>\n<etymology>[व्रत+इनि]</etymology>\n<is_a_part>यज्ञः</is_a_part>\n<kind_of>ब्राह्मणः</kind_of>\n<jAwi>मनुष्यः</jAwi>\n<upAXi>वृत्तिः</upAXi>\n<sense no=\"1\">प्रतिज्ञा पालन करने वाला, भक्त, पुण्यात्मा</sense>\n<sense n=\"2\">ब्रह्मचारी</sense>\n<sense n=\"3\">संन्यासी, भक्त<citation>श* ५/९</citation></sense>\n<sense n=\"4\">जो यज्ञ का उपक्रम करता हैदे* यजमान</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "व्रतिन्",
+            "content": "<body><s>vratin pu° vratamasyAsti ini . <lb/><b>1</b> vrataDArake <lb/><b>2</b> yajamAne ca . amaraH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "व्रतिन्",
+            "content": "<H2><h><key1>vratin</key1><key2>vrati/n</key2></h><body><s>vrati/n</s>   <lex>mfn.</lex> observing a vow, engaged in a religious observance &amp;c., <ls>TS.</ls>; <ls>ŚBr.</ls>; <ls>Kauś.</ls> &amp;c.<info lex=\"m:f:n\" /></body><tail><L>210692</L><pc>1043,1</pc></tail></H2>\n <H2A><h><key1>vratin</key1><key2>vrati/n</key2></h><body>  (<ab>ifc.</ab>) engaged in, worshipping, behaving like, <ls>MBh.</ls>; <ls>BhP.</ls><info lex=\"inh\" /></body><tail><L>210693</L><pc>1043,1</pc></tail></H2A>\n <H2B><h><key1>vratin</key1><key2>vrati/n</key2></h><body><s>vrati/n</s>   <lex>m.</lex> an ascetic, devotee, <ls>MW.</ls><info lex=\"m\" /></body><tail><L>210694</L><pc>1043,1</pc></tail></H2B>\n <H2B><h><key1>vratin</key1><key2>vrati/n</key2></h><body>  a religious student, <ls>ib.</ls><info lex=\"inh\" /></body><tail><L>210695</L><pc>1043,1</pc></tail></H2B>\n <H2B><h><key1>vratin</key1><key2>vrati/n</key2></h><body>  one who institutes a sacrifice and employs priests (= <s>yajamAna</s>), <ls>ib.</ls><info lex=\"inh\" /></body><tail><L>210696</L><pc>1043,1</pc></tail></H2B>\n <H2B><h><key1>vratin</key1><key2>vrati/n</key2></h><body>  <ab>N.</ab> of a <s1 slp1=\"muni\">Muni</s1>, <ls>Cat.</ls><info lex=\"inh\" /></body><tail><L>210697</L><pc>1043,1</pc></tail></H2B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "व्रतिन्",
+            "content": "<H1><h><key1>vratin</key1><key2>vratin</key2></h><body><s>vratin</s>  <div n=\"1\">mfn. (<s>-tI-tinI-ti</s>) Engaged in or observing a religious vow or <lb />obligation. </div><div n=\"1\">m. (<s>-tI</s>) </div><div n=\"2\"> 1. An employer of priests. </div><div n=\"2\"> 2. An ascetic, a <lb />devotee, one engaged in the observance of a vow or penance. </div><div n=\"2\"> 3. <lb />The religious student.</div><div n=\"E\"> E. <s>vrata</s> a vow, <s>ini</s> aff.</div></body><tail><L>39152</L><pc>701-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "व्रतिन्",
+            "content": "<span lang=\"sa\">व्रतिन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬ್ರಹ್ಮಚಾರಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"इनिः\" (५-२-११५)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>व्रतमस्यास्ति<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"भैक्षेण व्रतयेन्नित्यं नैकान्नादीभवेद्व्रती । भैक्षेण व्रतिनो वृत्तिरुपवाससमा स्मृता ॥\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div>व्रतिन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಯಜಮಾನ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>व्रतिन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನಿಯಮದಲ್ಲಿರುವ /ವ್ರತವನ್ನು ಆಚರಿಸುವ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>व्रतिन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತಪಸ್ಸನ್ನಾಚರಿಸುವ /ತಪಸ್ಸು ಉಪವಾಸ ಮೊದಲಾದ ವ್ರತಗಳ ಅನುಷ್ಠಾನದಲ್ಲಿರುವ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"किं तावद्व्रतिनामुपोढतपसाम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>शाकु० ५-९<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

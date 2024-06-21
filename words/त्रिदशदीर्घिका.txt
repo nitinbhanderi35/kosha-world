@@ -1,1 +1,115 @@
-:hover>.ck-widget__type-around>.ck-widget__type-around__button{opacity:1;pointer-events:auto}.ck .ck-widget:not(.ck-widget_selected)>.ck-widget__type-around>.ck-widget__type-around__button{background:var(--ck-color-widget-type-around-button-hover)}.ck .ck-widget.ck-widget_selected>.ck-widget__type-around>.ck-widget__type-around__button,.ck .ck-widget>.ck-widget__type-around>.ck-widget__type-around__button:hover{background:var(--ck-color-widget-type-around-button-active)}.ck .ck-widget.ck-widget_selected>.ck-widget__type-around>.ck-widget__type-around__button:after,.ck .ck-widget>.ck-widget__type-around>.ck-widget__type-around__button:hover:after{background:linear-gradient(135deg,hsla(0,0%,100%,0),hsla(0,0%,100%,.3));border-radius:100px;height:calc(var(--ck-widget-type-around-button-size) - 2px);width:calc(var(--ck-widget-type-around-button-size) - 2px)}.ck .ck-widget.ck-widget_with-selection-handle>.ck-widget__type-around>.ck-widget__type-around__button_before{margin-left:20px}.ck .ck-widget .ck-widget__type-around__fake-caret{animation:ck-widget-type-around-fake-caret-pulse 1s linear infinite normal forwards;background:var(--ck-color-base-text);height:1px;outline:1px solid hsla(0,0%,100%,.5);pointer-events:none}.ck .ck-widget.ck-widget_selected.ck-widget_type-around_show-fake-caret_after,.ck .ck-widget.ck-widget_selected.ck-widget_type-around_show-fake-caret_before{outline-color:transparent}.ck .ck-widget.ck-widget_type-around_show-fake-caret_after.ck-widget_selected:hover,.ck .ck-widget.ck-widget_type-around_show-fake-caret_before.ck-widget_selected:hover{outline-color:var(--ck-color-widget-hover-border)}.ck .ck-widget.ck-widget_type-around_show-fake-caret_after>.ck-widget__type-around>.ck-widget__type-around__button,.ck .ck-widget.ck-widget_type-around_show-fake-caret_before>.ck-widget__type-around>.ck-widget__type-around__button{opacity:0;pointer-events:none}.ck .ck-widget.ck-widget_type-around_show-fake-caret_after.ck-widget_selected.ck-widget_with-resizer>.ck-widget__resizer,.ck .ck-widget.ck-widget_type-around_show-fake-caret_after.ck-widget_with-selection-handle.ck-widget_selected:hover>.ck-widget__selection-handle,.ck .ck-widget.ck-widget_type-around_show-fake-caret_after.ck-widget_with-selection-handle.ck-widget_selected>.ck-widget__selection-handle,.ck .ck-widget.ck-widget_type-around_show-fake-caret_before.ck-widget_selected.ck-widget_with-resizer>.ck-widget__resizer,.ck .ck-widget.ck-widget_type-around_show-fake-caret_before.ck-widget_with-selection-handle.ck-widget_selected:hover>.ck-widget__selection-handle,.ck .ck-widget.ck-widget_type-around_show-fake-caret_before.ck-widget_with-selection-handle.ck-widget_selected>.ck-widget__selection-handle{opacity:0}.ck[dir=rtl] .ck-widget.ck-widget_with-selection-handle .ck-widget__type-around>.ck-widget__type-around__button_before{margin-left:0;margin-right:20px}.ck-editor__nested-editable.ck-editor__editable_selected .ck-widget.ck-widget_selected>.ck-widget__type-around>.ck-widget__type-around__button,.ck-editor__nested-editable.ck-editor__editable_selected .ck-widget:hover>.ck-widget__type-around>.ck-widget__type-around__button{opacity:0;pointer-events:none}.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected>.ck-widget__type-around>.ck-widget__type-around__button:not(:hover){background:var(--ck-color-widget-type-around-button-blurred-editable)}.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected>.ck-widget__type-around>.ck-widget__type-around__button:not(:hover) svg *{stroke:#999}@keyframes ck-widget-type-around-arrow-dash{0%{stroke-dashoffset:10}20%,to{stroke-dashoffset:0}}@keyframes ck-widget-type-around-arrow-tip-dash{0%,20%{stroke-dashoffset:7}40%,to{stroke-dashoffset:0}}@keyframes ck-widget-type-around-button-sonar{0%{box-shadow:0 0 0 0 hsla(var(--ck-color-focus-border-coordinates),var(--ck-color-widget-type-around-button-radar-start-alpha))}50%{box-shadow:0 0 0 5px hsla(var(--ck-color-focus-border-coordinates),var(--ck-color-widget-type-around-button-radar-end-alpha))}to{box-shadow:0 0 0 5px hsla(var(--ck-color-focus-border-coordinates),var(--ck-color-widget-type-around-button-radar-start-alpha))}}@keyframes ck-widget-type-around-fake-caret-pulse{0%{opacity:1}49%{opacity:1}50%{opacity:0}99%{opacity:0}to{opacity:1}}',"",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-widget/theme/widgettypearound.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-widget/widgettypearound.css"],names:[],mappings:"AASC,+CACC,aAAc,CAEd,eAAgB,CADhB,iBAAkB,CAElB,2BAwBD,CAtBC,mDAGC,QAAS,CAFT,
+{
+    "word": "त्रिदशदीर्घिका",
+    "ABCH": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "linga": "स्त्री",
+            "pagenum": "42",
+            "kanda": "तिर्यक्काण्डः",
+            "varga": "जलकायः",
+            "eid": "3253",
+            "group": "1335",
+            "synonyms": [
+                "गङ्गा",
+                "त्रिपथगा",
+                "भागीरथी",
+                "त्रिस्रोतस्",
+                "जाह्नवी",
+                "मन्दाकिनी",
+                "भीष्मकुमारसू",
+                "सरिद्वरा",
+                "विष्णुपदी",
+                "सिद्धापगा",
+                "स्वरापगा",
+                "स्वर्ग्यापगा",
+                "खापगा",
+                "ऋषिकुल्या",
+                "हैमवती",
+                "स्वर्वापी",
+                "हरशेखरा"
+            ],
+            "content": "गङ्गा त्रिपथगा भागीरथी त्रिदशदीर्घिका ।\nत्रिस्रोता जाह्नवी मन्दाकिनी भीष्मकुमारसूः ॥ १०८१ ॥\nसरिद्वरा विष्णुपदी सिद्धस्वःस्वर्गिखापगा ।\nऋषिकुल्या हैमवती स्वर्वापी हरशेखरा ॥ १०८२ ॥"
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "eid": "87761",
+            "pagenum": "458,3",
+            "content": "त्रि—दश—दीर्घिका ¦ <lex>f.</lex> ‘heavenly lake’, <s1 slp1='gaNgA'>Gaṅgā</s1>, <ls>L.</ls><info lex='f'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "eid": "47466",
+            "pagenum": 3,
+            "content": "*त्रिदशदीर्घिका¦ <lex>f.</lex> <ab>Bein.</ab> der <is>Gaṅgā</is>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "eid": "30949",
+            "pagenum": 3,
+            "content": "त्रिदशदीर्घिका¦ (त्रि° + दी°) <lex>f.</lex> <i>der Götterteich</i>, Beiw. der <is>Gaṅgā</is> <ls>H. 1081.</ls>"
+        },
+        {
+            "word": "त्रिदशदीर्घिका",
+            "eid": "75281",
+            "pagenum": 5,
+            "content": "त्रिदशदीर्घिका¦ <ls>HALĀY. 3, 51.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "eid": "18050",
+            "pagenum": 324,
+            "content": "त्रिदशदीर्घिका¦ f. (-का) The heavenly Ganges. E. त्रिदश a deity, and दीर्घिका a long pool."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "eid": "15527",
+            "pagenum": "2-657-a",
+            "content": "त्रिदशदीर्घिका¦, स्त्री, (त्रिदशानां देवानां दीर्घिका ।) स्वर्गङ्गा । इति हेमचन्द्रः । ४ । १४७ ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "eid": "23634",
+            "pagenum": "3366,b",
+            "content": "त्रिदशदीर्घिका¦ स्त्री ६ त० । गङ्गायां हेमच० । त्रिदशवाप्यादयोऽप्यत्र"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಗಂಗಾನದಿ",
+            "व्युत्पत्तिः": "त्रिदशानां दिर्घिका",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "content": "<body><s>tridaSadIrGikA strI 6 ta° . gaNgAyAM hemaca° . tridaSavApyAdayo'pyatra</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "content": "<H1><h><key1>tridaSadIrGikA</key1><key2>tridaSadIrGikA</key2></h><body><s>tridaSadIrGikA</s>  <div n=\"1\">f. (<s>-kA</s>) The heavenly Ganges.</div><div n=\"E\"> E. <s>tridaSa</s> a deity, and <s>dIrGikA</s> <lb />a long pool.</div></body><tail><L>18050</L><pc>324-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिदशदीर्घिका",
+            "content": "<span lang=\"sa\">त्रिदशदीर्घिका<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗಂಗಾನದಿ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिदशानां दिर्घिका<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

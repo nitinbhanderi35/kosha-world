@@ -1,296 +1,39 @@
-				break;
-			}
-		} else {
-			// export * as name
-			switch (importedExportsType) {
-				case "default-only":
-					mode = new ExportMode("reexport-fake-namespace-object");
-					mode.name = name;
-					mode.partialNamespaceExportInfo = exportInfo;
-					mode.fakeType = 0;
-					break;
-				case "default-with-named":
-					mode = new ExportMode("reexport-fake-namespace-object");
-					mode.name = name;
-					mode.partialNamespaceExportInfo = exportInfo;
-					mode.fakeType = 2;
-					break;
-				case "dynamic":
-				default:
-					mode = new ExportMode("reexport-namespace-object");
-					mode.name = name;
-					mode.partialNamespaceExportInfo = exportInfo;
-			}
-		}
-
-		return mode;
-	}
-
-	// Star reexporting
-
-	const { ignoredExports, exports, checked, hidden } = dep.getStarReexports(
-		moduleGraph,
-		runtime,
-		exportsInfo,
-		importedModule
-	);
-	if (!exports) {
-		// We have too few info about the modules
-		// Delegate the logic to the runtime code
-
-		const mode = new ExportMode("dynamic-reexport");
-		mode.ignored = ignoredExports;
-		mode.hidden = hidden;
-
-		return mode;
-	}
-
-	if (exports.size === 0) {
-		const mode = new ExportMode("empty-star");
-		mode.hidden = hidden;
-
-		return mode;
-	}
-
-	const mode = new ExportMode("normal-reexport");
-
-	mode.items = Array.from(
-		exports,
-		exportName =>
-			new NormalReexportItem(
-				exportName,
-				[exportName],
-				exportsInfo.getReadOnlyExportInfo(exportName),
-				checked.has(exportName),
-				false
-			)
-	);
-	if (hidden !== undefined) {
-		for (const exportName of hidden) {
-			mode.items.push(
-				new NormalReexportItem(
-					exportName,
-					[exportName],
-					exportsInfo.getReadOnlyExportInfo(exportName),
-					false,
-					true
-				)
-			);
-		}
-	}
-
-	return mode;
-};
-
-class HarmonyExportImportedSpecifierDependency extends HarmonyImportDependency {
-	/**
-	 * @param {string} request the request string
-	 * @param {number} sourceOrder the order in the original source file
-	 * @param {string[]} ids the requested export name of the imported module
-	 * @param {string | null} name the export name of for this module
-	 * @param {Set<string>} activeExports other named exports in the module
-	 * @param {ReadonlyArray<HarmonyExportImportedSpecifierDependency> | Iterable<HarmonyExportImportedSpecifierDependency> | null} otherStarExports other star exports in the module before this import
-	 * @param {number} exportPresenceMode mode of checking export names
-	 * @param {HarmonyStarExportsList | null} allStarExports all star exports in the module
-	 * @param {Attributes=} attributes import assertions
-	 */
-	constructor(
-		request,
-		sourceOrder,
-		ids,
-		name,
-		activeExports,
-		otherStarExports,
-		exportPresenceMode,
-		allStarExports,
-		attributes
-	) {
-		super(request, sourceOrder, attributes);
-
-		this.ids = ids;
-		this.name = name;
-		this.activeExports = activeExports;
-		this.otherStarExports = otherStarExports;
-		this.exportPresenceMode = exportPresenceMode;
-		this.allStarExports = allStarExports;
-	}
-
-	/**
-	 * @returns {boolean | TRANSITIVE} true, when changes to the referenced module could affect the referencing module; TRANSITIVE, when changes to the referenced module could affect referencing modules of the referencing module
-	 */
-	couldAffectReferencingModule() {
-		return Dependency.TRANSITIVE;
-	}
-
-	// TODO webpack 6 remove
-	get id() {
-		throw new Error("id was renamed to ids and type changed to string[]");
-	}
-
-	// TODO webpack 6 remove
-	getId() {
-		throw new Error("id was renamed to ids and type changed to string[]");
-	}
-
-	// TODO webpack 6 remove
-	setId() {
-		throw new Error("id was renamed to ids and type changed to string[]");
-	}
-
-	get type() {
-		return "harmony export imported specifier";
-	}
-
-	/**
-	 * @param {ModuleGraph} moduleGraph the module graph
-	 * @returns {string[]} the imported id
-	 */
-	getIds(moduleGraph) {
-		return moduleGraph.getMeta(this)[idsSymbol] || this.ids;
-	}
-
-	/**
-	 * @param {ModuleGraph} moduleGraph the module graph
-	 * @param {string[]} ids the imported ids
-	 * @returns {void}
-	 */
-	setIds(moduleGraph, ids) {
-		moduleGraph.getMeta(this)[idsSymbol] = ids;
-	}
-
-	/**
-	 * @param {ModuleGraph} moduleGraph the module graph
-	 * @param {RuntimeSpec} runtime the runtime
-	 * @returns {ExportMode} the export mode
-	 */
-	getMode(moduleGraph, runtime) {
-		return moduleGraph.dependencyCacheProvide(
-			this,
-			getRuntimeKey(runtime),
-			getMode
-		);
-	}
-
-	/**
-	 * @param {ModuleGraph} moduleGraph the module graph
-	 * @param {RuntimeSpec} runtime the runtime
-	 * @param {ExportsInfo} exportsInfo exports info about the current module (optional)
-	 * @param {Module} importedModule the imported module (optional)
-	 * @returns {{exports?: Set<string>, checked?: Set<string>, ignoredExports: Set<string>, hidden?: Set<string>}} information
-	 */
-	getStarReexports(
-		moduleGraph,
-		runtime,
-		exportsInfo = moduleGraph.getExportsInfo(
-			/** @type {Module} */ (moduleGraph.getParentModule(this))
-		),
-		importedModule = /** @type {Module} */ (moduleGraph.getModule(this))
-	) {
-		const importedExportsInfo = moduleGraph.getExportsInfo(importedModule);
-		const noExtraExports =
-			importedExportsInfo.otherExportsInfo.provided === false;
-		const noExtraImports =
-			exportsInfo.otherExportsInfo.getUsed(runtime) === UsageState.Unused;
-
-		const ignoredExports = new Set(["default", ...this.activeExports]);
-
-		let hiddenExports = undefined;
-		const otherStarExports =
-			this._discoverActiveExportsFromOtherStarExports(moduleGraph);
-		if (otherStarExports !== undefined) {
-			hiddenExports = new Set();
-			for (let i = 0; i < otherStarExports.namesSlice; i++) {
-				hiddenExports.add(otherStarExports.names[i]);
-			}
-			for (const e of ignoredExports) hiddenExports.delete(e);
-		}
-
-		if (!noExtraExports && !noExtraImports) {
-			return {
-				ignoredExports,
-				hidden: hiddenExports
-			};
-		}
-
-		/** @type {Set<string>} */
-		const exports = new Set();
-		/** @type {Set<string>} */
-		const checked = new Set();
-		/** @type {Set<string> | undefined} */
-		const hidden = hiddenExports !== undefined ? new Set() : undefined;
-
-		if (noExtraImports) {
-			for (const exportInfo of exportsInfo.orderedExports) {
-				const name = exportInfo.name;
-				if (ignoredExports.has(name)) continue;
-				if (exportInfo.getUsed(runtime) === UsageState.Unused) continue;
-				const importedExportInfo =
-					importedExportsInfo.getReadOnlyExportInfo(name);
-				if (importedExportInfo.provided === false) continue;
-				if (hiddenExports !== undefined && hiddenExports.has(name)) {
-					/** @type {Set<string>} */
-					(hidden).add(name);
-					continue;
-				}
-				exports.add(name);
-				if (importedExportInfo.provided === true) continue;
-				checked.add(name);
-			}
-		} else if (noExtraExports) {
-			for (const importedExportInfo of importedExportsInfo.orderedExports) {
-				const name = importedExportInfo.name;
-				if (ignoredExports.has(name)) continue;
-				if (importedExportInfo.provided === false) continue;
-				const exportInfo = exportsInfo.getReadOnlyExportInfo(name);
-				if (exportInfo.getUsed(runtime) === UsageState.Unused) continue;
-				if (hiddenExports !== undefined && hiddenExports.has(name)) {
-					/** @type {Set<string>} */
-					(hidden).add(name);
-					continue;
-				}
-				exports.add(name);
-				if (importedExportInfo.provided === true) continue;
-				checked.add(name);
-			}
-		}
-
-		return { ignoredExports, exports, checked, hidden };
-	}
-
-	/**
-	 * @param {ModuleGraph} moduleGraph module graph
-	 * @returns {null | false | GetConditionFn} function to determine if the connection is active
-	 */
-	getCondition(moduleGraph) {
-		return (connection, runtime) => {
-			const mode = this.getMode(moduleGraph, runtime);
-			return mode.type !== "unused" && mode.type !== "empty-star";
-		};
-	}
-
-	/**
-	 * @param {ModuleGraph} moduleGraph the module graph
-	 * @returns {ConnectionState} how this dependency connects the module to referencing modules
-	 */
-	getModuleEvaluationSideEffectsState(moduleGraph) {
-		return false;
-	}
-
-	/**
-	 * Returns list of exports referenced by this dependency
-	 * @param {ModuleGraph} moduleGraph module graph
-	 * @param {RuntimeSpec} runtime the runtime for which the module is analysed
-	 * @returns {(string[] | ReferencedExport)[]} referenced exports
-	 */
-	getReferencedExports(moduleGraph, runtime) {
-		const mode = this.getMode(moduleGraph, runtime);
-
-		switch (mode.type) {
-			case "missing":
-			case "unused":
-			case "empty-star":
-			case "reexport-undefined":
-				return Dependency.NO_EXPORTS_REFERENCED;
-
-			case "reexport-dynamic-default":
-				return Dependency.EXPORTS_OBJECT_R
+{
+    "word": "late",
+    "AE": [
+        {
+            "word": "late",
+            "eid": "6069",
+            "pagenum": 252,
+            "content": "<b>Late,</b>¦ <i>a.</i> विलंबेन आगत or प्राप्त; कालातीत, वेलातीत, समयातीत, अतिक्रांतकाल, अति- -काल, अतीतकाल-समय. <b>2</b> अवसित, परिणत, अवसन्न. <b>3</b> नूतन, अचिर, प्रत्यग्र, अभिनव, आधुनिक (की <i>f.</i>), नातिपुराण, सद्यस्का- -लीन. <b>4</b> अतीत, गंत, व्यतीत, भूत; प्राक्तन- -पूर्वतन (नी <i>f.</i>), पौर्विक (की <i>f.</i>), ‘at a ‘l. hour of the day’ परिणते दिवसे, अवसन्नप्राये अहनि; ‘at a l. hour of the night’ क्षीणभूयिष्ठायां क्षपायां; ‘at a l. period of life’ परिणते वयसि. <i>-adv.</i> विलंबेन, विलंबात्, वेलातिक्रमेण, अतिकालं- -समयं, चिरेण, चिरात्, चिरकालेन-लात्; ‘to be l.’ वेलातिक्रमं कृ 8 U, चिर(रा)यति (D.); ‘why are you l.’ किमिति चिरा- -यित त्वया; ‘l. in life’ परिणतवयसि, <i>See</i> above; ‘too l. in the day’ अतिपराह्णे; ‘too l. in the evening’ अतिसाये. <b>2</b> अकाले, असमये. <b>-ly,</b> ‘of late,’ <i>adv.</i> इदानींतने काले, नातिचिरात्प्राक्, आधुनिक- -समये; अचिरं. <b>-ness,</b> <i>s.</i> कालातीतता, का- -लातिक्रमः; परिणामः, परिणति <i>f.</i> <b>-Later,</b> <i>a.</i> उत्तर, अपर, पर, उत्तरकालीन, पाश्चात्य. <i>-adv.</i> (on) उत्तरं, उत्तरोत्तरं, पश्चात्, उत्तर-पर-काले."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "late",
+            "eid": "13234",
+            "pagenum": 408,
+            "content": "<b>LATE</b>¦ (adj.): <dvsn n='I'>I Long delayed: expr. with विलम्बेन <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>चिरेण,</dvsn> <i>the summer is l. this year:</i> *अस्मिन् वर्षे चिरेणागतो निदाघः। </dvsn><dvsn n='I'>II Far advanced: परिणतः (ता, तं), <dvsn n='xe'><i>l. in the day:</i></dvsn> <dvsn n='xs'>परिणते दिवसे।</dvsn> Ph.: <i>at l. hours</i> (<i>of night</i>): अकाले <i>or</i> (?) रिरंसाकाले, D.</dvsn> <dvsn n='I'>III Departed, out of office: पूर्वतनः (नी, नं).</dvsn> <dvsn n='I'>IV Not long past: expr. with इतः किञ्चित्   पूर्षम्, L. p.: </dvsn><dvsn n='1'>(1) परः (रा, रं); </dvsn><dvsn n='1'>(2) अधस्तनः (नी, नं) (of persons or things in position), <i>l. r than</i> <dvsn n='xe'><i>the works.</i></dvsn> <dvsn n='xs'>ग्रन्थानामधस्तनः,</dvsn> Mahesha.: v. Deceased: q. v.</dvsn>"
+        },
+        {
+            "word": "late",
+            "eid": "13235",
+            "pagenum": 408,
+            "content": "<b>LATE</b>¦ (adv.): <dvsn n='I'>I At an advanced time: </dvsn><dvsn n='1'>(1) विलम्बेन; </dvsn><dvsn n='1'>(2) चिरेण। Ph.: <dvsn n='xe'><i>sooner or l. r:</i></dvsn> <dvsn n='xs'>अद्य श्वो   वा;</dvsn> <dvsn n='xe'><i>too l.:</i></dvsn> <dvsn n='xs'>अतीतकालः</dvsn> (ला, लं), वि-, R. v. 14.</dvsn> <dvsn n='I'>II Lately: q. v. </dvsn><dvsn n='I'>III Far in the night: अकाले <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>असमये।</dvsn> Ph.: <dvsn n='xe'><i>of l.:</i></dvsn> <dvsn n='xs'>अधुनातनकाले;</dvsn> </dvsn><dvsn n='1'>(2) इदानीन्तनकाले; </dvsn><dvsn n='1'>(3) अधुना- (= now: in connec-tion with <i>formerly</i>).</dvsn>"
+        }
+    ],
+    "MWE": [
+        {
+            "word": "late",
+            "eid": "17454",
+            "pagenum": 439,
+            "content": "LATE¦, <i>a.</i> (After the usual time, tardy) कालातीतः -ता -तं, समया- तीतः -ता -तं, अतीतकालः -ला -लं, कालातिक्रान्तः -न्ता -न्तं, अतिक्रा- न्तकालः -ला -लं, वेलातीतः -ता -तं, विलम्बागतः -ता -तं, विलम्बेनागतः -ता -तं, विलम्बितः -ता -तं, मन्दः -न्दा -न्दं, चिरकालीनः -ना -नं, चिरकालादागतः -ता -तं, अतिकालः -ला -लं. — (Far advanced towards the close) अवसन्नः -न्ना -न्नं, अवसितः -ता -तं, परिणतः -ता -तं; ‘at a late hour of the day,’ अवसन्ने दिवसे, अपराह्ले, पराह्ले; ‘at a late hour of the night,’ अवसन्नायां रात्रौ, अपर- रात्रौ, रात्रिमध्ये, शेषरात्रौ; ‘at a late period of life,’ परिणते वयसि. — (Ripening after the time) नियमितकालात् परं or उपयुक्तकालात् परं पक्वः -क्वा -क्वं or परिणतः -ता -तं. — (Recent) नूतनः -ना -नं, नवः -वा -वं, अभिनवः -वा -वं, अचिरः -रा -रं, आधुनिकः -की -कं, अधुनातनः -नी -नं, इदानीन्तनः -नी -नं, सद्यस्कः -स्का -स्कं, सद्यस्कालीनः -ना -नं, अर्व्वाचीनः -ना -नं, अप्राचीनः -ना -नं, प्रत्यग्रः -ग्रा -ग्रं, वर्त्तमानकालीनः -ना -नं, अव्यवहितदीर्घकालः -ला -लं. — (Past, gone) अतीतः -ता -तं, व्यतीतः -ता -तं, गतः -ता -तं, भूतः -ता -तं. — (Former) प्राक्तनः -नी -नं, पूर्व्वतनः -नी -नं, पौर्व्विकः -की -कं."
+        },
+        {
+            "word": "late",
+            "eid": "17455",
+            "pagenum": 439,
+            "content": "LATE¦, <i>adv.</i> (After the usual time, after delay) विलम्बेन, विलम्बात्, चिरकाले -लात्, अतिकालं, अतिसमयं, अतीतकालं, मन्दं, विलम्बितं, चिरात् -रेण; ‘come late,’ विलम्बागतः -ता -तं, विलम्बेनागतः &c., चिरादागतः &c., चिरकालादागतः &c.; ‘ripening late,’ उपयुक्त- कालात् परं पक्वः -क्वा -क्वं; ‘late at night,’ अवसन्नायां रात्रौ, रात्रिमध्ये, मध्यरात्रं, अपररात्रं, महानिशायां; ‘late in the day,’ अपराह्ले, पराह्ले, अवसन्ने दिवसे; ‘late in life,’ परिणते वयसि. — (Not long ago, recently) नूतनं, अव्यवहितदीर्घकाले, अव्यवहित- पूर्व्वकाले; ‘too late in the evening,’ अतिसाये; ‘too late in the day,’ अतिपराह्ले; ‘too late in life,’ अतिपरिणतवयसि, सुपरिणतवयसि."
+        }
+    ]
+}

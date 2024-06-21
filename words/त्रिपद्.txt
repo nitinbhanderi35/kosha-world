@@ -1,1 +1,111 @@
-:var(--ck-focus-outer-shadow),0 0}.ck.ck-dropdown__panel{border-radius:0}.ck-rounded-corners .ck.ck-dropdown__panel,.ck.ck-dropdown__panel.ck-rounded-corners{border-radius:var(--ck-border-radius)}.ck.ck-dropdown__panel{background:var(--ck-color-dropdown-panel-background);border:1px solid var(--ck-color-dropdown-panel-border);bottom:0;box-shadow:var(--ck-drop-shadow),0 0;min-width:100%}.ck.ck-dropdown__panel.ck-dropdown__panel_se{border-top-left-radius:0}.ck.ck-dropdown__panel.ck-dropdown__panel_sw{border-top-right-radius:0}.ck.ck-dropdown__panel.ck-dropdown__panel_ne{border-bottom-left-radius:0}.ck.ck-dropdown__panel.ck-dropdown__panel_nw{border-bottom-right-radius:0}.ck.ck-dropdown__panel:focus{outline:none}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/dropdown/dropdown.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/dropdown/dropdown.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_disabled.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css"],names:[],mappings:"AAKA,MACC,4BACD,CAEA,gBACC,oBAAqB,CACrB,iBA2ED,CAzEC,oCACC,mBAAoB,CACpB,2BACD,CAGA,+CACC,UACD,CAEA,oCACC,YAAa,CAEb,sCAAuC,CAEvC,iBAAkB,CAHlB,yBA4DD,CAvDC,+DACC,oBACD,CAEA,mSAKC,WACD,CAEA,mSAUC,WAAY,CADZ,QAED,CAEA,oHAEC,MACD,CAEA,oHAEC,OACD,CAEA,kHAGC,QAAS,CACT,0BACD,CAEA,sHAGC,QAAS,CACT,0BACD,CAEA,sHAGC,QAAS,CACT,0BACD,CAQF,mCACC,mCACD,CCpFA,MACC,sDACD,CAEA,gBAEC,iBA2ED,CAzEC,oCACC,mCACD,CAGC,8CAIC,sCAAuC,CAHvC,gCAID,CAIA,8CACC,+BAAgC,CAGhC,oCACD,CAGD,gDC/BA,kCDiCA,CAIE,mFAEC,oCACD,CAIA,mFAEC,qCACD,CAID,iEAEC,eAAgB,CAChB,sBAAuB,CAFvB,SAGD,CAGA,6EC1DD,kCD4DC,CAGA,qDACC,2BAA4B,CAC5B,4BACD,CAEA,sGACC,UACD,CAGA,yHAEC,eAKD,CAHC,qIE7EF,2CF+EE,CAKH,uBGlFC,eHkHD,CAhCA,qFG9EE,qCH8GF,CAhCA,uBAIC,oDAAqD,CACrD,sDAAuD,CACvD,QAAS,CE1FT,oCAA8B,CF6F9B,cAuBD,CAnBC,6CACC,wBACD,CAEA,6CACC,yBACD,CAEA,6CACC,2BACD,CAEA,6CACC,4BACD,CAEA,6BACC,YACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t--ck-dropdown-max-width: 75vw;\n}\n\n.ck.ck-dropdown {\n\tdisplay: inline-block;\n\tposition: relative;\n\n\t& .ck-dropdown__arrow {\n\t\tpointer-events: none;\n\t\tz-index: var(--ck-z-default);\n\t}\n\n\t/* Dropdown button should span horizontally, e.g. in vertical toolbars */\n\t& .ck-button.ck-dropdown__button {\n\t\twidth: 100%;\n\t}\n\n\t& .ck-dropdown__panel {\n\t\tdisplay: none;\n\t\tz-index: var(--ck-z-panel);\n\t\tmax-width: var(--ck-dropdown-max-width);\n\n\t\tposition: absolute;\n\n\t\t&.ck-dropdown__panel-visible {\n\t\t\tdisplay: inline-block;\n\t\t}\n\n\t\t&.ck-dropdown__panel_ne,\n\t\t&.ck-dropdown__panel_nw,\n\t\t&.ck-dropdown__panel_n,\n\t\t&.ck-dropdown__panel_nmw,\n\t\t&.ck-dropdown__panel_nme {\n\t\t\tbottom: 100%;\n\t\t}\n\n\t\t&.ck-dropdown__panel_se,\n\t\t&.ck-dropdown__panel_sw,\n\t\t&.ck-dropdown__panel_smw,\n\t\t&.ck-dropdown__panel_sme,\n\t\t&.ck-dropdown__panel_s {\n\t\t\t/*\n\t\t\t * Using transform: translate3d( 0, 100%, 0 ) causes blurry dropdown on Chrome 67-78+ on non-retina displays.\n\t\t\t * See https://github.com/ckeditor/ckeditor5/issues/1053.\n\t\t\t */\n\t\t\ttop: 100%;\n\t\t\tbottom: auto;\n\t\t}\n\n\t\t&.ck-dropdown__panel_ne,\n\t\t&.ck-dropdown__panel_se {\n\t\t\tleft: 0px;\n\t\t}\n\n\t\t&.ck-dropdown__panel_nw,\n\t\t&.ck-dropdown__panel_sw {\n\t\t\tright: 0px;\n\t\t}\n\n\t\t&.ck-dropdown__panel_s,\n\t\t&.ck-dropdown__panel_n {\n\t\t\t/* Positioning panels relative to the center of the button */\n\t\t\tleft: 50%;\n\t\t\ttransform: translateX(-50%);\n\t\t}\n\n\t\t&.ck-dropdown__panel_nmw,\n\t\t&.ck-dropdown__panel_smw {\n\t\t\t/* Positioning panels relative to the middle-west of the button */\n\t\t\tleft: 75%;\n\t\t\ttransform: translateX(-75%);\n\t\t}\n\n\t\t&.ck-dropdown__panel_nme,\n\t\t&.ck-dropdown__panel_sme {\n\t\t\t/* Positioning panels relative to the middle-east of the button */\n\t\t\tleft: 25%;\n\t\t\ttransform: translateX(-25%);\n\t\t}\n\t}\n}\n\n/*\n * Toolbar dropdown panels should be always above the UI (eg. other dropdown panels) from the editor's content.\n * See https://github.com/ckeditor/ckeditor5/issues/7874\n */\n.ck.ck-toolbar .ck-dropdown__panel {\n\tz-index: calc( var(--ck-z-panel) + 1 );\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_rounded.css";\n@import "../../../mixins/_disabled.css";\n@import "../../../mixins/_shadow.css";\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n\n:root {\n\t--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));\n}\n\n.ck.ck-dropdown {\n\t/* Enable font size inheritance, which allows fluid UI scaling. */\n\tfont-size: inherit;\n\n\t& .ck-dropdown__arrow {\n\t\twidth: var(--ck-dropdown-arrow-size);\n\t}\n\n\t@mixin ck-dir ltr {\n\t\t& .ck-dropdown__arrow {\n\t\t\tright: var(--ck-spacing-standard);\n\n\t\t\t/* A space to accommodate the triangle. */\n\t\t\tmargin-left: var(--ck-spacing-standard);\n\t\t}\n\t}\n\n\t@mixin ck-dir rtl {\n\t\t& .ck-dropdown__arrow {\n\t\t\tleft: var(--ck-spacing-standard);\n\n\t\t\t/* A space to accommodate the triangle. */\n\t\t\tmargin-right: var(--ck-spacing-small);\n\t\t}\n\t}\n\n\t&.ck-disabled .ck-dropdown__arrow {\n\t\t@mixin ck-disabled;\n\t}\n\n\t& .ck-button.ck-dropdown__button {\n\t\t@mixin ck-dir ltr {\n\t\t\t&:not(.ck-button_with-text) {\n\t\t\t\t/* Make sure dropdowns with just an icon have the right inner spacing */\n\t\t\t\tpadding-left: var(--ck-spacing-small);\n\t\t\t}\n\t\t}\n\n\t\t@mixin ck-dir rtl {\n\t\t\t&:not(.ck-button_with-text) {\n\t\t\t\t/* Make sure dropdowns with just an icon have the right inner spacing */\n\t\t\t\tpadding-right: var(--ck-spacing-small);\n\t\t\t}\n\t\t}\n\n\t\t/* #23 */\n\t\t& .ck-button__label {\n\t\t\twidth: 7em;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t}\n\n\t\t/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */\n\t\t&.ck-disabled .ck-button__label {\n\t\t\t@mixin ck-disabled;\n\t\t}\n\n\t\t/* https://github.com/ckeditor/ckeditor5/issues/816 */\n\t\t&.ck-on {\n\t\t\tborder-bottom-left-radius: 0;\n\t\t\tborder-bottom-right-radius: 0;\n\t\t}\n\n\t\t&.ck-dropdown__button_label-width_auto .ck-button__label {\n\t\t\twidth: auto;\n\t\t}\n\n\t\t/* https://github.com/ckeditor/ckeditor5/issues/8699 */\n\t\t&.ck-off:active,\n\t\t&.ck-on:active {\n\t\t\tbox-shadow: none;\n\n\t\t\t&:focus {\n\t\t\t\t@mixin ck-box-shadow var(--ck-focus-outer-shadow);\n\t\t\t}\n\t\t}\n\t}\n}\n\n.ck.ck-dropdown__panel {\n\t@mixin ck-rounded-corners;\n\t@mixin ck-drop-shadow;\n\n\tbackground: var(--ck-color-dropdown-panel-background);\n\tborder: 1px solid var(--ck-color-dropdown-panel-border);\n\tbottom: 0;\n\n\t/* Make sure the panel is at least as wide as the drop-down\'s button. */\n\tmin-width: 100%;\n\n\t/* Disabled corner border radius to be consistent with the .dropdown__button\n\thttps://github.com/ckeditor/ckeditor5/issues/816 */\n\t&.ck-dropdown__panel_se {\n\t\tborder-top-left-radius: 0;\n\t}\n\n\t&.ck-dropdown__panel_sw {\n\t\tborder-top-right-radius: 0;\n\t}\n\n\t&.ck-dropdown__panel_ne {\n\t\tborder-bottom-left-radius: 0;\n\t}\n\n\t&.ck-dropdown__panel_nw {\n\t\tborder-bottom-right-radius: 0;\n\t}\n\n\t&:focus {\n\t\toutline: none;\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A class which indicates that an element holding it is disabled.\n */\n@define-mixin ck-disabled {\n\topacity: var(--ck-disabled-opacity);\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A helper to combine multiple shadows.\n */\n@define-mixin ck-box-shadow $shadowA, $shadowB: 0 0 {\n\tbox-shadow: $shadowA, $shadowB;\n}\n\n/**\n * Gives an element a drop shadow so it looks like a floating panel.\n */\n@define-mixin ck-drop-shadow {\n\t@mixin ck-box-shadow var(--ck-drop-shadow);\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * Implements rounded corner interface for .ck-rounded-corners class.\n *\n * @see $ck-border-radius\n */\n@define-mixin ck-rounded-corners {\n\tborder-radius: 0;\n\n\t@nest .ck-rounded-corners &,\n\t&.ck-rounded-corners {\n\t\tborder-radius: var(--ck-border-radius);\n\t\t@mixin-content;\n\t}\n}\n"],sourceRoot:""}]);const a=s},6571:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-dropdown>.
+{
+    "word": "त्रिपद्",
+    "CAE": [
+        {
+            "word": "त्रिपद्",
+            "eid": "12868",
+            "pagenum": 212,
+            "content": "त्रिप/द्¦  or त्रि/पद् (°पाद्), <lex>f.</lex> त्रिप/दी = <ab>seq.</ab>, also making three steps; <ab>s.</ab> three quarters, <lex>m.</lex> <ab>E.</ab> of Viṣṇu."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिपद्",
+            "eid": "9027",
+            "pagenum": 160,
+            "content": "त्रिप/द्¦ <i>u.</i> त्रि/पद्, <i>f.</i> त्रिप/दी dreifüßig <i>o.</i> dreiversig."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "त्रिपद्",
+            "eid": "3942",
+            "pagenum": 558,
+            "content": "<b>tri-pád,</b>¦ <ab>a.</ab>, stark tri-pā́d, <i>dreifüssig</i> [pád]. <dvsn n='TS'>-ā́d púruṣas {916,4}. _{916,3}(?). <dvsn n='TS'>-ā́dam {943,8}."
+        }
+    ],
+    "MD": [
+        {
+            "word": "त्रिपद्",
+            "eid": "8868",
+            "pagenum": 113,
+            "content": "त्रिपद्¦ tri-pád (<i>or</i> trí-: <i>strong <ab>st.</ab></i> <b>-pād</b>), <lex>a.</lex> 🞄(<b>-ī</b>) three-footed; taking three steps; <b>-ī,</b> <lex>f.</lex> 🞄<i>kind of</i> gait <i>in the elephant</i>; <b>-pada,</b> <lex>a.</lex> having 🞄three feet; having three (<i>metrical</i>) pādas; 🞄<b>-pala,</b> <lex>a.</lex> weighing three palas; <b>-pāṭhin,</b> <lex>a.</lex> 🞄studying the three Vedas; <b>-pādaka,</b> <lex>a.</lex> (<b>ikā</b>) 🞄three-footed; <b>-piṭaka,</b> <lex>n.</lex> the three literary 🞄collections (<ab>lit.</ab> baskets) <i>of the Buddhists</i> (<ab>i. e.</ab> 🞄<i>the</i> Sūtra-, Vinaya-, <i>and</i> Abhidharma-piṭaka); 🞄<b>-piba,</b> <lex>a.</lex> drinking with three <i>organs (ears and 🞄tongue)</i>; <b>-piṣṭapa,</b> <lex>n.</lex> Indraʼs heaven; <b>-puṇḍra</b>: <b>-ka,</b> <lex>n.</lex> three streaks <i>marked on various 🞄parts with ashes, <ab>esp.</ab> on the forehead by Śiva-worshippers</i>."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिपद्",
+            "eid": "87886",
+            "pagenum": "459,1",
+            "content": "त्रि—प/द् ¦ <lex>m.</lex> (पा/द्) <lex type='hw'>f.</lex> (पाद् [<ls>Pāṇ. iv f.</ls>]; प/दी <ab>g.</ab> कुम्भपद्य्-आदि) <lex type='hw'>n.</lex> three-footed, <ls>RV. x, 117, 8</ls>; <ls>VS.</ls>; <ls>ChUp.</ls>; <ls>Ragh.</ls> (<s1 slp1='Darma'>Dharma</s1>), <ls>BhP.</ls> (<s1 slp1='vizRu'>Viṣṇu</s1>, <s1 slp1='yajYa'>Yajña</s1>, <s1 slp1='jvara'>Jvara</s1>)<info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिपद्",
+            "eid": "87887",
+            "pagenum": "459,1",
+            "content": "¦ making 3 steps, <ls>ĀśvGṛ.</ls>; <ls>ŚāṅkhGṛ.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिपद्",
+            "eid": "87888",
+            "pagenum": "459,1",
+            "content": "¦ having 3 divisions (a stanza), <ls>ŚBr. xiv</ls>; <ls>BhP.</ls> (<s1 slp1='sAvitrI'>Sāvitrī</s1>, <s1 slp1='gAyatrI'>Gāyatrī</s1>), <ls>Chandaḥs.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिपद्",
+            "eid": "87889",
+            "pagenum": "459,1",
+            "content": "¦ trinomial<info lex='inh'/>"
+        },
+        {
+            "word": "त्रिपद्",
+            "eid": "87890",
+            "pagenum": "459,1",
+            "content": "¦ three-fourths, <ls>RV. x, 90, 3 f.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिपद्",
+            "eid": "87891",
+            "pagenum": "459,1",
+            "content": "त्रि—प/द् ¦ <lex>m.</lex> <ab>N.</ab> of a <s1 slp1='dEtya'>Daitya</s1>, <ls>MBh. ix, 2693</ls><info lex='m'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिपद्",
+            "eid": "47550",
+            "pagenum": 3,
+            "content": "त्रिप/द् und त्रि/पद् (stark °पाद्)¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> (*<lex>f.</lex> wie *<lex>m.</lex> und °प/दी) <dvsn n='2'>— a〉 <i>dreifüssig</i>. <dvsn n='2'>— b〉 <i>drei Schritte thuend</i>. <dvsn n='2'>— c〉 <i>aus drei Stollen bestehend</i>. <dvsn n='2'>— d〉 <i>trinomisch</i>. <dvsn n='2'>— e〉 <i>zu drei Vierteln</i> <ls>ṚV. 10,90,4</ls>. <ab>Subst.</ab> <i>Dreiviertel</i>. <ls n='ṚV. 10,90,'>3</ls>. <dvsn n='1'>— 2〉 <lex>m.</lex> <dvsn n='2'>— a〉 <ab>Bein.</ab> <is>Viṣṇu</is>ʼs. <dvsn n='2'>— b〉 <ab>N. pr.</ab> eines <is>Daitya</is>. <dvsn n='1'>— 3〉 <lex>f.</lex> त्रिपदी <dvsn n='2'>— a〉 *<i>Elephantengürtel</i>. <dvsn n='2'>— b〉 <i>ein <ab>best.</ab> Gang des Elephanten</i> <ls>KĀD. 94,10</ls>. <ls>VIKRAMĀṄKAC. 15,29</ls>. <dvsn n='2'>— c〉 *<i><bot>Cissus pedata</bot></i>. <dvsn n='2'>— d〉 <ab>Bez.</ab> <i>der</i> <is>Gāyatrī</is> <i>und eines <ab>best.</ab> Metrums im <lang>Prākrit</lang></i>. <dvsn n='2'>— e〉 <i>eine <ab>best.</ab> Composition</i> <ls>S. S. S. 164</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिपद्",
+            "eid": "31007",
+            "pagenum": 3,
+            "content": "त्रिप/द्¦ oder त्रिपा/द्, nach <ls>P. 6, 2, 197</ls> auch त्रि/° (त्रि + पद् oder पाद्) nom. <lex>m.</lex> °पाद्, <lex>f.</lex> °पाद् und °पदी <ls>P. 4, 1, 8.</ls> <ls n='P.'>5, 4, 140.</ls> <is>gaṇa</is> कुम्भपद्यादि zu <ls>P. 5, 4, 139.</ls> <dvsn n='1'> 1) <lex>adj.</lex> <dvsn n='2'> a) <i>dreifüssig</i>: द्वि\\पात्त्रि\\पाद^म\\भ्ये^ति प\\श्चात् <ls>ṚV. 10, 117, 8.</ls> त्रि\\पादू\\र्ध्व उदै\\त्पुरु^ष\\ः पादो^ ऽस्ये\\हाभ^व\\त्पुन^ः <ls n='ṚV. 10,'>90, 4.</ls> <ls n='ṚV. 10, 90,'>3.</ls> <ls>VS. 8, 30.</ls> <ls>CHĀND. UP. 3, 12, 6.</ls> धर्म <ls>RAGH. 15, 96.</ls> Beiw. und Bein. <is>Viṣṇu's</is> (vgl. त्रिविक्रम)  <ls>TRIK. 1, 1, 31.</ls> <ls>H. ś. 65.</ls> <ls>BHĀG. P. 3, 9, 16. 19, 22.</ls> यज्ञ <ls n='BHĀG. P.'>8, 16, 31.</ls> Beiw. des Fiebers: ज्वरस्तु त्रिशिरास्त्रिपात् <ls>BHĀG. P.</ls> im <ls>ŚKDR.</ls> <ls>VP. 594.</ls> <dvsn n='2'>— b) <i>drei Schritte zählend</i> <ls>ĀŚV. GṚHY. 1, 7.</ls> <ls>ŚĀṄKH. GṚHY. 1, 14.</ls> <dvsn n='2'>— c) = त्रिपद <i>drei</i> <is>Pāda</is> (metrisch) <i>zählend</i> <ls>ŚAT. BR. 14, 8, 15, 10.</ls> <ls>COLEBR. Misc. Ess. II, 152.</ls> त्रिपदी सावित्री <ls>BHĀG. P. 5, 9, 5.</ls> <dvsn n='2'>— d) <i>trinomisch</i> <ls>COLEBR. Alg. 280.</ls> <dvsn n='1'>— 2) <lex>m.</lex> N. pr. eines <is>Daitya</is> <ls>MBH. 9, 2693.</ls> <dvsn n='1'>— 3) <lex>f.</lex> °पदी <dvsn n='2'> a) <i>der Gürtel beim Elephanten</i> <ls>H. 1230.</ls> <ls>RAGH. 4, 48.</ls> <dvsn n='2'>— b) N. einer Pflanze, <i>Cissus pedata Lam.</i> (गोधापदी) <ls>RATNAM.</ls> im <ls>ŚKDR.</ls> <dvsn n='2'>— c) <i>ein best. Metrum im</i> <is>Prākrit</is> <ls>KĀVYODAYA</ls> im <ls>ŚKDR.</ls>"
+        },
+        {
+            "word": "त्रिपद्",
+            "eid": "75294",
+            "pagenum": 5,
+            "content": "त्रिपद्¦ <dvsn n='1'> 1) <dvsn n='2'> a) <ls>Sp. 435, Z. 2</ls> die aus <ls>ŚKDR.</ls> citirte Stelle aus <ls>BHĀG. P.</ls> steht <ls n='BHĀG. P.'>10, 63, 22.</ls> <dvsn n='2'>— c) <ls>Ind. St. 8, 146. 239. 241.</ls> त्रिपाद्विभूतिकथन (त्रिपाद् wohl = गायत्री) <ls>Verz. d. Oxf. H. 13,b,47.</ls> त्रिपदी = गायत्री <ls>BHĀG. P. 11, 17, 24.</ls>"
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "त्रिपद्",
+            "eid": "17950",
+            "pagenum": 7,
+            "content": "त्रिपद्¦, <lex>f.</lex> °पदी III. a〉 lies <i>Fessel des Elephanten</i> und streiche das* (wegen <ls>RAGH. 4,48</ls>). <ls>DHARM. 11,51</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "त्रिपद्",
+            "eid": "14898",
+            "pagenum": 205,
+            "content": "<i>[tripad]</i>¦ , 3. f. <i>°padī</i> a) lies: Fessel des Elefanten und streiche das * (wegen <ls>Ragh.</ls> 4, 48). <ls>Dharm.</ls> 11, 51. — b) auch <ls>H</ls> 31, 18. {part=,seq=15131,type=,n=4}"
+        }
+    ]
+}

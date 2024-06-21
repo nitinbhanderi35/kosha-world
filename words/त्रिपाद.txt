@@ -1,1 +1,111 @@
-ck-button.ck-color-selector__color-picker,.ck.ck-color-selector .ck-color-grids-fragment .ck-button.ck-color-selector__remove-color{align-items:center;display:flex}[dir=rtl] .ck.ck-color-selector .ck-color-grids-fragment .ck-button.ck-color-selector__color-picker,[dir=rtl] .ck.ck-color-selector .ck-color-grids-fragment .ck-button.ck-color-selector__remove-color{justify-content:flex-start}.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-selector_action-bar{display:flex;flex-direction:row;justify-content:space-around}.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-selector_action-bar .ck-button-cancel,.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-selector_action-bar .ck-button-save{flex:1}.ck.ck-color-selector .ck-color-grids-fragment .ck-button.ck-color-selector__color-picker,.ck.ck-color-selector .ck-color-grids-fragment .ck-button.ck-color-selector__remove-color{width:100%}.ck.ck-color-selector .ck-color-grids-fragment .ck-button.ck-color-selector__color-picker{border-bottom-left-radius:0;border-bottom-right-radius:0;padding:calc(var(--ck-spacing-standard)/2) var(--ck-spacing-standard)}.ck.ck-color-selector .ck-color-grids-fragment .ck-button.ck-color-selector__color-picker:not(:focus){border-top:1px solid var(--ck-color-base-border)}[dir=ltr] .ck.ck-color-selector .ck-color-grids-fragment .ck-button.ck-color-selector__color-picker .ck.ck-icon{margin-right:var(--ck-spacing-standard)}[dir=rtl] .ck.ck-color-selector .ck-color-grids-fragment .ck-button.ck-color-selector__color-picker .ck.ck-icon{margin-left:var(--ck-spacing-standard)}.ck.ck-color-selector .ck-color-grids-fragment label.ck.ck-color-grid__label{font-weight:unset}.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-picker{padding:8px}.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-picker .hex-color-picker{height:100px;min-width:180px}.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-picker .hex-color-picker::part(saturation){border-radius:var(--ck-border-radius) var(--ck-border-radius) 0 0}.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-picker .hex-color-picker::part(hue){border-radius:0 0 var(--ck-border-radius) var(--ck-border-radius)}.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-picker .hex-color-picker::part(hue-pointer),.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-picker .hex-color-picker::part(saturation-pointer){height:15px;width:15px}.ck.ck-color-selector .ck-color-picker-fragment .ck.ck-color-selector_action-bar{padding:0 8px 8px}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/colorselector/colorselector.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/colorselector/colorselector.css"],names:[],mappings:"AAUE,oLAGC,kBAAmB,CADnB,YAMD,CARA,wMAME,0BAEF,CAKA,iFACC,YAAa,CACb,kBAAmB,CACnB,4BAMD,CAJC,oMAEC,MACD,CCrBD,oLAEC,UACD,CAEA,0FAEC,2BAA4B,CAC5B,4BAA6B,CAF7B,qEAiBD,CAbC,sGACC,gDACD,CAEA,gHAEE,uCAMF,CARA,gHAME,sCAEF,CAGD,6EACC,iBACD,CAKA,oEACC,WAoBD,CAlBC,sFACC,YAAa,CACb,eAeD,CAbC,wGACC,iEACD,CAEA,iGACC,iEACD,CAEA,yNAGC,WAAY,CADZ,UAED,CAIF,iFACC,iBACD",sourcesContent:['/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n\n.ck.ck-color-selector {\n\t/* View fragment with color grids. */\n\t& .ck-color-grids-fragment {\n\t\t& .ck-button.ck-color-selector__remove-color,\n\t\t& .ck-button.ck-color-selector__color-picker {\n\t\t\tdisplay: flex;\n\t\t\talign-items: center;\n\n\t\t\t@mixin ck-dir rtl {\n\t\t\t\tjustify-content: flex-start;\n\t\t\t}\n\t\t}\n\t}\n\n\t/* View fragment with a color picker. */\n\t& .ck-color-picker-fragment {\n\t\t& .ck.ck-color-selector_action-bar {\n\t\t\tdisplay: flex;\n\t\t\tflex-direction: row;\n\t\t\tjustify-content: space-around;\n\n\t\t\t& .ck-button-save,\n\t\t\t& .ck-button-cancel {\n\t\t\t\tflex: 1\n\t\t\t}\n\t\t}\n\t}\n}\n','/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n\n.ck.ck-color-selector {\n\t/* View fragment with color grids. */\n\t& .ck-color-grids-fragment {\n\t\t& .ck-button.ck-color-selector__remove-color,\n\t\t& .ck-button.ck-color-selector__color-picker {\n\t\t\twidth: 100%;\n\t\t}\n\n\t\t& .ck-button.ck-color-selector__color-picker {\n\t\t\tpadding: calc(var(--ck-spacing-standard) / 2) var(--ck-spacing-standard);\n\t\t\tborder-bottom-left-radius: 0;\n\t\t\tborder-bottom-right-radius: 0;\n\n\t\t\t&:not(:focus) {\n\t\t\t\tborder-top: 1px solid var(--ck-color-base-border);\n\t\t\t}\n\n\t\t\t& .ck.ck-icon {\n\t\t\t\t@mixin ck-dir ltr {\n\t\t\t\t\tmargin-right: var(--ck-spacing-standard);\n\t\t\t\t}\n\n\t\t\t\t@mixin ck-dir rtl {\n\t\t\t\t\tmargin-left: var(--ck-spacing-standard);\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\t& label.ck.ck-color-grid__label {\n\t\t\tfont-weight: unset;\n\t\t}\n\t}\n\n\t/* View fragment with a color picker. */\n\t& .ck-col
+{
+    "word": "त्रिपाद",
+    "INM": [
+        {
+            "word": "त्रिपाद",
+            "eid": "10963",
+            "pagenum": 681,
+            "content": "<b>Tripāda</b>,¦ a Daitya. § 615<i>u</i> (Skanda): IX, <b>46</b>λ, 2693 (slain by Skanda)."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिपाद",
+            "eid": "16138",
+            "pagenum": 318,
+            "content": "tri-pAda¦ <i>(I) a.</i> having or consisting of three-fourths, <ls>R.</ls>xv.96."
+        },
+        {
+            "word": "त्रिपाद",
+            "eid": "16139",
+            "pagenum": 318,
+            "content": "tri-pAda¦ <i>(II) m.</i> an epithet of Vishṇu in his fifth or Vāmana incarnation."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिपाद",
+            "eid": "87935",
+            "pagenum": "459,2",
+            "content": "त्रि—पाद <hom>a</hom> ¦ <lex>m.</lex> an asterism of which three-fourths are included under one zodiacal sign, <ls>W.</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिपाद",
+            "eid": "87936",
+            "pagenum": "459,2",
+            "content": "¦ = -पदिका, <ls>Kauś.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिपाद",
+            "eid": "87936.1",
+            "pagenum": "1328,2",
+            "content": "त्रि—पाद <hom>b</hom> ¦ a vessel with three feet, <ls>Kauś.</ls><info n='sup'/>"
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिपाद",
+            "eid": "31019",
+            "pagenum": 3,
+            "content": "त्रिपाद¦ (त्रि + पाद) <dvsn n='1'> 1) <lex>adj.</lex> (von einem Sternbilde) <i>von dem drei Viertel</i> <i>in ein Zodiakalbild fallen</i>; <lex>m.</lex> <i>ein solches Sternbild</i> <ls>MOLESW.</ls> <dvsn n='1'>— 2) <i>dreifüssiges Gestell</i> (?) <ls>KAUŚ. 26. 41.</ls> <dvsn n='1'>— 3) <lex>f.</lex> ई <i>eine Art Mimose</i> <ls>NIGH. PR.</ls>"
+        }
+    ],
+    "SCH": [
+        {
+            "word": "त्रिपाद",
+            "eid": "14903",
+            "pagenum": 205,
+            "content": "°<i>tripāda</i>¦ n. eine Art Coitus, E 585 (P). {part=,seq=15136,type=°,n=1}"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिपाद",
+            "eid": "23692",
+            "pagenum": "3370,a",
+            "content": "त्रिपाद¦ पु० त्रयः षादा अस्य संख्यापूर्वत्वेऽपि समासान्त् विधेरनित्यत्वान्नान्त्यलोपः । १ परमेश्वरे “पादोऽस्य सर्वा भूतानि त्रिपादस्यामृतं दिवि” छा० उ० । भाष्यकारस्तु “त्रिपात् अस्यामृतः दिवीति” छित्त्वा त्रिपाद् त्रयः पादा अस्य सोऽयं त्रिपादिति हलन्तमाह । “नमो द्विशीर्ष्णे त्रिपदे चतुःशृङ्गाय तन्तवे” भाग० ८ । १६ । २६ । भत्वात् पादस्य पद्भावः । २ ज्वरे च “ज्वरस्त्रिपादस्त्रिशिराः षड्भुजो नव लोचनः” हरिवं० १८१ अ"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिपाद",
+            "content": "त्रिपादः वि. त्रि-पादः  - तीन पैरों वाला"
+        },
+        {
+            "word": "त्रिपाद",
+            "content": "त्रिपादः वि. त्रि-पादः  - 'तीन खंडों से युक्त, तीन चौथाई'"
+        },
+        {
+            "word": "त्रिपाद",
+            "content": "त्रिपादः पुं. त्रि-पादः  - त्रिनाम"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिपाद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಪರಮಾತ್ಮ \\/ತ್ರಿವಿಕ್ರಮ",
+            "प्रयोगाः": "'पादोऽस्य विश्वा भूतानि, त्रिपादस्यामृतं दिवि'",
+            "उल्लेखाः": "श्रुतिः",
+            "content": ""
+        },
+        {
+            "word": "त्रिपाद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಒಂದು ರಾಶಿಗೆ ೩ ಪಾದಗಳು ಸೇರುವ ನಕ್ಷತ್ರ",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिपाद",
+            "content": "<body><s>tripAda pu° trayaH zAdA asya saMKyApUrvatve'pi samAsAnt viDeranityatvAnnAntyalopaH . <lb/><b>1</b> parameSvare <q>pAdo'sya sarvA BUtAni tripAdasyAmftaM divi</q> CA° u° . BAzya­kArastu <q>tripAt asyAmftaH divIti</q> CittvA tripAd trayaH pAdA asya so'yaM tripAditi halantamAha . <q>namo dviSIrzRe tripade catuHSfNgAya tantave</q> BAga° 8 . 16 . 26 . BatvAt pAdasya padBAvaH . <lb/><b>2</b> jvare ca <q>jvara­stripAdastriSirAH zaqBujo nava locanaH</q> harivaM° 181 a°</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिपाद",
+            "content": "<span lang=\"sa\">त्रिपाद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪರಮಾತ್ಮ /ತ್ರಿವಿಕ್ರಮ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"पादोऽस्य विश्वा भूतानि, त्रिपादस्यामृतं दिवि\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>श्रुतिः<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिपाद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಂದು ರಾಶಿಗೆ ೩ ಪಾದಗಳು ಸೇರುವ ನಕ್ಷತ್ರ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

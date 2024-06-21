@@ -1,863 +1,256 @@
-sult = computeTextAlternative(child, {
-	        isEmbeddedInLabel: context.isEmbeddedInLabel,
-	        isReferenced: false,
-	        recursion: true
-	      });
-	      // TODO: Unclear why display affects delimiter
-	      // see https://github.com/w3c/accname/issues/3
-	      var display = isElement$1(child) ? getComputedStyle(child).getPropertyValue("display") : "inline";
-	      var separator = display !== "inline" ? " " : "";
-	      // trailing separator for wpt tests
-	      accumulatedText += "".concat(separator).concat(result).concat(separator);
-	    });
-	    if (isElement$1(node) && computedStyleSupportsPseudoElements) {
-	      var pseudoAfter = getComputedStyle(node, "::after");
-	      var afterContent = getTextualContent(pseudoAfter);
-	      accumulatedText = "".concat(accumulatedText, " ").concat(afterContent);
-	    }
-	    return accumulatedText.trim();
-	  }
-
-	  /**
-	   *
-	   * @param element
-	   * @param attributeName
-	   * @returns A string non-empty string or `null`
-	   */
-	  function useAttribute(element, attributeName) {
-	    var attribute = element.getAttributeNode(attributeName);
-	    if (attribute !== null && !consultedNodes.has(attribute) && attribute.value.trim() !== "") {
-	      consultedNodes.add(attribute);
-	      return attribute.value;
-	    }
-	    return null;
-	  }
-	  function computeTooltipAttributeValue(node) {
-	    if (!isElement$1(node)) {
-	      return null;
-	    }
-	    return useAttribute(node, "title");
-	  }
-	  function computeElementTextAlternative(node) {
-	    if (!isElement$1(node)) {
-	      return null;
-	    }
-
-	    // https://w3c.github.io/html-aam/#fieldset-and-legend-elements
-	    if (isHTMLFieldSetElement(node)) {
-	      consultedNodes.add(node);
-	      var children = arrayFrom(node.childNodes);
-	      for (var i = 0; i < children.length; i += 1) {
-	        var child = children[i];
-	        if (isHTMLLegendElement(child)) {
-	          return computeTextAlternative(child, {
-	            isEmbeddedInLabel: false,
-	            isReferenced: false,
-	            recursion: false
-	          });
-	        }
-	      }
-	    } else if (isHTMLTableElement(node)) {
-	      // https://w3c.github.io/html-aam/#table-element
-	      consultedNodes.add(node);
-	      var _children = arrayFrom(node.childNodes);
-	      for (var _i = 0; _i < _children.length; _i += 1) {
-	        var _child = _children[_i];
-	        if (isHTMLTableCaptionElement(_child)) {
-	          return computeTextAlternative(_child, {
-	            isEmbeddedInLabel: false,
-	            isReferenced: false,
-	            recursion: false
-	          });
-	        }
-	      }
-	    } else if (isSVGSVGElement(node)) {
-	      // https://www.w3.org/TR/svg-aam-1.0/
-	      consultedNodes.add(node);
-	      var _children2 = arrayFrom(node.childNodes);
-	      for (var _i2 = 0; _i2 < _children2.length; _i2 += 1) {
-	        var _child2 = _children2[_i2];
-	        if (isSVGTitleElement(_child2)) {
-	          return _child2.textContent;
-	        }
-	      }
-	      return null;
-	    } else if (getLocalName(node) === "img" || getLocalName(node) === "area") {
-	      // https://w3c.github.io/html-aam/#area-element
-	      // https://w3c.github.io/html-aam/#img-element
-	      var nameFromAlt = useAttribute(node, "alt");
-	      if (nameFromAlt !== null) {
-	        return nameFromAlt;
-	      }
-	    } else if (isHTMLOptGroupElement(node)) {
-	      var nameFromLabel = useAttribute(node, "label");
-	      if (nameFromLabel !== null) {
-	        return nameFromLabel;
-	      }
-	    }
-	    if (isHTMLInputElement(node) && (node.type === "button" || node.type === "submit" || node.type === "reset")) {
-	      // https://w3c.github.io/html-aam/#input-type-text-input-type-password-input-type-search-input-type-tel-input-type-email-input-type-url-and-textarea-element-accessible-description-computation
-	      var nameFromValue = useAttribute(node, "value");
-	      if (nameFromValue !== null) {
-	        return nameFromValue;
-	      }
-
-	      // TODO: l10n
-	      if (node.type === "submit") {
-	        return "Submit";
-	      }
-	      // TODO: l10n
-	      if (node.type === "reset") {
-	        return "Reset";
-	      }
-	    }
-	    var labels = getLabels(node);
-	    if (labels !== null && labels.length !== 0) {
-	      consultedNodes.add(node);
-	      return arrayFrom(labels).map(function (element) {
-	        return computeTextAlternative(element, {
-	          isEmbeddedInLabel: true,
-	          isReferenced: false,
-	          recursion: true
-	        });
-	      }).filter(function (label) {
-	        return label.length > 0;
-	      }).join(" ");
-	    }
-
-	    // https://w3c.github.io/html-aam/#input-type-image-accessible-name-computation
-	    // TODO: wpt test consider label elements but html-aam does not mention them
-	    // We follow existing implementations over spec
-	    if (isHTMLInputElement(node) && node.type === "image") {
-	      var _nameFromAlt = useAttribute(node, "alt");
-	      if (_nameFromAlt !== null) {
-	        return _nameFromAlt;
-	      }
-	      var nameFromTitle = useAttribute(node, "title");
-	      if (nameFromTitle !== null) {
-	        return nameFromTitle;
-	      }
-
-	      // TODO: l10n
-	      return "Submit Query";
-	    }
-	    if (hasAnyConcreteRoles(node, ["button"])) {
-	      // https://www.w3.org/TR/html-aam-1.0/#button-element
-	      var nameFromSubTree = computeMiscTextAlternative(node, {
-	        isEmbeddedInLabel: false,
-	        isReferenced: false
-	      });
-	      if (nameFromSubTree !== "") {
-	        return nameFromSubTree;
-	      }
-	    }
-	    return null;
-	  }
-	  function computeTextAlternative(current, context) {
-	    if (consultedNodes.has(current)) {
-	      return "";
-	    }
-
-	    // 2A
-	    if (!hidden && isHidden(current, getComputedStyle) && !context.isReferenced) {
-	      consultedNodes.add(current);
-	      return "";
-	    }
-
-	    // 2B
-	    var labelAttributeNode = isElement$1(current) ? current.getAttributeNode("aria-labelledby") : null;
-	    // TODO: Do we generally need to block query IdRefs of attributes we have already consulted?
-	    var labelElements = labelAttributeNode !== null && !consultedNodes.has(labelAttributeNode) ? queryIdRefs(current, "aria-labelledby") : [];
-	    if (compute === "name" && !context.isReferenced && labelElements.length > 0) {
-	      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Can't be null here otherwise labelElements would be empty
-	      consultedNodes.add(labelAttributeNode);
-	      return labelElements.map(function (element) {
-	        // TODO: Chrome will consider repeated values i.e. use a node multiple times while we'll bail out in computeTextAlternative.
-	        return computeTextAlternative(element, {
-	          isEmbeddedInLabel: context.isEmbeddedInLabel,
-	          isReferenced: true,
-	          // this isn't recursion as specified, otherwise we would skip
-	          // `aria-label` in
-	          // <input id="myself" aria-label="foo" aria-labelledby="myself"
-	          recursion: false
-	        });
-	      }).join(" ");
-	    }
-
-	    // 2C
-	    // Changed from the spec in anticipation of https://github.com/w3c/accname/issues/64
-	    // spec says we should only consider skipping if we have a non-empty label
-	    var skipToStep2E = context.recursion && isControl(current) && compute === "name";
-	    if (!skipToStep2E) {
-	      var ariaLabel = (isElement$1(current) && current.getAttribute("aria-label") || "").trim();
-	      if (ariaLabel !== "" && compute === "name") {
-	        consultedNodes.add(current);
-	        return ariaLabel;
-	      }
-
-	      // 2D
-	      if (!isMarkedPresentational(current)) {
-	        var elementTextAlternative = computeElementTextAlternative(current);
-	        if (elementTextAlternative !== null) {
-	          consultedNodes.add(current);
-	          return elementTextAlternative;
-	        }
-	      }
-	    }
-
-	    // special casing, cheating to make tests pass
-	    // https://github.com/w3c/accname/issues/67
-	    if (hasAnyConcreteRoles(current, ["menu"])) {
-	      consultedNodes.add(current);
-	      return "";
-	    }
-
-	    // 2E
-	    if (skipToStep2E || context.isEmbeddedInLabel || context.isReferenced) {
-	      if (hasAnyConcreteRoles(current, ["combobox", "listbox"])) {
-	        consultedNodes.add(current);
-	        var selectedOptions = querySelectedOptions(current);
-	        if (selectedOptions.length === 0) {
-	          // defined per test `name_heading_combobox`
-	          return isHTMLInputElement(current) ? current.value : "";
-	        }
-	        return arrayFrom(selectedOptions).map(function (selectedOption) {
-	          return computeTextAlternative(selectedOption, {
-	            isEmbeddedInLabel: context.isEmbeddedInLabel,
-	            isReferenced: false,
-	            recursion: true
-	          });
-	        }).join(" ");
-	      }
-	      if (hasAbstractRole(current, "range")) {
-	        consultedNodes.add(current);
-	        if (current.hasAttribute("aria-valuetext")) {
-	          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe due to hasAttribute guard
-	          return current.getAttribute("aria-valuetext");
-	        }
-	        if (current.hasAttribute("aria-valuenow")) {
-	          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe due to hasAttribute guard
-	          return current.getAttribute("aria-valuenow");
-	        }
-	        // Otherwise, use the value as specified by a host language attribute.
-	        return current.getAttribute("value") || "";
-	      }
-	      if (hasAnyConcreteRoles(current, ["textbox"])) {
-	        consultedNodes.add(current);
-	        return getValueOfTextbox(current);
-	      }
-	    }
-
-	    // 2F: https://w3c.github.io/accname/#step2F
-	    if (allowsNameFromContent(current) || isElement$1(current) && context.isReferenced || isNativeHostLanguageTextAlternativeElement(current) || isDescendantOfNativeHostLanguageTextAlternativeElement()) {
-	      var accumulatedText2F = computeMiscTextAlternative(current, {
-	        isEmbeddedInLabel: context.isEmbeddedInLabel,
-	        isReferenced: false
-	      });
-	      if (accumulatedText2F !== "") {
-	        consultedNodes.add(current);
-	        return accumulatedText2F;
-	      }
-	    }
-	    if (current.nodeType === current.TEXT_NODE) {
-	      consultedNodes.add(current);
-	      return current.textContent || "";
-	    }
-	    if (context.recursion) {
-	      consultedNodes.add(current);
-	      return computeMiscTextAlternative(current, {
-	        isEmbeddedInLabel: context.isEmbeddedInLabel,
-	        isReferenced: false
-	      });
-	    }
-	    var tooltipAttributeValue = computeTooltipAttributeValue(current);
-	    if (tooltipAttributeValue !== null) {
-	      consultedNodes.add(current);
-	      return tooltipAttributeValue;
-	    }
-
-	    // TODO should this be reachable?
-	    consultedNodes.add(current);
-	    return "";
-	  }
-	  return asFlatString(computeTextAlternative(root, {
-	    isEmbeddedInLabel: false,
-	    // by spec computeAccessibleDescription starts with the referenced elements as roots
-	    isReferenced: compute === "description",
-	    recursion: false
-	  }));
-	}
-
-	function _typeof$1(obj) {
-	  "@babel/helpers - typeof";
-
-	  return _typeof$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-	    return typeof obj;
-	  } : function (obj) {
-	    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-	  }, _typeof$1(obj);
-	}
-	function ownKeys(object, enumerableOnly) {
-	  var keys = Object.keys(object);
-	  if (Object.getOwnPropertySymbols) {
-	    var symbols = Object.getOwnPropertySymbols(object);
-	    enumerableOnly && (symbols = symbols.filter(function (sym) {
-	      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-	    })), keys.push.apply(keys, symbols);
-	  }
-	  return keys;
-	}
-	function _objectSpread(target) {
-	  for (var i = 1; i < arguments.length; i++) {
-	    var source = null != arguments[i] ? arguments[i] : {};
-	    i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
-	      _defineProperty$1(target, key, source[key]);
-	    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
-	      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-	    });
-	  }
-	  return target;
-	}
-	function _defineProperty$1(obj, key, value) {
-	  key = _toPropertyKey(key);
-	  if (key in obj) {
-	    Object.defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-	  return obj;
-	}
-	function _toPropertyKey(arg) {
-	  var key = _toPrimitive(arg, "string");
-	  return _typeof$1(key) === "symbol" ? key : String(key);
-	}
-	function _toPrimitive(input, hint) {
-	  if (_typeof$1(input) !== "object" || input === null) return input;
-	  var prim = input[Symbol.toPrimitive];
-	  if (prim !== undefined) {
-	    var res = prim.call(input, hint || "default");
-	    if (_typeof$1(res) !== "object") return res;
-	    throw new TypeError("@@toPrimitive must return a primitive value.");
-	  }
-	  return (hint === "string" ? String : Number)(input);
-	}
-
-	/**
-	 * @param root
-	 * @param options
-	 * @returns
-	 */
-	function computeAccessibleDescription(root) {
-	  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-	  var description = queryIdRefs(root, "aria-describedby").map(function (element) {
-	    return computeTextAlternative(element, _objectSpread(_objectSpread({}, options), {}, {
-	      compute: "description"
-	    }));
-	  }).join(" ");
-
-	  // TODO: Technically we need to make sure that node wasn't used for the accessible name
-	  //       This causes `description_1.0_combobox-focusable-manual` to fail
-	  //
-	  // https://www.w3.org/TR/html-aam-1.0/#accessible-name-and-description-computation
-	  // says for so many elements to use the `title` that we assume all elements are considered
-	  if (description === "") {
-	    var title = root.getAttribute("title");
-	    description = title === null ? "" : title;
-	  }
-	  return description;
-	}
-
-	/**
-	 * https://w3c.github.io/aria/#namefromprohibited
-	 */
-	function prohibitsNaming(node) {
-	  return hasAnyConcreteRoles(node, ["caption", "code", "deletion", "emphasis", "generic", "insertion", "paragraph", "presentation", "strong", "subscript", "superscript"]);
-	}
-
-	/**
-	 * implements https://w3c.github.io/accname/#mapping_additional_nd_name
-	 * @param root
-	 * @param options
-	 * @returns
-	 */
-	function computeAccessibleName(root) {
-	  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-	  if (prohibitsNaming(root)) {
-	    return "";
-	  }
-	  return computeTextAlternative(root, options);
-	}
-
-	var lib = {};
-
-	var ariaPropsMap$1 = {};
-
-	var iterationDecorator$1 = {};
-
-	var iteratorProxy$1 = {};
-
-	Object.defineProperty(iteratorProxy$1, "__esModule", {
-	  value: true
-	});
-	iteratorProxy$1.default = void 0;
-
-	// eslint-disable-next-line no-unused-vars
-	function iteratorProxy() {
-	  var values = this;
-	  var index = 0;
-	  var iter = {
-	    '@@iterator': function iterator() {
-	      return iter;
-	    },
-	    next: function next() {
-	      if (index < values.length) {
-	        var value = values[index];
-	        index = index + 1;
-	        return {
-	          done: false,
-	          value: value
-	        };
-	      } else {
-	        return {
-	          done: true
-	        };
-	      }
-	    }
-	  };
-	  return iter;
-	}
-	var _default$2h = iteratorProxy;
-	iteratorProxy$1.default = _default$2h;
-
-	Object.defineProperty(iterationDecorator$1, "__esModule", {
-	  value: true
-	});
-	iterationDecorator$1.default = iterationDecorator;
-	var _iteratorProxy = _interopRequireDefault$a(iteratorProxy$1);
-	function _interopRequireDefault$a(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-	function _typeof(obj) {
-	  "@babel/helpers - typeof";
-
-	  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-	    return typeof obj;
-	  } : function (obj) {
-	    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-	  }, _typeof(obj);
-	}
-	function iterationDecorator(collection, entries) {
-	  if (typeof Symbol === 'function' && _typeof(Symbol.iterator) === 'symbol') {
-	    Object.defineProperty(collection, Symbol.iterator, {
-	      value: _iteratorProxy.default.bind(entries)
-	    });
-	  }
-	  return collection;
-	}
-
-	Object.defineProperty(ariaPropsMap$1, "__esModule", {
-	  value: true
-	});
-	ariaPropsMap$1.default = void 0;
-	var _iterationDecorator$4 = _interopRequireDefault$9(iterationDecorator$1);
-	function _interopRequireDefault$9(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-	function _slicedToArray$4(arr, i) {
-	  return _arrayWithHoles$4(arr) || _iterableToArrayLimit$4(arr, i) || _unsupportedIterableToArray$4(arr, i) || _nonIterableRest$4();
-	}
-	function _nonIterableRest$4() {
-	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	}
-	function _iterableToArrayLimit$4(arr, i) {
-	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-	  if (_i == null) return;
-	  var _arr = [];
-	  var _n = true;
-	  var _d = false;
-	  var _s, _e;
-	  try {
-	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-	      _arr.push(_s.value);
-	      if (i && _arr.length === i) break;
-	    }
-	  } catch (err) {
-	    _d = true;
-	    _e = err;
-	  } finally {
-	    try {
-	      if (!_n && _i["return"] != null) _i["return"]();
-	    } finally {
-	      if (_d) throw _e;
-	    }
-	  }
-	  return _arr;
-	}
-	function _arrayWithHoles$4(arr) {
-	  if (Array.isArray(arr)) return arr;
-	}
-	function _createForOfIteratorHelper$4(o, allowArrayLike) {
-	  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-	  if (!it) {
-	    if (Array.isArray(o) || (it = _unsupportedIterableToArray$4(o)) || allowArrayLike && o && typeof o.length === "number") {
-	      if (it) o = it;
-	      var i = 0;
-	      var F = function F() {};
-	      return {
-	        s: F,
-	        n: function n() {
-	          if (i >= o.length) return {
-	            done: true
-	          };
-	          return {
-	            done: false,
-	            value: o[i++]
-	          };
-	        },
-	        e: function e(_e2) {
-	          throw _e2;
-	        },
-	        f: F
-	      };
-	    }
-	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	  }
-	  var normalCompletion = true,
-	    didErr = false,
-	    err;
-	  return {
-	    s: function s() {
-	      it = it.call(o);
-	    },
-	    n: function n() {
-	      var step = it.next();
-	      normalCompletion = step.done;
-	      return step;
-	    },
-	    e: function e(_e3) {
-	      didErr = true;
-	      err = _e3;
-	    },
-	    f: function f() {
-	      try {
-	        if (!normalCompletion && it.return != null) it.return();
-	      } finally {
-	        if (didErr) throw err;
-	      }
-	    }
-	  };
-	}
-	function _unsupportedIterableToArray$4(o, minLen) {
-	  if (!o) return;
-	  if (typeof o === "string") return _arrayLikeToArray$4(o, minLen);
-	  var n = Object.prototype.toString.call(o).slice(8, -1);
-	  if (n === "Object" && o.constructor) n = o.constructor.name;
-	  if (n === "Map" || n === "Set") return Array.from(o);
-	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$4(o, minLen);
-	}
-	function _arrayLikeToArray$4(arr, len) {
-	  if (len == null || len > arr.length) len = arr.length;
-	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-	    arr2[i] = arr[i];
-	  }
-	  return arr2;
-	}
-	var properties = [['aria-activedescendant', {
-	  'type': 'id'
-	}], ['aria-atomic', {
-	  'type': 'boolean'
-	}], ['aria-autocomplete', {
-	  'type': 'token',
-	  'values': ['inline', 'list', 'both', 'none']
-	}], ['aria-busy', {
-	  'type': 'boolean'
-	}], ['aria-checked', {
-	  'type': 'tristate'
-	}], ['aria-colcount', {
-	  type: 'integer'
-	}], ['aria-colindex', {
-	  type: 'integer'
-	}], ['aria-colspan', {
-	  type: 'integer'
-	}], ['aria-controls', {
-	  'type': 'idlist'
-	}], ['aria-current', {
-	  type: 'token',
-	  values: ['page', 'step', 'location', 'date', 'time', true, false]
-	}], ['aria-describedby', {
-	  'type': 'idlist'
-	}], ['aria-details', {
-	  'type': 'id'
-	}], ['aria-disabled', {
-	  'type': 'boolean'
-	}], ['aria-dropeffect', {
-	  'type': 'tokenlist',
-	  'values': ['copy', 'execute', 'link', 'move', 'none', 'popup']
-	}], ['aria-errormessage', {
-	  'type': 'id'
-	}], ['aria-expanded', {
-	  'type': 'boolean',
-	  'allowundefined': true
-	}], ['aria-flowto', {
-	  'type': 'idlist'
-	}], ['aria-grabbed', {
-	  'type': 'boolean',
-	  'allowundefined': true
-	}], ['aria-haspopup', {
-	  'type': 'token',
-	  'values': [false, true, 'menu', 'listbox', 'tree', 'grid', 'dialog']
-	}], ['aria-hidden', {
-	  'type': 'boolean',
-	  'allowundefined': true
-	}], ['aria-invalid', {
-	  'type': 'token',
-	  'values': ['grammar', false, 'spelling', true]
-	}], ['aria-keyshortcuts', {
-	  type: 'string'
-	}], ['aria-label', {
-	  'type': 'string'
-	}], ['aria-labelledby', {
-	  'type': 'idlist'
-	}], ['aria-level', {
-	  'type': 'integer'
-	}], ['aria-live', {
-	  'type': 'token',
-	  'values': ['assertive', 'off', 'polite']
-	}], ['aria-modal', {
-	  type: 'boolean'
-	}], ['aria-multiline', {
-	  'type': 'boolean'
-	}], ['aria-multiselectable', {
-	  'type': 'boolean'
-	}], ['aria-orientation', {
-	  'type': 'token',
-	  'values': ['vertical', 'undefined', 'horizontal']
-	}], ['aria-owns', {
-	  'type': 'idlist'
-	}], ['aria-placeholder', {
-	  type: 'string'
-	}], ['aria-posinset', {
-	  'type': 'integer'
-	}], ['aria-pressed', {
-	  'type': 'tristate'
-	}], ['aria-readonly', {
-	  'type': 'boolean'
-	}], ['aria-relevant', {
-	  'type': 'tokenlist',
-	  'values': ['additions', 'all', 'removals', 'text']
-	}], ['aria-required', {
-	  'type': 'boolean'
-	}], ['aria-roledescription', {
-	  type: 'string'
-	}], ['aria-rowcount', {
-	  type: 'integer'
-	}], ['aria-rowindex', {
-	  type: 'integer'
-	}], ['aria-rowspan', {
-	  type: 'integer'
-	}], ['aria-selected', {
-	  'type': 'boolean',
-	  'allowundefined': true
-	}], ['aria-setsize', {
-	  'type': 'integer'
-	}], ['aria-sort', {
-	  'type': 'token',
-	  'values': ['ascending', 'descending', 'none', 'other']
-	}], ['aria-valuemax', {
-	  'type': 'number'
-	}], ['aria-valuemin', {
-	  'type': 'number'
-	}], ['aria-valuenow', {
-	  'type': 'number'
-	}], ['aria-valuetext', {
-	  'type': 'string'
-	}]];
-	var ariaPropsMap = {
-	  entries: function entries() {
-	    return properties;
-	  },
-	  forEach: function forEach(fn) {
-	    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-	    var _iterator = _createForOfIteratorHelper$4(properties),
-	      _step;
-	    try {
-	      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-	        var _step$value = _slicedToArray$4(_step.value, 2),
-	          key = _step$value[0],
-	          values = _step$value[1];
-	        fn.call(thisArg, values, key, properties);
-	      }
-	    } catch (err) {
-	      _iterator.e(err);
-	    } finally {
-	      _iterator.f();
-	    }
-	  },
-	  get: function get(key) {
-	    var item = properties.find(function (tuple) {
-	      return tuple[0] === key ? true : false;
-	    });
-	    return item && item[1];
-	  },
-	  has: function has(key) {
-	    return !!ariaPropsMap.get(key);
-	  },
-	  keys: function keys() {
-	    return properties.map(function (_ref) {
-	      var _ref2 = _slicedToArray$4(_ref, 1),
-	        key = _ref2[0];
-	      return key;
-	    });
-	  },
-	  values: function values() {
-	    return properties.map(function (_ref3) {
-	      var _ref4 = _slicedToArray$4(_ref3, 2),
-	        values = _ref4[1];
-	      return values;
-	    });
-	  }
-	};
-	var _default$2g = (0, _iterationDecorator$4.default)(ariaPropsMap, ariaPropsMap.entries());
-	ariaPropsMap$1.default = _default$2g;
-
-	var domMap$1 = {};
-
-	Object.defineProperty(domMap$1, "__esModule", {
-	  value: true
-	});
-	domMap$1.default = void 0;
-	var _iterationDecorator$3 = _interopRequireDefault$8(iterationDecorator$1);
-	function _interopRequireDefault$8(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-	function _slicedToArray$3(arr, i) {
-	  return _arrayWithHoles$3(arr) || _iterableToArrayLimit$3(arr, i) || _unsupportedIterableToArray$3(arr, i) || _nonIterableRest$3();
-	}
-	function _nonIterableRest$3() {
-	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	}
-	function _iterableToArrayLimit$3(arr, i) {
-	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-	  if (_i == null) return;
-	  var _arr = [];
-	  var _n = true;
-	  var _d = false;
-	  var _s, _e;
-	  try {
-	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-	      _arr.push(_s.value);
-	      if (i && _arr.length === i) break;
-	    }
-	  } catch (err) {
-	    _d = true;
-	    _e = err;
-	  } finally {
-	    try {
-	      if (!_n && _i["return"] != null) _i["return"]();
-	    } finally {
-	      if (_d) throw _e;
-	    }
-	  }
-	  return _arr;
-	}
-	function _arrayWithHoles$3(arr) {
-	  if (Array.isArray(arr)) return arr;
-	}
-	function _createForOfIteratorHelper$3(o, allowArrayLike) {
-	  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-	  if (!it) {
-	    if (Array.isArray(o) || (it = _unsupportedIterableToArray$3(o)) || allowArrayLike && o && typeof o.length === "number") {
-	      if (it) o = it;
-	      var i = 0;
-	      var F = function F() {};
-	      return {
-	        s: F,
-	        n: function n() {
-	          if (i >= o.length) return {
-	            done: true
-	          };
-	          return {
-	            done: false,
-	            value: o[i++]
-	          };
-	        },
-	        e: function e(_e2) {
-	          throw _e2;
-	        },
-	        f: F
-	      };
-	    }
-	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	  }
-	  var normalCompletion = true,
-	    didErr = false,
-	    err;
-	  return {
-	    s: function s() {
-	      it = it.call(o);
-	    },
-	    n: function n() {
-	      var step = it.next();
-	      normalCompletion = step.done;
-	      return step;
-	    },
-	    e: function e(_e3) {
-	      didErr = true;
-	      err = _e3;
-	    },
-	    f: function f() {
-	      try {
-	        if (!normalCompletion && it.return != null) it.return();
-	      } finally {
-	        if (didErr) throw err;
-	      }
-	    }
-	  };
-	}
-	function _unsupportedIterableToArray$3(o, minLen) {
-	  if (!o) return;
-	  if (typeof o === "string") return _arrayLikeToArray$3(o, minLen);
-	  var n = Object.prototype.toString.call(o).slice(8, -1);
-	  if (n === "Object" && o.constructor) n = o.constructor.name;
-	  if (n === "Map" || n === "Set") return Array.from(o);
-	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$3(o, minLen);
-	}
-	function _arrayLikeToArray$3(arr, len) {
-	  if (len == null || len > arr.length) len = arr.length;
-	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-	    arr2[i] = arr[i];
-	  }
-	  return arr2;
-	}
-	var dom$1 = [['a', {
-	  reserved: false
-	}], ['abbr', {
-	  reserved: false
-	}], ['acronym', {
-	  reserved: false
-	}], ['address', {
-	  reserved: false
-	}], ['applet', {
-	  reserved: false
-	}], ['area', {
-	  reserved: false
-	}], ['article', {
-	  reserved: false
-	}], ['aside', {
-	  reserved: false
-	}], ['audio', {
-	  reserved: false
-	}], ['b', {
-	  reserved: false
-	}], ['base
+{
+    "word": "व्रश्च्",
+    "AP90": [
+        {
+            "word": "व्रश्च्",
+            "eid": "27478",
+            "pagenum": 1026,
+            "content": "व्रश्च्¦ {c6c} <ab>P.</ab> (वृश्चति, वृक्ण; <i><ab>caus.</ab></i>  <lbinfo n='vraSca#yati'/> व्रश्चयति-ते; <i><ab>desid.</ab></i> विव्रश्चिषति or विव्रक्षति) <b>1</b> To cut, cut up or asunder, tear, lacerate. <b>--2</b> To wound."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "व्रश्च्",
+            "eid": "14324",
+            "pagenum": 923,
+            "content": "व्रश्च्¦ <i>VRAŚC,</i> i. 6, <i>vṛśca,</i> <ab>Par.</ab> <b>1.</b> To tear. <b>2.</b> To cut, <ls>Bhaṭṭ.</ls> 9, 41. <b>3.</b> To wound. <ab>Ptcple.</ab> of the <ab>pf.</ab> <ab>pass.</ab> <i>vṛkṇa,</i> Broken, <ls>Bhaṭṭ.</ls> 12, 75. -- <ab>Cf.</ab> <lang n='greek'>ἕλκος, ῥάκος, λακίς, λακερός</lang>; <ab>Lat.</ab> lacerare, ulcus."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "व्रश्च्",
+            "eid": "7684",
+            "pagenum": 340,
+            "content": "व्रश्च्¦ 6. <i>P.</i> (छेदने <i>K.</i> छेदे <i>V.</i>; in tempp. spec. corripitur in वृश्च्; part. pass. वृक्ण) scindere, abscindere. BHATT. 14. 77.: वव्रश्चुः; 9. 41.: व्रश्चित्वा…अपांतयत् तरून्. <dvsn n='pfx'>c. अव <i>id.</i> RIGV. 51. 7.: वृश्चा शत्रोर् अव विश्वानि वृष्ट्या «frange inimici cunctas vires». <dvsn n='pfx'>c. आ <i>A. id.</i> RIGV. 27. 13.: मा ज्यायसः शंसम् आवृक्षि «nunquam optimi <i>cujusque dei</i> laudem interrumpam». <dvsn n='pfx'>c. वि <i>id.</i> RIGV. 61. 10.: विवृश्चद् वज्रेण वृत्रम् इन्द्रः; 32. 5.: स्कन्धांसी ऽव कुलिशेना विवृक्णा «arbores quasi securi caesae»."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "व्रश्च्",
+            "eid": "16457",
+            "pagenum": 630,
+            "content": "*व्रश्च्¦ <i>vraśc.</i> <i>vṛścāṃi</i> 6; <ab>p.</ab> <i>vavraśca;</i> <lbinfo n='6'/> <ab>f1.</ab> <i>vraṣṭāsmi;</i> <ab>f2.</ab> <i>vraściṣyāmi</i> et <i>vrakṣyāmi;</i> <lbinfo n='8'/> <ab>a1.</ab> <i>avraściṣam</i> et <i>avrākṣam;</i> <ab>pp.</ab> <i>vṛkṇa.</i> Couper, hacher, <i>tarūn</i> des arbres; || blesser.  <P><i>vraścayāmi</i> <ab>c.</ab>  <P><i>vraścana</i> <ab>m.</ab> petite scie ou ciseau. -- <ab>N.</ab> action de couper; de blesser."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "व्रश्च्",
+            "eid": "31526",
+            "pagenum": 532,
+            "content": "व्रश्च्¦ वृश्च/ति <vlex type='root'/> <ab>pp.</ab> वृक्ण/ hew down, fell (a tree), cut to pieces. <dvsn n='p'>— अपि hew off or asunder. <dvsn n='p'>अव cut off, sever. <dvsn n='p'>आ sever, separate, estrange or alienate from (<ab>dat.</ab> or <ab>loc.</ab>). <dvsn n='p'>नि hew down, fell. <dvsn n='p'>परि cut, mutilate. <dvsn n='p'>प्र cut or split off. <dvsn n='p'>वि cut or split asunder. <dvsn n='p'>सम् hew or cut in pieces."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "व्रश्च्",
+            "eid": "23887",
+            "pagenum": 432,
+            "content": "व्रश्च्,¦ वृश्च/ति abhauen, fällen; <i>p. p.</i> वृण/. अपि abhauen, zerhauen. आ abtrennen, entfremden <i>(Dat. 0. Loc.).</i> वि zerspalten; <lbinfo n='8'/> <i>p. p.</i> वि/वृक्ण। सम् zerstückeln."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "व्रश्च्",
+            "eid": "8544",
+            "pagenum": 1363,
+            "content": "<b>√vraśc</b>¦ [<ab>vgl.</ab> vṛ́ka und vā́śī], <i>spalten, abhauen, behauen</i> (mit dem Beile) Bäume, Wurzeln [<ab>A.</ab>], daher 2〉 den Fels [<ab>A.</ab>] <i>zerspalten;</i> 3〉 Feinde, Dämonen [<ab>A.</ab>] <i>zerspalten</i> (wie Bäume oder Holz), oft mit festgehaltenem Bilde. <dvsn n='Pf'>Mit <b>ápi</b> <i>zerspalten, abhauen</i> [<ab>A.</ab>]. <dvsn n='Pf'><b>áva</b> <i>herabhauen</i> [<ab>A.</ab>]; 2〉 bildlich. <dvsn n='Pf'><b>ā́</b> <i>zerspalten, vernichten</i> [<ab>A.</ab>]. <dvsn n='Pf'><b>ní</b> Bäume [<ab>A.</ab>] <i>niederhauen</i> mit dem Beile [<ab>I.</ab>], auch bildlich. <dvsn n='Pf'><b>ví</b> <i>zerspalten, zerhauen</i> [<ab>A.</ab>], namentlich 2〉 mit Axt, Blitz [<ab>I.</ab>]. <dvsn n='H'>Stamm <b>vṛścá:</b> <dvsn n='TS'>-asi <b>ní</b> táṣṭā‿iva vṛkṣám vanínas 〰 paraśvā́‿iva 〰 {130,4}. <dvsn n='TS'>-ati <b>ví</b> śimbalám {287,22}. <dvsn n='TS'>-ánti vánā {443,9}. <dvsn n='TS'>-as <b>ví</b> 2〉 áhim vájreṇa {313,7}. <dvsn n='TS'>-át <b>vi</b> 2〉 bhogā́n vájreṇa {383,6}; áhim (vájreṇa) {267,7}. <dvsn n='TS'>-at <b>ví</b> áhim {210,2}. — 2〉 vṛtrám vájreṇa {61,10}. <dvsn n='TS'>-ā́t ohne Objekt yéna (paraśuā́) {879,9}. <dvsn n='TS'>-á [-ā́] 3〉 īm (amítrān) {264,16} (adhástāt); rákṣas {264,17} (mádhyam); upanāyám eṣām {803,4} (upáriṣṭāt). — <b>áva</b> 2〉 śátros vṛ́ṣṇiā {51,7}. <dvsn n='TS'>-a mū́lam yātudhā́nasya {913,10}. — 3〉 śátrūn {942,5} (vigadéṣu). — <b>ápi</b> guṣpitám {660,6}; téṣām śīrsā́ṇi {913,16}. — <b>ní</b> vanínam ná téjasā {449,5}. [Page1364] <dvsn n='H'><ab>Impf.</ab> <b>ávṛśca</b> (tonlos {534,17}): <dvsn n='TS'>-at 2〉 ádrim {939,4}. — <b>áva</b> sraktī́s {534,17} (veśía). — <b>ví</b> vṛtrám {939,6}. <dvsn n='H'><ab>Perf.</ab> <b>vavṛśc, vavṛk:</b> <dvsn n='TS'>-ktam [<pe>2.</pe> <ab>du.</ab> <ab>Iv.</ab>] <b>ápi</b> vanuṣyatā́m śīrṣā́ {503,10}. <dvsn n='H'>Stamm des <ab>Pass.</ab> <b>vṛścya:</b> <dvsn n='TS'>-antām <b>ā́</b> durévās {913,18} (áditaye). <dvsn n='H'><ab>Part.</ab> <b>vṛścát:</b> <dvsn n='TS'>-án <b>vi</b> 1〉 ajavásas javínībhis {206,6}. <dvsn n='TS'>-ántas vánā {854,8}. <dvsn n='H'><ab>Part.</ab> II. <b>vṛkṇá:</b> <dvsn n='TS'>-ám 3〉 (yātudhā́nam) {913,5}. <dvsn n='TS'>-ā́sas (sváravas) {242,7}. <dvsn n='H'><b>vṛkṇa:</b> <dvsn n='TS'>-ā [<ab>n.</ab>] <b>ví</b> 2〉 skándhāṃsi‿iva kúliśenā 〰 {32,5}. <dvsn n='H'>Absolutiv <b>vṛktú:</b> <dvsn n='TS'>-vī́ 3〉 kravyā́das {913,2}."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "व्रश्च्",
+            "eid": "4083",
+            "pagenum": 254,
+            "content": "<b>√vraśc</b>¦ (<b>vṛścáti; vṛkṇá</b> [<ls n='wg,957'>957c</ls>]; <b>vṛṣṭvā́;</b> <b>-vṛ́ścya</b>). hew off; fell (a tree); cut to pieces. [<ab>orig.</ab> form is <b>vṛk,</b> as in <b>vṛ́k-a,</b> <b>vṛk-ṇá, vṛk-ṣá,</b> which see: <b>vṛśc</b> is <ab>prop.</ab> only a quasi-root of the present stem <b>vṛśca,</b> for <b>*vṛk-ska,</b> formed like the present of <b>√√prach</b> and <b>mlech,</b> which see: see <ls n='wg,221'>221<sup>2</sup></ls> and <ab>cf.</ab> <ls n='wg,220'>220.</ls>] <dvsn n='p'/><b>+ vi,</b> cut asunder <i>or</i> to pieces."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "व्रश्च्",
+            "eid": "36807",
+            "pagenum": 702,
+            "content": "vraSc¦ <i>vt. 6P (pp. वृक्ण; pres. वृश्चति; desid. विव्रश्चिषति or विव्रक्षति)</i> 1. To cut, to tear, to cut asunder; 2. to wound."
+        }
+    ],
+    "MD": [
+        {
+            "word": "व्रश्च्",
+            "eid": "17384",
+            "pagenum": 305,
+            "content": "व्रश्च्¦ VRAŚC [<i>present base extension of</i> 🞄√ vṛk], <cl>Ⅵ.</cl> <lex>P.</lex> <b>vṛścá,</b> cut down, hew 🞄off, cut in pieces, cleave, fell (<i>tree</i>); <ab>ps.</ab> 🞄<b>vṛścyate</b>; <ab>pp.</ab> <b>vṛkśá,</b> cut down, felled. 🞄cleft. <b>ā,</b> sever from, set at variance with 🞄(<ab>C.</ab>, <ab>lc.</ab>; <ab>V.</ab>). <b>vi,</b> hew in pieces (<ab>V.</ab>, <ab>P.</ab>)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "व्रश्च्",
+            "eid": "210711",
+            "pagenum": "1043,1",
+            "content": "व्रश्च् ¦ (<ab>cf.</ab> √ वृक्) <ab>cl.</ab> 6. <ab>P.</ab> (<ls>Dhātup. xxviii, 11</ls>) वृश्च/ति (<ab>pr. p.</ab> वृक्णन् [?] <ls>BhP.</ls>; <ab>pf.</ab> वव्रश्च, °चिथ <ab>Gr.</ab>; <ab>aor.</ab> अव्रश्चीत्, अव्राक्षीत्, <ls>ib.</ls>; वृक्षि, <ls>Br.</ls>; <ab>fut.</ab> व्रश्चिता, व्रष्टा <ab>Gr.</ab>; व्रश्चिष्यति, व्रक्ष्यति, <ls>ib.</ls>; <ab>ind.p.</ab> व्रश्चित्वा, <ls>ib.</ls>; वृष्ट्वा/, <ls>AV.</ls>; वृक्त्वी/, <ls>RV.</ls>; -व्र/श्चम्, -वृत्च्य, <ls>Br.</ls> &c.), <dvsn n='to'/>to cut down or off or asunder, cleave, hew, fell (a tree), <ls>RV.</ls> &c. &c.: <dvsn n='vp'/><ab>Pass.</ab> वृश्च्य/ते (in <ls>AV.</ls> also वृश्च/ते), to be cut down or off &c.: <dvsn n='vp'/><ab>Caus.</ab> व्रश्चयति (<ab>aor.</ab> अवव्रश्चत्) <ab>Gr.</ab>: <dvsn n='vp'/><ab>Desid.</ab> विव्रश्चिषति, विव्रक्षति, <ls>ib.</ls> : <dvsn n='vp'/><ab>Intens.</ab> वरीवृश्च्यते, वरीवृत्चीति, <ls>ib.</ls><info westergaard='vrascu,28.11,06.0014'/><info whitneyroots='vraSc,168'/><info verb='genuineroot' cp='6P'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "व्रश्च्",
+            "eid": "45896",
+            "pagenum": 984,
+            "content": "व्रश्च्¦ <i>vraśc,</i> cl. 6. P. <i>vṛścati</i> (Ved. <i>vṛ-</i> <i>ṇakti,</i> Naigh. II. 19), <i>vavraśca, vra-</i> <i>ściṣyati</i> or <i>vrakṣyati, avraścīt</i> or <i>avrākṣīt,</i> <i>vraścitum</i> or <i>vraṣṭum,</i> to cut, cut up, cut asunder, tear, lacerate, divide with an edged tool; to wound: Caus. <i>vraścayati, -yitum,</i> Aor. <i>avivraścat:</i> Desid. <i>vivraściṣati</i> and <i>vivrakṣati:</i> Intens. <i>varīvṛ-</i> <i>ścyate, varīvṛścīti;</i> [cf. Gr. <lang n='greek'>ἔλκος, ῥάκος, λακίς,</lang> <lang n='greek'>λακερός;</lang> Lat. <nsi>lacerare, ulcus.</nsi>]"
+        },
+        {
+            "word": "व्रश्च्",
+            "eid": "55372",
+            "pagenum": 1186,
+            "content": "<i>Vraśc, vraṭ, ṭ, ṭ,</i>¦ cutting, cutting off."
+        }
+    ],
+    "PW": [
+        {
+            "word": "व्रश्च्",
+            "eid": "109111",
+            "pagenum": 6,
+            "content": "<hom>1.</hom> √व्रश्च्¦, वृश्च/ति (<ab>Pass.</ab> वृश्च्यते) <i>abhauen, zerschneiden, spalten, fällen</i> (einen Baum) <ls>VAITĀN.</ls> <ls>MED.</ls> वृश्च/ते (wohl वृश्च्य/ते zu lesen) in der <ab>Bed.</ab> des Passivs <ls>AV. 6,136,3. 8,10,18</ls>. वृकणन् (!) <ab>Partic.</ab> <ls>BHĀG. P.</ls> वृक्ण/ (वृक्न fehlerhaft) <i>abgehauen, gespalten, gefällt</i>. *<ab>Intens.</ab> वरीवृश्च्यते. <dvsn n='p'>— Mit अपि <i>abhauen, zerhauen</i>. <dvsn n='p'>— Mit अव <i>abschneiden, abtrennen</i>. <dvsn n='p'>— Mit आ <i>abtrennen von, ausser Verbindung bringen —, verfeinden mit</i> (<ab>Dat.</ab> oder <ab>Loc.</ab>). आवृश्चेत् und आवृश्चेत hier und da fehlerhaft für आवृश्च्येत <ab>Pass.</ab> <dvsn n='p'>— Mit नि <i>niederhauen, fällen</i>. <dvsn n='p'>— Mit निस् <i>ausroden</i>. निर्वृश्च्य <ab>Absol.</ab> <ls>Comm. zu ĀPAST. ŚR. 10,20,7</ls>. <ab>Vgl.</ab> निर्व्रस्क. <dvsn n='p'>— Mit परि <i>beschneiden</i>. परिवृक्ण <i>verstümmelt</i>. <dvsn n='p'>— Mit प्र <i>abschneiden, abspalten, zerhauen</i>. प्रवृक्ण <i>abgehauen</i>. <dvsn n='p'>— Mit वि <i>zerspalten, in Stücke hauen, zerhacken</i>. वि/वृक्ण <i>zerspalten</i> <ab>u. s. w.</ab> <dvsn n='p'>— Mit सम् <i>in Stücke hauen, zerstückeln</i>."
+        },
+        {
+            "word": "व्रश्च्",
+            "eid": "109112",
+            "pagenum": 6,
+            "content": "<hom>2.</hom> *व्रश्च्¦ <lex>Adj.</lex> <i>abhauend</i> <ab>u. s. w.</ab>"
+        }
+    ],
+    "PWG": [
+        {
+            "word": "व्रश्च्",
+            "eid": "96929",
+            "pagenum": 6,
+            "content": "1. व्रश्च्¦ वृश्च/ति <ls>NAIGH. 2, 19</ls> (वधकर्मन्). <ls>DHĀTUP. 28, 11</ls> (छेदने). <ls>P. 6, 1, 16.</ls> <ls>VOP. 13, 1.</ls> वव्रश्च, वव्रश्चिथ <ls n='VOP.'>8, 124. 135. 13, 1.</ls> <ls>P. 6, 1, 17.</ls> व्रक्ष्यति; व्रष्टा <ls>P. 8, 2, 36</ls>, Schol. अव्रश्चीत् und अव्राक्षीत् <ls>VOP. 13, 1.</ls> व्रश्चित्वा <ls n='VOP.'>26, 219.</ls> <ls>P. 7, 2, 55.</ls> वृक्त्वी/; व्रष्टुम् <ls>P. 8, 2, 36</ls>, Schol. pass. वृश्च्य/ते, वृक्षि; partic. वृक्ण/ (hier und da fälschlich वृक्न geschrieben) <ls>P. 6, 1, 16.</ls> <ls>VOP. 26, 97.</ls> <i>abhauen, zerschneiden, spalten; fällen</i> (einen Baum): वना^ <ls>ṚV. 6, 2, 9.</ls> <ls n='ṚV.'>10, 28, 8.</ls> प\\र\\शुं येन^ वृ\\श्चात् <ls n='ṚV. 10,'>53, 9.</ls> क्र\\व्यादो^ वृ\\क्त्वयपि^ धत्स्वा\\सन् <ls n='ṚV. 10,'>87, 2.</ls> <ls n='ṚV. 10, 87,'>5.</ls> मूल^म् <ls n='ṚV. 10, 87,'>10.</ls> <ls>AV. 13, 1, 56.</ls> <ls>ṚV. 3, 30, 16.</ls> <ls n='ṚV.'>9, 91, 4.</ls> <ls n='ṚV.'>10, 116, 5.</ls> अद्रि^म् <ls n='ṚV. 10,'>113, 4.</ls> कुलि^शेन <ls>AV. 2, 12, 3.</ls> शिरो^ वृश्चामि श\\कुने^रिव <ls n='AV. 2,'>25, 2.</ls> बा\\हून् <ls n='AV.'>3, 19, 2.</ls> <ls n='AV.'>6, 65, 2.</ls> आयु^ः <ls n='AV.'>12, 4, 28.</ls> <ls n='AV. 12, 4,'>50.</ls> <ls n='AV. 12,'>5, 42.</ls> <ls>TS. 6, 3, 3, 4.</ls> यूपम् <ls>ŚAT. BR. 3, 6, 4, 1. 6. 11.</ls> दण्डम् <ls>KAUŚ. 47.</ls> पाशान् <ls n='KAUŚ.'>49.</ls> <ls>TBR. 3, 2, 10, 1.</ls> med.: समू^लो\\ यश्च^ (केशः) वृ\\श्चते^ (वृश्च्यते?) <ls>AV. 6, 136, 3.</ls> — को ऽवृश्चत्तव पादांस्त्रीन् <ls>BHĀG. P. 1, 17, 12.</ls> खङ्गेन शिरांसि <ls n='BHĀG. P.'>6, 11, 15. 7, 2, 12. 10, 66, 21. 88, 18.</ls> शस्त्राणि वव्रश्चुः <ls>BHAṬṬ. 14, 77.</ls> व्रश्चित्वा तरून् <ls n='BHAṬṬ.'>9, 41.</ls> व्रश्चति लोकसंशयम् <ls>BHĀG. P. 6, 3, 2.</ls> वृक्णन् partic. (!) <ls n='BHĀG. P.'>9, 5, 8.</ls> वृश्च्यमानमूल <ls n='BHĀG. P.'>5, 26, 9.</ls> — वृक्ण/ <i>abgehauen, gespalten, gefällt</i> <ls>AK. 3, 2, 53.</ls> <ls>H. 1490.</ls> ein Baum <ls>ṚV. 3, 8, 7.</ls> <ls>ŚAT. BR. 14, 6, 9, 33.</ls> स\\ंव\\त्स\\रे वृ\\क्णमपि^ रोहति <i>der Schnitt verwächst</i> <ls>AV. 8, 10, 8.</ls> <ls>TS. 2, 5, 1, 4.</ls> अ/परशु° <ls n='TS.'>5, 1, 10, 1.</ls> शूल <ls>BHĀG. P. 3, 19, 15.</ls> वृक्णायुधभुज <ls n='BHĀG. P.'>6,12, 16. 18, 71. 9, 2, 7. 10, 50, 25. 11, 29, 39.</ls> <ls>BHAṬṬ. 4, 42. 42, 75. 16, 42.</ls>  <dvsn n='p'>— intens. वरीवृश्च्यते <ls>PAT.</ls> zu <ls>P. 7, 4, 90.</ls> Schol. zu <ls n='P.'>6, 1, 16.</ls>  <dvsn n='p'>— अपि <i>abhauen, zerhauen</i> <ls>ṚV. 8, 40, 6.</ls> शी\\र्षाणि\\ हर\\सापि^ वृश्च <ls n='ṚV.'>10, 87, 16.</ls> <ls>AV. 1, 7, 7.</ls> <ls n='AV.'>2, 32, 2.</ls> <ls n='AV.'>10, 6, 1.</ls> व\\नु\\ष्य\\तामपि^ शी\\र्षा व^वृक्तम् <ls>ṚV. 6, 62, 10</ls> stellen wir hierher, weil वर्ज्, auf welches die Form wiese, sonst nicht mit अपि vorkommt; vielleicht wäre अप richtig.  <dvsn n='p'>— अव <i>abschneiden, abtrennen</i>: वृष्ण्या^ <ls>ṚV. 1, 51, 7.</ls> अव^ स्र\\क्तीर्वे\\श्या^वृश्चत् <ls n='ṚV.'>7, 18, 17.</ls> <dvsn n='v'>— Vgl. अवव्रश्च .  <dvsn n='p'>— आ <i>abtrennen von, ausser Verbindung bringen mit Jmd</i> (dat.): एताभ्यस्त्वा देवताभ्य आ वृश्चामः <ls>ŚAT. BR. 12, 1, 3, 22.</ls> <ls>KĀṬH. 21, 2.</ls> <ls>TBR. 3, 7, 6, 17.</ls> mit loc. <ls>ṢAḌV. BR. 2, 10.</ls> pass. mit dat.: आ सूर्या^य वृश्च्यते <ls>TBR. 2, 1, 2, 10.</ls> आ वृ^श्च्यन्ता\\मदि^तये दु\\रेवा^ः <ls>ṚV. 10, 87, 18.</ls> दे\\वेभ्य^ः <ls>AV. 15, 2, 1.</ls> <ls>TBR. 1, 1, 4, 8.</ls> पि\\तृभ्य^ः <ls n='TBR.'>3, 10, 7</ls>, wo statt वृश्चेत् des Textes und वृश्चेत des Comm. वृश्च्येत zu lesen sein wird, wie auch <ls>AV. 12, 2, 50.</ls> <ls n='AV.'>15, 2, 1.</ls> <ls n='AV. 15,'>12, 6</ls> und anderwärts in den <ls>BRĀHMAṆA</ls> die passive Form, welche die sorgfältigen Texte stets zeigen, wieder herzustellen ist. Mit loc.: दे\\वेषु^ <ls>AV. 12, 4, 6.</ls> <ls n='AV.'>15, 12, 6.</ls> Hierher ziehen wir auch wegen der Construction यत्ते\\ तप\\स्तस्मै^ ते\\ मा वृ^क्षि <ls>TS. 1, 6, 6, 1.</ls> <ls>ŚĀṄKH. ŚR. 4, 13, 3.</ls> <dvsn n='v'>— Vgl. आव्रश्चन fg.  <dvsn n='p'>— नि <i>niederhauen, fällen</i>: प\\व्येव^ राजन्न\\घश^ंसं नी\\चा नि वृ^श्च <ls>ṚV. 6, 8, 5.</ls> प्र\\जां च\\ तस्य\\ मूल^ं च नी\\चैर्दे^वा\\ नि वृ^श्चत <ls>TBR. 3, 7, 6, 16.</ls>  <dvsn n='p'>— निस् vgl. निर्व्रस्क .  <dvsn n='p'>— परि <i>beschneiden</i> <ls>ŚAT. BR. 6, 7, 2, 8.</ls> °वृक्ण <i>verstümmelt</i> <ls>CHĀND. UP. 8, 9, 1.</ls>  <dvsn n='p'>— प्र <i>abschneiden, abspalten; zerhauen</i> <ls>AV. 12, 5, 62.</ls> अग्रम् <ls>ŚAT. BR. 6, 6, 2, 11.</ls> <ls>TBR. 2, 2, 1, 7.</ls> भ्रातृ^व्यमुत्क\\रे ऽधि\\ प्रवृ^श्चति <ls n='TBR.'>3, 2, 10, 1.</ls> ध्वजम् <ls>BHAṬṬ. 17, 89. 107.</ls> प्रवृक्णा बाहवो मया <ls>BHĀG. P. 10, 63, 48.</ls> <dvsn n='v'>— Vgl. प्रव्रश्चन fg.  <dvsn n='p'>— वि <i>zerspalten, in Stücke hauen</i>: den <is>Vṛtra</is> <ls>ṚV. 1, 61, 10.</ls> <ls n='ṚV.'>10, 113, 6.</ls> die Schlange <ls n='ṚV.'>2, 19, 2.</ls> <ls n='ṚV.'>3, 33, 7.</ls> <ls n='ṚV.'>4, 17, 7.</ls> भो\\गान् <ls n='ṚV.'>5, 29, 6.</ls> <ls n='ṚV.'>2, 15, 6.</ls> <ls n='ṚV.'>3, 53, 22.</ls> अ\\दन्ति^ त्वा पि\\पीलि^का\\ वि वृ^श्चन्ति मयू\\र्य^ः <i>zerhacken</i> (mit dem Schnabel) <ls>AV. 7, 56, 7.</ls> पाशम् <ls>BHĀG. P. 6, 14, 54.</ls> विवृश्च्य <ls n='BHĀG. P.'>11, 12, 24.</ls> वि/वृक्ण <ls>ṚV. 1, 32, 5.</ls> <ls>BHĀG. P. 4, 10, 20. 5, 9, 19. 12, 16. 9, 15, 32.</ls>  <dvsn n='p'>— सम् <i>in Stücke hauen, zerstückeln</i> <ls>AV. 12, 5, 62.</ls> पर्वाण्येषां पर्वशः संव्रश्चम् (absol.) <ls>ŚAT. BR. 11, 6, 1, 3. 8.</ls> संव्रश्चमोषधिवनस्पतीनां प्रकिरति <i>stückweise</i> <ls n='ŚAT. BR.'>13, 7, 1, 9.</ls> <ls>KĀTY. ŚR. 21, 2, 6.</ls> <ls>ŚĀṄKH. ŚR. 16, 15, 16.</ls> दुर्जरगेहशृङ्खलाः संवृश्च्य <ls>BHĀG. P. 10, 32, 22.</ls>"
+        },
+        {
+            "word": "व्रश्च्",
+            "eid": "96930",
+            "pagenum": 6,
+            "content": "2. व्रश्च्¦ (= 1. व्रश्च्) nom. ag. <i>abhauend</i> u. s. w.; nom. व्रट् <ls>P. 8, 2, 36.</ls> <ls>VOP. 3, 77.fg.</ls> मूल° <ls>P.</ls>, Schol."
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "व्रश्च्",
+            "eid": "21389",
+            "pagenum": 7,
+            "content": "<hom>1.</hom> व्रश्च्¦, <ab>Partic.</ab> वृश्चित <ls>DĀRILA</ls> zu [Page7-377-b] <ls>KAUŚ. 47,28</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "व्रश्च्",
+            "eid": "24671",
+            "pagenum": 340,
+            "content": "1. <i>vraśc</i>¦ , Partic. <i>vṛścita</i>, <ls>Dārila</ls> zu <ls>Kauś.</ls> 47, 28. {part=,seq=25008,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "व्रश्च्",
+            "eid": "39155",
+            "pagenum": 701,
+            "content": "व्रश्च्(ओ, उ)ओद्रश्चु¦ r. 6th cl. (वृश्चति) To cut, to tear, to wound."
+        }
+    ],
+    "STC": [
+        {
+            "word": "व्रश्च्",
+            "eid": "19961",
+            "pagenum": 711,
+            "content": "<b>VRAŚC-</b>¦ <i>vṛścati</i> (<i>vraścati</i>) ; <i>vṛścyate</i> ; (<i>vṛkṇa-</i>) couper, fendre, abattre (un arbre)."
+        }
+    ],
+    "APHI": [
+        {
+            "word": "व्रश्च्",
+            "content": "व्रश्च् 'तुदा.पर. वृश्चति  ,  वृक्ण्  , प्रेर. व्रश्चयति  ,  व्रश्चयते  , इच्छा. विव्रश्चिषति  ,  विव्रक्षति  '  - 'काटना, काट डालना, फाड़ना, चीरना'"
+        },
+        {
+            "word": "व्रश्च्",
+            "content": "व्रश्च् 'तुदा.पर. वृश्चति  ,  वृक्ण्  , प्रेर. व्रश्चयति  ,  व्रश्चयते  , इच्छा. विव्रश्चिषति  ,  विव्रक्षति  '  - घायल करना"
+        }
+    ],
+    "UPSC": [
+        {
+            "word": "व्रश्च्",
+            "upasarga": "सम्",
+            "dhatu": "व्रश्च्",
+            "artha": "ओव्रश्चू छेदने",
+            "baseindex": "06.0012",
+            "examples": [
+                "'पर्वाण्येषां पर्वशः संव्रश्चम्' (श० ब्रा० ११।६।१।३)।",
+                "'संव्रश्चमिति णमुलन्तम्। संवृश्च्य खण्डशः कर्तित्वा।**",
+                "'संव्रश्चमोषधिवनस्पतीनां प्रकिरति' (श० ब्रा० १३।७।१।९)।"
+            ],
+            "content": ""
+        },
+        {
+            "word": "व्रश्च्",
+            "upasarga": "वि",
+            "dhatu": "व्रश्च्",
+            "artha": "ओ व्रश्चू छेदने",
+            "baseindex": "06.0012",
+            "examples": [
+                "'वि वृश्चद् वज्रेण वृत्रमिन्द्रः' (ऋ० १।६१।१०)। <hl>विवृश्चत् व्यवृश्चत्=विविधमच्छिनत्। शकलान्यकरोत्।</hl>",
+                "'अदन्ति त्वा पिपीलिका वि वृश्चन्ति मयूर्यः' (अथर्व० ७।५६।७)। <hl>विवृश्चन्ति चञ्चुभिः प्रतुदन्ति वितुदन्ति विदारयन्ति</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "व्रश्च्",
+            "upasarga": "आङ्",
+            "dhatu": "व्रश्च्",
+            "artha": "ओव्रश्चू छेदने",
+            "baseindex": "06.0012",
+            "examples": [
+                "'एताभ्यस्त्वा देवताभ्य आवृश्चामः' (श० ब्रा० १२।१।२।२२)। <hl>अवृश्चामः पृथक् कुर्मः।</hl>",
+                "'आवृश्च्यन्तामदितये दुरेवाः' (ऋ० १०।८७।१८)।",
+                "'आ वृश्च्यन्तामदितये दुरेवाः' (ऋ० १०।८७।१८)। <hl>पुस्तकेऽर्थो न निरदेशीत्यर्थनिर्देशायेहानूद्यते। आवृश्च्यन्तामाच्छिद्यन्ताम्। दुरेवा यातुधानाः।</hl>",
+                "'आ देवताभ्यो वृश्च्यते पापीयान्भवति' (तै० ब्रा० १।१।४।८)। <hl>आवृश्च्यते विच्छिद्यते, विश्लिष्यते, पृथग्भवति।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "व्रश्च्",
+            "upasarga": "नि",
+            "dhatu": "व्रश्च्",
+            "artha": "ओ व्रश्चू छेदने",
+            "baseindex": "06.0012",
+            "examples": [
+                "'पव्येव राजन्नघशंसमजर नीचा नि वृश्च' (ऋ० ६।८।५)। निवृश्च <hl>छिन्धि छित्वा निपातय।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "व्रश्च्",
+            "upasarga": "अपि",
+            "dhatu": "व्रश्च्",
+            "artha": "ओव्रश्चू छेदने",
+            "baseindex": "06.0012",
+            "examples": [
+                "'शीर्षाणि हरसापि वृश्च' (ऋ० १०।८७।१६)। <hl>अपिवृश्च छिन्द्धि।</hl>"
+            ],
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "व्रश्च्",
+            "content": "<lexhead no=\"2782\">\n<dentry>व्रश्च्</dentry>\n<prAwipaxikam>व्रश्च्</prAwipaxikam>\n<grammar><gaNa>तुदा*</gaNa><paxI>पर*</paxI><vform>वृश्चति</vform>,<vform>वृक्ण्</vform>, प्रेर*<vform>व्रश्चयति</vform>,<vform>व्रश्चयते</vform>, इच्छा*<vform>विव्रश्चिषति</vform>,<vform>विव्रक्षति</vform></grammar>\n<sense no=\"1\">काटना, काट डालना, फाड़ना, चीरना</sense>\n<sense n=\"2\">घायल करना</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "व्रश्च्",
+            "content": "<H1><h><key1>vraSc</key1><key2>vraSc</key2></h><body><s>vraSc</s>   (<ab>cf.</ab> √ <s>vfk</s>) <ab>cl.</ab> 6. <ab>P.</ab> (<ls>Dhātup. xxviii, 11</ls>) <s>vfSca/ti</s> (<ab>pr. p.</ab> <s>vfkRan</s> [?] <ls>BhP.</ls>; <ab>pf.</ab> <s>vavraSca</s>, <s>°ciTa</s> <ab>Gr.</ab>; <ab>aor.</ab> <s>avraScIt</s>, <s>avrAkzIt</s>, <ls>ib.</ls>; <s>vfkzi</s>, <ls>Br.</ls>; <ab>fut.</ab> <s>vraScitA</s>, <s>vrazwA</s> <ab>Gr.</ab>; <s>vraScizyati</s>, <s>vrakzyati</s>, <ls>ib.</ls>; <ab>ind.p.</ab> <s>vraScitvA</s>, <ls>ib.</ls>; <s>vfzwvA/</s>, <ls>AV.</ls>; <s>vfktvI/</s>, <ls>RV.</ls>; <s>-vra/Scam</s>, <s>-vftcya</s>, <ls>Br.</ls> &amp;c.), <div n=\"to\" />to cut down or off or asunder, cleave, hew, fell (a tree), <ls>RV.</ls> &amp;c. &amp;c.: <div n=\"vp\" /><ab>Pass.</ab> <s>vfScya/te</s> (in <ls>AV.</ls> also <s>vfSca/te</s>), to be cut down or off &amp;c.: <div n=\"vp\" /><ab>Caus.</ab> <s>vraScayati</s> (<ab>aor.</ab> <s>avavraScat</s>) <ab>Gr.</ab>: <div n=\"vp\" /><ab>Desid.</ab> <s>vivraScizati</s>, <s>vivrakzati</s>, <ls>ib.</ls> : <div n=\"vp\" /><ab>Intens.</ab> <s>varIvfScyate</s>, <s>varIvftcIti</s>, <ls>ib.</ls><info westergaard=\"vrascu,28.11,06.0014\" /><info whitneyroots=\"vraSc,168\" /><info verb=\"genuineroot\" cp=\"6P\" /></body><tail><L>210711</L><pc>1043,1</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "व्रश्च्",
+            "content": "<H1><h><key1>vraSc</key1><key2>vraSc(o, u)odraScu</key2></h><body><s>vraSc(o, u)odraScu</s> <div n=\"1\">r. 6th cl. (<s>vfScati</s>) To cut, to tear, to wound.</div></body><tail><L>39155</L><pc>701-b</pc></tail></H1>\n"
+        }
+    ]
+}

@@ -1,1 +1,63 @@
-idth: var(--ck-ui-component-min-height);\n\tmin-height: var(--ck-ui-component-min-height);\n\n\t/* Normalize the height of the line. Removing this will break consistent height\n\tamong text and text-less buttons (with icons). */\n\tline-height: 1;\n\n\t/* Enable font size inheritance, which allows fluid UI scaling. */\n\tfont-size: inherit;\n\n\t/* Avoid flickering when the foucs border shows up. */\n\tborder: 1px solid transparent;\n\n\t/* Apply some smooth transition to the box-shadow and border. */\n\ttransition: box-shadow .2s ease-in-out, border .2s ease-in-out;\n\n\t/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/189 */\n\t-webkit-appearance: none;\n\n\t&:active,\n\t&:focus {\n\t\t@mixin ck-focus-ring;\n\t\t@mixin ck-box-shadow var(--ck-focus-outer-shadow);\n\t}\n\n\t/* Allow icon coloring using the text "color" property. */\n\t& .ck-button__icon {\n\t\t& use,\n\t\t& use * {\n\t\t\tcolor: inherit;\n\t\t}\n\t}\n\n\t& .ck-button__label {\n\t\t/* Enable font size inheritance, which allows fluid UI scaling. */\n\t\tfont-size: inherit;\n\t\tfont-weight: inherit;\n\t\tcolor: inherit;\n\t\tcursor: inherit;\n\n\t\t/* Must be consistent with .ck-icon\'s vertical align. Otherwise, buttons with and\n\t\twithout labels (but with icons) have different sizes in Chrome */\n\t\tvertical-align: middle;\n\n\t\t@mixin ck-dir ltr {\n\t\t\ttext-align: left;\n\t\t}\n\n\t\t@mixin ck-dir rtl {\n\t\t\ttext-align: right;\n\t\t}\n\t}\n\n\t& .ck-button__keystroke {\n\t\tcolor: inherit;\n\n\t\t@mixin ck-dir ltr {\n\t\t\tmargin-left: var(--ck-spacing-large);\n\t\t}\n\n\t\t@mixin ck-dir rtl {\n\t\t\tmargin-right: var(--ck-spacing-large);\n\t\t}\n\n\t\topacity: .5;\n\t}\n\n\t/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */\n\t&.ck-disabled {\n\t\t&:active,\n\t\t&:focus {\n\t\t\t/* The disabled button should have a slightly less visible shadow when focused. */\n\t\t\t@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow);\n\t\t}\n\n\t\t& .ck-button__icon {\n\t\t\t@mixin ck-disabled;\n\t\t}\n\n\t\t/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/98 */\n\t\t& .ck-button__label {\n\t\t\t@mixin ck-disabled;\n\t\t}\n\n\t\t& .ck-button__keystroke {\n\t\t\topacity: .3;\n\t\t}\n\t}\n\n\t&.ck-button_with-text {\n\t\tpadding: var(--ck-spacing-tiny) var(--ck-spacing-standard);\n\n\t\t/* stylelint-disable-next-line no-descending-specificity */\n\t\t& .ck-button__icon {\n\t\t\t@mixin ck-dir ltr {\n\t\t\t\tmargin-left: calc(-1 * var(--ck-spacing-small));\n\t\t\t\tmargin-right: var(--ck-spacing-small);\n\t\t\t}\n\n\t\t\t@mixin ck-dir rtl {\n\t\t\t\tmargin-right: calc(-1 * var(--ck-spacing-small));\n\t\t\t\tmargin-left: var(--ck-spacing-small);\n\t\t\t}\n\t\t}\n\t}\n\n\t&.ck-button_with-keystroke {\n\t\t/* stylelint-disable-next-line no-descending-specificity */\n\t\t& .ck-button__label {\n\t\t\tflex-grow: 1;\n\t\t}\n\t}\n\n\t/* A style of the button which is currently on, e.g. its feature is active. */\n\t&.ck-on {\n\t\t@mixin ck-button-colors --ck-color-button-on;\n\n\t\tcolor: var(--ck-color-button-on-color);\n\t}\n\n\t&.ck-button-save {\n\t\tcolor: var(--ck-color-button-save);\n\t}\n\n\t&.ck-button-cancel {\n\t\tcolor: var(--ck-color-button-cancel);\n\t}\n}\n\n/* A style of the button which handles the primary action. */\n.ck.ck-button-action,\na.ck.ck-button-action {\n\t@mixin ck-button-colors --ck-color-button-action;\n\n\tcolor: var(--ck-color-button-action-text);\n}\n\n.ck.ck-button-bold,\na.ck.ck-button-bold {\n\tfont-weight: bold;\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * Implements a button of given background color.\n *\n * @param {String} $background - Background color of the button.\n * @param {String} $border - Border color of the button.\n */\n@define-mixin ck-button-colors $prefix {\n\tbackground: var($(prefix)-background);\n\n\t&:not(.ck-disabled) {\n\t\t&:hover {\n\t\t\tbackground: var($(prefix)-hover-background);\n\t\t}\n\n\t\t&:active {\n\t\t\tbackground: var($(prefix)-active-background);\n\t\t}\n\t}\n\n\t/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/98 */\n\t&.ck-disabled {\n\t\tbackground: var($(prefix)-disabled-background);\n\t}\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * Implements rounded corner interface for .ck-rounded-corners class.\n *\n * @see $ck-border-radius\n */\n@define-mixin ck-rounded-corners {\n\tborder-radius: 0;\n\n\t@nest .ck-rounded-corners &,\n\t&.ck-rounded-corners {\n\t\tborder-radius: var(--ck-border-radius);\n\t\t@mixin-content;\n\t}\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A visual style of focused element's border.\n */\n@define-mixin ck-focus-ring {\n\t/* Disable native outline. */\n\toutline: none;\n\tborder: var(--ck-focus-ring)\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A helper to combine multiple shadows.\n */\n@define-mixin ck-box-shadow $shadowA, $shadowB: 0 0 {\n\tbox-shadow: $shadowA, $shadowB;\n}\n\n/**\n * Gives an element a drop shadow so it looks like a floating panel.\n */\n@define-mixin ck-drop-shadow {\n\t@mixin ck-box-shadow var(--ck-drop-shadow);\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A class which indicates that an element holding it is disabled.\n */\n@define-mixin ck-disabled {\n\topacity: var(--ck-disabled-opacity);\n}\n"],sourceRoot:""}]);const a=s},8613:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-button.ck-switchbutton .ck-button__toggle,.ck.ck-button.ck-switchbutton .ck-button__toggle .ck-button__toggle__inner{display:block}:root{--ck-switch-button-toggle-width:2.6153846154em;--ck-switch-button-toggle-inner-size:calc(1.07692em + 1px);--ck-switch-button-translation:calc(var(--ck-switch-button-toggle-width) - var(--ck-switch-button-toggle-inner-size) - 2px);--ck-switch-button-inner-hover-shadow:0 0 0 5px var(--ck-color-switch-button-inner-shadow)}.ck.ck-button.ck-switchbutton,.ck.ck-button.ck-switchbutton.ck-on:active,.ck.ck-button.ck-switchbutton.ck-on:focus,.ck.ck-button.ck-switchbutton.ck-on:hover,.ck.ck-button.ck-switchbutton:active,.ck.ck-button.ck-switchbutton:focus,.ck.ck-button.ck-switchbutton:hover{background:transparent;color:inherit}[dir=ltr] .ck.ck-button.ck-switchbutton .ck-button__label{margin-right:calc(var(--ck-spacing-large)*2)}[dir=rtl] .ck.ck-button.ck-switchbutton .ck-button__label{margin-left:calc(var(--ck-spacing-large)*2)}.ck.ck-button.ck-switchbutton .ck-button__toggle{border-radius:0}.ck-rounded-corners .ck.ck-button.ck-switchbutton .ck-button__toggle,.ck.ck-button.ck-switchbutton .ck-button__toggle.ck-rounded-corners{border-radius:var(--ck-border-radius)}[dir=ltr] .ck.ck-button.ck-switchbutton .ck-button__toggle{margin-left:auto}[dir=rtl] .ck.ck-button.ck-switchbutton .ck-button__toggle{margin-right:auto}.ck.ck-button.ck-switchbutton .ck-button__toggle{background:var(--ck-color-switc
+{
+    "word": "त्रिपुरभैरवी",
+    "MW": [
+        {
+            "word": "त्रिपुरभैरवी",
+            "eid": "87996",
+            "pagenum": "459,2",
+            "content": "त्रि—पुर—भैरवी ¦ <lex>f.</lex> <s1 slp1='durgA'>Durgā</s1>, <ls>KālP.</ls>; <ls>Śārad. xii</ls><info lex='f'/>"
+        }
+    ],
+    "PUI": [
+        {
+            "word": "त्रिपुरभैरवी",
+            "eid": "5650",
+            "pagenum": 2,
+            "content": "<i>Tripurabhairavī</i>¦ — the second charioteer of Lalitā. <dvsn n='P'/>Br. IV. 20. 91."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिपुरभैरवी",
+            "eid": "31034",
+            "pagenum": 3,
+            "content": "त्रिपुरभैरवी¦ (त्रि° + भै°) <lex>f.</lex> <i>eine Form der</i> <is>Durgā</is> <ls>KĀLIKĀ-P.</ls> im <ls>ŚKDR.</ls> <ls>Verz. d. Oxf. H. 106,a,10</ls>; vgl. त्रिपुराभैरवी u. त्रिपुर 3,b."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिपुरभैरवी",
+            "eid": "15578",
+            "pagenum": "2-659-b",
+            "content": "त्रिपुरभैरवी¦, स्त्री, (त्रिपुरा धर्म्मार्थकामानां दात्री । सा चासौ भैरवी चेति ।) देवीविशेषः । तन्मन्त्रादि यथा, “वैष्णव्या मन्त्रमुख्येषु त्रिपुरायास्ततः शृणु । तस्यास्तु सर्व्वमन्त्राणि त्रयोदशयुतानि वै ॥ विंशतिस्तु सहस्राणि तत्राद्यं वाग्भवं स्मृतम् । द्बितीयं कामराजाख्यं मोहनञ्च तृतीयकम् ॥ आम्रेडितं वाग्भवन्तु चतुर्थं परिकीर्त्तितम् । नेत्रवीजं द्वितीयन्तु द्विरुक्तं वाग्भवं तथा ॥ आद्यं तत् पञ्चमं प्रोक्तं चतुर्भिरपि चाक्षरैः । नेत्रवीजं द्वितीयन्तु प्रथमं परिकीर्त्तितम् ॥ द्वितीयं कामराजन्तु तृतीयं वाग्भवं तथा । एभिस्त्रिभिश्च यन्मन्त्रं तत् षष्ठं परिकीर्त्तितम् ॥ नेत्रवीजद्वितीयेन वाग्भवान्तेन सप्तमम् । तदेव वाग्भवाद्यन्तु अष्टमं परिकीर्त्तितम् ॥ वाग्भवं कामराजञ्चेत्येताभ्यां नवमं स्मृतम् । कामराजं तथैवाद्यं द्वितीयञ्चैव मोहनम् ॥ एकादशमिदं प्रोक्तं तदेवाद्यन्तु वाग्भवम् । द्वादशं कीर्त्तितं मन्त्रं शेषतस्त्रैपुरं महत् ॥ तन्महत् त्रैपुरं मन्त्रं शृणुष्वैकमनास्त्विदम् । प्रान्तादिस्तस्य चाप्यादिर्वह्निर्व्वाग्भवसंज्ञितः ॥ आद्यं त्रिपुरभैरव्या वीजमाद्यं प्रकीर्त्तितम् । उपान्त्यश्च तदादिश्च व्यञ्जनाद्यं वृषाणकः ॥ चतुर्थस्वरविन्द्विन्दूयुक्तश्चैतत् द्वितीयकम् । उपान्त्यश्च तदादिश्च वह्निः शेषस्वरस्तथा ॥ समाप्तिर्बिन्दुसहिता संहितास्तु तृतीयकम् । एतत्तत्त्वं विजानाति यो नरो भुवि भूमणिः ॥ सिद्धविद्याधरेभ्यश्च सोऽधिको मन्मथो महान् । एतत्त्रयोदश प्रोक्ता मन्त्रा मन्त्रेषु चोज्ज्वलाः ॥ विंशतेस्तु सहस्रेभ्यः पराश्चैते प्रकीर्त्तिताः । विंशतेस्तु सहस्राणामाद्यमेतत् प्रकीर्त्तितम् ॥” तस्या ध्यानं यथा, “चतुर्भुजां रक्तवर्णां रक्तवस्त्रविभूषिताम् । दक्षिणोर्द्ध्वे स्रजञ्चाधो बिभ्रतीं पुस्तकोत्तमम् ॥ अभयं वामहस्ताभ्यां वरञ्च दधतीं तथा । सहस्रसूर्य्यसङ्काशां त्रिनेत्रां गजगामिनीम् ॥ पीनोत्तुङ्गस्तनयुगां सितप्रेतासनस्थिताम् । स्मितप्रभिन्नवदनां सर्व्वालङ्कारसंयुताम् ॥ तिसृभिर्म्मुण्डमालाभिः शिरोवक्षःकटीषु च । त्रिगुणं त्रिगुणीभूतैः प्रत्येकं परिभूषिताम् ॥ मदिराघूर्णनयनां रक्तदन्तच्छदद्बयाम् । चिन्तयेद्वरदां देवीमेवं त्रिपुरभैरवीम् ॥” इति कालिकापुराणे ७७ अध्यायः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिपुरभैरवी",
+            "eid": "23708",
+            "pagenum": "3373,b",
+            "content": "त्रिपुरभैरवी¦ स्त्री त्रिपुरा भैरवी कर्म्म० । त्रिपुराख्यदेवीभेदे “आद्यं त्रिषुरभैरव्याः वीजमाद्यं प्रकीर्तितम्” इति “चिन्तयेद्वरदां देवीमेवं त्रिपुरभैरवीम्” इति च तन्त्रसा"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिपुरभैरवी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ದುರ್ಗಾದೇವಿ",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिपुरभैरवी",
+            "content": "<body><s>tripuraBEravI strI tripurA BEravI karmma° . tripurAKyadevI­Bede <q>AdyaM trizuraBEravyAH vIjamAdyaM prakIrtitam</q> iti <q>cintayedvaradAM devImevaM tripuraBEravIm</q> iti ca tantrasA°</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिपुरभैरवी",
+            "content": "<span lang=\"sa\">त्रिपुरभैरवी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದುರ್ಗಾದೇವಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

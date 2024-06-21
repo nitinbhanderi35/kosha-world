@@ -1,631 +1,417 @@
-tion (element: Element): boolean} options.isSubtreeInaccessible -
-	 * can be used to return cached results from previous isSubtreeInaccessible calls
-	 * @returns {boolean} true if excluded, otherwise false
-	 */
-	function isInaccessible(element, options) {
-	  if (options === void 0) {
-	    options = {};
-	  }
-	  const {
-	    isSubtreeInaccessible: isSubtreeInaccessibleImpl = isSubtreeInaccessible
-	  } = options;
-	  const window = element.ownerDocument.defaultView;
-	  // since visibility is inherited we can exit early
-	  if (window.getComputedStyle(element).visibility === 'hidden') {
-	    return true;
-	  }
-	  let currentElement = element;
-	  while (currentElement) {
-	    if (isSubtreeInaccessibleImpl(currentElement)) {
-	      return true;
-	    }
-	    currentElement = currentElement.parentElement;
-	  }
-	  return false;
-	}
-	function getImplicitAriaRoles(currentNode) {
-	  // eslint bug here:
-	  // eslint-disable-next-line no-unused-vars
-	  for (const {
-	    match,
-	    roles
-	  } of elementRoleList) {
-	    if (match(currentNode)) {
-	      return [...roles];
-	    }
-	  }
-	  return [];
-	}
-	function buildElementRoleList(elementRolesMap) {
-	  function makeElementSelector(_ref) {
-	    let {
-	      name,
-	      attributes
-	    } = _ref;
-	    return "" + name + attributes.map(_ref2 => {
-	      let {
-	        name: attributeName,
-	        value,
-	        constraints = []
-	      } = _ref2;
-	      const shouldNotExist = constraints.indexOf('undefined') !== -1;
-	      if (shouldNotExist) {
-	        return ":not([" + attributeName + "])";
-	      } else if (value) {
-	        return "[" + attributeName + "=\"" + value + "\"]";
-	      } else {
-	        return "[" + attributeName + "]";
-	      }
-	    }).join('');
-	  }
-	  function getSelectorSpecificity(_ref3) {
-	    let {
-	      attributes = []
-	    } = _ref3;
-	    return attributes.length;
-	  }
-	  function bySelectorSpecificity(_ref4, _ref5) {
-	    let {
-	      specificity: leftSpecificity
-	    } = _ref4;
-	    let {
-	      specificity: rightSpecificity
-	    } = _ref5;
-	    return rightSpecificity - leftSpecificity;
-	  }
-	  function match(element) {
-	    let {
-	      attributes = []
-	    } = element;
-
-	    // https://github.com/testing-library/dom-testing-library/issues/814
-	    const typeTextIndex = attributes.findIndex(attribute => attribute.value && attribute.name === 'type' && attribute.value === 'text');
-	    if (typeTextIndex >= 0) {
-	      // not using splice to not mutate the attributes array
-	      attributes = [...attributes.slice(0, typeTextIndex), ...attributes.slice(typeTextIndex + 1)];
-	    }
-	    const selector = makeElementSelector({
-	      ...element,
-	      attributes
-	    });
-	    return node => {
-	      if (typeTextIndex >= 0 && node.type !== 'text') {
-	        return false;
-	      }
-	      return node.matches(selector);
-	    };
-	  }
-	  let result = [];
-
-	  // eslint bug here:
-	  // eslint-disable-next-line no-unused-vars
-	  for (const [element, roles] of elementRolesMap.entries()) {
-	    result = [...result, {
-	      match: match(element),
-	      roles: Array.from(roles),
-	      specificity: getSelectorSpecificity(element)
-	    }];
-	  }
-	  return result.sort(bySelectorSpecificity);
-	}
-	function getRoles(container, _temp) {
-	  let {
-	    hidden = false
-	  } = _temp === void 0 ? {} : _temp;
-	  function flattenDOM(node) {
-	    return [node, ...Array.from(node.children).reduce((acc, child) => [...acc, ...flattenDOM(child)], [])];
-	  }
-	  return flattenDOM(container).filter(element => {
-	    return hidden === false ? isInaccessible(element) === false : true;
-	  }).reduce((acc, node) => {
-	    let roles = [];
-	    // TODO: This violates html-aria which does not allow any role on every element
-	    if (node.hasAttribute('role')) {
-	      roles = node.getAttribute('role').split(' ').slice(0, 1);
-	    } else {
-	      roles = getImplicitAriaRoles(node);
-	    }
-	    return roles.reduce((rolesAcc, role) => Array.isArray(rolesAcc[role]) ? {
-	      ...rolesAcc,
-	      [role]: [...rolesAcc[role], node]
-	    } : {
-	      ...rolesAcc,
-	      [role]: [node]
-	    }, acc);
-	  }, {});
-	}
-	function prettyRoles(dom, _ref6) {
-	  let {
-	    hidden,
-	    includeDescription
-	  } = _ref6;
-	  const roles = getRoles(dom, {
-	    hidden
-	  });
-	  // We prefer to skip generic role, we don't recommend it
-	  return Object.entries(roles).filter(_ref7 => {
-	    let [role] = _ref7;
-	    return role !== 'generic';
-	  }).map(_ref8 => {
-	    let [role, elements] = _ref8;
-	    const delimiterBar = '-'.repeat(50);
-	    const elementsString = elements.map(el => {
-	      const nameString = "Name \"" + computeAccessibleName(el, {
-	        computedStyleSupportsPseudoElements: getConfig().computedStyleSupportsPseudoElements
-	      }) + "\":\n";
-	      const domString = prettyDOM(el.cloneNode(false));
-	      if (includeDescription) {
-	        const descriptionString = "Description \"" + computeAccessibleDescription(el, {
-	          computedStyleSupportsPseudoElements: getConfig().computedStyleSupportsPseudoElements
-	        }) + "\":\n";
-	        return "" + nameString + descriptionString + domString;
-	      }
-	      return "" + nameString + domString;
-	    }).join('\n\n');
-	    return role + ":\n\n" + elementsString + "\n\n" + delimiterBar;
-	  }).join('\n');
-	}
-	const logRoles = function (dom, _temp2) {
-	  let {
-	    hidden = false
-	  } = _temp2 === void 0 ? {} : _temp2;
-	  return console.log(prettyRoles(dom, {
-	    hidden
-	  }));
-	};
-
-	/**
-	 * @param {Element} element -
-	 * @returns {boolean | undefined} - false/true if (not)selected, undefined if not selectable
-	 */
-	function computeAriaSelected(element) {
-	  // implicit value from html-aam mappings: https://www.w3.org/TR/html-aam-1.0/#html-attribute-state-and-property-mappings
-	  // https://www.w3.org/TR/html-aam-1.0/#details-id-97
-	  if (element.tagName === 'OPTION') {
-	    return element.selected;
-	  }
-
-	  // explicit value
-	  return checkBooleanAttribute(element, 'aria-selected');
-	}
-
-	/**
-	 * @param {Element} element -
-	 * @returns {boolean | undefined} - false/true if (not)checked, undefined if not checked-able
-	 */
-	function computeAriaChecked(element) {
-	  // implicit value from html-aam mappings: https://www.w3.org/TR/html-aam-1.0/#html-attribute-state-and-property-mappings
-	  // https://www.w3.org/TR/html-aam-1.0/#details-id-56
-	  // https://www.w3.org/TR/html-aam-1.0/#details-id-67
-	  if ('indeterminate' in element && element.indeterminate) {
-	    return undefined;
-	  }
-	  if ('checked' in element) {
-	    return element.checked;
-	  }
-
-	  // explicit value
-	  return checkBooleanAttribute(element, 'aria-checked');
-	}
-
-	/**
-	 * @param {Element} element -
-	 * @returns {boolean | undefined} - false/true if (not)pressed, undefined if not press-able
-	 */
-	function computeAriaPressed(element) {
-	  // https://www.w3.org/TR/wai-aria-1.1/#aria-pressed
-	  return checkBooleanAttribute(element, 'aria-pressed');
-	}
-
-	/**
-	 * @param {Element} element -
-	 * @returns {boolean | string | null} -
-	 */
-	function computeAriaCurrent(element) {
-	  var _ref9, _checkBooleanAttribut;
-	  // https://www.w3.org/TR/wai-aria-1.1/#aria-current
-	  return (_ref9 = (_checkBooleanAttribut = checkBooleanAttribute(element, 'aria-current')) != null ? _checkBooleanAttribut : element.getAttribute('aria-current')) != null ? _ref9 : false;
-	}
-
-	/**
-	 * @param {Element} element -
-	 * @returns {boolean | undefined} - false/true if (not)expanded, undefined if not expand-able
-	 */
-	function computeAriaExpanded(element) {
-	  // https://www.w3.org/TR/wai-aria-1.1/#aria-expanded
-	  return checkBooleanAttribute(element, 'aria-expanded');
-	}
-	function checkBooleanAttribute(element, attribute) {
-	  const attributeValue = element.getAttribute(attribute);
-	  if (attributeValue === 'true') {
-	    return true;
-	  }
-	  if (attributeValue === 'false') {
-	    return false;
-	  }
-	  return undefined;
-	}
-
-	/**
-	 * @param {Element} element -
-	 * @returns {number | undefined} - number if implicit heading or aria-level present, otherwise undefined
-	 */
-	function computeHeadingLevel(element) {
-	  // https://w3c.github.io/html-aam/#el-h1-h6
-	  // https://w3c.github.io/html-aam/#el-h1-h6
-	  const implicitHeadingLevels = {
-	    H1: 1,
-	    H2: 2,
-	    H3: 3,
-	    H4: 4,
-	    H5: 5,
-	    H6: 6
-	  };
-	  // explicit aria-level value
-	  // https://www.w3.org/TR/wai-aria-1.2/#aria-level
-	  const ariaLevelAttribute = element.getAttribute('aria-level') && Number(element.getAttribute('aria-level'));
-	  return ariaLevelAttribute || implicitHeadingLevels[element.tagName];
-	}
-
-	const normalize = getDefaultNormalizer();
-	function escapeRegExp(string) {
-	  return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-	}
-
-	function getRegExpMatcher(string) {
-	  return new RegExp(escapeRegExp(string.toLowerCase()), 'i');
-	}
-	function makeSuggestion(queryName, element, content, _ref) {
-	  let {
-	    variant,
-	    name
-	  } = _ref;
-	  let warning = '';
-	  const queryOptions = {};
-	  const queryArgs = [['Role', 'TestId'].includes(queryName) ? content : getRegExpMatcher(content)];
-	  if (name) {
-	    queryOptions.name = getRegExpMatcher(name);
-	  }
-	  if (queryName === 'Role' && isInaccessible(element)) {
-	    queryOptions.hidden = true;
-	    warning = "Element is inaccessible. This means that the element and all its children are invisible to screen readers.\n    If you are using the aria-hidden prop, make sure this is the right choice for your case.\n    ";
-	  }
-	  if (Object.keys(queryOptions).length > 0) {
-	    queryArgs.push(queryOptions);
-	  }
-	  const queryMethod = variant + "By" + queryName;
-	  return {
-	    queryName,
-	    queryMethod,
-	    queryArgs,
-	    variant,
-	    warning,
-	    toString() {
-	      if (warning) {
-	        console.warn(warning);
-	      }
-	      let [text, options] = queryArgs;
-	      text = typeof text === 'string' ? "'" + text + "'" : text;
-	      options = options ? ", { " + Object.entries(options).map(_ref2 => {
-	        let [k, v] = _ref2;
-	        return k + ": " + v;
-	      }).join(', ') + " }" : '';
-	      return queryMethod + "(" + text + options + ")";
-	    }
-	  };
-	}
-	function canSuggest(currentMethod, requestedMethod, data) {
-	  return data && (!requestedMethod || requestedMethod.toLowerCase() === currentMethod.toLowerCase());
-	}
-	function getSuggestedQuery(element, variant, method) {
-	  var _element$getAttribute, _getImplicitAriaRoles;
-	  if (variant === void 0) {
-	    variant = 'get';
-	  }
-	  // don't create suggestions for script and style elements
-	  if (element.matches(getConfig().defaultIgnore)) {
-	    return undefined;
-	  }
-
-	  //We prefer to suggest something else if the role is generic
-	  const role = (_element$getAttribute = element.getAttribute('role')) != null ? _element$getAttribute : (_getImplicitAriaRoles = getImplicitAriaRoles(element)) == null ? void 0 : _getImplicitAriaRoles[0];
-	  if (role !== 'generic' && canSuggest('Role', method, role)) {
-	    return makeSuggestion('Role', element, role, {
-	      variant,
-	      name: computeAccessibleName(element, {
-	        computedStyleSupportsPseudoElements: getConfig().computedStyleSupportsPseudoElements
-	      })
-	    });
-	  }
-	  const labelText = getLabels$1(document, element).map(label => label.content).join(' ');
-	  if (canSuggest('LabelText', method, labelText)) {
-	    return makeSuggestion('LabelText', element, labelText, {
-	      variant
-	    });
-	  }
-	  const placeholderText = element.getAttribute('placeholder');
-	  if (canSuggest('PlaceholderText', method, placeholderText)) {
-	    return makeSuggestion('PlaceholderText', element, placeholderText, {
-	      variant
-	    });
-	  }
-	  const textContent = normalize(getNodeText(element));
-	  if (canSuggest('Text', method, textContent)) {
-	    return makeSuggestion('Text', element, textContent, {
-	      variant
-	    });
-	  }
-	  if (canSuggest('DisplayValue', method, element.value)) {
-	    return makeSuggestion('DisplayValue', element, normalize(element.value), {
-	      variant
-	    });
-	  }
-	  const alt = element.getAttribute('alt');
-	  if (canSuggest('AltText', method, alt)) {
-	    return makeSuggestion('AltText', element, alt, {
-	      variant
-	    });
-	  }
-	  const title = element.getAttribute('title');
-	  if (canSuggest('Title', method, title)) {
-	    return makeSuggestion('Title', element, title, {
-	      variant
-	    });
-	  }
-	  const testId = element.getAttribute(getConfig().testIdAttribute);
-	  if (canSuggest('TestId', method, testId)) {
-	    return makeSuggestion('TestId', element, testId, {
-	      variant
-	    });
-	  }
-	  return undefined;
-	}
-
-	// This is so the stack trace the developer sees is one that's
-	// closer to their code (because async stack traces are hard to follow).
-	function copyStackTrace(target, source) {
-	  target.stack = source.stack.replace(source.message, target.message);
-	}
-	function waitFor(callback, _ref) {
-	  let {
-	    container = getDocument(),
-	    timeout = getConfig().asyncUtilTimeout,
-	    showOriginalStackTrace = getConfig().showOriginalStackTrace,
-	    stackTraceError,
-	    interval = 50,
-	    onTimeout = error => {
-	      error.message = getConfig().getElementError(error.message, container).message;
-	      return error;
-	    },
-	    mutationObserverOptions = {
-	      subtree: true,
-	      childList: true,
-	      attributes: true,
-	      characterData: true
-	    }
-	  } = _ref;
-	  if (typeof callback !== 'function') {
-	    throw new TypeError('Received `callback` arg must be a function');
-	  }
-	  return new Promise(async (resolve, reject) => {
-	    let lastError, intervalId, observer;
-	    let finished = false;
-	    let promiseStatus = 'idle';
-	    const overallTimeoutTimer = setTimeout(handleTimeout, timeout);
-	    const usingJestFakeTimers = jestFakeTimersAreEnabled();
-	    if (usingJestFakeTimers) {
-	      const {
-	        unstable_advanceTimersWrapper: advanceTimersWrapper
-	      } = getConfig();
-	      checkCallback();
-	      // this is a dangerous rule to disable because it could lead to an
-	      // infinite loop. However, eslint isn't smart enough to know that we're
-	      // setting finished inside `onDone` which will be called when we're done
-	      // waiting or when we've timed out.
-	      // eslint-disable-next-line no-unmodified-loop-condition
-	      while (!finished) {
-	        if (!jestFakeTimersAreEnabled()) {
-	          const error = new Error("Changed from using fake timers to real timers while using waitFor. This is not allowed and will result in very strange behavior. Please ensure you're awaiting all async things your test is doing before changing to real timers. For more info, please go to https://github.com/testing-library/dom-testing-library/issues/830");
-	          if (!showOriginalStackTrace) copyStackTrace(error, stackTraceError);
-	          reject(error);
-	          return;
-	        }
-	        // we *could* (maybe should?) use `advanceTimersToNextTimer` but it's
-	        // possible that could make this loop go on forever if someone is using
-	        // third party code that's setting up recursive timers so rapidly that
-	        // the user's timer's don't get a chance to resolve. So we'll advance
-	        // by an interval instead. (We have a test for this case).
-	        advanceTimersWrapper(() => {
-	          jest.advanceTimersByTime(interval);
-	        });
-
-	        // It's really important that checkCallback is run *before* we flush
-	        // in-flight promises. To be honest, I'm not sure why, and I can't quite
-	        // think of a way to reproduce the problem in a test, but I spent
-	        // an entire day banging my head against a wall on this.
-	        checkCallback();
-	        if (finished) {
-	          break;
-	        }
-
-	        // In this rare case, we *need* to wait for in-flight promises
-	        // to resolve before continuing. We don't need to take advantage
-	        // of parallelization so we're fine.
-	        // https://stackoverflow.com/a/59243586/971592
-	        // eslint-disable-next-line no-await-in-loop
-	        await advanceTimersWrapper(async () => {
-	          await new Promise(r => {
-	            setTimeout(r, 0);
-	            jest.advanceTimersByTime(0);
-	          });
-	        });
-	      }
-	    } else {
-	      try {
-	        checkContainerType(container);
-	      } catch (e) {
-	        reject(e);
-	        return;
-	      }
-	      intervalId = setInterval(checkRealTimersCallback, interval);
-	      const {
-	        MutationObserver
-	      } = getWindowFromNode(container);
-	      observer = new MutationObserver(checkRealTimersCallback);
-	      observer.observe(container, mutationObserverOptions);
-	      checkCallback();
-	    }
-	    function onDone(error, result) {
-	      finished = true;
-	      clearTimeout(overallTimeoutTimer);
-	      if (!usingJestFakeTimers) {
-	        clearInterval(intervalId);
-	        observer.disconnect();
-	      }
-	      if (error) {
-	        reject(error);
-	      } else {
-	        resolve(result);
-	      }
-	    }
-	    function checkRealTimersCallback() {
-	      if (jestFakeTimersAreEnabled()) {
-	        const error = new Error("Changed from using real timers to fake timers while using waitFor. This is not allowed and will result in very strange behavior. Please ensure you're awaiting all async things your test is doing before changing to fake timers. For more info, please go to https://github.com/testing-library/dom-testing-library/issues/830");
-	        if (!showOriginalStackTrace) copyStackTrace(error, stackTraceError);
-	        return reject(error);
-	      } else {
-	        return checkCallback();
-	      }
-	    }
-	    function checkCallback() {
-	      if (promiseStatus === 'pending') return;
-	      try {
-	        const result = runWithExpensiveErrorDiagnosticsDisabled(callback);
-	        if (typeof (result == null ? void 0 : result.then) === 'function') {
-	          promiseStatus = 'pending';
-	          result.then(resolvedValue => {
-	            promiseStatus = 'resolved';
-	            onDone(null, resolvedValue);
-	          }, rejectedValue => {
-	            promiseStatus = 'rejected';
-	            lastError = rejectedValue;
-	          });
-	        } else {
-	          onDone(null, result);
-	        }
-	        // If `callback` throws, wait for the next mutation, interval, or timeout.
-	      } catch (error) {
-	        // Save the most recent callback error to reject the promise with it in the event of a timeout
-	        lastError = error;
-	      }
-	    }
-	    function handleTimeout() {
-	      let error;
-	      if (lastError) {
-	        error = lastError;
-	        if (!showOriginalStackTrace && error.name === 'TestingLibraryElementError') {
-	          copyStackTrace(error, stackTraceError);
-	        }
-	      } else {
-	        error = new Error('Timed out in waitFor.');
-	        if (!showOriginalStackTrace) {
-	          copyStackTrace(error, stackTraceError);
-	        }
-	      }
-	      onDone(onTimeout(error), null);
-	    }
-	  });
-	}
-	function waitForWrapper(callback, options) {
-	  // create the error here so its stack trace is as close to the
-	  // calling code as possible
-	  const stackTraceError = new Error('STACK_TRACE_MESSAGE');
-	  return getConfig().asyncWrapper(() => waitFor(callback, {
-	    stackTraceError,
-	    ...options
-	  }));
-	}
-
-	/*
-	eslint
-	  max-lines-per-function: ["error", {"max": 200}],
-	*/
-
-	function getElementError(message, container) {
-	  return getConfig().getElementError(message, container);
-	}
-	function getMultipleElementsFoundError(message, container) {
-	  return getElementError(message + "\n\n(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).", container);
-	}
-	function queryAllByAttribute(attribute, container, text, _temp) {
-	  let {
-	    exact = true,
-	    collapseWhitespace,
-	    trim,
-	    normalizer
-	  } = _temp === void 0 ? {} : _temp;
-	  const matcher = exact ? matches : fuzzyMatches;
-	  const matchNormalizer = makeNormalizer({
-	    collapseWhitespace,
-	    trim,
-	    normalizer
-	  });
-	  return Array.from(container.querySelectorAll("[" + attribute + "]")).filter(node => matcher(node.getAttribute(attribute), node, text, matchNormalizer));
-	}
-	function queryByAttribute(attribute, container, text, options) {
-	  const els = queryAllByAttribute(attribute, container, text, options);
-	  if (els.length > 1) {
-	    throw getMultipleElementsFoundError("Found multiple elements by [" + attribute + "=" + text + "]", container);
-	  }
-	  return els[0] || null;
-	}
-
-	// this accepts a query function and returns a function which throws an error
-	// if more than one elements is returned, otherwise it returns the first
-	// element or null
-	function makeSingleQuery(allQuery, getMultipleError) {
-	  return function (container) {
-	    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	      args[_key - 1] = arguments[_key];
-	    }
-	    const els = allQuery(container, ...args);
-	    if (els.length > 1) {
-	      const elementStrings = els.map(element => getElementError(null, element).message).join('\n\n');
-	      throw getMultipleElementsFoundError(getMultipleError(container, ...args) + "\n\nHere are the matching elements:\n\n" + elementStrings, container);
-	    }
-	    return els[0] || null;
-	  };
-	}
-	function getSuggestionError(suggestion, container) {
-	  return getConfig().getElementError("A better query is available, try this:\n" + suggestion.toString() + "\n", container);
-	}
-
-	// this accepts a query function and returns a function which throws an error
-	// if an empty list of elements is returned
-	function makeGetAllQuery(allQuery, getMissingError) {
-	  return function (container) {
-	    for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-	      args[_key2 - 1] = arguments[_key2];
-	    }
-	    const els = allQuery(container, ...args);
-	    if (!els.length) {
-	      throw getConfig().getElementError(getMissingError(container, ...args), container);
-	    }
-	    return els;
-	  };
-	}
-
-	// this accepts a getter query function and returns a function which calls
-	// waitFor and passing a function which invokes the getter.
-	function makeFindQuery(getter) {
-	  return (container, text, options, waitForOptions) => {
-	    return waitForWrapper(() => {
-	      return getter(container, text, options);
-	    }, {
-	      container,
-	      ...waitForOptions
-	    });
-	  };
-	}
-	const wrapSingleQueryWithSuggestion = (query, queryAllByName, variant) => function (container) {
-	  for (var _len3 = arguments.length, args = new Array
+{
+    "word": "ष",
+    "AP90": [
+        {
+            "word": "ष",
+            "eid": "28514",
+            "pagenum": 1064,
+            "content": "ष¦ <i><ab>a.</ab></i> <b>1</b> Best, excellent. <b>--2</b> Wise, learned. --षः <b>1</b> Loss, destruction. <b>--2</b> End. <b>--3</b> Rest, remainder. <b>--4</b> Final emancipation. <b>--5</b> Loss of <lbinfo n='know+ledge'/> knowledge. <b>--6</b> Heaven. <b>--7</b> Sleep. <b>--8</b> A learned man. <b>--9</b> A teat or <lbinfo n='nip+ple'/> nipple. <b>--10</b> Hair. <b>--11</b> Delivery ( <lbinfo n='garma#vimocana'/> गर्मविमोचन)."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "ष",
+            "eid": "15118",
+            "pagenum": 979,
+            "content": "ऽष¦ <i>-ṣa,</i> see <i>pañcaṣa.</i>"
+        }
+    ],
+    "BUR": [
+        {
+            "word": "ष",
+            "eid": "17189",
+            "pagenum": 665,
+            "content": "ष¦ <i>ṣa</i> 45ᵉ lettre et 2ᵉ sifflante de l'alphabet <lbinfo n='3'/> sanscrit; elle procède de श <i>śa</i> et de स <i>sa,</i> qu'elle remplace souvent après les voyelles <i>i</i> et <i>u</i> et après les diphthongues qui en dérivent. Elle répond, dans les langues <lbinfo n='4'/> âryennes, aux mêmes lettres que श <i>śa</i> et स <i>sa.</i>"
+        },
+        {
+            "word": "ष",
+            "eid": "17190",
+            "pagenum": 665,
+            "content": "ष¦ <i>ṣa</i> <ab>m.</ab> <i>(śam)</i> arrêt, repos; repos éternel, <lbinfo n='4'/> paradis; fin, terme; destruction. || <i>(śī)</i> repos, sommeil. || <i>(śās)</i> homme instruit, pandit. -- <ab>N.</ab> <i>(śam)</i> patience. || Embryon. -- <ab>A.</ab> excellent."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "ष",
+            "eid": "33617",
+            "pagenum": 565,
+            "content": "ष¦ (—°) = षष्."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "ष",
+            "eid": "25391",
+            "pagenum": 458,
+            "content": "ष¦ (—°)= षस्."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "ष",
+            "eid": "38825",
+            "pagenum": 737,
+            "content": "za¦ <i>m.</i> 1. Loss, destruction; 2. remainder; 3. final beatitude."
+        }
+    ],
+    "MD": [
+        {
+            "word": "ष",
+            "eid": "18406",
+            "pagenum": 324,
+            "content": "ष¦ ṣa = षष् Ṣaṣ <i>in</i> pañca-ṣa."
+        }
+    ],
+    "MW": [
+        {
+            "word": "ष",
+            "eid": "224878",
+            "pagenum": "1107,3",
+            "content": "<hom>1.</hom> ष ¦ the second of the three sibilants (it belongs to the cerebral class, and is sometimes substituted for स्, and more rarely for श्, and occasionally interchangeable with ख्; in sound it corresponds to <i>sh</i> in the English word <i>shun</i>; many roots which begin with स् are written in the <s1 slp1='DAtu-pAWa'>Dhātu-pāṭha</s1> with ष्, <ab>prob.</ab> to show that their initial स् is liable to be cerebralized after certain prepositions)."
+        },
+        {
+            "word": "ष",
+            "eid": "224882",
+            "pagenum": "1107,3",
+            "content": "<hom>2.</hom> ष ¦ <lex>mfn.</lex> (only <ls>L.</ls>; for <hom>3.</hom> ष See below) best, excellent<info lex='m:f:n'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224883",
+            "pagenum": "1107,3",
+            "content": "¦ wise, learned<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224884",
+            "pagenum": "1107,3",
+            "content": "ष ¦ <lex>m.</lex> loss, destruction<info lex='m'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224885",
+            "pagenum": "1107,3",
+            "content": "¦ loss of knowledge<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224886",
+            "pagenum": "1107,3",
+            "content": "¦ end, term<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224887",
+            "pagenum": "1107,3",
+            "content": "¦ rest, remainder<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224888",
+            "pagenum": "1107,3",
+            "content": "¦ eternal happiness, final emancipation<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224889",
+            "pagenum": "1107,3",
+            "content": "¦ heaven, paradise<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224890",
+            "pagenum": "1107,3",
+            "content": "¦ sleep<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224891",
+            "pagenum": "1107,3",
+            "content": "¦ a learned man, teacher<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224892",
+            "pagenum": "1107,3",
+            "content": "¦ a nipple<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224893",
+            "pagenum": "1107,3",
+            "content": "¦ = कच<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224894",
+            "pagenum": "1107,3",
+            "content": "¦ = मानव<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224895",
+            "pagenum": "1107,3",
+            "content": "¦ = सर्व<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224896",
+            "pagenum": "1107,3",
+            "content": "¦ = गर्भविमोचन<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224897",
+            "pagenum": "1107,3",
+            "content": "ष ¦ <lex>n.</lex> the embryo<info lex='n'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224898",
+            "pagenum": "1107,3",
+            "content": "¦ (<ab>accord.</ab> to some) patience, endurance.<info lex='inh'/>"
+        },
+        {
+            "word": "ष",
+            "eid": "224943",
+            "pagenum": "1108,1",
+            "content": "<hom>3.</hom> ष ¦ <lex>mfn.</lex> = षष् <ab>ifc.</ab> (in पञ्च-ष, <ab>q.v.</ab>)<info lex='m:f:n'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "ष",
+            "eid": "47650",
+            "pagenum": 1032,
+            "content": "ष 1¦. <i>ṣa,</i> the thirty-first consonant of the Nāgarī alphabet and second of the three sibilants; it belongs to the cerebral class, and in sound corresponds to <nsi>sh</nsi> in the English word <nsi>shun.</nsi> (Many roots which begin with the dental <i>s</i> are written in native grammars and in the Dhātu-pāṭha with <i>ṣ,</i> to show that the dental <i>s</i> is liable to be cerebralized after certain prepositions.) <i>—Ṣa-kāra, as,</i> m. the letter or sound <i>ṣa</i>. <i>—Ṣa-tva, am,</i> n. the state of the letter <i>ṣa,</i> the cerebral sibilant, the substitution of <i>ṣ</i> for <i>s.</i> <i>—Ṣatva-ṇatva, am,</i> n. the substitution of <i>ṣ</i> for <i>s</i> and of <i>ṇ</i> for <i>n</i> in grammatical derivatives."
+        },
+        {
+            "word": "ष",
+            "eid": "47651",
+            "pagenum": 1032,
+            "content": "ष 2¦. <i>ṣa, as, ā, am,</i> best, excellent; wise, learned; (<i>as</i>), m. loss, destruction; loss of knowledge; end, term; rest, remainder; eternal happiness, final emancipation, (in some of the preceding senses said to be fr. rt. <i>so</i>); heaven, paradise; sleep; a learned man, teacher; a nipple; (according to Śabda-k.) <i>= kaca; = mānava; = sarva; = garbha-</i> <i>vimocana</i> [cf. <i>ṣū</i>]; (<i>am</i>), n. the embryo; patience, endurance (according to some)."
+        },
+        {
+            "word": "ष",
+            "eid": "47663",
+            "pagenum": 1033,
+            "content": "3. <i>ṣa</i>¦ at the end of a comp. <i>= ṣaṣ</i> (e. g. <i>pañca-</i> <i>ṣa,</i> q. v.)."
+        }
+    ],
+    "PW": [
+        {
+            "word": "ष",
+            "eid": "116094",
+            "pagenum": 6,
+            "content": "<hom>1.</hom> ष¦ <lex>Adj.</lex> = षस् <i>sechs</i> in पञ्चष."
+        },
+        {
+            "word": "ष",
+            "eid": "116095",
+            "pagenum": 6,
+            "content": "<hom>2.</hom> *ष¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> = विज्ञ und श्रेष्ठ. <dvsn n='1'>— 2〉 <lex>m.</lex> = कच, मानव, गर्भविमोचन <i>loss, destruction; rest, remainder; loss of knowledge previously acquired; eternal happiness, final emancipation; heaven, paradise; sleep; end, term</i>. <dvsn n='1'>— 3〉 <lex>n.</lex> <i>the embryo; patience, endurance</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "ष",
+            "eid": "102409",
+            "pagenum": 7,
+            "content": "1. ष¦ <lex>adj.</lex> = षष् am Ende des comp. पञ्चष ."
+        },
+        {
+            "word": "ष",
+            "eid": "102410",
+            "pagenum": 7,
+            "content": "2. ष¦ <lex>adj.</lex> = विज्ञ und श्रेष्ठ; <lex>m.</lex> = कच <ls>MED. ṣ. 1.</ls> = मानव und गर्भविमोचन (m.) <ls>ŚKDR.</ls> nach einem <ls>EKĀKṢARAK.</ls> <i>loss, destruction; rest, remainder; loss of knowledge previously acquired</i> <ls>WILSON</ls> nach einem <ls>EKĀKṢARAK.</ls> <i>eternal happiness, final emancipation; heaven, paradise; sleep; end, term; n. the embryo; patience, endurance</i> <ls>ŚABDĀRTHAK.</ls> bei <ls>WILSON.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "ष",
+            "eid": "41365",
+            "pagenum": 739,
+            "content": "ष¦ The thirty-first consonant of the Nāgari alphabet, and second sibilant, corresponding to Sh, pronounced in some schools Kh: this letter is usually the first element of the roots, the derivatives of which commence with स ।"
+        },
+        {
+            "word": "ष",
+            "eid": "41366",
+            "pagenum": 739,
+            "content": "ष¦ mfn. (-षः-षा-षं) Best, excellent. m. (-षः) 1. A learned man, a teacher. 2. A nipple. 3. Loss, destruction. 4. Rest, remainder. 5. Loss of knowledge, previously acquired. 6. Eternal happiness, final emancipation. 7. Heaven, paradise. 8. Sleep. 9. End, term. 10. Hair. n. (-षं) 1. The embryo. 2. Patience, endurance. E. षो to destroy, &c., aff. कं or ड and the consonant unchanged, &c."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "ष",
+            "eid": "39449",
+            "pagenum": 869,
+            "content": "ष¦ The thirty-first consonant of the <i>Nāgarī</i> alphabet, and second sibilant, corresponding to <i>Sh,</i> pronounced in some schools <i>Kh:</i> this letter is usually the first element of the roots, the derivatives of which commence with स."
+        },
+        {
+            "word": "ष",
+            "eid": "39450",
+            "pagenum": 869,
+            "content": "ष¦ mfn. (षः-षा-षं) Best, excellent. m. (षः) .²1 A learned man, a teacher. .²2 A nipple. .²3 Loss, destruction. .²4 Rest, remainder. .²5 Loss of knowledge previously acquired. .²6 Eternal happiness, final emancipation. .²7 Heaven, paradise. .²8 Sleep. .²9 End, term. n. (-षं) .²1 The embryo. .²2 Patience, endurance. .E. षो to destroy, &c., aff. क or ड and the consonant unchanged, &c."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "ष",
+            "eid": "39111",
+            "pagenum": 788,
+            "content": "ष¦ <i>Sh,</i> the second letter of the sibilant class."
+        },
+        {
+            "word": "ष",
+            "eid": "39112",
+            "pagenum": 788,
+            "content": "ष¦ (षः) 1. <i>m.</i> A learned man; nipple; loss; remainder; final bliss; sleep; end. <i>n.</i> Embryo; patience. <i>a.</i> Excellent."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "ष",
+            "eid": "36919",
+            "pagenum": "5-184-b",
+            "content": "ष¦, मूद्ध न्यषकारः । स तु एकपञ्चाशद्वर्णान्तर्गतसप्तचत्वारिंशद्वर्णः । चतुस्त्रिंशद्व्यञ्जनान्तर्गतैकत्रिंशत्तमव्यञ्जनञ्च । अस्योच्चारणस्थानं मूर्द्धा । इति व्याकरणम् ॥ (यथा, शिक्षायाम् । १७ । स्युर्मूर्द्धन्या ऋटुरसा दन्त्या लूतुलसाः स्मृताः ॥”) तत्पर्य्यायः । “षः श्वेतो १ वासुदेवश्च २ पीता ३ प्राज्ञा ४ विनायकः ५ । परमेष्ठी ६ वामबाहुः ७ श्रेष्ठो ८ गर्भविमोचनः ९ ॥ लम्बोदरो १० यमौजेशः ११ कामधुक् १२ कामधूमकः १३ । सुश्रीः १४ उश्ना १५ वृषो १६ लज्जा १७ मरुद्भक्ष्यः १८ प्रियः १९ शिवः २० ॥ सूर्य्यात्मा २१ जठरः २२ कोषो २३ मत्ता २४ वक्षो २५ विदारिणी २६ । कलकण्ठो २७ मध्यभिन्ना २८ युद्धात्मा २९ मलपूः ३० शिरः ३१ ॥” इति तन्त्रम् ॥ * ॥ अपि च । “षकारः श्वेत आख्यातो मूर्द्धन्यो वृषसंज्ञकः । पित्तं शिक्तिश्च माया च महायोनिः स्वबिन्दुमत् ॥” इति मन्त्राभिधानम् ॥ अस्य स्वरूपं यथा, “षकारं शृणु चार्व्वङ्गि ! अष्टकोणमयं सदा । रक्तचन्द्रप्रतीकाशं स्वयं परमकुण्डली ॥ चतुर्वर्गमयं वर्णं सुधानिर्म्मितविग्रहम् । पञ्चदेवमयं वर्णं पञ्चप्राणमयं सदा ॥ रजःसत्त्वतमोयुक्तं त्रिशक्तिसहितं सदा । त्रिबिन्दुसहितं वर्णं आत्मादितत्त्वसंयुतम् ॥ सर्व्वदेवमयं वर्णं हृदि भावय पार्व्वति ॥” इति कामधेनुतन्त्रम् ॥ अस्य लेखनप्रकारो यथा, “चतुष्कोणात्मिका रेखा वामदक्षिणतः क्रमात् वह्नीन्द्रविष्णवस्तासु तिष्ठन्ति क्रमतः सदा ॥ ऊर्द्ध्वमात्रा शक्तिरूपा महालक्ष्मीसमा स्मृता । मात्रा मध्यगता या तु वाग्देवी सा परा स्मृता ॥” अस्य ध्यानं यथा, “चतुर्भुजां चकोराक्षीं चारुचन्दनचर्च्चिताम् । शुक्लवर्णां त्रिनयनां वरदाञ्च शुचिस्मिताम् ॥ रत्नालङ्कारभूषाठ्यां श्वेतमाल्योपशोभिताम् । देववृन्दैरभिवन्द्यां सेवितां मोक्षकाङ्क्षिभिः ॥ एवं ध्यात्वा षकारन्तु तन्मन्त्रं दशधा जपेत् ॥ इति च वर्णोद्धारतन्त्रम् ॥ (धात्वनुबन्धविशेषः । यथा, कविकल्पद्रुमे । “शिः कुटादिः षः कृदङ्वान् क्षो जक्षादी र वैदिकः ॥” “आख्यातिकस्याङोऽप्राप्त्यर्थं कृदिति विशेषणम् । स्वमते तूभयत्र ङ एव । डु ञौ ष पच पाके । भीषिचिन्तीति पचा ।” इति तट्टीका ॥)"
+        },
+        {
+            "word": "ष",
+            "eid": "36920",
+            "pagenum": "5-184-c",
+            "content": "षः¦, पुं, कचः । इति मेदिनी ॥ मानवः । सर्व्वः । श्रेष्ठः । गर्भविमोचनः । इति कश्चिदेकाक्षरकोषः ॥"
+        },
+        {
+            "word": "ष",
+            "eid": "36921",
+            "pagenum": "5-184-c",
+            "content": "षः¦, त्रि, विज्ञः । श्रेष्ठः । इति मेदिनी ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "ष",
+            "eid": "44464",
+            "pagenum": "5163,b",
+            "content": "ष¦ पु० षो--क पृषो० षत्वम् । १ केशे मेदि० २ गर्भविमोचने मानये च ३ सर्वे ४ श्रेष्ठे एकाक्षरकोषः । ५ विज्ञे च त्रि० मेदि० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "ष",
+            "content": "ष वि. -  -"
+        },
+        {
+            "word": "ष",
+            "content": "ष वि. -  'सो + क, पृषो.षत्वम्' 'सर्वोत्तम, सर्वोत्कृष्ट'"
+        },
+        {
+            "word": "ष",
+            "content": "षः पुं. - 'हानि, विनाश'"
+        },
+        {
+            "word": "ष",
+            "content": "षः पुं. - अन्त"
+        },
+        {
+            "word": "ष",
+            "content": "षः पुं. - 'शेष, अवशिष्ट'"
+        },
+        {
+            "word": "ष",
+            "content": "षः पुं. - मोक्ष"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "ष",
+            "content": "(1) consonant ष्, the vowel अ being added for facility of pronunciation; (2) compound-ending अ, substituted for the final of the word मूर्धन् at the end of a Bahuvrihi compound when the word मूर्धन् is preceded by द्वि or त्रि e. g. द्विमूर्धः, त्रिमूर्धः cf. द्वित्रिभ्यां ष मूर्ध्नः P. V. 4.115 (3) a technical term for तत्पुरुषसमास in the Jainendra Vyakarana."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "ष",
+            "कन्नडार्थः": "ಷಕಾರ",
+            "विस्तारः": "ಇದು ವರ್ಣಸಮಾಮ್ನಾಯದ ಅವರ್ಗೀಯ ವ್ಯಂಜನಾಕ್ಷರಗಳಲ್ಲಿ ೬ನೆಯ ವರ್ಣ. ಈ ವರ್ಣವು ಮೂರ್ಧಾಸ್ಥಾನದಲ್ಲಿ ವಿವೃತಪ್ರಯತ್ನದಿಂದ ಹುಟ್ಟುವ ಒಂದು ಊಷ್ಮವರ್ಣ. 'शषसहाः ऊष्माणः' । विवृतमूष्मणां स्वराणां चसि० कौ० ।",
+            "content": ""
+        },
+        {
+            "word": "ष",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಕಚ \\/ಕೇಶ \\/ತಲೆಯ ಕೂದಲು",
+            "content": ""
+        },
+        {
+            "word": "ष",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸ್ವರ್ಗ",
+            "content": ""
+        },
+        {
+            "word": "ष",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ದೇಶ",
+            "content": ""
+        },
+        {
+            "word": "ष",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಗರ್ಭ",
+            "content": ""
+        },
+        {
+            "word": "ष",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮೋಕ್ಷ",
+            "content": ""
+        },
+        {
+            "word": "ष",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಅವಸಾನ \\/ಕೊನೆ",
+            "content": ""
+        },
+        {
+            "word": "ष",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಪ್ರಳಯ",
+            "content": ""
+        },
+        {
+            "word": "ष",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಶ್ರೇಷ್ಠ",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "ष",
+            "content": "<lexhead no=\"1\">\n<dentry>ष</dentry>\n<prAwipaxikam>ष</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">ष</prAwipaxikam>\n<sense no=\"1\">धातु के आदि में स के स्थान पे लिखा जाने वाला ष जैसे- षिध् गत्याम्, बहुत सी धातुएँ जो ‘स्’ से आरम्भ होती हैं, धातु पाठ में ‘ष्’ पूर्वक लिखी जाती है जिससे कि यह प्रकट हो सके कि कुछ उपसर्गों के पश्वात् ‘स्’ बदल कर ‘ष्’ हो जाता है। इस प्रकार की धातुएँ ‘स्’ के अन्तर्गत ही अपने उचित स्थानपर मिलेंगी</sense>\n<sense n=\"2\">सर्वोत्तम, सर्वोत्कृष्ट</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "ष",
+            "content": "<body><s>za pu° zo—ka pfzo° zatvam . <lb/><b>1</b> keSe medi° <lb/><b>2</b> garBavimocane mAnaye ca <lb/><b>3</b> sarve <lb/><b>4</b> SrezWe ekAkzarakozaH . <lb/><b>5</b> vijYe ca tri° medi° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "ष",
+            "content": "<H1><h><key1>za</key1><key2>za</key2><hom>1</hom></h><body><hom>1.</hom> <s>za</s>   the second of the three sibilants (it belongs to the cerebral class, and is sometimes substituted for <s>s</s>, and more rarely for <s>S</s>, and occasionally interchangeable with <s>K</s>; in sound it corresponds to <i>sh</i> in the <lang>English</lang> word <i>shun</i>; many roots which begin with <s>s</s> are written in the <s1 slp1=\"DAtu-pAWa\">Dhātu-pāṭha</s1> with <s>z</s>, <ab>prob.</ab> to show that their initial <s>s</s> is liable to be cerebralized after certain prepositions).</body><tail><L>224878</L><pc>1107,3</pc></tail></H1>\n <H1><h><key1>za</key1><key2>za</key2><hom>2</hom></h><body><hom>2.</hom> <s>za</s>   <lex>mfn.</lex> (only <ls>L.</ls>; for <hom>3.</hom> <s>za</s> See below) best, excellent<info lex=\"m:f:n\" /></body><tail><L>224882</L><pc>1107,3</pc></tail></H1>\n <H1A><h><key1>za</key1><key2>za</key2></h><body>  wise, learned<info lex=\"inh\" /></body><tail><L>224883</L><pc>1107,3</pc></tail></H1A>\n <H1B><h><key1>za</key1><key2>za</key2></h><body><s>za</s>   <lex>m.</lex> loss, destruction<info lex=\"m\" /></body><tail><L>224884</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  loss of knowledge<info lex=\"inh\" /></body><tail><L>224885</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  end, term<info lex=\"inh\" /></body><tail><L>224886</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  rest, remainder<info lex=\"inh\" /></body><tail><L>224887</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  eternal happiness, final emancipation<info lex=\"inh\" /></body><tail><L>224888</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  heaven, paradise<info lex=\"inh\" /></body><tail><L>224889</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  sleep<info lex=\"inh\" /></body><tail><L>224890</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  a learned man, teacher<info lex=\"inh\" /></body><tail><L>224891</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  a nipple<info lex=\"inh\" /></body><tail><L>224892</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  = <s>kaca</s><info lex=\"inh\" /></body><tail><L>224893</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  = <s>mAnava</s><info lex=\"inh\" /></body><tail><L>224894</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  = <s>sarva</s><info lex=\"inh\" /></body><tail><L>224895</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  = <s>garBavimocana</s><info lex=\"inh\" /></body><tail><L>224896</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body><s>za</s>   <lex>n.</lex> the embryo<info lex=\"n\" /></body><tail><L>224897</L><pc>1107,3</pc></tail></H1B>\n <H1B><h><key1>za</key1><key2>za</key2></h><body>  (<ab>accord.</ab> to some) patience, endurance.<info lex=\"inh\" /></body><tail><L>224898</L><pc>1107,3</pc></tail></H1B>\n <H2><h><key1>za</key1><key2>za</key2><hom>3</hom></h><body><hom>3.</hom> <s>za</s>   <lex>mfn.</lex> = <s>zaz</s> <ab>ifc.</ab> (in <s>paYca-za</s>, <ab>q.v.</ab>)<info lex=\"m:f:n\" /></body><tail><L>224943</L><pc>1108,1</pc></tail></H2>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "ष",
+            "content": "<H1><h><key1>za</key1><key2>za</key2></h><body><s>za</s>  The thirty-first consonant of the Nāgari alphabet, and second <lb />sibilant, corresponding to Sh, pronounced in some schools Kh: <lb />this letter is usually the first element of the roots, the derivatives <lb />of which commence<div n=\"1\">with <s>sa .</s></div></body><tail><L>41365</L><pc>739-a</pc></tail></H1>\n <H1><h><key1>za</key1><key2>za</key2></h><body><s>za</s>  <div n=\"1\">mfn. (<s>-zaH-zA-zaM</s>) Best, excellent. </div><div n=\"1\">m. (<s>-zaH</s>) </div><div n=\"2\"> 1. A learned man, a teacher. <lb />2. A nipple. </div><div n=\"2\"> 3. Loss, destruction. </div><div n=\"2\"> 4. Rest, remainder. </div><div n=\"2\"> 5. Loss of <lb />knowledge, previously acquired. </div><div n=\"2\"> 6. Eternal happiness, final eman- <lb />cipation. </div><div n=\"2\"> 7. Heaven, paradise. </div><div n=\"2\"> 8. Sleep. </div><div n=\"2\"> 9. End, term. </div><div n=\"2\"> 10. Hair. [Page739-b+ 60] <lb />n. (<s>-zaM</s>) </div><div n=\"2\"> 1. The embryo. </div><div n=\"2\"> 2. Patience, endurance.</div><div n=\"E\"> E. <s>zo</s> to destroy, <lb />&amp;c., aff. <s>kaM</s> or <s>qa</s> and the consonant unchanged, &amp;c.</div></body><tail><L>41366</L><pc>739-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "ष",
+            "content": "<span lang=\"sa\">ष<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಷಕಾರ<div class=\"h-2\"> </div><b>विस्तारः - </b>ಇದು ವರ್ಣಸಮಾಮ್ನಾಯದ ಅವರ್ಗೀಯ ವ್ಯಂಜನಾಕ್ಷರಗಳಲ್ಲಿ ೬ನೆಯ ವರ್ಣ। ಈ ವರ್ಣವು ಮೂರ್ಧಾಸ್ಥಾನದಲ್ಲಿ ವಿವೃತಪ್ರಯತ್ನದಿಂದ ಹುಟ್ಟುವ ಒಂದು ಊಷ್ಮವರ್ಣ। \"शषसहाः ऊष्माणः\" । विवृतमूष्मणां स्वराणां च - सि० कौ० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ष<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕಚ /ಕೇಶ /ತಲೆಯ ಕೂದಲು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ष<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸ್ವರ್ಗ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ष<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದೇಶ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ष<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗರ್ಭ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ष<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೋಕ್ಷ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ष<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅವಸಾನ /ಕೊನೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ष<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪ್ರಳಯ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ष<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶ್ರೇಷ್ಠ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

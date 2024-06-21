@@ -1,158 +1,124 @@
-             err("Module.instantiateWasm callback failed with error: " + e);
-                    return false;
-                }
-            }
-            instantiateAsync().catch(readyPromiseReject);
-            return {};
+{
+    "word": "त्रिसन्ध्य",
+    "ABCH": [
+        {
+            "word": "त्रिसन्ध्य",
+            "linga": "क्ली",
+            "pagenum": "9",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "494",
+            "group": "90",
+            "synonyms": [
+                "उपवैणव"
+            ],
+            "content": "दिनावसानमुत्सूरो विकालसबली अपि ।\nसायं संध्या तु पितृसूस्त्रिसंध्यं तूपवैणवम् ॥ १४० ॥"
         }
-        function callRuntimeCallbacks(callbacks) {
-            while(callbacks.length > 0){
-                var callback = callbacks.shift();
-                if (typeof callback == "function") {
-                    callback(Module);
-                    continue;
-                }
-                var func = callback.func;
-                if (typeof func === "number") {
-                    if (callback.arg === undefined) {
-                        wasmTable.get(func)();
-                    } else {
-                        wasmTable.get(func)(callback.arg);
-                    }
-                } else {
-                    func(callback.arg === undefined ? null : callback.arg);
-                }
-            }
+    ],
+    "BUR": [
+        {
+            "word": "त्रिसन्ध्य",
+            "eid": "8302",
+            "pagenum": 305,
+            "content": "त्रिसन्ध्य¦ <i>trisandhya</i> <ab>m.</ab> <ab>n.</ab> et <i>trisandhyā</i> <ab>f.</ab> les trois moments sacrés [aurore, midi, crépuscule], <ab>cf.</ab> <i>triṣavaṇa.</i>"
         }
-        var runtimeKeepaliveCounter = 0;
-        function keepRuntimeAlive() {
-            return noExitRuntime || runtimeKeepaliveCounter > 0;
+    ],
+    "SHS": [
+        {
+            "word": "त्रिसन्ध्य",
+            "eid": "18161",
+            "pagenum": 326,
+            "content": "त्रिसन्ध्य¦ mfn. (-न्ध्यः-न्ध्या or न्ध्यी-न्ध्यं) The three periods of the day, or dawn, noon, and eve. E. त्रि three, and सन्ध्य either of the periods."
         }
-        function _atexit(func, arg) {}
-        function ___cxa_thread_atexit(a0, a1) {
-            return _atexit(a0, a1);
+    ],
+    "WIL": [
+        {
+            "word": "त्रिसन्ध्य",
+            "eid": "18178",
+            "pagenum": 392,
+            "content": "त्रिसन्ध्य¦ mfn. (-न्ध्यः-न्ध्या or -न्ध्यी-न्ध्यं) The three periods of the day, or dawn, noon, and eve. .E. त्रि three, and सन्ध्य either of the periods."
         }
-        var structRegistrations = {};
-        function runDestructors(destructors) {
-            while(destructors.length){
-                var ptr = destructors.pop();
-                var del = destructors.pop();
-                del(ptr);
-            }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिसन्ध्य",
+            "eid": "17653",
+            "pagenum": 347,
+            "content": "त्रि-सन्ध्य¦ (न्ध्यः-न्ध्या-न्ध्यी-न्ध्यं) <i>a.</i> The three periods of the day, the dawn, noon and evening."
         }
-        function simpleReadValueFromPointer(pointer) {
-            return this["fromWireType"](HEAPU32[pointer >> 2]);
+    ],
+    "SKD": [
+        {
+            "word": "त्रिसन्ध्य",
+            "eid": "15647",
+            "pagenum": "2-663-c",
+            "content": "त्रिसन्ध्यं¦, क्ली, (तिसृणां सन्ध्यानां समाहारः । आबन्तोवेति पाक्षिकी क्लीवता ।) पूर्व्वाह्णमध्याह्नापराह्णकालः । इत्यमरः । १ । ४ । ३ ॥ अस्य रूपान्तरम् । त्रिसन्ध्यी । इत्यमरटीकायां भरतः ॥ (यथा, महाभारते । ३ । ८२ । २१ । “सान्निध्यं पुष्करे येषां त्रिसन्ध्यं कुरुनन्दन ! । आदित्या वसवो रुद्राः साध्याश्च समरुद्गणाः । गन्धर्व्वाप्सरसश्चैव नित्यं सन्निहिता विभो ! ॥”)"
         }
-        var awaitingDependencies = {};
-        var registeredTypes = {};
-        var typeDependencies = {};
-        var char_0 = 48;
-        var char_9 = 57;
-        function makeLegalFunctionName(name) {
-            if (undefined === name) {
-                return "_unknown";
-            }
-            name = name.replace(/[^a-zA-Z0-9_]/g, "$");
-            var f = name.charCodeAt(0);
-            if (f >= char_0 && f <= char_9) {
-                return "_" + name;
-            } else {
-                return name;
-            }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिसन्ध्य",
+            "eid": "23842",
+            "pagenum": "3388,b",
+            "content": "त्रिसन्ध्य¦ न० समाहारद्वि० । प्राह्णपराह्णमध्याह्नरूपे स० न्ध्यात्रये । “सान्निध्यं पुष्करे येषां त्रिसन्ध्यं कुरुनन्दन!” भा० व० ८२ अ० । “करैस्त्रिसन्ध्यं त्रिदशैर्दिशे नमः” माघः । “त्रिसन्ध्यव्यापिनी या तु सैव पूज्या सदा तिथिः । न तत्र युग्मादरणमन्यत्र हरिवासरात्” ति० त० पराशरः । कुसुमे (फागनिया) राजनि० ।"
         }
-        function createNamedFunction(name, body) {
-            name = makeLegalFunctionName(name);
-            return new Function("body", "return function " + name + "() {\n" + '    "use strict";' + "    return body.apply(this, arguments);\n" + "};\n")(body);
+    ],
+    "APHI": [
+        {
+            "word": "त्रिसन्ध्य",
+            "content": "त्रिसन्ध्यम् नपुं. त्रि-सन्ध्यम्  - ' दिन के तीन काल अर्थात् प्रातः, मध्याह्न और सायम्'"
+        },
+        {
+            "word": "त्रिसन्ध्य",
+            "content": "त्रिसन्ध्यम् अव्य. त्रि-सन्ध्यम्  - तीनों संध्याओं के समय"
         }
-        function extendError(baseErrorType, errorName) {
-            var errorClass = createNamedFunction(errorName, function(message) {
-                this.name = errorName;
-                this.message = message;
-                var stack = new Error(message).stack;
-                if (stack !== undefined) {
-                    this.stack = this.toString() + "\n" + stack.replace(/^Error(:[^\n]*)?\n/, "");
-                }
-            });
-            errorClass.prototype = Object.create(baseErrorType.prototype);
-            errorClass.prototype.constructor = errorClass;
-            errorClass.prototype.toString = function() {
-                if (this.message === undefined) {
-                    return this.name;
-                } else {
-                    return this.name + ": " + this.message;
-                }
-            };
-            return errorClass;
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिसन्ध्य",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಪ್ರಾತಃಕಾಲ ಮಧ್ಯಾಹ್ಮ ಮತ್ತು ಸಾಯಂಕಾಲಗಳೆಂಬ ಮೂರು ಕಾಲ",
+            "व्युत्पत्तिः": "तिसृणां सन्ध्यानां समाहारः",
+            "प्रयोगाः": "'आकारि तस्यै पलस्खलत्करैस्त्रिसन्ध्यं त्रिदशैर्दिशो नमः'",
+            "उल्लेखाः": "माघ० १-४६",
+            "content": ""
+        },
+        {
+            "word": "त्रिसन्ध्य",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ತ್ರಿಸಂಧ್ಯಾಕಾಲಗಳಲ್ಲಿಯೂ",
+            "content": ""
         }
-        var InternalError = undefined;
-        function throwInternalError(message) {
-            throw new InternalError(message);
+    ],
+    "AMARA": [
+        {
+            "word": "त्रिसन्ध्य",
+            "linga": "N",
+            "artha": "प्राह्णापराह्णमध्याह्नाः",
+            "synonyms": [
+                "त्रिसन्ध्य"
+            ],
+            "num": "1.4.4",
+            "text": "प्राह्णापराह्णमध्याह्नास्त्रिसन्ध्यमथ शर्वरी । निशा निशीथिनी रात्रिस्त्रियामा क्षणदा क्षपा ॥",
+            "content": ""
         }
-        function whenDependentTypesAreResolved(myTypes, dependentTypes, getTypeConverters) {
-            myTypes.forEach(function(type) {
-                typeDependencies[type] = dependentTypes;
-            });
-            function onComplete(typeConverters) {
-                var myTypeConverters = getTypeConverters(typeConverters);
-                if (myTypeConverters.length !== myTypes.length) {
-                    throwInternalError("Mismatched type converter count");
-                }
-                for(var i = 0; i < myTypes.length; ++i){
-                    registerType(myTypes[i], myTypeConverters[i]);
-                }
-            }
-            var typeConverters = new Array(dependentTypes.length);
-            var unregisteredTypes = [];
-            var registered = 0;
-            dependentTypes.forEach(function(dt, i) {
-                if (registeredTypes.hasOwnProperty(dt)) {
-                    typeConverters[i] = registeredTypes[dt];
-                } else {
-                    unregisteredTypes.push(dt);
-                    if (!awaitingDependencies.hasOwnProperty(dt)) {
-                        awaitingDependencies[dt] = [];
-                    }
-                    awaitingDependencies[dt].push(function() {
-                        typeConverters[i] = registeredTypes[dt];
-                        ++registered;
-                        if (registered === unregisteredTypes.length) {
-                            onComplete(typeConverters);
-                        }
-                    });
-                }
-            });
-            if (0 === unregisteredTypes.length) {
-                onComplete(typeConverters);
-            }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिसन्ध्य",
+            "content": "<body><s>trisanDya na° samAhAradvi° . prAhRaparAhRamaDyAhnarUpe sa° nDyAtraye . <q>sAnniDyaM puzkare yezAM trisanDyaM kurunandana!</q> BA° va° 82 a° . <q>karEstrisanDyaM tridaSErdiSe namaH</q> mAGaH . <q>trisanDyavyApinI yA tu sEva pUjyA sadA tiTiH . na tatra yugmAdaraRamanyatra harivAsarAt</q> ti° ta° parASaraH . kusume (PAganiyA) rAjani° .</s></body>"
         }
-        function __embind_finalize_value_object(structType) {
-            var reg = structRegistrations[structType];
-            delete structRegistrations[structType];
-            var rawConstructor = reg.rawConstructor;
-            var rawDestructor = reg.rawDestructor;
-            var fieldRecords = reg.fields;
-            var fieldTypes = fieldRecords.map(function(field) {
-                return field.getterReturnType;
-            }).concat(fieldRecords.map(function(field) {
-                return field.setterArgumentType;
-            }));
-            whenDependentTypesAreResolved([
-                structType
-            ], fieldTypes, function(fieldTypes) {
-                var fields = {};
-                fieldRecords.forEach(function(field, i) {
-                    var fieldName = field.fieldName;
-                    var getterReturnType = fieldTypes[i];
-                    var getter = field.getter;
-                    var getterContext = field.getterContext;
-                    var setterArgumentType = fieldTypes[i + fieldRecords.length];
-                    var setter = field.setter;
-                    var setterContext = field.setterContext;
-                    fields[fieldName] = {
-                        read: function(ptr) {
-                            return getterReturnType["fromWireType"](getter(getterContext, ptr));
-                        },
-                        write: function(ptr, o) {
-                            var destructors = [];
-                            setter(setterContext, ptr, setterArgumentType["toWireType"](destructors, o));
-                            runDestructors(destructo
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिसन्ध्य",
+            "content": "<H1><h><key1>trisanDya</key1><key2>trisanDya</key2></h><body><s>trisanDya</s>  <div n=\"1\">mfn. (<s>-nDyaH-nDyA</s> or <s>nDyI-nDyaM</s>) The three periods of the day, or dawn, <lb />noon, and eve.</div><div n=\"E\"> E. <s>tri</s> three, and <s>sanDya</s> either of the periods.</div></body><tail><L>18161</L><pc>326-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिसन्ध्य",
+            "content": "<span lang=\"sa\">त्रिसन्ध्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪ್ರಾತಃಕಾಲ ಮಧ್ಯಾಹ್ಮ ಮತ್ತು ಸಾಯಂಕಾಲಗಳೆಂಬ ಮೂರು ಕಾಲ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>तिसृणां सन्ध्यानां समाहारः<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"आकारि तस्यै पलस्खलत्करैस्त्रिसन्ध्यं त्रिदशैर्दिशो नमः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० १-४६<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिसन्ध्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತ್ರಿಸಂಧ್ಯಾಕಾಲಗಳಲ್ಲಿಯೂ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

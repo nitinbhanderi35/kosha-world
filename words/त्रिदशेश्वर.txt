@@ -1,1 +1,98 @@
-100%, 50%);\n\n\t/* -- Generic colors ------------------------------------------------------------------------- */\n\n\t--ck-color-light-red:\t\t\t\t\t\t\t\t\t\thsl(0, 100%, 90%);\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t/**\n\t * An opacity value of disabled UI item.\n\t */\n\t--ck-disabled-opacity: .5;\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t/**\n\t * The geometry of the of focused element's outer shadow.\n\t */\n\t--ck-focus-outer-shadow-geometry: 0 0 0 3px;\n\n\t/**\n\t * A visual style of focused element's outer shadow.\n\t */\n\t--ck-focus-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-outer-shadow);\n\n\t/**\n\t * A visual style of focused element's outer shadow (when disabled).\n\t */\n\t--ck-focus-disabled-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-disabled-shadow);\n\n\t/**\n\t * A visual style of focused element's outer shadow (when has errors).\n\t */\n\t--ck-focus-error-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-error-shadow);\n\n\t/**\n\t * A visual style of focused element's border or outline.\n\t */\n\t--ck-focus-ring: 1px solid var(--ck-color-focus-border);\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t--ck-font-size-base: 13px;\n\t--ck-line-height-base: 1.84615;\n\t--ck-font-face: Helvetica, Arial, Tahoma, Verdana, Sans-Serif;\n\n\t--ck-font-size-tiny: 0.7em;\n\t--ck-font-size-small: 0.75em;\n\t--ck-font-size-normal: 1em;\n\t--ck-font-size-big: 1.4em;\n\t--ck-font-size-large: 1.8em;\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t/* This is super-important. This is **manually** adjusted so a button without an icon\n\tis never smaller than a button with icon, additionally making sure that text-less buttons\n\tare perfect squares. The value is also shared by other components which should stay "in-line"\n\twith buttons. */\n\t--ck-ui-component-min-height: 2.3em;\n}\n\n/**\n * Resets an element, ignoring its children.\n */\n.ck.ck-reset,\n.ck.ck-reset_all,\n.ck-reset_all *:not(.ck-reset_all-excluded *) {\n\t/* Do not include inheritable rules here. */\n\tmargin: 0;\n\tpadding: 0;\n\tborder: 0;\n\tbackground: transparent;\n\ttext-decoration: none;\n\tvertical-align: middle;\n\ttransition: none;\n\n\t/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/105 */\n\tword-wrap: break-word;\n}\n\n/**\n * Resets an element AND its children.\n */\n.ck.ck-reset_all,\n.ck-reset_all *:not(.ck-reset_all-excluded *) {\n\t/* These are rule inherited by all children elements. */\n\tborder-collapse: collapse;\n\tfont: normal normal normal var(--ck-font-size-base)/var(--ck-line-height-base) var(--ck-font-face);\n\tcolor: var(--ck-color-text);\n\ttext-align: left;\n\twhite-space: nowrap;\n\tcursor: auto;\n\tfloat: none;\n}\n\n.ck-reset_all {\n\t& .ck-rtl *:not(.ck-reset_all-excluded *) {\n\t\ttext-align: right;\n\t}\n\n\t& iframe:not(.ck-reset_all-excluded *) {\n\t\t/* For IE */\n\t\tvertical-align: inherit;\n\t}\n\n\t& textarea:not(.ck-reset_all-excluded *) {\n\t\twhite-space: pre-wrap;\n\t}\n\n\t& textarea:not(.ck-reset_all-excluded *),\n\t& input[type="text"]:not(.ck-reset_all-excluded *),\n\t& input[type="password"]:not(.ck-reset_all-excluded *) {\n\t\tcursor: text;\n\t}\n\n\t& textarea[disabled]:not(.ck-reset_all-excluded *),\n\t& input[type="text"][disabled]:not(.ck-reset_all-excluded *),\n\t& input[type="password"][disabled]:not(.ck-reset_all-excluded *) {\n\t\tcursor: default;\n\t}\n\n\t& fieldset:not(.ck-reset_all-excluded *) {\n\t\tpadding: 10px;\n\t\tborder: 2px groove hsl(255, 7%, 88%);\n\t}\n\n\t& button:not(.ck-reset_all-excluded *)::-moz-focus-inner {\n\t\t/* See http://stackoverflow.com/questions/5517744/remove-extra-button-spacing-padding-in-firefox */\n\t\tpadding: 0;\n\
+{
+    "word": "त्रिदशेश्वर",
+    "CAE": [
+        {
+            "word": "त्रिदशेश्वर",
+            "eid": "12856",
+            "pagenum": 212,
+            "content": "त्रिदशेश्वर¦ <lex>m.</lex> = <ab>prec.</ab>, also <ab>E.</ab> of Agni, Varuṇa, & Yama."
+        }
+    ],
+    "INM": [
+        {
+            "word": "त्रिदशेश्वर",
+            "eid": "10913",
+            "pagenum": 680,
+            "content": "<b>Tridaśeśvara</b><sup>1</sup>¦ = Indra: I, 1534; III, 10730, †11911, 12015, 13226, 17421 (<i>Vajrī</i>); VIII, 4440, 4443; IX, 2444; XI, 661; XII, 7338, 9530; XIII, 3913; XIV, 2882.— Do.<sup>2</sup> = Śiva: III, 11977; XIII, 971, 997.—Do.<sup>2</sup> = Kṛṣṇa: VII, 6462 (wanting in B.), 8274.—Do.<sup>4</sup>, pl. (<i>°āḥ</i>): III, 2190 (i.e. Indra, etc.); XIII, 7097."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "त्रिदशेश्वर",
+            "eid": "1825",
+            "pagenum": 166,
+            "content": "<b>tridaśeśvara,</b>¦ <i><ab>m.</ab> <ab>pl.</ab></i> lords of the gods, <i><ab>i. e.</ab></i> the four chief gods, Indra, Agni, Varuna, <lbinfo n='Va-runa,'/> and Yama. [<b>īśvara.</b>]"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिदशेश्वर",
+            "eid": "16104.1",
+            "pagenum": 318,
+            "content": "tri-daSa˚ISvara¦ <i>m.</i> an epithet of Indra."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिदशेश्वर",
+            "eid": "87791",
+            "pagenum": "458,3",
+            "content": "tri—da°Se<srs/>Svara ¦ <lex>m.</lex> = °Se<srs/>ndra, <ls>MBh.</ls>; <ls>R. ii</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिदशेश्वर",
+            "eid": "87792",
+            "pagenum": "458,3",
+            "content": "¦ <s1 slp1='Siva'>Śiva</s1>, <ls>MBh.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिदशेश्वर",
+            "eid": "87793",
+            "pagenum": "458,3",
+            "content": "¦ <ab>pl.</ab> <s1 slp1='indra'>Indra</s1>, <s1 slp1='agni'>Agni</s1>, <s1 slp1='varuRa'>Varuṇa</s1>, and <s1 slp1='yama'>Yama</s1>, <ls>Nal. iv, 31</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिदशेश्वर",
+            "eid": "47490",
+            "pagenum": 3,
+            "content": "त्रिदशेश्वर¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <ab>Bein.</ab> <is>Indra</is>ʼs. <is>Agni</is>ʼs, <is>Varuṇa</is>ʼs und <is>Yama</is>ʼs. °द्विष् <lex>m.</lex> <ab>Bein.</ab> <is>Rāvaṇa</is>ʼs. <dvsn n='1'>— 2〉 <lex>f.</lex> ई <dvsn n='2'>— a〉 <ab>Bein.</ab> der <is>Durgā</is>. <dvsn n='2'>— b〉 <ab>N. pr.</ab> eines Wesens im Gefolge der <is>Durgā</is>."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिदशेश्वर",
+            "eid": "23650",
+            "pagenum": "3367,a",
+            "content": "त्रिदशेश्वर¦ पु० ६ त० । १ इन्द्रे २ दुर्गायां स्त्री ङीप् । “सुराह्वास्त्रिदशा देवा नन्दिनी दुन्दुभिर्मता । तेषाञ्च नन्दिनी नन्दी ईशत्वात् त्रिदशेश्वरी” देवीपु० ४५ अ० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिदशेश्वर",
+            "content": "त्रिदशेश्वरः पुं. त्रि-दश-ईश्वरः  - इन्द्र के विशेषण"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिदशेश्वर",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಇಂದ್ರ \\/ದೇವತೆಗಳ ರಾಜ",
+            "व्युत्पत्तिः": "त्रिदशानामीश्वरः",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिदशेश्वर",
+            "content": "<body><s>tridaSeSvara pu° 6 ta° . <lb/><b>1</b> indre <lb/><b>2</b> durgAyAM strI NIp . <q>su­rAhvAstridaSA devA nandinI dunduBirmatA . tezAYca na­ndinI nandI ISatvAt tridaSeSvarI</q> devIpu° 45 a° .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिदशेश्वर",
+            "content": "<span lang=\"sa\">त्रिदशेश्वर<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಇಂದ್ರ /ದೇವತೆಗಳ ರಾಜ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिदशानामीश्वरः<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

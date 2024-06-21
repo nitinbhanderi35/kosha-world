@@ -1,1 +1,188 @@
-t:calc(var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width))}.ck.ck-balloon-panel.ck-balloon-panel_arrow_n:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_n:before{left:50%;margin-left:calc(var(--ck-balloon-arrow-half-width)*-1);top:calc(var(--ck-balloon-arrow-height)*-1)}.ck.ck-balloon-panel.ck-balloon-panel_arrow_nw:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_nw:before{left:calc(var(--ck-balloon-arrow-half-width)*2);top:calc(var(--ck-balloon-arrow-height)*-1)}.ck.ck-balloon-panel.ck-balloon-panel_arrow_ne:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_ne:before{right:calc(var(--ck-balloon-arrow-half-width)*2);top:calc(var(--ck-balloon-arrow-height)*-1)}.ck.ck-balloon-panel.ck-balloon-panel_arrow_s:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_s:before{bottom:calc(var(--ck-balloon-arrow-height)*-1);left:50%;margin-left:calc(var(--ck-balloon-arrow-half-width)*-1)}.ck.ck-balloon-panel.ck-balloon-panel_arrow_sw:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_sw:before{bottom:calc(var(--ck-balloon-arrow-height)*-1);left:calc(var(--ck-balloon-arrow-half-width)*2)}.ck.ck-balloon-panel.ck-balloon-panel_arrow_se:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_se:before{bottom:calc(var(--ck-balloon-arrow-height)*-1);right:calc(var(--ck-balloon-arrow-half-width)*2)}.ck.ck-balloon-panel.ck-balloon-panel_arrow_sme:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_sme:before{bottom:calc(var(--ck-balloon-arrow-height)*-1);margin-right:calc(var(--ck-balloon-arrow-half-width)*2);right:25%}.ck.ck-balloon-panel.ck-balloon-panel_arrow_smw:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_smw:before{bottom:calc(var(--ck-balloon-arrow-height)*-1);left:25%;margin-left:calc(var(--ck-balloon-arrow-half-width)*2)}.ck.ck-balloon-panel.ck-balloon-panel_arrow_nme:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_nme:before{margin-right:calc(var(--ck-balloon-arrow-half-width)*2);right:25%;top:calc(var(--ck-balloon-arrow-height)*-1)}.ck.ck-balloon-panel.ck-balloon-panel_arrow_nmw:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_nmw:before{left:25%;margin-left:calc(var(--ck-balloon-arrow-half-width)*2);top:calc(var(--ck-balloon-arrow-height)*-1)}.ck.ck-balloon-panel.ck-balloon-panel_arrow_e:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_e:before{margin-top:calc(var(--ck-balloon-arrow-half-width)*-1);right:calc(var(--ck-balloon-arrow-height)*-1);top:50%}.ck.ck-balloon-panel.ck-balloon-panel_arrow_w:after,.ck.ck-balloon-panel.ck-balloon-panel_arrow_w:before{left:calc(var(--ck-balloon-arrow-height)*-1);margin-top:calc(var(--ck-balloon-arrow-half-width)*-1);top:50%}',"",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/panel/balloonpanel.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/panel/balloonpanel.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css"],names:[],mappings:"AAKA,MAEC,8DACD,CAEA,qBACC,YAAa,CACb,iBAAkB,CAElB,yBAyCD,CAtCE,+GAEC,UAAW,CACX,iBACD,CAEA,wDACC,6CACD,CAEA,uDACC,uDACD,CAIA,4CACC,6CACD,CAEA,2CACC,uDACD,CAIA,4CACC,6CACD,CAEA,2CACC,uDACD,CAGD,8CACC,aACD,CC9CD,MACC,6BAA8B,CAC9B,6BAA8B,CAC9B,8BAA+B,CAC/B,iCAAkC,CAClC,oEACD,CAEA,qBCLC,eDmMD,CA9LA,iFCDE,qCD+LF,CA9LA,qBAMC,2CAA4C,CAC5C,wEAAyE,CEdzE,oCAA8B,CFW9B,eA0LD,CApLE,+GAIC,kBAAmB,CADnB,QAAS,CADT,OAGD,CAIA,uFAEC,mHACD,CAEA,4CACC,6EAA8E,CAC9E,kDACD,CAEA,2CACC,iFAAkF,CAClF,gFACD,CAIA,uFAEC,mHACD,CAEA,4CACC,iEAAkE,CAClE,uDAAwD,CACxD,qDACD,CAEA,2CACC,iFAAkF,CAClF,mFACD,CAIA,uFAEC,mHACD,CAEA,4CACC,6EAA8E,CAC9E,oDACD,CAEA,2CACC,iFAAkF,CAClF,kFACD,CAIA,uFAEC,mHACD,CAEA,4CACC,6EAA8E,CAC9E,mDACD,CAEA,2CACC,iFAAkF,CAClF,iFACD,CAIA,yGAEC,QAAS,CACT,uDAA0D,CAC1D,2CACD,CAIA,2GAEC,+CAAkD,CAClD,2CACD,CAIA,2GAEC,gDAAmD,CACnD,2CACD,CAIA,yGAIC,8CAAiD,CAFjD,QAAS,CACT,uDAED,CAIA,2GAGC,8CAAiD,CADjD,+CAED,CAIA,2GAGC,8CAAiD,CADjD,gDAED,CAIA,6GAIC,8CAAiD,CADjD,uDAA0D,CAD1D,SAGD,CAIA,6GAIC,8CAAiD,CAFjD,QAAS,CACT,sDAED,CAIA,6GAGC,uDAA0D,CAD1D,SAAU,CAEV,2CACD,CAIA,6GAEC,QAAS,CACT,sDAAyD,CACzD,2CACD,CAIA,yGAGC,sDAAyD,CADzD,6CAAgD,CAEhD,OACD,CAIA,yGAEC,4CAA+C,CAC/C,sDAAyD,CACzD,OACD",sourcesContent:['/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t/* Make sure the balloon arrow does not float over its children. */\n\t--ck-balloon-panel-arrow-z-index: calc(var(--ck-z-default) - 3);\n}\n\n.ck.ck-balloon-panel {\n\tdisplay: none;\n\tposition: absolute;\n\n\tz-index: var(--ck-z-panel);\n\n\t&.ck-balloon-panel_with-arrow {\n\t\t&::before,\n\t\t&::after {\n\t\t\tcontent: "";\n\t\t\tposition: absolute;\n\t\t}\n\n\t\t&::before {\n\t\t\tz-index: var(--ck-balloon-panel-arrow-z-index);\n\t\t}\n\n\t\t&::after {\n\t\t\tz-index: calc(var(--ck-balloon-panel-arrow-z-index) + 1);\n\t\t}\n\t}\n\n\t&[class*="arrow_n"] {\n\t\t&::before {\n\t\t\tz-index: var(--ck-balloon-panel-arrow-z-index);\n\t\t}\n\n\t\t&::after {\n\t\t\tz-index: calc(var(--ck-balloon-panel-arrow-z-index) + 1);\n\t\t}\n\t}\n\n\t&[class*="arrow_s"] {\n\t\t&::before {\n\t\t\tz-index: var(--ck-balloon-panel-arrow-z-index);\n\t\t}\n\n\t\t&::after {\n\t\t\tz-index: calc(var(--ck-balloon-panel-arrow-z-index) + 1);\n\t\t}\n\t}\n\n\t&.ck-balloon-panel_visible {\n\t\tdisplay: block;\n\t}\n}\n','/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_rounded.css";\n@import "../../../mixins/_shadow.css";\n\n:root {\n\t--ck-balloon-border-width: 1px;\n\t--ck-balloon-arrow-offset: 2px;\n\t--ck-balloon-arrow-height: 10px;\n\t--ck-balloon-arrow-half-width: 8px;\n\t--ck-balloon-arrow-drop-shadow: 0 2px 2px var(--ck-color-shadow-drop);\n}\n\n.ck.ck-balloon-panel {\n\t@mixin ck-rounded-corners;\n\t@mixin ck-drop-shadow;\n\n\tmin-height: 15px;\n\n\tbackground: var(--ck-color-panel-background);\n\tborder: var(--ck-balloon-border-width) solid var(--ck-color-panel-border);\n\n\t&.ck-balloon-panel_with-arrow {\n\t\t&::before,\n\t\t&::after {\n\t\t\twidth: 0;\n\t\t\theight: 0;\n\t\t\tborder-style: solid;\n\t\t}\n\t}\n\n\t&[class*="arrow_n"] {\n\t\t&::before,\n\t\t&::after {\n\t\t\tborder-width: 0 var(--ck-balloon-arrow-half-width) var(--ck-balloon-arrow-height) var(--ck-balloon-arrow-half-width);\n\t\t}\n\n\t\t&::before {\n\t\t\tborder-color: transparent transparent var(--ck-color-panel-border) transparent;\n\t\t\tmargin-top: calc( -1 * var(--ck-balloon-border-width) );\n\t\t}\n\n\t\t&::after {\n\t\t\tborder-color: transparent transparent var(--ck-color-panel-background) transparent;\n\t\t\tmargin-top: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );\n\t\t}\n\t}\n\n\t&[class*="arrow_s"] {\n\t\t&::before,\n\t\t&::after {\n\t\t\tborder-width: var(--ck-balloon-arrow-height) var(--ck-balloon-arrow-half-width) 0 var(--ck-balloon-arrow-half-width);\n\t\t}\n\n\t\t&::before {\n\t\t\tborder-color: var(--ck-color-panel-border) transparent transparent;\n\t\t\tfilter: drop-shadow(var(--ck-balloon-arrow-drop-shadow));\n\t\t\tmargin-bottom: calc( -1 * var(--ck-balloon-border-width) );\n\t\t}\n\n\t\t&::after {\n\t\t\tborder-color: var(--ck-color-panel-background) transparent transparent transparent;\n\t\t\tmargin-bottom: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );\n\t\t}\n\t}\n\n\t&[class*="arrow_e"] {\n\t\t&::before,\n\t\t&::after {\n\t\t\tborder-width: var(--ck-balloon-arrow-half-width) 0 var(--ck-balloon-arrow-half-width) var(--ck-balloon-arrow-height);\n\t\t}\n\n\t\t&::before {\n\t\t\tborder-color: transparent transparent transparent var(--ck-color-panel-border);\n\t\t\tmargin-right: calc( -1 * var(--ck-balloon-border-width) );\n\t\t}\n\n\t\t&::after {\n\t\t\tborder-color: transparent transparent transparent var(--ck-color-panel-background);\n\t\t\tmargin-right: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );\n\t\t}\n\t}\n\n\t&[class*="arrow_w"] {\n\t\t&::before,\n\t\t&::after {\n\t\t\tborder-width: var(--ck-balloon-arrow-half-width) var(--ck-balloon-arrow-height) var(--ck-balloon-arrow-half-width) 0;\n\t\t}\n\n\t\t&::before {\n\t\t\tborder-color: transparent var(--ck-color-panel-border) transparent transparent;\n\t\t\tmargin-left: calc( -1 * var(--ck-balloon-border-width) );\n\t\t}\n\n\t\t&::after {\n\t\t\tborder-color: transparent var(--ck-color-panel-background) transparent transparent;\n\t\t\tmargin-left: calc( var(--ck-balloon-arrow-offset) - var(--ck-balloon-border-width) );\n\t\t}\n\t}\n\n\t&.ck-balloon-panel_arrow_n {\n\t\t&::before,\n\t\t&::after {\n\t\t\tleft: 50%;\n\t\t\tmargin-left: calc(-1 * var(--ck-balloon-arrow-half-width));\n\t\t\ttop: calc(-1 * var(--ck-balloon-arrow-height));\n\t\t}\n\t}\n\n\t&.ck-balloon-panel_arrow_nw {\n\t\t&::before,\n\t\t&::after {\n\t\t\tleft: calc(2 * var(--ck-balloon-arrow-half-width));\n\t\t\ttop: calc(-1 * var(--ck-balloon-arrow-height));\n\t\t}\n\t}\n\n\t&.ck-balloon-panel_arrow_ne {\n\t\t&::before,\n\t\t&::after {\n\t\t\tright: calc(2 * var(--ck-balloon-arrow-half-width));\n\t\t\ttop: calc(-1 * var(--ck-balloon-arrow-height));\n\t\t}\n\t}\n\n\t&.ck-balloon-panel_arrow_s {\n\t\t&::before,\n\t\t&::after {\n\t\t\tleft: 50%;\n\t\t\tmargin-left: calc(-1 * var(--ck-balloon-arrow-half-width));\n\t\t\tbottom: calc(-1 * var(--ck-balloon-arrow-height));\n\t\t}\n\t}\n\n\t&.ck-balloon-panel_arrow_sw {\n\t\t&:
+{
+    "word": "त्रिधातु",
+    "BUR": [
+        {
+            "word": "त्रिधातु",
+            "eid": "8246",
+            "pagenum": 303,
+            "content": "त्रिधातु¦ <i>tridhātu</i> <ab>m.</ab> les trois stations du Soleil, <ab>Vd.</ab> || <ab>Surn.</ab> de <s1 slp1='gaReSa'>Gaṇeśa</s1>."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिधातु",
+            "eid": "12861",
+            "pagenum": 212,
+            "content": "त्रिधा/तु¦ <lex>a.</lex> tripartite, triple; <lex>n.</lex> = त्रिजगत्."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिधातु",
+            "eid": "9020",
+            "pagenum": 160,
+            "content": "त्रिधा/तु¦ dreiteilig, dreifach; <i>n.</i> die dreiteilige <lbinfo n='7'/> Welt."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "त्रिधातु",
+            "eid": "3937",
+            "pagenum": 558,
+            "content": "<b>tri-dhā́tu,</b>¦ <ab>a.</ab>, <i>aus drei Theilen</i> [dhátu] <i>bestehend, dreitheilig,</i> so auch 2〉 vom Liede, dem Feuer, der Opferstreu und vom Opferwerke; 3〉 vom Soma <ab>u. s. w.</ab>: <i>aus drei Bestandtheilen gemischt;</i> 4〉 von den Kühen: <i>dreifaches Gut enthaltend</i> (?); 5〉 vom Schutze <ab>u. s. w.</ab>: <i>dreifach,</i> <ab>d. h.</ab> stark; 6〉 von der Welt: <i>dreitheilig;</i> 7〉 <ab>n.</ab>, <i>die dreitheilige Welt;</i> 8〉 <ab>n.</ab>, <ab>adv.</ab> <i>dreifach</i>. <dvsn n='TS'>-us 2〉 arkás {260,7}; jūrnís {681,9}. — 3〉 mádas {798,46}. <dvsn n='TS'>-um 2〉 arkám {1020,4}. <dvsn n='TS'>-u [<ab>s.</ab> <ab>n.</ab>] 2〉 barhís {711,14}. — 3〉 amṛ́tam {485,23}; mádhu {713,8}; {782,8}. — 5〉 śárma {34,6}; śaraṇám {487,9}; śaraṇám śárma {617,2}; varūthíam {667,10}. — 6〉 bhū́ma {338,4}. — 7〉 {154,4} (oder zu 8); {521,4} (oder zu vratám). — 8〉 {476,2}; {820,12}. <dvsn n='TS'>-unā 1〉 (ráthena) {183,1}. — 5〉 śármaṇā {660,12}. <dvsn n='TS'>-u [<ab>p.</ab> <ab>n.</ab>] 8〉 〰 rāyás ā́ suvā vásūni {290,6}. <dvsn n='TS'>-avas 4〉 gā́vas {401,4}. <dvsn n='TS'>-ūni 2〉 vidáthā {659,9}. — 5〉 śárma {85,12}. <dvsn n='TS'>-ubhis 4〉 áruṣībhis {823,2}."
+        }
+    ],
+    "INM": [
+        {
+            "word": "त्रिधातु",
+            "eid": "10919",
+            "pagenum": 680,
+            "content": "<b>Tridhātu</b>¦ = Kṛṣṇa (Viṣṇu): XII, 13246."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "त्रिधातु",
+            "eid": "1827",
+            "pagenum": 166,
+            "content": "<b>tri-dhā́tu,</b>¦ <i><ab>a.</ab></i> having three parts, tri-partite, <lbinfo n='tri-par-tite,'/> threefold. [<ab>acct</ab>, <ls n='wg,1300'>1300c</ls>.]"
+        }
+    ],
+    "MD": [
+        {
+            "word": "त्रिधातु",
+            "eid": "8866",
+            "pagenum": 113,
+            "content": "त्रिधातु¦ tri-dhā́tu, <lex>a.</lex> threefold; <lex>n.</lex> the triple 🞄world."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिधातु",
+            "eid": "87816",
+            "pagenum": "458,3",
+            "content": "त्रि—धा/तु ¦ <lex>mfn.</lex> consisting of 3 parts, triple, threefold (used like <ab>Lat.</ab> <etym>triplex</etym> to denote excessive), <ls>RV.</ls>; <ls>ŚBr. v, 5, 5, 6</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिधातु",
+            "eid": "87817",
+            "pagenum": "458,3",
+            "content": "त्रि—धा/तु ¦ <lex>m.</lex> (<ab>scil.</ab> पुरोडा/श) <ab>N.</ab> of an oblation, <ls>TS. ii, 3, 6, 1</ls> (-त्व/ <lex type='phw'>n.</lex> <ab>abstr.</ab>)<info phwchild='87821.1'/><info lex='m'/>"
+        },
+        {
+            "word": "त्रिधातु",
+            "eid": "87818",
+            "pagenum": "458,3",
+            "content": "त्रि—धा/तु ¦ <lex>m.</lex> <s1 slp1='gaReSa'>Gaṇeśa</s1>, <ls>L.</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिधातु",
+            "eid": "87819",
+            "pagenum": "458,3",
+            "content": "¦ <ab>N.</ab> of a man, <ls>TāṇḍyaBr. xiii, 3, 12</ls>, <ab>Sch.</ab><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिधातु",
+            "eid": "87820",
+            "pagenum": "459,1",
+            "content": "त्रि—धा/तु ¦ <lex>n.</lex> the triple world, <ls>RV.</ls><info lex='n'/>"
+        },
+        {
+            "word": "त्रिधातु",
+            "eid": "87821",
+            "pagenum": "459,1",
+            "content": "¦ the aggregate of the 3 minerals or of the 3 humours, <ls>W.</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिधातु",
+            "eid": "47507",
+            "pagenum": 3,
+            "content": "त्रिधा/तु¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>dreitheilig</i> (eine Composition <ls>S. S. S. 120</ls>), <i>dreifach, dreifältig;</i> überhaupt verstärkend wie <i>dreifach und triplex</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <dvsn n='2'>— a〉 <i>eine <ab>best.</ab> Darbringung</i>. <ab>Nom. abstr.</ab> त्रिधातुत्व/ <lex>n.</lex> <ls>TS. 2,3,6,1</ls>. <dvsn n='2'>— b〉 *<ab>Bein.</ab> <is>Gaṇeśa</is>ʼs. <dvsn n='2'>— c〉 *<ab>N. pr.</ab> eines Mannes <ls>Comm. zu TĀṆḌYA-BR. 13,3,12</ls> (त्रिधातोः oder त्रिधातु <ab>st.</ab> त्रिधातुः zu lesen). <dvsn n='1'>— 3〉 <lex>n.</lex> <i>die dreitheilige Welt</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिधातु",
+            "eid": "30976",
+            "pagenum": 3,
+            "content": "त्रिधातु¦ (त्रि + धातु) <lex>m.</lex> Bein. <is>Gaṇeśa's</is> <ls>TRIK. 1, 1, 55.</ls> St. त्रिधामुक <ls>H. ś. 61.</ls> ist wohl त्रिधातुक zu lesen. <dvsn n='v'>— Vgl. auch u. धातु, त्रैधातव ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिधातु",
+            "eid": "18074",
+            "pagenum": 324,
+            "content": "त्रिधातु¦ m. (-तुः) A name of GANESA. n. (-त) Three minerals, &c. E. त्रि three, and धातु mineral, &c. त्रीन् धर्मार्थकामान् दधाति पुष्णाति धा-तुन् ।"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिधातु",
+            "eid": "18091",
+            "pagenum": 389,
+            "content": "त्रिधातु¦ m. (-तुः) A name of GAṆEŚA. n. (-तु) Three minerals, &c. .E. त्रि three, and धातु mineral, &c."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिधातु",
+            "eid": "17567",
+            "pagenum": 345,
+            "content": "त्रि-धातु¦ (तुः) 2. <i>m.</i> A name of <i>Ganesha.</i> <i>n.</i> Three minerals."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिधातु",
+            "eid": "15544",
+            "pagenum": "2-657-b",
+            "content": "त्रिधातुः¦, पुं, (त्रीन् धर्म्मार्थकामान् दधाति पुष्णातीति । धा + तुन् ।) गणेशः । इति त्रिकाण्डशेषः ॥ (त्रयाणां घातूनां समाहारः ।) धातुत्रये, क्ली ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिधातु",
+            "eid": "23662",
+            "pagenum": "3367,b",
+            "content": "त्रिधातु¦ पु० त्रीन् धर्मार्थकामान् दधाति पुष्णाति धा--तुन् । १ गणेशे त्रिका० । समा० द्विगुः । २ धातु त्रये न० ।"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिधातु",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಗಣಪತಿ \\/ವಿನಾಯಕ",
+            "निष्पत्तिः": "डुधाञ् (धारणपोषणयोः)'तुन्' (उ० १-६९)",
+            "व्युत्पत्तिः": "त्रीन् धर्मार्थकामान् ददाति",
+            "विस्तारः": "'त्रिधातुरेकदन्तश्च द्विदेहो मूषिकाञ्जनः'त्रिकाण्ड० ।",
+            "content": ""
+        },
+        {
+            "word": "त्रिधातु",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಮೂರು ಧಾತುಗಳು",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिधातु",
+            "content": "<body><s>triDAtu pu° trIn DarmArTakAmAn daDAti puzRAti DA—tun . <lb/><b>1</b> gaReSe trikA° . samA° dviguH . <lb/><b>2</b> DAtu traye na° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिधातु",
+            "content": "<H1><h><key1>triDAtu</key1><key2>triDAtu</key2></h><body><s>triDAtu</s>  <div n=\"1\">m. (<s>-tuH</s>) A name of GANESA. </div><div n=\"1\">n. (<s>-ta</s>) Three minerals, &amp;c.</div><div n=\"E\"> E. <s>tri</s> <lb />three, and <s>DAtu</s> mineral, &amp;c. <s>trIn DarmArTakAmAn daDAti puzRAti DA-tun .</s></div></body><tail><L>18074</L><pc>324-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिधातु",
+            "content": "<span lang=\"sa\">त्रिधातु<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗಣಪತಿ /ವಿನಾಯಕ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>डुधाञ् (धारणपोषणयोः) - \"तुन्\" (उ० १-६९)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीन् धर्मार्थकामान् ददाति<div class=\"h-2\"> </div><b>विस्तारः - </b>\"त्रिधातुरेकदन्तश्च द्विदेहो मूषिकाञ्जनः\" - त्रिकाण्ड० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिधातु<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ಧಾತುಗಳು<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

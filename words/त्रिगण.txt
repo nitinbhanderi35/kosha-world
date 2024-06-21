@@ -1,1 +1,140 @@
-_selection.setTo(...t)}get isFake(){return this._selection.isFake}get fakeSelectionLabel(){return this._selection.fakeSelectionLabel}get anchor(){return this._selection.anchor}get focus(){return this._selection.focus}get isCollapsed(){return this._selection.isCollapsed}get rangeCount(){return this._selection.rangeCount}get isBackward(){return this._selection.isBackward}get editableElement(){return this._selection.editableElement}get _ranges(){return this._selection._ranges}*getRanges(){yield*this._selection.getRanges()}getFirstRange(){return this._selection.getFirstRange()}getLastRange(){return this._selection.getLastRange()}getFirstPosition(){return this._selection.getFirstPosition()}getLastPosition(){return this._selection.getLastPosition()}getSelectedElement(){return this._selection.getSelectedElement()}isEqual(t){return this._selection.isEqual(t)}isSimilar(t){return this._selection.isSimilar(t)}_setTo(...t){this._selection.setTo(...t)}_setFocus(t,e){this._selection.setFocus(t,e)}}Cs.prototype.is=function(t){return"selection"===t||"documentSelection"==t||"view:selection"==t||"view:documentSelection"==t};class vs extends m{constructor(t,e,n){super(t,e),this.startRange=n,this._eventPhase="none",this._currentTarget=null}get eventPhase(){return this._eventPhase}get currentTarget(){return this._currentTarget}}const ys=Symbol("bubbling contexts");function xs(t){return class extends t{fire(t,...e){try{const n=t instanceof m?t:new m(this,t),o=Ss(this);if(!o.size)return;if(Es(n,"capturing",this),Bs(o,"$capture",n,...e))return n.return;const i=n.startRange||this.selection.getFirstRange(),r=i?i.getContainedElement():null,s=!!r&&Boolean(Ds(o,r));let a=r||function(t){if(!t)return null;const e=t.start.parent,n=t.end.parent,o=e.getPath(),i=n.getPath();return o.length>i.length?e:n}(i);if(Es(n,"atTarget",a),!s){if(Bs(o,"$text",n,...e))return n.return;Es(n,"bubbling",a)}for(;a;){if(a.is("rootElement")){if(Bs(o,"$root",n,...e))return n.return}else if(a.is("element")&&Bs(o,a.name,n,...e))return n.return;if(Bs(o,a,n,...e))return n.return;a=a.parent,Es(n,"bubbling",a)}return Es(n,"bubbling",this),Bs(o,"$document",n,...e),n.return}catch(t){A.rethrowUnexpectedError(t,this)}}_addEventListener(t,e,n){const o=vi(n.context||"$document"),i=Ss(this);for(const r of o){let o=i.get(r);o||(o=new(P()),i.set(r,o)),this.listenTo(o,t,e,n)}}_removeEventListener(t,e){const n=Ss(this);for(const o of n.values())this.stopListening(o,t,e)}}}{const t=xs(Object);["fire","_addEventListener","_removeEventListener"].forEach((e=>{xs[e]=t.prototype[e]}))}function Es(t,e,n){t instanceof vs&&(t._eventPhase=e,t._currentTarget=n)}function Bs(t,e,n,...o){const i="string"==typeof e?t.get(e):Ds(t,e);return!!i&&(i.fire(n,...o),n.stop.called)}function Ds(t,e){for(const[n,o]of t)if("function"==typeof n&&n(e))return o;return null}function Ss(t){return t[ys]||(t[ys]=new Map),t[ys]}class Ts extends(xs(K())){constructor(t){super(),this._postFixers=new Set,this.selection=new Cs,this.roots=new Wi({idProperty:"rootName"}),this.stylesProcessor=t,this.set("isReadOnly",!1),this.set("isFocused",!1),this.set("isSelecting",!1),this.set("isComposing",!1)}getRoot(t="main"){return this.roots.get(t)}registerPostFixer(t){this._postFixers.add(t)}destroy(){this.roots.forEach((t=>t.destroy())),this.stopListening()}_callPostFixers(t){let e=!1;do{for(const n of this._postFixers)if(e=n(t),e)break}while(e)}}class Ps extends ds{constructor(t,e,n,o){super(t,e,n,o),this._priority=10,this._id=null,this._clonesGroup=null,this.getFillerOffset=Ms}get priority(){return this._priority}get id(){return this._id}getElementsWithSameId(){if(null===this.id)throw new A("attribute-element-get-elements-with-same-id-no-id",this);return new Set(this._clonesGroup)}isSimilar(t){return null!==this.id||null!==t.id?this.id===t.id:super.isSimilar(t)&&this.priority==t.priority}_clone(t=!1){const e=super._clone(t);return e._priority=this._priority,e._id=this._id,e}}Ps.DEFAULT_PRIORITY=10;const Is=Ps;function Ms(){if(Rs(this))return null;let t=this.parent;for(;t&&t.is("attributeElement");){if(Rs(t)>1)return null;t=t.parent}return!t||Rs(t)>1?null:this.childCount}function Rs(t){return Array.from(t.getChildren()).filter((t=>!t.is("uiElement"))).length}Ps.prototype.is=function(t,e){return e?e===this.name&&("attributeElement"===t||"view:attributeElement"===t||"element"===t||"view:element"===t):"attributeElement"===t||"view:attributeElement"===t||"element"===t||"view:element"===t||"node"===t||"view:node"===t};class Fs extends ds{constructor(t,e,n,o){super(t,e,n,o),this.getFillerOffset=Ls}_insertChild(t,e){if(e&&(e instanceof Br||Array.from(e).length>0))throw new A("view-emptyelement-cannot-add",[this,e]);return 0}}function Ls(){return null}Fs.prototype.is=function(t,e){return e?e===this.name&&("emptyElement"===t||"view:emptyElement"===t||"element"===t||"view:element"===t):"emptyElement"===t||"view:emptyElement"===t||"element"===t||"view:element"===t||"node"===t||"view:node"===t};class Vs extends ds{constructor(t,e,n,o){super(t,e,n,o),this.getFillerOffset=zs}_insertChild(t,e){if(e&&(e instanceof Br||Array.from(e).length>0))throw new A("view-uielement-cannot-add",[this,e]);return 0}render(t,e){return this.toDomElement(t)}toDomElement(t){const e=t.createElement(this.name);for(const t of this.getAttributeKeys())e.setAttribute(t,this.getAttribute(t));return e}}function Os(t){t.document.on("arrowKey",((e,n)=>function(t,e,n){if(e.keyCode==fi.arrowright){const t=e.domTarget.ownerDocument.defaultView.getSelection(),o=1==t.rangeCount&&t.getRangeAt(0).colla
+{
+    "word": "त्रिगण",
+    "BUR": [
+        {
+            "word": "त्रिगण",
+            "eid": "8228",
+            "pagenum": 303,
+            "content": "त्रिगण¦ <i>trigaṇa</i> <ab>m.</ab> les trois choses précieuses <lbinfo n='7'/> [vertu, richesse, amour]."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिगण",
+            "eid": "16078",
+            "pagenum": 318,
+            "content": "tri-gaRa¦ <i>m.</i> the aggregate of the three objects of existence, viz., धर्म, अर्थ and काम, न बाधतेऽस्य त्रिगणः परस्परम् <ls>Kir.</ls>i.11."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिगण",
+            "eid": "87660",
+            "pagenum": "458,2",
+            "content": "त्रि—गण ¦ <lex>m.</lex> the triad of duties (धर्म, काम, and अर्थ), <ls>Kir. i, 11.</ls><info lex='m'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिगण",
+            "eid": "47400",
+            "pagenum": 3,
+            "content": "*त्रिगण¦ <lex>m.</lex> = धर्म, काम und अर्थ."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिगण",
+            "eid": "30896",
+            "pagenum": 3,
+            "content": "त्रिगण¦ (त्रि + गण) <lex>m.</lex> <i>der Verein von Dreien: Tugend</i> (धर्म), <i>Lust</i> oder <i>Vergnügen</i> (काम) und <i>Nutzen</i> (अर्थ) <ls>NĪLAK.</ls> zu <ls>AK. 2, 7, 57.</ls> <dvsn n='v'>— Vgl. त्रिवर्ग ."
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "त्रिगण",
+            "eid": "4793",
+            "pagenum": 3,
+            "content": "त्रिगण¦ <lex>m.</lex> <ls>KIR. 1,11</ls>."
+        },
+        {
+            "word": "त्रिगण",
+            "eid": "17939",
+            "pagenum": 7,
+            "content": "त्रिगण¦ III. 3."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "त्रिगण",
+            "eid": "14852",
+            "pagenum": 205,
+            "content": "<i>trigaṇa</i>¦ m. <ls>Kir.</ls> 1, 11. {part=,seq=15085,type=,n=1}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिगण",
+            "eid": "18029",
+            "pagenum": 323,
+            "content": "त्रिगण¦ m. (-णः) The aggregate of three human objects, or virtue, wealth, and desire. E. त्रि three, and गण a class: see त्रिवर्ग."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिगण",
+            "eid": "18046",
+            "pagenum": 388,
+            "content": "त्रिगण¦ m. (-णः) The aggregate of three human objects, or virtue, wealth, and desire. .E. त्रि three, and गण a class: see त्रिवर्ग."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिगण",
+            "eid": "17521",
+            "pagenum": 344,
+            "content": "त्रि-गण¦ (णः) 1. <i>m.</i> The aggregate of three human objects, virtue, wealth, and love."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिगण",
+            "eid": "15507",
+            "pagenum": "2-656-a",
+            "content": "त्रिगणः¦, पुं, (त्रयाणां धर्म्मार्थकामानां गणो वर्गः ।) त्रिवर्गः । धर्म्मार्थकामाः । इत्यमरटीकायां नीलकण्ठः ॥ (यथा, किरातार्ज्जुनीये । १ । ११ । “गुणानुरागादिव सख्यमीयिवान्न वाधतेऽस्य त्रिगणः परस्परम् ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिगण",
+            "eid": "23599",
+            "pagenum": "3363,b",
+            "content": "त्रिगण¦ त्रि० ६ त० । १ त्रिवर्गे अमरटीकायां नीलकण्ठः “न वाधतेऽस्य त्रिगणः परस्परम्” किरा० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिगण",
+            "content": "त्रिगणः पुं. त्रि-गणः  - सांसारिक जीवन के तीन पदार्थों की समष्टि"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिगण",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ತ್ರಿವರ್ಗ \\/ಧರ್ಮ ಅರ್ಥ ಮತ್ತು ಕಾಮ ಇವುಗಳಸಮುದಾಯ",
+            "व्युत्पत्तिः": "त्रयाणां धर्मार्थकामानां गणः",
+            "प्रयोगाः": "'गुणानुरागादिव सख्यमीयिवान्न बाधनेऽस्य त्रिगणः परस्परम्'",
+            "उल्लेखाः": "किरा० १-११",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिगण",
+            "content": "<body><s>trigaRa tri° 6 ta° . <lb/><b>1</b> trivarge amarawIkAyAM nIlakaRWaH <q>na vADate'sya trigaRaH parasparam</q> kirA° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिगण",
+            "content": "<H1><h><key1>trigaRa</key1><key2>trigaRa</key2></h><body><s>trigaRa</s>  <div n=\"1\">m. (<s>-RaH</s>) The aggregate of three human objects, or virtue, <lb />wealth, and desire.</div><div n=\"E\"> E. <s>tri</s> three, and <s>gaRa</s> a class: see <s>trivarga</s>.</div></body><tail><L>18029</L><pc>323-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिगण",
+            "content": "<span lang=\"sa\">त्रिगण<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತ್ರಿವರ್ಗ /ಧರ್ಮ ಅರ್ಥ ಮತ್ತು ಕಾಮ ಇವುಗಳಸಮುದಾಯ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रयाणां धर्मार्थकामानां गणः<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"गुणानुरागादिव सख्यमीयिवान्न बाधनेऽस्य त्रिगणः परस्परम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>किरा० १-११<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

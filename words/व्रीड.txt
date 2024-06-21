@@ -1,337 +1,226 @@
-      function isFragment(object) {
-	        return typeOf(object) === REACT_FRAGMENT_TYPE;
-	      }
-	      function isLazy(object) {
-	        return typeOf(object) === REACT_LAZY_TYPE;
-	      }
-	      function isMemo(object) {
-	        return typeOf(object) === REACT_MEMO_TYPE;
-	      }
-	      function isPortal(object) {
-	        return typeOf(object) === REACT_PORTAL_TYPE;
-	      }
-	      function isProfiler(object) {
-	        return typeOf(object) === REACT_PROFILER_TYPE;
-	      }
-	      function isStrictMode(object) {
-	        return typeOf(object) === REACT_STRICT_MODE_TYPE;
-	      }
-	      function isSuspense(object) {
-	        return typeOf(object) === REACT_SUSPENSE_TYPE;
-	      }
-	      reactIs_development.ContextConsumer = ContextConsumer;
-	      reactIs_development.ContextProvider = ContextProvider;
-	      reactIs_development.Element = Element;
-	      reactIs_development.ForwardRef = ForwardRef;
-	      reactIs_development.Fragment = Fragment;
-	      reactIs_development.Lazy = Lazy;
-	      reactIs_development.Memo = Memo;
-	      reactIs_development.Portal = Portal;
-	      reactIs_development.Profiler = Profiler;
-	      reactIs_development.StrictMode = StrictMode;
-	      reactIs_development.Suspense = Suspense;
-	      reactIs_development.isAsyncMode = isAsyncMode;
-	      reactIs_development.isConcurrentMode = isConcurrentMode;
-	      reactIs_development.isContextConsumer = isContextConsumer;
-	      reactIs_development.isContextProvider = isContextProvider;
-	      reactIs_development.isElement = isElement;
-	      reactIs_development.isForwardRef = isForwardRef;
-	      reactIs_development.isFragment = isFragment;
-	      reactIs_development.isLazy = isLazy;
-	      reactIs_development.isMemo = isMemo;
-	      reactIs_development.isPortal = isPortal;
-	      reactIs_development.isProfiler = isProfiler;
-	      reactIs_development.isStrictMode = isStrictMode;
-	      reactIs_development.isSuspense = isSuspense;
-	      reactIs_development.isValidElementType = isValidElementType;
-	      reactIs_development.typeOf = typeOf;
-	    })();
-	  }
-	  return reactIs_development;
-	}
-
-	(function (module) {
-
-	  {
-	    module.exports = requireReactIs_development();
-	  }
-	})(reactIs);
-
-	Object.defineProperty(ReactElement, '__esModule', {
-	  value: true
-	});
-	ReactElement.test = ReactElement.serialize = ReactElement.default = void 0;
-	var ReactIs = _interopRequireWildcard(reactIs.exports);
-	var _markup$1 = markup;
-	function _getRequireWildcardCache(nodeInterop) {
-	  if (typeof WeakMap !== 'function') return null;
-	  var cacheBabelInterop = new WeakMap();
-	  var cacheNodeInterop = new WeakMap();
-	  return (_getRequireWildcardCache = function (nodeInterop) {
-	    return nodeInterop ? cacheNodeInterop : cacheBabelInterop;
-	  })(nodeInterop);
-	}
-	function _interopRequireWildcard(obj, nodeInterop) {
-	  if (!nodeInterop && obj && obj.__esModule) {
-	    return obj;
-	  }
-	  if (obj === null || typeof obj !== 'object' && typeof obj !== 'function') {
-	    return {
-	      default: obj
-	    };
-	  }
-	  var cache = _getRequireWildcardCache(nodeInterop);
-	  if (cache && cache.has(obj)) {
-	    return cache.get(obj);
-	  }
-	  var newObj = {};
-	  var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
-	  for (var key in obj) {
-	    if (key !== 'default' && Object.prototype.hasOwnProperty.call(obj, key)) {
-	      var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
-	      if (desc && (desc.get || desc.set)) {
-	        Object.defineProperty(newObj, key, desc);
-	      } else {
-	        newObj[key] = obj[key];
-	      }
-	    }
-	  }
-	  newObj.default = obj;
-	  if (cache) {
-	    cache.set(obj, newObj);
-	  }
-	  return newObj;
-	}
-
-	/**
-	 * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-	 *
-	 * This source code is licensed under the MIT license found in the
-	 * LICENSE file in the root directory of this source tree.
-	 */
-	// Given element.props.children, or subtree during recursive traversal,
-	// return flattened array of children.
-	const getChildren = function (arg, children) {
-	  if (children === void 0) {
-	    children = [];
-	  }
-	  if (Array.isArray(arg)) {
-	    arg.forEach(item => {
-	      getChildren(item, children);
-	    });
-	  } else if (arg != null && arg !== false) {
-	    children.push(arg);
-	  }
-	  return children;
-	};
-	const getType = element => {
-	  const type = element.type;
-	  if (typeof type === 'string') {
-	    return type;
-	  }
-	  if (typeof type === 'function') {
-	    return type.displayName || type.name || 'Unknown';
-	  }
-	  if (ReactIs.isFragment(element)) {
-	    return 'React.Fragment';
-	  }
-	  if (ReactIs.isSuspense(element)) {
-	    return 'React.Suspense';
-	  }
-	  if (typeof type === 'object' && type !== null) {
-	    if (ReactIs.isContextProvider(element)) {
-	      return 'Context.Provider';
-	    }
-	    if (ReactIs.isContextConsumer(element)) {
-	      return 'Context.Consumer';
-	    }
-	    if (ReactIs.isForwardRef(element)) {
-	      if (type.displayName) {
-	        return type.displayName;
-	      }
-	      const functionName = type.render.displayName || type.render.name || '';
-	      return functionName !== '' ? 'ForwardRef(' + functionName + ')' : 'ForwardRef';
-	    }
-	    if (ReactIs.isMemo(element)) {
-	      const functionName = type.displayName || type.type.displayName || type.type.name || '';
-	      return functionName !== '' ? 'Memo(' + functionName + ')' : 'Memo';
-	    }
-	  }
-	  return 'UNDEFINED';
-	};
-	const getPropKeys$1 = element => {
-	  const {
-	    props
-	  } = element;
-	  return Object.keys(props).filter(key => key !== 'children' && props[key] !== undefined).sort();
-	};
-	const serialize$1 = (element, config, indentation, depth, refs, printer) => ++depth > config.maxDepth ? (0, _markup$1.printElementAsLeaf)(getType(element), config) : (0, _markup$1.printElement)(getType(element), (0, _markup$1.printProps)(getPropKeys$1(element), element.props, config, indentation + config.indent, depth, refs, printer), (0, _markup$1.printChildren)(getChildren(element.props.children), config, indentation + config.indent, depth, refs, printer), config, indentation);
-	ReactElement.serialize = serialize$1;
-	const test$2 = val => val != null && ReactIs.isElement(val);
-	ReactElement.test = test$2;
-	const plugin$1 = {
-	  serialize: serialize$1,
-	  test: test$2
-	};
-	var _default$2k = plugin$1;
-	ReactElement.default = _default$2k;
-
-	var ReactTestComponent = {};
-
-	Object.defineProperty(ReactTestComponent, '__esModule', {
-	  value: true
-	});
-	ReactTestComponent.test = ReactTestComponent.serialize = ReactTestComponent.default = void 0;
-	var _markup = markup;
-	var global$1 = function () {
-	  if (typeof globalThis !== 'undefined') {
-	    return globalThis;
-	  } else if (typeof global$1 !== 'undefined') {
-	    return global$1;
-	  } else if (typeof self !== 'undefined') {
-	    return self;
-	  } else if (typeof window !== 'undefined') {
-	    return window;
-	  } else {
-	    return Function('return this')();
-	  }
-	}();
-	var Symbol$1 = global$1['jest-symbol-do-not-touch'] || global$1.Symbol;
-	const testSymbol = typeof Symbol$1 === 'function' && Symbol$1.for ? Symbol$1.for('react.test.json') : 0xea71357;
-	const getPropKeys = object => {
-	  const {
-	    props
-	  } = object;
-	  return props ? Object.keys(props).filter(key => props[key] !== undefined).sort() : [];
-	};
-	const serialize = (object, config, indentation, depth, refs, printer) => ++depth > config.maxDepth ? (0, _markup.printElementAsLeaf)(object.type, config) : (0, _markup.printElement)(object.type, object.props ? (0, _markup.printProps)(getPropKeys(object), object.props, config, indentation + config.indent, depth, refs, printer) : '', object.children ? (0, _markup.printChildren)(object.children, config, indentation + config.indent, depth, refs, printer) : '', config, indentation);
-	ReactTestComponent.serialize = serialize;
-	const test$1 = val => val && val.$$typeof === testSymbol;
-	ReactTestComponent.test = test$1;
-	const plugin = {
-	  serialize,
-	  test: test$1
-	};
-	var _default$2j = plugin;
-	ReactTestComponent.default = _default$2j;
-
-	Object.defineProperty(build, '__esModule', {
-	  value: true
-	});
-	var default_1 = build.default = DEFAULT_OPTIONS_1 = build.DEFAULT_OPTIONS = void 0;
-	var format_1 = build.format = format;
-	var plugins_1 = build.plugins = void 0;
-	var _ansiStyles = _interopRequireDefault$b(ansiStyles.exports);
-	var _collections = collections;
-	var _AsymmetricMatcher = _interopRequireDefault$b(AsymmetricMatcher);
-	var _ConvertAnsi = _interopRequireDefault$b(ConvertAnsi);
-	var _DOMCollection = _interopRequireDefault$b(DOMCollection$1);
-	var _DOMElement = _interopRequireDefault$b(DOMElement);
-	var _Immutable = _interopRequireDefault$b(Immutable);
-	var _ReactElement = _interopRequireDefault$b(ReactElement);
-	var _ReactTestComponent = _interopRequireDefault$b(ReactTestComponent);
-	function _interopRequireDefault$b(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-
-	/**
-	 * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-	 *
-	 * This source code is licensed under the MIT license found in the
-	 * LICENSE file in the root directory of this source tree.
-	 */
-
-	/* eslint-disable local/ban-types-eventually */
-	const toString$1 = Object.prototype.toString;
-	const toISOString = Date.prototype.toISOString;
-	const errorToString = Error.prototype.toString;
-	const regExpToString = RegExp.prototype.toString;
-	/**
-	 * Explicitly comparing typeof constructor to function avoids undefined as name
-	 * when mock identity-obj-proxy returns the key as the value for any key.
-	 */
-
-	const getConstructorName = val => typeof val.constructor === 'function' && val.constructor.name || 'Object';
-	/* global window */
-
-	/** Is val is equal to global window object? Works even if it does not exist :) */
-
-	const isWindow = val => typeof window !== 'undefined' && val === window;
-	const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
-	const NEWLINE_REGEXP = /\n/gi;
-	class PrettyFormatPluginError extends Error {
-	  constructor(message, stack) {
-	    super(message);
-	    this.stack = stack;
-	    this.name = this.constructor.name;
-	  }
-	}
-	function isToStringedArrayType(toStringed) {
-	  return toStringed === '[object Array]' || toStringed === '[object ArrayBuffer]' || toStringed === '[object DataView]' || toStringed === '[object Float32Array]' || toStringed === '[object Float64Array]' || toStringed === '[object Int8Array]' || toStringed === '[object Int16Array]' || toStringed === '[object Int32Array]' || toStringed === '[object Uint8Array]' || toStringed === '[object Uint8ClampedArray]' || toStringed === '[object Uint16Array]' || toStringed === '[object Uint32Array]';
-	}
-	function printNumber(val) {
-	  return Object.is(val, -0) ? '-0' : String(val);
-	}
-	function printBigInt(val) {
-	  return String(val + "n");
-	}
-	function printFunction(val, printFunctionName) {
-	  if (!printFunctionName) {
-	    return '[Function]';
-	  }
-	  return '[Function ' + (val.name || 'anonymous') + ']';
-	}
-	function printSymbol(val) {
-	  return String(val).replace(SYMBOL_REGEXP, 'Symbol($1)');
-	}
-	function printError(val) {
-	  return '[' + errorToString.call(val) + ']';
-	}
-	/**
-	 * The first port of call for printing an object, handles most of the
-	 * data-types in JS.
-	 */
-
-	function printBasicValue(val, printFunctionName, escapeRegex, escapeString) {
-	  if (val === true || val === false) {
-	    return '' + val;
-	  }
-	  if (val === undefined) {
-	    return 'undefined';
-	  }
-	  if (val === null) {
-	    return 'null';
-	  }
-	  const typeOf = typeof val;
-	  if (typeOf === 'number') {
-	    return printNumber(val);
-	  }
-	  if (typeOf === 'bigint') {
-	    return printBigInt(val);
-	  }
-	  if (typeOf === 'string') {
-	    if (escapeString) {
-	      return '"' + val.replace(/"|\\/g, '\\$&') + '"';
-	    }
-	    return '"' + val + '"';
-	  }
-	  if (typeOf === 'function') {
-	    return printFunction(val, printFunctionName);
-	  }
-	  if (typeOf === 'symbol') {
-	    return printSymbol(val);
-	  }
-	  const toStringed = toString$1.call(val);
-	  if (toStringed === '[object WeakMap]') {
-	    return 'WeakMap {}';
-	  }
-	  if (toStringed === '[object WeakSet]') {
-	    return 'WeakSet {}';
-	  }
-	  if (toStringed === '[object Function]' || toStringed === '[object GeneratorFunction]') {
-	    return printFunction(val, printFunctionName);
-	  }
-	  if (toStringed === '[object Symbol]') {
-	    return printSymbol(val);
+{
+    "word": "व्रीड",
+    "KRM": [
+        {
+            "word": "व्रीड",
+            "eid": "1666",
+            "pagenum": 1277,
+            "content": "(1667) <b>“व्रीड चोदने लज्जायां च”</b>¦ (IV-दिवादिः-1126. अक. सेट्. पर.) <dvsn n='NI'>धातुवृत्तौ तु ‘— चोदने’ इत्येव । तरङ्गिण्याम् ‘— चोदने’ इति पठित्वा ‘चोदनं = लज्जा’ इति दृश्यते । ‘लज्जायामप्यधीयते’ इति मैत्रेयः । भट्टोजिदीक्षित-काशकृत्स्न-आत्रेयादयस्तु ‘— चोदने लज्जायां च’ इत्येव पठन्ति । ‘— प्रेरणे च द्रुमे’ इति धा. का. व्याख्यायाम् (1-57) । व्रीडकः-डिका, व्रीडकः-डिका, विव्रीडिषकः-षिका, वेव्रीडकः-डिका; व्रीडिता-त्री, व्रीडयिता-त्री, विव्रीडिषिता-त्री, वेव्रीडिता-त्री; इत्यादिकानि रूपाणि सर्वाण्यपि भौवादिकक्रीडतिवत् (275) बोध्यानि । व्रीडः<sup>1</sup> आव्रीडः, <sup>2</sup> व्रीडा । <F>1. घञ्प्रत्यये रूपमेवम् । लघूपधत्वाभावात् न गुणः ।</F> <F>2. ‘गुरोश्च हलः’ (3-3-103) इत्यकारः स्त्रियां भवति ।</F>"
+        }
+    ],
+    "ACSJ": [
+        {
+            "word": "व्रीड",
+            "linga": "पुं",
+            "pagenum": "1",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "1030",
+            "group": "33",
+            "synonyms": [
+                "शूका",
+                "मन्दाक्ष्य"
+            ],
+            "content": "व्रीडः सूकामन्दाक्षं च ह्रियामूहापि चोहवत् ।"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "व्रीड",
+            "eid": "27487",
+            "pagenum": 1026,
+            "content": "व्रीडः --डा¦ <b>1</b> Shame;  <lbinfo n='vrIqAdivAByA#sagatErvililye'/> व्रीडादिवाभ्यासगतैर्विलिल्ये <ls>Śi. 3. 40</ls>; व्रीडमावहति मे स (शब्दः) संप्रति <ls>R. 11. 73.</ls> <b>--2</b> Modesty, bashfulness; <ls>Śi. 10. 18.</ls> <b>--Comp.</b> --आनत, --आन्वित <i><ab>a.</ab></i> modest, bashful."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "व्रीड",
+            "eid": "14332",
+            "pagenum": 923,
+            "content": "व्रीड¦ <i>vrīḍa</i> (<ab>m.</ab> and) <ab>f.</ab> <i>ḍā,</i> <b>1.</b> Shame, <ls>Rājat.</ls> 5, 338. <b>2.</b> Bashfulness, <ls>Bhartṛ.</ls> 2, 18. <b> -- <ab>Comp.</ab></b> <i>Sa-,</i> <ab>adj.</ab>, <ab>f.</ab> <i>ḍā,</i> 1. ashamed, <ls>Chr.</ls> 61, 42. 2. bashful, <ls>Chr.</ls> 5, 4; <ls>Vikr.</ls> 10, 12. 3. modest. <i>°ḍam,</i> <ab>adv.</ab> 1. with shame, ashamed, <ls>Pañc.</ls> 208, 13. 2. bashfully, <ls>Vikr.</ls> 28, 14."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "व्रीड",
+            "eid": "16468",
+            "pagenum": 630,
+            "content": "व्रीड¦ <i>vrīḍa</i> <ab>m.</ab> et <i>vrīḍā</i> <ab>f.</ab> pudeur, modestie. <lbinfo n='7'/>  <P><i>vrīḍana</i> <ab>n.</ab> <ab>mms.</ab>"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "व्रीड",
+            "eid": "31538",
+            "pagenum": 532,
+            "content": "व्रीड¦ <lex>m.</lex> आ <lex>f.</lex> shame, bashfulness."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "व्रीड",
+            "eid": "23897",
+            "pagenum": 432,
+            "content": "व्रीड¦ <i>m.</i>, आ <i>f.</i> Verlegenheit, Scham."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "व्रीड",
+            "eid": "36820",
+            "pagenum": 703,
+            "content": "vrIqa¦ <i>m.</i> 1. Shame, व्रीडामावहति मे स संप्रति व्यस्तवृत्तिरुदयोन्मुखे त्वयि <ls>R.</ls>xi.78; 2. modesty, bashfulness."
+        }
+    ],
+    "MD": [
+        {
+            "word": "व्रीड",
+            "eid": "17392",
+            "pagenum": 305,
+            "content": "व्रीड¦ vrīḍ-a, <lex>m.</lex>, <b>ā,</b> <lex>f.</lex> (<i>more common</i>) shame, 🞄bashfulness: (<b>ā</b>) <b>-vat,</b> <lex>a.</lex> ashamed, abashed."
+        }
+    ],
+    "MW": [
+        {
+            "word": "व्रीड",
+            "eid": "210766",
+            "pagenum": "1043,2",
+            "content": "व्रीड ¦ <lex>m.</lex> = व्रीडा, shame, <ls>Kāv.</ls>; <ls>Rājat.</ls><info lex='m'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "व्रीड",
+            "eid": "45914",
+            "pagenum": 984,
+            "content": "<i>Vrīḍa, as, ā,</i>¦ m. f. shame, modesty, bashfulness. <i>—Vrīḍānata (°ḍā-ān°), as, ā, am,</i> bowed down with shame, hanging down the head with shame, ashamed. <i>—Vrīḍānvita (°ḍā-an°), as, ā, am,</i> ashamed, bashful, modest. <i>—Vrīḍā-yuj, k, k, k,</i> possessing shame, ashamed."
+        }
+    ],
+    "PW": [
+        {
+            "word": "व्रीड",
+            "eid": "109147",
+            "pagenum": 6,
+            "content": "व्रीड <lex>m.</lex> (<ls>ŚIŚ. 4,67. 14,2</ls>) und häufiger व्रीडा <lex>f.</lex>¦ <i>Verlegenheit, Scham</i>. Am Ende eines <ab>adj. Comp.</ab> <lex>f.</lex> आ."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "व्रीड",
+            "eid": "96955",
+            "pagenum": 6,
+            "content": "व्रीड¦ (von व्रीड्) <lex>m.</lex> <i>Verlegenheit, Scham</i> <ls>TRIK. 1, 1, 128. 3, 5, 18.</ls> <ls>H. 311</ls>, Schol. अलं व्रीडेन <ls>R. 3, 61, 46</ls> (<ls n='R. ed. Bomb. 3,'>55, 34</ls> <ls>ed. Bomb.</ls>). व्रीडमावहति मे <ls>RAGH. 11, 73.</ls> व्रीडात् <ls>KUMĀRAS. 7, 67.</ls> <ls>RĀJA-TAR. 1, 210. 6, 98.</ls> Häufiger व्रीडा <lex>f.</lex> <ls>AK. 1, 1, 7, 23.</ls> <ls>TRIK.</ls> <ls>H. 311.</ls> <ls>HALĀY. 2, 412.</ls> = धार्ष्ट्यभावं <ls>DAŚAR. 4, 22.</ls> <ls>SĀH. D. 194.</ls> व्रीडां न कुरुषे कथम् <i>sich schämen</i> <ls>MBH. 2, 1577.</ls> परां व्रीडामुपागमत् <ls>R. 1, 1, 80.</ls> °युज् <ls n='R.'>4, 10, 31.</ls> <ls>Spr. 2016.</ls> <ls>RAGH. 15, 27.</ls> <ls>ŚĀK. 50, 15. 132.</ls> <ls>VARĀH. BṚH. S. 74, 20. 78, 12.</ls> <ls>DAŚAR. 2, 39.</ls> <ls>RĀJA-TAR. 1, 254. 5, 338.</ls> <ls>BHĀG. P. 1, 10, 16. 11, 37. 2, 1, 32. 3, 20, 31. 23, 9. 4, 4, 22.</ls> Am Ende eines <lex>adj.</lex> comp. (f. आ): वीत° <ls>Spr. (II) 526.</ls> दरव्रीडा <ls>SĀH. D. 101.</ls> स्वल्प° <ls n='SĀH. D.'>42, 18.</ls> स° <i>verlegen, beschämt</i> <ls>MBH. 3, 10348.</ls> <ls n='MBH.'>4, 1129.</ls> <ls n='MBH.'>5, 5969.</ls> <ls n='MBH. 5,'>7528.</ls> <ls>R. 1, 55, 8</ls> (wohl सव्रीडश्चि° zu lesen). <ls n='R. 1,'>63, 10.</ls> <ls n='R.'>5, 21, 20.</ls> <ls>Spr. 1885.</ls> <ls>VIKR. 10, 12.</ls> <ls>RĀJA-TAR. 4, 447.</ls> <ls>BHĀG. 3, 22, 1. 8, 8, 46. 22, 14.</ls> सव्रीडम् adv. <ls>ŚĀK. 51, 12.</ls> <ls>VIKR. 28, 14.</ls> <ls>VARĀH. BṚH. S. 32, 3.</ls> <ls>PAÑCAT. 218, 13.</ls> <dvsn n='v'>— Vgl. अव्रीड ."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "व्रीड",
+            "eid": "24673",
+            "pagenum": 340,
+            "content": "<i>vrīḍa</i>¦ m. auch <ls>Śrīk.</ls> 17, 65. {part=,seq=25010,type=,n=1}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "व्रीड",
+            "eid": "39165",
+            "pagenum": 701,
+            "content": "व्रीड¦ mf. (-डः-डा) Shame, bashfulness. E. व्रीड् to be ashamed, aff. अच्; fem. aff. अङ् and टाप् ।"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "व्रीड",
+            "eid": "37385",
+            "pagenum": 822,
+            "content": "व्रीड¦ r. 4th cl. (व्रीडयति) .²1 To be modest, to be bashful or ashamed. .²2 To throw, to direct or send."
+        },
+        {
+            "word": "व्रीड",
+            "eid": "37386",
+            "pagenum": 822,
+            "content": "व्रीड¦ mf. (-डः-डा) Shame, bashfulness. .E. व्रीड to be ashamed, affs. अङ् and टाप्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "व्रीड",
+            "eid": "37020",
+            "pagenum": 740,
+            "content": "व्रीड¦ (य) व्रीडयति 4. <i>d.</i> To be modest; to throw."
+        },
+        {
+            "word": "व्रीड",
+            "eid": "37021",
+            "pagenum": 740,
+            "content": "व्रीड¦ (डः-डा) 1. <i>m. f.</i> Shame, bashfulness, modesty."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "व्रीड",
+            "eid": "34600",
+            "pagenum": "4-564-c",
+            "content": "व्रीड¦, य ञि क्षिपि । लज्जे । इति कविकल्पद्रुमः ॥ (दिवा०-पर०-सक०-लज्जे-अक०-सेट् ।) रेफयुक्तः । य, व्रीड्यति बाणं चापः । व्रीड्यति बधूः । ञि, व्रीडितोऽस्ति । इति दुर्गादासः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "व्रीड",
+            "eid": "42795",
+            "pagenum": "5071,b",
+            "content": "व्रीड¦ क्षेपे दिंवा० पर० सक० लज्जायां अक० सेट् । व्रीड्यते अव्रीडिष्ट ।"
+        },
+        {
+            "word": "व्रीड",
+            "eid": "42796",
+            "pagenum": "5071,b",
+            "content": "व्रीड¦ पु० व्रीड--घञ् । लज्जायाम् । अ । तत्रैव स्त्री अमरः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "व्रीड",
+            "content": "व्रीडः पुं. -  व्रीड् + घञ्  लज्जा"
+        },
+        {
+            "word": "व्रीड",
+            "content": "व्रीडः पुं. -  व्रीड् + घञ्  'विनय, लज्जाशीलता'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "व्रीड",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಲಜ್ಜೆ \\/ನಾಚಿಕೆ \\/ಅವಮಾನ",
+            "निष्पत्तिः": "व्रीड (चोदने लज्जायां च)'घञ्' (३-३-१८)",
+            "प्रयोगाः": "'व्रीडादमुं देवमुदीक्ष्य मन्ये सन्न्यस्तदेहः स्वयमेव कामः'",
+            "उल्लेखाः": "कुमा० ७-६७",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "व्रीड",
+            "content": "<body><s>vrIqa kzepe diMvA° para° saka° lajjAyAM aka° sew . vrIqyate avrIqizwa .</s></body> <body><s>vrIqa pu° vrIqa—GaY . lajjAyAm . a . tatrEva strI amaraH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "व्रीड",
+            "content": "<H2><h><key1>vrIqa</key1><key2>vrIqa</key2></h><body><s>vrIqa</s>   <lex>m.</lex> = <s>vrIqA</s>, shame, <ls>Kāv.</ls>; <ls>Rājat.</ls><info lex=\"m\" /></body><tail><L>210766</L><pc>1043,2</pc></tail></H2>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "व्रीड",
+            "content": "<H1><h><key1>vrIqa</key1><key2>vrIqa</key2></h><body><s>vrIqa</s>  <div n=\"1\">mf. (<s>-qaH-qA</s>) Shame, bashfulness.</div><div n=\"E\"> E. <s>vrIq</s> to be ashamed, aff. <s>ac;</s> fem. aff. <s>aN</s> and <s>wAp .</s></div></body><tail><L>39165</L><pc>701-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "व्रीड",
+            "content": "<span lang=\"sa\">व्रीड<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಲಜ್ಜೆ /ನಾಚಿಕೆ /ಅವಮಾನ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>व्रीड (चोदने लज्जायां च) - \"घञ्\" (३-३-१८)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"व्रीडादमुं देवमुदीक्ष्य मन्ये सन्न्यस्तदेहः स्वयमेव कामः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>कुमा० ७-६७<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

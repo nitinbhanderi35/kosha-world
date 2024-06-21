@@ -1,3 +1,421 @@
-process.nextTick(emitErrorNT,this,e)}else if(!this._writableState.errorEmitted){this._writableState.errorEmitted=true;process.nextTick(emitErrorNT,this,e)}}return this}if(this._readableState){this._readableState.destroyed=true}if(this._writableState){this._writableState.destroyed=true}this._destroy(e||null,(function(e){if(!t&&e){if(!r._writableState){process.nextTick(emitErrorAndCloseNT,r,e)}else if(!r._writableState.errorEmitted){r._writableState.errorEmitted=true;process.nextTick(emitErrorAndCloseNT,r,e)}else{process.nextTick(emitCloseNT,r)}}else if(t){process.nextTick(emitCloseNT,r);t(e)}else{process.nextTick(emitCloseNT,r)}}));return this}function emitErrorAndCloseNT(e,t){emitErrorNT(e,t);emitCloseNT(e)}function emitCloseNT(e){if(e._writableState&&!e._writableState.emitClose)return;if(e._readableState&&!e._readableState.emitClose)return;e.emit("close")}function undestroy(){if(this._readableState){this._readableState.destroyed=false;this._readableState.reading=false;this._readableState.ended=false;this._readableState.endEmitted=false}if(this._writableState){this._writableState.destroyed=false;this._writableState.ended=false;this._writableState.ending=false;this._writableState.finalCalled=false;this._writableState.prefinished=false;this._writableState.finished=false;this._writableState.errorEmitted=false}}function emitErrorNT(e,t){e.emit("error",t)}function errorOrDestroy(e,t){var r=e._readableState;var i=e._writableState;if(r&&r.autoDestroy||i&&i.autoDestroy)e.destroy(t);else e.emit("error",t)}e.exports={destroy:destroy,undestroy:undestroy,errorOrDestroy:errorOrDestroy}},9698:function(e,t,r){"use strict";var i=r(4646).q.ERR_STREAM_PREMATURE_CLOSE;function once(e){var t=false;return function(){if(t)return;t=true;for(var r=arguments.length,i=new Array(r),n=0;n<r;n++){i[n]=arguments[n]}e.apply(this,i)}}function noop(){}function isRequest(e){return e.setHeader&&typeof e.abort==="function"}function eos(e,t,r){if(typeof t==="function")return eos(e,null,t);if(!t)t={};r=once(r||noop);var n=t.readable||t.readable!==false&&e.readable;var a=t.writable||t.writable!==false&&e.writable;var s=function onlegacyfinish(){if(!e.writable)h()};var o=e._writableState&&e._writableState.finished;var h=function onfinish(){a=false;o=true;if(!n)r.call(e)};var u=e._readableState&&e._readableState.endEmitted;var d=function onend(){n=false;u=true;if(!a)r.call(e)};var c=function onerror(t){r.call(e,t)};var l=function onclose(){var t;if(n&&!u){if(!e._readableState||!e._readableState.ended)t=new i;return r.call(e,t)}if(a&&!o){if(!e._writableState||!e._writableState.ended)t=new i;return r.call(e,t)}};var p=function onrequest(){e.req.on("finish",h)};if(isRequest(e)){e.on("complete",h);e.on("abort",l);if(e.req)p();else e.on("request",p)}else if(a&&!e._writableState){e.on("end",s);e.on("close",s)}e.on("end",d);e.on("finish",h);if(t.error!==false)e.on("error",c);e.on("close",l);return function(){e.removeListener("complete",h);e.removeListener("abort",l);e.removeListener("request",p);if(e.req)e.req.removeListener("finish",h);e.removeListener("end",s);e.removeListener("close",s);e.removeListener("finish",h);e.removeListener("end",d);e.removeListener("error",c);e.removeListener("close",l)}}e.exports=eos},9727:function(e,t,r){"use strict";function asyncGeneratorStep(e,t,r,i,n,a,s){try{var o=e[a](s);var h=o.value}catch(e){r(e);return}if(o.done){t(h)}else{Promise.resolve(h).then(i,n)}}function _asyncToGenerator(e){return function(){var t=this,r=arguments;return new Promise((function(i,n){var a=e.apply(t,r);function _next(e){asyncGeneratorStep(a,i,n,_next,_throw,"next",e)}function _throw(e){asyncGeneratorStep(a,i,n,_next,_throw,"throw",e)}_next(undefined)}))}}function ownKeys(e,t){var r=Object.keys(e);if(Object.getOwnPropertySymbols){var i=Object.getOwnPropertySymbols(e);if(t)i=i.filter((function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable}));r.push.apply(r,i)}return r}function _objectSpread(e){for(var t=1;t<arguments.length;t++){var r=arguments[t]!=null?arguments[t]:{};if(t%2){ownKeys(Object(r),true).forEach((function(t){_defineProperty(e,t,r[t])}))}else if(Object.getOwnPropertyDescriptors){Object.defineProperties(e,Object.getOwnPropertyDescriptors(r))}else{ownKeys(Object(r)).forEach((function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(r,t))}))}}return e}function _defineProperty(e,t,r){if(t in e){Object.defineProperty(e,t,{value:r,enumerable:true,configurable:true,writable:true})}else{e[t]=r}return e}var i=r(4646).q.ERR_INVALID_ARG_TYPE;function from(e,t,r){var n;if(t&&typeof t.next==="function"){n=t}else if(t&&t[Symbol.asyncIterator])n=t[Symbol.asyncIterator]();else if(t&&t[Symbol.iterator])n=t[Symbol.iterator]();else throw new i("iterable",["Iterable"],t);var a=new e(_objectSpread({objectMode:true},r));var s=false;a._read=function(){if(!s){s=true;next()}};function next(){return _next2.apply(this,arguments)}function _next2(){_next2=_asyncToGenerator((function*(){try{var e=yield n.next(),t=e.value,r=e.done;if(r){a.push(null)}else if(a.push(yield t)){next()}else{s=false}}catch(e){a.destroy(e)}}));return _next2.apply(this,arguments)}return a}e.exports=from},8442:function(e,t,r){"use strict";var i;function once(e){var t=false;return function(){if(t)return;t=true;e.apply(void 0,arguments)}}var n=r(4646).q,a=n.ERR_MISSING_ARGS,s=n.ERR_STREAM_DESTROYED;function noop(e){if(e)throw e}function isRequest(e){return e.setHeader&&typeof e.abort==="function"}function destroyer(e,t,n,a){a=once(a);var o=false;e.on("close",(function(){o=true}));if(i===undefined)i=r(9698);i(e,{readable:t,writable:n},(function(e){if(e)return a(e);o=true;a()}));var h=false;return function(t){if(o)return;if(h)return;h=true;if(isRequest(e))return e.abort();if(typeof e.destroy==="function")return e.destroy();a(t||new s("pipe"))}}function call(e){e()}function pipe(e,t){return e.pipe(t)}function popCallback(e){if(!e.length)return noop;if(typeof e[e.length-1]!=="function")return noop;return e.pop()}function pipeline(){for(var e=arguments.length,t=new Array(e),r=0;r<e;r++){t[r]=arguments[r]}var i=popCallback(t);if(Array.isArray(t[0]))t=t[0];if(t.length<2){throw new a("streams")}var n;var s=t.map((function(e,r){var a=r<t.length-1;var o=r>0;return destroyer(e,a,o,(function(e){if(!n)n=e;if(e)s.forEach(call);if(a)return;s.forEach(call);i(n)}))}));return t.reduce(pipe)}e.exports=pipeline},6776:function(e,t,r){"use strict";var i=r(4646).q.ERR_INVALID_OPT_VALUE;function highWaterMarkFrom(e,t,r){return e.highWaterMark!=null?e.highWaterMark:t?e[r]:null}function getHighWaterMark(e,t,r,n){var a=highWaterMarkFrom(t,n,r);if(a!=null){if(!(isFinite(a)&&Math.floor(a)===a)||a<0){var s=n?r:"highWaterMark";throw new i(s,a)}return Math.floor(a)}return e.objectMode?16:16*1024}e.exports={getHighWaterMark:getHighWaterMark}},4678:function(e,t,r){e.exports=r(2781)},3726:function(e,t,r){var i=r(2781);if(process.env.READABLE_STREAM==="disable"&&i){e.exports=i.Readable;Object.assign(e.exports,i);e.exports.Stream=i}else{t=e.exports=r(1709);t.Stream=i||t;t.Readable=t;t.Writable=r(7337);t.Duplex=r(2403);t.Transform=r(1170);t.PassThrough=r(7889);t.finished=r(9698);t.pipeline=r(8442)}},3225:function(e,t,r){"use strict";var i=r(4300).Buffer;var n=r(3782);var a=r(9029);var s=new Array(16);var o=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,7,4,13,1,10,6,15,3,12,0,9,5,2,14,11,8,3,10,14,4,9,15,8,1,2,7,0,6,13,11,5,12,1,9,11,10,0,8,12,4,13,3,7,15,14,5,6,2,4,0,5,9,7,12,2,10,14,1,3,8,11,6,15,13];var h=[5,14,7,0,9,2,11,4,13,6,15,8,1,10,3,12,6,11,3,7,0,13,5,10,14,15,8,12,4,9,1,2,15,5,1,3,7,14,6,9,11,8,12,2,10,0,4,13,8,6,4,1,3,11,15,0,5,12,2,13,9,7,10,14,12,15,10,4,1,5,8,7,6,2,13,14,0,3,9,11];var u=[11,14,15,12,5,8,7,9,11,13,14,15,6,7,9,8,7,6,8,13,11,9,7,15,7,12,15,9,11,7,13,12,11,13,6,7,14,9,13,15,14,8,13,6,5,12,7,5,11,12,14,15,14,15,9,8,9,14,5,6,8,6,5,12,9,15,5,11,6,8,13,12,5,12,13,14,11,8,5,6];var d=[8,9,9,11,13,15,15,5,7,7,8,11,14,14,12,6,9,13,15,7,12,8,9,11,7,7,12,7,6,15,13,11,9,7,15,11,8,6,6,14,12,13,5,14,13,13,7,5,15,5,8,11,14,14,6,14,6,9,12,9,12,5,15,8,8,5,12,9,12,5,14,6,8,13,6,5,15,13,11,11];var c=[0,1518500249,1859775393,2400959708,2840853838];var l=[1352829926,1548603684,1836072691,2053994217,0];function RIPEMD160(){a.call(this,64);this._a=1732584193;this._b=4023233417;this._c=2562383102;this._d=271733878;this._e=3285377520}n(RIPEMD160,a);RIPEMD160.prototype._update=function(){var e=s;for(var t=0;t<16;++t)e[t]=this._block.readInt32LE(t*4);var r=this._a|0;var i=this._b|0;var n=this._c|0;var a=this._d|0;var p=this._e|0;var v=this._a|0;var b=this._b|0;var m=this._c|0;var y=this._d|0;var g=this._e|0;for(var _=0;_<80;_+=1){var w;var M;if(_<16){w=fn1(r,i,n,a,p,e[o[_]],c[0],u[_]);M=fn5(v,b,m,y,g,e[h[_]],l[0],d[_])}else if(_<32){w=fn2(r,i,n,a,p,e[o[_]],c[1],u[_]);M=fn4(v,b,m,y,g,e[h[_]],l[1],d[_])}else if(_<48){w=fn3(r,i,n,a,p,e[o[_]],c[2],u[_]);M=fn3(v,b,m,y,g,e[h[_]],l[2],d[_])}else if(_<64){w=fn4(r,i,n,a,p,e[o[_]],c[3],u[_]);M=fn2(v,b,m,y,g,e[h[_]],l[3],d[_])}else{w=fn5(r,i,n,a,p,e[o[_]],c[4],u[_]);M=fn1(v,b,m,y,g,e[h[_]],l[4],d[_])}r=p;p=a;a=rotl(n,10);n=i;i=w;v=g;g=y;y=rotl(m,10);m=b;b=M}var B=this._b+n+y|0;this._b=this._c+a+g|0;this._c=this._d+p+v|0;this._d=this._e+r+b|0;this._e=this._a+i+m|0;this._a=B};RIPEMD160.prototype._digest=function(){this._block[this._blockOffset++]=128;if(this._blockOffset>56){this._block.fill(0,this._blockOffset,64);this._update();this._blockOffset=0}this._block.fill(0,this._blockOffset,56);this._block.writeUInt32LE(this._length[0],56);this._block.writeUInt32LE(this._length[1],60);this._update();var e=i.alloc?i.alloc(20):new i(20);e.writeInt32LE(this._a,0);e.writeInt32LE(this._b,4);e.writeInt32LE(this._c,8);e.writeInt32LE(this._d,12);e.writeInt32LE(this._e,16);return e};function rotl(e,t){return e<<t|e>>>32-t}function fn1(e,t,r,i,n,a,s,o){return rotl(e+(t^r^i)+a+s|0,o)+n|0}function fn2(e,t,r,i,n,a,s,o){return rotl(e+(t&r|~t&i)+a+s|0,o)+n|0}function fn3(e,t,r,i,n,a,s,o){return rotl(e+((t|~r)^i)+a+s|0,o)+n|0}function fn4(e,t,r,i,n,a,s,o){return rotl(e+(t&i|r&~i)+a+s|0,o)+n|0}function fn5(e,t,r,i,n,a,s,o){return rotl(e+(t^(r|~i))+a+s|0,o)+n|0}e.exports=RIPEMD160},5055:function(e,t,r){var i=r(4300);var n=i.Buffer;function copyProps(e,t){for(var r in e){t[r]=e[r]}}if(n.from&&n.alloc&&n.allocUnsafe&&n.allocUnsafeSlow){e.exports=i}else{copyProps(i,t);t.Buffer=SafeBuffer}function SafeBuffer(e,t,r){return n(e,t,r)}SafeBuffer.prototype=Object.create(n.prototype);copyProps(n,SafeBuffer);SafeBuffer.from=function(e,t,r){if(typeof e==="number"){throw new TypeError("Argument must not be a number")}return n(e,t,r)};SafeBuffer.alloc=function(e,t,r){if(typeof e!=="number"){throw new TypeError("Argument must be a number")}var i=n(e);if(t!==undefined){if(typeof r==="string"){i.fill(t,r)}else{i.fill(t)}}else{i.fill(0)}return i};SafeBuffer.allocUnsafe=function(e){if(typeof e!=="number"){throw new TypeError("Argument must be a number")}return n(e)};SafeBuffer.allocUnsafeSlow=function(e){if(typeof e!=="number"){throw new TypeError("Argument must be a number")}return i.SlowBuffer(e)}},6911:function(e,t,r){
-/*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
-var i=r(4300);var n=i.Buffer;function copyProps(e,t){for(var r in e){t[r]=e[r]}}if(n.from&&n.alloc&&n.allocUnsafe&&n.allocUnsafeSlow){e.exports=i}else{copyProps(i,t);t.Buffer=SafeBuffer}function SafeBuffer(e,t,r){return n(e,t,r)}SafeBuffer.prototype=Object.create(n.prototype);copyProps(n,SafeBuffer);SafeBuffer.from=function(e,t,r){if(typeof e==="number"){throw new TypeError("Argument must not be a number")}return n(e,t,r)};SafeBuffer.alloc=function(e,t,r){if(typeof e!=="number"){throw new TypeError("Argument must be a number")}var i=n(e);if(t!==undefined){if(typeof r==="string"){i.fill(t,r)}else{i.fill(t)}}else{i.fill(0)}return i};SafeBuffer.allocUnsafe=function(e){if(typeof e!=="number"){throw new TypeError("Argument must be a number")}return n(e)};SafeBuffer.allocUnsafeSlow=function(e){if(typeof e!=="number"){throw new TypeError("Argument must be a number")}return i.SlowBuffer(e)}},2858:function(e,t,r){var i=r(6911).Buffer;function Hash(e,t){this._block=i.alloc(e);this._finalSize=t;this._blockSize=e;this._len=0}Hash.prototype.update=function(e,t){if(typeof e==="string"){t=t||"utf8";e=i.from(e,t)}var r=this._block;var n=this._blockSize;var a=e.length;var s=this._len;for(var o=0;o<a;){var h=s%n;var u=Math.min(a-o,n-h);for(var d=0;d<u;d++){r[h+d]=e[o+d]}s+=u;o+=u;if(s%n===0){this._update(r)}}this._len+=a;return this};Hash.prototype.digest=function(e){var t=this._len%this._blockSize;this._block[t]=128;this._block.fill(0,t+1);if(t>=this._finalSize){this._update(this._block);this._block.fill(0)}var r=this._len*8;if(r<=4294967295){this._block.writeUInt32BE(r,this._blockSize-4)}else{var i=(r&4294967295)>>>0;var n=(r-i)/4294967296;this._block.writeUInt32BE(n,this._blockSize-8);this._block.writeUInt32BE(i,this._blockSize-4)}this._update(this._block);var a=this._hash();return e?a.toString(e):a};Hash.prototype._update=function(){throw new Error("_update must be implemented by subclass")};e.exports=Hash},4371:function(e,t,r){var i=e.exports=function SHA(e){e=e.toLowerCase();var t=i[e];if(!t)throw new Error(e+" is not supported (we accept pull requests)");return new t};i.sha=r(4018);i.sha1=r(4179);i.sha224=r(532);i.sha256=r(1843);i.sha384=r(7455);i.sha512=r(9934)},4018:function(e,t,r){var i=r(3782);var n=r(2858);var a=r(6911).Buffer;var s=[1518500249,1859775393,2400959708|0,3395469782|0];var o=new Array(80);function Sha(){this.init();this._w=o;n.call(this,64,56)}i(Sha,n);Sha.prototype.init=function(){this._a=1732584193;this._b=4023233417;this._c=2562383102;this._d=271733878;this._e=3285377520;return this};function rotl5(e){return e<<5|e>>>27}function rotl30(e){return e<<30|e>>>2}function ft(e,t,r,i){if(e===0)return t&r|~t&i;if(e===2)return t&r|t&i|r&i;return t^r^i}Sha.prototype._update=function(e){var t=this._w;var r=this._a|0;var i=this._b|0;var n=this._c|0;var a=this._d|0;var o=this._e|0;for(var h=0;h<16;++h)t[h]=e.readInt32BE(h*4);for(;h<80;++h)t[h]=t[h-3]^t[h-8]^t[h-14]^t[h-16];for(var u=0;u<80;++u){var d=~~(u/20);var c=rotl5(r)+ft(d,i,n,a)+o+t[u]+s[d]|0;o=a;a=n;n=rotl30(i);i=r;r=c}this._a=r+this._a|0;this._b=i+this._b|0;this._c=n+this._c|0;this._d=a+this._d|0;this._e=o+this._e|0};Sha.prototype._hash=function(){var e=a.allocUnsafe(20);e.writeInt32BE(this._a|0,0);e.writeInt32BE(this._b|0,4);e.writeInt32BE(this._c|0,8);e.writeInt32BE(this._d|0,12);e.writeInt32BE(this._e|0,16);return e};e.exports=Sha},4179:function(e,t,r){var i=r(3782);var n=r(2858);var a=r(6911).Buffer;var s=[1518500249,1859775393,2400959708|0,3395469782|0];var o=new Array(80);function Sha1(){this.init();this._w=o;n.call(this,64,56)}i(Sha1,n);Sha1.prototype.init=function(){this._a=1732584193;this._b=4023233417;this._c=2562383102;this._d=271733878;this._e=3285377520;return this};function rotl1(e){return e<<1|e>>>31}function rotl5(e){return e<<5|e>>>27}function rotl30(e){return e<<30|e>>>2}function ft(e,t,r,i){if(e===0)return t&r|~t&i;if(e===2)return t&r|t&i|r&i;return t^r^i}Sha1.prototype._update=function(e){var t=this._w;var r=this._a|0;var i=this._b|0;var n=this._c|0;var a=this._d|0;var o=this._e|0;for(var h=0;h<16;++h)t[h]=e.readInt32BE(h*4);for(;h<80;++h)t[h]=rotl1(t[h-3]^t[h-8]^t[h-14]^t[h-16]);for(var u=0;u<80;++u){var d=~~(u/20);var c=rotl5(r)+ft(d,i,n,a)+o+t[u]+s[d]|0;o=a;a=n;n=rotl30(i);i=r;r=c}this._a=r+this._a|0;this._b=i+this._b|0;this._c=n+this._c|0;this._d=a+this._d|0;this._e=o+this._e|0};Sha1.prototype._hash=function(){var e=a.allocUnsafe(20);e.writeInt32BE(this._a|0,0);e.writeInt32BE(this._b|0,4);e.writeInt32BE(this._c|0,8);e.writeInt32BE(this._d|0,12);e.writeInt32BE(this._e|0,16);return e};e.exports=Sha1},532:function(e,t,r){var i=r(3782);var n=r(1843);var a=r(2858);var s=r(6911).Buffer;var o=new Array(64);function Sha224(){this.init();this._w=o;a.call(this,64,56)}i(Sha224,n);Sha224.prototype.init=function(){this._a=3238371032;this._b=914150663;this._c=812702999;this._d=4144912697;this._e=4290775857;this._f=1750603025;this._g=1694076839;this._h=3204075428;return this};Sha224.prototype._hash=function(){var e=s.allocUnsafe(28);e.writeInt32BE(this._a,0);e.writeInt32BE(this._b,4);e.writeInt32BE(this._c,8);e.writeInt32BE(this._d,12);e.writeInt32BE(this._e,16);e.writeInt32BE(this._f,20);e.writeInt32BE(this._g,24);return e};e.exports=Sha224},1843:function(e,t,r){var i=r(3782);var n=r(2858);var a=r(6911).Buffer;var s=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];var o=new Array(64);function Sha256(){this.init();this._w=o;n.call(this,64,56)}i(Sha256,n);Sha256.prototype.init=function(){this._a=1779033703;this._b=3144134277;this._c=1013904242;this._d=2773480762;this._e=1359893119;this._f=2600822924;this._g=528734635;this._h=1541459225;return this};function ch(e,t,r){return r^e&(t^r)}function maj(e,t,r){return e&t|r&(e|t)}function sigma0(e){return(e>>>2|e<<30)^(e>>>13|e<<19)^(e>>>22|e<<10)}function sigma1(e){return(e>>>6|e<<26)^(e>>>11|e<<21)^(e>>>25|e<<7)}function gamma0(e){return(e>>>7|e<<25)^(e>>>18|e<<14)^e>>>3}function gamma1(e){return(e>>>17|e<<15)^(e>>>19|e<<13)^e>>>10}Sha256.prototype._update=function(e){var t=this._w;var r=this._a|0;var i=this._b|0;var n=this._c|0;var a=this._d|0;var o=this._e|0;var h=this._f|0;var u=this._g|0;var d=this._h|0;for(var c=0;c<16;++c)t[c]=e.readInt32BE(c*4);for(;c<64;++c)t[c]=gamma1(t[c-2])+t[c-7]+gamma0(t[c-15])+t[c-16]|0;for(var l=0;l<64;++l){var p=d+sigma1(o)+ch(o,h,u)+s[l]+t[l]|0;var v=sigma0(r)+maj(r,i,n)|0;d=u;u=h;h=o;o=a+p|0;a=n;n=i;i=r;r=p+v|0}this._a=r+this._a|0;this._b=i+this._b|0;this._c=n+this._c|0;this._d=a+this._d|0;this._e=o+this._e|0;this._f=h+this._f|0;this._g=u+this._g|0;this._h=d+this._h|0};Sha256.prototype._hash=function(){var e=a.allocUnsafe(32);e.writeInt32BE(this._a,0);e.writeInt32BE(this._b,4);e.writeInt32BE(this._c,8);e.writeInt32BE(this._d,12);e.writeInt32BE(this._e,16);e.writeInt32BE(this._f,20);e.writeInt32BE(this._g,24);e.writeInt32BE(this._h,28);return e};e.exports=Sha256},7455:function(e,t,r){var i=r(3782);var n=r(9934);var a=r(2858);var s=r(6911).Buffer;var o=new Array(160);function Sha384(){this.init();this._w=o;a.call(this,128,112)}i(Sha384,n);Sha384.prototype.init=function(){this._ah=3418070365;this._bh=1654270250;this._ch=2438529370;this._dh=355462360;this._eh=1731405415;this._fh=2394180231;this._gh=3675008525;this._hh=1203062813;this._al=3238371032;this._bl=914150663;this._cl=812702999;this._dl=4144912697;this._el=4290775857;this._fl=1750603025;this._gl=1694076839;this._hl=3204075428;return this};Sha384.prototype._hash=function(){var e=s.allocUnsafe(48);function writeInt64BE(t,r,i){e.writeInt32BE(t,i);e.writeInt32BE(r,i+4)}writeInt64BE(this._ah,this._al,0);writeInt64BE(this._bh,this._bl,8);writeInt64BE(this._ch,this._cl,16);writeInt64BE(this._dh,this._dl,24);writeInt64BE(this._eh,this._el,32);writeInt64BE(this._fh,this._fl,40);return e};e.exports=Sha384},9934:function(e,t,r){var i=r(3782);var n=r(2858);var a=r(6911).Buffer;var s=[1116352408,3609767458,1899447441,602891725,3049323471,3964484399,3921009573,2173295548,961987163,4081628472,1508970993,3053834265,2453635748,2937671579,2870763221,3664609560,3624381080,2734883394,310598401,1164996542,607225278,1323610764,1426881987,3590304994,1925078388,4068182383,2162078206,991336113,2614888103,633803317,3248222580,3479774868,3835390401,2666613458,4022224774,944711139,264347078,2341262773,604807628,2007800933,770255983,1495990901,1249150122,1856431235,1555081692,3175218132,1996064986,2198950837,2554220882,3999719339,2821834349,766784016,2952996808,2566594879,3210313671,3203337956,3336571891,1034457026,3584528711,2466948901,113926993,3758326383,338241895,168717936,666307205,1188179964,773529912,1546045734,1294757372,1522805485,1396182291,2643833823,1695183700,2343527390,1986661051,1014477480,2177026350,1206759142,2456956037,344077627,2730485921,1290863460,2820302411,3158454273,3259730800,3505952657,3345764771,106217008,3516065817,3606008344,3600352804,1432725776,4094571909,1467031594,275423344,851169720,430227734,3100823752,506948616,1363258195,659060556,3750685593,883997877,3785050280,958139571,3318307427,1322822218,3812723403,1537002063,2003034995,1747873779,3602036899,1955562222,1575990012,2024104815,1125592928,2227730452,2716904306,2361852424,442776044,2428436474,593698344,2756734187,3733110249,3204031479,2999351573,3329325298,3815920427,3391569614,3928383900,3515267271,566280711,3940187606,3454069534,4118630271,4000239992,116418474,1914138554,174292421,2731055270,289380356,3203993006,460393269,320620315,685471733,587496836,852142971,1086792851,1017036298,365543100,1126000580,2618297676,1288033470,3409855158,1501505948,4234509866,1607167915,987167468,1816402316,1246189591];var o=new Array(160);function Sha512(){this.init();this._w=o;n.call(this,128,112)}i(Sha512,n);Sha512.prototype.init=function(){this._ah=1779033703;this._bh=3144134277;this._ch=1013904242;this._dh=2773480762;this._eh=1359893119;this._fh=2600822924;this._gh=528734635;this._hh=1541459225;this._al=4089235720;this._bl=2227873595;this._cl=4271175723;this._dl=1595750129;this._el=2917565137;this._fl=725511199;this._gl=4215389547;this._hl=327033209;return this};function Ch(e,t,r){return r^e&(t^r)}function maj(e,t,r){return e&t|r&(e|t)}function sigma0(e,t){return(e>>>28|t<<4)^(t>>>2|e<<30)^(t>>>7|e<<25)}function sigma1(e,t){return(e>>>14|t<<18)^(e>>>18|t<<14)^(t>>>9|e<<23)}function Gamma0(e,t){return(e>>>1|t<<31)^(e>>>8|t<<24)^e>>>7}function Gamma0l(e,t){return(e>>>1|t<<31)^(e>>>8|t<<24)^(e>>>7|t<<25)}function Gamma1(e,t){return(e>>>19|t<<13)^(t>>>29|e<<3)^e>>>6}function Gamma1l(e,t){return(e>>>19|t<<13)^(t>>>29|e<<3)^(e>>>6|t<<26)}function getCarry(e,t){return e>>>0<t>>>0?1:0}Sha512.prototype._update=function(e){var t=this._w;var r=this._ah|0;var i=this._bh|0;var n=this._ch|0;var a=this._dh|0;var o=this._eh|0;var h=this._fh|0;var u=this._gh|0;var d=this._hh|0;var c=this._al|0;var l=this._bl|0;var p=this._cl|0;var v=this._dl|0;var b=this._el|0;var m=this._fl|0;var y=this._gl|0;var g=this._hl|0;for(var _=0;_<32;_+=2){t[_]=e.readInt32BE(_*4);t[_+1]=e.readInt32BE(_*4+4)}for(;_<160;_+=2){var w=t[_-15*2];var M=t[_-15*2+1];var B=Gamma0(w,M);var E=Gamma0l(M,w);w=t[_-2*2];M=t[_-2*2+1];var k=Gamma1(w,M);var A=Gamma1l(M,w);var N=t[_-7*2];var P=t[_-7*2+1];var x=t[_-16*2];var I=t[_-16*2+1];var C=E+P|0;var D=B+N+getCarry(C,E)|0;C=C+A|0;D=D+k+getCarry(C,A)|0;C=C+I|0;D=D+x+getCarry(C,I)|0;t[_]=D;t[_+1]=C}for(var T=0;T<160;T+=2){D=t[T];C=t[T+1];var j=maj(r,i,n);var q=maj(c,l,p);var O=sigma0(r,c);var H=sigma0(c,r);var L=sigma1(o,b);var z=sigma1(b,o);var F=s[T];var U=s[T+1];var W=Ch(o,h,u);var V=Ch(b,m,y);var G=g+z|0;var J=d+L+getCarry(G,g)|0;G=G+V|0;J=J+W+getCarry(G,V)|0;G=G+U|0;J=J+F+getCarry(G,U)|0;G=G+C|0;J=J+D+getCarry(G,C)|0;var Z=H+q|0;var X=O+j+getCarry(Z,H)|0;d=u;g=y;u=h;y=m;h=o;m=b;b=v+G|0;o=a+J+getCarry(b,v)|0;a=n;v=p;n=i;p=l;i=r;l=c;c=G+Z|0;r=J+X+getCarry(c,G)|0}this._al=this._al+c|0;this._bl=this._bl+l|0;this._cl=this._cl+p|0;this._dl=this._dl+v|0;this._el=this._el+b|0;this._fl=this._fl+m|0;this._gl=this._gl+y|0;this._hl=this._hl+g|0;this._ah=this._ah+r+getCarry(this._al,c)|0;this._bh=this._bh+i+getCarry(this._bl,l)|0;this._ch=this._ch+n+getCarry(this._cl,p)|0;this._dh=this._dh+a+getCarry(this._dl,v)|0;this._eh=this._eh+o+getCarry(this._el,b)|0;this._fh=this._fh+h+getCarry(this._fl,m)|0;this._gh=this._gh+u+getCarry(this._gl,y)|0;this._hh=this._hh+d+getCarry(this._hl,g)|0};Sha512.prototype._hash=function(){var e=a.allocUnsafe(64);function writeInt64BE(t,r,i){e.writeInt32BE(t,i);e.writeInt32BE(r,i+4)}writeInt64BE(this._ah,this._al,0);writeInt64BE(this._bh,this._bl,8);writeInt64BE(this._ch,this._cl,16);writeInt64BE(this._dh,this._dl,24);writeInt64BE(this._eh,this._el,32);writeInt64BE(this._fh,this._fl,40);writeInt64BE(this._gh,this._gl,48);writeInt64BE(this._hh,this._hl,56);return e};e.exports=Sha512},3704:function(e,t,r){"use strict";var i=r(5055).Buffer;var n=i.isEncoding||function(e){e=""+e;switch(e&&e.toLowerCase()){case"hex":case"utf8":case"utf-8":case"ascii":case"binary":case"base64":case"ucs2":case"ucs-2":case"utf16le":case"utf-16le":case"raw":return true;default:return false}};function _normalizeEncoding(e){if(!e)return"utf8";var t;while(true){switch(e){case"utf8":case"utf-8":return"utf8";case"ucs2":case"ucs-2":case"utf16le":case"utf-16le":return"utf16le";case"latin1":case"binary":return"latin1";case"base64":case"ascii":case"hex":return e;default:if(t)return;e=(""+e).toLowerCase();t=true}}}function normalizeEncoding(e){var t=_normalizeEncoding(e);if(typeof t!=="string"&&(i.isEncoding===n||!n(e)))throw new Error("Unknown encoding: "+e);return t||e}t.s=StringDecoder;function StringDecoder(e){this.encoding=normalizeEncoding(e);var t;switch(this.encoding){case"utf16le":this.text=utf16Text;this.end=utf16End;t=4;break;case"utf8":this.fillLast=utf8FillLast;t=4;break;case"base64":this.text=base64Text;this.end=base64End;t=3;break;default:this.write=simpleWrite;this.end=simpleEnd;return}this.lastNeed=0;this.lastTotal=0;this.lastChar=i.allocUnsafe(t)}StringDecoder.prototype.write=function(e){if(e.length===0)return"";var t;var r;if(this.lastNeed){t=this.fillLast(e);if(t===undefined)return"";r=this.lastNeed;this.lastNeed=0}else{r=0}if(r<e.length)return t?t+this.text(e,r):this.text(e,r);return t||""};StringDecoder.prototype.end=utf8End;StringDecoder.prototype.text=utf8Text;StringDecoder.prototype.fillLast=function(e){if(this.lastNeed<=e.length){e.copy(this.lastChar,this.lastTotal-this.lastNeed,0,this.lastNeed);return this.lastChar.toString(this.encoding,0,this.lastTotal)}e.copy(this.lastChar,this.lastTotal-this.lastNeed,0,e.length);this.lastNeed-=e.length};function utf8CheckByte(e){if(e<=127)return 0;else if(e>>5===6)return 2;else if(e>>4===14)return 3;else if(e>>3===30)return 4;return e>>6===2?-1:-2}function utf8CheckIncomplete(e,t,r){var i=t.length-1;if(i<r)return 0;var n=utf8CheckByte(t[i]);if(n>=0){if(n>0)e.lastNeed=n-1;return n}if(--i<r||n===-2)return 0;n=utf8CheckByte(t[i]);if(n>=0){if(n>0)e.lastNeed=n-2;return n}if(--i<r||n===-2)return 0;n=utf8CheckByte(t[i]);if(n>=0){if(n>0){if(n===2)n=0;else e.lastNeed=n-3}return n}return 0}function utf8CheckExtraBytes(e,t,r){if((t[0]&192)!==128){e.lastNeed=0;return"�"}if(e.lastNeed>1&&t.length>1){if((t[1]&192)!==128){e.lastNeed=1;return"�"}if(e.lastNeed>2&&t.length>2){if((t[2]&192)!==128){e.lastNeed=2;return"�"}}}}function utf8FillLast(e){var t=this.lastTotal-this.lastNeed;var r=utf8CheckExtraBytes(this,e,t);if(r!==undefined)return r;if(this.lastNeed<=e.length){e.copy(this.lastChar,t,0,this.lastNeed);return this.lastChar.toString(this.encoding,0,this.lastTotal)}e.copy(this.lastChar,t,0,e.length);this.lastNeed-=e.length}function utf8Text(e,t){var r=utf8CheckIncomplete(this,e,t);if(!this.lastNeed)return e.toString("utf8",t);this.lastTotal=r;var i=e.length-(r-this.lastNeed);e.copy(this.lastChar,0,i);return e.toString("utf8",t,i)}function utf8End(e){var t=e&&e.length?this.write(e):"";if(this.lastNeed)return t+"�";return t}function utf16Text(e,t){if((e.length-t)%2===0){var r=e.toString("utf16le",t);if(r){var i=r.charCodeAt(r.length-1);if(i>=55296&&i<=56319){this.lastNeed=2;this.lastTotal=4;this.lastChar[0]=e[e.length-2];this.lastChar[1]=e[e.length-1];return r.slice(0,-1)}}return r}this.lastNeed=1;this.lastTotal=2;this.lastChar[0]=e[e.length-1];return e.toString("utf16le",t,e.length-1)}function utf16End(e){var t=e&&e.length?this.write(e):"";if(this.lastNeed){var r=this.lastTotal-this.lastNeed;return t+this.lastChar.toString("utf16le",0,r)}return t}function base64Text(e,t){var r=(e.length-t)%3;if(r===0)return e.toString("base64",t);this.lastNeed=3-r;this.lastTotal=3;if(r===1){this.lastChar[0]=e[e.length-1]}else{this.lastChar[0]=e[e.length-2];this.lastChar[1]=e[e.length-1]}return e.toString("base64",t,e.length-r)}function base64End(e){var t=e&&e.length?this.write(e):"";if(this.lastNeed)return t+this.lastChar.toString("base64",0,3-this.lastNeed);return t}function simpleWrite(e){return e.toString(this.encoding)}function simpleEnd(e){return e&&e.length?this.write(e):""}},6769:function(e){e.exports=deprecate;function deprecate(e,t){if(config("noDeprecation")){return e}var r=false;function deprecated(){if(!r){if(config("throwDeprecation")){throw new Error(t)}else if(config("traceDeprecation")){console.trace(t)}else{console.warn(t)}r=true}return e.apply(this,arguments)}return deprecated}function config(e){try{if(!global.localStorage)return false}catch(e){return false}var t=global.localStorage[e];if(null==t)return false;return String(t).toLowerCase()==="true"}},4300:function(e){"use strict";e.exports=require("buffer")},6113:function(e){"use strict";e.exports=require("crypto")},2361:function(e){"use strict";e.exports=require("events")},2781:function(e){"use strict";e.exports=require("stream")},1576:function(e){"use strict";e.exports=require("string_decoder")},3837:function(e){"use strict";e.exports=require("util")},6144:function(e){"use strict";e.exports=require("vm")},5866:function(e){"use strict";e.exports=JSON.parse('{"aes-128-ecb":{"cipher":"AES","key":128,"iv":0,"mode":"ECB","type":"block"},"aes-192-ecb":{"cipher":"AES","key":192,"iv":0,"mode":"ECB","type":"block"},"aes-256-ecb":{"cipher":"AES","key":256,"iv":0,"mode":"ECB","type":"block"},"aes-128-cbc":{"cipher":"AES","key":128,"iv":16,"mode":"CBC","type":"block"},"aes-192-cbc":{"cipher":"AES","key":192,"iv":16,"mode":"CBC","type":"block"},"aes-256-cbc":{"cipher":"AES","key":256,"iv":16,"mode":"CBC","type":"block"},"aes128":{"cipher":"AES","key":128,"iv":16,"mode":"CBC","type":"block"},"aes192":{"cipher":"AES","key":192,"iv":16,"mode":"CBC","type":"block"},"aes256":{"cipher":"AES","key":256,"iv":16,"mode":"CBC","type":"block"},"aes-128-cfb":{"cipher":"AES","key":128,"iv":16,"mode":"CFB","type":"stream"},"aes-192-cfb":{"cipher":"AES","key":192,"iv":16,"mode":"CFB","type":"stream"},"aes-256-cfb":{"cipher":"AES","key":256,"iv":16,"mode":"CFB","type":"stream"},"aes-128-cfb8":{"cipher":"AES","key":128,"iv":16,"mode":"CFB8","type":"stream"},"aes-192-cfb8":{"cipher":"AES","key":192,"iv":16,"mode":"CFB8","type":"stream"},"aes-256-cfb8":{"cipher":"AES","key":256,"iv":16,"mode":"CFB8","type":"stream"},"aes-128-cfb1":{"cipher":"AES","key":128,"iv":16,"mode":"CFB1","type":"stream"},"aes-192-cfb1":{"cipher":"AES","key":192,"iv":16,"mode":"CFB1","type":"stream"},"aes-256-cfb1":{"cipher":"AES","key":256,"iv":16,"mode":"CFB1","type":"stream"},"aes-128-ofb":{"cipher":"AES","key":128,"iv":16,"mode":"OFB","type":"stream"},"aes-192-ofb":{"cipher":"AES","key":192,"iv":16,"mode":"OFB","type":"stream"},"aes-256-ofb":{"cipher":"AES","key":256,"iv":16,"mode":"OFB","type":"stream"},"aes-128-ctr":{"cipher":"AES","key":128,"iv":16,"mode":"CTR","type":"stream"},"aes-192-ctr":{"cipher":"AES","key":192,"iv":16,"mode":"CTR","type":"stream"},"aes-256-ctr":{"cipher":"AES","key":256,"iv":16,"mode":"CTR","type":"stream"},"aes-128-gcm":{"cipher":"AES","key":128,"iv":12,"mode":"GCM","type":"auth"},"aes-192-gcm":{"cipher":"AES","key":192,"iv":12,"mode":"GCM","type":"auth"},"aes-256-gcm":{"cipher":"AES","key":256,"iv":12,"mode":"GCM","type":"auth"}}')},2908:function(e){"use strict";e.exports=JSON.parse('{"sha224WithRSAEncryption":{"sign":"rsa","hash":"sha224","id":"302d300d06096086480165030402040500041c"},"RSA-SHA224":{"sign":"ecdsa/rsa","hash":"sha224","id":"302d300d06096086480165030402040500041c"},"sha256WithRSAEncryption":{"sign":"rsa","hash":"sha256","id":"3031300d060960864801650304020105000420"},"RSA-SHA256":{"sign":"ecdsa/rsa","hash":"sha256","id":"3031300d060960864801650304020105000420"},"sha384WithRSAEncryption":{"sign":"rsa","hash":"sha384","id":"3041300d060960864801650304020205000430"},"RSA-SHA384":{"sign":"ecdsa/rsa","hash":"sha384","id":"3041300d060960864801650304020205000430"},"sha512WithRSAEncryption":{"sign":"rsa","hash":"sha512","id":"3051300d060960864801650304020305000440"},"RSA-SHA512":{"sign":"ecdsa/rsa","hash":"sha512","id":"3051300d060960864801650304020305000440"},"RSA-SHA1":{"sign":"rsa","hash":"sha1","id":"3021300906052b0e03021a05000414"},"ecdsa-with-SHA1":{"sign":"ecdsa","hash":"sha1","id":""},"sha256":{"sign":"ecdsa","hash":"sha256","id":""},"sha224":{"sign":"ecdsa","hash":"sha224","id":""},"sha384":{"sign":"ecdsa","hash":"sha384","id":""},"sha512":{"sign":"ecdsa","hash":"sha512","id":""},"DSA-SHA":{"sign":"dsa","hash":"sha1","id":""},"DSA-SHA1":{"sign":"dsa","hash":"sha1","id":""},"DSA":{"sign":"dsa","hash":"sha1","id":""},"DSA-WITH-SHA224":{"sign":"dsa","hash":"sha224","id":""},"DSA-SHA224":{"sign":"dsa","hash":"sha224","id":""},"DSA-WITH-SHA256":{"sign":"dsa","hash":"sha256","id":""},"DSA-SHA256":{"sign":"dsa","hash":"sha256","id":""},"DSA-WITH-SHA384":{"sign
+{
+    "word": "कूप",
+    "ABCH": [
+        {
+            "word": "कूप",
+            "linga": "पुंस्त्री",
+            "pagenum": "43",
+            "kanda": "तिर्यक्काण्डः",
+            "varga": "जलकायः",
+            "eid": "3283",
+            "group": "1351",
+            "synonyms": [
+                "उदपान",
+                "अन्धु",
+                "प्रहि"
+            ],
+            "content": "कूपः स्यादुदपानोऽन्धुः प्रर्हिर्नेमी तु तत्त्रिका ॥ १०९१ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "कूप",
+            "eid": "11341",
+            "pagenum": 416,
+            "content": "कूपः¦ [कुवंति मंडूका अस्मिन्, कु-पक् दीर्घश्च <ls>Uṇ. 3. 27</ls>] <b>1</b> A well; कूपे पश्य पयोनिधावपि घटो गृह्णाति तुल्यं जलं <ls>Bh. 2. 49</ls>; so नितरां नीचोस्मीति त्वं खेदं कूप मा कदापि कृथाः । अत्यंतसरसहृदयो यतः परेषां <lbinfo n='guRa#grahItAsi'/> गुणग्रहीतासि <ls>Bv. 1. 9</ls>; प्रोद्दीप्ते भवने तु <lbinfo n='kUpa#KananaM'/> कूपखननं प्रत्यद्यमः कीदृशः <ls>Bh. 3. 88.</ls> <b>--2</b> A hole, cave, hollow, cavity; as in जघनकूप; <ls>Śi. 7. 74.</ls> <b>--3</b> A leather oil-vessel. <b>--4</b> A post to which a ship is moored. <b>--5</b> A tree or rock in the midst of a river. <b>--6</b> A mast;  <lbinfo n='kzoRI#nOkUpadaMqaH'/> क्षोणीनौकूपदंडः <ls>Dk. 1.</ls> --पी <b>1</b> A small well. <b>--2</b> A flask, bottle. <b>--3</b> The navel. <b>--Comp.</b> --अंकः, --अंगः <lbinfo n='horri+pilation'/> horripilation. --कच्छपः, --मंडूकः, --मंडूकी (<ab>lit.</ab>) a tortoise or frog in a well; (<ab>fig.</ab>) an inexperienced person, one who has had no experience of the world at large, a man of limited ideas who knows only his own <lbinfo n='neigh+bourhood'/> neighbourhood; <ab>oft.</ab> used as a term of reproach. --यंत्रं a water-wheel, a contrivance for raising water from a well. °यंत्रघटी-घटिका a bucket or pot attached to the water-wheel to draw up water. °यंत्रघटिकान्याय see under न्याय."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "कूप",
+            "eid": "3668",
+            "pagenum": 201,
+            "content": "कूप¦ <i>kūpa,</i> <ab>m.</ab> <b>1.</b> A pit, <ls>MBh.</ls> 1, 716. <b>2.</b> A well, <ls>Man.</ls> 4, 202. <b> -- <ab>Comp.</ab></b> <i>ludba-,</i>  <ab>m.</ab> a pit-fall, a pit the opening of which is overgrown, <ls>Kathās.</ls> 4, 120. <i>Roma-</i> <i>kūpa,</i> <ab>i. e.</ab> <i>roman-,</i> <ab>m.</ab> a pore of the skin."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "कूप",
+            "eid": "2336",
+            "pagenum": 79,
+            "content": "कूप¦ <i>m.</i> 1) fovea, cavum, specus. 2) puteus. BHAR. 2. 41. (Gr. <lang n='greek'>ϰύπη</lang>, russ. <lang n='russian'>копа̀ю</lang> fodio.)"
+        }
+    ],
+    "BUR": [
+        {
+            "word": "कूप",
+            "eid": "4967",
+            "pagenum": 178,
+            "content": "कूप¦ <i>kūpa</i> <ab>m.</ab> trou, fosse, cavité; puits, citerne. <ab>Gr.</ab> <lang n='greek'>ϰύπη</lang>. || Mât; arbre ou rocher au milieu d'une rivière.  <P><i>kūpaka</i> <ab>m.</ab> creux, cavité; mare; || puits, citerne; || creux au bas des reins; sillon formé par la croupe d'un animal; || outre de cuir. || Mât de navire; || poteau pour amarrer <lbinfo n='3'/> les navires; || arbre ou roc dans une rivière. <lbinfo n='6'/> || Bûcher funéraire.  <P><i>kūpāṅga</i> <ab>m.</ab> et <i>kūpāṅka</i> <ab>m.</ab> hérissement des cheveux ou des poils qui se dressent.  <P><i>kūpāra</i> <ab>m.</ab> la mer.  <P><i>kūpikā</i> <ab>f.</ab> roc dans une rivière."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "कूप",
+            "eid": "8201",
+            "pagenum": 127,
+            "content": "कू/प¦ <lex>m.</lex> hole, cave, well."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "कूप",
+            "eid": "5213",
+            "pagenum": 89,
+            "content": "कू/प¦ <i>m.</i> Grube, Höhle, Brunnen."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "कूप",
+            "eid": "2641",
+            "pagenum": 332,
+            "content": "<b>kū́pa,</b>¦ <ab>m.</ab>, <i>Grube, Höhle</i> [<ls>Cu. 〔83b〕</ls>]. <dvsn n='TS'>-e {105,17}."
+        }
+    ],
+    "IEG": [
+        {
+            "word": "कूप",
+            "eid": "2947",
+            "pagenum": 167,
+            "content": "<i>kūpa</i>¦ (<i>Ep. Ind.,</i> Vol. VII, p. 46, note 8), an ordinary well; cf. <i>vāpī</i> which is a well with a flight of stairs."
+        }
+    ],
+    "INM": [
+        {
+            "word": "कूप",
+            "eid": "6228",
+            "pagenum": 438,
+            "content": "<b>Kūpa</b><sup>1</sup>,¦ a tīrtha. § 368 (Tīrthayātrāp.): III, <b>83</b>, 7043."
+        },
+        {
+            "word": "कूप",
+            "eid": "6229",
+            "pagenum": 438,
+            "content": "<b>Kūpa</b><sup>2</sup>¦ = Śiva (1000 names<sup>2</sup>)."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "कूप",
+            "eid": "1167",
+            "pagenum": 142,
+            "content": "<b>kū́pa,</b>¦ <i><ab>m.</ab></i> cave, hole; well. [<ab>cf.</ab> <lang n='greek'>κύπη</lang>, ‘cave, hut,’ <ab>Lat.</ab> <i>cūpa,</i> ‘vat,’ ‘niche for the dead,’ borrowed <ab>Eng.</ab> <i>coop,</i> ‘vat,’ whence <i>cooper.</i>]"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "कूप",
+            "eid": "10055",
+            "pagenum": 200,
+            "content": "kUpa¦ <i>m.</i> 1. A well, कूपे पश्य पयोनिधावपि घटो गृह्णाति तुल्यं जलम् <ls>Bhartr.</ls>ii.49, <ls>Rt.</ls>i.23, <ls>Bh.V.</ls>i.9, <ls>M.</ls>iv.202; 2. a hole, a hollow, a cave; 3. a leather oil-vessel; 4. a mast, क्षोणीनौकूपदंडः <ls>D.K.</ls>"
+        }
+    ],
+    "MCI": [
+        {
+            "word": "कूप",
+            "eid": "1156",
+            "pagenum": 314,
+            "content": "<b>Kūpa<sup>1</sup></b>¦ m.: A sacred well, not named, in the Gaṅgā. <dvsn n='P'>Situated near the Gaṅgāhrada; there are three crores of <i>tīrthas</i> in that well (<i>tisraḥ</i> <i>koṭyas tu tīrthānāṃ tasmin kūpe</i>); by bathing there one goes to heaven 3. 81. 153. [See <b>Udapāna</b> and <b>Kūpa<sup>2</sup></b>]"
+        },
+        {
+            "word": "कूप",
+            "eid": "1157",
+            "pagenum": 314,
+            "content": "<b>Kūpa<sup>2</sup></b>¦ m.: A sacred well, not named. <dvsn n='P'>It is near the sacred place called Jyeṣṭhasthāna 3. 83. 59-60; described as famous (<i>viśruta</i>) 3. 83. 60; all the four oceans are present in this Kūpa; by bathing there (<i>upaspṛśya</i>) and by circumambulating it (<i>kṛtvā cāpi pradakṣiṇam</i>), a person who has controlled his self (<i>niyatātmā</i>) is purified and acquires the highest state (after death) (<i>paramāṃ gatim</i>) 3. 83. 61. [See <b>Udapāna</b> and <b>Kūpa<sup>1</sup></b>]"
+        }
+    ],
+    "MD": [
+        {
+            "word": "कूप",
+            "eid": "6167",
+            "pagenum": 72,
+            "content": "कूप¦ kū́pa, <lex>m.</lex> [ku ap-a], pit, hole; well: <b>-ka,</b> 🞄<lex>m.</lex> little well; <b>-kāra,</b> <lex>m.</lex> well-digger; <b>-kūrma,</b> <lex>m.</lex> tortoise in a well = <i>unsophisticated 🞄person</i>; <b>-khanana,</b> <lex>n.</lex> digging of a well; 🞄<b>-khānaka,</b> <lex>m.</lex> well-digger; <b>-cakra,</b> <lex>n.</lex> water-wheel; 🞄<b>-dardura,</b> <lex>m.</lex> frog in well = <i>unsophisticated 🞄person</i>; <b>-yantra,</b> <lex>n.</lex> water-wheel."
+        }
+    ],
+    "MW": [
+        {
+            "word": "कूप",
+            "eid": "53937",
+            "pagenum": "300,1",
+            "content": "कू/प ¦ <lex>m.</lex> (<ab>fr.</ab> <hom>1.</hom> कु and अ/प्?; <ab>cf.</ab> अनूप/, द्वीप/), a hole, hollow, cave, <ls>RV. i, 105, 17</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls> &c.<info lex='m'/>"
+        },
+        {
+            "word": "कूप",
+            "eid": "53938",
+            "pagenum": "300,1",
+            "content": "¦ a pit well, <ls>ŚāṅkhGṛ.</ls>; <ls>Mn.</ls>; <ls>Mṛcch.</ls> &c.<info lex='inh'/>"
+        },
+        {
+            "word": "कूप",
+            "eid": "53939",
+            "pagenum": "300,1",
+            "content": "¦ a post to which a boat or ship is moored, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कूप",
+            "eid": "53940",
+            "pagenum": "300,1",
+            "content": "¦ a mast, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कूप",
+            "eid": "53941",
+            "pagenum": "300,1",
+            "content": "¦ a tree or rock in the midst of a river, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कूप",
+            "eid": "53942",
+            "pagenum": "300,1",
+            "content": "¦ a leather oil vessel, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कूप",
+            "eid": "53943",
+            "pagenum": "300,1",
+            "content": "¦ = मृन्-मान, <ls>L.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "कूप",
+            "eid": "15552",
+            "pagenum": 245,
+            "content": "कूप¦ <i>kūpa, as,</i> m. (said to be fr. rt. 3. <i>ku;</i> according to others perhaps fr. 1. <i>ku</i> and <i>ap;</i> cf. <i>anūpa, dvīpa</i>), a hole, a hollow, a cave; a well; a post to which a boat or ship is moored; a mast (?); a tree or rock in the midst of a river; a leather oil vessel; (<i>ī</i>), f. a small well; the navel; a flask, a bottle; [cf. Gr. <lang n='greek'>κύπη.</lang>] <i>—Kūpa-kacchapa,</i> <i>as,</i> m. a tortoise in a well; (metaphorically) a man without experience, who has seen nothing of the world. <i>—Kūpa-kāra, as,</i> m. a well-digger. <i>—Kūpa-</i> <i>khā, ās,</i> m. (rt. <i>khan</i>), Ved. a well-digger. <i>—Kūpa-</i> <i>ja, as,</i> m. hair. <i>—Kūpa-jala, am,</i> n. well-water, spring-water. <i>—Kūpa-dardura</i> or <i>kūpa-maṇḍūka,</i> <i>as,</i> m. a frog in a well, applied to a person of no experience and enterprise, one who never leaves home. <i>—Kūpa-rājya, am,</i> n., N. of a country. <i>—Kū-</i> <i>pāṅka</i> or <i>kūpāṅga (°pa-aṅ°), as,</i> m. horripilation, erection of the hairs of the body. <i>—Kūpodaka (°pa-</i> <i>ud°), am,</i> n. well-water."
+        }
+    ],
+    "PW": [
+        {
+            "word": "कूप",
+            "eid": "29748",
+            "pagenum": 2,
+            "content": "कू/प¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <dvsn n='2'>— a〉 <i>Grube, Höhle</i>. <dvsn n='2'>— b〉 <i>Brunnen</i>. <dvsn n='2'>— c〉 *<i>ein Pfosten zum Anbinden eines Bootes oder Mast</i>. <dvsn n='2'>— d〉 *<i>ein Fels oder Baumstamm in einem Flusse</i>. <dvsn n='2'>— e〉 *<i>Oelschlauch</i>. <dvsn n='2'>— f〉 *= मृन्मान. <dvsn n='1'>— 2〉 *<lex>f.</lex> कूपी <dvsn n='2'>— a〉 <i>ein kleiner Brunnen</i>. <dvsn n='2'>— b〉 <i>Nabel</i>. <dvsn n='2'>— c〉 <i>Flasche</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "कूप",
+            "eid": "18475",
+            "pagenum": 2,
+            "content": "कू/प¦ <dvsn n='1'> 1) <lex>m.</lex> <ls>Uṇ. 3, 27.</ls> <dvsn n='2'> a) <i>Grube, Höhle</i> <ls>NAIGH. 3, 23.</ls> <ls>H. an. 2, 293.</ls> <ls>MED. p. 3.</ls> त्रि\\तः कूपे ऽव^हितः <ls>ṚV. 1, 105, 17.</ls> <ls>AV. 5, 31, 8.</ls> कूपा इव हि सर्पाणामायतनानि <ls>ŚAT. BR. 4, 4, 5, 3.</ls> शीर्षंश्चत्वारः कूपाः <ls n='ŚAT. BR.'>3, 5, 4, 1. 6, 1, 13. 7, 1, 6. 6, 3, 3, 26.</ls> <ls>MBH. 1, 716.</ls> <ls n='MBH. 1,'>719. fg.</ls> असृग्विण्मूत्रकूपपतित <ls>BHĀG. P. 3, 31, 17.</ls> Vgl. कटिकूप, रोम° . <dvsn n='2'>— b) <i>Brunnen</i> <ls>AK. 1, 2, 3, 26.</ls> <ls>H. 1091.</ls> <ls>H. an.</ls> <ls>MED.</ls> <ls>SUŚR. 1, 169, 12.</ls> <ls>M. 4, 202.</ls> <ls n='M.'>8, 262.</ls> <ls n='M.'>11, 163.</ls> यस्तु रज्जुं घटं कूपाद्धरेत् <ls n='M.'>8, 319.</ls> कूपे पश्य पयोनिधावपि घटो गृह्णाति तुल्यं जलम् <ls>BHARTṚ. 2, 41.</ls> अन्योऽन्यं प्रतिपक्षसंहतिमिमां लोकस्थितिं बोधयन्नेष क्रीडति कूपयन्त्रघटिकान्यायप्रसक्तो विधिः <ls>MṚCCH. 178, 7.</ls> <ls>VET. 22, 6. 7.</ls> <ls>ṚT. 1, 23.</ls> चाण्डालकूप <ls>PAÑCAT. III, 194.</ls> कूपोदक <ls>HIT. I, 186.</ls> <dvsn n='2'>— c) <i>ein Pfosten, an dem ein Boot, ein Schiff angebunden wird</i> (गृणवृक्ष, nach Einigen: <i>Mast</i>) <ls>TRIK. 3, 3, 276.</ls> <ls>H. an.</ls> <ls>MED.</ls> <dvsn n='2'>— d) <i>ein Fels</i> oder <i>Baumstamm in einem Flusse</i> <ls>UṆĀDIK.</ls> im <ls>ŚKDR.</ls> <dvsn n='2'>— e) <i>Oelschlauch.</i> <dvsn n='2'>— f) = मृन्मान(?) <ls>H. an.</ls> <ls>MED.</ls> <dvsn n='1'>— 2) <lex>f.</lex> कूपी <dvsn n='2'> a) <i>ein kleiner Brunnen.</i> <dvsn n='2'>— b) <i>Nabel.</i> <dvsn n='2'>— c) <i>Flasche</i> <ls>WILS.</ls> — कूप ist viell. nach der Analogie von अनूप und द्वीप in 1. कु + अप् <i>Wasser</i> zu zerlegen."
+        },
+        {
+            "word": "कूप",
+            "eid": "71278",
+            "pagenum": 5,
+            "content": "कूप¦ <dvsn n='1'> 1) <dvsn n='2'> b) <ls>ŚĀṄKH. GṚHY. 5, 2.</ls> <dvsn n='1'>— 2) <dvsn n='2'> b) vgl. तुन्दकूपी . <dvsn n='2'>— c) <ls>BHĀVAPR.</ls> im <ls>ŚKDR.</ls> <dvsn n='v'>— Vgl. अन्ध°, कण्ठ°, रोम° ."
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "कूप",
+            "eid": "16296",
+            "pagenum": 7,
+            "content": "कूप¦ II. 1〉c〉 °दण्ड <lex>m.</lex> <i>Mast</i> <ls>DAŚAK. (1883) 1,2</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "कूप",
+            "eid": "11080",
+            "pagenum": 152,
+            "content": "<i>kūpa</i>¦ 1. c) <i>°daṇḍa</i> m. Mast, <ls>Daśak.</ls> (1883) 1, 2. {part=,seq=11246,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "कूप",
+            "eid": "11194",
+            "pagenum": 196,
+            "content": "कूप¦ r. 10th cl. (कूपयति) 1. To be weak. 2. To weaken: see कुप."
+        },
+        {
+            "word": "कूप",
+            "eid": "11195",
+            "pagenum": 196,
+            "content": "कूप¦ m. (-पः) 1. A well. 2. A hole, a hollow. 3. A mast. 4. A tree or rock in the midst of a river. f. (-पी) 1. A small well. 2. The navel. 3. A flask, a bottle. E. कु to sound, (frogs croaking in a well, &c.) and प Unadi affix: the vowel is made long; also कूपक."
+        }
+    ],
+    "STC": [
+        {
+            "word": "कूप",
+            "eid": "8194",
+            "pagenum": 203,
+            "content": "<b>kūpa-</b>¦ <ab>m.</ab> puits, fontaine ; grotte, caverne ; mât ; <i>-ikā-</i> <ab>f.</ab> réservoir.  <P><i>°karṇa-</i> <ab>m.</ab> <ab>n.</ab> d'un homme.  <P><i>°kāra-</i> <ab>m.</ab> qui creuse des puits.  <P><i>°cakra-</i> <ab>nt.</ab> roue servant à tirer l'eau d'un puits.  <P><i>°daṇḍa-</i> <ab>m.</ab> mât.  <P><i>°dardura-</i> (grenouille dans un puits) <ab>m.</ab> se dit des gens sans expérience qui ne sont jamais sortis de leur trou ; <i>°maṇḍūka-</i> <ab>id.</ab>  <P><i>°yantra-</i> <ab>nt.</ab> = <i>°cakra-.</i>"
+        }
+    ],
+    "VEI": [
+        {
+            "word": "कूप",
+            "eid": "680",
+            "pagenum": 1,
+            "content": "<b>Kūpa</b>¦ occurs in the Rigveda<sup>1</sup> and later literature<sup>2</sup> denoting an artificial hollow in the earth, or pit. In some cases they must have been deep, as Trita in the myth is said to have fallen into one from which he could not escape unaided.<sup>3</sup> <F>1) i. 105, 17.</F> <F>2) Av. v. 31, 8; Satapatha Brahmaṇa, iii. 5, 4, 1; iv. 4, 5, 3; vi. 3, 3. 26, etc.; Jaiminīya Brāhmaṇa, i. 184. etc. The adjective <i>kūpya,</i> ‘being in a hole,’ occurs frequently in the later Saṃhitās.</F> <F>3) Macdonell, <i>Vedic Mythology,</i> p. 67.</F>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "कूप",
+            "eid": "11200",
+            "pagenum": 239,
+            "content": "कूप¦ r. 10th cl. (कूपयति) .²1 To be weak. .²2 To weaken: see कुप."
+        },
+        {
+            "word": "कूप",
+            "eid": "11201",
+            "pagenum": 239,
+            "content": "कूप¦ m. (-पः) .²1 A well. .²2 A hole, a hollow. .²3 A mast. .²4 A tree or rock in the midst of a river. f. (-पी) .²1 A small well. .²2 The navel. .²3 A flask, a bottle. .E. कु to sound, (frogs croaking in a well, &c.) and प Uṇādi affix: the vowel is made long; also कूपक."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "कूप",
+            "eid": "10646",
+            "pagenum": 203,
+            "content": "कूप¦ (पः) 1. <i>m.</i> A well; a hole; a mast; a tree or rock in a river. <i>f.</i> (पी) Small well; flask; navel."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कूप",
+            "eid": "8480",
+            "pagenum": "2-170-a",
+            "content": "कूप¦, त् क दौर्ब्बल्ये । (अदन्तचुरां--परं--अकं--सेट् ।) अयं षष्ठस्वरी । इति त्रिलोचनः ॥ सप्तमखरी । इति कविकल्पद्रुमटीकायां दुर्गादासः ॥"
+        },
+        {
+            "word": "कूप",
+            "eid": "8481",
+            "pagenum": "2-170-a",
+            "content": "कूपः¦, पुं, (कु ईषत् आपी यत्र । “ऋक्पूरित्यः” । ५ । ४ । ७४ । ऊदनोरित्यत्र दीर्घनिर्द्देशादन्यत्राप्यूदिति वा । यद्वा कुतन्ति मण्डूकाः अत्र । “कुपु भ्याञ्च” । उणां ३ । २७ इति पो दीर्घश्च ।) स्वनामख्यातो जलाधारः ॥ कूया इति पात्कूया इति च भाषा । तत्पर्य्यायः । अन्धुः २ प्रहिः ३ उदपानम् ४ । इत्यमरः । १ । १० । २६ ॥ अवटः ५ कोट्टारः ६ । इति जटाधरः ॥ कात्तः ७ कर्त्तः ८ वज्रः ९ काटः १० खातः ११ अवतः १२ क्रिविः १३ सूदः १४ उत्सः १५ ऋष्यदात् १६ कारोतरात् १७ कुशेषः १८ केवटः १९ । इति वेदनिघण्टौ ३ अध्याये त्रयोदशकूपनामानि ॥ तस्य लक्षणं यथा, “भूमौ खातोऽल्पविस्तारो गम्भीरो मण्डलाकृतिः । बद्धोऽबद्धः स कूपः स्यात्तदम्भः कौपमुच्यते” ॥ इति भावप्रकाशः ॥ तज्जलगुणाः । वातकफनाशित्वम् । अग्निदीपनत्वम् । लघुत्वम् । पित्तवर्द्धनत्वम् । क्षारत्वम् । शीतकाले उष्णत्वम् । उष्णकाले शीतत्वम् । वसन्तकाले प्रशस्तत्वञ्च । इति राजवल्लभः ॥ (“रूक्षं कफघ्नं लवणात्मकञ्च सन्दीपनं पित्तकरं लघूष्णम् । कूपोदकं वातहरं प्रदिष्टं हितं न शस्तं शरदो वदन्ति” ॥ इति हारीते प्रथमस्थाने ७ अध्याये ॥ कूपादिकरणफलादिकं जलाशयतत्त्वधृतादित्यपुराणवचनम् । यथा, “सेतुबन्धरता ये च तीर्थशौचरताश्च ये । तडागकूपकर्त्तारो मुच्यन्ते ते तृषाभयात्” ॥ विष्णौ च । “अथ कूपकर्त्तुस्तत्प्रवृत्ते पानीये दुष्कृतार्द्धं विनश्यति” । तत्प्रवृत्ते कृतकूपादुत्थिते । विष्णुधर्म्मोत्तरे च । “तडागकूपकर्त्तारस्तथा कन्याप्रदायिनः । छत्रोपानहदातारस्ते नराः स्वर्गगामिनः” ॥ तथा, नन्दिकेश्वरपुराणे । “यो वापीमथवा कूपं देशे तोयविवर्ज्जिते । खानयेत् स दिवं याति विन्दौ विन्दौ शतं समाः” ॥ तत्संस्कारकर्त्तुरपि फलमुच्यते विष्णौ । यथा, “कूपारामतडागेषु देवतायतनेषु च । पुनः संस्कारकर्त्ता च लभते मौलिकं फलम्” ॥ परं जलशून्यदेशखनने एव प्रतिष्ठा न तु पङ्कोद्धारमात्रे । “अजले जलमुत्पाद्य” इति वचनात् ॥) गर्त्तः । गुणवृक्षः । नदीमध्यस्थितो वृक्षः पर्व्वतो वा । इत्युणादिकोषः । कूपकः । कूपा इति भाषा । मृन्मानम् । इति मेदिनी ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "कूप",
+            "eid": "14568",
+            "pagenum": "2164,b",
+            "content": "कू(कु)प¦ दौर्बल्ये अद० चुरा० उभ० अक० सेट् । कू(कु)पयति--ते अचुकू(कु)पत् त । कू(कु)पयां बभूप आस चकार चक्रे ।"
+        },
+        {
+            "word": "कूप",
+            "eid": "14569",
+            "pagenum": "2164,b",
+            "content": "कूप¦ पु० ईषत् आपो यत्र अच् समा०, कुवन्ति मण्डूकाः अस्मिन् कू--पक दीर्घश्च वा । १ खनामख्याते जलाधार, अमरः तल्लक्षणं भावप्र० उक्तं यथा । “भूमौ खातोऽल्पविस्तारो गम्भीरो मण्डलाकृतिः । बद्धोऽबद्धः स कूपः स्यात् तदम्भः कौपमुच्यते । कौपं पयोयदि स्वादु त्रिदोषघ्नं हितं लघु । तत् क्षारं कफवातघ्नं दीवनं पित्तकृत् परम्” । कूपस्येदम् अण् । कौप तत्सम्बन्धिनि त्रि० स्त्रियां ङीप् । “प्रायेणास्य शिशोः पिता न विरसाः कौपीरपः पास्यति” सा० द० । कूपादिकरणफलादिकम् जलाश० त० “सेतुबन्धरता ये च तीर्थशौचरताश्च ये । तडागकूपकर्त्तारोमुच्यन्ते ते तृषाभयात्” आदित्य पु० । “अथ कूपकर्त्तुस्तत्प्रवृत्ते प्रानीये दुष्कृतार्द्धं विनश्यति” विष्णुः । तत्प्रवृत्ते कृतकूपादुत्थिते । “तडागकूपकर्त्तारस्तथा कन्याप्रदायिनः । छत्रोपानहदातारस्ते नराः स्वर्गगामिनः” विष्णुध० । “यो वापीमथ वा कूपं देशे तोयविवर्ज्जिते । खानयेत् स दिवं याति विन्दौ विन्दौ शतं समाः” नन्दि पुं० “कूपारामतडागेषु देवतायतनेषु च । पुनः संस्कार कर्त्ता च लमते मौलिकं फलम्” विष्णुः “संस्कारविधौ “अजले जलमुऽपाद्य इति वचनात् जलशून्यदेशखनन एव प्रतिष्ठा न तु पङ्कोद्धारमात्रे । “प्रासादेऽप्येवमेवं स्यात् कूपवापीषु गम्यते” जलाश० त० धृत वचनाच्च तत्र वास्तुयागः कार्य्यः । तज्जलञ्च “शीतकाले भवेदुष्णं ग्रोष्मकाले सु शीतलम् । वसन्ते तु प्रशस्तं स्यात् कालभेदात् गुणत्रयम्” राजवल्लभः “प्रेक्षादि० चतुरर्थ्यं इनि । कूपिन् तत्सन्निकृष्टदेशादौ त्रि० स्त्रियां ङीप् । २ गर्त्ते उणादिकोषः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कूप",
+            "content": "कूपः पुं. -  कुवन्ति मण्डूका अस्मिन् - कु - एक् दीर्घश्च कुआँ"
+        },
+        {
+            "word": "कूप",
+            "content": "कूपः पुं. -  कुवन्ति मण्डूका अस्मिन् - कु - एक् दीर्घश्च 'छिद्र, रन्ध्र, गढ़ा, गर्त'"
+        },
+        {
+            "word": "कूप",
+            "content": "कूपः पुं. -  कुवन्ति मण्डूका अस्मिन् - कु - एक् दीर्घश्च चमड़े की बनी तेल रखने की कुप्पी"
+        },
+        {
+            "word": "कूप",
+            "content": "कूपः पुं. -  कुवन्ति मण्डूका अस्मिन् - कु - एक् दीर्घश्च मस्तूल"
+        },
+        {
+            "word": "कूप",
+            "content": "कूपः पुं. -  'कु+पक्, दीर्घश्च' कुआँ"
+        },
+        {
+            "word": "कूप",
+            "content": "कूपः पुं. -  'कु+पक्, दीर्घश्च' छिद्र यथा रोमकूप"
+        },
+        {
+            "word": "कूप",
+            "content": "कूपः पुं. -  'कु+पक्, दीर्घश्च' जड़"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कूप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಬಾವಿ",
+            "निष्पत्तिः": "कु (शब्दे)'पः' दीर्घश्च (उ० ३-२७)",
+            "व्युत्पत्तिः": "कुवन्ति मण्डूका अत्र",
+            "प्रयोगाः": "'तद्धीरो भव वित्तवत्सु कृपणां वृत्तिं वृथा मा कृथाः कूपे पश्य पयोनिधावपि घटो गृह्णाति तुल्यं जलम्'",
+            "उल्लेखाः": "भर्तृ० १-४०",
+            "content": ""
+        },
+        {
+            "word": "कूप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಹಳ್ಳ \\/ಗುಳಿ \\/ರಂಧ್ರ",
+            "प्रयोगाः": "'त्वन्नाभिकूपस्य तटे निवासी न दृश्यते सम्प्रति मध्यभागः'",
+            "उल्लेखाः": "च० भा०",
+            "content": ""
+        },
+        {
+            "word": "कूप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಹಡಗಿನ ಧ್ವಜಸ್ತಂಭ \\/ಹಡಗಿನ ಪಟದ ಕಂಬ",
+            "content": ""
+        },
+        {
+            "word": "कूप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಹಡಗನ್ನು ಕಟ್ಟುವ ಮರದ ಅಥವಾ ಕಬ್ಬಿಣದ ಕಂಬ",
+            "content": ""
+        },
+        {
+            "word": "कूप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ನದಿಯ ಮಧ್ಯದಲ್ಲಿರುವ ಮರ ಅಥವಾ ಬುಡ",
+            "विस्तारः": "'कूपः कूपकगर्ताम्बुमृण्मानगुणवृक्षके'विश्व० ।",
+            "content": ""
+        },
+        {
+            "word": "कूप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ತೊಗಲಿನ ಎಣ್ಣೆಯ ಚೀಲ",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "कूप",
+            "linga": "P",
+            "artha": "कूपः",
+            "synonyms": [
+                "अन्धु",
+                "प्रहि",
+                "कूप",
+                "उदपान"
+            ],
+            "num": "1.10.26",
+            "text": "आहावस्तु निपानं स्यादुपकूपजलाशये । पुंस्येवान्धुः प्रहिः कूप उदपानं तु पुंसि वा ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "कूप",
+            "content": "<body><s>kU(ku)pa dOrbalye ada° curA° uBa° aka° sew . kU(ku)paya­ti—te acukU(ku)pat ta . kU(ku)payAM baBUpa Asa ca­kAra cakre .</s></body> <body><s>kUpa pu° Izat Apo yatra ac samA°, kuvanti maRqUkAH asmin kU—paka dIrGaSca vA . <lb/><b>1</b> KanAmaKyAte jalADAra, amaraH tallakzaRaM BAvapra° uktaM yaTA . <q>BUmO KAto'lpavistAro gamBIro maRqalAkftiH . badDo­'badDaH sa kUpaH syAt tadamBaH kOpamucyate . kOpaM payoyadi svAdu tridozaGnaM hitaM laGu . tat kzAraM kaPavAtaGnaM dIvanaM pittakft param</q> . kUpasyedam aR . kOpa tatsambanDini tri° striyAM NIp . <q>prAyeRAsya SiSoH pitA na virasAH kOpIrapaH pAsyati</q> sA° da° . kUpAdikaraRaPalAdikam jalASa° ta° <q>setubanDaratA ye ca tIrTaSOcaratASca ye . taqAgakUpakarttAromucyante te tfzABayAt</q> Aditya pu° . <q>aTa kUpakarttustatpravftte prAnIye duzkftArdDaM vinaSyati</q> vizRuH . tatpravftte kftakUpAdutTite . <q>taqAgakUpakarttArastaTA kanyA­pradAyinaH . CatropAnahadAtAraste narAH svargagAminaH</q> vizRuDa° . <q>yo vApImaTa vA kUpaM deSe toyavivarjjite . KAnayet sa divaM yAti vindO vindO SataM samAH</q> nandi puM° <q>kUpArAmataqAgezu devatAyatanezu ca . punaH saMskAra karttA ca lamate mOlikaM Palam</q> vizRuH <q>saMskAra­viDO “ajale jalamu'pAdya iti vacanAt jalaSUnya­deSaKanana eva pratizWA na tu paNkodDAramAtre . “prAsAde­'pyevamevaM syAt kUpavApIzu gamyate</q> jalASa° ta° Dfta vacanAcca tatra vAstuyAgaH kAryyaH . tajjalaYca <q>SIta­kAle BaveduzRaM grozmakAle su SItalam . vasante tu praSa­staM syAt kAlaBedAt guRatrayam</q> rAjavallaBaH “prekzAdi° caturarTyaM ini . kUpin tatsannikfzwadeSAdO tri° striyAM NIp . <lb/><b>2</b> gartte uRAdikozaH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "कूप",
+            "content": "<H1><h><key1>kUpa</key1><key2>kU/pa</key2></h><body><s>kU/pa</s>   <lex>m.</lex> (<ab>fr.</ab> <hom>1.</hom> <s>ku</s> and <s>a/p</s>?; <ab>cf.</ab> <s>anUpa/</s>, <s>dvIpa/</s>), a hole, hollow, cave, <ls>RV. i, 105, 17</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls> &amp;c.<info lex=\"m\" /></body><tail><L>53937</L><pc>300,1</pc></tail></H1>\n <H1A><h><key1>kUpa</key1><key2>kU/pa</key2></h><body>  a pit well, <ls>ŚāṅkhGṛ.</ls>; <ls>Mn.</ls>; <ls>Mṛcch.</ls> &amp;c.<info lex=\"inh\" /></body><tail><L>53938</L><pc>300,1</pc></tail></H1A>\n <H1A><h><key1>kUpa</key1><key2>kU/pa</key2></h><body>  a post to which a boat or ship is moored, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53939</L><pc>300,1</pc></tail></H1A>\n <H1A><h><key1>kUpa</key1><key2>kU/pa</key2></h><body>  a mast, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53940</L><pc>300,1</pc></tail></H1A>\n <H1A><h><key1>kUpa</key1><key2>kU/pa</key2></h><body>  a tree or rock in the midst of a river, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53941</L><pc>300,1</pc></tail></H1A>\n <H1A><h><key1>kUpa</key1><key2>kU/pa</key2></h><body>  a leather oil vessel, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53942</L><pc>300,1</pc></tail></H1A>\n <H1A><h><key1>kUpa</key1><key2>kU/pa</key2></h><body>  = <s>mfn-mAna</s>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53943</L><pc>300,1</pc></tail></H1A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "कूप",
+            "content": "<H1><h><key1>kUpa</key1><key2>kUpa</key2></h><body><s>kUpa</s> <div n=\"1\">r. 10th cl. (<s>kUpayati</s>) </div><div n=\"2\"> 1. To be weak. </div><div n=\"2\"> 2. To weaken: see <s>kupa</s>.</div></body><tail><L>11194</L><pc>196-b</pc></tail></H1>\n <H1><h><key1>kUpa</key1><key2>kUpa</key2></h><body><s>kUpa</s>  <div n=\"1\">m. (<s>-paH</s>) </div><div n=\"2\"> 1. A well. </div><div n=\"2\"> 2. A hole, a hollow. </div><div n=\"2\"> 3. A mast. </div><div n=\"2\"> 4. A tree or rock <lb />in the midst of a river. </div><div n=\"1\">f. (<s>-pI</s>) </div><div n=\"2\"> 1. A small well. </div><div n=\"2\"> 2. The navel. </div><div n=\"2\"> 3. A <lb />flask, a bottle.</div><div n=\"E\"> E. <s>ku</s> to sound, (frogs croaking in a well, &amp;c.) and <lb /><s>pa</s> Unadi affix: the vowel is made long; also <s>kUpaka</s>.</div></body><tail><L>11195</L><pc>196-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कूप",
+            "content": "<span lang=\"sa\">कूप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬಾವಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>कु (शब्दे) - \"पः\" दीर्घश्च (उ० ३-२७)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>कुवन्ति मण्डूका अत्र<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"तद्धीरो भव वित्तवत्सु कृपणां वृत्तिं वृथा मा कृथाः कूपे पश्य पयोनिधावपि घटो गृह्णाति तुल्यं जलम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भर्तृ० १-४०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कूप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹಳ್ಳ /ಗುಳಿ /ರಂಧ್ರ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"त्वन्नाभिकूपस्य तटे निवासी न दृश्यते सम्प्रति मध्यभागः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>च० भा०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कूप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹಡಗಿನ ಧ್ವಜಸ್ತಂಭ /ಹಡಗಿನ ಪಟದ ಕಂಬ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कूप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹಡಗನ್ನು ಕಟ್ಟುವ ಮರದ ಅಥವಾ ಕಬ್ಬಿಣದ ಕಂಬ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कूप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನದಿಯ ಮಧ್ಯದಲ್ಲಿರುವ ಮರ ಅಥವಾ ಬುಡ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"कूपः कूपकगर्ताम्बुमृण्मानगुणवृक्षके\" - विश्व० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कूप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತೊಗಲಿನ ಎಣ್ಣೆಯ ಚೀಲ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

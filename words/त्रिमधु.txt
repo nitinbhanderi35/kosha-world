@@ -1,1 +1,123 @@
-ark-size) / 5.3 );\n\t\twidth: calc( var(--ck-todo-list-checkmark-size) / 5.3 );\n\t\theight: calc( var(--ck-todo-list-checkmark-size) / 2.6 );\n\t\tborder-style: solid;\n\t\tborder-color: transparent;\n\t\tborder-width: 0 calc( var(--ck-todo-list-checkmark-size) / 8 ) calc( var(--ck-todo-list-checkmark-size) / 8 ) 0;\n\t\ttransform: rotate(45deg);\n\t}\n\n\t&[checked] {\n\t\t&::before {\n\t\t\tbackground: hsl(126, 64%, 41%);\n\t\t\tborder-color: hsl(126, 64%, 41%);\n\t\t}\n\n\t\t&::after {\n\t\t\tborder-color: hsl(0, 0%, 100%);\n\t\t}\n\t}\n}\n\n/*\n * To-do list content styles.\n */\n.ck-content .todo-list {\n\tlist-style: none;\n\n\t& li {\n\t\tposition: relative;\n\t\tmargin-bottom: 5px;\n\n\t\t& .todo-list {\n\t\t\tmargin-top: 5px;\n\t\t}\n\t}\n\n\t& .todo-list__label {\n\t\t& > input {\n\t\t\t@mixin todo-list-checkbox;\n\t\t}\n\n\t\t& .todo-list__label__description {\n\t\t\tvertical-align: middle;\n\t\t}\n\n\t\t&.todo-list__label_without-description input[type=checkbox] {\n\t\t\tposition: absolute;\n\t\t}\n\t}\n}\n\n/*\n * To-do list editing view styles.\n */\n.ck-editor__editable.ck-content .todo-list .todo-list__label {\n\t/*\n\t * To-do list should be interactive only during the editing\n\t * (https://github.com/ckeditor/ckeditor5/issues/2090).\n\t */\n\t& > input,\n\t& > span[contenteditable=false] > input {\n\t\tcursor: pointer;\n\n\t\t&:hover::before {\n\t\t\tbox-shadow: 0 0 0 5px hsla(0, 0%, 0%, 0.1);\n\t\t}\n\t}\n\n\t/*\n\t * Document Lists - editing view has an additional span around checkbox.\n\t */\n\t& > span[contenteditable=false] > input {\n\t\t@mixin todo-list-checkbox;\n\t}\n\n\t&.todo-list__label_without-description {\n\t\t& input[type=checkbox] {\n\t\t\tposition: absolute;\n\t\t}\n\t}\n}\n"],sourceRoot:""}]);const a=s},584:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,":root{--ck-show-blocks-border-color:#757575}.ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) address:not(.ck-widget_selected):not(.ck-widget:hover){outline:1px dashed var(--ck-show-blocks-border-color)}[dir=ltr] .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) address{background-image:url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='3' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>ADDRESS</text></svg>\");background-position:1px 1px;background-repeat:no-repeat;padding-top:15px}[dir=rtl] .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) address{background-image:url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px); transform:translate(-2px, 0);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='100%' text-anchor='end' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>ADDRESS</text></svg>\");background-position:calc(100% - 1px) 1px;background-repeat:no-repeat;padding-top:15px}.ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) aside:not(.ck-widget_selected):not(.ck-widget:hover){outline:1px dashed var(--ck-show-blocks-border-color)}[dir=ltr] .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) aside{background-image:url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='3' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>ASIDE</text></svg>\");background-position:1px 1px;background-repeat:no-repeat;padding-top:15px}[dir=rtl] .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) aside{background-image:url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px); transform:translate(-2px, 0);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='100%' text-anchor='end' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>ASIDE</text></svg>\");background-position:calc(100% - 1px) 1px;background-repeat:no-repeat;padding-top:15px}.ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) blockquote:not(.ck-widget_selected):not(.ck-widget:hover){outline:1px dashed var(--ck-show-blocks-border-color)}[dir=ltr] .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) blockquote{background-image:url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='3' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>BLOCKQUOTE</text></svg>\");background-position:1px 1px;background-repeat:no-repeat;padding-top:15px}[dir=rtl] .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) blockquote{background-image:url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px); transform:translate(-2px, 0);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='100%' text-anchor='end' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>BLOCKQUOTE</text></svg>\");background-position:calc(100% - 1px) 1px;background-repeat:no-repeat;padding-top:15px}.ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) details:not(.ck-widget_selected):not(.ck-widget:hover){outline:1px dashed var(--ck-show-blocks-border-color)}[dir=ltr] .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) details{background-image:url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='3' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>DETAILS</text></svg>\");background-position:1px 1px;background-repeat:no-repeat;padding-top:15px}[dir=rtl] .ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) details{background-image:url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px); transform:translate(-2px, 0);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='100%' text-anchor='end' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>DETAILS</text></svg>\");background-position:calc(100% - 1px) 1px;background-repeat:no-repeat;padding-top:15px}.ck.ck-editor__editable.ck
+{
+    "word": "त्रिमधु",
+    "BUR": [
+        {
+            "word": "त्रिमधु",
+            "eid": "8267",
+            "pagenum": 304,
+            "content": "त्रिमधु¦ <i>trimadhu</i> <ab>m.</ab> portion du <s1 slp1='fgveda'>Ṛg-veda</s1>. || Brâhmane étudiant cette portion."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिमधु",
+            "eid": "88101",
+            "pagenum": "459,3",
+            "content": "त्रि—मधु ¦ <lex>mfn.</lex> knowing or reciting the 3 verses beginning with म/धु (<ls>RV. i, 90, 6</ls>-<ls n='RV. i, 90,'>8</ls>), <ls>Gaut.</ls>; <ls>Yājñ. i</ls>; <ls>VP. iii, 15, 1</ls>; <ls>MārkP. xxxi</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिमधु",
+            "eid": "88102",
+            "pagenum": "459,3",
+            "content": "त्रि—मधु ¦ <lex>n.</lex> = °धुर, <ls>L.</ls><info lex='n'/>"
+        }
+    ],
+    "PUI": [
+        {
+            "word": "त्रिमधु",
+            "eid": "5663",
+            "pagenum": 2,
+            "content": "<i>Trimadhu</i>¦ — the Brahmanas of the Sāma Veda fit for feeding on the śrāddha occasions. <dvsn n='P'/>Vi. III. 15. 2."
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिमधु",
+            "eid": "47667",
+            "pagenum": 3,
+            "content": "त्रिमधु¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>der die drei mit</i> मधु <i>beginnenden Verse</i> (<ls>ṚV. 1,90,68</ls>) <i>kennt oder hersagt</i> <ls>GAUT.</ls> <dvsn n='1'>— 2〉 *<lex>n.</lex> = त्रिमधुर."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिमधु",
+            "eid": "31072",
+            "pagenum": 3,
+            "content": "त्रिमधु¦ (त्रि + मधु) <dvsn n='1'> 1) <lex>n.</lex> <i>die drei süssen Stoffe: Zucker, Honig und zerlassene Butter</i> <ls>RĀJAN.</ls> im <ls>ŚKDR.</ls> <dvsn n='1'>— 2) <lex>adj.</lex> <i>der die 3 mit</i> मधु <i>beginnenden Verse im</i> <is>Ṛgveda</is> ( <ls n='ṚV.'>1, 90, 6 - 8</ls>) <i>kennt, hersagt</i> <ls>YĀJÑ. 1, 219.</ls> <ls>VP. 325.</ls> <ls>MĀRK. P. 31, 23.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिमधु",
+            "eid": "18112",
+            "pagenum": 325,
+            "content": "त्रिमधु¦ m. (-धुः) 1. A portion of the Rig Veda. 2. A follower or student of the Trimadhu section of the Rig Veda. n. (-धु) Ghee, honey, and sugar. E. त्रि, and मधु honey."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिमधु",
+            "eid": "18129",
+            "pagenum": 390,
+            "content": "त्रिमधु¦ m. (-धुः) .²1 A portion of the <i>Rig Veda.</i> .²2 A follower or student of the <i>Tri-madhu</i> section of the <i>Rig Veda.</i> n. (-धुः) <i>Ghee,</i> honey, and sugar. .E. त्रि, and मधु honey."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिमधु",
+            "eid": "17605",
+            "pagenum": 346,
+            "content": "त्रि-मधु¦ (धुः) 2. <i>m.</i> A portion of the <i>Rig</i> <i>veda,</i> a follower of it. <i>n.</i> Ghee, honey and sugar."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिमधु",
+            "eid": "15592",
+            "pagenum": "2-660-c",
+            "content": "त्रिमधु¦, क्ली, (त्रयाणां मधूनां मधुराणां समाहारः ।) मिलितसितामाक्षिकसर्पींषि । तत्पर्य्यायः । मधुरत्रयम् २ मधुत्रयम् ३ । इति राजनिर्घण्टः ॥"
+        },
+        {
+            "word": "त्रिमधु",
+            "eid": "15593",
+            "pagenum": "2-660-c",
+            "content": "त्रिमधुः¦, पुं, (मधुवाता इत्यादयस्त्रयो मधुशब्दा यत्र ।) ऋग्वेदैकदेशः । (यथा, ऋग्वेदे । १ । ९० । ६ -- ८ । “मघुवाता ऋतायते मधु क्षरन्ति सिन्धवः । माध्वीर्नः सन्तोषधीः ॥ मधुनक्तमुतोषसो मधुमत् पार्थिवं रजः । मधु द्यौरस्तुनः पिता ॥ मधुमान्नो वनस्पतिर्मधुमाँ अस्तु सूर्य्यः । माध्वीर्गावो भवन्तु नः ॥”) मधुवातादिऋक्त्रयवेत्ता । यथा, “त्रिनाचिकेतस्त्रिमधुस्त्रिसुवर्णः षडङ्गवित् ॥” इति पङ्क्तिपावनवर्णने मार्कण्डेयपुराणम् । ३१ । २३ ॥ तद्व्रतञ्च । तद्व्रताचरणेन यस्तदध्यायी सोऽपि । इति विज्ञानेश्वरः ॥ * ॥ श्राद्धे त्रिवारमधुशब्दोच्चारणविधिर्यथा, “गायत्त्रीं त्रिः सकृद्बापि जपेद्ब्याहृतिपूर्व्विकाम् । मधुवाता इति त्र्यृचं मध्वित्येतत् त्रिकं जपेत् ॥” इति श्राद्धतत्त्वे मिताक्षराधृतपारस्करवचनम् ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिमधु",
+            "eid": "23744",
+            "pagenum": "3376,b",
+            "content": "त्रिमधु¦ न० त्रिगुणितं मधु संज्ञात्वात् कर्म्म० । “दुग्धं सिता माक्षिकञ्च विज्ञेयं मधुरत्रयम्” इत्युक्ते १ दुग्धादित्रये । २ऋग्वेदैकदेशे पु० ३ तद्व्रतभेदे तदाचरणेन ४ तद्वेदाध्यायिनि पु० मिता० “मधुवाता इति त्रयः मधुशब्दा यत्र । मधुवाता इत्यादिके ५ऋक्त्रये पु० । “वेदार्थवित् ज्योष्ठसामा त्रिमधुस्त्रिसुपर्णकः” याज्ञ० । “त्रिणाचिकेतस्त्रिमधुस्त्रिसुपर्णः षडङ्गवित्” मनुः । ६ मधुशब्दत्रये च “गायत्री त्रिः सकृद्वापि जपेद्व्याहृतिपूर्विकाम् । मधुवाता इति तृचं मध्वित्येतत् त्रिकं जपेत्” इति पारस्करः । ७ आज्यप्रधुसितात्रये न० “कमलैश्च त्रिमध्वक्तैर्हुनेदष्टोत्तरं शतम्” तन्त्र० ।"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिमधु",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಹಾಲು ಜೇನುತುಪ್ಪ ಮತ್ತು ಸಕ್ಕರೆ",
+            "व्युत्पत्तिः": "त्रिगुणितं मधु",
+            "विस्तारः": "'दुग्धं सिता माक्षिकं च विज्ञेयं मधुरत्रयम्'",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिमधु",
+            "content": "<body><s>trimaDu na° triguRitaM maDu saMjYAtvAt karmma° . <q>dugDaM sitA mAkzikaYca vijYeyaM maDuratrayam</q> ityukte <lb/><b>1</b> dugDAditraye . 2fgvedEkadeSe pu° 3 tadvrataBede tadAcaraRena 4 tadvedADyA­yini pu° mitA° <q>maDuvAtA iti trayaH maDuSabdA yatra . maDuvAtA ityAdike 5fktraye pu° . “vedArTavit jyozWa­sAmA trimaDustrisuparRakaH</q> yAjYa° . <q>triRAciketastri­maDustrisuparRaH zaqaNgavit</q> manuH . 6 maDuSabdatraye ca <q>gAyatrI triH sakfdvApi japedvyAhftipUrvikAm . maDu­vAtA iti tfcaM maDvityetat trikaM japet</q> iti pAra­skaraH . 7 AjyapraDusitAtraye na° <q>kamalESca trimaDvaktE­rhunedazwottaraM Satam</q> tantra° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिमधु",
+            "content": "<H1><h><key1>trimaDu</key1><key2>trimaDu</key2></h><body><s>trimaDu</s>  <div n=\"1\">m. (<s>-DuH</s>) </div><div n=\"2\"> 1. A portion of the Rig Veda. </div><div n=\"2\"> 2. A follower or student <lb />of the Trimadhu section of the Rig Veda. </div><div n=\"1\">n. (<s>-Du</s>) Ghee, honey, and <lb />sugar.</div><div n=\"E\"> E. <s>tri,</s> and <s>maDu</s> honey.</div></body><tail><L>18112</L><pc>325-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिमधु",
+            "content": "<span lang=\"sa\">त्रिमधु<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹಾಲು ಜೇನುತುಪ್ಪ ಮತ್ತು ಸಕ್ಕರೆ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिगुणितं मधु<div class=\"h-2\"> </div><b>विस्तारः - </b>\"दुग्धं सिता माक्षिकं च विज्ञेयं मधुरत्रयम्\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

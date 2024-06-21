@@ -1,1 +1,106 @@
-C,2BAA4B,CAC5B,gBAmCD,CApDA,oIACC,qDACD,CAoDA,+FA/CC,ifAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBA8CD,CAFA,+FAxCC,oiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBAuCD,CAxDA,oIACC,qDACD,CAwDA,+FAnDC,ifAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBAkDD,CAFA,+FA5CC,oiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBA2CD,CA5DA,oIACC,qDACD,CA4DA,+FAvDC,ifAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBAsDD,CAFA,+FAhDC,oiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBA+CD,CAhEA,oIACC,qDACD,CAgEA,+FA3DC,ifAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBA0DD,CAFA,+FApDC,oiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBAmDD,CApEA,wIACC,qDACD,CAoEA,mGA/DC,qfAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBA8DD,CAFA,mGAxDC,wiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBAuDD,CAxEA,sIACC,qDACD,CAwEA,iGAnEC,mfAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBAkED,CAFA,iGA5DC,siBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBA2DD,CA5EA,qIACC,qDACD,CA4EA,gGAvEC,kfAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBAsED,CAFA,gGAhEC,qiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBA+DD,CAhFA,qIACC,qDACD,CAgFA,gGA3EC,kfAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBA0ED,CAFA,gGApEC,qiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBAmED,CApFA,oIACC,qDACD,CAoFA,+FA/EC,ifAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBA8ED,CAFA,+FAxEC,oiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBAuED,CAxFA,oIACC,qDACD,CAwFA,+FAnFC,ifAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBAkFD,CAFA,+FA5EC,oiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBA2ED,CA5FA,mIACC,qDACD,CA4FA,8FAvFC,gfAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBAsFD,CAFA,8FAhFC,miBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBA+ED,CAhGA,yIACC,qDACD,CAgGA,oGA3FC,sfAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBA0FD,CAFA,oGApFC,yiBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBAmFD,CApGA,8KACC,qDACD,CAoGA,yIA/FC,yfAAuf,CACvf,2BAA4B,CAC5B,2BAA4B,CAC5B,gBA8FD,CAFA,yIAxFC,4iBAA0iB,CAC1iB,wCAAyC,CACzC,2BAA4B,CAC5B,gBAuFD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import \"@ckeditor/ckeditor5-ui/theme/mixins/_dir.css\";\n\n:root {\n\t--ck-show-blocks-border-color: hsl(0, 0%, 46%);\n}\n\n@define-mixin block-name-background $text {\n\t&:not(.ck-widget_selected):not(.ck-widget:hover) {\n\t\toutline: 1px dashed var(--ck-show-blocks-border-color);\n\t}\n\n\t/* Some props are duplicated for both 'ltr' and 'rtl' directions for their higher specificity.\n\tSee https://github.com/ckeditor/ckeditor5/issues/14435 for details. */\n\t@mixin ck-dir ltr {\n\t\tbackground-image: url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='3' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>$(text)</text></svg>\");\n\t\tbackground-position: 1px 1px;\n\t\tbackground-repeat: no-repeat;\n\t\tpadding-top: 15px;\n\t}\n\n\t@mixin ck-dir rtl {\n\t\tbackground-image: url(\"data:image/svg+xml;utf8,<svg width='120' height='12' xmlns='http://www.w3.org/2000/svg' ><text style='paint-order:stroke fill; clip-path: inset(-3px); transform:translate(-2px, 0);' stroke='%23EAEAEA' stroke-width='13' dominant-baseline='middle' fill='black' x='100%' text-anchor='end' y='7' font-size='9px' font-family='Consolas, %22Lucida Console%22, %22Lucida Sans Typewriter%22, %22DejaVu Sans Mono%22, %22Bitstream Vera Sans Mono%22, %22Liberation Mono%22, Monaco, %22Courier New%22, Courier, monospace'>$(text)</text></svg>\");\n\t\tbackground-position: calc(100% - 1px) 1px;\n\t\tbackground-repeat: no-repeat;\n\t\tpadding-top: 15px;\n\t}\n}\n\n.ck.ck-editor__editable.ck-editor__editable_inline.ck-show-blocks:not(.ck-widget) {\n\t& address {\n\t\t@mixin block-name-background ADDRESS;\n\t}\n\n\t& aside {\n\t\t@mixin block-name-background ASIDE;\n\t}\n\n\t& blockquote {\n\t\t@mixin block-name-background BLOCKQUOTE;\n\t}\n\n\t& details {\n\t\t@mixin block-name-background DETAILS;\n\t}\n\n\t& div:not(.ck-widget, .ck-widget *) {\n\t\t@mixin block-name-background DIV;\n\t}\n\n\t& footer {\n\t\t@mixin block-name-background FOOTER;\n\t}\n\n\t& h1 {\n\t\t@mixin block-name-background H1;\n\t}\n\n\t& h2 {\n\t\t@mixin block-name-background H2;\n\t}\n\n\t& h3 {\n\t\t@mixin block-name-background H3;\n\t}\n\n\t& h4 {\n\t\t@mixin block-name-background H4;\n\t}\n\n\t& h5 {\n\t\t@mixin block-name-background H5;\n\t}\n\n\t& h6 {\n\t\t@mixin block-name-background H6;\n\t}\n\n\t& header {\n\t\t@mixin block-name-background HEADER;\n\t}\n\n\t& main {\n\t\t@mixin block-name-background MAIN;\n\t}\n\n\t& nav {\n\t\t@mixin block-name-background NAV;\n\t}\n\n\t& pre {\n\t\t@mixin block-name-background PRE;\n\t}\n\n\t& ol {\n\t\t@mixin block-name-background OL;\n\t}\n\n\t& ul {\n\t\t@mixin block-name-background UL;\n\t}\n\n\t& p {\n\t\t@mixin block-name-background P;\n\t}\n\n\t& section {\n\t\t@mixin block-name-background SECTION;\n\t}\n\n\t& :where(figure.image, figure.table) figcaption {\n
+{
+    "word": "त्रिभण्डी",
+    "MW": [
+        {
+            "word": "त्रिभण्डी",
+            "eid": "88065",
+            "pagenum": "459,3",
+            "content": "त्रि—भण्डी ¦ <lex>f.</lex> = -पुषा, <ls>Suśr.</ls> (metrically °डि, <ls n='Suśr.'>vi, 56</ls>). <info lex='f'/>"
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिभण्डी",
+            "eid": "31055",
+            "pagenum": 3,
+            "content": "त्रिभण्डी¦ (त्रि + भण्डि, भण्डी) <lex>f.</lex> <i>Convolvulus Turpethum R. Br.</i> <ls>AK. 2, 4, 3, 7.</ls> <ls>RATNAM. 18.</ls> <ls>SUŚR. 2, 70, 1. 102, 11. 469, 3.</ls> °भण्डिजात <ls n='SUŚR.'>1, 161, 21.</ls> °भण्डियुक्त <ls n='SUŚR.'>2, 520, 9.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिभण्डी",
+            "eid": "18108",
+            "pagenum": 325,
+            "content": "त्रिभण्डी¦ f. (-ण्डी) A plant, (Convolvulus turpethum.) E. त्रि three, (ailments, or bile, phlegm, and fever,) भडि to oppose, affixes अण् and ङीष्. त्रीन् वातादिदोषान् भण्डति ।"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिभण्डी",
+            "eid": "18125",
+            "pagenum": 390,
+            "content": "त्रिभण्डी¦ f. (-ण्डी) A plant, (<bot>Convolvulus turpethum</bot>.) .E. त्रि three, (ailments, or bile, phlegm, and fever,) भडि to oppose, affix अण् and ङीष्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिभण्डी",
+            "eid": "17601",
+            "pagenum": 346,
+            "content": "त्रि-भण्डी¦ (ण्डी) 3. <i>f.</i> A plant, Teori."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिभण्डी",
+            "eid": "15588",
+            "pagenum": "2-660-c",
+            "content": "त्रिभण्डी¦, स्त्री, (त्रीन् वातादिदोषान् भण्डति परिहसतीति । भण्ड परिहासे + अण् । ततो ङीप् ।) त्रिवृता । इत्यमरः । २ । ४ । १०८ ॥ (पर्य्यायोऽस्या यथा, “त्रिवृद्वृकाक्षी सुवहा त्रिभण्डी त्रिपुटा च सा । व्याघ्रादनी कूटरणा निःसृता त्रिवृता कणा ॥” इति वैद्यकरत्नमालायाम् ॥ यथाच सुश्रुते चिकित्सितस्थाने । १७ । “श्यामा त्रिभण्डी त्रिफला सुसिद्धं हरिद्रयो रोध्रकवृक्षयोश्च । घृतं सदुग्धं व्रणतर्पणेन हन्याद्गतिं कोष्ठगतापि या स्यात् ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिभण्डी",
+            "eid": "23733",
+            "pagenum": "3376,a",
+            "content": "त्रिभण्डी¦ स्त्री त्रीन् वातादिदोषान् भण्डति भण्ड--परिभाषणे अण् । त्रिवृति (तेओडि) अमरः ।"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिभण्डी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಕೆಂಪು ತಿಗಡೆ ಮರ",
+            "निष्पत्तिः": "भडि (परिभाषणे)'अच्' (३-२-१)",
+            "व्युत्पत्तिः": "त्रीन् दोषान् भण्डते",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "त्रिभण्डी",
+            "linga": "S",
+            "artha": "शुक्लत्रिधारा",
+            "synonyms": [
+                "सर्वानुभूति",
+                "सरला",
+                "त्रिपुटा",
+                "त्रिवृता",
+                "त्रिवृत्",
+                "त्रिभण्डी",
+                "रोचनी"
+            ],
+            "num": "2.4.108",
+            "text": "सर्वानुभूतिः सरला त्रिपुटा त्रिवृता त्रिवृत् । त्रिभण्डी  रोचनी श्यामापालिन्द्यौ तु सुषेणिका ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिभण्डी",
+            "content": "<body><s>triBaRqI strI trIn vAtAdidozAn BaRqati BaRqa—pari­BAzaRe aR . trivfti (teoqi) amaraH .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिभण्डी",
+            "content": "<H1><h><key1>triBaRqI</key1><key2>triBaRqI</key2></h><body><s>triBaRqI</s>  <div n=\"1\">f. (<s>-RqI</s>) A plant, (Convolvulus turpethum.)</div><div n=\"E\"> E. <s>tri</s> three, <lb />(ailments, or bile, phlegm, and fever,) <s>Baqi</s> to oppose, affixes <s>aR</s> <lb />and <s>NIz</s>.<s> trIn vAtAdidozAn BaRqati .</s></div></body><tail><L>18108</L><pc>325-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिभण्डी",
+            "content": "<span lang=\"sa\">त्रिभण्डी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೆಂಪು ತಿಗಡೆ ಮರ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>भडि (परिभाषणे) - \"अच्\" (३-२-१)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीन् दोषान् भण्डते<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

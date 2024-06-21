@@ -1,198 +1,120 @@
-f this function assumes that a single child gets
- * passed without a wrapper, but the purpose of this helper function is to
- * abstract away the particular structure of children.
- *
- * @param {?object} children Child collection structure.
- * @return {ReactElement} The first and only `ReactElement` contained in the
- * structure.
- */
-
-
-function onlyChild(children) {
-  if (!isValidElement(children)) {
-    throw Error(formatProdErrorMessage(143));
-  }
-
-  return children;
-}
-
-// an immutable object with a single mutable value
-function createRef() {
-  const refObject = {
-    current: null
-  };
-
-  return refObject;
-}
-
-function resolveDispatcher() {
-  const dispatcher = ReactCurrentDispatcher.current;
-  // intentionally don't throw our own error because this is in a hot path.
-  // Also helps ensure this is inlined.
-
-
-  return dispatcher;
-}
-function useCallback(callback, deps) {
-  const dispatcher = resolveDispatcher();
-  return dispatcher.useCallback(callback, deps);
-}
-function useMemo(create, deps) {
-  const dispatcher = resolveDispatcher();
-  return dispatcher.useMemo(create, deps);
-}
-function useDebugValue(value, formatterFn) {
-}
-function useId() {
-  const dispatcher = resolveDispatcher();
-  return dispatcher.useId();
-}
-function use(usable) {
-  const dispatcher = resolveDispatcher();
-  return dispatcher.use(usable);
-}
-
-function forwardRef(render) {
-
-  const elementType = {
-    $$typeof: REACT_FORWARD_REF_TYPE,
-    render
-  };
-
-  return elementType;
-}
-
-const Uninitialized = -1;
-const Pending = 0;
-const Resolved = 1;
-const Rejected = 2;
-
-function lazyInitializer(payload) {
-  if (payload._status === Uninitialized) {
-    const ctor = payload._result;
-    const thenable = ctor(); // Transition to the next state.
-    // This might throw either because it's missing or throws. If so, we treat it
-    // as still uninitialized and try again next time. Which is the same as what
-    // happens if the ctor or any wrappers processing the ctor throws. This might
-    // end up fixing it if the resolution was a concurrency bug.
-
-    thenable.then(moduleObject => {
-      if (payload._status === Pending || payload._status === Uninitialized) {
-        // Transition to the next state.
-        const resolved = payload;
-        resolved._status = Resolved;
-        resolved._result = moduleObject;
-      }
-    }, error => {
-      if (payload._status === Pending || payload._status === Uninitialized) {
-        // Transition to the next state.
-        const rejected = payload;
-        rejected._status = Rejected;
-        rejected._result = error;
-      }
-    });
-
-    if (payload._status === Uninitialized) {
-      // In case, we're still uninitialized, then we're waiting for the thenable
-      // to resolve. Set it as pending in the meantime.
-      const pending = payload;
-      pending._status = Pending;
-      pending._result = thenable;
-    }
-  }
-
-  if (payload._status === Resolved) {
-    const moduleObject = payload._result;
-
-    return moduleObject.default;
-  } else {
-    throw payload._result;
-  }
-}
-
-function lazy(ctor) {
-  const payload = {
-    // We use these fields to store the result.
-    _status: Uninitialized,
-    _result: ctor
-  };
-  const lazyType = {
-    $$typeof: REACT_LAZY_TYPE,
-    _payload: payload,
-    _init: lazyInitializer
-  };
-
-  return lazyType;
-}
-
-function memo(type, compare) {
-
-  const elementType = {
-    $$typeof: REACT_MEMO_TYPE,
-    type,
-    compare: compare === undefined ? null : compare
-  };
-
-  return elementType;
-}
-
-const UNTERMINATED = 0;
-const TERMINATED = 1;
-const ERRORED = 2;
-
-function createCacheRoot() {
-  return new WeakMap();
-}
-
-function createCacheNode() {
-  return {
-    s: UNTERMINATED,
-    // status, represents whether the cached computation returned a value or threw an error
-    v: undefined,
-    // value, either the cached result or an error, depending on s
-    o: null,
-    // object cache, a WeakMap where non-primitive arguments are stored
-    p: null // primitive cache, a regular Map where primitive arguments are stored.
-
-  };
-}
-
-function cache(fn) {
-  return function () {
-    const dispatcher = ReactCurrentCache.current;
-
-    if (!dispatcher) {
-      // If there is no dispatcher, then we treat this as not being cached.
-      // $FlowFixMe[incompatible-call]: We don't want to use rest arguments since we transpile the code.
-      return fn.apply(null, arguments);
-    }
-
-    const fnMap = dispatcher.getCacheForType(createCacheRoot);
-    const fnNode = fnMap.get(fn);
-    let cacheNode;
-
-    if (fnNode === undefined) {
-      cacheNode = createCacheNode();
-      fnMap.set(fn, cacheNode);
-    } else {
-      cacheNode = fnNode;
-    }
-
-    for (let i = 0, l = arguments.length; i < l; i++) {
-      const arg = arguments[i];
-
-      if (typeof arg === 'function' || typeof arg === 'object' && arg !== null) {
-        // Objects go into a WeakMap
-        let objectCache = cacheNode.o;
-
-        if (objectCache === null) {
-          cacheNode.o = objectCache = new WeakMap();
+{
+    "word": "त्रिलोकनाथ",
+    "ACC": [
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "9366",
+            "pagenum": 1,
+            "content": "त्रिलोकनाथ¦ son of Vaidyanātha: <HI1>Vyākhyāsudhā Rādhāvinodakāvyaṭīkā. L. 1717."
+        },
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "33467",
+            "pagenum": 2,
+            "content": "त्रिलोकनाथ¦ son of Vaidyanātha: <HI1>Ṣaṭkārakanirūpaṇa."
+        },
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "40135",
+            "pagenum": 2,
+            "content": "त्रिलोकनाथ¦ son of Vaidyanātha: <HI1>Kārakanirūpaṇa gr."
         }
-
-        const objectNode = objectCache.get(arg);
-
-        if (objectNode === undefined) {
-          cacheNode = createCacheNode();
-          objectCache.set(arg, cacheNode);
-        } else {
-          cacheNode = objectNode;
+    ],
+    "CAE": [
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "12913",
+            "pagenum": 213,
+            "content": "त्रिलोकनाथ¦ <lex>m.</lex> <ab>E.</ab> of Indra or Śiva (<ab>v.</ab> <ab>prec.</ab>)."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "9066",
+            "pagenum": 161,
+            "content": "त्रिलोकनाथ¦ <i>m.</i> der Herr der drei Welten <i>(Götterbeiname).</i>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "16172",
+            "pagenum": 318,
+            "content": "tri-loka˚nATa¦ <i>m.</i> (lord of the three worlds) 1. an epithet of Indra, <ls>R.</ls>iii.45; 2. of Śiva, <ls>K.S.</ls>v.77."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "88178",
+            "pagenum": "460,1",
+            "content": "त्रि—लोक—नाथ ¦ <lex>m.</lex> ‘<ab n='Triloka' slp1='triloka'>T°</ab>-lord’, <s1 slp1='indra'>Indra</s1>, <ls>Ragh. iii, 45</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "88179",
+            "pagenum": "460,1",
+            "content": "¦ <s1 slp1='Siva'>Śiva</s1>, <ls>Kum. v, 77</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "47725",
+            "pagenum": 3,
+            "content": "त्रिलोकनाथ¦ <lex>m.</lex> <ab>Bein.</ab> <dvsn n='1'>— 1〉 <is>Indra</is>ʼs. <dvsn n='1'>— 2〉 <is>Śiva</is>ʼs."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिलोकनाथ",
+            "eid": "23770",
+            "pagenum": "3378,b",
+            "content": "त्रिलोकनाथ¦ पु० त्रयाणां लोकानां नाथः उत्तरपदद्विगुघटितस्तत्पुरुषः । त्रयाणां लोकानां नाथे परमेश्वरादौ । “त्रिलोकनाथेन सतां मखद्विषः” रघुः । “त्रिलोकनाथः पितृसद्मगोचरः” कुमा० । त्रिलोकपत्यादयोऽप्यत्र ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिलोकनाथ",
+            "content": "त्रिलोकनाथः पुं. त्रि-लोकम्-नाथः  - 'तीनों लोकों का स्वामी, इन्द्र का विशेषण'"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "त्रिलोकनाथ",
+            "content": "son of Vaidyanatha who wrote a small treatise on karakas  called षट्कारकनिरूपण."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिलोकनाथ",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಮೂರು ಲೋಕಗಳಿಗೂ ಸ್ವಾಮಿಯಾದ ಪರಮಾತ್ಮ",
+            "व्युत्पत्तिः": "त्रयाणां लोकानां नाथः स्वामी",
+            "प्रयोगाः": "'अकिञ्चनः सन् प्रभवः स सम्पदां त्रिलोकनाथः पितृसद्मगोचरः'",
+            "उल्लेखाः": "कुमा० ५-७७",
+            "content": ""
+        },
+        {
+            "word": "त्रिलोकनाथ",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ದೇವೇಂದ್ರ",
+            "प्रयोगाः": "'त्रिलोकनाथेन सदा मखद्विषस्त्वया नियम्या ननु दिव्यचक्षुषा'",
+            "उल्लेखाः": "रघु० ३-४५",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिलोकनाथ",
+            "content": "<body><s>trilokanATa pu° trayARAM lokAnAM nATaH uttarapadadvigu­GawitastatpuruzaH . trayARAM lokAnAM nATe parameSvarAdO . <q>trilokanATena satAM maKadvizaH</q> raGuH . <q>trilokanATaH pitfsadmagocaraH</q> kumA° . trilokapatyAdayo'pyatra .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिलोकनाथ",
+            "content": "<span lang=\"sa\">त्रिलोकनाथ<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ಲೋಕಗಳಿಗೂ ಸ್ವಾಮಿಯಾದ ಪರಮಾತ್ಮ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रयाणां लोकानां नाथः स्वामी<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"अकिञ्चनः सन् प्रभवः स सम्पदां त्रिलोकनाथः पितृसद्मगोचरः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>कुमा० ५-७७<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिलोकनाथ<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದೇವೇಂದ್ರ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"त्रिलोकनाथेन सदा मखद्विषस्त्वया नियम्या ननु दिव्यचक्षुषा\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० ३-४५<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

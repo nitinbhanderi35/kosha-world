@@ -1,235 +1,153 @@
-inter,
-                        destructorFunction: rawDestructor
-                    }
-                ];
-            });
+{
+    "word": "त्रिषवण",
+    "BEN": [
+        {
+            "word": "त्रिषवण",
+            "eid": "6161",
+            "pagenum": 379,
+            "content": "त्रिषवण¦ <i>triṣavaṇa,</i> <ab>i. e.</ab> <i>tri-savana,</i> <ab>n.</ab> The three daily ablutions, <ls>Man.</ls> 6, 24."
         }
-        function __embind_register_bigint(primitiveType, name, size, minRange, maxRange) {}
-        function getShiftFromSize(size) {
-            switch(size){
-                case 1:
-                    return 0;
-                case 2:
-                    return 1;
-                case 4:
-                    return 2;
-                case 8:
-                    return 3;
-                default:
-                    throw new TypeError("Unknown type size: " + size);
-            }
+    ],
+    "BUR": [
+        {
+            "word": "त्रिषवण",
+            "eid": "8299",
+            "pagenum": 305,
+            "content": "त्रिषवण¦ <i>triṣavaṇa</i> <ab>n.</ab> <i>(savana)</i> les trois sacrifices quotidiens [le matin, à midi, le soir], <ab>Vd.</ab>  <P><i>triṣavaṇasnāyin</i> <ab>a.</ab> <i>(snā;</i> <ab>sfx.</ab> <i>in)</i> qui accomplit <lbinfo n='7'/> les ablutions aux heures des trois <s1 slp1='savana'>savana</s1>s."
         }
-        function embind_init_charCodes() {
-            var codes = new Array(256);
-            for(var i = 0; i < 256; ++i){
-                codes[i] = String.fromCharCode(i);
-            }
-            embind_charCodes = codes;
+    ],
+    "CAE": [
+        {
+            "word": "त्रिषवण",
+            "eid": "12957",
+            "pagenum": 213,
+            "content": "त्रिषवण¦ <lex>n.</lex> <ab>pl.</ab> the (daily) three Soma oblations, <lex>a.</lex> connected with them."
         }
-        var embind_charCodes = undefined;
-        function readLatin1String(ptr) {
-            var ret = "";
-            var c = ptr;
-            while(HEAPU8[c]){
-                ret += embind_charCodes[HEAPU8[c++]];
-            }
-            return ret;
+    ],
+    "CCS": [
+        {
+            "word": "त्रिषवण",
+            "eid": "9104",
+            "pagenum": 162,
+            "content": "त्रिषवण¦ drei Kelterungen enthaltend; <i>n.</i> <i>Pl.</i> die drei Kelterungen <i>(r.).</i>"
         }
-        var BindingError = undefined;
-        function throwBindingError(message) {
-            throw new BindingError(message);
+    ],
+    "LAN": [
+        {
+            "word": "त्रिषवण",
+            "eid": "1834",
+            "pagenum": 166,
+            "content": "<b>tri-ṣavaṇa,</b>¦ <i><ab>a.</ab></i> pertaining to the three Soma-pressings; <b>-am,</b> <i><ab>adv.</ab></i> at morning, noon, and evening. [<b>savana.</b>]"
         }
-        function registerType(rawType, registeredInstance, options) {
-            options = options || {};
-            if (!("argPackAdvance" in registeredInstance)) {
-                throw new TypeError("registerType registeredInstance requires argPackAdvance");
-            }
-            var name = registeredInstance.name;
-            if (!rawType) {
-                throwBindingError('type "' + name + '" must have a positive integer typeid pointer');
-            }
-            if (registeredTypes.hasOwnProperty(rawType)) {
-                if (options.ignoreDuplicateRegistrations) {
-                    return;
-                } else {
-                    throwBindingError("Cannot register type '" + name + "' twice");
-                }
-            }
-            registeredTypes[rawType] = registeredInstance;
-            delete typeDependencies[rawType];
-            if (awaitingDependencies.hasOwnProperty(rawType)) {
-                var callbacks = awaitingDependencies[rawType];
-                delete awaitingDependencies[rawType];
-                callbacks.forEach(function(cb) {
-                    cb();
-                });
-            }
+    ],
+    "MW": [
+        {
+            "word": "त्रिषवण",
+            "eid": "88418",
+            "pagenum": "461,1",
+            "content": "त्रि—षवण ¦ <lex>mfn.</lex> connected with 3 <s1 slp1='soma'>Soma</s1> libations, <ls>ŚBr. xii, 2</ls> (-सव्°), <ls>ŚāṅkhŚr.</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिषवण",
+            "eid": "88419",
+            "pagenum": "461,1",
+            "content": "त्रि—षवण ¦ <lex>n.</lex> <ab>pl.</ab> the 3 <s1 slp1='soma'>Soma</s1> libations, <ls>MBh. iii</ls> (-सव्°)<info lex='n'/>"
+        },
+        {
+            "word": "त्रिषवण",
+            "eid": "88420",
+            "pagenum": "461,1",
+            "content": "¦ <ab>sg.</ab> (with or without स्नान) the 3 ablutions (at dawn, noon, and sunset) (also त्रिः-स्नान, <ls>Kām. ii, 28</ls>), <ls n='MBh.'>xiii</ls>; <ls>Mn.</ls> &c. (-सव्°, <ls>MārkP. xxiii</ls>)<info lex='inh'/>"
+        },
+        {
+            "word": "त्रिषवण",
+            "eid": "88422",
+            "pagenum": "461,1",
+            "content": "त्रि—षवण ¦ <lex>m.</lex> <ab>N.</ab> of a man, <ls>BrahmaP. ii, 12</ls> and <ls n='BrahmaP. ii,'>18</ls>, <ls n='BrahmaP. ii,'>19</ls><info lex='m'/>"
         }
-        function __embind_register_bool(rawType, name, size, trueValue, falseValue) {
-            var shift = getShiftFromSize(size);
-            name = readLatin1String(name);
-            registerType(rawType, {
-                name: name,
-                fromWireType: function(wt) {
-                    return !!wt;
-                },
-                toWireType: function(destructors, o) {
-                    return o ? trueValue : falseValue;
-                },
-                argPackAdvance: 8,
-                readValueFromPointer: function(pointer) {
-                    var heap;
-                    if (size === 1) {
-                        heap = HEAP8;
-                    } else if (size === 2) {
-                        heap = HEAP16;
-                    } else if (size === 4) {
-                        heap = HEAP32;
-                    } else {
-                        throw new TypeError("Unknown boolean type size: " + name);
-                    }
-                    return this["fromWireType"](heap[pointer >> shift]);
-                },
-                destructorFunction: null
-            });
+    ],
+    "PW": [
+        {
+            "word": "त्रिषवण",
+            "eid": "47890",
+            "pagenum": 3,
+            "content": "त्रिषवण¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <dvsn n='2'>— a〉 <i>mit drei</i> <is>Soma</is>-<i>Kelterungen verbunden</i>. <dvsn n='2'>— b〉 in Verbindung mit स्नान <lex>n.</lex> <i>dreimalige Abwaschung am Tage</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <ab>N. pr.</ab> eines Mannes. <dvsn n='1'>— 3〉 <lex>n.</lex> <dvsn n='2'>— a〉 <ab>Pl.</ab> <i>die drei</i> <is>Soma</is>-<i>Kelterungen am Tage</i>. <dvsn n='2'>— b〉 <i>dreimalige Abwaschung am Tage</i>. <dvsn n='1'>— 4〉 °म् <lex>Adv.</lex> <i>Morgens, Mittags und Abends</i> <ls>ĀPAST.</ls> <ls>MĀN. GṚHY. 1,23</ls>."
         }
-        var emval_free_list = [];
-        var emval_handle_array = [
-            {},
-            {
-                value: undefined
-            },
-            {
-                value: null
-            },
-            {
-                value: true
-            },
-            {
-                value: false
-            }
-        ];
-        function __emval_decref(handle) {
-            if (handle > 4 && 0 === --emval_handle_array[handle].refcount) {
-                emval_handle_array[handle] = undefined;
-                emval_free_list.push(handle);
-            }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिषवण",
+            "eid": "31205",
+            "pagenum": 3,
+            "content": "त्रि/षवण¦ (त्रि + सवन) <lex>adj.</lex> <i>drei Spenden enthaltend</i>: यज्ञ <ls>ŚĀṄKH. ŚR. 16, 21, 2.</ls> त्रिसवन <ls>ŚAT. BR. 12, 2, 2, 21.</ls> स्नान <i>ein Bad, eine Abwaschung an der Stelle und zu den Zeiten der alten drei Spenden (?); dreimalige Abwaschungen am Tage</i>; häufig subst. <lex>n.</lex> mit Ergänzung von स्नानः स्नानं त्रिषवणं चरेत् <ls>BHĀG. P. 8, 16, 48.</ls> °स्नान <ls>MĀRK. P. 28, 26.</ls> <ls>MADHUS.</ls> in <ls>Ind. St. 1, 23, 2.</ls> त्रिषवणं स्नात्वा <ls>MBH. 13, 360.</ls> <ls n='MBH. 13,'>2938.</ls> °स्नायिन् <ls n='MBH. 13,'>5231.</ls> <ls>YĀJÑ. 3, 48. 326.</ls> उपस्पृशंस्त्रिषवणम् <ls>M. 6, 24. 11, 123. 216.</ls> <ls>R. 2, 95, 17.</ls> सद्भिस्त्रिषवणार्थिभिः <ls>HARIV. 3636.</ls> त्रिषवणातिथि <ls n='HARIV.'>9624.</ls> त्रिषवणाम्भोभिः <ls n='HARIV.'>5294.</ls> त्रिसवनाप्लुत <ls>MĀRK. P. 23, 29.</ls> <i>die drei Spenden am Tage</i>: अध्वर्यवस्त्रिसवनानि तन्वते <ls>MBH. 3, 10660.</ls>"
+        },
+        {
+            "word": "त्रिषवण",
+            "eid": "75362",
+            "pagenum": 5,
+            "content": "त्रिषवण¦ <lex>m.</lex> N. pr. eines Mannes <ls>Verz. d. Oxf. H. 18,b,12. 19,a,30.</ls>"
         }
-        function count_emval_handles() {
-            var count = 0;
-            for(var i = 5; i < emval_handle_array.length; ++i){
-                if (emval_handle_array[i] !== undefined) {
-                    ++count;
-                }
-            }
-            return count;
+    ],
+    "SHS": [
+        {
+            "word": "त्रिषवण",
+            "eid": "18157",
+            "pagenum": 326,
+            "content": "त्रिषवण¦ n. (-णं) The three ablutions to be performed in the day or at dawn, noon, and sun-set. E. त्रि three, षवन bathing; also read त्रिसवन ।"
         }
-        function get_first_emval() {
-            for(var i = 5; i < emval_handle_array.length; ++i){
-                if (emval_handle_array[i] !== undefined) {
-                    return emval_handle_array[i];
-                }
-            }
-            return null;
+    ],
+    "WIL": [
+        {
+            "word": "त्रिषवण",
+            "eid": "18174",
+            "pagenum": 391,
+            "content": "त्रिषवण¦ n. (-णं) The three ablutions to be performed in the day, or at dawn, noon, and sun-set. .E. त्रि three, सवन bathing; also read त्रिसवन."
         }
-        function init_emval() {
-            Module["count_emval_handles"] = count_emval_handles;
-            Module["get_first_emval"] = get_first_emval;
+    ],
+    "YAT": [
+        {
+            "word": "त्रिषवण",
+            "eid": "17650",
+            "pagenum": 347,
+            "content": "त्रि-षवण¦ (णं) 1. <i>n.</i> The three ablutions of the day."
         }
-        function __emval_register(value) {
-            switch(value){
-                case undefined:
-                    {
-                        return 1;
-                    }
-                case null:
-                    {
-                        return 2;
-                    }
-                case true:
-                    {
-                        return 3;
-                    }
-                case false:
-                    {
-                        return 4;
-                    }
-                default:
-                    {
-                        var handle = emval_free_list.length ? emval_free_list.pop() : emval_handle_array.length;
-                        emval_handle_array[handle] = {
-                            refcount: 1,
-                            value: value
-                        };
-                        return handle;
-                    }
-            }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिषवण",
+            "eid": "23833",
+            "pagenum": "3387,b",
+            "content": "त्रिषवण¦ न० सूयते सोमोऽत्र सु--आधारे ल्युट् “पूर्बपदात्” पा० वा षत्वम् । त्रिकाले प्रातर्मध्याह्नसायाह्नरूपे काले “उपस्पृशंस्त्रिषवणं पितॄन् देवांश्च तर्पयेत् । दान्तस्त्रिषवणस्नायी निवृत्तश्च प्रतिग्रहात्” “कुर्य्यात् त्रिषवणस्नायी कृच्छ्रं चान्द्रायणं तथा” याज्ञ० । षत्वाभावे लोके च त्रिसवनमप्यत्र"
         }
-        function __embind_register_emval(rawType, name) {
-            name = readLatin1String(name);
-            registerType(rawType, {
-                name: name,
-                fromWireType: function(handle) {
-                    var rv = emval_handle_array[handle].value;
-                    __emval_decref(handle);
-                    return rv;
-                },
-                toWireType: function(destructors, value) {
-                    return __emval_register(value);
-                },
-                argPackAdvance: 8,
-                readValueFromPointer: simpleReadValueFromPointer,
-                destructorFunction: null
-            });
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिषवण",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಪ್ರಾತಃಕಾಲ ಮಧ್ಯಾಹ್ಮ ಮತ್ತು ಸಾಯಂಕಾಲಗಳೆಂಬ ಮೂರು ಕಾಲ",
+            "निष्पत्तिः": "षुअधि० 'ल्युट्' (३-३-११७)",
+            "व्युत्पत्तिः": "सूयते सोमोऽत्र",
+            "प्रयोगाः": "'कुर्यात् विषवणस्नायी कृच्छ्रं चान्द्रायणं तथा'",
+            "उल्लेखाः": "याज्ञ० ३-३२५",
+            "content": ""
         }
-        function _embind_repr(v) {
-            if (v === null) {
-                return "null";
-            }
-            var t = typeof v;
-            if (t === "object" || t === "array" || t === "function") {
-                return v.toString();
-            } else {
-                return "" + v;
-            }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिषवण",
+            "content": "<body><s>trizavaRa na° sUyate somo'tra su—ADAre lyuw <q>pUrbapadAt</q> pA° vA zatvam . trikAle prAtarmaDyAhnasAyAhnarUpe kAle <q>upaspf­SaMstrizavaRaM pitFn devAMSca tarpayet . dAntastrizavaRasnAyI nivfttaSca pratigrahAt</q> <q>kuryyAt trizavaRasnAyI kfcCraM cAndrAyaRaM taTA</q> yAjYa° . zatvABAve loke ca trisavanamapyatra</s></body>"
         }
-        function floatReadValueFromPointer(name, shift) {
-            switch(shift){
-                case 2:
-                    return function(pointer) {
-                        return this["fromWireType"](HEAPF32[pointer >> 2]);
-                    };
-                case 3:
-                    return function(pointer) {
-                        return this["fromWireType"](HEAPF64[pointer >> 3]);
-                    };
-                default:
-                    throw new TypeError("Unknown float type: " + name);
-            }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिषवण",
+            "content": "<H1><h><key1>trizavaRa</key1><key2>trizavaRa</key2></h><body><s>trizavaRa</s>  <div n=\"1\">n. (<s>-RaM</s>) The three ablutions to be performed in the day or at <lb />dawn, noon, and sun-set.</div><div n=\"E\"> E. <s>tri</s> three, <s>zavana</s> bathing; also read <lb /><s>trisavana .</s></div></body><tail><L>18157</L><pc>326-a</pc></tail></H1>\n"
         }
-        function __embind_register_float(rawType, name, size) {
-            var shift = getShiftFromSize(size);
-            name = readLatin1String(name);
-            registerType(rawType, {
-                name: name,
-                fromWireType: function(value) {
-                    return value;
-                },
-                toWireType: function(destructors, value) {
-                    if (typeof value !== "number" && typeof value !== "boolean") {
-                        throw new TypeError('Cannot convert "' + _embind_repr(value) + '" to ' + this.name);
-                    }
-                    return value;
-                },
-                argPackAdvance: 8,
-                readValueFromPointer: floatReadValueFromPointer(name, shift),
-                destructorFunction: null
-            });
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिषवण",
+            "content": "<span lang=\"sa\">त्रिषवण<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪ್ರಾತಃಕಾಲ ಮಧ್ಯಾಹ್ಮ ಮತ್ತು ಸಾಯಂಕಾಲಗಳೆಂಬ ಮೂರು ಕಾಲ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>षु - अधि० \"ल्युट्\" (३-३-११७)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>सूयते सोमोऽत्र<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"कुर्यात् विषवणस्नायी कृच्छ्रं चान्द्रायणं तथा\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>याज्ञ० ३-३२५<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
         }
-        function new_(constructor, argumentList) {
-            if (!(constructor instanceof Function)) {
-                throw new TypeError("new_ called with constructor type " + typeof constructor + " which is not a function");
-            }
-            var dummy = createNamedFunction(constructor.name || "unknownFunctionName", function() {});
-            dummy.prototype = constructor.prototype;
-  
+    ]
+}

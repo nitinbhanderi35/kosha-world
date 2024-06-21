@@ -1,1051 +1,331 @@
-de any removeChild logic. This is maybe the same
-    // function as "disappearLayoutEffects" (or whatever that turns into after
-    // the layout phase is refactored to use recursion).
-    // Before starting, find the nearest host parent on the stack so we know
-    // which instance/container to remove the children from.
-    // TODO: Instead of searching up the fiber return path on every deletion, we
-    // can track the nearest host component on the JS stack as we traverse the
-    // tree during the commit phase. This would make insertions faster, too.
-    let parent = returnFiber;
-
-    findParent: while (parent !== null) {
-      switch (parent.tag) {
-        case HostSingleton:
-        case HostComponent:
-          {
-            hostParent = parent.stateNode;
-            hostParentIsContainer = false;
-            break findParent;
-          }
-
-        case HostRoot:
-          {
-            hostParent = parent.stateNode.containerInfo;
-            hostParentIsContainer = true;
-            break findParent;
-          }
-
-        case HostPortal:
-          {
-            hostParent = parent.stateNode.containerInfo;
-            hostParentIsContainer = true;
-            break findParent;
-          }
-      }
-
-      parent = parent.return;
-    }
-
-    if (hostParent === null) {
-      throw Error(formatProdErrorMessage(160));
-    }
-
-    commitDeletionEffectsOnFiber(root, returnFiber, deletedFiber);
-    hostParent = null;
-    hostParentIsContainer = false;
-  }
-
-  detachFiberMutation(deletedFiber);
-}
-
-function recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, parent) {
-  // TODO: Use a static flag to skip trees that don't have unmount effects
-  let child = parent.child;
-
-  while (child !== null) {
-    commitDeletionEffectsOnFiber(finishedRoot, nearestMountedAncestor, child);
-    child = child.sibling;
-  }
-}
-
-function commitDeletionEffectsOnFiber(finishedRoot, nearestMountedAncestor, deletedFiber) {
-  onCommitUnmount(deletedFiber); // The cases in this outer switch modify the stack before they traverse
-  // into their subtree. There are simpler cases in the inner switch
-  // that don't modify the stack.
-
-  switch (deletedFiber.tag) {
-    case HostHoistable:
-      {
+{
+    "word": "तिरस्",
+    "ABCH": [
         {
-          if (!offscreenSubtreeWasHidden) {
-            safelyDetachRef(deletedFiber, nearestMountedAncestor);
-          }
-
-          recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
-
-          if (deletedFiber.memoizedState) {
-            releaseResource(deletedFiber.memoizedState);
-          } else if (deletedFiber.stateNode) {
-            unmountHoistable(deletedFiber.stateNode);
-          }
-
-          return;
-        } // Fall through
-
-      }
-
-    case HostSingleton:
-      {
+            "word": "तिरस्",
+            "linga": "अ",
+            "pagenum": "57",
+            "kanda": "अव्ययवर्गः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4559",
+            "group": "1948",
+            "synonyms": [
+                "तिर्यञ्च्",
+                "साचि"
+            ],
+            "content": "तिर्यगर्थे तिरः साचि निष्फले तु वृथा मुधा ।"
+        }
+    ],
+    "AP90": [
         {
-          if (!offscreenSubtreeWasHidden) {
-            safelyDetachRef(deletedFiber, nearestMountedAncestor);
-          }
-
-          const prevHostParent = hostParent;
-          const prevHostParentIsContainer = hostParentIsContainer;
-          hostParent = deletedFiber.stateNode;
-          recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber); // Normally this is called in passive unmount effect phase however with
-          // HostSingleton we warn if you acquire one that is already associated to
-          // a different fiber. To increase our chances of avoiding this, specifically
-          // if you keyed a HostSingleton so there will be a delete followed by a Placement
-          // we treat detach eagerly here
-
-          releaseSingletonInstance(deletedFiber.stateNode);
-          hostParent = prevHostParent;
-          hostParentIsContainer = prevHostParentIsContainer;
-          return;
-        } // Fall through
-
-      }
-
-    case HostComponent:
-      {
-        if (!offscreenSubtreeWasHidden) {
-          safelyDetachRef(deletedFiber, nearestMountedAncestor);
-        } // Intentional fallthrough to next branch
-
-      }
-
-    case HostText:
-      {
-        // We only need to remove the nearest host child. Set the host parent
-        // to `null` on the stack to indicate that nested children don't
-        // need to be removed.
+            "word": "तिरस्",
+            "eid": "14677",
+            "pagenum": 538,
+            "content": "तिरस्¦ <i><ab>ind.</ab></i> [तॄ-असुन् स्वरादि] <b>1</b> Crookedly, obliquely, awry; स <lbinfo n='tirya#N'/> तिर्यङ् यस्तिर्ॐऽचति <ls>Ak.</ls> <b>--2</b> Without; apart from. <b>--3</b> Secretly, covertly, invisibly. <b>--4</b> Across, beyond, over. <b>--5</b> Indirectly, badly. [In classical literature तिरस् is rarely used by <lbinfo n='it+self'/> itself, but chiefly occurs in <lbinfo n='composi+tion'/> composition with (<i>a</i>) कृ, (<i>b</i>) धा, and (<i>c</i>) भू; see below.] <b>--Comp.</b> --कुड्य, --प्राकार <i><ab>a.</ab></i> looking through a wall. --गत <i><ab>a.</ab></i> vanished, disappeared. --वर्ष <i><ab>a.</ab></i> protected from rain."
+        }
+    ],
+    "BEN": [
         {
-          const prevHostParent = hostParent;
-          const prevHostParentIsContainer = hostParentIsContainer;
-          hostParent = null;
-          recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
-          hostParent = prevHostParent;
-          hostParentIsContainer = prevHostParentIsContainer;
-
-          if (hostParent !== null) {
-            // Now that all the child effects have unmounted, we can remove the
-            // node from the tree.
-            if (hostParentIsContainer) {
-              removeChildFromContainer(hostParent, deletedFiber.stateNode);
-            } else {
-              removeChild(hostParent, deletedFiber.stateNode);
-            }
-          }
+            "word": "तिरस्",
+            "eid": "5888",
+            "pagenum": 364,
+            "content": "तिरस्¦ <i>tiras</i> (for original <i>taras</i>), <ab>i. e.</ab> <i>tṝ + as,</i> <b>1.</b> <ab>adv.</ab> Awry, <ls>Mārk. P.</ls> 17, 3. <b>2.</b> prepos. Over, through, etc. (<ab>ved.</ab>); see <i>kṛ, dhā,</i> and <i>bhū.</i> -- <ab>Cf.</ab> <ab>Lat.</ab> trans."
         }
-
-        return;
-      }
-
-    case DehydratedFragment:
-      {
-        // Delete the dehydrated suspense boundary and all of its content.
-
-
+    ],
+    "BHS": [
         {
-          if (hostParent !== null) {
-            if (hostParentIsContainer) {
-              clearSuspenseBoundaryFromContainer(hostParent, deletedFiber.stateNode);
-            } else {
-              clearSuspenseBoundary(hostParent, deletedFiber.stateNode);
-            }
-          }
+            "word": "तिरस्",
+            "eid": "6960",
+            "pagenum": 253,
+            "content": "<b>tiras-, tiraskṛta-</b>¦ (<ab>cf.</ab> <lang>Pali</lang> tiro, <i>outside</i>, <ab>esp.</ab> as prior member of <ab>cpds.</ab>), in <ab>comp.</ab> with -prātiveśya, taken by <ls>Divy</ls> 〔Index〕 (and <ls>pw</ls>) as meaning <i>near</i> (neighbor), but rather <i>outside</i> (neighbor), (neighbor) <i>living outside</i> (oneʼs own house): tiraḥprātiveśya-suhṛt-svajanādibhyo <ls>Divy</ls> 〔234.24〕; tena tiraḥprātiveśyāḥ pṛṣṭāḥ 〔272.4〕; tiraskṛtaprātiveśya-sajana-(read -svajana-?)-yuvatyaś 〔235.19〕. See also <ab>s.v.</ab> <b>tiryak</b>, where it is suggested that even <lang>Skt.</lang> tiras may have this <ab>mg.</ab> in <ls>Mārk. Pur.</ls> 〔17.3〕 (<ls>BR</ls> <ab>s.v.</ab> 2a)."
         }
-
-        return;
-      }
-
-    case HostPortal:
-      {
+    ],
+    "BOP": [
         {
-          // When we go into a portal, it becomes the parent to remove from.
-          const prevHostParent = hostParent;
-          const prevHostParentIsContainer = hostParentIsContainer;
-          hostParent = deletedFiber.stateNode.containerInfo;
-          hostParentIsContainer = true;
-          recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
-          hostParent = prevHostParent;
-          hostParentIsContainer = prevHostParentIsContainer;
+            "word": "तिरस्",
+            "eid": "3742",
+            "pagenum": 153,
+            "content": "तिरस्¦ (r. तॄ i.e. तर्, तीर् s. अस्) 1) Praep. <i>in dialecto</i> <i>vêdica</i>, trans, per (v. Lass. p. 34.) <i>e. c.</i> तिरः पुरूचिद् अश्विना रजांसि…एह यातम् «per tenebras multas huc venite, As'vini!» य ईङ्खयन्ति पर्वतान् तिरः समु- द्रम् अर्णवम् «qui trans mare undosum nubes propellunt». 2) <i>Adv.</i> flexuose, tortuose. (Ad तिरस् trans, per, referri possunt lat. <i>trans</i>, goth. <i>thairh</i>, nostrum <i>dur-ch</i>, hib. <i>tar, tair</i> «beyond, over, across, through, above», <i>tri</i> «through, by»; lith. <i>tiē4s</i> e regione, ex adverso; zend. <i>tarô</i> trans (Burnouf Yaçna Note LXVI.) nititur formâ primitivâ तरस्. Ad तिरस् tortuose traxerim hib. <i>tar</i> «bad»; v. तॄ.)"
         }
-
-        return;
-      }
-
-    case FunctionComponent:
-    case ForwardRef:
-    case MemoComponent:
-    case SimpleMemoComponent:
-      {
-        if (!offscreenSubtreeWasHidden) {
-          const updateQueue = deletedFiber.updateQueue;
-
-          if (updateQueue !== null) {
-            const lastEffect = updateQueue.lastEffect;
-
-            if (lastEffect !== null) {
-              const firstEffect = lastEffect.next;
-              let effect = firstEffect;
-
-              do {
-                const tag = effect.tag;
-                const inst = effect.inst;
-                const destroy = inst.destroy;
-
-                if (destroy !== undefined) {
-                  if ((tag & Insertion) !== NoFlags) {
-                    inst.destroy = undefined;
-                    safelyCallDestroy(deletedFiber, nearestMountedAncestor, destroy);
-                  } else if ((tag & Layout) !== NoFlags) {
-
-                    {
-                      inst.destroy = undefined;
-                      safelyCallDestroy(deletedFiber, nearestMountedAncestor, destroy);
-                    }
-                  }
-                }
-
-                effect = effect.next;
-              } while (effect !== firstEffect);
-            }
-          }
-        }
-
-        recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
-        return;
-      }
-
-    case ClassComponent:
-      {
-        if (!offscreenSubtreeWasHidden) {
-          safelyDetachRef(deletedFiber, nearestMountedAncestor);
-          const instance = deletedFiber.stateNode;
-
-          if (typeof instance.componentWillUnmount === 'function') {
-            safelyCallComponentWillUnmount(deletedFiber, nearestMountedAncestor, instance);
-          }
-        }
-
-        recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
-        return;
-      }
-
-    case ScopeComponent:
-      {
-
-        recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
-        return;
-      }
-
-    case OffscreenComponent:
-      {
-        safelyDetachRef(deletedFiber, nearestMountedAncestor);
-
-        if (deletedFiber.mode & ConcurrentMode) {
-          // If this offscreen component is hidden, we already unmounted it. Before
-          // deleting the children, track that it's already unmounted so that we
-          // don't attempt to unmount the effects again.
-          // TODO: If the tree is hidden, in most cases we should be able to skip
-          // over the nested children entirely. An exception is we haven't yet found
-          // the topmost host node to delete, which we already track on the stack.
-          // But the other case is portals, which need to be detached no matter how
-          // deeply they are nested. We should use a subtree flag to track whether a
-          // subtree includes a nested portal.
-          const prevOffscreenSubtreeWasHidden = offscreenSubtreeWasHidden;
-          offscreenSubtreeWasHidden = prevOffscreenSubtreeWasHidden || deletedFiber.memoizedState !== null;
-          recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
-          offscreenSubtreeWasHidden = prevOffscreenSubtreeWasHidden;
-        } else {
-          recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
-        }
-
-        break;
-      }
-
-    default:
-      {
-        recursivelyTraverseDeletionEffects(finishedRoot, nearestMountedAncestor, deletedFiber);
-        return;
-      }
-  }
-}
-
-function commitSuspenseCallback(finishedWork) {
-}
-
-function commitSuspenseHydrationCallbacks(finishedRoot, finishedWork) {
-
-  const newState = finishedWork.memoizedState;
-
-  if (newState === null) {
-    const current = finishedWork.alternate;
-
-    if (current !== null) {
-      const prevState = current.memoizedState;
-
-      if (prevState !== null) {
-        const suspenseInstance = prevState.dehydrated;
-
-        if (suspenseInstance !== null) {
-          try {
-            commitHydratedSuspenseInstance(suspenseInstance);
-
-            if (enableSuspenseCallback) ;
-          } catch (error) {
-            captureCommitPhaseError(finishedWork, finishedWork.return, error);
-          }
-        }
-      }
-    }
-  }
-}
-
-function getRetryCache(finishedWork) {
-  // TODO: Unify the interface for the retry cache so we don't have to switch
-  // on the tag like this.
-  switch (finishedWork.tag) {
-    case SuspenseComponent:
-    case SuspenseListComponent:
-      {
-        let retryCache = finishedWork.stateNode;
-
-        if (retryCache === null) {
-          retryCache = finishedWork.stateNode = new PossiblyWeakSet();
-        }
-
-        return retryCache;
-      }
-
-    case OffscreenComponent:
-      {
-        const instance = finishedWork.stateNode;
-        let retryCache = instance._retryCache;
-
-        if (retryCache === null) {
-          retryCache = instance._retryCache = new PossiblyWeakSet();
-        }
-
-        return retryCache;
-      }
-
-    default:
-      {
-        throw Error(formatProdErrorMessage(435, finishedWork.tag));
-      }
-  }
-}
-
-function detachOffscreenInstance(instance) {
-  const fiber = instance._current;
-
-  if (fiber === null) {
-    throw Error(formatProdErrorMessage(456));
-  }
-
-  if ((instance._pendingVisibility & OffscreenDetached) !== NoFlags$1) {
-    // The instance is already detached, this is a noop.
-    return;
-  } // TODO: There is an opportunity to optimise this by not entering commit phase
-  // and unmounting effects directly.
-
-
-  const root = enqueueConcurrentRenderForLane(fiber, SyncLane);
-
-  if (root !== null) {
-    instance._pendingVisibility |= OffscreenDetached;
-    scheduleUpdateOnFiber(root, fiber, SyncLane);
-  }
-}
-function attachOffscreenInstance(instance) {
-  const fiber = instance._current;
-
-  if (fiber === null) {
-    throw Error(formatProdErrorMessage(456));
-  }
-
-  if ((instance._pendingVisibility & OffscreenDetached) === NoFlags$1) {
-    // The instance is already attached, this is a noop.
-    return;
-  }
-
-  const root = enqueueConcurrentRenderForLane(fiber, SyncLane);
-
-  if (root !== null) {
-    instance._pendingVisibility &= ~OffscreenDetached;
-    scheduleUpdateOnFiber(root, fiber, SyncLane);
-  }
-}
-
-function attachSuspenseRetryListeners(finishedWork, wakeables) {
-  // If this boundary just timed out, then it will have a set of wakeables.
-  // For each wakeable, attach a listener so that when it resolves, React
-  // attempts to re-render the boundary in the primary (pre-timeout) state.
-  const retryCache = getRetryCache(finishedWork);
-  wakeables.forEach(wakeable => {
-    // Memoize using the boundary fiber to prevent redundant listeners.
-    const retry = resolveRetryWakeable.bind(null, finishedWork, wakeable);
-
-    if (!retryCache.has(wakeable)) {
-      retryCache.add(wakeable);
-
-      wakeable.then(retry, retry);
-    }
-  });
-} // This function detects when a Suspense boundary goes from visible to hidden.
-function commitMutationEffects(root, finishedWork, committedLanes) {
-  commitMutationEffectsOnFiber(finishedWork, root);
-}
-
-function recursivelyTraverseMutationEffects(root, parentFiber, lanes) {
-  // Deletions effects can be scheduled on any fiber type. They need to happen
-  // before the children effects hae fired.
-  const deletions = parentFiber.deletions;
-
-  if (deletions !== null) {
-    for (let i = 0; i < deletions.length; i++) {
-      const childToDelete = deletions[i];
-
-      try {
-        commitDeletionEffects(root, parentFiber, childToDelete);
-      } catch (error) {
-        captureCommitPhaseError(childToDelete, parentFiber, error);
-      }
-    }
-  }
-
-  if (parentFiber.subtreeFlags & MutationMask) {
-    let child = parentFiber.child;
-
-    while (child !== null) {
-      commitMutationEffectsOnFiber(child, root);
-      child = child.sibling;
-    }
-  }
-}
-
-let currentHoistableRoot = null;
-
-function commitMutationEffectsOnFiber(finishedWork, root, lanes) {
-  const current = finishedWork.alternate;
-  const flags = finishedWork.flags; // The effect flag should be checked *after* we refine the type of fiber,
-  // because the fiber tag is more specific. An exception is any flag related
-  // to reconciliation, because those can be set on all fiber types.
-
-  switch (finishedWork.tag) {
-    case FunctionComponent:
-    case ForwardRef:
-    case MemoComponent:
-    case SimpleMemoComponent:
-      {
-        recursivelyTraverseMutationEffects(root, finishedWork);
-        commitReconciliationEffects(finishedWork);
-
-        if (flags & Update) {
-          try {
-            commitHookEffectListUnmount(Insertion | HasEffect, finishedWork, finishedWork.return);
-            commitHookEffectListMount(Insertion | HasEffect, finishedWork);
-          } catch (error) {
-            captureCommitPhaseError(finishedWork, finishedWork.return, error);
-          } // Layout effects are destroyed during the mutation phase so that all
-          // destroy functions for all fibers are called before any create functions.
-          // This prevents sibling component effects from interfering with each other,
-          // e.g. a destroy function in one component should never override a ref set
-          // by a create function in another component during the same commit.
-
-
-          {
-            try {
-              commitHookEffectListUnmount(Layout | HasEffect, finishedWork, finishedWork.return);
-            } catch (error) {
-              captureCommitPhaseError(finishedWork, finishedWork.return, error);
-            }
-          }
-        }
-
-        return;
-      }
-
-    case ClassComponent:
-      {
-        recursivelyTraverseMutationEffects(root, finishedWork);
-        commitReconciliationEffects(finishedWork);
-
-        if (flags & Ref) {
-          if (current !== null) {
-            safelyDetachRef(current, current.return);
-          }
-        }
-
-        if (flags & Callback && offscreenSubtreeIsHidden) {
-          const updateQueue = finishedWork.updateQueue;
-
-          if (updateQueue !== null) {
-            deferHiddenCallbacks(updateQueue);
-          }
-        }
-
-        return;
-      }
-
-    case HostHoistable:
-      {
+    ],
+    "BUR": [
         {
-          // We cast because we always set the root at the React root and so it cannot be
-          // null while we are processing mutation effects
-          const hoistableRoot = currentHoistableRoot;
-          recursivelyTraverseMutationEffects(root, finishedWork);
-          commitReconciliationEffects(finishedWork);
-
-          if (flags & Ref) {
-            if (current !== null) {
-              safelyDetachRef(current, current.return);
-            }
-          }
-
-          if (flags & Update) {
-            const currentResource = current !== null ? current.memoizedState : null;
-            const newResource = finishedWork.memoizedState;
-
-            if (current === null) {
-              // We are mounting a new HostHoistable Fiber. We fork the mount
-              // behavior based on whether this instance is a Hoistable Instance
-              // or a Hoistable Resource
-              if (newResource === null) {
-                if (finishedWork.stateNode === null) {
-                  finishedWork.stateNode = hydrateHoistable(hoistableRoot, finishedWork.type, finishedWork.memoizedProps, finishedWork);
-                } else {
-                  mountHoistable(hoistableRoot, finishedWork.type, finishedWork.stateNode);
-                }
-              } else {
-                finishedWork.stateNode = acquireResource(hoistableRoot, newResource, finishedWork.memoizedProps);
-              }
-            } else if (currentResource !== newResource) {
-              // We are moving to or from Hoistable Resource, or between different Hoistable Resources
-              if (currentResource === null) {
-                if (current.stateNode !== null) {
-                  unmountHoistable(current.stateNode);
-                }
-              } else {
-                releaseResource(currentResource);
-              }
-
-              if (newResource === null) {
-                mountHoistable(hoistableRoot, finishedWork.type, finishedWork.stateNode);
-              } else {
-                acquireResource(hoistableRoot, newResource, finishedWork.memoizedProps);
-              }
-            } else if (newResource === null && finishedWork.stateNode !== null) {
-              // We may have an update on a Hoistable element
-              const updatePayload = finishedWork.updateQueue;
-              finishedWork.updateQueue = null;
-
-              try {
-                commitUpdate(finishedWork.stateNode, updatePayload, finishedWork.type, current.memoizedProps, finishedWork.memoizedProps, finishedWork);
-              } catch (error) {
-                captureCommitPhaseError(finishedWork, finishedWork.return, error);
-              }
-            }
-          }
-
-          return;
-        } // Fall through
-
-      }
-
-    case HostSingleton:
-      {
+            "word": "तिरस्",
+            "eid": "7955",
+            "pagenum": 293,
+            "content": "तिरस्¦ <i>tiras</i> <i>(tṝ;</i> <ab>sfx.</ab> <i>as)</i> [<ab>prép.</ab> avec l'<ab>ac.</ab>] par, à travers, au delà. -- <ab>Adv.</ab> par sinuosités; || au <ab>fig.</ab> d'une façon tortueuse; indirectement; frauduleusement; secrètement. <lbinfo n='5'/>  <P><i>tiraskarin</i> <ab>m.</ab> et <i>tiraskariṇī</i> <ab>f.</ab> <i>(kṛ;</i> <ab>sfx.</ab> <i>in)</i> enceinte de toile dressée autour d'une tente.  <P><i>tiraskaromi</i> 8 et <i>tiraskarāmi</i> 1 <i>(kṛ)</i> cacher, <lbinfo n='5'/> mettre un voile devant, <ab>ac.</ab> || Dépasser, <lbinfo n='4'/> surpasser. || Accuser, outrager.  <P><i>tiraskāra</i> <ab>m.</ab> <i>(kṛ)</i> blâme, reproche; insulte. <lbinfo n='6'/>  <P><i>tiraskriyā</i> <ab>f.</ab> <i>(kṛ)</i> <ab>mms.</ab>  <P><i>tirasyāmi</i> (<ab>dénom.</ab> de <i>tiras)</i> disparaître; périr."
+        }
+    ],
+    "CAE": [
         {
-          if (flags & Update) {
-            const previousWork = finishedWork.alternate;
-
-            if (previousWork === null) {
-              const singleton = finishedWork.stateNode;
-              const props = finishedWork.memoizedProps; // This was a new mount, we need to clear and set initial properties
-
-              clearSingleton(singleton);
-              acquireSingletonInstance(finishedWork.type, props, singleton, finishedWork);
-            }
-          }
-        } // Fall through
-
-      }
-
-    case HostComponent:
-      {
-        recursivelyTraverseMutationEffects(root, finishedWork);
-        commitReconciliationEffects(finishedWork);
-
-        if (flags & Ref) {
-          if (current !== null) {
-            safelyDetachRef(current, current.return);
-          }
+            "word": "तिरस्",
+            "eid": "12324",
+            "pagenum": 203,
+            "content": "तिर/स्¦ <ab>prep.</ab> through, across, beyond, past, without, against (<ab>acc.</ab>), apart, secretly, or safely from (<ab>abl.</ab>); <ab>adv.</ab> crossways, aside, awry; privately, covertly. — Cf. कृ, धा, भू."
         }
-
+    ],
+    "CCS": [
         {
-          // TODO: ContentReset gets cleared by the children during the commit
-          // phase. This is a refactor hazard because it means we must read
-          // flags the flags after `commitReconciliationEffects` has already run;
-          // the order matters. We should refactor so that ContentReset does not
-          // rely on mutating the flag during commit. Like by setting a flag
-          // during the render phase instead.
-          if (finishedWork.flags & ContentReset) {
-            const instance = finishedWork.stateNode;
-
-            try {
-              resetTextContent(instance);
-            } catch (error) {
-              captureCommitPhaseError(finishedWork, finishedWork.return, error);
-            }
-          }
-
-          if (flags & Update) {
-            const instance = finishedWork.stateNode;
-
-            if (instance != null) {
-              // Commit the work prepared earlier.
-              const newProps = finishedWork.memoizedProps; // For hydration we reuse the update path but we treat the oldProps
-              // as the newProps. The updatePayload will contain the real change in
-              // this case.
-
-              const oldProps = current !== null ? current.memoizedProps : newProps;
-              const type = finishedWork.type; // TODO: Type the updateQueue to be specific to host components.
-
-              const updatePayload = finishedWork.updateQueue;
-              finishedWork.updateQueue = null;
-
-              try {
-                commitUpdate(instance, updatePayload, type, oldProps, newProps, finishedWork);
-              } catch (error) {
-                captureCommitPhaseError(finishedWork, finishedWork.return, error);
-              }
-            }
-          }
+            "word": "तिरस्",
+            "eid": "8569",
+            "pagenum": 153,
+            "content": "तिर/स्¦ <i>Praep.</i> durch, durch—hin, vorüber an, ohne, gegen <i>(Acc.)</i>; abseits von, geheim vor <i>(Abl.).</i> — <i>Adv.</i> quer, abseits, <lbinfo n='6'/> unbemerkt. <i>Mit</i> कर् beseitigen, verbergen, übertreffen, ausstechen, missachten, <lbinfo n='7'/> schmähen. <i>Mit</i> धा wegschaffen, verdrängen, verstecken, überwinden. <i>Med.</i> sich verstecken, verschwinden; <i>p.p.</i> तिरो/हित verborgen, verschwunden. <i>Mit</i> भू = <i>vor. Med.; p.p.</i> तिरो/भूत = तिरो/हित."
         }
-
-        return;
-      }
-
-    case HostText:
-      {
-        recursivelyTraverseMutationEffects(root, finishedWork);
-        commitReconciliationEffects(finishedWork);
-
-        if (flags & Update) {
-          {
-            if (finishedWork.stateNode === null) {
-              throw Error(formatProdErrorMessage(162));
-            }
-
-            const textInstance = finishedWork.stateNode;
-            const newText = finishedWork.memoizedProps; // For hydration we reuse the update path but we treat the oldProps
-            // as the newProps. The updatePayload will contain the real change in
-            // this case.
-
-            const oldText = current !== null ? current.memoizedProps : newText;
-
-            try {
-              commitTextUpdate(textInstance, oldText, newText);
-            } catch (error) {
-              captureCommitPhaseError(finishedWork, finishedWork.return, error);
-            }
-          }
-        }
-
-        return;
-      }
-
-    case HostRoot:
-      {
+    ],
+    "GRA": [
         {
-          prepareToCommitHoistables();
-          const previousHoistableRoot = currentHoistableRoot;
-          currentHoistableRoot = getHoistableRoot(root.containerInfo);
-          recursivelyTraverseMutationEffects(root, finishedWork);
-          currentHoistableRoot = previousHoistableRoot;
-          commitReconciliationEffects(finishedWork);
-        }
-
-        if (flags & Update) {
-          {
-            if (current !== null) {
-              const prevRootState = current.memoizedState;
-
-              if (prevRootState.isDehydrated) {
-                try {
-                  commitHydratedContainer(root.containerInfo);
-                } catch (error) {
-                  captureCommitPhaseError(finishedWork, finishedWork.return, error);
-                }
-              }
-            }
-          }
-        }
-
-        return;
-      }
-
-    case HostPortal:
-      {
+            "word": "तिरस्",
+            "eid": "3761",
+            "pagenum": 536,
+            "content": "<b>tirás,</b>¦ <ab>präp.</ab>, „durch“, mit tar in Zusammenhang stehend, aber nicht aus ihm abzuleiten, im <lang>Zend</lang> taras; eine Form ohne s liegt in tiri-ac zu Grunde. In Bezug auf den ersten Theil (tira <ab>u. s. w.</ab>) sind zu vergleichen <lang>celt.</lang> tri, tre, triss, „durch“, tar, tairm, tremi, trem (<lang>kambr.</lang> tros, trus) = <lang>lat.</lang> trans, <lang>goth.</lang> thairh. <dvsn n='P'>I. Als Richtungswort mit aj, dhā, nī, pṛ, yā. <dvsn n='P'>II. Präposition mit nachfolgendem, seltener ({41,3}; {46,6}; {407,14}; {451,4}; {1008,1}) vorangehendem Accusativ. 1〉 <i>durch</i> in räumlichem Sinne bei Verben der Bewegung: támas {46,6}; pavítram {135,6}; {621,15}; {774,1}; {779,7}; {780,2}; {821,16}. _{821,19}; rájāṃsi {584,3}; {691,9}; {715,8}; rájas {789,2}; rómāṇi avyáyā {774,8}; róma {809,11}; vā́raṇi avyáyā {779,4}; so auch bei svānás (suvānás) 〰 vā́rani avyáyā {819,10} und māmṛje 〰 áṇvāni meṣías {819,11}, so auch 2〉 bildlich bei Verben der Bewegung: <i>durch</i> Geräusch oder Andachtsübung rávam {784,3}; arámatim {918,5}; 3〉 <i>darüber hinweg, über,</i> räumlich bei Verben der Bewegung: samudrám {19,7}. _{19,8}; arṇavám {836,1}; ádrim {61,7} (ástā); auch in der Verbindung <i>darüber hin</i> aufrichten {56,5} 〰 dharúṇam ‥ rájas átiṣṭhipas; 4〉 <i>durch</i> [<ab>A.</ab>] <i>hindurch</i> sehen oder strahlen, hören oder schallen: támāṃsi {261,13}; {683,5}; támas {451,4}; {489,6}; {525,2}; támasas aktū́n {506,1}; dhánva {1013,2}; aryás {584,2} (śrutám, doch <ab n='siehe'>s.</ab> <ab>Bed.</ab> 6); rájāṃsi {292,5} (āṅgūṣás); bildlich {703,7} ā́pas iva srídhas; 5〉 <i>über</i> Gefahren [<ab>A.</ab>] <i>hinweg</i> führen (nī) duritā́ {41,3}; {492,10}; áṃhas {576,6}; durgáhā {1008,1}; dvíṣas {1013,1}; 6〉 <i>an</i> jemand [<ab>A.</ab>] <i>vorüber</i> gehen (yā, gam, ähnlich vah, nī), entweder in dem Sinne: ihm entgehen, nidás {407,14}; víśvās {429,2}, oder 7〉 in dem Sinne: ihn bei Seite lassen, sich nicht bei ihm aufhalten, um vielmehr zu einem andern zu kommen: aryás {325,1}; {584,2}; {675,12}; {429,7} (〰 cid aryayā́ pári vartís yātam); aryám {653,14}; árcatas {915,16}; so wol auch aratím {334,4}; vaiśantám {549,2}; 8〉 <i>wider,</i> cittā́ni {575,8}; devā́nām váśam {997,4}; 9〉 <i>sicher vor,</i> párihvṛtim {791,2}."
+        },
         {
-          const previousHoistableRoot = currentHoistableRoot;
-          currentHoistableRoot = getHoistableRoot(finishedWork.stateNode.containerInfo);
-          recursivelyTraverseMutationEffects(root, finishedWork);
-          commitReconciliationEffects(finishedWork);
-          currentHoistableRoot = previousHoistableRoot;
+            "word": "तिरस्",
+            "eid": "12383",
+            "pagenum": 1763,
+            "content": "<b>tirás:</b>¦<info vn='add 347 gra'/> <dvsn n='P'>1〉 rájāṃsi {715,7}."
         }
-
-        return;
-      }
-
-    case SuspenseComponent:
-      {
-        recursivelyTraverseMutationEffects(root, finishedWork);
-        commitReconciliationEffects(finishedWork); // TODO: We should mark a flag on the Suspense fiber itself, rather than
-        // relying on the Offscreen fiber having a flag also being marked. The
-        // reason is that this offscreen fiber might not be part of the work-in-
-        // progress tree! It could have been reused from a previous render. This
-        // doesn't lead to incorrect behavior because we don't rely on the flag
-        // check alone; we also compare the states explicitly below. But for
-        // modeling purposes, we _should_ be able to rely on the flag check alone.
-        // So this is a bit fragile.
-        //
-        // Also, all this logic could/should move to the passive phase so it
-        // doesn't block paint.
-
-        const offscreenFiber = finishedWork.child;
-
-        if (offscreenFiber.flags & Visibility) {
-          // Throttle the appearance and disappearance of Suspense fallbacks.
-          const isShowingFallback = finishedWork.memoizedState !== null;
-          const wasShowingFallback = current !== null && current.memoizedState !== null;
-
-          {
-            if (isShowingFallback !== wasShowingFallback) {
-              // A fallback is either appearing or disappearing.
-              markCommitTimeOfFallback();
-            }
-          }
-        }
-
-        if (flags & Update) {
-          try {
-            commitSuspenseCallback(finishedWork);
-          } catch (error) {
-            captureCommitPhaseError(finishedWork, finishedWork.return, error);
-          }
-
-          const retryQueue = finishedWork.updateQueue;
-
-          if (retryQueue !== null) {
-            finishedWork.updateQueue = null;
-            attachSuspenseRetryListeners(finishedWork, retryQueue);
-          }
-        }
-
-        return;
-      }
-
-    case OffscreenComponent:
-      {
-        if (flags & Ref) {
-          if (current !== null) {
-            safelyDetachRef(current, current.return);
-          }
-        }
-
-        const newState = finishedWork.memoizedState;
-        const isHidden = newState !== null;
-        const wasHidden = current !== null && current.memoizedState !== null;
-
-        if (finishedWork.mode & ConcurrentMode) {
-          // Before committing the children, track on the stack whether this
-          // offscreen subtree was already hidden, so that we don't unmount the
-          // effects again.
-          const prevOffscreenSubtreeIsHidden = offscreenSubtreeIsHidden;
-          const prevOffscreenSubtreeWasHidden = offscreenSubtreeWasHidden;
-          offscreenSubtreeIsHidden = prevOffscreenSubtreeIsHidden || isHidden;
-          offscreenSubtreeWasHidden = prevOffscreenSubtreeWasHidden || wasHidden;
-          recursivelyTraverseMutationEffects(root, finishedWork);
-          offscreenSubtreeWasHidden = prevOffscreenSubtreeWasHidden;
-          offscreenSubtreeIsHidden = prevOffscreenSubtreeIsHidden;
-        } else {
-          recursivelyTraverseMutationEffects(root, finishedWork);
-        }
-
-        commitReconciliationEffects(finishedWork);
-        const offscreenInstance = finishedWork.stateNode; // TODO: Add explicit effect flag to set _current.
-
-        offscreenInstance._current = finishedWork; // Offscreen stores pending changes to visibility in `_pendingVisibility`. This is
-        // to support batching of `attach` and `detach` calls.
-
-        offscreenInstance._visibility &= ~OffscreenDetached;
-        offscreenInstance._visibility |= offscreenInstance._pendingVisibility & OffscreenDetached;
-
-        if (flags & Visibility) {
-          // Track the current state on the Offscreen instance so we can
-          // read it during an event
-          if (isHidden) {
-            offscreenInstance._visibility &= ~OffscreenVisible;
-          } else {
-            offscreenInstance._visibility |= OffscreenVisible;
-          }
-
-          if (isHidden) {
-            const isUpdate = current !== null;
-            const wasHiddenByAncestorOffscreen = offscreenSubtreeIsHidden || offscreenSubtreeWasHidden; // Only trigger disapper layout effects if:
-            //   - This is an update, not first mount.
-            //   - This Offscreen was not hidden before.
-            //   - Ancestor Offscreen was not hidden in previous commit.
-
-            if (isUpdate && !wasHidden && !wasHiddenByAncestorOffscreen) {
-              if ((finishedWork.mode & ConcurrentMode) !== NoMode) {
-                // Disappear the layout effects of all the children
-                recursivelyTraverseDisappearLayoutEffects(finishedWork);
-              }
-            }
-          } // Offscreen with manual mode manages visibility manually.
-
-
-          if (!isOffscreenManual(finishedWork)) {
-            // TODO: This needs to run whenever there's an insertion or update
-            // inside a hidden Offscreen tree.
-            hideOrUnhideAllChildren(finishedWork, isHidden);
-          }
-        } // TODO: Move to passive phase
-
-
-        if (flags & Update) {
-          const offscreenQueue = finishedWork.updateQueue;
-
-          if (offscreenQueue !== null) {
-            const retryQueue = offscreenQueue.retryQueue;
-
-            if (retryQueue !== null) {
-              offscreenQueue.retryQueue = null;
-              attachSuspenseRetryListeners(finishedWork, retryQueue);
-            }
-          }
-        }
-
-        return;
-      }
-
-    case SuspenseListComponent:
-      {
-        recursivelyTraverseMutationEffects(root, finishedWork);
-        commitReconciliationEffects(finishedWork);
-
-        if (flags & Update) {
-          const retryQueue = finishedWork.updateQueue;
-
-          if (retryQueue !== null) {
-            finishedWork.updateQueue = null;
-            attachSuspenseRetryListeners(finishedWork, retryQueue);
-          }
-        }
-
-        return;
-      }
-
-    case ScopeComponent:
-      {
-
-        return;
-      }
-
-    default:
-      {
-        recursivelyTraverseMutationEffects(root, finishedWork);
-        commitReconciliationEffects(finishedWork);
-        return;
-      }
-  }
-}
-
-function commitReconciliationEffects(finishedWork) {
-  // Placement effects (insertions, reorders) can be scheduled on any fiber
-  // type. They needs to happen after the children effects have fired, but
-  // before the effects on this fiber have fired.
-  const flags = finishedWork.flags;
-
-  if (flags & Placement) {
-    try {
-      commitPlacement(finishedWork);
-    } catch (error) {
-      captureCommitPhaseError(finishedWork, finishedWork.return, error);
-    } // Clear the "placement" from effect tag so that we know that this is
-    // inserted, before any life-cycles like componentDidMount gets called.
-    // TODO: findDOMNode doesn't rely on this any more but isMounted does
-    // and isMounted is deprecated anyway so we should be able to kill this.
-
-
-    finishedWork.flags &= ~Placement;
-  }
-
-  if (flags & Hydrating) {
-    finishedWork.flags &= ~Hydrating;
-  }
-}
-
-function commitLayoutEffects(finishedWork, root, committedLanes) {
-  const current = finishedWork.alternate;
-  commitLayoutEffectOnFiber(root, current, finishedWork);
-}
-
-function recursivelyTraverseLayoutEffects(root, parentFiber, lanes) {
-
-  if (parentFiber.subtreeFlags & LayoutMask) {
-    let child = parentFiber.child;
-
-    while (child !== null) {
-      const current = child.alternate;
-      commitLayoutEffectOnFiber(root, current, child);
-      child = child.sibling;
-    }
-  }
-}
-
-function disappearLayoutEffects(finishedWork) {
-  switch (finishedWork.tag) {
-    case FunctionComponent:
-    case ForwardRef:
-    case MemoComponent:
-    case SimpleMemoComponent:
-      {
-        // TODO (Offscreen) Check: flags & LayoutStatic
+    ],
+    "LAN": [
         {
-          commitHookEffectListUnmount(Layout, finishedWork, finishedWork.return);
+            "word": "तिरस्",
+            "eid": "1762",
+            "pagenum": 163,
+            "content": "<b>tirás,</b>¦ <dvsn n='2'/><b>—1.</b> <i><ab>prep.</ab></i> through; across; <dvsn n='2'/><b>—2.</b> <i>as</i> <i><ab>adv.</ab></i> crossways, sideways; aside; <i><ab>w.</ab></i> <b>kṛ</b> [<ls n='wg,171'>171<sup>3</sup></ls>, <ls n='wg,1078'>1078<sup>4</sup></ls>], put aside, treat disrespectfully, <lbinfo n='disrespect-fully,'/> scold. [<b>√tṛ,</b> ‘cross’: <ab>cf.</ab> <ab>Lat.</ab> <i>trans,</i> ‘across.’]"
         }
-
-        recursivelyTraverseDisappearLayoutEffects(finishedWork);
-        break;
-      }
-
-    case ClassComponent:
-      {
-        // TODO (Offscreen) Check: flags & RefStatic
-        safelyDetachRef(finishedWork, finishedWork.return);
-        const instance = finishedWork.stateNode;
-
-        if (typeof instance.componentWillUnmount === 'function') {
-          safelyCallComponentWillUnmount(finishedWork, finishedWork.return, instance);
+    ],
+    "LRV": [
+        {
+            "word": "तिरस्",
+            "eid": "15592",
+            "pagenum": 310,
+            "content": "tiras¦ <i>ind.</i> A particle meaning- (1) crookedly, obliquely, e.g. तिरो गत्वा समीक्षेत; (2) invisible, unseen [in classics, it is not used by itself but in composition with the roots कृ, <ls>M.</ls>iv.49, <ls>R.</ls>iii.8, xvi.20, <ls>Am.S.</ls>81), धा (<ls>R.</ls>x.48), and भू (<ls>Bt.</ls>xiv.44) qq.vv.]."
         }
-
-        recursivelyTraverseDisappearLayoutEffects(finishedWork);
-        break;
-      }
-
-    case HostHoistable:
-    case HostSingleton:
-    case HostComponent:
-      {
-        // TODO (Offscreen) Check: flags & RefStatic
-        safelyDetachRef(finishedWork, finishedWork.return);
-        recursivelyTraverseDisappearLayoutEffects(finishedWork);
-        break;
-      }
-
-    case OffscreenComponent:
-      {
-        // TODO (Offscreen) Check: flags & RefStatic
-        safelyDetachRef(finishedWork, finishedWork.return);
-        const isHidden = finishedWork.memoizedState !== null;
-
-        if (isHidden) ; else {
-          recursivelyTraverseDisappearLayoutEffects(finishedWork);
+    ],
+    "MD": [
+        {
+            "word": "तिरस्",
+            "eid": "8610",
+            "pagenum": 109,
+            "content": "तिरस्¦ tir-ás, [√ tṝ] <ab>prp.</ab> (<ab>V.</ab>) <i>with</i> <ab>ac.</ab> across, 🞄through; over, past; without, against; <i>with</i> 🞄<ab>ab.</ab> without the knowledge of; <ab>ab.</ab> across, crossways, 🞄sideways; aside; out of sight: <b>tiras</b> 🞄<b>kṛ,</b> put aside, remove; cover, conceal; surpass; 🞄overcome; conquer; contemn; blame, 🞄scold; <b>tiro dhā,</b> remove; conceal; repel, 🞄overcome; <lex>Ā.</lex> hide oneself from (<ab>ab.</ab>); disappear: 🞄<ab>pp.</ab> <b>tiróhita,</b> disappeared; hidden; 🞄<b>tirobhū,</b> be removed, vanish; hide oneself: 🞄<ab>pp.</ab> <b>tiróbhūta,</b> vanished; <ab>cs.</ab> cause to disappear, 🞄remove."
         }
-
-        break;
-      }
-
-    default:
-      {
-        recursivelyTraverseDisappearLayoutEffects(finishedWork);
-        break;
-      }
-  }
+    ],
+    "MW": [
+        {
+            "word": "तिरस्",
+            "eid": "85061",
+            "pagenum": "447,2",
+            "content": "तिर/स् ¦ <lex>ind.</lex> (<ab>g.</ab> स्वर्-आदि; √ तॄ) through (<ab>acc.</ab>), <ls>RV.</ls>; <ls>AV. xiii, 1, 36</ls><info lex='ind'/>"
+        },
+        {
+            "word": "तिरस्",
+            "eid": "85061.1",
+            "pagenum": "447,2",
+            "content": "¦ across, beyond, over (<ab>acc.</ab>), <ls>RV.</ls>; <ls>AV. vii, 38, 5</ls><info lex='inh'/>"
+        },
+        {
+            "word": "तिरस्",
+            "eid": "85061.2",
+            "pagenum": "447,2",
+            "content": "¦ so as to pass by, apart from, without, against (<ab>acc.</ab>), <ls>RV.</ls> (°र/स् चित्त/नि, ‘without the knowledge’ <ls n='RV.'>vii, 59, 8</ls>; °रो/ व/शम्, ‘against the will’ <ls n='RV.'>x, 171, 4</ls>)<info lex='inh'/>"
+        },
+        {
+            "word": "तिरस्",
+            "eid": "85061.3",
+            "pagenum": "447,2",
+            "content": "¦ apart or secretly from (<ab>abl.</ab>), <ls>AV. xii, 3, 39</ls>; <ls>ŚBr. i</ls>, <ls n='ŚBr.'>iii</ls><info lex='inh'/>"
+        },
+        {
+            "word": "तिरस्",
+            "eid": "85061.4",
+            "pagenum": "447,2",
+            "content": "¦ obliquely, transversely, <ls>MārkP. xvii, 3</ls><info lex='inh'/>"
+        },
+        {
+            "word": "तिरस्",
+            "eid": "85061.5",
+            "pagenum": "447,2",
+            "content": "¦ apart, secretly, <ls>TS. ii, 5, 10, 6</ls>; <ls>AitBr. ii</ls>; <ls>ŚBr.</ls>; <info lex='inh'/>"
+        },
+        {
+            "word": "तिरस्",
+            "eid": "85061.75",
+            "pagenum": "447,2",
+            "content": "तिरस् ¦ [<ab>cf.</ab> <ab>Zd.</ab> <etym>tarō</etym>; <ab>Lat.</ab> <etym>trans</etym>; <ab>Goth.</ab> <etym>thairh</etym>; <ab>Germ.</ab> <etym>durch</etym>; <ab>Hib.</ab> <etym>tar</etym>, <etym>tair</etym>.]"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "तिरस्",
+            "eid": "20942",
+            "pagenum": 374,
+            "content": "तिरस्¦ <i>tiras,</i> ind. (fr. rt. <i>tṝ,</i> the <i>as</i> being probably the ablative termination), through (with acc. in Ved., e. g. <i>tiraḥ pavitram,</i> through the strainer; <i>tiras tamāṃsi darśataḥ,</i> discernible through the darkness); across, beyond, over (e. g. <i>nadīṃ tiras,</i> across the river; <i>rajāṃsi tiras,</i> over the world; <i>te</i> <i>nas tiro viśvāni duritā nayanti,</i> they lead us over all difficulties); without (i. e. in such a manner as to pass by or leave on one side); apart from, on one side of, aside, secretly from, ‘clam’ (with acc., e. g. <i>tiraś cittāni,</i> without the knowledge; <i>tiro</i> <i>vaśam,</i> against the will; or sometimes with abl., e. g. <i>manuṣyebhyas tiras,</i> on one side of the men); crookedly, obliquely, awry; transversely, indirectly, badly, secretly, covertly; [cf. Lat. <nsi>trans:</nsi> Goth. <nsi>thairh:</nsi> Germ. <nsi>durch:</nsi> Hib. <nsi>tar, tair,</nsi> ‘beyond, over, across, through; bad;’ <nsi>tri,</nsi> ‘through, by:’ Lith. <nsi>tiês:</nsi> Zend <nsi>tarō.</nsi>] <i>—Tiras-kara, as, ī, am,</i> leaving on one side, passing by, surpassing, excelling. <i>—Tiras-karin, ī, iṇī,</i> m. f. a curtain, veil; an outer tent, kanāt, wall, or screen of cloth surrounding the principal tent; a kind of magical veil rendering the wearer invisible. <i>—Tiras-kāra, as,</i> m. placing aside, concealment, disappearance; disrespect, abuse, reproach, censure, disgrace, disdain. <i>—Tiras-kāriṇī,</i> f. a curtain, <i>= tiras-kariṇī</i>. <i>—Tiras-kuḍya</i> or <i>ti-</i> <i>ras-prākāra, as, ā, am,</i> looking through a wall. <i>—Tiras-kṛ</i> or <i>tiraḥ kṛ,</i> cl. 8. P. <i>-karoti, -kartum,</i> to put on one side, set aside, remove, cover, conceal; to pass by, surpass, excel, conquer; to blame, reproach, abuse, treat disrespectfully, contemn, despise; [according to Pāṇini I. IV. 71, 72, <i>tiras</i> must be a <i>gati</i> (q. v.), in the sense of ‘covering,’ ‘concealing,’ but an option is allowed in its connection with rt. 1. <i>kṛ.</i>] <i>—Tiras-kṛta, as, ā, am,</i> concealed, hidden, veiled, vanished, disappeared; censured, reviled, abused, reproached, scorned. <i>—Tiras-kṛtya</i> (or <i>tiraḥ kṛtvā</i>), ind. having concealed. <i>—Tiras-</i> <i>kriyā,</i> f. concealment, disappearance; disrespect, reproach, contempt. <i>—Tiro-ahnya</i> or <i>tiro-'hnya,</i> <i>as, ā, am</i> (the former form occurring in the Veda, the latter in the Brāhmaṇas and later writings), more than one day old, prepared the day before yesterday. <i>—Tiro-gata, as, ā, am,</i> disappeared, vanished, out of sight. <i>—Tiro-janam,</i> ind., Ved. apart from men. — 1. <i>tiro-dhā</i> or <i>tiro dhā,</i> cl. 3. P. A. <i>dadhāti,</i> <i>dhatte, dhātum,</i> to place on one side, set aside, remove out of the way, cover, conceal, hide; to hide one's self from (with abl.), disappear; to overpower, conquer: Pass. <i>tiro-dhīyate</i> or <i>tiro dhīyate,</i> to be hidden, to vanish, disappear. <i>—2. tiro-dhā,</i> f., Ved. concealment, secrecy. <i>—Tiro-dhātavya, as, ā,</i> <i>am,</i> to be covered or concealed, to be closed. <i>—Tiro-dhāna, am,</i> n. disappearance, vanishing, the being hidden or the act of hiding, concealing, &c.; a covering, a sheath, a veil, a cloth or cloak, anything which conceals from sight. <i>—Tiro-bhavitṛ, tā, trī,</i> <i>tṛ,</i> disappearing. <i>—Tiro-bhāva, as,</i> m. disappearance, (opposed to <i>āvir-bhāva</i> and <i>prādur-bhāva.</i>) <i>—Tiro-bhū,</i> cl. 1. P. <i>tiro-bhavati, -vitum,</i> to be set on one side, disappear, vanish, hide one's self: Caus. <i>tiro-bhāvayati</i> or <i>tiro bhāvayati, -yitum,</i> to cause to disappear, dispel. <i>—Tiro-varṣa, as, ā, am,</i> protected from rain. <i>—Tiro-hita, as, ā, am,</i> covered, concealed, hidden, removed or withdrawn from sight. <i>—Tirohita-tā,</i> f. disappearance, the becoming invisible; <i>tirohitatāṃ gam,</i> to disappear."
+        }
+    ],
+    "PW": [
+        {
+            "word": "तिरस्",
+            "eid": "45825",
+            "pagenum": 3,
+            "content": "तिर/स्¦ <dvsn n='1'>— 1〉 <ab>Praep.</ab> <dvsn n='2'>— a〉 mit <ab>Acc.</ab> (der gewöhnlich folgt) <dvsn n='3'>— α〉 <i>durch, durch — hin, über — hin</i>. <dvsn n='3'>— β〉 <i>über — hinüber, an — vorüber</i>. <dvsn n='3'>— γ〉 <i>mit Beiseitelassung [Page3-029-b] von, ohne, wider, gegen</i>. <dvsn n='3'>— δ〉 <i>sicher vor</i>. <dvsn n='2'>— b〉 mit <ab>Abl.</ab> <i>abseits von, ohne Vorwissen von, geheim vor, clam</i>. <dvsn n='1'>— 2〉 <lex>Adv.</lex> <dvsn n='2'>— a〉 <i>in die Quere, seitwärts</i>. <dvsn n='2'>— b〉 <i>abseits, aus dem Wege</i>. <dvsn n='2'>— c〉 <i>der Wahrnehmung entzogen, verborgen, unbemerkt</i>. <dvsn n='1'>— 3〉 <lex>Adv.</lex> in Verbindung <dvsn n='2'>— a〉 mit <hom>1.</hom> कर् <dvsn n='3'>— α〉 <i>beseitigen, wegschaffen, verdecken, verhüllen, verbergen</i>. <dvsn n='3'>— β〉 <i>bei Seite liegen lassen,</i> so <ab>v. a.</ab> <i>in Schatten stellen, überwinden, übertreffen</i>. <dvsn n='3'>— γ〉 <i>schmähen, tadeln, gegen Jmd seine Geringachtung an den Tag legen, verachten</i>. <dvsn n='2'>— b〉 mit धा <dvsn n='3'>— α〉 <i>beseitigen, wegschaffen, zurückdrängen, überwinden</i>. <dvsn n='3'>— β〉 <i>verbergen</i>. <ab>Med.</ab> <i>sich verbergen, — vor</i> (<ab>Abl.</ab>), <i>verschwinden</i>. तिरो/हित <i>verborgen, versteckt, verschwunden; *der die Flucht ergriffen hat</i>. <dvsn n='2'>— c〉 mit भू <i>beseitigt werden, abhanden kommen, verschwinden, sich verstecken</i>. Einmal <ab>Pass.</ab> (!) in derselben <ab>Bed.</ab> तिरो/भूत <i>verschwunden</i>. <dvsn n='2'>— d〉 mit dem <ab>Caus.</ab> von भू <i>verschwinden machen, vertreiben</i>. <dvsn n='2'>— e〉 mit dem <ab>Intens.</ab> von भू <i>mit Etwas</i> (<ab>Instr.</ab>) <i>geheim thun, Etwas verbergen</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "तिरस्",
+            "eid": "29670",
+            "pagenum": 3,
+            "content": "तिर/स्¦ (ति/रस् <is>gaṇa</is> स्वरादि zu <ls>P. 1, 1, 37</ls>) <dvsn n='1'> 1) praep. <i>trans.</i> <dvsn n='2'> a) mit dem acc., gewöhnlich voranstehend; <dvsn n='3'> α) <i>durch, durch - hin, über - hin</i>: ति\\रो तमा^ंसि दर्श\\तः <ls>ṚV. 3, 27, 13.</ls> <ls n='ṚV.'>6, 48, 6.</ls> ति\\रः प\\वित्र^म् <ls n='ṚV.'>1, 135, 6.</ls> रोमा^णि <ls n='ṚV.'>9, 62, 8.</ls> रजा^ंसि <ls n='ṚV.'>3, 58, 5.</ls> <ls n='ṚV.'>7, 68, 3.</ls> <ls n='ṚV.'>10, 92, 5.</ls> यः पर^स्याः प^रा\\वत^स्ति\\रो धन्वा^ति\\रोच^ते <ls n='ṚV. 10,'>182, 2.</ls> <ls>AV. 13, 1, 36.</ls> न\\द्य^स्ति\\रः <i>trans</i> <ls>AV. 7, 38, 5.</ls> <dvsn n='3'>— β) <i>über - hinüber, an - vorüber</i>: त उ^ नस्ति\\रो विश्वा^नि दुरि\\ता नय^न्ति <ls>ṚV. 6, 51, 10.</ls> <ls n='ṚV.'>7, 60, 12.</ls> ति\\रश्चि\\दंह^ः सु\\पथा^ नयन्ति <ls n='ṚV. 7, 60,'>6.</ls> ति\\रो विश्वा\\ं अर्च^तो याह्य\\र्वाङ् <ls n='ṚV.'>10, 89, 16.</ls> <ls n='ṚV.'>4, 29, 1.</ls> <ls n='ṚV.'>8, 33, 14.</ls> अती^याम नि\\दस्ति\\रः स्व\\स्तिभि^ः <ls n='ṚV.'>5, 53, 4.</ls> <dvsn n='3'>— γ) <i>mit Beiseitelassung von, ohne; mit Hintansetzung von; sicher vor</i>: ति\\रश्चि\\त्तानि^ <i>unbemerkt</i> <ls>ṚV. 7, 59, 8.</ls> दे\\वाना^ं चित्ति\\रो वश^म् <i>gegen den Willen</i> <ls n='ṚV.'>10, 171, 4.</ls> ति\\रो अ\\र्यो हव^नानि श्रु\\तं न^ः <ls n='ṚV.'>7, 68, 2.</ls> ति\\रो मर्त^स्य\\ कस्य^ चि\\त्परि^ह्वृतिं व\\यं धना^नि वि\\श्वधा^ भरेमहि <ls n='ṚV.'>9, 79, 2.</ls> <dvsn n='2'>— b) mit dem abl. (vor - oder nachstehend) <i>abseits von; ohne Vorwissen von, geheim vor, clam</i>: (यत्पचति) पति^र्जाये\\ त्वत्ति\\रः <ls>AV. 12, 3, 39.</ls> स्त्रियस्तिर इव वै पुंसो जिघत्सन्ति <ls>ŚAT. BR. 1, 9, 2, 12.</ls> तिर इव वै देवा मनुष्येभ्यः <ls n='ŚAT. BR.'>3, 3, 4, 6. 1, 1, 3.</ls> (अरण्यं) मनुष्येभ्यस्तिरो भवति <ls n='ŚAT. BR.'>13, 6, 2, 20.</ls> <dvsn n='1'>— 2) adv. <dvsn n='2'> a) <i>in die Quere, seitwärts</i>: स तिर्यङ्यस्तिरो ऽञ्चति <ls>AK. 3, 1, 34.</ls> <ls>H. 444.</ls> तमेवोवाह पवनस्तिरश्चोर्ध्वं च वेगवान् <ls>MĀRK. P. 17, 3.</ls> तिरस् = तिर्यक् <ls>AK. 3, 4, 32 (28), 18.</ls> <ls n='AK. 3,'>5, 6.</ls> <ls>H. 1534.</ls> <ls>an. 7, 50.</ls> <ls>MED. <is>avy.</is> 81.</ls>  <dvsn n='2'>— b) <i>abseits, aus dem Wege; der Wahrnehmung entzogen, verborgen, unbemerkt</i>, अन्तर्धौ <ls>AK. 3, 4, 32 (28), 18.</ls> <ls>H. an.</ls> <ls>MED.</ls> ति\\र इ^व\\ वै सु^व\\र्गो लो\\कः <ls>TS. 2, 5, 10, 6.</ls> तिर इव वा एतद्वाचो यदुपांशु तिर इवैतद्यद्रक्षांसि <ls>AIT. BR. 2, 7.</ls> तिर इव वै रेतांसि विक्रियन्ते <ls n='AIT. BR.'>39.</ls> <ls>ŚAT. BR. 6, 4, 4, 19.</ls> तिर इव वै मिथुनेन चर्यते <ls n='ŚAT. BR.'>1, 9, 2, 8. 8, 5, 4, 4. 9, 3, 1, 24.</ls> <dvsn n='2'>— c) in Verb. mit den Zeitwörtern <dvsn n='2'> a) कर्, तिरस्करोति und तिरः करोति, तिरस्कृत्य und तिरः कृत्वा <ls>P. 1, 4, 72.</ls> <ls n='P.'>8, 3, 42.</ls> <ls>VOP. 15, 5.</ls> <dvsn n='3'> α) <i>beseitigen, wegschaffen; verdecken, verhüllen, verbergen</i> <ls>ŚAT. BR. 1, 9, 2, 12. 2, 3, 1, 3. 4, 2, 1, 18</ls> u. s. w. तिरस्कृत्य <ls>KĀTY. ŚR. 6, 1, 12.</ls> यो विस्फुरद्भ्रूविटपेन भूमेर्भारं कृतान्तेन तिरश्चकार <ls>BHĀG. P. 3, 2, 18.</ls> तिरस्कृत्योच्चरेत्काष्ठलोष्टपत्त्रतृणादिना <ls>M. 4, 49.</ls> तिरस्क्रियन्ते कृमितन्तुजालैः - गवाक्षाः <ls>RAGH. 16, 20.</ls> तिरस्कृत <ls>AMAR. 81.</ls> <ls>BHAṬṬ. 9, 62</ls> (wo so zu lesen ist). कालरात्रिः - भार्यारूपतिरस्कृता <ls>R. 2, 12, 89.</ls> <dvsn n='3'>— β) <i>bei Seite liegen lassen</i> so v. a. <i>überwinden, übertreffen</i>: स तिरस्क्रियते ऽरिभिः <ls>HIT. III, 8.</ls> <ls>BHAṬṬ. 9, 62.</ls> यन्मार्जारमर्कटादयो ऽपि तिरस्कृता अस्योत्पतनेन <ls>PAÑCAT. 118, 13.</ls> स्तनद्वयम् । तिरश्चकार - पङ्कजकोषयोः श्रियम् <ls>RAGH. 3, 8.</ls> या दीप्त्या सूर्यमपि तिरस्कुरुते <ls>PAÑCAT. 256, 5.</ls> <dvsn n='3'>— γ) <i>schmähen, tadeln, gegen Jmd seine Geringachtung an den Tag legen, verachten</i>: यस्य वचनात्तत्रावलम्बितास्तं सर्वे तिरस्कुर्वन्ति <ls>HIT. 13, 11.</ls> <ls n='HIT.'>115, 9.</ls> <ls>BHĀG. P. 1, 18, 48. 6, 14, 40. 8, 11, 3.</ls> सर्वेषामप्येतेषां बाणिज्येनातिरस्कृतो ऽर्थलाभः स्यात् <ls>PAÑCAT. 7, 10.</ls> <dvsn n='2'>— b) धा <i>beseitigen,</i> <i>wegschaffen, zurückdrängen; verbergen</i>: अ\\ज\\का\\वं ति\\रो द^धे <ls>ṚV. 7, 50, 1.</ls> <ls n='ṚV.'>9, 73, 3.</ls> <ls n='ṚV. 9,'>97, 14.</ls> पाप्मानम् <ls>AV. 8, 10, 28.</ls> <ls n='AV.'>12, 2, 23</ls> (wo <ls>ṚV.</ls> अन्तर्). अश्विनाविन्दुममृतं वृत्तभूयौ तिरो धत्ताम् <ls>MBH. 1, 728.</ls> विदन्ति मुनयः - यदा तदेवासत्तर्कैस्तिरो धीयेत विप्लुतम् <ls>BHĀG. P. 2, 6, 40.</ls> <i>zurückdrängen, überwinden</i>: तिरोधातुम् <ls>SĀH. D. 75, 10.</ls> तिरो धीयते <ls n='SĀH. D.'>14.</ls> med. <i>sich verbergen vor</i> (abl.), <i>verschwinden</i>: तस्मात्तिरो दधे <ls>KENOP. 24.</ls> तिरो धत्ते <ls>BHĀG. P. 3, 7, 12.</ls> तिरो दधे <ls>RAGH. 10, 49.</ls> <ls n='RAGH.'>11, 91.</ls> <ls>KATHĀS. 5, 56. 10, 82. 17, 123. 18, 238. 342.</ls> <ls>BHĀG. P. 3, 9, 44.</ls> <ls>BHAṬṬ. 14, 39.</ls> तिरो/हित <i>verschwunden, verborgen, versteckt</i> <ls>AK. 2, 8, 2, 80.</ls> <ls>H. 1477.</ls> <ls>ṚV. 3, 9, 5.</ls> <ls>ŚAT. BR. 1, 1, 1, 2. 4, 5, 4. 7, 1, 7.</ls> एष ह वै पुरोहितो य एवं वेदाथ स तिरोहित य एवं न वेद <ls>AIT. BR. 8, 27.</ls> <ls>M. 8, 203.</ls> <ls>VIKR. 68, 8.</ls> <ls>VID. 159. 284.</ls> <ls>DEV. 9, 20.</ls> <ls>MĀRK. P. 39, 24.</ls> <i>verschwunden</i> so v. a. <i>der die Flucht ergriffen hat</i> <ls>H. 805.</ls> <dvsn n='2'>— c) भू <i>beseitigt werden, abhanden kommen, verschwinden, sich verstecken</i>: (मनः) मा ति\\रो भू^त् <ls>AV. 8, 1, 7.</ls> (देवाः) तिरो ऽभवन् <ls>ŚAT. BR. 1, 6, 2, 1. 3, 1, 4, 3. 2, 2, 2</ls> u.s.w. <ls>RAGH. 16, 20.</ls> <ls>ŚĀK. 126, v. l.</ls> <ls>MĀLAV. 69.</ls> <ls>KATHĀS. 11, 41.</ls> <ls>BHĀG. P. 9, 4, 53.</ls> <ls>BHAṬṬ. 6, 71.</ls> तिरोभूय <ls>P. 1, 4, 71</ls>, <ls>Sch.</ls>  <ls>KATHĀS. 20, 77.</ls> pass. in gleicher Bed.: तिरो भूयते <ls>Sch.</ls> zu <ls>KAP. 1, 121.</ls> तिरो/भूत <ls>ŚAT. BR. 2, 2, 3, 3. 3, 4, 4. 11, 5, 1, 4.</ls> <ls>KATHĀS. 5, 10.</ls> <ls>BHAṬṬ. 14, 44.</ls> caus. <i>verschwinden machen, vertreiben</i>: तस्यावलेपनं ज्ञात्वा क्रुद्धस्तु भगवान्हरः । तिरोभावयितुं बुद्धिं चक्रे <ls>R. 1, 44, 9.</ls> intens.: तिर इवैतेन बोभवत् <ls>ŚAT. BR. 2, 2, 3, 16.</ls> — Offenbar von 1. तर्; in der Endung अस् vermuthen wir das suff. des abl."
+        },
+        {
+            "word": "तिरस्",
+            "eid": "120132",
+            "pagenum": 7,
+            "content": "तिरस्¦ <dvsn n='1'> 2) <dvsn n='2'> c) <dvsn n='3'> α) <dvsn n='3'> β) कर्णं तिरस्कुरुते <i>übertrifft, stellt in Schatten</i> <ls>Spr. (II) 4001.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "तिरस्",
+            "eid": "17475",
+            "pagenum": 313,
+            "content": "तिरस्¦ ind. 1. Indirectly, underhandedly, secretly, covertly. 2. Crookedly, awry. 3. A particle of abuse or depreciation. E. तॄ to go, असुक् aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "तिरस्",
+            "eid": "10043",
+            "pagenum": 284,
+            "content": "<b>tiras</b>¦ <ab>adv.</ab> à travers, par-dessus, de travers, transversalement, obliquement ; <i>tiraḥ-</i> ou <i>tiras-kṛ-</i> écarter, escamoter, cacher, couvrir, éclipser, surpasser ; contrarier, gronder, injurier, traiter avec mépris, dédaigner ; <i>tirodhā-</i> <lbinfo n='4'/> <ab>act.</ab> écarter, déplacer, s'emparer ; <ab>moy.</ab> se cacher, disparaître ; <i>°bhū-</i> (<ab>act.</ab> ou <ab>pass.</ab>) disparaître, se cacher, <ab>caus.</ab> faire disparaître, disperser.  <P><i>°kara-</i> <i>-ī-</i> <ab>ag.</ab> qui éclipse, qui surpasse.  <P><i>°karaṇi-</i> <ab>f.</ab> <i>°karin-</i> <ab>m.</ab> rideau ; <i>°kariṇī-</i> <ab>f.</ab> <ab>id.</ab> ; voile magique qui rend invisible.  <P><i>°kāra-</i> <ab>m.</ab> propos contrariant, fait de gronder, de blâmer ; mépris ; cuirasse.  <P><i>°kārin-</i> <ab>a.</ab> <ab>ifc.</ab> = <i>°kara-.</i>  <P><i>°kṛta-</i> <ab>a. v.</ab> caché, détourné, surpassé ; grondé, méprisé, insulté.  <P><i>°kṛti-</i> <ab>f.</ab> <ab>ifc.</ab> reproche, dédain, injure.  <P><i>°kriyā-</i> <ab>f.</ab> <ab>id.</ab> ; cachette, abri.  <P><i>tiro-dhāna-</i> <ab>nt.</ab> <i>°bhāva-</i> <ab>m.</ab> disparition.  <P><i>°bhavitṛ-</i> <i>-trī-</i> <ab>ag.</ab> disparaissant.  <P><i>°varṣa-</i> <ab>a.</ab> à l'abri de la pluie.  <P><i>°hita-</i> <ab>a. v.</ab> caché, soustrait à la vue ; <i>-tā-</i> <ab>f.</ab> disparition."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "तिरस्",
+            "eid": "17492",
+            "pagenum": 376,
+            "content": "तिरस्¦ <i>ind.</i> .²1 Indirectly, underhandedly, secretly, covertly. .²5 Crookedly, awry. .²6 A particle of abuse or depreciation. .E. तॄ to go, असच् aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "तिरस्",
+            "eid": "16964",
+            "pagenum": 333,
+            "content": "तिरस्¦ <i>adv.</i> Indirectly, crookedly."
+        }
+    ],
+    "APHI": [
+        {
+            "word": "तिरस्",
+            "content": "तिरस् अव्य. -  तरति दृष्टिपथं - तॄ + असुन् 'बांकेपन से, टेढ़ेपन से, तिरछेपन से'"
+        },
+        {
+            "word": "तिरस्",
+            "content": "तिरस् अव्य. - 'के बिना, के अतिरिक्त'"
+        },
+        {
+            "word": "तिरस्",
+            "content": "तिरस् अव्य. - 'चुपचाप, प्रछन्न रुप से, बिना दिखाई दिये'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "तिरस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಅಡ್ಡವಾಗಿ",
+            "content": ""
+        },
+        {
+            "word": "तिरस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಅಂಕುಡೊಂಕಾಗಿ",
+            "content": ""
+        },
+        {
+            "word": "तिरस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಮರೆಯಾಗಿ",
+            "निष्पत्तिः": "तॄ (तरणप्ल्वनयोः)'असुन्' (उ० ४-१८८)",
+            "content": ""
+        },
+        {
+            "word": "तिरस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಅಂತರ್ಧಾನ \\/ಮರೆಯಾಗುವುದು",
+            "content": ""
+        },
+        {
+            "word": "तिरस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ರಹಸ್ಯವಾಗಿ \\/ಗುಟ್ಟಾಗಿ",
+            "content": ""
+        },
+        {
+            "word": "तिरस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ತಿರಸ್ಕಾರ",
+            "विस्तारः": "'तिरिन्तर्धी तिर्यगर्थे'- अम० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "तिरस्",
+            "linga": "A",
+            "artha": "अन्तर्धानम्",
+            "synonyms": [
+                "अन्तर्धा",
+                "व्यवधा",
+                "अन्तर्धि",
+                "अपवारण",
+                "अपिधान",
+                "तिरोधान",
+                "पिधान",
+                "आच्छादन",
+                "अन्तर",
+                "तिरस्"
+            ],
+            "num": "3.3.271",
+            "text": "नामप्राकाश्ययोः प्रादुर्मिथोऽन्योन्यं रहस्यपि । तिरोऽन्तर्धौ तिर्यगर्थे हा विषादशुगर्तिषु ॥",
+            "content": ""
+        },
+        {
+            "word": "तिरस्",
+            "linga": "A",
+            "artha": "तिर्यक्",
+            "synonyms": [
+                "साचि",
+                "तिरस्"
+            ],
+            "num": "3.4.6",
+            "text": "दिवाह्नीत्यथ दोषा च नक्तं च रजनावपि । तिर्यगर्थे साचि तिरोऽप्यथ सम्बोधनार्थकाः ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "तिरस्",
+            "content": "<lexhead no=\"333\">\n<dentry>तिरस्</dentry>\n<prAwipaxikam>तिरस्</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<etymology><vigrahavAkya>तरति दृष्टिपथं</vigrahavAkya> - तॄ+असुन्</etymology>\n<jAwi>दिक्</jAwi>\n<jAwi>क्रिया</jAwi>\n<sense no=\"1\">बांकेपन से, टेढ़ेपन से, तिरछेपन से, स तिर्यङ् यस्तिरोंऽचति<citation>अमर*</citation></sense>\n<sense n=\"2\">के बिना, के अतिरिक्त</sense>\n<sense n=\"3\">चुपचाप, प्रछन्न रुप से, बिना दिखाई दिये श्रेण्य साहित्य में ‘तिरस’ शब्द का स्वतन्त्र प्रयोग नही मिलता हैं - यह मुख्यतः प्रयुक्त होता हैं</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "तिरस्",
+            "content": "<H2><h><key1>tiras</key1><key2>tira/s</key2></h><body><s>tira/s</s>   <lex>ind.</lex> (<ab>g.</ab> <s>svar-Adi</s>; √ <s>tF</s>) through (<ab>acc.</ab>), <ls>RV.</ls>; <ls>AV. xiii, 1, 36</ls><info lex=\"ind\" /></body><tail><L>85061</L><pc>447,2</pc></tail></H2>\n <H2A><h><key1>tiras</key1><key2>tira/s</key2></h><body>  across, beyond, over (<ab>acc.</ab>), <ls>RV.</ls>; <ls>AV. vii, 38, 5</ls><info lex=\"inh\" /></body><tail><L>85061.1</L><pc>447,2</pc></tail></H2A>\n <H2A><h><key1>tiras</key1><key2>tira/s</key2></h><body>  so as to pass by, apart from, without, against (<ab>acc.</ab>), <ls>RV.</ls> (<s>°ra/s citta/ni</s>, ‘without the knowledge’ <ls n=\"RV.\">vii, 59, 8</ls>; <s>°ro/ va/Sam</s>, ‘against the will’ <ls n=\"RV.\">x, 171, 4</ls>)<info lex=\"inh\" /></body><tail><L>85061.2</L><pc>447,2</pc></tail></H2A>\n <H2A><h><key1>tiras</key1><key2>tira/s</key2></h><body>  apart or secretly from (<ab>abl.</ab>), <ls>AV. xii, 3, 39</ls>; <ls>ŚBr. i</ls>, <ls n=\"ŚBr.\">iii</ls><info lex=\"inh\" /></body><tail><L>85061.3</L><pc>447,2</pc></tail></H2A>\n <H2A><h><key1>tiras</key1><key2>tira/s</key2></h><body>  obliquely, transversely, <ls>MārkP. xvii, 3</ls><info lex=\"inh\" /></body><tail><L>85061.4</L><pc>447,2</pc></tail></H2A>\n <H2A><h><key1>tiras</key1><key2>tira/s</key2></h><body>  apart, secretly, <ls>TS. ii, 5, 10, 6</ls>; <ls>AitBr. ii</ls>; <ls>ŚBr.</ls>; <info lex=\"inh\" /></body><tail><L>85061.5</L><pc>447,2</pc></tail></H2A>\n <H2E><h><key1>tiras</key1><key2>tiras</key2></h><body><s>tiras</s>   [<ab>cf.</ab> <lang>Zd.</lang> <etym>tarō</etym>; <lang>Lat.</lang> <etym>trans</etym>; <lang>Goth.</lang> <etym>thairh</etym>; <lang>Germ.</lang> <etym>durch</etym>; <lang>Hib.</lang> <etym>tar</etym>, <etym>tair</etym>.]</body><tail><L>85061.75</L><pc>447,2</pc></tail></H2E>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "तिरस्",
+            "content": "<H1><h><key1>tiras</key1><key2>tiras</key2></h><body><s>tiras</s>  ind. <div n=\"2\"> 1. Indirectly, underhandedly, secretly, covertly. </div><div n=\"2\"> 2. Crooked- <lb />ly, awry. </div><div n=\"2\"> 3. A particle of abuse or depreciation.</div><div n=\"E\"> E. <s>tF</s> to go, <lb /><s>asuk</s> aff.</div></body><tail><L>17475</L><pc>313-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "तिरस्",
+            "content": "<span lang=\"sa\">तिरस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಡ್ಡವಾಗಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तिरस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಂಕುಡೊಂಕಾಗಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तिरस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮರೆಯಾಗಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>तॄ (तरणप्ल्वनयोः) - \"असुन्\" (उ० ४-१८८)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तिरस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಂತರ್ಧಾನ /ಮರೆಯಾಗುವುದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तिरस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ರಹಸ್ಯವಾಗಿ /ಗುಟ್ಟಾಗಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तिरस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತಿರಸ್ಕಾರ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"तिरिन्तर्धी तिर्यगर्थे\"- अम० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-
-function recursivelyTraverseDisappearLayoutEffects(parentFiber) {
-  // TODO (Offscreen) Check: flags & (RefStatic | LayoutStatic)
-  let child = parentFiber.child;
-
-  while (child !== null) {
-    disappearLayoutEffects(child);
-    child = child.sibling;
-  }
-}
-
-function reappearLayoutEffects(finishedRoot, current, finishedWork, // This function visits both newly finished work and nodes that were re-used
-// from a previously committed tree. We cannot check non-static flags if the
-// node was reused.
-includeWorkInProgressEffects) {
-  // Turn on layout effects in a tree that previously disappeared.
-  const flags = finishedWork.flags;
-
-  switch (finishedWork.tag) {
-    case FunctionComponent:
-    case ForwardRef:
-    case SimpleMemoComponent:
-      {
-        recursivelyTraverseReappearLayoutEffects(finishedRoot, finishedWork, includeWorkInProgressEffects); // TODO: Check flags & LayoutStatic
-
-        commitHookLayoutEffects(finishedWork, Layout);
-        break;
-      }
-
-    case ClassComponent:
-      {
-        recursivelyTraverseReappearLayoutEffects(finishedRoot, finishedWork, includeWorkInProgressEffects); // TODO: Check for LayoutStatic flag
-
-        const instance = finishedWork.stateNode;
-
-        if (typeof instance.componentDidMount === 'function') {
-          try {
-            instance.componentDidMount();
-          } catch (error) {
-            captureCommitPhaseError(finishedWork, finishedWork.return, error);
-          }
-        } // Commit any callbacks that would have fired while the component
-        // was hidden.
-
-
-        const updateQueue = finishedWork.updateQueue;
-
-        if (updateQueue !== null) {
-          commitHiddenCallbacks(updateQueue, instance);
-        } // If this is newly finished work, check for setState callbacks
-
-
-        if (includeWorkInProgressEffects && flags & Callback) {
-          commitClassCallbacks(finishedWork);
-        } // TODO: Check flags & RefStatic
-
-
-        safelyAttachRef(finishedWork, finishedWork.return);
-        break;
-      }
-    // Unlike commitLayoutEffectsOnFiber, we don't need to handle HostRoot
-    // because this function only visits nodes that are inside an
-    // Offscreen fiber.
-    // case HostRoot: {
-    //  ...
-    // }
-
-    case HostHoistable:
-    case HostSingleton:
-    case HostComponent:
-      {
-        recursivelyTraverseReappearLayoutEffects(finishedRoot, finishedWork, includeWorkInProgressEffects); // Renderers may schedule work to be done after host components are mounted
-        // (eg DOM renderer may schedule auto-focus for inputs and form controls).
-        // These effects should only be committed when components are first mounted,
-        // aka when there is no current/alternate.
-
-        if (includeWorkInProgressEffects && current === null && flags & Update) {
-          commitHostComponentMount(finishedWork);
-        } // TODO: Check flags & 

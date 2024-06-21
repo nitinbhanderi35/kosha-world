@@ -1,478 +1,267 @@
-ing;
-	var concat = Array.prototype.concat;
-	var origDefineProperty = Object.defineProperty;
-	var isFunction = function (fn) {
-	  return typeof fn === 'function' && toStr$7.call(fn) === '[object Function]';
-	};
-	var hasPropertyDescriptors = hasPropertyDescriptors_1();
-	var supportsDescriptors$2 = origDefineProperty && hasPropertyDescriptors;
-	var defineProperty$1 = function (object, name, value, predicate) {
-	  if (name in object) {
-	    if (predicate === true) {
-	      if (object[name] === value) {
-	        return;
-	      }
-	    } else if (!isFunction(predicate) || !predicate()) {
-	      return;
-	    }
-	  }
-	  if (supportsDescriptors$2) {
-	    origDefineProperty(object, name, {
-	      configurable: true,
-	      enumerable: false,
-	      value: value,
-	      writable: true
-	    });
-	  } else {
-	    object[name] = value; // eslint-disable-line no-param-reassign
-	  }
-	};
-
-	var defineProperties$1 = function (object, map) {
-	  var predicates = arguments.length > 2 ? arguments[2] : {};
-	  var props = keys$2(map);
-	  if (hasSymbols$3) {
-	    props = concat.call(props, Object.getOwnPropertySymbols(map));
-	  }
-	  for (var i = 0; i < props.length; i += 1) {
-	    defineProperty$1(object, props[i], map[props[i]], predicates[props[i]]);
-	  }
-	};
-	defineProperties$1.supportsDescriptors = !!supportsDescriptors$2;
-	var defineProperties_1 = defineProperties$1;
-
-	var callBind$5 = {exports: {}};
-
-	(function (module) {
-
-	  var bind = functionBind;
-	  var GetIntrinsic = getIntrinsic;
-	  var $apply = GetIntrinsic('%Function.prototype.apply%');
-	  var $call = GetIntrinsic('%Function.prototype.call%');
-	  var $reflectApply = GetIntrinsic('%Reflect.apply%', true) || bind.call($call, $apply);
-	  var $gOPD = GetIntrinsic('%Object.getOwnPropertyDescriptor%', true);
-	  var $defineProperty = GetIntrinsic('%Object.defineProperty%', true);
-	  var $max = GetIntrinsic('%Math.max%');
-	  if ($defineProperty) {
-	    try {
-	      $defineProperty({}, 'a', {
-	        value: 1
-	      });
-	    } catch (e) {
-	      // IE 8 has a broken defineProperty
-	      $defineProperty = null;
-	    }
-	  }
-	  module.exports = function callBind(originalFunction) {
-	    var func = $reflectApply(bind, $call, arguments);
-	    if ($gOPD && $defineProperty) {
-	      var desc = $gOPD(func, 'length');
-	      if (desc.configurable) {
-	        // original length, plus the receiver, minus any additional arguments (after the receiver)
-	        $defineProperty(func, 'length', {
-	          value: 1 + $max(0, originalFunction.length - (arguments.length - 1))
-	        });
-	      }
-	    }
-	    return func;
-	  };
-	  var applyBind = function applyBind() {
-	    return $reflectApply(bind, $apply, arguments);
-	  };
-	  if ($defineProperty) {
-	    $defineProperty(module.exports, 'apply', {
-	      value: applyBind
-	    });
-	  } else {
-	    module.exports.apply = applyBind;
-	  }
-	})(callBind$5);
-
-	var GetIntrinsic$7 = getIntrinsic;
-	var callBind$4 = callBind$5.exports;
-	var $indexOf$1 = callBind$4(GetIntrinsic$7('String.prototype.indexOf'));
-	var callBound$d = function callBoundIntrinsic(name, allowMissing) {
-	  var intrinsic = GetIntrinsic$7(name, !!allowMissing);
-	  if (typeof intrinsic === 'function' && $indexOf$1(name, '.prototype.') > -1) {
-	    return callBind$4(intrinsic);
-	  }
-	  return intrinsic;
-	};
-
-	// modified from https://github.com/es-shims/es6-shim
-	var objectKeys$1 = objectKeys$2;
-	var hasSymbols$2 = shams$1();
-	var callBound$c = callBound$d;
-	var toObject = Object;
-	var $push = callBound$c('Array.prototype.push');
-	var $propIsEnumerable = callBound$c('Object.prototype.propertyIsEnumerable');
-	var originalGetSymbols = hasSymbols$2 ? Object.getOwnPropertySymbols : null;
-
-	// eslint-disable-next-line no-unused-vars
-	var implementation$8 = function assign(target, source1) {
-	  if (target == null) {
-	    throw new TypeError('target must be an object');
-	  }
-	  var to = toObject(target); // step 1
-	  if (arguments.length === 1) {
-	    return to; // step 2
-	  }
-
-	  for (var s = 1; s < arguments.length; ++s) {
-	    var from = toObject(arguments[s]); // step 3.a.i
-
-	    // step 3.a.ii:
-	    var keys = objectKeys$1(from);
-	    var getSymbols = hasSymbols$2 && (Object.getOwnPropertySymbols || originalGetSymbols);
-	    if (getSymbols) {
-	      var syms = getSymbols(from);
-	      for (var j = 0; j < syms.length; ++j) {
-	        var key = syms[j];
-	        if ($propIsEnumerable(from, key)) {
-	          $push(keys, key);
-	        }
-	      }
-	    }
-
-	    // step 3.a.iii:
-	    for (var i = 0; i < keys.length; ++i) {
-	      var nextKey = keys[i];
-	      if ($propIsEnumerable(from, nextKey)) {
-	        // step 3.a.iii.2
-	        var propValue = from[nextKey]; // step 3.a.iii.2.a
-	        to[nextKey] = propValue; // step 3.a.iii.2.b
-	      }
-	    }
-	  }
-
-	  return to; // step 4
-	};
-
-	var implementation$7 = implementation$8;
-	var lacksProperEnumerationOrder = function () {
-	  if (!Object.assign) {
-	    return false;
-	  }
-	  /*
-	   * v8, specifically in node 4.x, has a bug with incorrect property enumeration order
-	   * note: this does not detect the bug unless there's 20 characters
-	   */
-	  var str = 'abcdefghijklmnopqrst';
-	  var letters = str.split('');
-	  var map = {};
-	  for (var i = 0; i < letters.length; ++i) {
-	    map[letters[i]] = letters[i];
-	  }
-	  var obj = Object.assign({}, map);
-	  var actual = '';
-	  for (var k in obj) {
-	    actual += k;
-	  }
-	  return str !== actual;
-	};
-	var assignHasPendingExceptions = function () {
-	  if (!Object.assign || !Object.preventExtensions) {
-	    return false;
-	  }
-	  /*
-	   * Firefox 37 still has "pending exception" logic in its Object.assign implementation,
-	   * which is 72% slower than our shim, and Firefox 40's native implementation.
-	   */
-	  var thrower = Object.preventExtensions({
-	    1: 2
-	  });
-	  try {
-	    Object.assign(thrower, 'xy');
-	  } catch (e) {
-	    return thrower[1] === 'y';
-	  }
-	  return false;
-	};
-	var polyfill$4 = function getPolyfill() {
-	  if (!Object.assign) {
-	    return implementation$7;
-	  }
-	  if (lacksProperEnumerationOrder()) {
-	    return implementation$7;
-	  }
-	  if (assignHasPendingExceptions()) {
-	    return implementation$7;
-	  }
-	  return Object.assign;
-	};
-
-	var define$3 = defineProperties_1;
-	var getPolyfill$5 = polyfill$4;
-	var shim$5 = function shimAssign() {
-	  var polyfill = getPolyfill$5();
-	  define$3(Object, {
-	    assign: polyfill
-	  }, {
-	    assign: function () {
-	      return Object.assign !== polyfill;
-	    }
-	  });
-	  return polyfill;
-	};
-
-	var defineProperties = defineProperties_1;
-	var callBind$3 = callBind$5.exports;
-	var implementation$6 = implementation$8;
-	var getPolyfill$4 = polyfill$4;
-	var shim$4 = shim$5;
-	var polyfill$3 = callBind$3.apply(getPolyfill$4());
-	// eslint-disable-next-line no-unused-vars
-	var bound = function assign(target, source1) {
-	  return polyfill$3(Object, arguments);
-	};
-	defineProperties(bound, {
-	  getPolyfill: getPolyfill$4,
-	  implementation: implementation$6,
-	  shim: shim$4
-	});
-	var object_assign = bound;
-
-	var implementation$5 = {exports: {}};
-
-	var functionsHaveNames = function functionsHaveNames() {
-	  return typeof function f() {}.name === 'string';
-	};
-	var gOPD$4 = Object.getOwnPropertyDescriptor;
-	if (gOPD$4) {
-	  try {
-	    gOPD$4([], 'length');
-	  } catch (e) {
-	    // IE 8 has a broken gOPD
-	    gOPD$4 = null;
-	  }
-	}
-	functionsHaveNames.functionsHaveConfigurableNames = function functionsHaveConfigurableNames() {
-	  if (!functionsHaveNames() || !gOPD$4) {
-	    return false;
-	  }
-	  var desc = gOPD$4(function () {}, 'name');
-	  return !!desc && !!desc.configurable;
-	};
-	var $bind = Function.prototype.bind;
-	functionsHaveNames.boundFunctionsHaveNames = function boundFunctionsHaveNames() {
-	  return functionsHaveNames() && typeof $bind === 'function' && function f() {}.bind().name !== '';
-	};
-	var functionsHaveNames_1 = functionsHaveNames;
-
-	(function (module) {
-
-	  var functionsHaveConfigurableNames = functionsHaveNames_1.functionsHaveConfigurableNames();
-	  var $Object = Object;
-	  var $TypeError = TypeError;
-	  module.exports = function flags() {
-	    if (this != null && this !== $Object(this)) {
-	      throw new $TypeError('RegExp.prototype.flags getter called on non-object');
-	    }
-	    var result = '';
-	    if (this.hasIndices) {
-	      result += 'd';
-	    }
-	    if (this.global) {
-	      result += 'g';
-	    }
-	    if (this.ignoreCase) {
-	      result += 'i';
-	    }
-	    if (this.multiline) {
-	      result += 'm';
-	    }
-	    if (this.dotAll) {
-	      result += 's';
-	    }
-	    if (this.unicode) {
-	      result += 'u';
-	    }
-	    if (this.unicodeSets) {
-	      result += 'v';
-	    }
-	    if (this.sticky) {
-	      result += 'y';
-	    }
-	    return result;
-	  };
-	  if (functionsHaveConfigurableNames && Object.defineProperty) {
-	    Object.defineProperty(module.exports, 'name', {
-	      value: 'get flags'
-	    });
-	  }
-	})(implementation$5);
-
-	var implementation$4 = implementation$5.exports;
-	var supportsDescriptors$1 = defineProperties_1.supportsDescriptors;
-	var $gOPD$1 = Object.getOwnPropertyDescriptor;
-	var polyfill$2 = function getPolyfill() {
-	  if (supportsDescriptors$1 && /a/mig.flags === 'gim') {
-	    var descriptor = $gOPD$1(RegExp.prototype, 'flags');
-	    if (descriptor && typeof descriptor.get === 'function' && typeof RegExp.prototype.dotAll === 'boolean' && typeof RegExp.prototype.hasIndices === 'boolean') {
-	      /* eslint getter-return: 0 */
-	      var calls = '';
-	      var o = {};
-	      Object.defineProperty(o, 'hasIndices', {
-	        get: function () {
-	          calls += 'd';
-	        }
-	      });
-	      Object.defineProperty(o, 'sticky', {
-	        get: function () {
-	          calls += 'y';
-	        }
-	      });
-	      if (calls === 'dy') {
-	        return descriptor.get;
-	      }
-	    }
-	  }
-	  return implementation$4;
-	};
-
-	var supportsDescriptors = defineProperties_1.supportsDescriptors;
-	var getPolyfill$3 = polyfill$2;
-	var gOPD$3 = Object.getOwnPropertyDescriptor;
-	var defineProperty = Object.defineProperty;
-	var TypeErr = TypeError;
-	var getProto = Object.getPrototypeOf;
-	var regex = /a/;
-	var shim$3 = function shimFlags() {
-	  if (!supportsDescriptors || !getProto) {
-	    throw new TypeErr('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
-	  }
-	  var polyfill = getPolyfill$3();
-	  var proto = getProto(regex);
-	  var descriptor = gOPD$3(proto, 'flags');
-	  if (!descriptor || descriptor.get !== polyfill) {
-	    defineProperty(proto, 'flags', {
-	      configurable: true,
-	      enumerable: false,
-	      get: polyfill
-	    });
-	  }
-	  return polyfill;
-	};
-
-	var define$2 = defineProperties_1;
-	var callBind$2 = callBind$5.exports;
-	var implementation$3 = implementation$5.exports;
-	var getPolyfill$2 = polyfill$2;
-	var shim$2 = shim$3;
-	var flagsBound = callBind$2(getPolyfill$2());
-	define$2(flagsBound, {
-	  getPolyfill: getPolyfill$2,
-	  implementation: implementation$3,
-	  shim: shim$2
-	});
-	var regexp_prototype_flags = flagsBound;
-
-	var esGetIterator = {exports: {}};
-
-	var hasSymbols$1 = shams$1;
-	var shams = function hasToStringTagShams() {
-	  return hasSymbols$1() && !!Symbol.toStringTag;
-	};
-
-	var hasToStringTag$8 = shams();
-	var callBound$b = callBound$d;
-	var $toString$4 = callBound$b('Object.prototype.toString');
-	var isStandardArguments = function isArguments(value) {
-	  if (hasToStringTag$8 && value && typeof value === 'object' && Symbol.toStringTag in value) {
-	    return false;
-	  }
-	  return $toString$4(value) === '[object Arguments]';
-	};
-	var isLegacyArguments = function isArguments(value) {
-	  if (isStandardArguments(value)) {
-	    return true;
-	  }
-	  return value !== null && typeof value === 'object' && typeof value.length === 'number' && value.length >= 0 && $toString$4(value) !== '[object Array]' && $toString$4(value.callee) === '[object Function]';
-	};
-	var supportsStandardArguments = function () {
-	  return isStandardArguments(arguments);
-	}();
-	isStandardArguments.isLegacyArguments = isLegacyArguments; // for tests
-
-	var isArguments$2 = supportsStandardArguments ? isStandardArguments : isLegacyArguments;
-
-	var _nodeResolve_empty = {};
-
-	var _nodeResolve_empty$1 = /*#__PURE__*/Object.freeze({
-		__proto__: null,
-		'default': _nodeResolve_empty
-	});
-
-	var require$$0 = /*@__PURE__*/getAugmentedNamespace(_nodeResolve_empty$1);
-
-	var hasMap = typeof Map === 'function' && Map.prototype;
-	var mapSizeDescriptor = Object.getOwnPropertyDescriptor && hasMap ? Object.getOwnPropertyDescriptor(Map.prototype, 'size') : null;
-	var mapSize = hasMap && mapSizeDescriptor && typeof mapSizeDescriptor.get === 'function' ? mapSizeDescriptor.get : null;
-	var mapForEach = hasMap && Map.prototype.forEach;
-	var hasSet = typeof Set === 'function' && Set.prototype;
-	var setSizeDescriptor = Object.getOwnPropertyDescriptor && hasSet ? Object.getOwnPropertyDescriptor(Set.prototype, 'size') : null;
-	var setSize = hasSet && setSizeDescriptor && typeof setSizeDescriptor.get === 'function' ? setSizeDescriptor.get : null;
-	var setForEach = hasSet && Set.prototype.forEach;
-	var hasWeakMap = typeof WeakMap === 'function' && WeakMap.prototype;
-	var weakMapHas = hasWeakMap ? WeakMap.prototype.has : null;
-	var hasWeakSet = typeof WeakSet === 'function' && WeakSet.prototype;
-	var weakSetHas = hasWeakSet ? WeakSet.prototype.has : null;
-	var hasWeakRef = typeof WeakRef === 'function' && WeakRef.prototype;
-	var weakRefDeref = hasWeakRef ? WeakRef.prototype.deref : null;
-	var booleanValueOf = Boolean.prototype.valueOf;
-	var objectToString = Object.prototype.toString;
-	var functionToString = Function.prototype.toString;
-	var $match = String.prototype.match;
-	var $slice$2 = String.prototype.slice;
-	var $replace = String.prototype.replace;
-	var $toUpperCase = String.prototype.toUpperCase;
-	var $toLowerCase = String.prototype.toLowerCase;
-	var $test = RegExp.prototype.test;
-	var $concat = Array.prototype.concat;
-	var $join = Array.prototype.join;
-	var $arrSlice = Array.prototype.slice;
-	var $floor = Math.floor;
-	var bigIntValueOf$1 = typeof BigInt === 'function' ? BigInt.prototype.valueOf : null;
-	var gOPS = Object.getOwnPropertySymbols;
-	var symToString = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol' ? Symbol.prototype.toString : null;
-	var hasShammedSymbols = typeof Symbol === 'function' && typeof Symbol.iterator === 'object';
-	// ie, `has-tostringtag/shams
-	var toStringTag = typeof Symbol === 'function' && Symbol.toStringTag && (typeof Symbol.toStringTag === hasShammedSymbols ? 'object' : 'symbol') ? Symbol.toStringTag : null;
-	var isEnumerable = Object.prototype.propertyIsEnumerable;
-	var gPO$1 = (typeof Reflect === 'function' ? Reflect.getPrototypeOf : Object.getPrototypeOf) || ([].__proto__ === Array.prototype // eslint-disable-line no-proto
-	? function (O) {
-	  return O.__proto__; // eslint-disable-line no-proto
-	} : null);
-	function addNumericSeparator(num, str) {
-	  if (num === Infinity || num === -Infinity || num !== num || num && num > -1000 && num < 1000 || $test.call(/e/, str)) {
-	    return str;
-	  }
-	  var sepRegex = /[0-9](?=(?:[0-9]{3})+(?![0-9]))/g;
-	  if (typeof num === 'number') {
-	    var int = num < 0 ? -$floor(-num) : $floor(num); // trunc(num)
-	    if (int !== num) {
-	      var intStr = String(int);
-	      var dec = $slice$2.call(str, intStr.length + 1);
-	      return $replace.call(intStr, sepRegex, '$&_') + '.' + $replace.call($replace.call(dec, /([0-9]{3})/g, '$&_'), /_$/, '');
-	    }
-	  }
-	  return $replace.call(str, sepRegex, '$&_');
-	}
-	var utilInspect = require$$0;
-	var inspectCustom = utilInspect.custom;
-	var inspectSymbol = isSymbol$2(inspectCustom) ? inspectCustom : null;
-	var objectInspect = function inspect_(obj, options, depth, seen) {
-	  var opts = options || {};
-	  if (has$2(opts, 'quoteStyle') && opts.quoteStyle !== 'single' && opts.quoteStyle !== 'double') {
-	    throw new TypeError('option "quoteStyle" must be "single" or "double"');
-	  }
-	  if (has$2(opts, 'maxStringLength') && (typeof opts.maxStringLength === 'number' ? opts.maxStringLength < 0 && opts.maxStringLength !== Infinity : opts.maxStringLength !== null)) {
-	    throw new TypeError('option "maxStringLength", if provided, must be a positive integer, Infinity, or `null`');
-	  }
-	  var customInspect = has$2(opts, 'customInspect') ? opts.customInspect : true;
-	  if (typeof customInspect !== 'boolean' && customInspect !== 'symbol') {
-	    throw new TypeError('option "customInspect", if provided, must be `true`, `false`, or `\'symbol\'`');
-	  }
-	  if (has$2(opts, 'indent') && opts.indent !== null && opts.indent !== '\t' && !(parseInt(opts.indent, 10) === opts.indent && opts.indent > 0)) {
-	    throw new TypeError('option "indent" must be "\\t", an integer > 0, or `null`');
-	  
+{
+    "word": "समर्थन",
+    "ABCH": [
+        {
+            "word": "समर्थन",
+            "linga": "क्ली",
+            "pagenum": "52",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4108",
+            "group": "1744",
+            "synonyms": [
+                "सम्प्रधारणा"
+            ],
+            "content": "निर्णयो निश्चयोऽन्तः संप्रधारणा समर्थनम् ।"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "समर्थन",
+            "eid": "29335",
+            "pagenum": 1094,
+            "content": "समर्थनं --ना¦ <b>1</b> Establishing, <lbinfo n='sup+porting'/> supporting, corroborating. <b>--2</b> <lbinfo n='Defend+ing'/> Defending, vindicating, justifying;  <lbinfo n='sTite#zvetatsamarTanaM'/> स्थितेष्वेतत्समर्थनं <ls>K. P. 7.</ls> <b>--3</b> Pleading, advocating. <b>--4</b> Judging, <lbinfo n='consider+ing'/> considering, imagining. <b>--5</b> Deliberation, determination, deciding on the <lbinfo n='pro+priety'/> propriety or otherwise of anything. <b>--6</b> Adequacy, efficacy, force, capability. <b>--7</b> Energy, perseverance. <b>--8</b> <lbinfo n='Recon+ciling'/> Reconciling differences, allaying disputes. <b>--9</b> Objection."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "समर्थन",
+            "eid": "15588",
+            "pagenum": 1010,
+            "content": "समर्थन¦ <i>sam-arth + ana,</i> <ab>m.</ab> <b>1.</b> Reconciling differences, allaying a dispute. <b>2.</b> Perseverance in an arduous undertaking. <b>3.</b> Deliberation, deciding on the propriety or impropriety of anything. <b>4.</b> Objecting, objection."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "समर्थन",
+            "eid": "35187",
+            "pagenum": 591,
+            "content": "समर्थन¦ <lex>n.</lex> consideration, deliberation (also <lex>f.</lex> आ), confirmation, corroboration, justification; <lex>f.</lex> आ persuasion, invitation, also = <ab>prec.</ab>"
+        }
+    ],
+    "CCS": [
+        {
+            "word": "समर्थन",
+            "eid": "26376",
+            "pagenum": 476,
+            "content": "समर्थन¦ <i>n.</i> Betrachtung, Erwägung, Bestätigung, <lbinfo n='10'/> Begründung."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "समर्थन",
+            "eid": "39729",
+            "pagenum": 758,
+            "content": "samarTana¦ <i>n.</i> 1. Reconciling differences, allaying disputes; 2. potency, efficacy; 3. deliberation, decision on the propriety or impropriety of anything; 4. corroboration, support, vindication; 5. objection."
+        }
+    ],
+    "MD": [
+        {
+            "word": "समर्थन",
+            "eid": "18850",
+            "pagenum": 336,
+            "content": "समर्थन¦ sam-arthana, <lex>n.</lex> reflection, contemplation; 🞄corroboration, vindication, justification; 🞄ability, competence (<ab>ab.</ab>, by virtue of, 🞄<ab>g.</ab>): <b>-ṃ kṛ,</b> reflect; <b>-arthanīya,</b> <ab>fp.</ab> to be 🞄established, justified, <i>or</i> cleared up; <b>-arthaya,</b> <ab>den.</ab> (<ab>v.</ab> arthaya) arrange <ab>etc.</ab>; connect with, 🞄construe <i>grammatically</i>: <ab>pp.</ab> <b>ita,</b> capable; 🞄<b>-arthya,</b> <ab>fp.</ab> to be established, corroborated, 🞄<i>or</i> justified; <b>-ardhana,</b> <lex>a.</lex> (<b>ī</b>) causing to succeed: 🞄<b>-ardhayitṛ,</b> <lex>m.</lex> fulfiller, bestower: 🞄<b>trī,</b> <lex>f.</lex>; <b>-arpaka,</b> <lex>a.</lex> delivering, yielding up; 🞄<b>-ārpaṇa,</b> <lex>n.</lex> placing <i>or</i> throwing upon (<ab>Br.</ab>); 🞄<ab>C.</ab>; delivering, handing over, consigning, bestowing; 🞄making known, communication; 🞄<b>-arpaṇīya,</b> <ab>fp.</ab> to be delivered, handed over, 🞄<i>or</i> entrusted <b>-arpayitavya,</b> <ab>fp.</ab> <ab>id.</ab>; <b>-arpita,</b> 🞄<ab>cs.</ab> <ab>pp.</ab> (√ i) handed over <ab>etc.</ab>."
+        }
+    ],
+    "MW": [
+        {
+            "word": "समर्थन",
+            "eid": "233768",
+            "pagenum": "1157,1",
+            "content": "सम्-अर्थन ¦ <lex>n.</lex> (or <lex type='hwalt'>f(आ). </lex>) reflection, deliberation, contemplation (°नं-√ कृ, ‘to reflect, consider’), <ls>MBh.</ls>; <ls>Kathās.</ls><info lex='f#A:n'/>"
+        },
+        {
+            "word": "समर्थन",
+            "eid": "233769",
+            "pagenum": "1157,1",
+            "content": "¦ reconciling differences, reconciliation, <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समर्थन",
+            "eid": "233770",
+            "pagenum": "1157,1",
+            "content": "¦ objecting, objection, <ls>ib.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समर्थन",
+            "eid": "233773",
+            "pagenum": "1157,1",
+            "content": "सम्-अर्थन ¦ (अम्), <lex>n.</lex> establishing, maintaining, corroboration, vindication, justification, <ls>Pratāp.</ls>; <ls>Kuval.</ls><info lex='n'/>"
+        },
+        {
+            "word": "समर्थन",
+            "eid": "233774",
+            "pagenum": "1157,1",
+            "content": "¦ energy, force, ability, competence (आत्, with <ab>gen.</ab>, ‘by virtue of’), <ls>MBh.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "समर्थन",
+            "eid": "49778",
+            "pagenum": 1070,
+            "content": "<i>Sam-arthana, am, ā,</i>¦ n. f. the act of making capable, giving force or strength, establishing, maintaining, supporting, corroborating, corroboration; deliberation, determination, determining or deciding on the propriety of anything, judging, considering, supposing, imagining, inferring; adequacy, capability, energy, force, potency, efficacy, ability, perseverance; attempting difficulties or impossibilities; reconciling differences, reconciliation, allaying disputes; objecting, objection."
+        }
+    ],
+    "PW": [
+        {
+            "word": "समर्थन",
+            "eid": "120042",
+            "pagenum": 7,
+            "content": "समर्थन¦ <dvsn n='1'>— 1〉 <lex>n.</lex> <lex>f.</lex> आ <i>Betrachtung, Erwägung</i>. समर्थनं कर् <i>Betrachtungen anstellen</i>. <dvsn n='1'>— 2〉 <lex>f.</lex> आ <dvsn n='2'>— a〉 <i>das Bereden, Aufforderung</i> <ls>MBH. 7,182,20</ls>. <dvsn n='2'>— b〉 <i>das Sichversteigen zum Unmöglichen</i>. <dvsn n='1'>— 3〉 <lex>n.</lex> <dvsn n='2'>— a〉 <i>Bestätigung, Begründung, Rechtfertigung</i>. <dvsn n='2'>— b〉 <i>Befähigung,</i> <ab>Abl.</ab> mit <ab>Gen.</ab> so <ab>v. a.</ab> <i>vermöge</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समर्थन",
+            "eid": "105409",
+            "pagenum": 7,
+            "content": "समर्थन¦ (von समर्थय्) <dvsn n='1'> 1) <lex>n.</lex> <i>Betrachtung, Erwägung</i>; = संप्रधारणा <ls>AK. 2, 8, 1, 25.</ls> <ls>H. 1374.</ls> = समाधि <ls>AK. 3, 4, 17, 100.</ls> समर्थनं कर् <i>Betrachtungen anstellen</i> <ls>KATHĀS. 25, 73.</ls> f. आ dass. <ls>MBH. 4, 106.</ls> <dvsn n='1'>— 2) <lex>n.</lex> <i>Bestätigung, Begründung, Rechtfertigung</i>: समर्थनप्रपञ्चोक्तिरुक्तस्यार्थस्य विस्तरः <ls>PRATĀPAR. 69,a,6.</ls> कार्यकारणसामान्यविशेषाणां परस्परं समर्थनम् 98, <i>a</i>, <ls n='PRATĀPAR.'>9.</ls> <ls>KUVALAY. 126,b.</ls> Comm. zu <ls>TS. PRĀT. 13, 14.</ls> पयोग्रहसमर्थनप्रकार <lex>m.</lex> Titel einer Schrift <ls>HALL 192.</ls> <dvsn n='1'>— 3) <lex>f.</lex> आ <i>das Sichversteigen zu Unmöglichem</i>, = अशक्ये ऽध्यवसायः <ls>VOP. 25, 23.</ls> <dvsn n='1'>— 4) <lex>n.</lex> = समर्थता. तपसश्च समर्थनात् so v. a. <i>vermöge</i> <ls>MBH. 1, 5080.</ls> समन्वयात् eine von <ls>NĪLAK.</ls> erwähnte Lesart."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समर्थन",
+            "eid": "42570",
+            "pagenum": 761,
+            "content": "समर्थन¦ n. (-नं) 1. Deliberation, deciding on the propriety or impropriety of anything; also समर्थना. 2. Perseverance in an arduous undertaking, attempting difficulties or impossibilities. 3. Reconciling differences, allaying a dispute. 4. Objecting, objection. 5. Potency, efficacy. E. सम् before अर्थ् to ask or request, aff. ल्युट् ।"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "समर्थन",
+            "eid": "40546",
+            "pagenum": 895,
+            "content": "समर्थन¦ n. (-नं) .²1 Deliberation, deciding on the propriety or impropriety of any thing; also समर्थना. .²2 Perseverance in an arduous undertaking, attempting difficulties or impossibilities. .²3 Reconciling differences, allaying a dispute. .²4 Objecting, objection. .E. सम् before अर्थ to ask, or request, aff. ल्युट्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "समर्थन",
+            "eid": "40259",
+            "pagenum": 815,
+            "content": "समर्थन¦ (नं) 1. <i>n.</i> Deliberation, decision, perseverance; stopping a dispute; objection."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समर्थन",
+            "eid": "37899",
+            "pagenum": "5-270-a",
+            "content": "समर्थनं¦, क्ली, (सम् + अर्थ + ल्युट् ।) इदमुचितमिदमनुचितमिति निश्चयः । तत्पर्य्यायः । संप्रधारणा २ । इत्यमरः ॥ समर्थना ३ । इति शब्दरत्नावली ॥ (यथा, कथासरित्सागरे । २५ । ७३ । “शक्तिदेवस्य पार्श्वस्थो विष्णुदत्तः समर्थनम् । विनोदपूर्व्वकं कुर्व्वन् कथां कथितवानिमाम् ॥”) सामर्थ्यञ्च ॥ (यथा, महाभारते । १ । १३० । १० । “स तु ज्ञानगरीयस्त्वात् तपसश्च समर्थनात् । अवतस्थे महाप्राज्ञो धैर्य्येण परमेण ह ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "समर्थन",
+            "eid": "45266",
+            "pagenum": "5230,a",
+            "content": "समर्थन¦ न० सम् + अर्थ--ल्युट् । इदमित्थमेवेति निश्चयहेतूपन्यासेन निश्चायकव्यापारभेदे अमरः । युच् । तत्र, अशक्येऽध्यवसाये च स्त्री ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समर्थन",
+            "content": "समर्थनम् नपुं. -  सम् + अर्थ् + ल्युट् 'संस्थापन, पुष्टि करना, ताईद करना'"
+        },
+        {
+            "word": "समर्थन",
+            "content": "समर्थनम् नपुं. -  सम् + अर्थ् + ल्युट् 'रक्षा करना, सहारा देना, न्यायसंगत सिद्ध करना'"
+        },
+        {
+            "word": "समर्थन",
+            "content": "समर्थनम् नपुं. -  सम् + अर्थ् + ल्युट् 'वकालत करना, हिमायत करना, चिन्तन करना'"
+        },
+        {
+            "word": "समर्थन",
+            "content": "समर्थनम् नपुं. -  सम् + अर्थ् + ल्युट् 'विचारविमर्श, निर्धारण, किसी वस्तु के औचित्यनौचित्य का निर्णय करना'"
+        },
+        {
+            "word": "समर्थन",
+            "content": "समर्थनम् नपुं. -  सम् + अर्थ् + ल्युट् 'पर्याप्तता, अचूकता, बल, धारिता'"
+        },
+        {
+            "word": "समर्थन",
+            "content": "समर्थनम् नपुं. -  सम् + अर्थ् + ल्युट् 'ऊर्जा, धैर्य'"
+        },
+        {
+            "word": "समर्थन",
+            "content": "समर्थनम् नपुं. -  सम् + अर्थ् + ल्युट् 'भेदभाव दूर कर फिर समझौता करना, कलह दूर करना'"
+        },
+        {
+            "word": "समर्थन",
+            "content": "समर्थनम् नपुं. -  सम् + अर्थ् + ल्युट् आक्षेप"
+        },
+        {
+            "word": "समर्थन",
+            "content": "समर्थनम् नपुं. -  समर्थ्+ल्युट् किसी हानि या अपराध की क्षति पूर्ति करना"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "समर्थन",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ದೃಢೀಕರಿಸುವುದು \\/ಸ್ಥಿರಪಡಿಸುವುದು",
+            "निष्पत्तिः": "सम् + अर्थ (उपयाञ्चायाम्)'ल्युट्' (३-३-११५)",
+            "content": ""
+        },
+        {
+            "word": "समर्थन",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವಾದ ಮಾಡಿ ನ್ಯಾಯವನ್ನು ತೋರಿಸುವುದು \\/ಋಜುತ್ವವನ್ನು ಸ್ಥಾಪಿಸುವುದು",
+            "content": ""
+        },
+        {
+            "word": "समर्थन",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸಾಮರ್ಥ್ಯ \\/ಶಕ್ತಿ",
+            "प्रयोगाः": "'स तु ज्ञानगरीयस्त्वात् तपसश्च समर्थनात् । अवतस्थे महाप्राज्ञो धैर्येण परमेण ह ॥'",
+            "उल्लेखाः": "भा० आदि०",
+            "content": ""
+        },
+        {
+            "word": "समर्थन",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಇದೇ ಸರಿಯೆಂದು ನಿಶ್ಚಯಿಸುವುದು",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "समर्थन",
+            "linga": "N",
+            "artha": "युक्तायुक्तपरीक्षणम्",
+            "synonyms": [
+                "सम्प्रधारणा",
+                "समर्थन"
+            ],
+            "num": "2.8.25",
+            "text": "न्याय्यं च त्रिषु षट्संप्रधारणा तु समर्थनम् । अववादस्तु निर्देशो निदेशः शासनं च सः ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "समर्थन",
+            "content": "<body><s>samarTana na° sam + arTa—lyuw . idamitTameveti niScayahetU­panyAsena niScAyakavyApAraBede amaraH . yuc . tatra, aSa­kye'DyavasAye ca strI .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "समर्थन",
+            "content": "<H2><h><key1>samarTana</key1><key2>sam-arTana</key2></h><body><s>sam-arTana</s>   <lex>n.</lex> (or <lex type=\"hwalt\">f(<s>A</s>). </lex>) reflection, deliberation, contemplation (<s>°naM-√ kf</s>, ‘to reflect, consider’), <ls>MBh.</ls>; <ls>Kathās.</ls><info lex=\"f#A:n\" /></body><tail><L>233768</L><pc>1157,1</pc></tail></H2>\n <H2A><h><key1>samarTana</key1><key2>sam-arTana</key2></h><body>  reconciling differences, reconciliation, <ls>W.</ls><info lex=\"inh\" /></body><tail><L>233769</L><pc>1157,1</pc></tail></H2A>\n <H2A><h><key1>samarTana</key1><key2>sam-arTana</key2></h><body>  objecting, objection, <ls>ib.</ls><info lex=\"inh\" /></body><tail><L>233770</L><pc>1157,1</pc></tail></H2A>\n <H2B><h><key1>samarTana</key1><key2>sam-arTana</key2></h><body><s>sam-arTana</s>   (<s>am</s>), <lex>n.</lex> establishing, maintaining, corroboration, vindication, justification, <ls>Pratāp.</ls>; <ls>Kuval.</ls><info lex=\"n\" /></body><tail><L>233773</L><pc>1157,1</pc></tail></H2B>\n <H2B><h><key1>samarTana</key1><key2>sam-arTana</key2></h><body>  energy, force, ability, competence (<s>At</s>, with <ab>gen.</ab>, ‘by virtue of’), <ls>MBh.</ls><info lex=\"inh\" /></body><tail><L>233774</L><pc>1157,1</pc></tail></H2B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समर्थन",
+            "content": "<H1><h><key1>samarTana</key1><key2>samarTana</key2></h><body><s>samarTana</s>  <div n=\"1\">n. (<s>-naM</s>) </div><div n=\"2\"> 1. Deliberation, deciding on the propriety or impropriety <lb />of anything; also <s>samarTanA</s>. </div><div n=\"2\"> 2. Perseverance in an arduous under- <lb />taking, attempting difficulties or impossibilities. </div><div n=\"2\"> 3. Reconciling [Page762-a+ 60] <lb />differences, allaying a dispute. </div><div n=\"2\"> 4. Objecting, objection. </div><div n=\"2\"> 5. Potency, <lb />efficacy.</div><div n=\"E\"> E. <s>sam</s> before <s>arT</s> to ask or request, aff. <s>lyuw .</s></div></body><tail><L>42570</L><pc>761-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "समर्थन",
+            "content": "<span lang=\"sa\">समर्थन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದೃಢೀಕರಿಸುವುದು /ಸ್ಥಿರಪಡಿಸುವುದು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>सम् + अर्थ (उपयाञ्चायाम्) - \"ल्युट्\" (३-३-११५)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समर्थन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಾದ ಮಾಡಿ ನ್ಯಾಯವನ್ನು ತೋರಿಸುವುದು /ಋಜುತ್ವವನ್ನು ಸ್ಥಾಪಿಸುವುದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समर्थन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಾಮರ್ಥ್ಯ /ಶಕ್ತಿ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"स तु ज्ञानगरीयस्त्वात् तपसश्च समर्थनात् । अवतस्थे महाप्राज्ञो धैर्येण परमेण ह ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भा० आदि०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समर्थन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಇದೇ ಸರಿಯೆಂದು ನಿಶ್ಚಯಿಸುವುದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

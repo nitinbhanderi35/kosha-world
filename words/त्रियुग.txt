@@ -1,1 +1,130 @@
-x(e,n),o),r=Math.min(Math.min(e,n),o),s=i-r;let a,c;return a=s<1?r/(1-s):0,c=s<=0?0:i===e?(n-o)/s%6:i===n?2+(o-e)/s:4+(e-n)/s,c/=6,c%=1,[360*c,100*s,100*a]},r.hsl.hcg=function(t){const e=t[1]/100,n=t[2]/100,o=n<.5?2*e*n:2*e*(1-n);let i=0;return o<1&&(i=(n-.5*o)/(1-o)),[t[0],100*o,100*i]},r.hsv.hcg=function(t){const e=t[1]/100,n=t[2]/100,o=e*n;let i=0;return o<1&&(i=(n-o)/(1-o)),[t[0],100*o,100*i]},r.hcg.rgb=function(t){const e=t[0]/360,n=t[1]/100,o=t[2]/100;if(0===n)return[255*o,255*o,255*o];const i=[0,0,0],r=e%1*6,s=r%1,a=1-s;let c=0;switch(Math.floor(r)){case 0:i[0]=1,i[1]=s,i[2]=0;break;case 1:i[0]=a,i[1]=1,i[2]=0;break;case 2:i[0]=0,i[1]=1,i[2]=s;break;case 3:i[0]=0,i[1]=a,i[2]=1;break;case 4:i[0]=s,i[1]=0,i[2]=1;break;default:i[0]=1,i[1]=0,i[2]=a}return c=(1-n)*o,[255*(n*i[0]+c),255*(n*i[1]+c),255*(n*i[2]+c)]},r.hcg.hsv=function(t){const e=t[1]/100,n=e+t[2]/100*(1-e);let o=0;return n>0&&(o=e/n),[t[0],100*o,100*n]},r.hcg.hsl=function(t){const e=t[1]/100,n=t[2]/100*(1-e)+.5*e;let o=0;return n>0&&n<.5?o=e/(2*n):n>=.5&&n<1&&(o=e/(2*(1-n))),[t[0],100*o,100*n]},r.hcg.hwb=function(t){const e=t[1]/100,n=e+t[2]/100*(1-e);return[t[0],100*(n-e),100*(1-n)]},r.hwb.hcg=function(t){const e=t[1]/100,n=1-t[2]/100,o=n-e;let i=0;return o<1&&(i=(n-o)/(1-o)),[t[0],100*o,100*i]},r.apple.rgb=function(t){return[t[0]/65535*255,t[1]/65535*255,t[2]/65535*255]},r.rgb.apple=function(t){return[t[0]/255*65535,t[1]/255*65535,t[2]/255*65535]},r.gray.rgb=function(t){return[t[0]/100*255,t[0]/100*255,t[0]/100*255]},r.gray.hsl=function(t){return[0,0,t[0]]},r.gray.hsv=r.gray.hsl,r.gray.hwb=function(t){return[0,100,t[0]]},r.gray.cmyk=function(t){return[0,0,0,t[0]]},r.gray.lab=function(t){return[t[0],0,0]},r.gray.hex=function(t){const e=255&Math.round(t[0]/100*255),n=((e<<16)+(e<<8)+e).toString(16).toUpperCase();return"000000".substring(n.length)+n},r.rgb.gray=function(t){return[(t[0]+t[1]+t[2])/3/255*100]}},734:(t,e,n)=>{const o=n(5659),i=n(8507),r={};Object.keys(o).forEach((t=>{r[t]={},Object.defineProperty(r[t],"channels",{value:o[t].channels}),Object.defineProperty(r[t],"labels",{value:o[t].labels});const e=i(t);Object.keys(e).forEach((n=>{const o=e[n];r[t][n]=function(t){const e=function(...e){const n=e[0];if(null==n)return n;n.length>1&&(e=n);const o=t(e);if("object"==typeof o)for(let t=o.length,e=0;e<t;e++)o[e]=Math.round(o[e]);return o};return"conversion"in t&&(e.conversion=t.conversion),e}(o),r[t][n].raw=function(t){const e=function(...e){const n=e[0];return null==n?n:(n.length>1&&(e=n),t(e))};return"conversion"in t&&(e.conversion=t.conversion),e}(o)}))})),t.exports=r},8507:(t,e,n)=>{const o=n(5659);function i(t){const e=function(){const t={},e=Object.keys(o);for(let n=e.length,o=0;o<n;o++)t[e[o]]={distance:-1,parent:null};return t}(),n=[t];for(e[t].distance=0;n.length;){const t=n.pop(),i=Object.keys(o[t]);for(let o=i.length,r=0;r<o;r++){const o=i[r],s=e[o];-1===s.distance&&(s.distance=e[t].distance+1,s.parent=t,n.unshift(o))}}return e}function r(t,e){return function(n){return e(t(n))}}function s(t,e){const n=[e[t].parent,t];let i=o[e[t].parent][t],s=e[t].parent;for(;e[s].parent;)n.unshift(e[s].parent),i=r(o[e[s].parent][s],i),s=e[s].parent;return i.conversion=n,i}t.exports=function(t){const e=i(t),n={},o=Object.keys(e);for(let t=o.length,i=0;i<t;i++){const t=o[i];null!==e[t].parent&&(n[t]=s(t,e))}return n}},8156:t=>{"use strict";t.exports={aliceblue:[240,248,255],antiquewhite:[250,235,215],aqua:[0,255,255],aquamarine:[127,255,212],azure:[240,255,255],beige:[245,245,220],bisque:[255,228,196],black:[0,0,0],blanchedalmond:[255,235,205],blue:[0,0,255],blueviolet:[138,43,226],brown:[165,42,42],burlywood:[222,184,135],cadetblue:[95,158,160],chartreuse:[127,255,0],chocolate:[210,105,30],coral:[255,127,80],cornflowerblue:[100,149,237],cornsilk:[255,248,220],crimson:[220,20,60],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgoldenrod:[184,134,11],darkgray:[169,169,169],darkgreen:[0,100,0],darkgrey:[169,169,169],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkseagreen:[143,188,143],darkslateblue:[72,61,139],darkslategray:[47,79,79],darkslategrey:[47,79,79],darkturquoise:[0,206,209],darkviolet:[148,0,211],deeppink:[255,20,147],deepskyblue:[0,191,255],dimgray:[105,105,105],dimgrey:[105,105,105],dodgerblue:[30,144,255],firebrick:[178,34,34],floralwhite:[255,250,240],forestgreen:[34,139,34],fuchsia:[255,0,255],gainsboro:[220,220,220],ghostwhite:[248,248,255],gold:[255,215,0],goldenrod:[218,165,32],gray:[128,128,128],green:[0,128,0],greenyellow:[173,255,47],grey:[128,128,128],honeydew:[240,255,240],hotpink:[255,105,180],indianred:[205,92,92],indigo:[75,0,130],ivory:[255,255,240],khaki:[240,230,140],lavender:[230,230,250],lavenderblush:[255,240,245],lawngreen:[124,252,0],lemonchiffon:[255,250,205],lightblue:[173,216,230],lightcoral:[240,128,128],lightcyan:[224,255,255],lightgoldenrodyellow:[250,250,210],lightgray:[211,211,211],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightsalmon:[255,160,122],lightseagreen:[32,178,170],lightskyblue:[135,206,250],lightslategray:[119,136,153],lightslategrey:[119,136,153],lightsteelblue:[176,196,222],lightyellow:[255,255,224],lime:[0,255,0],limegreen:[50,205,50],linen:[250,240,230],magenta:[255,0,255],maroon:[128,0,0],mediumaquamarine:[102,205,170],mediumblue:[0,0,205],mediumorchid:[186,85,211],mediumpurple:[147,112,219],mediumseagreen:[60,179,113],mediumslateblue:[123,104,238],mediumspringgreen:[0,250,154],mediumturquoise:[72,209,204],mediumvioletred:[199,21,133],midnightblue:[25,25,112],mintcream:[245,255,250],mistyrose:[255,228,225],moccasin:[255,228,181],navajowhite:[255,222,173],navy:[0,0,128],oldlace:[253,245,230],olive:[128,128,0],olivedrab:[107,142,35],orange:[255,165,0],orangered:[255,69,0],orchid:[218,112,214],palegoldenrod:[238,232,170],palegreen:[152,251,152],paleturquoise:[175,238,238],palevioletred:[219,112,147],papayawhip:[255,239,213],peachpuff:[255,218,185],peru:[205,133,63],pink:[255,192,203],plum:[221,160,221],powderblue:[176,224,230],purple:[128,0,128],rebeccapurple:[102,51,153],red:[255,0,0],rosybrown:[188,143,143],royalblue:[65,105,225],saddlebrown:[139,69,19],salmon:[250,128,114],sandybrown:[244,164,96],seagreen:[46,139,87],seashell:[255,245,238],sienna:[160,82,45],silver:[192,192,192],skyblue:[135,206,235],slateblue:[106,90,205],slategray:[112,128,144],slategrey:[112,128,144],snow:[255,250,250],springgreen:[0,255,127],steelblue:[70,130,180],tan:[210,180,140],teal:[0,128,128],thistle:[216,191,216],tomato:[255,99,71],turquoise:[64,224,208],violet:[238,130,238],wheat:[245,222,179],white:[255,255,255],whitesmoke:[245,245,245],yellow:[255,255,0],yellowgreen:[154,205,50]}},8797:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-abbr-form{grid-column-gap:0;grid-row-gap:var(--ck-spacing-standard);display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);padding:var(--ck-spacing-large)}.ck.ck-abbr-form .ck.ck-labeled-field-view:first-of-type{grid-area:1/1/2/3}.ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(2){grid-area:2/1/3/3}.ck.ck-abbr-form .ck-button:first-of-type{grid-area:3/1/4/2}.ck.ck-abbr-form .ck-button:nth-of-type(2){grid-area:3/2/4/3}","",{version:3,sources:["webpack://./abbreviation/styles.css"],names:[],mappings:"AAAA,iBAKI,iBAAoB,CACpB,uCAAwC,CAJxC,YAAa,CACb,mCAAqC,CACrC,gCAAkC,CAHlC,+BAMJ,CAEA,yDACI,iBACJ,CAEA,0DACI,iBACJ,CAEA,0CACI,iBACJ,CAEA,2CACI,iBACJ",sourcesContent:[".ck.ck-abbr-form {\r\n    padding: var(--ck-spacing-large);\r\n    display: grid;\r\n    grid-template-columns: repeat(2, 1fr);\r\n    grid-template-rows: repeat(3, 1fr);\r\n    grid-column-gap: 0px;\r\n    grid-row-gap: var(--ck-spacing-standard);\r\n}\r\n\r\n.ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(1) {\r\n    grid-area: 1 / 1 / 2 / 3;\r\n}\r\n\r\n.ck.ck-abbr-form .ck.ck-labeled-field-view:nth-of-type(2) {\r\n    grid-area: 2 / 1 / 3 / 3;\r\n}\r\n\r\n.ck.ck-abbr-form .ck-button:nth-of-type(1) {\r\n    grid-area: 3 / 1 / 4 / 2;\r\n}\r\n\r\n.ck.ck-abbr-form .ck-button:nth-of-type(2) {\r\n    grid-area: 3 / 2 / 4 / 3;\r\n}"],sourceRoot:""}]);const a=s},2165:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck-content code{background-color:hsla(0,0%,78%,.3);border-radius:2px;padding:.15em}.ck.ck-editor__editable .ck-code_selected{background-color:hsla(0,0%,78%,.5)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-basic-styles/theme/code.css"],names:[],mappings:"AAKA,iBACC,kCAAuC,CAEvC,iBAAkB,CADlB,aAED,CAEA,0CACC,kCACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck-content code {\n\tbackground-color: hsla(0, 0%, 78%, 0.3);\n\tpadding: .15em;\n\tborder-radius: 2px;\n}\n\n.ck.ck-editor__editable .ck-code_selected  {\n\tbackground-color: hsla(0, 0%, 78%, 0.5);\n}\n"],sourceRoot:""}]);const a=s},8643:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,'.ck.ck-editor__editable .ck.ck-clipboard-drop-target-position{display:inline;pointer-events:none;position:relative}.ck.ck-editor__editable .ck.ck-clipboard-drop-target-position span{position:absolute;width:0}.ck.ck-editor__editable .ck-widget:-webkit-drag>.ck-widget__selection-handle,.ck.ck-editor__editable .ck-widget:-webkit-drag>.ck-widget__type-around{display:none}.ck.ck-clipboard-drop-target-line{pointer-events:none;position:absolute}:root{--ck-clipboard-drop-target-dot-width:12px;--ck-clipboard-drop-target-dot-height:8px;--ck-clipboard-drop-target-color:var(--ck-color-focus-border)}.ck.ck-editor__editable .ck.ck-clipboard-drop-target-position span{background:var(--ck-clipboard-drop-target-color);border:1px solid var(--ck-clipboard-drop-target-color);bottom:calc(var(--ck-clipboard-drop-target-dot-height)*-.5);margin-left:-1px;top:calc(var(--ck-clipboard-drop-target-dot-height)*-.5)}.ck.ck-editor__editable .ck.ck-clipboard-drop-target-position span:after{border-color:var(--ck-clipboard-drop-target-color) transparent transparent transparent;border-style:solid;border-width:calc(var(--ck-clipboard-drop-target-dot-height)) calc(var(--ck-clipboard-drop-target-dot-width)*.5) 0 calc(var(--ck-clipboard-drop-target-dot-width)*.5);content:"";display:block;height:0;left:50%;position:absolute;top:calc(var(--ck-clipboard-drop-target-dot-height)*-.5);transform:translateX(-50%);width:0}.ck.ck-editor__editable .ck-widget.ck-clipboard-drop-target-range{outline:var(--ck-widget-outline-thickness) solid var(--ck-clipboard-drop-target-color)!important}.ck.ck-editor__editable .ck-widget:-webkit-drag{zoom:.6;outline:none!important}.ck.ck-clipboard-drop-target-line{background:var(--ck-clipboard-drop-target-color);border:1px solid var(--ck-clipboard-drop-target-color);height:0;margin-top:-1px}.ck.ck-clipboard-drop-target-line:before{border-style:solid;content:"";height:0;position:absolute;top:calc(var(--ck-clipboard-drop-target-dot-width)*-.5);width:0}[dir=ltr] .ck.ck-clipboard-drop-target-line:before{border-color:transparent transparent transparent var(--ck-clipboard-drop-target-color);border-width:calc(var(--ck-clipboard-drop-target-dot-width)*.5) 0 calc(var(--ck-clipboard-drop-target-dot-width)*.5) var(--ck-clipboard-drop-target-dot-height);left:-1px}[dir=rtl] .ck.ck-clipboard-drop-target-line:before{border-color:transparent var(--ck-clipboard-drop-target-color) tr
+{
+    "word": "त्रियुग",
+    "CAE": [
+        {
+            "word": "त्रियुग",
+            "eid": "12907",
+            "pagenum": 212,
+            "content": "त्रियुग/¦ <lex>n.</lex> three periods or ages."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रियुग",
+            "eid": "9060",
+            "pagenum": 161,
+            "content": "त्रियुग/¦ <i>n.</i> drei Menschen- <i>o.</i> Zeitalter."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "त्रियुग",
+            "eid": "3951",
+            "pagenum": 559,
+            "content": "<b>tri-yugá,</b>¦ <ab>n.</ab>, ein <i>Zeitraum von drei Lebensaltern</i> [yugá]. <dvsn n='TS'>-ám yā́s óṣadhīs pū́rvās yātā́s devébhyas 〰 purā́ {923,1}."
+        }
+    ],
+    "INM": [
+        {
+            "word": "त्रियुग",
+            "eid": "10991",
+            "pagenum": 683,
+            "content": "<b>Triyuga</b><sup>1</sup>¦ = Kṛṣṇa: III, 8280 (dual = K. and Arjuna); V, 2541, 2542; XII, 1504.—Do.<sup>2</sup> = Śiva (1000 names<sup>2</sup>)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रियुग",
+            "eid": "88142",
+            "pagenum": "460,1",
+            "content": "त्रि—युग/ ¦ <lex>n.</lex> (= -पुरुष) 3 generations (<ls>Nir.</ls>; ‘spring, rainy-season, and autumn’, <ls>ŚBr. vii</ls>), <ls>RV. x, 97, 1</ls><info lex='n'/>"
+        },
+        {
+            "word": "त्रियुग",
+            "eid": "88143",
+            "pagenum": "460,1",
+            "content": "त्रि—युग/ ¦ <lex>mfn.</lex> appearing in the first 3 <s1 slp1='yuga'>Yuga</s1>s (<s1 slp1='kfzRa'>Kṛṣṇa</s1>), <ls>MBh.</ls>; <ls>BhP.</ls><info lex='m:f:n'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रियुग",
+            "eid": "47699",
+            "pagenum": 3,
+            "content": "<hom>1.</hom> त्रियुग/¦ <lex>n.</lex> <i>eine Periode von drei Generationen</i>. Nach Andern <i>Frühling, Regenzeit und Herbst oder die drei letzten Weltalter</i>."
+        },
+        {
+            "word": "त्रियुग",
+            "eid": "47700",
+            "pagenum": 3,
+            "content": "<hom>2.</hom> त्रियुग/¦ <lex>Adj.</lex> <i>in den drei ersten Weltaltern erscheinend</i> <ls>MBH. 12,43,6</ls>. Wird auch ähnlich wie त्रियुग्म erklärt."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रियुग",
+            "eid": "31091",
+            "pagenum": 3,
+            "content": "1. त्रियुग¦ (त्रि + युग) <lex>n.</lex> oxyt. <i>ein Zeitraum von drei Perioden</i> oder <i>Altern</i> <ls>NIR. 9, 28.</ls> या ओष^धी\\ः पूर्वा^ जा\\ता दे\\वेभ्य^स्त्रियु\\गं पु\\रा <i>um drei Alter vor den Göttern</i> <ls>ṚV. 10, 97, 1.</ls> Nach <ls>DURGA</ls> : <i>vor den drei</i> (letzten) <is>Yuga</is> <ab>d. i.</ab> <i>im ersten</i> J.; nach <ls>ŚAT. BR. 7, 2, 4, 26</ls> und <ls>MAHĪDH.</ls> zu <ls>VS. 12, 75</ls> <i>im Frühling, in der Regenzeit, im Herbst.</i>"
+        },
+        {
+            "word": "त्रियुग",
+            "eid": "31092",
+            "pagenum": 3,
+            "content": "2. त्रियुग¦ (wie eben) <lex>adj.</lex> als Beiw. von <is>Kṛṣṇa</is> <i>in drei</i> <is>Yuga</is> <i>zur Erscheinung kommend</i> <ls>MBH. 12, 504.</ls> <ls>BHĀG. P. 3, 24, 26. 5, 18, 35. 7, 9, 38.</ls> त्रियुगौ - वासुदेवधनंजयौ <ls>MBH. 3, 8280.</ls>"
+        },
+        {
+            "word": "त्रियुग",
+            "eid": "120183",
+            "pagenum": 7,
+            "content": "1. त्रियुग¦ vgl. u. युग 4)."
+        }
+    ],
+    "VEI": [
+        {
+            "word": "त्रियुग",
+            "eid": "1217",
+            "pagenum": 1,
+            "content": "<b>Tri-yuga,</b>¦ neut., is an expression occurring in the Rigveda<sup>1</sup> where it is said that the plants (<i>oṣadhi</i>) were born ‘three ages’ before the gods (<i>devebhyas triyugaṃ purā</i>). The commentator on the Nirukta<sup>2</sup> thinks that the ages here meant are the Yugas of the later Indian chronology, the sense of the passage being that the plants were born in the first Yuga. The author of the Śatapatha Brāhmaṇa<sup>3</sup> understands three seasons — spring, the rains, and autumn — to be meant in the verse, taking the two words <i>triyugaṃ purā</i> separately as ‘formerly, in the three seasons.’ The vague sense ‘three ages’ is quite adequate: the use of ‘three’ in such cases is a favourite feature in folklore. <i>Cf.</i> <b>Yuga.</b> <F>1) x. 97, 1 = Taittirīya Saṃhitā, iv. 2, 6, 1, and Vājasaneyi Saṃhitā; xii. 75.</F> <F>2) ix. 28.</F> <F>3) vii. 2, 4, 26. <dvsn n='P'/><i>Cf.</i> Eggeling, <i>Sacred Books of the East,</i> 41, 340.</F>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रियुग",
+            "eid": "15602",
+            "pagenum": "2-661-a",
+            "content": "त्रियुगः¦, पुं, (त्रीणि युगानि सत्यत्रेताद्बापररूपाणि आविर्भावकालोऽस्य ।) विष्णुः । यथा, भागवते । ७ । ९ । ३८ । “इत्यं नृतिर्य्यगृषिदेवझषावतारैर्लोकान् विभावयसि हंसि जगत्प्रतीपान् । धर्म्मं महापुरुष ! पासि युगानुवृत्तं छन्नः कलौ यदभवस्त्रियुगोऽथ स त्वम् ॥” “एकस्तमेव इत्यादिभिरष्टभिः श्लोकैर्यदुक्तं पक्षपातेन रक्षणं तद्बिपक्षवधश्च सत्त्वोपाधितो न स्वत इति तदुपसंहरति इत्थमिति विभावयसि पालयसि हंसि घातयसि । कलौ तु तन्न करोषि यतस्तदा त्वं छन्नोऽभवः यतस्त्रिष्वेव युगेष्वाविर्भावात् स एवम्भूतस्त्वं त्रियुग इति प्रसिद्धः ।” इति तट्टीकायां श्रीधरस्वामी ॥ (तथा च तत्रैव । ३ । २४ । २६ । “स चावतीर्णं त्रियुगमाज्ञाय विबुधर्षभम् । विविक्त उपसंगम्य प्रणम्य समभाषत ॥” वसन्तप्रावृट्शरद्रूपकालत्रये, क्ली । यथा, वाजसनेयसंहितायाम् । १२ । ७५ । “या ओषधीः पूर्व्वा जाता देवेभ्यस्त्रियुगं पुरा ॥” “युगशब्दः कालवाची । त्रयाणां युगानां समाहारस्त्रियुगं त्रिकालं वसन्ते प्रावृषि शरदि च ।” इति तद्भाष्ये महीधरः ॥ कृतत्रेताद्वापररूपयुगत्रयम् । इति ऋग्वेदस्य । १० । ९७ । १ । भाष्ये सायनः ॥ षडैश्वर्य्यशालिनि, त्रि । यथा, महाभारते । ३ । ८६ । ५ । “त्रियुगौ पुण्डरीकाक्षौ वासुदेवधनञ्जयौ ॥” “त्रियुगौ धर्म्मस्य भार्य्यायां मूर्त्तिसंज्ञायां कृतयुगेऽवतीर्णौ नरनारायणौ तावेव द्बापरान्ते केशवार्ज्जुनौ इति पुराणपुरुषावेतौ नास्मदादिवन्मानुषाविति भावः । यद्वा, त्रीणि युगानि युगलानि षडैश्वर्य्याणि भगसंज्ञानि वा षडङ्गानि वा ययोस्तौ त्रियुगौ ॥” इति तट्टीकायां नीलकण्ठः ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रियुग",
+            "eid": "23760",
+            "pagenum": "3377,b",
+            "content": "त्रियुग¦ पु० त्रीणि युगानि आविर्भावकालोऽस्य । १ यज्ञपुरुषे तस्य कृतयुये आविर्भावाभावात् कलौ छन्नत्वात् वा । “इत्थं नृतिर्य्यगृषिदेवझषावतारैर्लोकान् विभावयसि हंसि जगत् प्रतीपान् । धर्मं महापुरुष! पासि युगानुवृत्तं छन्नः कलौ यदभवस्त्रियुगोऽथ स त्वम्” भाग० ७ । ९ । ३८ “कलौ तु तन्न करोसि यतस्तदा त्वं छन्नोऽभवः यतस्त्रिष्वेव युगेष्वाविर्भावात् स एवम्भूतस्त्वं त्रियुग इति प्रसिद्धः” श्रीधरस्वामी । २ वसन्तादिकालत्रये । “या ओषधीः पूर्वा जाता देवेभ्यस्त्रियुगं पुरा” यजु० १२ । ७५ “युगशब्दः कालवाची त्रयाणां युगानां समाहारस्त्रियुगं त्रिकालं वसन्ते प्रावृषि शरदि च । वेददी० ।"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रियुग",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಯಜ್ಞಪುರುಷ",
+            "व्युत्पत्तिः": "त्रीणि युगानि आविर्भावकालोऽस्य",
+            "प्रयोगाः": "'इत्थं नृतिर्यगृषिदेवझषावतारैर्लोकान् विभावयसि हंसि जगत्प्रतीपान् । धर्मं महापुरुष पासि युगानुवृत्तं छन्नः कलौ यदभवस्त्रियुगोऽथ स त्वम् ॥'",
+            "उल्लेखाः": "भाग० ७-९-३८",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रियुग",
+            "content": "<body><s>triyuga pu° trIRi yugAni AvirBAvakAlo'sya . <lb/><b>1</b> yajYapuruze tasya kftayuye AvirBAvABAvAt kalO CannatvAt vA . <q>itTaM nftiryyagfzidevaJazAvatArErlokAn viBAvayasi haMsi jagat pratIpAn . DarmaM mahApuruza! pAsi yugA­nuvfttaM CannaH kalO yadaBavastriyugo'Ta sa tvam</q> BAga° 7 . 9 . 38 <q>kalO tu tanna karosi yatastadA tvaM Canno'­BavaH yatastrizveva yugezvAvirBAvAt sa evamBUtastvaM triyuga iti prasidDaH</q> SrIDarasvAmI . <lb/><b>2</b> vasantAdikAla­traye . <q>yA ozaDIH pUrvA jAtA deveByastriyugaM purA</q> yaju° 12 . 75 “yugaSabdaH kAlavAcI trayARAM yugAnAM samAhArastriyugaM trikAlaM vasante prAvfzi Saradi ca . vedadI° .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रियुग",
+            "content": "<span lang=\"sa\">त्रियुग<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಯಜ್ಞಪುರುಷ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीणि युगानि आविर्भावकालोऽस्य<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"इत्थं नृतिर्यगृषिदेवझषावतारैर्लोकान् विभावयसि हंसि जगत्प्रतीपान् । धर्मं महापुरुष पासि युगानुवृत्तं छन्नः कलौ यदभवस्त्रियुगोऽथ स त्वम् ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भाग० ७-९-३८<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

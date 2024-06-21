@@ -1,458 +1,101 @@
- || typeof value !== 'object') {
-	    return false;
-	  }
-	  var descriptor = gOPD$1(value, 'lastIndex');
-	  var hasLastIndexDataProperty = descriptor && has(descriptor, 'value');
-	  if (!hasLastIndexDataProperty) {
-	    return false;
-	  }
-	  try {
-	    $exec(value, badStringifier);
-	  } catch (e) {
-	    return e === isRegexMarker;
-	  }
-	} : function isRegex(value) {
-	  // In older browsers, typeof regex incorrectly returns 'function'
-	  if (!value || typeof value !== 'object' && typeof value !== 'function') {
-	    return false;
-	  }
-	  return $toString$2(value) === regexClass;
-	};
-
-	var callBound$5 = callBound$d;
-	var $byteLength$1 = callBound$5('SharedArrayBuffer.prototype.byteLength', true);
-	var isSharedArrayBuffer$1 = $byteLength$1 ? function isSharedArrayBuffer(obj) {
-	  if (!obj || typeof obj !== 'object') {
-	    return false;
-	  }
-	  try {
-	    $byteLength$1(obj);
-	    return true;
-	  } catch (e) {
-	    return false;
-	  }
-	} : function isSharedArrayBuffer(obj) {
-	  // eslint-disable-line no-unused-vars
-	  return false;
-	};
-
-	var numToStr = Number.prototype.toString;
-	var tryNumberObject = function tryNumberObject(value) {
-	  try {
-	    numToStr.call(value);
-	    return true;
-	  } catch (e) {
-	    return false;
-	  }
-	};
-	var toStr$1 = Object.prototype.toString;
-	var numClass = '[object Number]';
-	var hasToStringTag$2 = shams();
-	var isNumberObject = function isNumberObject(value) {
-	  if (typeof value === 'number') {
-	    return true;
-	  }
-	  if (typeof value !== 'object') {
-	    return false;
-	  }
-	  return hasToStringTag$2 ? tryNumberObject(value) : toStr$1.call(value) === numClass;
-	};
-
-	var callBound$4 = callBound$d;
-	var $boolToStr = callBound$4('Boolean.prototype.toString');
-	var $toString$1 = callBound$4('Object.prototype.toString');
-	var tryBooleanObject = function booleanBrandCheck(value) {
-	  try {
-	    $boolToStr(value);
-	    return true;
-	  } catch (e) {
-	    return false;
-	  }
-	};
-	var boolClass = '[object Boolean]';
-	var hasToStringTag$1 = shams();
-	var isBooleanObject = function isBoolean(value) {
-	  if (typeof value === 'boolean') {
-	    return true;
-	  }
-	  if (value === null || typeof value !== 'object') {
-	    return false;
-	  }
-	  return hasToStringTag$1 && Symbol.toStringTag in value ? tryBooleanObject(value) : $toString$1(value) === boolClass;
-	};
-
-	var isSymbol$1 = {exports: {}};
-
-	var toStr = Object.prototype.toString;
-	var hasSymbols = hasSymbols$5();
-	if (hasSymbols) {
-	  var symToStr = Symbol.prototype.toString;
-	  var symStringRegex = /^Symbol\(.*\)$/;
-	  var isSymbolObject = function isRealSymbolObject(value) {
-	    if (typeof value.valueOf() !== 'symbol') {
-	      return false;
-	    }
-	    return symStringRegex.test(symToStr.call(value));
-	  };
-	  isSymbol$1.exports = function isSymbol(value) {
-	    if (typeof value === 'symbol') {
-	      return true;
-	    }
-	    if (toStr.call(value) !== '[object Symbol]') {
-	      return false;
-	    }
-	    try {
-	      return isSymbolObject(value);
-	    } catch (e) {
-	      return false;
-	    }
-	  };
-	} else {
-	  isSymbol$1.exports = function isSymbol(value) {
-	    // this environment does not support Symbols.
-	    return false ;
-	  };
-	}
-
-	var isBigint = {exports: {}};
-
-	var $BigInt = typeof BigInt !== 'undefined' && BigInt;
-	var hasBigints = function hasNativeBigInts() {
-	  return typeof $BigInt === 'function' && typeof BigInt === 'function' && typeof $BigInt(42) === 'bigint' // eslint-disable-line no-magic-numbers
-	  && typeof BigInt(42) === 'bigint'; // eslint-disable-line no-magic-numbers
-	};
-
-	var hasBigInts = hasBigints();
-	if (hasBigInts) {
-	  var bigIntValueOf = BigInt.prototype.valueOf;
-	  var tryBigInt = function tryBigIntObject(value) {
-	    try {
-	      bigIntValueOf.call(value);
-	      return true;
-	    } catch (e) {}
-	    return false;
-	  };
-	  isBigint.exports = function isBigInt(value) {
-	    if (value === null || typeof value === 'undefined' || typeof value === 'boolean' || typeof value === 'string' || typeof value === 'number' || typeof value === 'symbol' || typeof value === 'function') {
-	      return false;
-	    }
-	    if (typeof value === 'bigint') {
-	      return true;
-	    }
-	    return tryBigInt(value);
-	  };
-	} else {
-	  isBigint.exports = function isBigInt(value) {
-	    return false ;
-	  };
-	}
-
-	var isString = isString$2;
-	var isNumber = isNumberObject;
-	var isBoolean = isBooleanObject;
-	var isSymbol = isSymbol$1.exports;
-	var isBigInt = isBigint.exports;
-
-	// eslint-disable-next-line consistent-return
-	var whichBoxedPrimitive$1 = function whichBoxedPrimitive(value) {
-	  // eslint-disable-next-line eqeqeq
-	  if (value == null || typeof value !== 'object' && typeof value !== 'function') {
-	    return null;
-	  }
-	  if (isString(value)) {
-	    return 'String';
-	  }
-	  if (isNumber(value)) {
-	    return 'Number';
-	  }
-	  if (isBoolean(value)) {
-	    return 'Boolean';
-	  }
-	  if (isSymbol(value)) {
-	    return 'Symbol';
-	  }
-	  if (isBigInt(value)) {
-	    return 'BigInt';
-	  }
-	};
-
-	var $WeakMap = typeof WeakMap === 'function' && WeakMap.prototype ? WeakMap : null;
-	var $WeakSet$1 = typeof WeakSet === 'function' && WeakSet.prototype ? WeakSet : null;
-	var exported;
-	if (!$WeakMap) {
-	  // eslint-disable-next-line no-unused-vars
-	  exported = function isWeakMap(x) {
-	    // `WeakMap` is not present in this environment.
-	    return false;
-	  };
-	}
-	var $mapHas$2 = $WeakMap ? $WeakMap.prototype.has : null;
-	var $setHas$2 = $WeakSet$1 ? $WeakSet$1.prototype.has : null;
-	if (!exported && !$mapHas$2) {
-	  // eslint-disable-next-line no-unused-vars
-	  exported = function isWeakMap(x) {
-	    // `WeakMap` does not have a `has` method
-	    return false;
-	  };
-	}
-	var isWeakmap = exported || function isWeakMap(x) {
-	  if (!x || typeof x !== 'object') {
-	    return false;
-	  }
-	  try {
-	    $mapHas$2.call(x, $mapHas$2);
-	    if ($setHas$2) {
-	      try {
-	        $setHas$2.call(x, $setHas$2);
-	      } catch (e) {
-	        return true;
-	      }
-	    }
-	    return x instanceof $WeakMap; // core-js workaround, pre-v3
-	  } catch (e) {}
-	  return false;
-	};
-
-	var isWeakset = {exports: {}};
-
-	var GetIntrinsic$1 = getIntrinsic;
-	var callBound$3 = callBound$d;
-	var $WeakSet = GetIntrinsic$1('%WeakSet%', true);
-	var $setHas$1 = callBound$3('WeakSet.prototype.has', true);
-	if ($setHas$1) {
-	  var $mapHas$1 = callBound$3('WeakMap.prototype.has', true);
-	  isWeakset.exports = function isWeakSet(x) {
-	    if (!x || typeof x !== 'object') {
-	      return false;
-	    }
-	    try {
-	      $setHas$1(x, $setHas$1);
-	      if ($mapHas$1) {
-	        try {
-	          $mapHas$1(x, $mapHas$1);
-	        } catch (e) {
-	          return true;
-	        }
-	      }
-	      return x instanceof $WeakSet; // core-js workaround, pre-v3
-	    } catch (e) {}
-	    return false;
-	  };
-	} else {
-	  // eslint-disable-next-line no-unused-vars
-	  isWeakset.exports = function isWeakSet(x) {
-	    // `WeakSet` does not exist, or does not have a `has` method
-	    return false;
-	  };
-	}
-
-	var isMap = isMap$2;
-	var isSet = isSet$2;
-	var isWeakMap = isWeakmap;
-	var isWeakSet = isWeakset.exports;
-	var whichCollection$1 = function whichCollection(value) {
-	  if (value && typeof value === 'object') {
-	    if (isMap(value)) {
-	      return 'Map';
-	    }
-	    if (isSet(value)) {
-	      return 'Set';
-	    }
-	    if (isWeakMap(value)) {
-	      return 'WeakMap';
-	    }
-	    if (isWeakSet(value)) {
-	      return 'WeakSet';
-	    }
-	  }
-	  return false;
-	};
-
-	var forEach = forEach_1;
-	var availableTypedArrays = availableTypedArrays$2;
-	var callBound$2 = callBound$d;
-	var gOPD = gopd;
-	var $toString = callBound$2('Object.prototype.toString');
-	var hasToStringTag = shams();
-	var g = typeof globalThis === 'undefined' ? commonjsGlobal : globalThis;
-	var typedArrays = availableTypedArrays();
-	var $slice = callBound$2('String.prototype.slice');
-	var toStrTags = {};
-	var getPrototypeOf = Object.getPrototypeOf; // require('getprototypeof');
-	if (hasToStringTag && gOPD && getPrototypeOf) {
-	  forEach(typedArrays, function (typedArray) {
-	    if (typeof g[typedArray] === 'function') {
-	      var arr = new g[typedArray]();
-	      if (Symbol.toStringTag in arr) {
-	        var proto = getPrototypeOf(arr);
-	        var descriptor = gOPD(proto, Symbol.toStringTag);
-	        if (!descriptor) {
-	          var superProto = getPrototypeOf(proto);
-	          descriptor = gOPD(superProto, Symbol.toStringTag);
-	        }
-	        toStrTags[typedArray] = descriptor.get;
-	      }
-	    }
-	  });
-	}
-	var tryTypedArrays = function tryAllTypedArrays(value) {
-	  var foundName = false;
-	  forEach(toStrTags, function (getter, typedArray) {
-	    if (!foundName) {
-	      try {
-	        var name = getter.call(value);
-	        if (name === typedArray) {
-	          foundName = name;
-	        }
-	      } catch (e) {}
-	    }
-	  });
-	  return foundName;
-	};
-	var isTypedArray = isTypedArray$2;
-	var whichTypedArray$1 = function whichTypedArray(value) {
-	  if (!isTypedArray(value)) {
-	    return false;
-	  }
-	  if (!hasToStringTag || !(Symbol.toStringTag in value)) {
-	    return $slice($toString(value), 8, -1);
-	  }
-	  return tryTypedArrays(value);
-	};
-
-	var callBound$1 = callBound$d;
-	var $byteLength = callBound$1('ArrayBuffer.prototype.byteLength', true);
-	var isArrayBuffer$1 = isArrayBuffer$2;
-	var arrayBufferByteLength = function byteLength(ab) {
-	  if (!isArrayBuffer$1(ab)) {
-	    return NaN;
-	  }
-	  return $byteLength ? $byteLength(ab) : ab.byteLength;
-	}; // in node < 0.11, byteLength is an own nonconfigurable property
-
-	var assign = object_assign;
-	var callBound = callBound$d;
-	var flags = regexp_prototype_flags;
-	var GetIntrinsic = getIntrinsic;
-	var getIterator = esGetIterator.exports;
-	var getSideChannel = sideChannel;
-	var is = objectIs;
-	var isArguments = isArguments$2;
-	var isArray = isarray;
-	var isArrayBuffer = isArrayBuffer$2;
-	var isDate = isDateObject;
-	var isRegex = isRegex$1;
-	var isSharedArrayBuffer = isSharedArrayBuffer$1;
-	var objectKeys = objectKeys$2;
-	var whichBoxedPrimitive = whichBoxedPrimitive$1;
-	var whichCollection = whichCollection$1;
-	var whichTypedArray = whichTypedArray$1;
-	var byteLength = arrayBufferByteLength;
-	var sabByteLength = callBound('SharedArrayBuffer.prototype.byteLength', true);
-	var $getTime = callBound('Date.prototype.getTime');
-	var gPO = Object.getPrototypeOf;
-	var $objToString = callBound('Object.prototype.toString');
-	var $Set = GetIntrinsic('%Set%', true);
-	var $mapHas = callBound('Map.prototype.has', true);
-	var $mapGet = callBound('Map.prototype.get', true);
-	var $mapSize = callBound('Map.prototype.size', true);
-	var $setAdd = callBound('Set.prototype.add', true);
-	var $setDelete = callBound('Set.prototype.delete', true);
-	var $setHas = callBound('Set.prototype.has', true);
-	var $setSize = callBound('Set.prototype.size', true);
-
-	// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L401-L414
-	function setHasEqualElement(set, val1, opts, channel) {
-	  var i = getIterator(set);
-	  var result;
-	  while ((result = i.next()) && !result.done) {
-	    if (internalDeepEqual(val1, result.value, opts, channel)) {
-	      // eslint-disable-line no-use-before-define
-	      // Remove the matching element to make sure we do not check that again.
-	      $setDelete(set, result.value);
-	      return true;
-	    }
-	  }
-	  return false;
-	}
-
-	// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L416-L439
-	function findLooseMatchingPrimitives(prim) {
-	  if (typeof prim === 'undefined') {
-	    return null;
-	  }
-	  if (typeof prim === 'object') {
-	    // Only pass in null as object!
-	    return void 0;
-	  }
-	  if (typeof prim === 'symbol') {
-	    return false;
-	  }
-	  if (typeof prim === 'string' || typeof prim === 'number') {
-	    // Loose equal entries exist only if the string is possible to convert to a regular number and not NaN.
-	    return +prim === +prim; // eslint-disable-line no-implicit-coercion
-	  }
-
-	  return true;
-	}
-
-	// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L449-L460
-	function mapMightHaveLoosePrim(a, b, prim, item, opts, channel) {
-	  var altValue = findLooseMatchingPrimitives(prim);
-	  if (altValue != null) {
-	    return altValue;
-	  }
-	  var curB = $mapGet(b, altValue);
-	  var looseOpts = assign({}, opts, {
-	    strict: false
-	  });
-	  if (typeof curB === 'undefined' && !$mapHas(b, altValue)
-	  // eslint-disable-next-line no-use-before-define
-	  || !internalDeepEqual(item, curB, looseOpts, channel)) {
-	    return false;
-	  }
-	  // eslint-disable-next-line no-use-before-define
-	  return !$mapHas(a, altValue) && internalDeepEqual(item, curB, looseOpts, channel);
-	}
-
-	// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L441-L447
-	function setMightHaveLoosePrim(a, b, prim) {
-	  var altValue = findLooseMatchingPrimitives(prim);
-	  if (altValue != null) {
-	    return altValue;
-	  }
-	  return $setHas(b, altValue) && !$setHas(a, altValue);
-	}
-
-	// taken from https://github.com/browserify/commonjs-assert/blob/bba838e9ba9e28edf3127ce6974624208502f6bc/internal/util/comparisons.js#L518-L533
-	function mapHasEqualEntry(set, map, key1, item1, opts, channel) {
-	  var i = getIterator(set);
-	  var result;
-	  var key2;
-	  while ((result = i.next()) && !result.done) {
-	    key2 = result.value;
-	    if (
-	    // eslint-disable-next-line no-use-before-define
-	    internalDeepEqual(key1, key2, opts, channel)
-	    // eslint-disable-next-line no-use-before-define
-	    && internalDeepEqual(item1, $mapGet(map, key2), opts, channel)) {
-	      $setDelete(set, key2);
-	      return true;
-	    }
-	  }
-	  return false;
-	}
-	function internalDeepEqual(actual, expected, options, channel) {
-	  var opts = options || {};
-
-	  // 7.1. All identical values are equivalent, as determined by ===.
-	  if (opts.strict ? is(actual, expected) : actual === expected) {
-	    return true;
-	  }
-	  var actualBoxed = whichBoxedPrimitive(actual);
-	  var expectedBoxed = whichBoxedPrimitive(expected);
-	  if (actualBoxed !== expectedBoxed) {
-	    return false;
-	  }
-
-	  // 7.3. Other pairs that do not both pass typeof 
+{
+    "word": "समन्तपञ्चक",
+    "INM": [
+        {
+            "word": "समन्तपञ्चक",
+            "eid": "9336",
+            "pagenum": 610,
+            "content": "<b>Samantapañcaka</b>,¦ name of a place = Kurukṣetra. § 1 (Anukram.): I, <b>1</b>, 12 (the place of the battle between the Kurus and the Pāṇḍavas).—§ 8 (Parvasaṅgr.): I, <b>2</b>, 270, 271 (<i>°ākhyaṃ</i>), 273 (there Rāma Jāmadagnya dug five lakes which were filled with the blood of the kṣatriyas whom he slew). 278 (the lakes became tīrthas). 282 (<i>°e</i> <i>yuddhaṃ Kuru-Pāṇḍavasenayoḥ</i>).—§ 398 (Paraśurāma): III, <b>117</b>, 10204 (Rāma Jāmadagnya made five lakes in <i>S</i>.).— § 574 (Jambūkh.): VI, <b>1</b>, 7 (C. by error <i>Sya°</i>).—§ 596 (Pratijñāp.): VII, <b>77</b>, 2725 (do.).—§ 615 (Baladevatīrthayātrā): IX, <b>37</b>, 2163 (on the Sarasvatī).—§ 615<i>u</i> (Skanda): IX, <b>44</b>, 2501 (<i>°e yā vai triṣu lokeṣu viśrutā</i>, sc. Sarasvatī). —§ 615 (Baladevatīrthay.): IX, <b>52</b>, 3006 (<i>°dvārā</i>) (B. <i>°āt</i>)). —§ 615<i>kk</i> (Kurukṣetrak.): IX, <b>53</b>, †3008 (<i>Prajāpater</i> <i>uttaravedir ucyate</i>), 3032 (<i>etat Kurukṣetra-S°ṃ Prajāpater</i> <i>uttaravedir ucyate</i>).—§ 615 (Gadāyuddhap.): IX, <b>55</b>, 3085 (<i>uttaravedī…Prajāpateḥ</i>), 3087; <b>64</b>, 3620 (<i>puṇye</i>, there Duryodhana died)."
+        }
+    ],
+    "MCI": [
+        {
+            "word": "समन्तपञ्चक",
+            "eid": "2056",
+            "pagenum": 577,
+            "content": "<b>Samantapañcaka</b>¦ nt.: Name of a holy place, also called <b>Kurukṣetrasamantapañca-</b> <b>ka</b> and <b>Pitāmahasya uttaravediḥ</b> or <b>Prajā-</b> <b>pater uttaravediḥ</b> (or <b>uttaravedī</b>) 3. 81. 178 = 9. 52. 20, 1; 9. 54. 5. <b>A.</b> Location: Along the southern bank of the river Sarasvatī (<i>sarasvatyāḥ … /tīr-</i> <i>thāni … kūle vai dakṣiṇe tadā / samanta-</i> <i>pañcakaṃ yāvat tāvat te dvijasattamāḥ /</i> <i>tīrthalobhān … nadyās tīraṃ samāśritāḥ //</i>) 9. 36. 41-42; a part of Kurukṣetra (9. 52. 1-2), hence called Kurukṣetrasamantapañcaka; the land between Tarantuka and Arantuka and between the (five) lakes of Rāma and Macakruka—that is the extent of Kurukṣetrasamantapañcaka (<i>tarantukāruntakayor yad antaraṃ rāma-</i> <i>hradānāṃ ca macakrukasya / etat kuru-</i> <i>kṣetrasamantapañcakam</i>) 3. 81. 178 = 9. 52. 20. <b>B.</b> Description: Holy (<i>puṇya</i>) 1. 1. 11; 1. 2. 7, 11; 9. 63. 39; most holy in the three worlds (<i>mahāpuṇyatame trailo-</i> <i>kyasya</i>) 9. 54. 6; very ancient (<i>sanātana</i>) 9. 54. 6; pleasing (<i>ramaṇīya</i>) 1. 2. 11; resorted to by twice-born (<i>dvijaniṣevita</i>) 1. 1. 11; very pious (<i>paramadharmiṣṭha</i>) 1. 2. 10; free from the defects of the earth (<i>bhū-</i> <i>doṣavarjita</i>) 1. 2. 10; famous in the three worlds (<i>triṣu lokeṣu viśrute</i>) 9. 63. 39. <b>C.</b> Characteristic: Rāma created at this place five ponds filled with the blood of the Kṣatriyas killed by him; the place near these five ponds came to be called Samantapañcaka, since the wise say that a place should be called after the characteristic by which it is distinguished (<i>teṣāṃ samīpe yo deśo hradā-</i> <i>nāṃ rudhirāmbhasām / samantapañcakam</i> <i>iti puṇyaṃ tat parikīrtitam // yena liṅgena</i> <i>yo deśo yuktaḥ samupalakṣyate / tenaiva</i> <i>nāmnā taṃ deśam vācyam āhur manīṣiṇaḥ //</i>) 1. 2. 7-8. <b>D.</b> Holiness: (1) The holy <i>tīrthas</i> on the southern bank of Sarasvatī became towns and extended as far as Samantapañcaka (<i>sarasvatyāḥ … /tīrthāni naga-</i> <i>rāyante kūle vai dakṣiṇe tadā // samanta-</i> <i>pañcakaṃ yāvat</i>) 9. 36. 42; (2) It was called the most ancient <i>uttaravedi</i> of Prajāpati (or Pitāmaha) (<i>prajāpater uttaravedir</i> <i>ucyate sanātanā rāma samantapañcakam /</i> 9. 52. 1, 20; 9. 54. 5 (<i>uttaravedī</i>); (<i>pitāmaha-</i> <i>syottaravedir ucyate</i>) 3. 81. 178; a place in heaven was assured for one who died while fighting at Samantapañcaka (<i>tasmin … saṃ-</i> <i>grāme nidhanaṃ prāpya dhruvaṃ svargo bha-</i> <i>viṣyati</i>) 9. 54. 6; 9. 63. 39. <b>E.</b> Epic events: (1) Sūta Ugraśravas visited Samantapañcaka before he arrived at the <i>satra</i> of Śaunaka in the Naimiṣa forest (<i>samantapañ-</i> <i>cakaṃ nāma … .gatavān asmi taṃ deśam</i>) 1. 1. 11; the sages expressed their wish to know more about the place Samantapañcaka 1. 2. 1; (2) Yudhiṣṭhira asked his men to raise tents in thousands outside Samantapañcaka (<i>samantapañcakād bā-</i> <i>hyam</i>) 6. 1. 6; (3) The battle between the Pāṇḍavas and the Kauravas and between all the kings was fought at Samantapañcaka (<i>yuddhaṃ yatrābhavat purā pāṇḍavānāṃ</i> <i>kurūṇāṃ ca sarveṣāṃ ca mahīkṣitām</i>) 1. 1. 11; the battle at Samantapañcaka took place at the junction of the Kali and Dvāpara and where the armies, eighteen <i>akṣau-</i> <i>hiṇīs</i> in number had gathered for fighting the battle (<i>antare caiva samprāpte kalidvā-</i> <i>parayor abhūt / samantapañcake yuddhaṃ</i> <i>kurupāṇḍavasenayoḥ // … aṣṭādaśa samāja-</i> <i>gmur akṣauhiṇyo yuyutsayā</i>) 1. 2. 9-10; (4) While consoling Subhadrā over the death of Abhimanyu, Kṛṣṇa told her that on the following day she would hear that the head of Jayadratha was severed from his body and carried outside Samantapañcaka (<i>śvaḥ śiraḥ śroṣyase tasya saindhava-</i> <i>sya raṇe hṛtam / samantapañcakād bāhyaṃ</i>) 7. 54. 20; Kṛṣṇa advised Arjuna to remove the head of Jayadratha and let it fall on the lap of Vṛddhakṣatra (father of Jayadratha) who was practising austerities in a forest outside Samantapañcaka (<i>vṛddha-</i> <i>kṣatro vanaṃ yātaḥ … tapyati … tapo</i> <i>ghoraṃ … /samantapañcakād asmād bahiḥ</i>) 7. 121. 24-26; Arjuna, after he cut the head of Jayadratha, took it outside Samantapañcaka with arrows which formed a close cluster (<i>śaraiḥ kadambakīkṛtya kāle tasmiṃś</i> <i>ca pāṇḍavaḥ / samantapañcakād bāhyaṃ</i> <i>śiras tad vyāharat tataḥ //</i>) 7. 121. 34; (5) Duryodhana suggested to go to Samantapañcaka for his duel with Bhīma (<i>samanta-</i> <i>pañcakaṃ kṣipram ito yāma viśāṃ pate</i>) 9. 54. 5; Yudhiṣṭhira, followed by Duryodhana, then went to Samantapañcaka 9. 54. 7; (6) From the <i>tīrtha</i> of Vṛddhakanyā, Mādhava (Balarāma) came out of Samantapañcaka (<i>samantapañcakād dvārāt</i> <i>tato niṣkramya mādhavaḥ</i>) 9. 51. 25. <b>F.</b> Past events: (1) At Samantapañcaka, which was known as the Uttaravedi of Prajāpati, gods formerly offered an excellent <i>satra (prajāpater uttaravedir</i> <i>ucyate … samantapañcakam / samījire yatra</i> <i>purā divaukaso vareṇa satreṇa)</i> 9. 52. 1; (2) Once many sages arrived at the <i>tīrthas</i> on Sarasvatī which extended as far as Samantapañcaka with a view to visiting them; they offered there sacrifices and filled the regions with the sound of their vedic recitations (<i>samantapañcakaṃ yāvat tāvat te</i> <i>dvijasattamāḥ / tīrthalobhān naravyāghra</i> <i>nadyās tīraṃ samāśrītāḥ //</i>) 9. 36. 42-43; (3) Rāma deprived the earth of the Kṣatriyas twentyone times and filled at Samantapañcaka five ponds with blood (<i>triḥsapta-</i> <i>kṛtvaḥ pṛthivīṃ kṛtvā niḥkṣatriyāṃ pra-</i> <i>bhuḥ / samantapañcake pañca cakāra rudhi-</i> <i>rahradān // </i>) 3. 117. 9; 1. 2. 3-4. [see <b>Prajāpateḥ vedi<sup>2</sup></b> Vol. 1. 387-88]"
+        }
+    ],
+    "MW": [
+        {
+            "word": "समन्तपञ्चक",
+            "eid": "233565",
+            "pagenum": "1155,1",
+            "content": "सम्-अन्त—पञ्चक ¦ <lex>n.</lex> <ab>N.</ab> of the district <s1 slp1='kuru-kzetra'>Kuru-kṣetra</s1> or of a <s1 slp1='tIrTa'>Tīrtha</s1> in it (where <s1 slp1='paraSu-rAma'>Paraśu-rāma</s1> is said to have destroyed the <s1 slp1='kzatriya'>Kṣatriya</s1>s), <ls>MBh.</ls>; <ls>Pur.</ls><info lex='n'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "समन्तपञ्चक",
+            "eid": "119896",
+            "pagenum": 7,
+            "content": "समन्तपञ्चक¦ <lex>n.</lex> <ab>N. pr.</ab> eines <is>Tīrtha</is> in <is>Kurukṣetra</is>, wo <is>Paraśurāma</is> die <is>Kṣatriya</is> vernichtet haben soll."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समन्तपञ्चक",
+            "eid": "105301",
+            "pagenum": 7,
+            "content": "समन्तपञ्चक¦ <lex>n.</lex> N. pr. eines <is>Tīrtha</is> in <is>Kurukṣetra</is>, wo <is>Paraśurāma</is> die <is>Kṣatriya</is> vernichtet haben soll, <ls>MBH. 1, 12.</ls> <ls n='MBH. 1,'>270. fgg.</ls> <ls n='MBH.'>3, 10204.</ls> <ls n='MBH.'>7, 6267.</ls> <ls n='MBH.'>9, 3008.</ls> <ls>VP. 403.</ls> <ls>BHĀG. P. 9, 16, 19.</ls> कुरुक्षेत्र° <ls>MBH. 3, 7078.</ls> <ls n='MBH.'>9, 3032.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समन्तपञ्चक",
+            "eid": "42527",
+            "pagenum": 761,
+            "content": "समन्तपञ्चक¦ n. (-कं) Name of a holy place near Kurukshetra."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समन्तपञ्चक",
+            "eid": "37877",
+            "pagenum": "5-267-b",
+            "content": "समन्तपञ्चकं¦, क्ली, (समन्तात् पञ्चकं ह्रदपञ्चकं यत्र ।) कुरुक्षेत्रम् । तच्च कुरुपाण्डवयोर्युद्धस्थानम् । तत्र पुरा परशुरामः क्षत्त्रियरुधिरेण पञ्च ह्रदान् चकार । यथा, “त्रिःसप्तकृत्वः पृथिवीं कृत्वा निःक्षत्त्रियां प्रभुः । समन्तपञ्चके पञ्च कृतवान् रुधिरैर्ह्रदान् ॥ स तेषु तर्पयामास पितॄन् भृगुकुलोद्वहः । साक्षात् ददर्श पितरं स च रामं न्यवारयत् ॥” इति पाद्मे भूमिखण्डे १२४ अध्यायः ॥ * ॥ अन्यच्चे । “त्रिःसप्तकृत्वः पृथिवीं कृत्वा निःक्षत्त्रियां प्रभुः । समन्तपञ्चके चक्रे शोणितोदान् ह्रदान् नव ॥” इति श्रीभागवते ९ स्कन्धे १६ अध्यायः ॥ * ॥ तस्य माहात्म्यं सीमा च यथा, “पृथिव्यां नैमिषं तीर्थमन्तरीक्षे च पुष्करम् । त्रयाणामपि लोकानां कुरुक्षेत्रं विशिष्यते ॥” इत्यारभ्य, “तरन्तुकारन्तुकयोर्यदन्तरं रामह्रदानाञ्च मचक्रुकस्य च । एतत् कुरुक्षेत्रसमन्तपञ्चकं पितामहस्योत्तरवेदिरुच्यते ॥” इति महाभारतीयवनपर्व्वणि ८३ अध्यायः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "समन्तपञ्चक",
+            "eid": "45245",
+            "pagenum": "5229,a",
+            "content": "समन्तपञ्चक¦ न० समन्तात् पञ्चकं ह्रदपञ्चकं यत्र । कुरुक्षेत्र स्थे तीर्थभेदे “त्रिःसप्तकृत्वः पृथिवीं कृत्वा निःक्षत्त्रियां प्रभुः । समन्तपञ्चके पञ्च चकार रौधिरान् ह्रदान् । स तेषु तर्पयामास भृगून् भृगुकुलोद्वहः” भा० व० ११७ अ० । “तरन्तुकारन्तुकयोर्युदन्तरं रामह्रदानाञ्च मचक्रुकस्य च । एतत् कुरुक्षेत्र समन्तपञ्चकं पितामहस्योत्तरवेदिरुच्यते” भा० व० ८३ अ० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समन्तपञ्चक",
+            "content": "समन्तपञ्चकम् नपुं. समन्त-पञ्चकम्  - कुरुक्षेत्र या उसके निकट का प्रदेश"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "समन्तपञ्चक",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸುತ್ತಲೂ ೫ ಹ್ರದಗಳುಳ್ಳ ಕುರುಕ್ಷೇತ್ರ",
+            "प्रयोगाः": "'स सर्वं क्षत्रमुत्साद्य स्ववीर्येणानलद्युतिः । समन्तपञ्चके पञ्च चकार रुधिर ह्रदान् ॥'",
+            "उल्लेखाः": "भा० आदि० २-४",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "समन्तपञ्चक",
+            "content": "<body><s>samantapaYcaka na° samantAt paYcakaM hradapaYcakaM yatra . kurukzetra sTe tIrTaBede <q>triHsaptakftvaH pfTivIM kftvA niHkzattriyAM praBuH . samantapaYcake paYca cakAra rODirAn hradAn . sa tezu tarpayAmAsa BfgUn BfgukulodvahaH</q> BA° va° 117 a° . <q>tarantukArantukayoryudantaraM rAmahradAnAYca macakrukasya ca . etat kurukzetra samantapaYcakaM pitAmahasyottaravedirucyate</q> BA° va° 83 a° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समन्तपञ्चक",
+            "content": "<H1><h><key1>samantapaYcaka</key1><key2>samantapaYcaka</key2></h><body><s>samantapaYcaka</s>  <div n=\"1\">n. (<s>-kaM</s>) Name of a holy place near Kurukshetra.</div></body><tail><L>42527</L><pc>761-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "समन्तपञ्चक",
+            "content": "<span lang=\"sa\">समन्तपञ्चक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸುತ್ತಲೂ ೫ ಹ್ರದಗಳುಳ್ಳ ಕುರುಕ್ಷೇತ್ರ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"स सर्वं क्षत्रमुत्साद्य स्ववीर्येणानलद्युतिः । समन्तपञ्चके पञ्च चकार रुधिर ह्रदान् ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भा० आदि० २-४<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

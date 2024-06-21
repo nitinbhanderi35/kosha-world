@@ -1,288 +1,31 @@
-ring} reason explanation why unpack is necessary
-	 * @returns {void | Promise<void>} maybe a promise if lazy
-	 */
-	unpack(reason) {
-		if (this.content) return;
-
-		// Move from state B to C
-		if (this.lazy) {
-			const { lazyName } = this;
-			/** @type {string | undefined} */
-			let timeMessage;
-			if (lazyName) {
-				// only log once
-				this.lazyName = undefined;
-				timeMessage = `unpack cache content ${lazyName} (${formatSize(
-					this.getSize()
-				)})`;
-				this.logger.log(
-					`starting to unpack cache content ${lazyName} (${formatSize(
-						this.getSize()
-					)}) because ${reason}`
-				);
-				this.logger.time(timeMessage);
-			}
-			const value = this.lazy();
-			if ("then" in value) {
-				return value.then(data => {
-					if (timeMessage) {
-						this.logger.timeEnd(timeMessage);
-					}
-					this.content = data.map;
-				});
-			} else {
-				if (timeMessage) {
-					this.logger.timeEnd(timeMessage);
-				}
-				this.content = value.map;
-			}
-		}
-	}
-
-	/**
-	 * @returns {number} size of the content or -1 if not known
-	 */
-	getSize() {
-		if (!this.lazy) return -1;
-		const options = /** @type {any} */ (this.lazy).options;
-		if (!options) return -1;
-		const size = options.size;
-		if (typeof size !== "number") return -1;
-		return size;
-	}
-
-	/**
-	 * @param {string} identifier identifier
-	 */
-	delete(identifier) {
-		this.items.delete(identifier);
-		this.used.delete(identifier);
-		this.outdated = true;
-	}
-
-	/**
-	 * @template T
-	 * @param {function(any): function(): Promise<PackContentItems> | PackContentItems} write write function
-	 * @returns {void}
-	 */
-	writeLazy(write) {
-		if (!this.outdated && this.lazy) {
-			// State B1 or C1
-			// this.lazy is still the valid deserialized version
-			write(this.lazy);
-			return;
-		}
-		if (!this.outdated && this.content) {
-			// State A1
-			const map = new Map(this.content);
-			// Move to state C1
-			this.lazy = SerializerMiddleware.unMemoizeLazy(
-				write(() => new PackContentItems(map))
-			);
-			return;
-		}
-		if (this.content) {
-			// State A2 or C2
-			/** @type {Map<string, any>} */
-			const map = new Map();
-			for (const item of this.items) {
-				map.set(item, this.content.get(item));
-			}
-			// Move to state C1
-			this.outdated = false;
-			this.content = map;
-			this.lazy = SerializerMiddleware.unMemoizeLazy(
-				write(() => new PackContentItems(map))
-			);
-			return;
-		}
-		// State B2
-		const { lazyName } = this;
-		/** @type {string | undefined} */
-		let timeMessage;
-		if (lazyName) {
-			// only log once
-			this.lazyName = undefined;
-			timeMessage = `unpack cache content ${lazyName} (${formatSize(
-				this.getSize()
-			)})`;
-			this.logger.log(
-				`starting to unpack cache content ${lazyName} (${formatSize(
-					this.getSize()
-				)}) because it's outdated and need to be serialized`
-			);
-			this.logger.time(timeMessage);
-		}
-		const value = this.lazy();
-		this.outdated = false;
-		if ("then" in value) {
-			// Move to state B1
-			this.lazy = write(() =>
-				value.then(data => {
-					if (timeMessage) {
-						this.logger.timeEnd(timeMessage);
-					}
-					const oldMap = data.map;
-					/** @type {Map<string, any>} */
-					const map = new Map();
-					for (const item of this.items) {
-						map.set(item, oldMap.get(item));
-					}
-					// Move to state C1 (or maybe C2)
-					this.content = map;
-					this.lazy = SerializerMiddleware.unMemoizeLazy(this.lazy);
-
-					return new PackContentItems(map);
-				})
-			);
-		} else {
-			// Move to state C1
-			if (timeMessage) {
-				this.logger.timeEnd(timeMessage);
-			}
-			const oldMap = value.map;
-			/** @type {Map<string, any>} */
-			const map = new Map();
-			for (const item of this.items) {
-				map.set(item, oldMap.get(item));
-			}
-			this.content = map;
-			this.lazy = write(() => new PackContentItems(map));
-		}
-	}
+{
+    "word": "labor",
+    "AE": [
+        {
+            "word": "labor",
+            "eid": "5984",
+            "pagenum": 249,
+            "content": "<b>Labor (Labour),</b>¦ <i>s.</i> श्रमः, परिश्रमः, प्र- -आ-यासः, क्लेशः, कष्टं, दुःखं <b>2</b> उद्यमः, उ- -द्योगः, व्यापारः, व्यवसायः, चेष्टा, प्र-, यत्नः, उत्साहः. <b>3</b> प्रसूतिकालः-समयः, प्रसवकालः, प्रसवावस्था; ‘pain of l.’ प्रसूति-प्रसव-वे- -दना-यातना-व्यथा; ‘bodily l.’ व्रातं, देह- -काय-क्लेश-आयासः-श्रमः; ‘unpaid l.’ विष्टि <i>f.,</i> आजूः; ‘got by one's l.’ स्वकष्टार्जित. <i>-v. i.</i> परिश्रमं-आयासं-कृ 8 U, श्रम् 4 P, प्र-, यत् 1 A, ध्यव-सो 4 U, चेष्ट् 1 A, उद्यम् 1 P, प्रवृत् 1 A, आयस् 1, 4 P, व्रातं कृ, शरीरायासं कृ. <b>2</b> खिद्-क्लिश्-पीड् pass., व्यथ् 1 A. <b>3</b> प्रसवावस्थायां वृत्, (आसन्न- -प्रसवा or प्राप्तप्रसववेदना सा स्त्री); ‘1. under’ बाध्-अभिभू-आक्रम्-पीड्-उपहन्-pass., ‘l. ing under hundreds of anxieties’ चिंताशतैर्बाध्यमान-अभिभूत; अतिभाराक्रांत &c.; ‘l. ing under a disease’ रोग- -पीडित, रुजार्त. <i>-v. t.</i> महाश्रमेण-प्रयत्नेन-साध् 5 P or सं-पद् c. or कॢप् c. or वि-धा 3 U or कृ or अनु-ष्ठा 1 P. <b>2</b> कृष् 6 U. <b>-ed,</b> <i>a.</i> श्रम-यत्न-कष्ट-सिद्ध, यत्न-श्रम-पूर्व, प्रयत्न- -कृत. <b>-er,</b> <i>s.</i> कृतश्रमः, कर्मिन् <i>m.,</i> व्यवसा- -यिन् <i>m.,</i> कार्मः. <b>2</b> कर्मकरः, कर्मकारः, भृतकः, वैतनिकः, भृति-भरण्य-भुज् <i>m.</i> <b>3</b> कृषकः, कृषीवलः; <i>See</i> <b>Farmer. -Laborious,</b> <i>a.</i> श्रम-आयास-कष्ट-साध्य, कष्ट-आयास-प्रद्, पीडाकर (री <i>f</i>), दुःखसाध्य, कष्ट. <b>2</b> आ- -यासिन्, कृतश्रम, श्रम-उद्योग-कर्म-शील, उद्य- -मिन्, उद्योगिन्, सोद्यम, सोद्योग, सोत्साह; <i>See</i> <b>Industrious. -ly,</b> <i>adv.</i> श्रमेण, श्रम-आयास-पूर्वं, आ-प्र-यासेन, सयत्नं, सोद्योगं, सोद्यमं, सोत्साहं, कष्टेन, कृच्छ्रेण. <b>-ness,</b> <i>s.</i> श्रमसाध्यता. <b>2</b> उद्योगः, उद्यमः, व्यवसायः, उद्योगशीलता. <b>-Laboratory,</b> <i>s.</i> रसक्रियास्थानं, रससंस्कारशाला. <b>2</b> उद्योग- -शिल्प-शाला-गृहं."
+        }
+    ],
+    "MWE": [
+        {
+            "word": "labor",
+            "eid": "17233",
+            "pagenum": 432,
+            "content": "LABOR¦, <i>s.</i> (Exertion) उत्साहः, उद्योगः, यत्नः, प्रयत्नः, व्यवसायः, अध्यवसायः, उद्यमः, आयासः, कर्म्म <i>n.</i> (न्), क्रिया, प्रवृत्तिः <i>f.,</i> व्यापारः, चेष्टा. — (Toil) आयासः, प्रयासः, क्लेशः, श्रमः, परिश्रमः, कष्टं, दुःखं, नित्यश्रमः, नित्यक्लेशः. — (Bodily or manual labor) कायक्लेशः, देहक्लेशः, शरीरायासः, शरीरक्लेशः, शरीरश्रमः, व्रातं. — (Unpaid labor) विष्टिः, आजूः <i>f.</i> — (Travail, childbirth) प्रसववेदना, प्रसूति- वेदना, गर्भवेदना, प्रसवयातना, प्रसवकालः, प्रसूतिकालः; ‘acquired by one's own labor,’ स्वकष्टार्जितः -ता -तं."
+        },
+        {
+            "word": "labor",
+            "eid": "17234",
+            "pagenum": 432,
+            "content": "<i>To</i> LABOR¦, <i>v. n.</i> (Exert strength, make effort) यत् (c. 1. यतते -तितुं), प्रयत्, व्यवसो (c. 4. -स्यति -सातुं), उद्यम् (c. 1. -यच्छति -यन्तुं) चेष्ट् (c. 1. चेष्टते -ष्टितुं), विचेष्ट्, उद्योगं कृ, उत्साहं कृ, यत्नं कृ, व्यव- सायं कृ, आयासं कृ. — (Toil) आयस् (c. 4. -यस्यति -यसितुं), आयासं कृ, श्रम् (c. 4. श्राम्यति, श्रमितुं), परिश्रम्, क्लिश् (c. 4. क्लिश्यते, क्लेशितुं), परिक्लिश्, शरीरायासं कृ, व्रातं कृ, शरीरायासेन कर्म्म कृ, कष्टं कृ. — (Be in distress) क्लिश्, व्यथ् (c. 1. व्यथते -थितुं), पीड् in pass. (पीड्यते), तप् in pass. (तप्यते), कृच्छ्र (nom. कृच्छ्रायते), खिद् in pass. (खिद्यते), परिखिद्. — (Be in travail) प्राप्तप्रसववेदनाभू, प्राप्तगर्भवेदनाभू, प्राप्तप्रसवकाला भू. — (Labor under) उपहन् in pass. (-हन्यते), पीड् in pass. (पीड्यते), उपहतः -ता -तं भू, पीडितः -ता -तं भू; ‘to labor under a disease,’ रोगपीडितः -ता -तं भू, रोगार्त्तः -र्त्ता -र्त्तं भू."
+        },
+        {
+            "word": "labor",
+            "eid": "17235",
+            "pagenum": 433,
+            "content": "<i>To</i> LABOR¦, <i>v. a.</i> (Form with labor) महायत्नेन or बहुश्रमेण or अत्या- यासेन कृ or संस्कृ or परिष्कृ or साध् (c. 10. साधयति -यितुं) or सिद्धीकृ or कॢप् (c. 10. कल्पयति -यितुं) or विधा (c. 3. -दधाति -धातुं), यत्नेन सेव् (c. 1. सेवते -वितुं) or उपसेव् or अनुष्ठा (c. 1. -तिष्ठति -ष्ठातुं) or आस्था. — (Till, cultivate) कृष् (c. 6. कृषति, क्रष्टुं)."
+        }
+    ]
 }
-
-/**
- * @param {Buffer} buf buffer
- * @returns {Buffer} buffer that can be collected
- */
-const allowCollectingMemory = buf => {
-	const wasted = buf.buffer.byteLength - buf.byteLength;
-	if (wasted > 8192 && (wasted > 1048576 || wasted > buf.byteLength)) {
-		return Buffer.from(buf);
-	}
-	return buf;
-};
-
-class PackFileCacheStrategy {
-	/**
-	 * @param {Object} options options
-	 * @param {Compiler} options.compiler the compiler
-	 * @param {IntermediateFileSystem} options.fs the filesystem
-	 * @param {string} options.context the context directory
-	 * @param {string} options.cacheLocation the location of the cache data
-	 * @param {string} options.version version identifier
-	 * @param {Logger} options.logger a logger
-	 * @param {SnapshotOptions} options.snapshot options regarding snapshotting
-	 * @param {number} options.maxAge max age of cache items
-	 * @param {boolean | undefined} options.profile track and log detailed timing information for individual cache items
-	 * @param {boolean | undefined} options.allowCollectingMemory allow to collect unused memory created during deserialization
-	 * @param {false | "gzip" | "brotli" | undefined} options.compression compression used
-	 * @param {boolean | undefined} options.readonly disable storing cache into filesystem
-	 */
-	constructor({
-		compiler,
-		fs,
-		context,
-		cacheLocation,
-		version,
-		logger,
-		snapshot,
-		maxAge,
-		profile,
-		allowCollectingMemory,
-		compression,
-		readonly
-	}) {
-		this.fileSerializer = createFileSerializer(
-			fs,
-			compiler.options.output.hashFunction
-		);
-		this.fileSystemInfo = new FileSystemInfo(fs, {
-			managedPaths: snapshot.managedPaths,
-			immutablePaths: snapshot.immutablePaths,
-			logger: logger.getChildLogger("webpack.FileSystemInfo"),
-			hashFunction: compiler.options.output.hashFunction
-		});
-		this.compiler = compiler;
-		this.context = context;
-		this.cacheLocation = cacheLocation;
-		this.version = version;
-		this.logger = logger;
-		this.maxAge = maxAge;
-		this.profile = profile;
-		this.readonly = readonly;
-		this.allowCollectingMemory = allowCollectingMemory;
-		this.compression = compression;
-		this._extension =
-			compression === "brotli"
-				? ".pack.br"
-				: compression === "gzip"
-					? ".pack.gz"
-					: ".pack";
-		this.snapshot = snapshot;
-		/** @type {BuildDependencies} */
-		this.buildDependencies = new Set();
-		/** @type {LazySet<string>} */
-		this.newBuildDependencies = new LazySet();
-		/** @type {Snapshot | undefined} */
-		this.resolveBuildDependenciesSnapshot = undefined;
-		/** @type {ResolveResults | undefined} */
-		this.resolveResults = undefined;
-		/** @type {Snapshot | undefined} */
-		this.buildSnapshot = undefined;
-		/** @type {Promise<Pack> | undefined} */
-		this.packPromise = this._openPack();
-		this.storePromise = Promise.resolve();
-	}
-
-	/**
-	 * @returns {Promise<Pack>} pack
-	 */
-	_getPack() {
-		if (this.packPromise === undefined) {
-			this.packPromise = this.storePromise.then(() => this._openPack());
-		}
-		return this.packPromise;
-	}
-
-	/**
-	 * @returns {Promise<Pack>} the pack
-	 */
-	_openPack() {
-		const { logger, profile, cacheLocation, version } = this;
-		/** @type {Snapshot} */
-		let buildSnapshot;
-		/** @type {BuildDependencies} */
-		let buildDependencies;
-		/** @type {BuildDependencies} */
-		let newBuildDependencies;
-		/** @type {Snapshot} */
-		let resolveBuildDependenciesSnapshot;
-		/** @type {ResolveResults | undefined} */
-		let resolveResults;
-		logger.time("restore cache container");
-		return this.fileSerializer
-			.deserialize(null, {
-				filename: `${cacheLocation}/index${this._extension}`,
-				extension: `${this._extension}`,
-				logger,
-				profile,
-				retainedBuffer: this.allowCollectingMemory
-					? allowCollectingMemory
-					: undefined
-			})
-			.catch(err => {
-				if (err.code !== "ENOENT") {
-					logger.warn(
-						`Restoring pack failed from ${cacheLocation}${this._extension}: ${err}`
-					);
-					logger.debug(err.stack);
-				} else {
-					logger.debug(
-						`No pack exists at ${cacheLocation}${this._extension}: ${err}`
-					);
-				}
-				return undefined;
-			})
-			.then(packContainer => {

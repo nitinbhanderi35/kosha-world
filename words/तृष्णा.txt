@@ -1,1412 +1,363 @@
-reate, deps) {
-  const hook = updateWorkInProgressHook();
-  const nextDeps = deps === undefined ? null : deps;
-  const effect = hook.memoizedState;
-  const inst = effect.inst; // currentHook is null on initial mount when rerendering after a render phase
-  // state update or for strict mode.
-
-  if (currentHook !== null) {
-    if (nextDeps !== null) {
-      const prevEffect = currentHook.memoizedState;
-      const prevDeps = prevEffect.deps;
-
-      if (areHookInputsEqual(nextDeps, prevDeps)) {
-        hook.memoizedState = pushEffect(hookFlags, create, inst, nextDeps);
-        return;
-      }
-    }
-  }
-
-  currentlyRenderingFiber$1.flags |= fiberFlags;
-  hook.memoizedState = pushEffect(HasEffect | hookFlags, create, inst, nextDeps);
-}
-
-function mountEffect(create, deps) {
-  {
-    mountEffectImpl(Passive$1 | PassiveStatic, Passive, create, deps);
-  }
-}
-
-function updateEffect(create, deps) {
-  updateEffectImpl(Passive$1, Passive, create, deps);
-}
-
-function useEffectEventImpl(payload) {
-  currentlyRenderingFiber$1.flags |= Update;
-  let componentUpdateQueue = currentlyRenderingFiber$1.updateQueue;
-
-  if (componentUpdateQueue === null) {
-    componentUpdateQueue = createFunctionComponentUpdateQueue();
-    currentlyRenderingFiber$1.updateQueue = componentUpdateQueue;
-    componentUpdateQueue.events = [payload];
-  } else {
-    const events = componentUpdateQueue.events;
-
-    if (events === null) {
-      componentUpdateQueue.events = [payload];
-    } else {
-      events.push(payload);
-    }
-  }
-}
-
-function mountEvent(callback) {
-  const hook = mountWorkInProgressHook();
-  const ref = {
-    impl: callback
-  };
-  hook.memoizedState = ref; // $FlowIgnore[incompatible-return]
-
-  return function eventFn() {
-    if (isInvalidExecutionContextForEventFunction()) {
-      throw Error(formatProdErrorMessage(440));
-    }
-
-    return ref.impl.apply(undefined, arguments);
-  };
-}
-
-function updateEvent(callback) {
-  const hook = updateWorkInProgressHook();
-  const ref = hook.memoizedState;
-  useEffectEventImpl({
-    ref,
-    nextImpl: callback
-  }); // $FlowIgnore[incompatible-return]
-
-  return function eventFn() {
-    if (isInvalidExecutionContextForEventFunction()) {
-      throw Error(formatProdErrorMessage(440));
-    }
-
-    return ref.impl.apply(undefined, arguments);
-  };
-}
-
-function mountInsertionEffect(create, deps) {
-  mountEffectImpl(Update, Insertion, create, deps);
-}
-
-function updateInsertionEffect(create, deps) {
-  return updateEffectImpl(Update, Insertion, create, deps);
-}
-
-function mountLayoutEffect(create, deps) {
-  let fiberFlags = Update | LayoutStatic;
-
-  return mountEffectImpl(fiberFlags, Layout, create, deps);
-}
-
-function updateLayoutEffect(create, deps) {
-  return updateEffectImpl(Update, Layout, create, deps);
-}
-
-function imperativeHandleEffect(create, ref) {
-  if (typeof ref === 'function') {
-    const refCallback = ref;
-    const inst = create();
-    refCallback(inst);
-    return () => {
-      refCallback(null);
-    };
-  } else if (ref !== null && ref !== undefined) {
-    const refObject = ref;
-
-    const inst = create();
-    refObject.current = inst;
-    return () => {
-      refObject.current = null;
-    };
-  }
-}
-
-function mountImperativeHandle(ref, create, deps) {
-
-
-  const effectDeps = deps !== null && deps !== undefined ? deps.concat([ref]) : null;
-  let fiberFlags = Update | LayoutStatic;
-
-  mountEffectImpl(fiberFlags, Layout, imperativeHandleEffect.bind(null, create, ref), effectDeps);
-}
-
-function updateImperativeHandle(ref, create, deps) {
-
-
-  const effectDeps = deps !== null && deps !== undefined ? deps.concat([ref]) : null;
-  updateEffectImpl(Update, Layout, imperativeHandleEffect.bind(null, create, ref), effectDeps);
-}
-
-function mountDebugValue(value, formatterFn) {// This hook is normally a no-op.
-  // The react-debug-hooks package injects its own implementation
-  // so that e.g. DevTools can display custom hook values.
-}
-
-const updateDebugValue = mountDebugValue;
-
-function mountCallback(callback, deps) {
-  const hook = mountWorkInProgressHook();
-  const nextDeps = deps === undefined ? null : deps;
-  hook.memoizedState = [callback, nextDeps];
-  return callback;
-}
-
-function updateCallback(callback, deps) {
-  const hook = updateWorkInProgressHook();
-  const nextDeps = deps === undefined ? null : deps;
-  const prevState = hook.memoizedState;
-
-  if (nextDeps !== null) {
-    const prevDeps = prevState[1];
-
-    if (areHookInputsEqual(nextDeps, prevDeps)) {
-      return prevState[0];
-    }
-  }
-
-  hook.memoizedState = [callback, nextDeps];
-  return callback;
-}
-
-function mountMemo(nextCreate, deps) {
-  const hook = mountWorkInProgressHook();
-  const nextDeps = deps === undefined ? null : deps;
-
-  if (shouldDoubleInvokeUserFnsInHooksDEV) {
-    nextCreate();
-  }
-
-  const nextValue = nextCreate();
-  hook.memoizedState = [nextValue, nextDeps];
-  return nextValue;
-}
-
-function updateMemo(nextCreate, deps) {
-  const hook = updateWorkInProgressHook();
-  const nextDeps = deps === undefined ? null : deps;
-  const prevState = hook.memoizedState; // Assume these are defined. If they're not, areHookInputsEqual will warn.
-
-  if (nextDeps !== null) {
-    const prevDeps = prevState[1];
-
-    if (areHookInputsEqual(nextDeps, prevDeps)) {
-      return prevState[0];
-    }
-  }
-
-  if (shouldDoubleInvokeUserFnsInHooksDEV) {
-    nextCreate();
-  }
-
-  const nextValue = nextCreate();
-  hook.memoizedState = [nextValue, nextDeps];
-  return nextValue;
-}
-
-function mountDeferredValue(value, initialValue) {
-  const hook = mountWorkInProgressHook();
-  return mountDeferredValueImpl(hook, value, initialValue);
-}
-
-function updateDeferredValue(value, initialValue) {
-  const hook = updateWorkInProgressHook();
-  const resolvedCurrentHook = currentHook;
-  const prevValue = resolvedCurrentHook.memoizedState;
-  return updateDeferredValueImpl(hook, prevValue, value, initialValue);
-}
-
-function rerenderDeferredValue(value, initialValue) {
-  const hook = updateWorkInProgressHook();
-
-  if (currentHook === null) {
-    // This is a rerender during a mount.
-    return mountDeferredValueImpl(hook, value, initialValue);
-  } else {
-    // This is a rerender during an update.
-    const prevValue = currentHook.memoizedState;
-    return updateDeferredValueImpl(hook, prevValue, value, initialValue);
-  }
-}
-
-function mountDeferredValueImpl(hook, value, initialValue) {
-  if (// When `initialValue` is provided, we defer the initial render even if the
-  // current render is not synchronous.
-  initialValue !== undefined && // However, to avoid waterfalls, we do not defer if this render
-  // was itself spawned by an earlier useDeferredValue. Check if DeferredLane
-  // is part of the render lanes.
-  !includesSomeLane(renderLanes, DeferredLane)) {
-    // Render with the initial value
-    hook.memoizedState = initialValue; // Schedule a deferred render to switch to the final value.
-
-    const deferredLane = requestDeferredLane();
-    currentlyRenderingFiber$1.lanes = mergeLanes(currentlyRenderingFiber$1.lanes, deferredLane);
-    markSkippedUpdateLanes(deferredLane);
-    return initialValue;
-  } else {
-    hook.memoizedState = value;
-    return value;
-  }
-}
-
-function updateDeferredValueImpl(hook, prevValue, value, initialValue) {
-  if (objectIs(value, prevValue)) {
-    // The incoming value is referentially identical to the currently rendered
-    // value, so we can bail out quickly.
-    return value;
-  } else {
-    // Received a new value that's different from the current value.
-    // Check if we're inside a hidden tree
-    if (isCurrentTreeHidden()) {
-      // Revealing a prerendered tree is considered the same as mounting new
-      // one, so we reuse the "mount" path in this case.
-      const resultValue = mountDeferredValueImpl(hook, value, initialValue); // Unlike during an actual mount, we need to mark this as an update if
-      // the value changed.
-
-      if (!objectIs(resultValue, prevValue)) {
-        markWorkInProgressReceivedUpdate();
-      }
-
-      return resultValue;
-    }
-
-    const shouldDeferValue = !includesOnlyNonUrgentLanes(renderLanes);
-
-    if (shouldDeferValue) {
-      // This is an urgent update. Since the value has changed, keep using the
-      // previous value and spawn a deferred render to update it later.
-      // Schedule a deferred render
-      const deferredLane = requestDeferredLane();
-      currentlyRenderingFiber$1.lanes = mergeLanes(currentlyRenderingFiber$1.lanes, deferredLane);
-      markSkippedUpdateLanes(deferredLane); // Reuse the previous value. We do not need to mark this as an update,
-      // because we did not render a new value.
-
-      return prevValue;
-    } else {
-      // This is not an urgent update, so we can use the latest value regardless
-      // of what it is. No need to defer it.
-      // Mark this as an update to prevent the fiber from bailing out.
-      markWorkInProgressReceivedUpdate();
-      hook.memoizedState = value;
-      return value;
-    }
-  }
-}
-
-function startTransition(fiber, queue, pendingState, finishedState, callback, options) {
-  const previousPriority = getCurrentUpdatePriority();
-  setCurrentUpdatePriority(higherEventPriority(previousPriority, ContinuousEventPriority));
-  const prevTransition = ReactCurrentBatchConfig$3.transition;
-  const currentTransition = {};
-
-  {
-    // We don't really need to use an optimistic update here, because we
-    // schedule a second "revert" update below (which we use to suspend the
-    // transition until the async action scope has finished). But we'll use an
-    // optimistic update anyway to make it less likely the behavior accidentally
-    // diverges; for example, both an optimistic update and this one should
-    // share the same lane.
-    ReactCurrentBatchConfig$3.transition = currentTransition;
-    dispatchOptimisticSetState(fiber, false, queue, pendingState);
-  }
-
-  try {
-    if (enableAsyncActions) {
-      const returnValue = callback(); // Check if we're inside an async action scope. If so, we'll entangle
-      // this new action with the existing scope.
-      //
-      // If we're not already inside an async action scope, and this action is
-      // async, then we'll create a new async scope.
-      //
-      // In the async case, the resulting render will suspend until the async
-      // action scope has finished.
-
-      if (returnValue !== null && typeof returnValue === 'object' && typeof returnValue.then === 'function') {
-        const thenable = returnValue; // This is a thenable that resolves to `finishedState` once the async
-        // action scope has finished.
-
-        const entangledResult = requestAsyncActionContext(thenable, finishedState);
-        dispatchSetState(fiber, queue, entangledResult);
-      } else {
-        // This is either `finishedState` or a thenable that resolves to
-        // `finishedState`, depending on whether we're inside an async
-        // action scope.
-        const entangledResult = requestSyncActionContext(returnValue, finishedState);
-        dispatchSetState(fiber, queue, entangledResult);
-      }
-    }
-  } catch (error) {
-    {
-      // This is a trick to get the `useTransition` hook to rethrow the error.
-      // When it unwraps the thenable with the `use` algorithm, the error
-      // will be thrown.
-      const rejectedThenable = {
-        then() {},
-
-        status: 'rejected',
-        reason: error
-      };
-      dispatchSetState(fiber, queue, rejectedThenable);
-    }
-  } finally {
-    setCurrentUpdatePriority(previousPriority);
-    ReactCurrentBatchConfig$3.transition = prevTransition;
-  }
-}
-
-function startHostTransition(formFiber, pendingState, callback, formData) {
-
-  if (formFiber.tag !== HostComponent) {
-    throw Error(formatProdErrorMessage(476));
-  }
-
-  let queue;
-
-  if (formFiber.memoizedState === null) {
-    // Upgrade this host component fiber to be stateful. We're going to pretend
-    // it was stateful all along so we can reuse most of the implementation
-    // for function components and useTransition.
-    //
-    // Create the state hook used by TransitionAwareHostComponent. This is
-    // essentially an inlined version of mountState.
-    const newQueue = {
-      pending: null,
-      lanes: NoLanes,
-      // We're going to cheat and intentionally not create a bound dispatch
-      // method, because we can call it directly in startTransition.
-      dispatch: null,
-      lastRenderedReducer: basicStateReducer,
-      lastRenderedState: NotPendingTransition
-    };
-    queue = newQueue;
-    const stateHook = {
-      memoizedState: NotPendingTransition,
-      baseState: NotPendingTransition,
-      baseQueue: null,
-      queue: newQueue,
-      next: null
-    }; // Add the state hook to both fiber alternates. The idea is that the fiber
-    // had this hook all along.
-
-    formFiber.memoizedState = stateHook;
-    const alternate = formFiber.alternate;
-
-    if (alternate !== null) {
-      alternate.memoizedState = stateHook;
-    }
-  } else {
-    // This fiber was already upgraded to be stateful.
-    const stateHook = formFiber.memoizedState;
-    queue = stateHook.queue;
-  }
-
-  startTransition(formFiber, queue, pendingState, NotPendingTransition, // TODO: We can avoid this extra wrapper, somehow. Figure out layering
-  // once more of this function is implemented.
-  () => callback(formData));
-}
-
-function mountTransition() {
-  const stateHook = mountStateImpl(false); // The `start` method never changes.
-
-  const start = startTransition.bind(null, currentlyRenderingFiber$1, stateHook.queue, true, false);
-  const hook = mountWorkInProgressHook();
-  hook.memoizedState = start;
-  return [false, start];
-}
-
-function updateTransition() {
-  const _updateState = updateState(),
-        booleanOrThenable = _updateState[0];
-
-  const hook = updateWorkInProgressHook();
-  const start = hook.memoizedState;
-  const isPending = typeof booleanOrThenable === 'boolean' ? booleanOrThenable : // This will suspend until the async action scope has finished.
-  useThenable(booleanOrThenable);
-  return [isPending, start];
-}
-
-function rerenderTransition() {
-  const _rerenderState = rerenderState(),
-        booleanOrThenable = _rerenderState[0];
-
-  const hook = updateWorkInProgressHook();
-  const start = hook.memoizedState;
-  const isPending = typeof booleanOrThenable === 'boolean' ? booleanOrThenable : // This will suspend until the async action scope has finished.
-  useThenable(booleanOrThenable);
-  return [isPending, start];
-}
-
-function useHostTransitionStatus() {
-
-  const status = readContext(HostTransitionContext);
-  return status !== null ? status : NotPendingTransition;
-}
-
-function mountId() {
-  const hook = mountWorkInProgressHook();
-  const root = getWorkInProgressRoot(); // TODO: In Fizz, id generation is specific to each server config. Maybe we
-  // should do this in Fiber, too? Deferring this decision for now because
-  // there's no other place to store the prefix except for an internal field on
-  // the public createRoot object, which the fiber tree does not currently have
-  // a reference to.
-
-  const identifierPrefix = root.identifierPrefix;
-  let id;
-
-  if (getIsHydrating()) {
-    const treeId = getTreeId(); // Use a captial R prefix for server-generated ids.
-
-    id = ':' + identifierPrefix + 'R' + treeId; // Unless this is the first id at this level, append a number at the end
-    // that represents the position of this useId hook among all the useId
-    // hooks for this fiber.
-
-    const localId = localIdCounter++;
-
-    if (localId > 0) {
-      id += 'H' + localId.toString(32);
-    }
-
-    id += ':';
-  } else {
-    // Use a lowercase r prefix for client-generated ids.
-    const globalClientId = globalClientIdCounter++;
-    id = ':' + identifierPrefix + 'r' + globalClientId.toString(32) + ':';
-  }
-
-  hook.memoizedState = id;
-  return id;
-}
-
-function updateId() {
-  const hook = updateWorkInProgressHook();
-  const id = hook.memoizedState;
-  return id;
-}
-
-function mountRefresh() {
-  const hook = mountWorkInProgressHook();
-  const refresh = hook.memoizedState = refreshCache.bind(null, currentlyRenderingFiber$1);
-  return refresh;
-}
-
-function updateRefresh() {
-  const hook = updateWorkInProgressHook();
-  return hook.memoizedState;
-}
-
-function refreshCache(fiber, seedKey, seedValue) {
-  // TODO: Consider warning if the refresh is at discrete priority, or if we
-  // otherwise suspect that it wasn't batched properly.
-
-
-  let provider = fiber.return;
-
-  while (provider !== null) {
-    switch (provider.tag) {
-      case CacheComponent:
-      case HostRoot:
+{
+    "word": "तृष्णा",
+    "ABCH": [
         {
-          // Schedule an update on the cache boundary to trigger a refresh.
-          const lane = requestUpdateLane(provider);
-          const refreshUpdate = createUpdate(lane);
-          const root = enqueueUpdate(provider, refreshUpdate, lane);
-
-          if (root !== null) {
-            scheduleUpdateOnFiber(root, provider, lane);
-            entangleTransitions(root, provider, lane);
-          } // TODO: If a refresh never commits, the new cache created here must be
-          // released. A simple case is start refreshing a cache boundary, but then
-          // unmount that boundary before the refresh completes.
-
-
-          const seededCache = createCache();
-
-          if (seedKey !== null && seedKey !== undefined && root !== null) {
-            {
-              // Seed the cache with the value passed by the caller. This could be
-              // from a server mutation, or it could be a streaming response.
-              seededCache.data.set(seedKey, seedValue);
-            }
-          }
-
-          const payload = {
-            cache: seededCache
-          };
-          refreshUpdate.payload = payload;
-          return;
+            "word": "तृष्णा",
+            "linga": "स्त्री",
+            "pagenum": "19",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1233",
+            "group": "373",
+            "synonyms": [
+                "तर्ष",
+                "अपलासिका",
+                "पिपासा",
+                "तृष्",
+                "तृषा",
+                "उदन्या",
+                "पान"
+            ],
+            "content": "पिपासुस्तृषितस्तृष्णक्तृष्णा तर्षोऽपलासिका ॥ ३९३ ॥\nपिपासा तृट्तृषोदन्या धीतिः पानेऽथ शोषणम् ।\nरसादानं भक्षकस्तु घस्मरोऽद्मर आशितः ॥ ३९४ ॥"
+        },
+        {
+            "word": "तृष्णा",
+            "linga": "स्त्री",
+            "pagenum": "20",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1325",
+            "group": "421",
+            "synonyms": [
+                "लोभ",
+                "लिप्सा",
+                "वश",
+                "स्पृहा",
+                "काङ्क्षा",
+                "आशंसा",
+                "गर्ध",
+                "वाञ्छा",
+                "आशा",
+                "इच्छा",
+                "ईहा",
+                "तृष्",
+                "मनोरथ",
+                "काम",
+                "अभिलाष"
+            ],
+            "content": "गृध्नुस्तु गर्धनस्तृष्णग्लिप्सुर्लुब्धोऽभिलाषुकः ॥ ४२९ ॥\nलोलुपो लोलुभो लोभस्तृष्णा लिप्सा वशः स्पृहा ।\nकाङ्क्षाशंसागर्धवाञ्छाशेच्छेहातृण्मनोरथाः ॥ ४३० ॥\nकामोऽभिलाषोऽभिध्या तु परस्वेहोद्धतः पुनः ।\nअविनीतो विनीतस्तु निभृतः प्रश्रितोऽपि च ॥ ४३१ ॥"
         }
-    }
-
-    provider = provider.return;
-  } // TODO: Warn if unmounted?
-
-}
-
-function dispatchReducerAction(fiber, queue, action) {
-
-  const lane = requestUpdateLane(fiber);
-  const update = {
-    lane,
-    revertLane: NoLane,
-    action,
-    hasEagerState: false,
-    eagerState: null,
-    next: null
-  };
-
-  if (isRenderPhaseUpdate(fiber)) {
-    enqueueRenderPhaseUpdate(queue, update);
-  } else {
-    const root = enqueueConcurrentHookUpdate(fiber, queue, update, lane);
-
-    if (root !== null) {
-      scheduleUpdateOnFiber(root, fiber, lane);
-      entangleTransitionUpdate(root, queue, lane);
-    }
-  }
-}
-
-function dispatchSetState(fiber, queue, action) {
-
-  const lane = requestUpdateLane(fiber);
-  const update = {
-    lane,
-    revertLane: NoLane,
-    action,
-    hasEagerState: false,
-    eagerState: null,
-    next: null
-  };
-
-  if (isRenderPhaseUpdate(fiber)) {
-    enqueueRenderPhaseUpdate(queue, update);
-  } else {
-    const alternate = fiber.alternate;
-
-    if (fiber.lanes === NoLanes && (alternate === null || alternate.lanes === NoLanes)) {
-      // The queue is currently empty, which means we can eagerly compute the
-      // next state before entering the render phase. If the new state is the
-      // same as the current state, we may be able to bail out entirely.
-      const lastRenderedReducer = queue.lastRenderedReducer;
-
-      if (lastRenderedReducer !== null) {
-
-        try {
-          const currentState = queue.lastRenderedState;
-          const eagerState = lastRenderedReducer(currentState, action); // Stash the eagerly computed state, and the reducer used to compute
-          // it, on the update object. If the reducer hasn't changed by the
-          // time we enter the render phase, then the eager state can be used
-          // without calling the reducer again.
-
-          update.hasEagerState = true;
-          update.eagerState = eagerState;
-
-          if (objectIs(eagerState, currentState)) {
-            // Fast path. We can bail out without scheduling React to re-render.
-            // It's still possible that we'll need to rebase this update later,
-            // if the component re-renders for a different reason and by that
-            // time the reducer has changed.
-            // TODO: Do we still need to entangle transitions in this case?
-            enqueueConcurrentHookUpdateAndEagerlyBailout(fiber, queue, update);
-            return;
-          }
-        } catch (error) {// Suppress the error. It will throw again in the render phase.
-        } finally {
+    ],
+    "AP90": [
+        {
+            "word": "तृष्णा",
+            "eid": "14905",
+            "pagenum": 545,
+            "content": "तृष्णा¦ [तृष् न किच्च] <b>1</b> Thirst (<ab>lit.</ab> and <ab>fig.</ab>); तृष्णां छिनत्त्यात्मनः  <lbinfo n='ls:H. 1.+ 171'/> <ls>H. 1. 171</ls>; <ls>Rs. 1. 15.</ls> <b>--2</b> Desire, strong desire, greed, avidity, desire of gain; तृष्णां छिंद्धि <ls>Bh. 2. 77</ls>, <ls n='Bh.'>3. 5</ls>; <ls>R. 8. 2.</ls> <b>--Comp.</b> --क्षयः cessation of desire, tranquillity of mind, <lbinfo n='con+tentment'/> contentment."
         }
-      }
-    }
-
-    const root = enqueueConcurrentHookUpdate(fiber, queue, update, lane);
-
-    if (root !== null) {
-      scheduleUpdateOnFiber(root, fiber, lane);
-      entangleTransitionUpdate(root, queue, lane);
-    }
-  }
+    ],
+    "BEN": [
+        {
+            "word": "तृष्णा",
+            "eid": "6040",
+            "pagenum": 371,
+            "content": "तृष्णा¦ <i>tṛṣṇā,</i> <ab>i. e.</ab> <i>tṛṣ + na,</i> <ab>f.</ab> <b>1.</b> Thirst, <ls>Man.</ls> 8, 67. <b>2.</b> Desire, <ls>Bhartṛ.</ls> 2, 70. <b> -- <ab>Comp.</ab></b> <i>Ati-,</i> <ab>f.</ab> excess of covetousness, <ls>Man.</ls> 7, 139. <i>Ati-tṛṣṇa,</i> <ab>adj.</ab> very thirsty, <ls>Ragh.</ls> 2, 69. <i>Mṛga-,</i> <ab>f.</ab> mirage. <i>Vi-,</i> <ab>adj.</ab> free from desire. <i>Sa-tṛṣṇa + m,</i> <ab>adv.</ab> with desire, <ls>Śāk.</ls> <ab>d.</ab> 59."
+        }
+    ],
+    "BHS": [
+        {
+            "word": "तृष्णा",
+            "eid": "7035",
+            "pagenum": 256,
+            "content": "<b>Tṛṣṇā</b>¦ (= <lang>Pali</lang> Taṇhā), (<b>1</b>) <ab>n.</ab> of a daughter of Māra: <ls>LV</ls> 〔378.4〕; <ab>cf.</ab> <b>Tantrī</b>; (<b>2</b>) = <lang>Skt.</lang>, <i>craving</i>; as with <lang>Pali</lang> taṇhā, three in Buddhism, kāma-, bhava-, <b>vibhava-</b> (2): <ls>AbhidhK. LaV-P.</ls> 〔v.29〕."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "तृष्णा",
+            "eid": "3841",
+            "pagenum": 157,
+            "content": "तृष्णा¦ <i>f.</i> (r. तृष् s. ना in <i>fem.</i>, v. gr. 94^<i>a</i>).) <i>id.</i> H. 1. 19."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "तृष्णा",
+            "eid": "8125",
+            "pagenum": 299,
+            "content": "तृष्णा¦ <i>tṛṣṇā</i> <ab>f.</ab> (<ab>sfx.</ab> <i>na)</i> soif. || Désir, appétit.  <P><i>tṛṣnākṣaya</i> <ab>m.</ab> <i>(kṣi)</i> suppression des désirs, patience, résignation."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "तृष्णा",
+            "eid": "12650",
+            "pagenum": 208,
+            "content": "तृ/ष्णा¦ <lex>f.</lex> thirst; greediness, strong desire for (—°)."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "तृष्णा",
+            "eid": "8831",
+            "pagenum": 157,
+            "content": "तृ/ष्णा¦ <i>f.</i> Durst, Gier <i>(auch personif.)</i>, Verlangen <lbinfo n='6'/> nach (—°)."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "तृष्णा",
+            "eid": "3891",
+            "pagenum": 550,
+            "content": "<b>tṛ́ṣṇā,</b>¦ <ab>f.</ab>, <i>Durst</i> [von tṛṣ]. <dvsn n='TS'>-ā {605,4}; {791,3}. <dvsn n='TS'>-ayā {38,6}."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "तृष्णा",
+            "eid": "1800",
+            "pagenum": 165,
+            "content": "<b>tṛ́ṣṇā,</b>¦ <i><ab>f.</ab></i> thirst. [<b>√tṛṣ,</b> <ls n='wg,1177'>1177a</ls>.]"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "तृष्णा",
+            "eid": "15891",
+            "pagenum": 315,
+            "content": "tfzRA¦ <i>f.</i> 1. Thirst, <ls>Rt.</ls>i.15; 2. strong desire, avidity, <ls>R.</ls>viii.2; 3. desire of gain, <ls>Bhartr.</ls>iii.5."
+        }
+    ],
+    "MD": [
+        {
+            "word": "तृष्णा",
+            "eid": "8754",
+            "pagenum": 111,
+            "content": "तृष्णा¦ tṛ́ṣ-ṇā, <lex>f.</lex> thirst; desire, greed; eagerness 🞄for (<ab>—°</ab>): <b>-āmaya,</b> <lex>a.</lex> dying of thirst."
+        }
+    ],
+    "MW": [
+        {
+            "word": "तृष्णा",
+            "eid": "86805",
+            "pagenum": "454,1",
+            "content": "तृ/ष्णा ¦ <lex>f.</lex> thirst, <ls n='RV.'>i</ls>, <ls n='RV.'>vii</ls>, <ls n='RV.'>ix</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls> &c.<info lex='f'/>"
+        },
+        {
+            "word": "तृष्णा",
+            "eid": "86806",
+            "pagenum": "454,1",
+            "content": "¦ desire, avidity (chiefly <ab>ifc.</ab>), <ls>R.</ls>; <ls>Ragh.</ls>; <ls>BhP.</ls> &c.<info lex='inh'/>"
+        },
+        {
+            "word": "तृष्णा",
+            "eid": "86807",
+            "pagenum": "454,1",
+            "content": "¦ Avidity as mother of <s1 slp1='damBa'>Dambha</s1> (<ls>Prab. ii, 11/12</ls>), daughter of Death (<s1 slp1='mftyu'>Mṛtyu</s1>, <ls>VP. i, 7, 31</ls>; or <s1 slp1='mAra'>Māra</s1>, <ls>Lalit. xxiv, 20</ls>), generated by <s1 slp1='vedanA'>Vedanā</s1> and generating <s1 slp1='upAdAna'>Upādāna</s1> (<ls>Buddh.</ls>)<info lex='inh'/>"
+        },
+        {
+            "word": "तृष्णा",
+            "eid": "86808",
+            "pagenum": "454,1",
+            "content": "¦ <ab>cf.</ab> अति-.<info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "तृष्णा",
+            "eid": "21303",
+            "pagenum": 383,
+            "content": "<i>Tṛṣṇā,</i>¦ f. (in the Veda the accent is on the first syllable, in later Sanskrit on the last), thirst, strong wish, desire, avidity; (Tṛṣṇā and Lobha are sometimes personified as the parents of Dambha; or Tṛṣṇā is variously regarded as a daughter of Death, or of Pāpīyas, or as generated by Vedanā and generating Upādāna); [cf. <i>ati-tṛṣṇa.</i>] <i>—Tṛṣṇā-</i> <i>kṣaya, as,</i> m. cessation of desire, tranquillity of mind, resignation, patience, content. <i>—Tṛṣṇā-ghna,</i> <i>as, ī, am,</i> quenching the thirst. <i>—Tṛṣṇāmaya</i> <i>(°ṇā-ām°), as, ā, am,</i> ill with thirst. <i>—Tṛṣṇā-</i> <i>māra, as,</i> m., Ved. dying of thirst. <i>—Tṛṣṇāri</i> <i>(°ṇā-ari), is,</i> m. ‘enemy of thirst,’ a kind of plant (<i>= parpaṭa</i>)."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "तृष्णा",
+            "eid": "5552",
+            "pagenum": 2,
+            "content": "<i>Tṛṣṇā,</i>¦ also <i>Tṛṣā</i> — implications of, with regard to life and death;<sup>1</sup> annihilation of, leads to mokṣa;<sup>2</sup> no end of.<sup>3</sup> <F>1) Br. III. 68. 101; IV. 3. 42, 59.</F> <F>2) Ib. IV. 3. 71.</F> <F>3) Vi. IV. 10. 24.</F>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "तृष्णा",
+            "eid": "46848",
+            "pagenum": 3,
+            "content": "तृ/ष्णा¦ <lex>f.</lex> <dvsn n='1'>— 1〉 <i>Durst</i>. <dvsn n='1'>— 2〉 <i>Begier, Habsucht, heftiges Verlangen nach</i> (im <ab>Comp.</ab> vorangehend). <dvsn n='1'>— 3〉 [Page3-042-a] <ab>personif.</ab> als Mutter des <is>Dambha</is>, als Tochter des Todes <ab>u. s. w.</ab>"
+        }
+    ],
+    "PWG": [
+        {
+            "word": "तृष्णा",
+            "eid": "30457",
+            "pagenum": 3,
+            "content": "तृ/ष्णा¦ (wie eben, तृष्णा/ <ls>UṆĀDIS. 3, 12</ls>) <lex>f.</lex> <i>Durst</i> <ls>AK. 3, 4, 13, 54.</ls> <ls>H. 393.</ls> <ls>an. 1, 15.</ls> <ls>MED. ṇ. 16.</ls> अ\\पां मध्ये^ तस्थि\\वांस\\ं तृष्णा^विदज्जरि\\तार^म् <ls>ṚV. 7, 89, 4.</ls> <ls n='ṚV.'>9, 79, 3.</ls> <ls n='ṚV.'>1, 38, 3.</ls> <ls>AV. 3, 31, 3.</ls> <ls n='AV.'>11, 8, 21.</ls> <ls>ŚAT. BR. 1, 7, 3, 28.</ls> <ls>KAUŚ. 27.</ls> <ls>M. 8, 67.</ls> <ls>HIḌ. 1, 19.</ls> <ls>DAŚ. 1, 38.</ls> <ls>SUŚR. 1, 117, 3. 118, 12.</ls> <ls>ṚT. 1, 15.</ls> <ls>VID. 248.</ls> हतद्विपेन्द्ररुधिरैस्तृष्णां छिनत्त्यात्मनः <ls>HIT. I, 96.</ls> übertr. <i>Begier, Habsucht, heftiges Verlangen</i> <ls>AK.</ls> <ls>TRIK. 2, 9, 1.</ls> <ls>H. 430.</ls> <ls>H. an.</ls> <ls>MED.</ls> <ls>HĀR. 125.</ls> <ls>HIT. I, 178.</ls> वाह्यमानस्तृष्णया im Gegens. zu संतुष्ट 139. युद्ध° <ls>R. 4, 9, 57.</ls> भोग° <ls>RAGH. 8, 2.</ls> राज्य° <ls n='RAGH.'>12, 19.</ls> अर्थ° <ls>BHĀG. P. 7, 6, 10.</ls> तृष्णा und लोभ <i>die Eltern des</i> <is>Dambha</is> <ls>PRAB. 24, 19.</ls> तृष्णा <i>eine Tochter des Todes</i> <ls>VP. 56.</ls> des <is>Pāpīyaṃs</is> <ls>LALIT. 353.</ls> entsteht aus वेदना und erzeugt उपादान <ls>BURN. Intr. 487. 497. fgg.</ls> <dvsn n='v'>— Vgl. अतितृष्ण, अतितृष्णा ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "तृष्णा",
+            "eid": "17831",
+            "pagenum": 320,
+            "content": "तृष्णा¦ f. (-ष्णा) 1. Thirst. 2. Desire, wish. E. तृष् to thirst, न Unadi aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "तृष्णा",
+            "eid": "10138",
+            "pagenum": 288,
+            "content": "<b>tṛṣṇā-</b>¦ <ab>f.</ab> soif ; désir, convoitise, concupiscence <lbinfo n='8'/> (<ab>souv.</ab> <ab>ifc.</ab>).  <P><i>°bhūti-</i> <ab>f.</ab> état de soif.  <P><i>°saṅga-</i> <ab>m.</ab> attachement aux désirs.  <P><i>tṛṣṇārta-</i> <ab>a.</ab> = <i>tṛṣārta-.</i>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "तृष्णा",
+            "eid": "17848",
+            "pagenum": 384,
+            "content": "तृष्णा¦ f. (-ष्णा) .²1 Thirst. .²2 Desire, wish. .E. तृषं to thirst, न Uṇādi aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "तृष्णा",
+            "eid": "17328",
+            "pagenum": 340,
+            "content": "तृष्णा¦ (ष्णा) 1. <i>f.</i> Thirst; desire."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "तृष्णा",
+            "eid": "15306",
+            "pagenum": "2-645-a",
+            "content": "तृष्णा¦, स्त्री, (तृष + “तृषिशुषिरादिभ्यः कित् ।” उणां ३ । १२ । इति नः स च कित् ।) अनात्मीयस्वीकारेच्छा । इति चण्डीटीकायां नागोजीभट्टः ॥ सा लिप्सा । (यथा, रघुः । ८ । २ । “तदुपस्थितमग्रहीदजः पितुराज्ञेति न भोगतृष्णया ॥”) पानेच्छा । इति मेदिनी । णे, १६ ॥ तत्पर्य्यायः । उदन्या २ पिपासा ३ तृट् ४ तर्षः ५ इत्यमरः । ३ । ३ । ५१ ॥ तृषा ६ । इति शब्दरत्नावली ॥ तर्पणम् ७ । इति जटाधरः ॥ * ॥ रोगविशेषः । तन्निदानं यथा, “वातात् पित्तात् कफात् तृष्णा सन्निपातात् द्रवक्षयात् । षष्ठी स्यादुपसर्गाच्च वातपित्ते तु कारणम् ॥ सर्व्वासु तत् प्रकोपो हि सौम्यधातुप्रशोषणात् । सर्व्वदेहे भ्रमात् कम्पतापकृद्दाहमोहकृत् ॥ जिह्वामूलगलक्लोमतालुतोयवहाः शिराः । संशोष्य तृष्णा जायन्ते तासां सामान्यलक्षणम् ॥ * ॥ मुखशोषो जलातृप्तिरन्नद्वेषः स्वरक्षयः । कण्ठोष्ठजिह्वाकार्क्कश्यं जिह्वानिष्क्रमणं क्लमः । प्रलापश्चित्तविभ्रंशो मृद्ग्रहोक्तास्तथामयाः । मरुतः क्षामता दैन्यं शङ्खतोदः शिरोभ्रमः ॥ गन्धाज्ञानास्यवैरस्यश्रुतिनिद्राबलक्षयाः । शीताम्बुफेनवृद्धिश्च पित्तान्मूर्च्छास्यतिक्तता ॥ रक्तेक्षणत्वं सततं शोषो दाहोऽतिधूमकः । कफं रुणद्धि कुपितस्तोयवाहिषु मारुतः ॥ स्रोतःसु स कफस्तेन पङ्कवच्छोष्यते ततः । शूकैरिवाचितः कण्ठो निद्रामधुरवक्त्रता ॥ आत्मनः शिरसो जाड्यं स्तैमित्यच्छर्द्द्यरोचका । आलस्यमविपाकश्च यः स स्यात् सर्व्वलक्षणः ॥ आमोद्भवा च भक्ष्यस्य संरोधाद्बातपित्तजा । उष्णक्रान्तस्य सहसा शीताम्भो भजतस्तृषा ॥ तृष्णा वोर्द्ध्वं गतं कोष्ठं कुर्य्यात् पित्तरुजैव सा । या च पानातिपानोत्था तीक्ष्णाग्नेः स्नेहपाकजा ॥ स्निग्धकट्वम्ललवणभोजनेन कफोद्भवा । तृष्णारसक्षयोक्तेन लक्षणेन क्षयात्मिका ॥ शोषमोहज्वराद्यस्य दीर्घरोगोपसर्गतः । यातृष्णा जायते तीव्रा सोपसर्गात्मिका स्मृता ॥” इति गारुडे तृष्णानिदानम् १५९ अध्यायः ॥ * ॥ तदौषधं यथा, “त्रिफलापिप्पलीचूर्णं भक्षितं मधुना युतम् । भोजनादौ हि समधु पिपासां त्वरितं हरेत् ॥” इति तत्रैव १९४ अध्यायः ॥ * ॥ अपि च । “अथ तृष्णाधिकारः । तत्र तृष्णाया निदानपूर्व्विकां सम्प्राप्तिमाह । भयश्रमाभ्यां वलसङ्क्षयाद्वा ऊर्द्ध्वं चितं पित्तविवर्द्धनैश्च । पित्तं सवातं कुपितं नराणां तालुप्रपन्नं जनयेत् पिपासाम् ॥ स्रोतःस्वपां वाहिषु दूषितेषु दोषैश्च तृट् सम्भवतीह जन्तोः । तिस्रः स्मृतास्ताः क्षतजा चतुर्थी क्षयात्तथान्यामसमुद्भवा च ॥ भुक्तोद्भवा सप्तमिकेति तासां निबोध लिङ्गान्यनुपूर्व्वशस्तु ॥ नराणां चितं स्वस्थान एव सञ्चितं पित्तं सवातं पित्तविवर्द्धनैः कट्वम्लोष्णादिभिः कुपितम् । भयश्रमाभ्यां बलसङ्क्षयादुपवासादेश्च वातः कुपितः । तद्द्वयं ऊर्द्ध्वं प्रसरन् तालुप्रपन्नं सत् पिपासां जनयेत् । न केवलं तालुन्येव दूषिते तृषा भवति । किन्तु जलवाहिस्रोतःस्वपि । अत आह । स्रोतःस्वित्यादि । नन्वत्र बहुवचनं युक्तम् । यतो जलवहे द्वे स्रोतसी सुश्रुतेनोक्ते । उच्यते । तयोरेवानेकप्रतानयोगान्न दोषः । अपां वाहिषु स्रोतःस्विति जिह्वादेरप्युपलक्षणम् । यत आह चरकः रसवाहिनीश्च धमनीर्जिह्वा हृदयगलतालुक्लोम च । संशोष्य नॄणां देहे कुरुतस्तृष्णामतिबलौ पित्तानिलाविति ॥ सङ्ख्यामाह । तिस्र इत्यादि ॥ तृष्णायाः सामान्यं लक्षणमाह । सततं यः पिबेत्तोयं न तृप्तिमधिगच्छति । मुहुः काङ्क्षति तोयन्तु तं तृष्णार्द्दितमादिशेत् ॥ वातजाया लक्षणमाह । क्षामास्यता मारुतसम्भवायां तोदस्तथा शङ्खशिरःसु चापि । स्रोतोनिरोधो विरसञ्च वक्त्रं शीताभिरद्भिश्च विवृद्धमेति ॥ शङ्खशिरःसु शङ्खयोः शिरसि च । स्रोतोनिरोधो रसाम्बुवाहिधमनीनिरोधः ॥ * ॥ पित्तजामाह । मूर्च्छ्रान्नविद्वेषविलापदाहा रक्तेक्षणत्वं प्रततश्च शोषः । शीताभिनन्दा मुखतिक्तता च पित्तात्मिकायां परिधूपनञ्च ॥ विलापः प्रलापः । प्रततश्च शोषः अविरतश्च शोषः । शीताभिनन्दा शीतेच्छा । परिधूपनं कण्ठाद्धूमनिर्गम इव ॥ कफजामाह । वास्पावरोधात् कफसंवृतेऽग्नौ तृष्णा वलासेन भवेन्नरस्य । निद्रागुरुत्वं मधुरास्यता च तयार्द्दितः शुष्यति चातिमात्रम् ॥ अग्नौ जठराग्नौ । कफसंवृते स्वकारणकुपितेन कफेनोपरिष्टादाच्छादिते । वास्पावरोधात् अग्नेरुष्मावरोधात् । अवरुद्धानलोष्मणाम्बुवहस्रोतःशोषणात् वलासेन कफेन नरस्य तृष्णा भवेत् । तया तृष्णया अर्द्दितः पीडितः । शुष्यति कृशो भवति ॥ * ॥ क्षतजामाह । क्षतस्य रुक्शोणितनिर्गमाभ्यां तृष्णा चतुर्थी क्षतजा मता तु । क्षतस्य शस्त्रादिक्षतयुक्तस्य । रुक् पीडा ॥ * ॥ क्षयजामाह । रसक्षयाद्या क्षयसम्भवा सा तयाभिभूतस्तु निशादिनेषु । पेपीयतेऽम्भः स सुखं न याति तां सन्निपातादिति केचिदाहुः ॥ रसक्षयोक्तानि च लक्षणानि तस्यामशेषेण भिषग्व्यवस्येत् । रसक्षयलक्षणानि सुश्रुतेनोक्तानि ॥ रसक्षये हृत्पीडा कम्पः शोषः शून्यता तृष्णा चेति । व्यवस्येत् जानीयात् ॥ * ॥ आमजामाह । त्रिदोषलिङ्गामसमुद्भवा च हृच्छूलनिष्ठीवनसादकर्त्री ॥ * ॥ भुक्तोद्भवामाह । स्निग्धं तथाम्लं लवणञ्च भुक्तं गुर्व्वन्नमेवाशु तृषां करोति । लवणञ्चेति चकारात् कटु च ॥ * ॥ उपसर्गजामाह । क्षीणस्वरः प्रताम्यन् दीनाननहृदयशुष्कगलतालुः । भवति खलु सोपसर्गात् तृष्णा सा शोषिणी कष्टा ॥ शोषिणी धातुशोषिणी ॥ * ॥ उपसर्गानाह । ज्वरो मोहः क्षयः श्वासो वाधिर्य्यं कास एव च । वहिर्निर्गतजिह्वात्वं सप्तैते तदुपद्रवाः ॥ * ॥ तद्युक्ताया अरिष्टत्वञ्चाह । ज्वरमोहक्षयकासश्वासाद्युपसृष्टदेहानाम् । सर्व्वास्त्वतिप्रसक्ता रोगकृशानां वमिप्रसक्तानाम् ॥ घोरोपद्रवयुक्तास्तृष्णा मरणाय विज्ञेयाः । आदिशब्दादतीसारादीनां ग्रहणम् । अतिप्रसक्ताः निरन्तराः । घोरोपद्रवयुक्ताः अतीवमुखशोषादियुताः ॥ * ॥ अथ तृष्णायाश्चिकित्सा । वातघ्नमन्नपानं मृदु लघु शीतञ्च वाततृष्णायाम् । तृष्णायां पवनोत्थायां सगुडं दधि शस्यते । स्वादु तिक्तं द्रवं शीतं पित्ततृष्णापहं परम् ॥ * ॥ मुस्तपर्प्प टकोदीच्यछत्राख्योशीरचन्दनैः । शृतं शीतं जलं दद्यात् तृड्दाहज्वरशान्तये ॥ छत्रा धान्याकम् । कश्चिद्धात्रीञ्च दद्यात् । चन्दनमत्र धवलं दद्यात्तस्यातितृष्णाहरत्वात् । शृतमर्द्धपक्वमत्र कर्त्तव्यम् । इति षडङ्गपानम् ॥ १ ॥ लाजोदकं मधुयुतं शीतं गुडविमर्द्दितम् । काश्मरीशर्करायुक्तं पिबेत् तृष्णार्द्दितो नरः ॥ २ ॥ आस्तरणमार्द्रवासः प्रावरणं चाद्रेमेव स्यात् । तेन पिपासा शाम्यति दाहश्चोग्रोऽपि देहिनां नियतम् ॥ ३ ॥ गोस्तनीक्षुरसक्षीरयष्टीमधुमधूत्पलैः । नियतं नासिकापीतैस्तृष्णा शाम्यति दारुणा ॥ ४ ॥ वैषद्यं जनयत्यास्ये सन्दधाति मुखे जलम् । तृष्णादाहप्रशमनं मधुगण्डूषधारणम् ॥ ५ ॥ जिह्वातालुगलक्लोमशोषे मूर्द्धनि दापयेत् । केशरं मातुलुङ्गस्य घृतसैन्धवसंयुतम् ॥ ६ ॥ दाडिमं वदरं लोध्रं कपित्थं वीजपूरकम् । पिष्टा मूद्धान लेपस्तु पिपासादाहनाशनः ॥ ७ ॥ वारि शीतं मधुयुतमाकण्ठाद्बा पिपासितम् पाययेद्बामयेच्चापि तेन तृष्णा प्रशाम्यति ॥ ८ ॥ प्रातः सशर्करः पेयो हिमो धान्याकसम्भवः । जयेत् तृष्णां तथा दाहं भवेत् स्रोतोविशोधनम् ॥ ९ ॥ आमलं कमलं कुष्ठं लाजाश्च वटरोहकम् । एतच्चूर्णस्य मधुना गुटिकां धारयेन्मुखे ॥ तृष्णां प्रवृद्धां हन्त्येषा मुखशोषञ्च दारुणम् ॥ १० ॥ क्षतोद्भवां रुग्विनिवारणेन जयेत् क्षतानामसृजश्च पातैः । ११ । क्षयोत्थितां क्षीरजलं निहन्यान्मांसोदकं वा मधुरोदकं वा ॥ १२ ॥ आमोद्भवां विल्ववचायुतानां जयेत् कषायैरथ दीपनानाम् १३ । गुव्वन्नजामुल्लिखनैर्ज्जयेच्च क्षयं विना सर्व्वकृताञ्च तृष्णाम् ॥ उल्लिखनैः लेखनद्रव्यैः ॥ १४ ॥ स्निग्धेऽन्ने भुक्ते या तृष्णा स्यात्तां गुडाम्बुना शमयेत् । अतिरोगदुर्ब्बलानां तृष्णां शमयेन्नृणामिहाशु पयः ॥ पयोऽत्र दुग्धम् ॥ १५ ॥ मूर्च्छाच्छर्द्दितृषादाहस्त्रीमद्यभृशकर्षिताः । पिबेयुः शीतलं तोयं रक्तपित्ते मदात्यये ॥ १६ ॥ सात्म्यान्नपानभैष्यज्यैस्तृष्णां तस्य जयेत् पुनः । तस्यां जितायामन्योऽपि व्याधिः शक्यश्चिकित्सितुम् ॥ १७ ॥ * ॥ तृष्यन् पूर्व्वामयक्षीणो न लभेत जल यदि । मरणं दीर्घरोगं वा प्राप्नुयात् त्वरितं नरः ॥ तृषितो मोहमायाति मोहात् प्राणान् विमुञ्चति । तस्मात् सर्व्वास्ववस्थासु न क्वाचद्बारि वारयेत् ॥ अन्नेनापि विना जन्तुः प्राणान् धारयत चिरम् । तोयाभावात् पिपासार्त्तः क्षणात् प्राणैर्व्विमुच्यते ॥ इति तृष्णाधिकारः ॥” इति भावप्रकाशः ॥ (अथास्याः पथ्यापथ्यनियमः ॥ पथ्यानि यथा, “शोधनं शमनं निद्रां स्नानं कवलधारणम् । जिह्वाधःसिरयोर्द्दाहो दीपदग्धहरिद्रया ॥ कोद्रवाः शालयः पेया विलेपी लाजशक्तवः । अन्नमण्डो धन्वरसाः शर्करा वागषाडवौ ॥ भृष्टैर्मुद्गैर्मसूरैर्व्वा चणकैर्वा कृतो रसः । रम्भापुष्पं तैलकूर्च्चं द्राक्षापर्पटपल्लवाः ॥ कपित्थं कोलमम्लीका कुष्माण्डकमुपोदिका । खर्ज्जरं दाडिमं धात्री कर्कटी नलदाम्बु च ॥ जम्बीरं करमर्द्दञ्च वीजपूरं गवां पयः । मधूकपुष्पं ह्रीवेरं तिक्तानि मधुराणि च ॥ बालतालाम्बु शीताम्बु पयः पेटीप्रपानकम् । माक्षिकं सरसां तोयं शताह्वा नागकेशरम् । एलाजातीफलं पथ्या कुस्तुम्बुरु च टङ्गणम् । घनसारो गन्धसारः कौमुदी शिशिरानिलः चन्दनार्द्रप्रियाश्लेषो रत्नाभरणधारणम् । हिमानुलेपनञ्च स्यात् पथ्यमेतत्तृषातुरे ॥” अपथ्यानि यथा, “स्नेहाञ्जनस्वेदनधूमपानव्यायामनस्यातपदन्तकाष्ठम् । गुर्व्वन्नमम्लं लवणं कषायं कटु स्त्रियं दुष्टजलानि तीक्ष्णम् ॥ एतानि सर्व्वाणि हिताभिलाषी तृष्णातुरो नैव भजेत् कदाचित् ॥” इति वैद्यकपथ्यापथ्यविधिग्रन्थे तृष्णाधिकारे ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "तृष्णा",
+            "eid": "23312",
+            "pagenum": "3346,b",
+            "content": "तृष्णा¦ स्त्री० तृष नाकिच्च । १ पिपासायां, २ लोभे, ३ अप्राप्ताभिलाषे च अमरः ४ रोगभेदे । तन्निदामादि भावप्र० उक्तं यथा “भयश्रमाभ्यां वलसङ्क्षयाद्वा ऊर्द्धं चितं पित्तविवर्द्धनैश्च । पित्तं सवातं कुपितं नराणां तालुप्रपन्नं जनयेत् पिपासाम् । स्रोतःस्वपांवाहिषु दूषितेषु दोषैश्च तृट् सम्भवतीह जन्तोः । तिस्रः स्मृतास्ता क्षतजा चतुर्थी क्षयात्तथान्यामसमुद्भवा च । भुक्तोद्भवा सप्तमिकेति तासां निबोध लिङ्गान्यनुपूर्वशस्तु” । नराणां चितं स्वस्थान एव सञ्चितं पित्तं सवातं पित्तविवर्द्धनैः कद्वम्लोष्णादिभिः कुपितम् । भयश्रसाभ्यां बलसङ्क्षयादुपवासादेश्च त्वातः कुपितः । तद्द्वयं ऊर्द्ध्वं प्रसरत् तालुप्रपन्नं सत् पिपासां जनयेत् । न केवलं तालुन्येव दूषिते तृष्णा भवति किन्तु जलवाहिस्रोतःस्वपि । अत आह । स्रोतः स्वित्यादि । नन्वत्र बहुवचनमयुक्तम् । यतो जलवहे द्वे स्रोतसी सुश्रुतेनोक्ते । उच्यते । तयोरेवानेकप्रतानयोगान्न दोषः । अपांवाहिषु स्रोतःस्विति जिह्वादेरप्युपलक्षणम् । यत आह चरकः । “रसवाहिनीश्च धमनीर्जिह्वाहृदयगलतालुक्लोम च । संशोष्य नॄणां देहे कुरुतस्तृष्णामतिवलौ पित्तानिलाविति” । सङ्ख्यामाह तिस्र इत्यादि । तृष्णायाः सामान्यं लक्षणमाह । “सततं यं पिवेत्तोयं न तृप्तिमधिगच्छति । मुहुः काङ्क्षति तोयन्तुतं तृष्णार्द्दितमादिशेत् । वातजायालक्षणमाह । क्षामास्यता मारुतसम्भवायां तोदस्तदा शङ्खशिरःसु चापि । स्रोतोनिरोधो विरसञ्चवक्त्रं शीताभिरद्भिश्च विवृद्धिमेति” । शङ्खशिरःसु शङ्खयोः शिरसि च । स्रोतो निरोधः । पित्तजामाह “मूर्च्छान्नविद्वेषविलापदाहरक्तेक्षणत्वं प्रततश्च शोषः । शीताभिनन्दो मुखतिक्तता च पित्तात्मिकायां परिधूपनञ्च” । विलापः प्रलापः प्रततश्च शोषः अविरतश्च शोषः । शीताभिनन्दः शीतेच्छा । परिधूपनं कण्ठाद्धूमनिर्गम इव । कफजामाह । “वास्पावरोधात् कफसंवृतेऽग्नौ तृष्णा बलासेन भवेन्नरस्य । निद्रागुरुत्वं मधुरास्यता च तयार्द्दितः शुष्यति चातिमात्रम्” । अग्नौ जठराग्नौ । कफसंवृते स्वकारण कुपितेन कफेनोपरिष्टादाच्छादिते । वास्पावरोधात् अग्नेरुष्मावरोधात् । अवरुद्धानलोष्मणाम्बु वहस्रोतःशोषणात् बलासेन कफेन नरस्य तृष्णा भवेत् । तया तृष्णया अर्दितः पीडितः शुष्यति कृशो भवति । क्षतजामाह । “क्षतस्य रुक्शोणितनिर्गमाभ्यां तृष्णा चतुर्थी क्षतजा मतातु” । क्षतस्य शस्त्रादिक्षतयुक्तस्य । रुक् पीडा । क्षयजामाह । “रसक्षयाद् या क्षयसम्भवा सा तयाभिभूतस्तु निशादिनेषु । पेपीयतेऽम्भः स सुखं न याति तां सन्निपातादिति केचिदाहुः । रसक्षयोक्तानि च लक्षणानि तस्यामशेषेण भिषग् व्यवस्येत्” । रसक्षयलक्षणानि सुश्रुतेनोक्तानि “रसक्षये हृत्पीडा कम्पः शोषः शून्यता तृष्णा चेति” । व्यवस्येत् जानीयात् । आमजामाह । “त्रिदोषलिङ्गामसमुद्भवा च हृच्छूलनिष्ठीवनसादकर्त्री” । भुक्तोद्भवामाह । “स्निग्धं तथाम्लं लवणञ्च भुक्तं गुर्वन्न सेवासु तृषां करोति” । लवणञ्चेति चकारात् कटु च । उपसर्गजामाह “क्षीणस्वरः प्रताय्यं दीनाननहृदयशुष्कगलतालुः । भवति खलु सोपसर्गात् तृष्णा सा शोषिणी कष्टा” । शोषिणी धातुशोषिणी । उपसर्गानाह । “ज्वरमोहं क्षयः श्वासो बाधिर्य्यं कास एव च । बहिर्निर्गतजिह्वत्वं सप्तैते तदुपद्रवाः” । तद्युक्तायां अरिष्टत्वञ्चाह “ज्वरमोहक्षयकासश्वासाद्युपसृष्टदेहिनाम् । सर्वास्त्वतिप्रसक्तारोग कृशानां वमिप्रसक्तानाम् । घोरोपद्रवयुक्तास्तृष्णा मरणाय विज्ञेयाः” । आदिशब्दादतीसारादीनां ग्रहणम् । अतिप्रसक्ताः निरन्तराः । घोरोपद्रवयुक्ताः अतीव मुखशोषादियुताः । तृष्णाशब्दस्य वरुत्रीशब्देन द्वन्द्वे उभयपदे प्रकृतिखरः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "तृष्णा",
+            "content": "तृष्णा स्त्री. -  तृष् + न + टाप् किच्च प्यास"
+        },
+        {
+            "word": "तृष्णा",
+            "content": "तृष्णा स्त्री. - 'इच्छा, लालसा, लालच, लोभ, लिप्सा'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "तृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ನೀರಡಿಕೆ \\/ಬಾಯಾರಿಕೆ",
+            "निष्पत्तिः": "ञितृषा (पिपासायाम्)'नः' (उ० ३-१२)",
+            "प्रयोगाः": "'तोयराशिसम्भवापि तृष्णामुत्पादयति'",
+            "उल्लेखाः": "काद०",
+            "content": ""
+        },
+        {
+            "word": "तृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಅತ್ಯಾಸೆ \\/ಲೋಭ",
+            "प्रयोगाः": "'तृष्णां चेह परित्यज्य को दरिद्रः क ईश्वरः । तस्ताश्चेत्प्रसरोदत्तः दास्यं च शिरसि स्थितम् ॥'",
+            "उल्लेखाः": "हितो०",
+            "content": ""
+        },
+        {
+            "word": "तृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಇಚ್ಛೆ \\/ಅಪೇಕ್ಷೆ \\/ಆಸೆ",
+            "प्रयोगाः": "'घिगस्तु तृष्णातरलं भवन्मनः समीक्ष्य पक्षान्मम हेमजन्मनः'",
+            "उल्लेखाः": "नैष० १-१३०",
+            "content": ""
+        },
+        {
+            "word": "तृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಯಾವಾಗಲೂ ಬಾಯಾರಿರುವ ಮತ್ತು ಯಾವಾಗಲೂ ನೀರನ್ನು ಅಪೇಕ್ಷಿಸುವ ಒಂದು ರೋಗ",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "तृष्णा",
+            "linga": "S",
+            "artha": "स्पृहा",
+            "synonyms": [
+                "दोहद",
+                "इच्छा",
+                "काङ्क्षा",
+                "स्पृहा",
+                "ईहा",
+                "तृष्",
+                "वाञ्छा",
+                "लिप्सा",
+                "मनोरथ",
+                "काम",
+                "अभिलाष",
+                "तर्ष",
+                "भग",
+                "रुचि",
+                "तृष्णा",
+                "श्रद्धा",
+                "प्रतियत्न",
+                "छन्दस्"
+            ],
+            "num": "3.3.58",
+            "text": "तृष्णे स्पृहापिपासे द्वे जुगुप्साकरुणे घृणे । वणिक्पथे च विपणिः सुरा प्रत्यक्च वारुणी ॥",
+            "content": ""
+        },
+        {
+            "word": "तृष्णा",
+            "linga": "S",
+            "artha": "पिपासा",
+            "synonyms": [
+                "उदन्या",
+                "पिपासा",
+                "तृष्",
+                "तर्ष",
+                "तृष्णा"
+            ],
+            "num": "3.3.58",
+            "text": "तृष्णे स्पृहापिपासे द्वे जुगुप्साकरुणे घृणे । वणिक्पथे च विपणिः सुरा प्रत्यक्च वारुणी ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "तृष्णा",
+            "content": "<lexhead no=\"475\">\n<dentry>तृष्णा</dentry>\n<prAwipaxikam>तृष्णा</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>तृष्+न+टाप् किच्च</etymology>\n<kind_of>मनोविकारः</kind_of>\n<jAwi>मानसिकभावः</jAwi>\n<kind_of>इच्छा</kind_of>\n<jAwi>मानसिकभावः</jAwi>\n<sense no=\"1\">प्यास, तृष्णा छिन्नत्त्यात्मनः<citation>हि* १।१७१</citation><citation>ऋतु* १।१५</citation></sense>\n<sense n=\"2\">इच्छा, लालसा, लालच, लोभ, लिप्सातृष्णां छिन्धि<citation>भर्तृ* २।७७</citation>३।५<citation>रघु* ८।२</citation></sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "तृष्णा",
+            "content": "<body><s>tfzRA strI° tfza nAkicca . <lb/><b>1</b> pipAsAyAM, <lb/><b>2</b> loBe, <lb/><b>3</b> aprAptABi­lAze ca amaraH <lb/><b>4</b> rogaBede . tannidAmAdi BAvapra° uktaM yaTA <q>BayaSramAByAM valasaNkzayAdvA UrdDaM citaM pittavivardDa­nESca . pittaM savAtaM kupitaM narARAM tAluprapannaM janayet pipAsAm . srotaHsvapAMvAhizu dUzitezu dozESca tfw samBa­vatIha jantoH . tisraH smftAstA kzatajA caturTI kzayA­ttaTAnyAmasamudBavA ca . BuktodBavA saptamiketi tAsAM niboDa liNgAnyanupUrvaSastu</q> . narARAM citaM svasTAna eva saYcitaM pittaM savAtaM pittavivardDanEH kadvamlozRAdiBiH kupitam . BayaSrasAByAM balasaNkzayAdupavAsAdeSca tvAtaH kupitaH . taddvayaM UrdDvaM prasarat tAluprapannaM sat pipAsAM janayet . na kevalaM tAlunyeva dUzite tfzRA Bavati kintu jalavAhisrotaHsvapi . ata Aha . srotaH svityAdi . nanvatra bahuvacanamayuktam . yato jalavahe dve srotasI suSrutenokte . ucyate . tayorevAnekapratA­nayogAnna dozaH . apAMvAhizu srotaHsviti jihvAde­rapyupalakzaRam . yata Aha carakaH . <q>rasavAhinISca DamanIrjihvAhfdayagalatAlukloma ca . saMSozya nFRAM dehe kurutastfzRAmativalO pittAnilAviti</q> . saNKyAmAha tisra ityAdi . tfzRAyAH sAmAnyaM lakzaRamAha . <q>satataM yaM pivettoyaM na tfptimaDigacCati . muhuH kANkzati toyantutaM tfzRArdditamAdiSet . vAtajAyAlakza­RamAha . kzAmAsyatA mArutasamBavAyAM todastadA SaNKa­SiraHsu cApi . srotoniroDo virasaYcavaktraM SItABi­radBiSca vivfdDimeti</q> . SaNKaSiraHsu SaNKayoH Sirasi ca . sroto niroDaH . pittajAmAha <q>mUrcCAnnavidvezavilApa­dAharaktekzaRatvaM pratataSca SozaH . SItABinando muKa­tiktatA ca pittAtmikAyAM pariDUpanaYca</q> . vilApaH pralApaH pratataSca SozaH avirataSca SozaH . SItABinandaH SI­tecCA . pariDUpanaM kaRWAdDUmanirgama iva . kaPajAmAha . <q>vAspAvaroDAt kaPasaMvfte'gnO tfzRA balAsena Bavennarasya . nidrAgurutvaM maDurAsyatA ca tayArdditaH Suzyati cAti­mAtram</q> . agnO jaWarAgnO . kaPasaMvfte svakAraRa kupitena kaPenoparizwAdAcCAdite . vAspAvaroDAt agne­ruzmAvaroDAt . avarudDAnalozmaRAmbu vahasrotaHSozaRAt balAsena kaPena narasya tfzRA Bavet . tayA tfzRayA arditaH pIqitaH Suzyati kfSo Bavati . kzatajAmAha . <q>kzatasya rukSoRitanirgamAByAM tfzRA caturTI kzatajA matAtu</q> . kzatasya SastrAdikzatayuktasya . ruk pIqA . kzaya­jAmAha . <q>rasakzayAd yA kzayasamBavA sA tayABiBU­tastu niSAdinezu . pepIyate'mBaH sa suKaM na yAti tAM sannipAtAditi kecidAhuH . rasakzayoktAni ca lakza­RAni tasyAmaSezeRa Bizag vyavasyet</q> . rasakzayalakzaRAni suSrutenoktAni <q>rasakzaye hftpIqA kampaH SozaH SUnyatA tfzRA ceti</q> . vyavasyet jAnIyAt . AmajAmAha . <q>tridozaliNgAmasamudBavA ca hfcCUlanizWIvanasAdakartrI</q> . BuktodBavAmAha . <q>snigDaM taTAmlaM lavaRaYca BuktaM gurvanna sevAsu tfzAM karoti</q> . lavaRaYceti cakArAt kawu ca . upasargajAmAha <q>kzIRasvaraH pratAyyaM dInAnanahfdaya­SuzkagalatAluH . Bavati Kalu sopasargAt tfzRA sA SoziRI kazwA</q> . SoziRI DAtuSoziRI . upasargAnAha . <q>jvaramohaM kzayaH SvAso bADiryyaM kAsa eva ca . bahi­rnirgatajihvatvaM saptEte tadupadravAH</q> . tadyuktAyAM arizwa­tvaYcAha <q>jvaramohakzayakAsaSvAsAdyupasfzwadehinAm . sarvAstvatiprasaktAroga kfSAnAM vamiprasaktAnAm . Goro­padravayuktAstfzRA maraRAya vijYeyAH</q> . AdiSabdAdatI­sArAdInAM grahaRam . atiprasaktAH nirantarAH . Goro­padravayuktAH atIva muKaSozAdiyutAH . tfzRASabdasya varutrISabdena dvandve uBayapade prakftiKaraH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "तृष्णा",
+            "content": "<H2><h><key1>tfzRA</key1><key2>tf/zRA</key2></h><body><s>tf/zRA</s>   <lex>f.</lex> thirst, <ls n=\"RV.\">i</ls>, <ls n=\"RV.\">vii</ls>, <ls n=\"RV.\">ix</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls> &amp;c.<info lex=\"f\" /></body><tail><L>86805</L><pc>454,1</pc></tail></H2>\n <H2A><h><key1>tfzRA</key1><key2>tf/zRA</key2></h><body>  desire, avidity (chiefly <ab>ifc.</ab>), <ls>R.</ls>; <ls>Ragh.</ls>; <ls>BhP.</ls> &amp;c.<info lex=\"inh\" /></body><tail><L>86806</L><pc>454,1</pc></tail></H2A>\n <H2A><h><key1>tfzRA</key1><key2>tf/zRA</key2></h><body>  Avidity as mother of <s1 slp1=\"damBa\">Dambha</s1> (<ls>Prab. ii, 11/12</ls>), daughter of Death (<s1 slp1=\"mftyu\">Mṛtyu</s1>, <ls>VP. i, 7, 31</ls>; or <s1 slp1=\"mAra\">Māra</s1>, <ls>Lalit. xxiv, 20</ls>), generated by <s1 slp1=\"vedanA\">Vedanā</s1> and generating <s1 slp1=\"upAdAna\">Upādāna</s1> (<ls>Buddh.</ls>)<info lex=\"inh\" /></body><tail><L>86807</L><pc>454,1</pc></tail></H2A>\n <H2A><h><key1>tfzRA</key1><key2>tf/zRA</key2></h><body>  <ab>cf.</ab> <s>ati-</s>.<info lex=\"inh\" /></body><tail><L>86808</L><pc>454,1</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "तृष्णा",
+            "content": "<H1><h><key1>tfzRA</key1><key2>tfzRA</key2></h><body><s>tfzRA</s>  <div n=\"1\">f. (<s>-zRA</s>) </div><div n=\"2\"> 1. Thirst. </div><div n=\"2\"> 2. Desire, wish.</div><div n=\"E\"> E. <s>tfz</s> to thirst, <s>na</s> Unadi aff.</div></body><tail><L>17831</L><pc>320-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "तृष्णा",
+            "content": "<span lang=\"sa\">तृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನೀರಡಿಕೆ /ಬಾಯಾರಿಕೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>ञितृषा (पिपासायाम्) - \"नः\" (उ० ३-१२)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"तोयराशिसम्भवापि तृष्णामुत्पादयति\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>काद०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅತ್ಯಾಸೆ /ಲೋಭ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"तृष्णां चेह परित्यज्य को दरिद्रः क ईश्वरः । तस्ताश्चेत्प्रसरोदत्तः दास्यं च शिरसि स्थितम् ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>हितो०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಇಚ್ಛೆ /ಅಪೇಕ್ಷೆ /ಆಸೆ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"घिगस्तु तृष्णातरलं भवन्मनः समीक्ष्य पक्षान्मम हेमजन्मनः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>नैष० १-१३०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಯಾವಾಗಲೂ ಬಾಯಾರಿರುವ ಮತ್ತು ಯಾವಾಗಲೂ ನೀರನ್ನು ಅಪೇಕ್ಷಿಸುವ ಒಂದು ರೋಗ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-
-function dispatchOptimisticSetState(fiber, throwIfDuringRender, queue, action) {
-
-  const update = {
-    // An optimistic update commits synchronously.
-    lane: SyncLane,
-    // After committing, the optimistic update is "reverted" using the same
-    // lane as the transition it's associated with.
-    revertLane: requestTransitionLane(),
-    action,
-    hasEagerState: false,
-    eagerState: null,
-    next: null
-  };
-
-  if (isRenderPhaseUpdate(fiber)) {
-    // When calling startTransition during render, this warns instead of
-    // throwing because throwing would be a breaking change. setOptimisticState
-    // is a new API so it's OK to throw.
-    if (throwIfDuringRender) {
-      throw Error(formatProdErrorMessage(479));
-    }
-  } else {
-    const root = enqueueConcurrentHookUpdate(fiber, queue, update, SyncLane);
-
-    if (root !== null) {
-      // NOTE: The optimistic update implementation assumes that the transition
-      // will never be attempted before the optimistic update. This currently
-      // holds because the optimistic update is always synchronous. If we ever
-      // change that, we'll need to account for this.
-      scheduleUpdateOnFiber(root, fiber, SyncLane); // Optimistic updates are always synchronous, so we don't need to call
-      // entangleTransitionUpdate here.
-    }
-  }
-}
-
-function isRenderPhaseUpdate(fiber) {
-  const alternate = fiber.alternate;
-  return fiber === currentlyRenderingFiber$1 || alternate !== null && alternate === currentlyRenderingFiber$1;
-}
-
-function enqueueRenderPhaseUpdate(queue, update) {
-  // This is a render phase update. Stash it in a lazily-created map of
-  // queue -> linked list of updates. After this render pass, we'll restart
-  // and apply the stashed updates on top of the work-in-progress hook.
-  didScheduleRenderPhaseUpdateDuringThisPass = didScheduleRenderPhaseUpdate = true;
-  const pending = queue.pending;
-
-  if (pending === null) {
-    // This is the first update. Create a circular list.
-    update.next = update;
-  } else {
-    update.next = pending.next;
-    pending.next = update;
-  }
-
-  queue.pending = update;
-} // TODO: Move to ReactFiberConcurrentUpdates?
-
-
-function entangleTransitionUpdate(root, queue, lane) {
-  if (isTransitionLane(lane)) {
-    let queueLanes = queue.lanes; // If any entangled lanes are no longer pending on the root, then they
-    // must have finished. We can remove them from the shared queue, which
-    // represents a superset of the actually pending lanes. In some cases we
-    // may entangle more than we need to, but that's OK. In fact it's worse if
-    // we *don't* entangle when we should.
-
-    queueLanes = intersectLanes(queueLanes, root.pendingLanes); // Entangle the new transition lane with the other transition lanes.
-
-    const newQueueLanes = mergeLanes(queueLanes, lane);
-    queue.lanes = newQueueLanes; // Even if queue.lanes already include lane, we don't know for certain if
-    // the lane finished since the last time we entangled it. So we need to
-    // entangle it again, just to be sure.
-
-    markRootEntangled(root, newQueueLanes);
-  }
-}
-
-const ContextOnlyDispatcher = {
-  readContext,
-  use,
-  useCallback: throwInvalidHookError,
-  useContext: throwInvalidHookError,
-  useEffect: throwInvalidHookError,
-  useImperativeHandle: throwInvalidHookError,
-  useInsertionEffect: throwInvalidHookError,
-  useLayoutEffect: throwInvalidHookError,
-  useMemo: throwInvalidHookError,
-  useReducer: throwInvalidHookError,
-  useRef: throwInvalidHookError,
-  useState: throwInvalidHookError,
-  useDebugValue: throwInvalidHookError,
-  useDeferredValue: throwInvalidHookError,
-  useTransition: throwInvalidHookError,
-  useSyncExternalStore: throwInvalidHookError,
-  useId: throwInvalidHookError
-};
-
-{
-  ContextOnlyDispatcher.useCacheRefresh = throwInvalidHookError;
-}
-
-{
-  ContextOnlyDispatcher.useMemoCache = throwInvalidHookError;
-}
-
-{
-  ContextOnlyDispatcher.useEffectEvent = throwInvalidHookError;
-}
-
-{
-  ContextOnlyDispatcher.useHostTransitionStatus = throwInvalidHookError;
-  ContextOnlyDispatcher.useFormState = throwInvalidHookError;
-}
-
-{
-  ContextOnlyDispatcher.useOptimistic = throwInvalidHookError;
-}
-
-const HooksDispatcherOnMount = {
-  readContext,
-  use,
-  useCallback: mountCallback,
-  useContext: readContext,
-  useEffect: mountEffect,
-  useImperativeHandle: mountImperativeHandle,
-  useLayoutEffect: mountLayoutEffect,
-  useInsertionEffect: mountInsertionEffect,
-  useMemo: mountMemo,
-  useReducer: mountReducer,
-  useRef: mountRef,
-  useState: mountState,
-  useDebugValue: mountDebugValue,
-  useDeferredValue: mountDeferredValue,
-  useTransition: mountTransition,
-  useSyncExternalStore: mountSyncExternalStore,
-  useId: mountId
-};
-
-{
-  HooksDispatcherOnMount.useCacheRefresh = mountRefresh;
-}
-
-{
-  HooksDispatcherOnMount.useMemoCache = useMemoCache;
-}
-
-{
-  HooksDispatcherOnMount.useEffectEvent = mountEvent;
-}
-
-{
-  HooksDispatcherOnMount.useHostTransitionStatus = useHostTransitionStatus;
-  HooksDispatcherOnMount.useFormState = mountFormState;
-}
-
-{
-  HooksDispatcherOnMount.useOptimistic = mountOptimistic;
-}
-
-const HooksDispatcherOnUpdate = {
-  readContext,
-  use,
-  useCallback: updateCallback,
-  useContext: readContext,
-  useEffect: updateEffect,
-  useImperativeHandle: updateImperativeHandle,
-  useInsertionEffect: updateInsertionEffect,
-  useLayoutEffect: updateLayoutEffect,
-  useMemo: updateMemo,
-  useReducer: updateReducer,
-  useRef: updateRef,
-  useState: updateState,
-  useDebugValue: updateDebugValue,
-  useDeferredValue: updateDeferredValue,
-  useTransition: updateTransition,
-  useSyncExternalStore: updateSyncExternalStore,
-  useId: updateId
-};
-
-{
-  HooksDispatcherOnUpdate.useCacheRefresh = updateRefresh;
-}
-
-{
-  HooksDispatcherOnUpdate.useMemoCache = useMemoCache;
-}
-
-{
-  HooksDispatcherOnUpdate.useEffectEvent = updateEvent;
-}
-
-{
-  HooksDispatcherOnUpdate.useHostTransitionStatus = useHostTransitionStatus;
-  HooksDispatcherOnUpdate.useFormState = updateFormState;
-}
-
-{
-  HooksDispatcherOnUpdate.useOptimistic = updateOptimistic;
-}
-
-const HooksDispatcherOnRerender = {
-  readContext,
-  use,
-  useCallback: updateCallback,
-  useContext: readContext,
-  useEffect: updateEffect,
-  useImperativeHandle: updateImperativeHandle,
-  useInsertionEffect: updateInsertionEffect,
-  useLayoutEffect: updateLayoutEffect,
-  useMemo: updateMemo,
-  useReducer: rerenderReducer,
-  useRef: updateRef,
-  useState: rerenderState,
-  useDebugValue: updateDebugValue,
-  useDeferredValue: rerenderDeferredValue,
-  useTransition: rerenderTransition,
-  useSyncExternalStore: updateSyncExternalStore,
-  useId: updateId
-};
-
-{
-  HooksDispatcherOnRerender.useCacheRefresh = updateRefresh;
-}
-
-{
-  HooksDispatcherOnRerender.useMemoCache = useMemoCache;
-}
-
-{
-  HooksDispatcherOnRerender.useEffectEvent = updateEvent;
-}
-
-{
-  HooksDispatcherOnRerender.useHostTransitionStatus = useHostTransitionStatus;
-  HooksDispatcherOnRerender.useFormState = rerenderFormState;
-}
-
-{
-  HooksDispatcherOnRerender.useOptimistic = rerenderOptimistic;
-}
-
-function recordLayoutEffectDuration(fiber) {
-  {
-    return;
-  }
-}
-
-function startLayoutEffectTimer() {
-  {
-    return;
-  }
-}
-
-function resolveDefaultProps(Component, baseProps) {
-  if (Component && Component.defaultProps) {
-    // Resolve default props. Taken from ReactElement
-    const props = assign({}, baseProps);
-    const defaultProps = Component.defaultProps;
-
-    for (const propName in defaultProps) {
-      if (props[propName] === undefined) {
-        props[propName] = defaultProps[propName];
-      }
-    }
-
-    return props;
-  }
-
-  return baseProps;
-}
-
-function applyDerivedStateFromProps(workInProgress, ctor, getDerivedStateFromProps, nextProps) {
-  const prevState = workInProgress.memoizedState;
-  let partialState = getDerivedStateFromProps(nextProps, prevState);
-
-
-  const memoizedState = partialState === null || partialState === undefined ? prevState : assign({}, prevState, partialState);
-  workInProgress.memoizedState = memoizedState; // Once the update queue is empty, persist the derived state onto the
-  // base state.
-
-  if (workInProgress.lanes === NoLanes) {
-    // Queue is always non-null for classes
-    const updateQueue = workInProgress.updateQueue;
-    updateQueue.baseState = memoizedState;
-  }
-}
-
-const classComponentUpdater = {
-  isMounted,
-
-  // $FlowFixMe[missing-local-annot]
-  enqueueSetState(inst, payload, callback) {
-    const fiber = get(inst);
-    const lane = requestUpdateLane(fiber);
-    const update = createUpdate(lane);
-    update.payload = payload;
-
-    if (callback !== undefined && callback !== null) {
-
-      update.callback = callback;
-    }
-
-    const root = enqueueUpdate(fiber, update, lane);
-
-    if (root !== null) {
-      scheduleUpdateOnFiber(root, fiber, lane);
-      entangleTransitions(root, fiber, lane);
-    }
-  },
-
-  enqueueReplaceState(inst, payload, callback) {
-    const fiber = get(inst);
-    const lane = requestUpdateLane(fiber);
-    const update = createUpdate(lane);
-    update.tag = ReplaceState;
-    update.payload = payload;
-
-    if (callback !== undefined && callback !== null) {
-
-      update.callback = callback;
-    }
-
-    const root = enqueueUpdate(fiber, update, lane);
-
-    if (root !== null) {
-      scheduleUpdateOnFiber(root, fiber, lane);
-      entangleTransitions(root, fiber, lane);
-    }
-  },
-
-  // $FlowFixMe[missing-local-annot]
-  enqueueForceUpdate(inst, callback) {
-    const fiber = get(inst);
-    const lane = requestUpdateLane(fiber);
-    const update = createUpdate(lane);
-    update.tag = ForceUpdate;
-
-    if (callback !== undefined && callback !== null) {
-
-      update.callback = callback;
-    }
-
-    const root = enqueueUpdate(fiber, update, lane);
-
-    if (root !== null) {
-      scheduleUpdateOnFiber(root, fiber, lane);
-      entangleTransitions(root, fiber, lane);
-    }
-  }
-
-};
-
-function checkShouldComponentUpdate(workInProgress, ctor, oldProps, newProps, oldState, newState, nextContext) {
-  const instance = workInProgress.stateNode;
-
-  if (typeof instance.shouldComponentUpdate === 'function') {
-    let shouldUpdate = instance.shouldComponentUpdate(newProps, newState, nextContext);
-
-    return shouldUpdate;
-  }
-
-  if (ctor.prototype && ctor.prototype.isPureReactComponent) {
-    return !shallowEqual(oldProps, newProps) || !shallowEqual(oldState, newState);
-  }
-
-  return true;
-}
-
-function adoptClassInstance(workInProgress, instance) {
-  instance.updater = classComponentUpdater;
-  workInProgress.stateNode = instance; // The instance needs access to the fiber so that it can schedule updates
-
-  set(instance, workInProgress);
-}
-
-function constructClassInstance(workInProgress, ctor, props) {
-  let isLegacyContextConsumer = false;
-  let unmaskedContext = emptyContextObject;
-  let context = emptyContextObject;
-  const contextType = ctor.contextType;
-
-  if (typeof contextType === 'object' && contextType !== null) {
-    context = readContext(contextType);
-  } else {
-    unmaskedContext = getUnmaskedContext(workInProgress, ctor, true);
-    const contextTypes = ctor.contextTypes;
-    isLegacyContextConsumer = contextTypes !== null && contextTypes !== undefined;
-    context = isLegacyContextConsumer ? getMaskedContext(workInProgress, unmaskedContext) : emptyContextObject;
-  }
-
-  let instance = new ctor(props, context); // Instantiate twice to help detect side-effects.
-
-  workInProgress.memoizedState = instance.state !== null && instance.state !== undefined ? instance.state : null;
-  adoptClassInstance(workInProgress, instance);
-  // ReactFiberContext usually updates this cache but can't for newly-created instances.
-
-
-  if (isLegacyContextConsumer) {
-    cacheContext(workInProgress, unmaskedContext, context);
-  }
-
-  return instance;
-}
-
-function callComponentWillMount(workInProgress, instance) {
-  const oldState = instance.state;
-
-  if (typeof instance.componentWillMount === 'function') {
-    instance.componentWillMount();
-  }
-
-  if (typeof instance.UNSAFE_componentWillMount === 'function') {
-    instance.UNSAFE_componentWillMount();
-  }
-
-  if (oldState !== instance.state) {
-
-    classComponentUpdater.enqueueReplaceState(instance, instance.state, null);
-  }
-}
-
-function callComponentWillReceiveProps(workInProgress, instance, newProps, nextContext) {
-  const oldState = instance.state;
-
-  if (typeof instance.componentWillReceiveProps === 'function') {
-    instance.componentWillReceiveProps(newProps, nextContext);
-  }
-
-  if (typeof instance.UNSAFE_componentWillReceiveProps === 'function') {
-    instance.UNSAFE_componentWillReceiveProps(newProps, nextContext);
-  }
-
-  if (instance.state !== oldState) {
-
-    classComponentUpdater.enqueueReplaceState(instance, instance.state, null);
-  }
-} // Invokes the mount life-cycles on a previously never rendered instance.
-
-
-function mountClassInstance(workInProgress, ctor, newProps, renderLanes) {
-
-  const instance = workInProgress.stateNode;
-  instance.props = newProps;
-  instance.state = workInProgress.memoizedState;
-  instance.refs = {};
-  initializeUpdateQueue(workInProgress);
-  const contextType = ctor.contextType;
-
-  if (typeof contextType === 'object' && contextType !== null) {
-    instance.context = readContext(contextType);
-  } else {
-    const unmaskedContext = getUnmaskedContext(workInProgress, ctor, true);
-    instance.context = getMaskedContext(workInProgress, unmaskedContext);
-  }
-
-  instance.state = workInProgress.memoizedState;
-  const getDerivedStateFromProps = ctor.getDerivedStateFromProps;
-
-  if (typeof getDerivedStateFromProps === 'function') {
-    applyDerivedStateFromProps(workInProgress, ctor, getDerivedStateFromProps, newProps);
-    instance.state = workInProgress.memoizedState;
-  } // In order to support react-lifecycles-compat polyfilled components,
-  // Unsafe lifecycles should not be invoked for components using the new APIs.
-
-
-  if (typeof ctor.getDerivedStateFromProps !== 'function' && typeof instance.getSnapshotBeforeUpdate !== 'function' && (typeof instance.UNSAFE_componentWillMount === 'function' || typeof instance.componentWillMount === 'function')) {
-    callComponentWillMount(workInProgress, instance); // If we had additional state updates during this life-cycle, let's
-    // process them now.
-
-    processUpdateQueue(workInProgress, newProps, instance, renderLanes);
-    instance.state = workInProgress.memoizedState;
-  }
-
-  if (typeof instance.componentDidMount === 'function') {
-    workInProgress.flags |= Update | LayoutStatic;
-  }
-}
-
-function resumeMountClassInstance(workInProgress, ctor, newProps, renderLanes) {
-  const instance = workInProgress.stateNode;
-  const oldProps = workInProgress.memoizedProps;
-  instance.props = oldProps;
-  const oldContext = instance.context;
-  const contextType = ctor.contextType;
-  let nextContext = emptyContextObject;
-
-  if (typeof contextType === 'object' && contextType !== null) {
-    nextContext = readContext(contextType);
-  } else {
-    const nextLegacyUnmaskedContext = getUnmaskedContext(workInProgress, ctor, true);
-    nextContext = getMaskedContext(workInProgress, nextLegacyUnmaskedContext);
-  }
-
-  const getDerivedStateFromProps = ctor.getDerivedStateFromProps;
-  const hasNewLifecycles = typeof getDerivedStateFromProps === 'function' || typeof instance.getSnapshotBeforeUpdate === 'function'; // Note: During these life-cycles, instance.props/instance.state are what
-  // ever the previously attempted to render - not the "current". However,
-  // during componentDidUpdate we pass the "current" props.
-  // In order to support react-lifecycles-compat polyfilled components,
-  // Unsafe lifecycles should not be invoked for components using the new APIs.
-
-  if (!hasNewLifecycles && (typeof instance.UNSAFE_componentWillReceiveProps === 'function' || typeof instance.componentWillReceiveProps === 'function')) {
-    if (oldProps !== newProps || oldContext !== nextContext) {
-      callComponentWillReceiveProps(workInProgress, instance, newProps, nextContext);
-    }
-  }
-
-  resetHasForceUpdateBeforeProcessing();
-  const oldState = workInProgress.memoizedState;
-  let newState = instance.state = oldState;
-  processUpdateQueue(workInProgress, newProps, instance, renderLanes);
-  newState = workInProgress.memoizedState;
-
-  if (oldProps === newProps && oldState === newState && !hasContextChanged() && !checkHasForceUpdateAfterProcessing()) {
-    // If an update was already in progress, we should schedule an Update
-    // effect even though we're bailing out, so that cWU/cDU are called.
-    if (typeof instance.componentDidMount === 'function') {
-      workInProgress.flags |= Update | LayoutStatic;
-    }
-
-    return false;
-  }
-
-  if (typeof getDerivedStateFromProps === 'function') {
-    applyDerivedStateFromProps(workInProgress, ctor, getDerivedStateFromProps, newProps);
-    newState = workInProgress.memoizedState;
-  }
-
-  const shouldUpdate = checkHasForceUpdateAfterProcessing() || checkShouldComponentUpdate(workInProgress, ctor, oldProps, newProps, oldState, newState, nextContext);
-
-  if (shouldUpdate) {
-    // In order to support react-lifecycles-compat polyfilled components,
-    // Unsafe lifecycles should not be invoked for components using the new APIs.
-    if (!hasNewLifecycles && (typeof instance.UNSAFE_componentWillMount === 'function' || typeof instance.componentWillMount === 'function')) {
-      if (typeof instance.componentWillMount === 'function') {
-        instance.componentWillMount();
-      }
-
-      if (typeof instance.UNSAFE_componentWillMount === 'function') {
-        instance.UNSAFE_componentWillMount();
-      }
-    }
-
-    if (typeof instance.componentDidMount === 'function') {
-      workInProgress.flags |= Update | LayoutStatic;
-    }
-  } else {
-    // If an update was already in progress, we should schedule an Update
-    // effect even though we're bailing out, so that cWU/cDU are called.
-    if (typeof instance.componentDidMount === 'function') {
-      workInProgress.flags |= Update | LayoutStatic;
-    }
-    // memoized state to indicate that this work can be reused.
-
-
-    workInProgress.memoizedProps = newProps;
-    workInProgress.memoizedState = newState;
-  } // Update the existing instance's state, props, and context pointers even
-  // if shouldComponentUpdate returns false.
-
-
-  instance.props = newProps;
-  instance.state = newState;
-  instance.context = nextContext;
-  return shouldUpdate;
-} // Invokes the update life-cycles and returns false if it shouldn't rerender.
-
-
-function updateClassInstance(current, workInProgress, ctor, newProps, renderLanes) {
-  const instance = workInProgress.stateNode;
-  cloneUpdateQueue(current, workInProgress);
-  const unresolvedOldProps = workInProgress.memoizedProps;
-  const oldProps = workInProgress.type === workInProgress.elementType ? unresolvedOldProps : resolveDefaultProps(workInProgress.type, unresolvedOldProps);
-  instance.props = oldProps;
-  const unresolvedNewProps = workInProgress.pendingProps;
-  const oldContext = instance.context;
-  const contextType = ctor.contextType;
-  let nextContext = emptyContextObject;
-
-  if (typeof contextType === 'object' && contextType !== null) {
-    nextContext = readContext(contextType);
-  } else {
-    const nextUnmaskedContext = getUnmaskedContext(workInProgress, ctor, true);
-    nextContext = getMaskedContext(workInProgress, nextUnmaskedContext);
-  }
-
-  const getDerivedStateFromProps = ctor.getDerivedStateFromProps;
-  const hasNewLifecycles = typeof getDerivedStateFromProps === 'function' || typeof instance.getSnapshotBeforeUpdate === 'function'; // Note: During these life-cycles, instance.props/instance.state are what
-  // ever the previously attempted to render - not the "current". However,
-  // during componentDidUpdate we pass the "current" props.
-  // In order to support react-lifecycles-compat polyfilled components,
-  // Unsafe lifecycles should not be invoked for components using the new APIs.
-
-  if (!hasNewLifecycles && (typeof instance.UNSAFE_componentWillReceiveProps === 'function' || typeof instance.componentWillReceiveProps === 'function')) {
-    if (unresolvedOldProps !== unresolvedNewProps || oldContext !== nextContext) {
-      callComponentWillReceiveProps(workInProgress, instance, newProps, nextContext);
-    }
-  }
-
-  resetHasForceUpdateBeforeProcessing();
-  const oldState = workInProgress.memoizedState;
-  let newState = instance.state = oldState;
-  processUpdateQueue(workInProgress, newProps, instance, renderLanes);
-  newState = workInProgress.memoizedState;
-
-  if (unresolvedOldProps === unresolvedNewProps && oldState === newState && !hasContextChanged() && !checkHasForceUpdateAfterProcessing() && !(enableLazyContextPropagation   )) {
-    // If an update was already in progress, we should schedule an Update
-    // effect even though we're bailing out, so that cWU/cDU are called.
-    if (typeof instance.componentDidUpdate === 'function') {
-      if (unresolvedOldProps !== current.memoizedProps || oldState !== current.memoizedState) {
-        workInProgress.flags |= Update;
-      }
-    }
-
-    if (typeof instance.getSnapshotBeforeUpdate === 'function') {
-      if (unresolvedOldProps !== current.memoizedProps || oldState !== current.memoizedState) {
-        workInProgress.flags |= Snapshot;
-      }
-    }
-
-    return false;
-  }
-
-  if (typeof getDerivedStateFromProps === 'function') {
-    applyDerivedStateFromProps(workInProgress, ctor, getDerivedStateFromProps, newProps);
-    newState = workInProgress.memoizedState;
-  }
-
-  const shouldUpdate = checkHasForceUpdateAfterProcessing() || checkShouldComponentUpdate(workInProgress, ctor, oldProps, newProps, oldState, newState, nextContext) || // TODO: In some cases, we'll end up checking if context has changed twice,
-  // both before and after `shouldComponentUpdate` has been called. Not ideal,
-  // but I'm loath to refactor this function. This only happens for memoized
-  // components so it's not that common.
-  enableLazyContextPropagation   ;
-
-  if (shouldUpdate) {
-    // In order to support react-lifecycles-compat polyfilled components,
-    // Unsafe lifecycles should not be invoked for components using the new APIs.
-    if (!hasNewLifecycles && (typeof instance.UNSAFE_componentWillUpdate === 'function' || typeof instance.componentWillUpdate === 'function')) {
-      if (typeof instance.componentWillUpdate === 'function') {
-        instance.componentWillUpdate(newProps, newState, nextContext);
-      }
-
-      if (typeof instance.UNSAFE_componentWillUpdate === 'function') {
-        instance.UNSAFE_componentWillUpdate(newProps, newState, nextContext);
-      }
-    }
-
-    if (typeof instance.componentDidUpdate === 'function') {
-      workInProgress.flags |= Update;
-    }
-
-    if (typeof instance.getSnapshotBeforeUpdate === 'function') {
-      workInProgress.flags |= Snapshot;
-    }
-  } else {
-    // If an update was already in progress, we should schedule an Update
-    // effect even though we're bailing out, so that cWU/cDU are called.
-    if (typeof instance.componentDidUpdate === 'function') {
-      if (unresolvedOldProps !== current.memoizedProps || oldState !== current.memoizedState) {
-        workInProgress.flags |= Update;
-      }
-    }
-
-    if (typeof instance.getSnapshotBeforeUpdate === 'function') {
-      if (unresolvedOldProps !== current.memoizedProps || oldState !== current.memoizedState) {
-        workInProgress.flags |= Snapshot;
-      }
-    } // If shouldComponentUpdate returned false, we should still update the
-    // memoized props/state to indicate that this work can be reused.
-
-
-    workInProgress.memoizedProps = newProps;
-    workInProgress.memoizedState = newState;
-  } // Update the existing instance's state, props, and context pointers even
-  // if shouldComponentUpdate returns false.
-
-
-  instance.props = newProps;
-  instance.state = newState;
-  instance.context = nextContext;
-  return shouldUpdate;
-}
-
-function createCapturedValueAtFiber(value, source) {
-  // If the value is an error, call this function immediately after it is thrown
-  // so the stack is accurate.
-  return {
-    value,
-    source,
-    stack: getStackByFiberInDevAndProd(source),
-    digest: null
-  };
-}
-function createCapturedValue(value, digest, stack) {
-  return {
-    value,
-    source: null,
-    stack: stack != null ? stack : null,
-    digest: digest != null ? digest : null
-  };
-}
-
-// This module is forked in different environments.
-// By default, return `true` to log errors to the console.
-// Forks can return `false` if this isn't desirable.
-function showErrorDialog(boundary, errorInfo) {
-  return true;
-}
-
-function logCapturedError(boundary, errorInfo) {
-  try {
-    const logError = showErrorDialog(boundary, errorInfo); // Allow injected showErrorDialog() to prevent default console.error logging.
-    // This enables renderers like ReactNative to better manage redbox behavior.
-
-    if (logError === false) ;
-
-    const error = errorInfo.value;
-
-    if (false) ; else {
-      // In production, we print the error directly.
-      // This will include the message, the JS stack, and anything the browser wants to show.
-      // We pass the error object instead of custom message so that the browser displays the error natively.
-      console['error'](error); // Don't transform to our wrapper
-    }
-  } catch (e) {
-    // This method must not throw, or React internal state will get messed up.
-    // If console.error is overridden, or logCapturedError() shows a dialog that throws,
-    // we want to report this error outside of the normal stack as a last resort.
-    // https://github.com/facebook/react/issues/13188
-    setTimeout(() => {
-      throw e;
-    });
-  }
-}
-
-function createRootErrorUpdate(fiber, errorInfo, lane) {
-  const update = createUpdate(lane); // Unmount the root by rendering null.
-
-  update.tag = CaptureUpdate; // Caution: React DevTools currently depends on this property
-  // being called "element".
-
-  update.payload = {
-    element: null
-  };
-  const error = errorInfo.value;
-
-  update.callback = () => {
-    onUncaughtError(error);
-    logCapturedError(fiber, errorInfo);
-  };
-
-  return update;
-}
-
-function createClassErrorUpdate(fiber, errorInfo, lane) {
-  const update = createUpdate(lane);
-  update.tag = CaptureUpdate;
-  const getDerivedStateFromError = fiber.type.getDerivedStateFromError;
-
-  if (typeof getDerivedStateFromError === 'function') {
-    const error = errorInfo.value;
-
-    update.payload = () => {
-      return getDerivedStateFromError(error);
-    };
-
-    update.callback = () => {
-
-      logCapturedError(fiber, errorInfo);
-    };
-  }
-
-  const inst = fiber.stateNode;
-
-  if (inst !== null && typeof inst.componentDidCatch === 'function') {
-    // $FlowFixMe[missing-this-annot]
-    update.callback = function callback() {
-
-      logCapturedError(fiber, errorInfo);
-
-      if (typeof getDerivedStateFromError !== 'function') {
-        // To preserve the preexisting retry behavior of error boundaries,
-        // we keep track of which ones already failed during this batch.
-        // This gets reset before we yield back to the browser.
-        // TODO: Warn in strict mode if getDerivedStateFromError is
-        // not defined.
-        markLegacyErrorBoundaryAsFai

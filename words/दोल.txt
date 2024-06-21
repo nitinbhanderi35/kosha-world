@@ -1,1352 +1,221 @@
-           didSuspendAlready = true;
-                  workInProgress.flags |= DidCapture;
-                  cutOffTailIfNeeded(renderState, false); // If this is a newly suspended tree, it might not get committed as
-                  // part of the second pass. In that case nothing will subscribe to
-                  // its thenables. Instead, we'll transfer its thenables to the
-                  // SuspenseList so that it can retry if they resolve.
-                  // There might be multiple of these in the list but since we're
-                  // going to wait for all of them anyway, it doesn't really matter
-                  // which ones gets to ping. In theory we could get clever and keep
-                  // track of how many dependencies remain but it gets tricky because
-                  // in the meantime, we can add/remove/change items and dependencies.
-                  // We might bail out of the loop before finding any but that
-                  // doesn't matter since that means that the other boundaries that
-                  // we did find already has their listeners attached.
-
-                  const retryQueue = suspended.updateQueue;
-                  workInProgress.updateQueue = retryQueue;
-                  scheduleRetryEffect(workInProgress, retryQueue); // Rerender the whole list, but this time, we'll force fallbacks
-                  // to stay in place.
-                  // Reset the effect flags before doing the second pass since that's now invalid.
-                  // Reset the child fibers to their original state.
-
-                  workInProgress.subtreeFlags = NoFlags$1;
-                  resetChildFibers(workInProgress, renderLanes); // Set up the Suspense List Context to force suspense and
-                  // immediately rerender the children.
-
-                  pushSuspenseListContext(workInProgress, setShallowSuspenseListContext(suspenseStackCursor.current, ForceSuspenseFallback)); // Don't bubble properties in this case.
-
-                  return workInProgress.child;
-                }
-
-                row = row.sibling;
-              }
-            }
-
-            if (renderState.tail !== null && now() > getRenderTargetTime()) {
-              // We have already passed our CPU deadline but we still have rows
-              // left in the tail. We'll just give up further attempts to render
-              // the main content and only render fallbacks.
-              workInProgress.flags |= DidCapture;
-              didSuspendAlready = true;
-              cutOffTailIfNeeded(renderState, false); // Since nothing actually suspended, there will nothing to ping this
-              // to get it started back up to attempt the next item. While in terms
-              // of priority this work has the same priority as this current render,
-              // it's not part of the same transition once the transition has
-              // committed. If it's sync, we still want to yield so that it can be
-              // painted. Conceptually, this is really the same as pinging.
-              // We can use any RetryLane even if it's the one currently rendering
-              // since we're leaving it behind on this node.
-
-              workInProgress.lanes = SomeRetryLane;
-            }
-          } else {
-            cutOffTailIfNeeded(renderState, false);
-          } // Next we're going to render the tail.
-
-        } else {
-          // Append the rendered row to the child list.
-          if (!didSuspendAlready) {
-            const suspended = findFirstSuspended(renderedTail);
-
-            if (suspended !== null) {
-              workInProgress.flags |= DidCapture;
-              didSuspendAlready = true; // Ensure we transfer the update queue to the parent so that it doesn't
-              // get lost if this row ends up dropped during a second pass.
-
-              const retryQueue = suspended.updateQueue;
-              workInProgress.updateQueue = retryQueue;
-              scheduleRetryEffect(workInProgress, retryQueue);
-              cutOffTailIfNeeded(renderState, true); // This might have been modified.
-
-              if (renderState.tail === null && renderState.tailMode === 'hidden' && !renderedTail.alternate && !getIsHydrating() // We don't cut it if we're hydrating.
-              ) {
-                  // We're done.
-                  bubbleProperties(workInProgress);
-                  return null;
-                }
-            } else if ( // The time it took to render last row is greater than the remaining
-            // time we have to render. So rendering one more row would likely
-            // exceed it.
-            now() * 2 - renderState.renderingStartTime > getRenderTargetTime() && renderLanes !== OffscreenLane) {
-              // We have now passed our CPU deadline and we'll just give up further
-              // attempts to render the main content and only render fallbacks.
-              // The assumption is that this is usually faster.
-              workInProgress.flags |= DidCapture;
-              didSuspendAlready = true;
-              cutOffTailIfNeeded(renderState, false); // Since nothing actually suspended, there will nothing to ping this
-              // to get it started back up to attempt the next item. While in terms
-              // of priority this work has the same priority as this current render,
-              // it's not part of the same transition once the transition has
-              // committed. If it's sync, we still want to yield so that it can be
-              // painted. Conceptually, this is really the same as pinging.
-              // We can use any RetryLane even if it's the one currently rendering
-              // since we're leaving it behind on this node.
-
-              workInProgress.lanes = SomeRetryLane;
-            }
-          }
-
-          if (renderState.isBackwards) {
-            // The effect list of the backwards tail will have been added
-            // to the end. This breaks the guarantee that life-cycles fire in
-            // sibling order but that isn't a strong guarantee promised by React.
-            // Especially since these might also just pop in during future commits.
-            // Append to the beginning of the list.
-            renderedTail.sibling = workInProgress.child;
-            workInProgress.child = renderedTail;
-          } else {
-            const previousSibling = renderState.last;
-
-            if (previousSibling !== null) {
-              previousSibling.sibling = renderedTail;
-            } else {
-              workInProgress.child = renderedTail;
-            }
-
-            renderState.last = renderedTail;
-          }
-        }
-
-        if (renderState.tail !== null) {
-          // We still have tail rows to render.
-          // Pop a row.
-          const next = renderState.tail;
-          renderState.rendering = next;
-          renderState.tail = next.sibling;
-          renderState.renderingStartTime = now();
-          next.sibling = null; // Restore the context.
-          // TODO: We can probably just avoid popping it instead and only
-          // setting it the first time we go from not suspended to suspended.
-
-          let suspenseContext = suspenseStackCursor.current;
-
-          if (didSuspendAlready) {
-            suspenseContext = setShallowSuspenseListContext(suspenseContext, ForceSuspenseFallback);
-          } else {
-            suspenseContext = setDefaultShallowSuspenseListContext(suspenseContext);
-          }
-
-          pushSuspenseListContext(workInProgress, suspenseContext); // Do a pass over the next row.
-          // Don't bubble properties in this case.
-
-          return next;
-        }
-
-        bubbleProperties(workInProgress);
-        return null;
-      }
-
-    case ScopeComponent:
-      {
-
-        break;
-      }
-
-    case OffscreenComponent:
-    case LegacyHiddenComponent:
-      {
-        popSuspenseHandler(workInProgress);
-        popHiddenContext();
-        const nextState = workInProgress.memoizedState;
-        const nextIsHidden = nextState !== null; // Schedule a Visibility effect if the visibility has changed
-
+{
+    "word": "दोल",
+    "AP90": [
         {
-          if (current !== null) {
-            const prevState = current.memoizedState;
-            const prevIsHidden = prevState !== null;
-
-            if (prevIsHidden !== nextIsHidden) {
-              workInProgress.flags |= Visibility;
-            }
-          } else {
-            // On initial mount, we only need a Visibility effect if the tree
-            // is hidden.
-            if (nextIsHidden) {
-              workInProgress.flags |= Visibility;
-            }
-          }
+            "word": "दोल",
+            "eid": "15694",
+            "pagenum": 582,
+            "content": "दोलः¦ [दल् घञ्] <b>1</b> Swinging, <lbinfo n='rock+ing'/> rocking, oscillating. <b>--2</b> A swing, litter. <b>--3</b> A festival held on the fourteenth or full-moon day of the month of Phālguna when figures of ‘young Kṛṣṇa’ (बालकृष्ण) are swung in a swing."
         }
-
-        if (!nextIsHidden || (workInProgress.mode & ConcurrentMode) === NoMode) {
-          bubbleProperties(workInProgress);
-        } else {
-          // Don't bubble properties for hidden children unless we're rendering
-          // at offscreen priority.
-          if (includesSomeLane(renderLanes, OffscreenLane) && // Also don't bubble if the tree suspended
-          (workInProgress.flags & DidCapture) === NoLanes) {
-            bubbleProperties(workInProgress); // Check if there was an insertion or update in the hidden subtree.
-            // If so, we need to hide those nodes in the commit phase, so
-            // schedule a visibility effect.
-
-            if (workInProgress.subtreeFlags & (Placement | Update)) {
-              workInProgress.flags |= Visibility;
-            }
-          }
-        }
-
-        const offscreenQueue = workInProgress.updateQueue;
-
-        if (offscreenQueue !== null) {
-          const retryQueue = offscreenQueue.retryQueue;
-          scheduleRetryEffect(workInProgress, retryQueue);
-        }
-
+    ],
+    "BOP": [
         {
-          let previousCache = null;
-
-          if (current !== null && current.memoizedState !== null && current.memoizedState.cachePool !== null) {
-            previousCache = current.memoizedState.cachePool.pool;
-          }
-
-          let cache = null;
-
-          if (workInProgress.memoizedState !== null && workInProgress.memoizedState.cachePool !== null) {
-            cache = workInProgress.memoizedState.cachePool.pool;
-          }
-
-          if (cache !== previousCache) {
-            // Run passive effects to retain/release the cache.
-            workInProgress.flags |= Passive$1;
-          }
+            "word": "दोल",
+            "eid": "4230",
+            "pagenum": 176,
+            "content": "दोल¦ <i>m.</i> (r. दुल् s. अ) oscillum."
         }
-
-        popTransition(workInProgress, current);
-        return null;
-      }
-
-    case CacheComponent:
-      {
+    ],
+    "BUR": [
         {
-          let previousCache = null;
-
-          if (current !== null) {
-            previousCache = current.memoizedState.cache;
-          }
-
-          const cache = workInProgress.memoizedState.cache;
-
-          if (cache !== previousCache) {
-            // Run passive effects to retain/release the cache.
-            workInProgress.flags |= Passive$1;
-          }
-
-          popCacheProvider();
-          bubbleProperties(workInProgress);
+            "word": "दोल",
+            "eid": "9020",
+            "pagenum": 332,
+            "content": "दोल¦ <i>dola</i> <ab>m.</ab>, <i>dolā</i> et <i>dolī</i> <ab>f.</ab> <i>(dul)</i> balançoire; <lbinfo n='9'/> || hamac; || palanquin. -- <ab>F.</ab> <i>dolā</i> indigotier, <ab>bot.</ab>  <P><i>dolāyāmi</i> (<ab>dénom.</ab> de <i>dolā)</i> balancer; faire osciller.  <P><i>dolikā</i> <ab>f.</ab> balançoire, hamac, palanquin."
         }
-
-        return null;
-      }
-
-    case TracingMarkerComponent:
-      {
-
-        return null;
-      }
-  }
-
-  throw Error(formatProdErrorMessage(156, workInProgress.tag));
-}
-
-function unwindWork(current, workInProgress, renderLanes) {
-  // Note: This intentionally doesn't check if we're hydrating because comparing
-  // to the current tree provider fiber is just as fast and less error-prone.
-  // Ideally we would have a special version of the work loop only
-  // for hydration.
-  popTreeContext(workInProgress);
-
-  switch (workInProgress.tag) {
-    case ClassComponent:
-      {
-        const Component = workInProgress.type;
-
-        if (isContextProvider(Component)) {
-          popContext();
-        }
-
-        const flags = workInProgress.flags;
-
-        if (flags & ShouldCapture) {
-          workInProgress.flags = flags & ~ShouldCapture | DidCapture;
-
-          return workInProgress;
-        }
-
-        return null;
-      }
-
-    case HostRoot:
-      {
-
+    ],
+    "CAE": [
         {
-          popCacheProvider();
+            "word": "दोल",
+            "eid": "14628",
+            "pagenum": 239,
+            "content": "दोल¦ <lex>m.</lex> swinging, rocking; <lex>f.</lex> आ (<ab>r.</ab> <lex>m.</lex>) swing, litter, hammock."
         }
-        popHostContainer();
-        popTopLevelContextObject();
-        const flags = workInProgress.flags;
-
-        if ((flags & ShouldCapture) !== NoFlags$1 && (flags & DidCapture) === NoFlags$1) {
-          // There was an error during render that wasn't captured by a suspense
-          // boundary. Do a second pass on the root to unmount the children.
-          workInProgress.flags = flags & ~ShouldCapture | DidCapture;
-          return workInProgress;
-        } // We unwound to the root without completing it. Exit.
-
-
-        return null;
-      }
-
-    case HostHoistable:
-    case HostSingleton:
-    case HostComponent:
-      {
-        // TODO: popHydrationState
-        popHostContext(workInProgress);
-        return null;
-      }
-
-    case SuspenseComponent:
-      {
-        popSuspenseHandler(workInProgress);
-        const suspenseState = workInProgress.memoizedState;
-
-        if (suspenseState !== null && suspenseState.dehydrated !== null) {
-          if (workInProgress.alternate === null) {
-            throw Error(formatProdErrorMessage(340));
-          }
-
-          resetHydrationState();
-        }
-
-        const flags = workInProgress.flags;
-
-        if (flags & ShouldCapture) {
-          workInProgress.flags = flags & ~ShouldCapture | DidCapture; // Captured a suspense effect. Re-render the boundary.
-
-          return workInProgress;
-        }
-
-        return null;
-      }
-
-    case SuspenseListComponent:
-      {
-        popSuspenseListContext(); // SuspenseList doesn't actually catch anything. It should've been
-        // caught by a nested boundary. If not, it should bubble through.
-
-        return null;
-      }
-
-    case HostPortal:
-      popHostContainer();
-      return null;
-
-    case ContextProvider:
-      const context = workInProgress.type._context;
-      popProvider(context);
-      return null;
-
-    case OffscreenComponent:
-    case LegacyHiddenComponent:
-      {
-        popSuspenseHandler(workInProgress);
-        popHiddenContext();
-        popTransition(workInProgress, current);
-        const flags = workInProgress.flags;
-
-        if (flags & ShouldCapture) {
-          workInProgress.flags = flags & ~ShouldCapture | DidCapture; // Captured a suspense effect. Re-render the boundary.
-
-          return workInProgress;
-        }
-
-        return null;
-      }
-
-    case CacheComponent:
-      {
-        popCacheProvider();
-      }
-
-      return null;
-
-    case TracingMarkerComponent:
-
-      return null;
-
-    default:
-      return null;
-  }
-}
-
-function unwindInterruptedWork(current, interruptedWork, renderLanes) {
-  // Note: This intentionally doesn't check if we're hydrating because comparing
-  // to the current tree provider fiber is just as fast and less error-prone.
-  // Ideally we would have a special version of the work loop only
-  // for hydration.
-  popTreeContext(interruptedWork);
-
-  switch (interruptedWork.tag) {
-    case ClassComponent:
-      {
-        const childContextTypes = interruptedWork.type.childContextTypes;
-
-        if (childContextTypes !== null && childContextTypes !== undefined) {
-          popContext();
-        }
-
-        break;
-      }
-
-    case HostRoot:
-      {
-
+    ],
+    "CCS": [
         {
-          popCacheProvider();
+            "word": "दोल",
+            "eid": "10473",
+            "pagenum": 185,
+            "content": "दोल¦ <i>m.</i> das Schaukeln, Schwanken; <i>f.</i> आ Schaukel, Sänfte."
         }
-        popHostContainer();
-        popTopLevelContextObject();
-        break;
-      }
-
-    case HostHoistable:
-    case HostSingleton:
-    case HostComponent:
-      {
-        popHostContext(interruptedWork);
-        break;
-      }
-
-    case HostPortal:
-      popHostContainer();
-      break;
-
-    case SuspenseComponent:
-      popSuspenseHandler(interruptedWork);
-      break;
-
-    case SuspenseListComponent:
-      popSuspenseListContext();
-      break;
-
-    case ContextProvider:
-      const context = interruptedWork.type._context;
-      popProvider(context);
-      break;
-
-    case OffscreenComponent:
-    case LegacyHiddenComponent:
-      popSuspenseHandler(interruptedWork);
-      popHiddenContext();
-      popTransition(interruptedWork, current);
-      break;
-
-    case CacheComponent:
-      {
-        popCacheProvider();
-      }
-
-      break;
-  }
-}
-
-function invokeGuardedCallbackImpl(name, func, context) {
-  {
-    // $FlowFixMe[method-unbinding]
-    const funcArgs = Array.prototype.slice.call(arguments, 3);
-
-    try {
-      // $FlowFixMe[incompatible-call] Flow doesn't understand the arguments splicing.
-      func.apply(context, funcArgs);
-    } catch (error) {
-      this.onError(error);
-    }
-  }
-}
-
-let hasError = false;
-let caughtError = null; // Used by event system to capture/rethrow the first error.
-
-let hasRethrowError = false;
-let rethrowError = null;
-const reporter = {
-  onError(error) {
-    hasError = true;
-    caughtError = error;
-  }
-
-};
-/**
- * Call a function while guarding against errors that happens within it.
- * Returns an error if it throws, otherwise null.
- *
- * In production, this is implemented using a try-catch. The reason we don't
- * use a try-catch directly is so that we can swap out a different
- * implementation in DEV mode.
- *
- * @param {String} name of the guard to use for logging or debugging
- * @param {Function} func The function to invoke
- * @param {*} context The context to use when calling the function
- * @param {...*} args Arguments for function
- */
-
-function invokeGuardedCallback(name, func, context, a, b, c, d, e, f) {
-  hasError = false;
-  caughtError = null;
-  invokeGuardedCallbackImpl.apply(reporter, arguments);
-}
-/**
- * Same as invokeGuardedCallback, but instead of returning an error, it stores
- * it in a global so it can be rethrown by `rethrowCaughtError` later.
- * TODO: See if caughtError and rethrowError can be unified.
- *
- * @param {String} name of the guard to use for logging or debugging
- * @param {Function} func The function to invoke
- * @param {*} context The context to use when calling the function
- * @param {...*} args Arguments for function
- */
-
-function invokeGuardedCallbackAndCatchFirstError(name, func, context, a, b, c, d, e, f) {
-  invokeGuardedCallback.apply(this, arguments);
-
-  if (hasError) {
-    const error = clearCaughtError();
-
-    if (!hasRethrowError) {
-      hasRethrowError = true;
-      rethrowError = error;
-    }
-  }
-}
-/**
- * During execution of guarded functions we will capture the first error which
- * we will rethrow to be handled by the top level error handler.
- */
-
-function rethrowCaughtError() {
-  if (hasRethrowError) {
-    const error = rethrowError;
-    hasRethrowError = false;
-    rethrowError = null;
-    throw error;
-  }
-}
-function clearCaughtError() {
-  if (hasError) {
-    const error = caughtError;
-    hasError = false;
-    caughtError = null;
-    return error;
-  } else {
-    throw Error(formatProdErrorMessage(198));
-  }
-}
-
-// Allows us to avoid traversing the return path to find the nearest Offscreen ancestor.
-
-
-let offscreenSubtreeIsHidden = false;
-let offscreenSubtreeWasHidden = false;
-const PossiblyWeakSet = typeof WeakSet === 'function' ? WeakSet : Set;
-let nextEffect = null; // Used for Profiling builds to track updaters.
-
-function shouldProfile(current) {
-  return enableProfilerTimer   ;
-}
-
-function callComponentWillUnmountWithTimer(current, instance) {
-  instance.props = current.memoizedProps;
-  instance.state = current.memoizedState;
-
-  {
-    instance.componentWillUnmount();
-  }
-} // Capture errors so they don't interrupt unmounting.
-
-
-function safelyCallComponentWillUnmount(current, nearestMountedAncestor, instance) {
-  try {
-    callComponentWillUnmountWithTimer(current, instance);
-  } catch (error) {
-    captureCommitPhaseError(current, nearestMountedAncestor, error);
-  }
-} // Capture errors so they don't interrupt mounting.
-
-
-function safelyAttachRef(current, nearestMountedAncestor) {
-  try {
-    commitAttachRef(current);
-  } catch (error) {
-    captureCommitPhaseError(current, nearestMountedAncestor, error);
-  }
-}
-
-function safelyDetachRef(current, nearestMountedAncestor) {
-  const ref = current.ref;
-  const refCleanup = current.refCleanup;
-
-  if (ref !== null) {
-    if (typeof refCleanup === 'function') {
-      try {
-        if (shouldProfile(current)) ; else {
-          refCleanup();
-        }
-      } catch (error) {
-        captureCommitPhaseError(current, nearestMountedAncestor, error);
-      } finally {
-        // `refCleanup` has been called. Nullify all references to it to prevent double invocation.
-        current.refCleanup = null;
-        const finishedWork = current.alternate;
-
-        if (finishedWork != null) {
-          finishedWork.refCleanup = null;
-        }
-      }
-    } else if (typeof ref === 'function') {
-      let retVal;
-
-      try {
-        if (shouldProfile(current)) ; else {
-          retVal = ref(null);
-        }
-      } catch (error) {
-        captureCommitPhaseError(current, nearestMountedAncestor, error);
-      }
-    } else {
-      // $FlowFixMe[incompatible-use] unable to narrow type to RefObject
-      ref.current = null;
-    }
-  }
-}
-
-function safelyCallDestroy(current, nearestMountedAncestor, destroy) {
-  try {
-    destroy();
-  } catch (error) {
-    captureCommitPhaseError(current, nearestMountedAncestor, error);
-  }
-}
-let shouldFireAfterActiveInstanceBlur = false;
-function commitBeforeMutationEffects(root, firstChild) {
-  prepareForCommit();
-  nextEffect = firstChild;
-  commitBeforeMutationEffects_begin(); // We no longer need to track the active instance fiber
-
-  const shouldFire = shouldFireAfterActiveInstanceBlur;
-  shouldFireAfterActiveInstanceBlur = false;
-  return shouldFire;
-}
-
-function commitBeforeMutationEffects_begin() {
-  while (nextEffect !== null) {
-    const fiber = nextEffect; // This phase is only used for beforeActiveInstanceBlur.
-
-    const child = fiber.child;
-
-    if ((fiber.subtreeFlags & BeforeMutationMask) !== NoFlags$1 && child !== null) {
-      child.return = fiber;
-      nextEffect = child;
-    } else {
-      commitBeforeMutationEffects_complete();
-    }
-  }
-}
-
-function commitBeforeMutationEffects_complete() {
-  while (nextEffect !== null) {
-    const fiber = nextEffect;
-
-    try {
-      commitBeforeMutationEffectsOnFiber(fiber);
-    } catch (error) {
-      captureCommitPhaseError(fiber, fiber.return, error);
-    }
-    const sibling = fiber.sibling;
-
-    if (sibling !== null) {
-      sibling.return = fiber.return;
-      nextEffect = sibling;
-      return;
-    }
-
-    nextEffect = fiber.return;
-  }
-}
-
-function commitBeforeMutationEffectsOnFiber(finishedWork) {
-  const current = finishedWork.alternate;
-  const flags = finishedWork.flags;
-
-  switch (finishedWork.tag) {
-    case FunctionComponent:
-      {
+    ],
+    "LAN": [
         {
-          if ((flags & Update) !== NoFlags$1) {
-            commitUseEffectEventMount(finishedWork);
-          }
+            "word": "दोल",
+            "eid": "2065",
+            "pagenum": 173,
+            "content": "<b>dola,</b>¦ <i><ab>m.</ab></i> a swinging; <i><ab>f.</ab></i> <b>dolā,</b> a dooly (<i>Anglo-Indian term</i>), a little bamboo chair slung on four men's shoulders. [<b>√dul.</b>]"
         }
-
-        break;
-      }
-
-    case ForwardRef:
-    case SimpleMemoComponent:
-      {
-        break;
-      }
-
-    case ClassComponent:
-      {
-        if ((flags & Snapshot) !== NoFlags$1) {
-          if (current !== null) {
-            const prevProps = current.memoizedProps;
-            const prevState = current.memoizedState;
-            const instance = finishedWork.stateNode; // We could update instance props and state here,
-
-            const snapshot = instance.getSnapshotBeforeUpdate(finishedWork.elementType === finishedWork.type ? prevProps : resolveDefaultProps(finishedWork.type, prevProps), prevState);
-
-            instance.__reactInternalSnapshotBeforeUpdate = snapshot;
-          }
-        }
-
-        break;
-      }
-
-    case HostRoot:
-      {
-        if ((flags & Snapshot) !== NoFlags$1) {
-          {
-            const root = finishedWork.stateNode;
-            clearContainer(root.containerInfo);
-          }
-        }
-
-        break;
-      }
-
-    case HostComponent:
-    case HostHoistable:
-    case HostSingleton:
-    case HostText:
-    case HostPortal:
-    case IncompleteClassComponent:
-      // Nothing to do for these component types
-      break;
-
-    default:
-      {
-        if ((flags & Snapshot) !== NoFlags$1) {
-          throw Error(formatProdErrorMessage(163));
-        }
-      }
-  }
-}
-
-function commitHookEffectListUnmount(flags, finishedWork, nearestMountedAncestor) {
-  const updateQueue = finishedWork.updateQueue;
-  const lastEffect = updateQueue !== null ? updateQueue.lastEffect : null;
-
-  if (lastEffect !== null) {
-    const firstEffect = lastEffect.next;
-    let effect = firstEffect;
-
-    do {
-      if ((effect.tag & flags) === flags) {
-        // Unmount
-        const inst = effect.inst;
-        const destroy = inst.destroy;
-
-        if (destroy !== undefined) {
-          inst.destroy = undefined;
-
-          safelyCallDestroy(finishedWork, nearestMountedAncestor, destroy);
-        }
-      }
-
-      effect = effect.next;
-    } while (effect !== firstEffect);
-  }
-}
-
-function commitHookEffectListMount(flags, finishedWork) {
-  const updateQueue = finishedWork.updateQueue;
-  const lastEffect = updateQueue !== null ? updateQueue.lastEffect : null;
-
-  if (lastEffect !== null) {
-    const firstEffect = lastEffect.next;
-    let effect = firstEffect;
-
-    do {
-      if ((effect.tag & flags) === flags) {
-
-
-        const create = effect.create;
-
-        const inst = effect.inst;
-        const destroy = create();
-        inst.destroy = destroy;
-      }
-
-      effect = effect.next;
-    } while (effect !== firstEffect);
-  }
-}
-
-function commitUseEffectEventMount(finishedWork) {
-  const updateQueue = finishedWork.updateQueue;
-  const eventPayloads = updateQueue !== null ? updateQueue.events : null;
-
-  if (eventPayloads !== null) {
-    for (let ii = 0; ii < eventPayloads.length; ii++) {
-      const _eventPayloads$ii = eventPayloads[ii],
-            ref = _eventPayloads$ii.ref,
-            nextImpl = _eventPayloads$ii.nextImpl;
-      ref.impl = nextImpl;
-    }
-  }
-}
-
-function commitHookLayoutEffects(finishedWork, hookFlags) {
-  // At this point layout effects have already been destroyed (during mutation phase).
-  // This is done to prevent sibling component effects from interfering with each other,
-  // e.g. a destroy function in one component should never override a ref set
-  // by a create function in another component during the same commit.
-  {
-    try {
-      commitHookEffectListMount(hookFlags, finishedWork);
-    } catch (error) {
-      captureCommitPhaseError(finishedWork, finishedWork.return, error);
-    }
-  }
-}
-
-function commitClassLayoutLifecycles(finishedWork, current) {
-  const instance = finishedWork.stateNode;
-
-  if (current === null) {
-
-    {
-      try {
-        instance.componentDidMount();
-      } catch (error) {
-        captureCommitPhaseError(finishedWork, finishedWork.return, error);
-      }
-    }
-  } else {
-    const prevProps = finishedWork.elementType === finishedWork.type ? current.memoizedProps : resolveDefaultProps(finishedWork.type, current.memoizedProps);
-    const prevState = current.memoizedState; // We could update instance props and state here,
-
-    {
-      try {
-        instance.componentDidUpdate(prevProps, prevState, instance.__reactInternalSnapshotBeforeUpdate);
-      } catch (error) {
-        captureCommitPhaseError(finishedWork, finishedWork.return, error);
-      }
-    }
-  }
-}
-
-function commitClassCallbacks(finishedWork) {
-  // TODO: I think this is now always non-null by the time it reaches the
-  // commit phase. Consider removing the type check.
-  const updateQueue = finishedWork.updateQueue;
-
-  if (updateQueue !== null) {
-    const instance = finishedWork.stateNode;
-    // but instead we rely on them being set during last render.
-    // TODO: revisit this when we implement resuming.
-
-
-    try {
-      commitCallbacks(updateQueue, instance);
-    } catch (error) {
-      captureCommitPhaseError(finishedWork, finishedWork.return, error);
-    }
-  }
-}
-
-function commitHostComponentMount(finishedWork) {
-  const type = finishedWork.type;
-  const props = finishedWork.memoizedProps;
-  const instance = finishedWork.stateNode;
-
-  try {
-    commitMount(instance, type, props, finishedWork);
-  } catch (error) {
-    captureCommitPhaseError(finishedWork, finishedWork.return, error);
-  }
-}
-
-function commitLayoutEffectOnFiber(finishedRoot, current, finishedWork, committedLanes) {
-  // When updating this function, also update reappearLayoutEffects, which does
-  // most of the same things when an offscreen tree goes from hidden -> visible.
-  const flags = finishedWork.flags;
-
-  switch (finishedWork.tag) {
-    case FunctionComponent:
-    case ForwardRef:
-    case SimpleMemoComponent:
-      {
-        recursivelyTraverseLayoutEffects(finishedRoot, finishedWork);
-
-        if (flags & Update) {
-          commitHookLayoutEffects(finishedWork, Layout | HasEffect);
-        }
-
-        break;
-      }
-
-    case ClassComponent:
-      {
-        recursivelyTraverseLayoutEffects(finishedRoot, finishedWork);
-
-        if (flags & Update) {
-          commitClassLayoutLifecycles(finishedWork, current);
-        }
-
-        if (flags & Callback) {
-          commitClassCallbacks(finishedWork);
-        }
-
-        if (flags & Ref) {
-          safelyAttachRef(finishedWork, finishedWork.return);
-        }
-
-        break;
-      }
-
-    case HostRoot:
-      {
-        recursivelyTraverseLayoutEffects(finishedRoot, finishedWork);
-
-        if (flags & Callback) {
-          // TODO: I think this is now always non-null by the time it reaches the
-          // commit phase. Consider removing the type check.
-          const updateQueue = finishedWork.updateQueue;
-
-          if (updateQueue !== null) {
-            let instance = null;
-
-            if (finishedWork.child !== null) {
-              switch (finishedWork.child.tag) {
-                case HostSingleton:
-                case HostComponent:
-                  instance = getPublicInstance(finishedWork.child.stateNode);
-                  break;
-
-                case ClassComponent:
-                  instance = finishedWork.child.stateNode;
-                  break;
-              }
-            }
-
-            try {
-              commitCallbacks(updateQueue, instance);
-            } catch (error) {
-              captureCommitPhaseError(finishedWork, finishedWork.return, error);
-            }
-          }
-        }
-
-        break;
-      }
-
-    case HostHoistable:
-      {
+    ],
+    "LRV": [
         {
-          recursivelyTraverseLayoutEffects(finishedRoot, finishedWork);
-
-          if (flags & Ref) {
-            safelyAttachRef(finishedWork, finishedWork.return);
-          }
-
-          break;
-        } // Fall through
-
-      }
-
-    case HostSingleton:
-    case HostComponent:
-      {
-        recursivelyTraverseLayoutEffects(finishedRoot, finishedWork); // Renderers may schedule work to be done after host components are mounted
-        // (eg DOM renderer may schedule auto-focus for inputs and form controls).
-        // These effects should only be committed when components are first mounted,
-        // aka when there is no current/alternate.
-
-        if (current === null && flags & Update) {
-          commitHostComponentMount(finishedWork);
+            "word": "दोल",
+            "eid": "17682",
+            "pagenum": 345,
+            "content": "dola¦ <i>m.</i> 1. Swinging, recking; 2. a swing, a litter; 3. a festival held on the full moon day of the month of <i>Phālguna</i> when figures of Kṛishṇa are swung in swings."
         }
-
-        if (flags & Ref) {
-          safelyAttachRef(finishedWork, finishedWork.return);
-        }
-
-        break;
-      }
-
-    case Profiler:
-      {
-        recursivelyTraverseLayoutEffects(finishedRoot, finishedWork); // TODO: Should this fire inside an offscreen tree? Or should it wait to
-
-        break;
-      }
-
-    case SuspenseComponent:
-      {
-        recursivelyTraverseLayoutEffects(finishedRoot, finishedWork);
-
-        if (flags & Update) {
-          commitSuspenseHydrationCallbacks(finishedRoot, finishedWork);
-        }
-
-        break;
-      }
-
-    case OffscreenComponent:
-      {
-        const isModernRoot = (finishedWork.mode & ConcurrentMode) !== NoMode;
-
-        if (isModernRoot) {
-          const isHidden = finishedWork.memoizedState !== null;
-          const newOffscreenSubtreeIsHidden = isHidden || offscreenSubtreeIsHidden;
-
-          if (newOffscreenSubtreeIsHidden) ; else {
-            // The Offscreen tree is visible.
-            const wasHidden = current !== null && current.memoizedState !== null;
-            const newOffscreenSubtreeWasHidden = wasHidden || offscreenSubtreeWasHidden;
-            const prevOffscreenSubtreeIsHidden = offscreenSubtreeIsHidden;
-            const prevOffscreenSubtreeWasHidden = offscreenSubtreeWasHidden;
-            offscreenSubtreeIsHidden = newOffscreenSubtreeIsHidden;
-            offscreenSubtreeWasHidden = newOffscreenSubtreeWasHidden;
-
-            if (offscreenSubtreeWasHidden && !prevOffscreenSubtreeWasHidden) {
-              // This is the root of a reappearing boundary. As we continue
-              // traversing the layout effects, we must also re-mount layout
-              // effects that were unmounted when the Offscreen subtree was
-              // hidden. So this is a superset of the normal commitLayoutEffects.
-              const includeWorkInProgressEffects = (finishedWork.subtreeFlags & LayoutMask) !== NoFlags$1;
-              recursivelyTraverseReappearLayoutEffects(finishedRoot, finishedWork, includeWorkInProgressEffects);
-            } else {
-              recursivelyTraverseLayoutEffects(finishedRoot, finishedWork);
-            }
-
-            offscreenSubtreeIsHidden = prevOffscreenSubtreeIsHidden;
-            offscreenSubtreeWasHidden = prevOffscreenSubtreeWasHidden;
-          }
-        } else {
-          recursivelyTraverseLayoutEffects(finishedRoot, finishedWork);
-        }
-
-        if (flags & Ref) {
-          const props = finishedWork.memoizedProps;
-
-          if (props.mode === 'manual') {
-            safelyAttachRef(finishedWork, finishedWork.return);
-          } else {
-            safelyDetachRef(finishedWork, finishedWork.return);
-          }
-        }
-
-        break;
-      }
-
-    default:
-      {
-        recursivelyTraverseLayoutEffects(finishedRoot, finishedWork);
-        break;
-      }
-  }
-}
-
-function hideOrUnhideAllChildren(finishedWork, isHidden) {
-  // Only hide or unhide the top-most host nodes.
-  let hostSubtreeRoot = null;
-
-  {
-    // We only have the top Fiber that was inserted but we need to recurse down its
-    // children to find all the terminal nodes.
-    let node = finishedWork;
-
-    while (true) {
-      if (node.tag === HostComponent || (node.tag === HostHoistable ) || (node.tag === HostSingleton )) {
-        if (hostSubtreeRoot === null) {
-          hostSubtreeRoot = node;
-
-          try {
-            const instance = node.stateNode;
-
-            if (isHidden) {
-              hideInstance(instance);
-            } else {
-              unhideInstance(node.stateNode, node.memoizedProps);
-            }
-          } catch (error) {
-            captureCommitPhaseError(finishedWork, finishedWork.return, error);
-          }
-        }
-      } else if (node.tag === HostText) {
-        if (hostSubtreeRoot === null) {
-          try {
-            const instance = node.stateNode;
-
-            if (isHidden) {
-              hideTextInstance(instance);
-            } else {
-              unhideTextInstance(instance, node.memoizedProps);
-            }
-          } catch (error) {
-            captureCommitPhaseError(finishedWork, finishedWork.return, error);
-          }
-        }
-      } else if ((node.tag === OffscreenComponent || node.tag === LegacyHiddenComponent) && node.memoizedState !== null && node !== finishedWork) ; else if (node.child !== null) {
-        node.child.return = node;
-        node = node.child;
-        continue;
-      }
-
-      if (node === finishedWork) {
-        return;
-      }
-
-      while (node.sibling === null) {
-        if (node.return === null || node.return === finishedWork) {
-          return;
-        }
-
-        if (hostSubtreeRoot === node) {
-          hostSubtreeRoot = null;
-        }
-
-        node = node.return;
-      }
-
-      if (hostSubtreeRoot === node) {
-        hostSubtreeRoot = null;
-      }
-
-      node.sibling.return = node.return;
-      node = node.sibling;
-    }
-  }
-}
-
-function commitAttachRef(finishedWork) {
-  const ref = finishedWork.ref;
-
-  if (ref !== null) {
-    const instance = finishedWork.stateNode;
-    let instanceToUse;
-
-    switch (finishedWork.tag) {
-      case HostHoistable:
-      case HostSingleton:
-      case HostComponent:
-        instanceToUse = getPublicInstance(instance);
-        break;
-
-      default:
-        instanceToUse = instance;
-    } // Moved outside to ensure DCE works with this flag
-
-    if (typeof ref === 'function') {
-      {
-        finishedWork.refCleanup = ref(instanceToUse);
-      }
-    } else {
-
-
-      ref.current = instanceToUse;
-    }
-  }
-}
-
-function detachFiberMutation(fiber) {
-  // Cut off the return pointer to disconnect it from the tree.
-  // This enables us to detect and warn against state updates on an unmounted component.
-  // It also prevents events from bubbling from within disconnected components.
-  //
-  // Ideally, we should also clear the child pointer of the parent alternate to let this
-  // get GC:ed but we don't know which for sure which parent is the current
-  // one so we'll settle for GC:ing the subtree of this child.
-  // This child itself will be GC:ed when the parent updates the next time.
-  //
-  // Note that we can't clear child or sibling pointers yet.
-  // They're needed for passive effects and for findDOMNode.
-  // We defer those fields, and all other cleanup, to the passive phase (see detachFiberAfterEffects).
-  //
-  // Don't reset the alternate yet, either. We need that so we can detach the
-  // alternate's fields in the passive phase. Clearing the return pointer is
-  // sufficient for findDOMNode semantics.
-  const alternate = fiber.alternate;
-
-  if (alternate !== null) {
-    alternate.return = null;
-  }
-
-  fiber.return = null;
-}
-
-function detachFiberAfterEffects(fiber) {
-  const alternate = fiber.alternate;
-
-  if (alternate !== null) {
-    fiber.alternate = null;
-    detachFiberAfterEffects(alternate);
-  } // Clear cyclical Fiber fields. This level alone is designed to roughly
-  // approximate the planned Fiber refactor. In that world, `setState` will be
-  // bound to a special "instance" object instead of a Fiber. The Instance
-  // object will not have any of these fields. It will only be connected to
-  // the fiber tree via a single link at the root. So if this level alone is
-  // sufficient to fix memory issues, that bodes well for our plans.
-
-
-  fiber.child = null;
-  fiber.deletions = null;
-  fiber.sibling = null; // The `stateNode` is cyclical because on host nodes it points to the host
-  // tree, which has its own pointers to children, parents, and siblings.
-  // The other host nodes also point back to fibers, so we should detach that
-  // one, too.
-
-  if (fiber.tag === HostComponent) {
-    const hostInstance = fiber.stateNode;
-
-    if (hostInstance !== null) {
-      detachDeletedInstance(hostInstance);
-    }
-  }
-
-  fiber.stateNode = null;
-  // disconnected the fiber from the tree. So even if something leaks this
-  // particular fiber, it won't leak anything else.
-
-
-  fiber.return = null;
-  fiber.dependencies = null;
-  fiber.memoizedProps = null;
-  fiber.memoizedState = null;
-  fiber.pendingProps = null;
-  fiber.stateNode = null; // TODO: Move to `commitPassiveUnmountInsideDeletedTreeOnFiber` instead.
-
-  fiber.updateQueue = null;
-}
-
-function getHostParentFiber(fiber) {
-  let parent = fiber.return;
-
-  while (parent !== null) {
-    if (isHostParent(parent)) {
-      return parent;
-    }
-
-    parent = parent.return;
-  }
-
-  throw Error(formatProdErrorMessage(160));
-}
-
-function isHostParent(fiber) {
-  return fiber.tag === HostComponent || fiber.tag === HostRoot || (fiber.tag === HostHoistable ) || (fiber.tag === HostSingleton ) || fiber.tag === HostPortal;
-}
-
-function getHostSibling(fiber) {
-  // We're going to search forward into the tree until we find a sibling host
-  // node. Unfortunately, if multiple insertions are done in a row we have to
-  // search past them. This leads to exponential search for the next sibling.
-  // TODO: Find a more efficient way to do this.
-  let node = fiber;
-
-  siblings: while (true) {
-    // If we didn't find anything, let's try the next sibling.
-    while (node.sibling === null) {
-      if (node.return === null || isHostParent(node.return)) {
-        // If we pop out of the root or hit the parent the fiber we are the
-        // last sibling.
-        return null;
-      } // $FlowFixMe[incompatible-type] found when upgrading Flow
-
-
-      node = node.return;
-    }
-
-    node.sibling.return = node.return;
-    node = node.sibling;
-
-    while (node.tag !== HostComponent && node.tag !== HostText && (node.tag !== HostSingleton) && node.tag !== DehydratedFragment) {
-      // If it is not host node and, we might have a host node inside it.
-      // Try to search down until we find one.
-      if (node.flags & Placement) {
-        // If we don't have a child, try the siblings instead.
-        continue siblings;
-      } // If we don't have a child, try the siblings instead.
-      // We also skip portals because they are not part of this host tree.
-
-
-      if (node.child === null || node.tag === HostPortal) {
-        continue siblings;
-      } else {
-        node.child.return = node;
-        node = node.child;
-      }
-    } // Check if this host node is stable or about to be placed.
-
-
-    if (!(node.flags & Placement)) {
-      // Found it!
-      return node.stateNode;
-    }
-  }
-}
-
-function commitPlacement(finishedWork) {
-
-  {
-    if (finishedWork.tag === HostSingleton) {
-      // Singletons are already in the Host and don't need to be placed
-      // Since they operate somewhat like Portals though their children will
-      // have Placement and will get placed inside them
-      return;
-    }
-  } // Recursively insert all host nodes into the parent.
-
-
-  const parentFiber = getHostParentFiber(finishedWork);
-
-  switch (parentFiber.tag) {
-    case HostSingleton:
-      {
+    ],
+    "MD": [
         {
-          const parent = parentFiber.stateNode;
-          const before = getHostSibling(finishedWork); // We only have the top Fiber that was inserted but we need to recurse down its
-          // children to find all the terminal nodes.
-
-          insertOrAppendPlacementNode(finishedWork, before, parent);
-          break;
-        } // Fall through
-
-      }
-
-    case HostComponent:
-      {
-        const parent = parentFiber.stateNode;
-
-        if (parentFiber.flags & ContentReset) {
-          // Reset the text content of the parent before doing any insertions
-          resetTextContent(parent); // Clear ContentReset from the effect tag
-
-          parentFiber.flags &= ~ContentReset;
+            "word": "दोल",
+            "eid": "9634",
+            "pagenum": 126,
+            "content": "दोल¦ dol-a, <lex>m.</lex> swinging; (<lex>m.</lex>) <b>ā,</b> <lex>f.</lex> swing, 🞄<i>often as symbol of doubt</i>; dooly, <i>bamboo</i> litter 🞄(<i>carried on four menʼs shoulders</i>)."
         }
-
-        const before = getHostSibling(finishedWork); // We only have the top Fiber that was inserted but we need to recurse down its
-        // children to find all the terminal nodes.
-
-        i
+    ],
+    "MW": [
+        {
+            "word": "दोल",
+            "eid": "96978",
+            "pagenum": "498,2",
+            "content": "दोल ¦ <lex>m.</lex> (√ दुल्) swinging, oscillating, <ls>MBh. i, 1214</ls><info lex='m'/>"
+        },
+        {
+            "word": "दोल",
+            "eid": "96979",
+            "pagenum": "498,2",
+            "content": "¦ a festival (on the 14th of <s1 slp1='PAlguna'>Phālguna</s1>) when images of the boy <s1 slp1='kfzRa'>Kṛṣṇa</s1> are swung, <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "दोल",
+            "eid": "96980",
+            "pagenum": "498,2",
+            "content": "¦ a <ab>partic.</ab> position of the closed hand, <ls>Cat.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "दोल",
+            "eid": "22792",
+            "pagenum": 436,
+            "content": "दोल¦ <i>dola, as,</i> m. (fr. rt. <i>dul</i>), swinging, rocking, oscillating; a festival on the fourteenth of the month Phālguna (February — March) when figures of the juvenile Kṛṣṇa are swung in an ornamental swing; a swing, litter; a peculiar position of the closed hand; (<i>ā</i>), f. a litter, a swinging cradle or cot or hammock, a dooly, palanquin, sedan, a swing, swinging; fluctuation, incertitude, doubt; the indigo plant. <i>—Dolākula-dhī (°lā-āk°), īs, īs, i,</i> or <i>dolā-</i> <i>cala-cittavṛtti, is, is, i,</i> whose mind is agitated like a swing. <i>—Dolādhirūḍha (°lā-adh°), as, ā, am,</i> mounted on a swing; restless, disquieted. <i>—Dolā-</i> <i>yātrā,</i> f. ‘the swing festival,’ N. of a festival in honour of Kṛṣṇa when figures of him and his consort Rādhā are carried about in a litter or swung in an ornamental swing."
+        }
+    ],
+    "PW": [
+        {
+            "word": "दोल",
+            "eid": "52992",
+            "pagenum": 3,
+            "content": "दोल¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <dvsn n='2'>— a〉 <i>das Schaukeln, Wogen</i> <ls>MBH. 1,21,10</ls>. <dvsn n='2'>— b〉 <i>eine <ab>best.</ab> Stellung der geschlossenen Hand</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> (ausnahmsweise) und <lex>f.</lex> आ und *ई <dvsn n='2'>— a〉 <i>Schaukel</i>. Häufig als Bild <i>der Unsicherheit und der Zweifels</i>. संदेहदोलाधिरूढ <lex>Adj.</lex> <ls>BĀLAR. 88,12</ls>. <dvsn n='2'>— b〉 <i>Sänfte, Palanquin</i>. <dvsn n='1'>— 3〉 *<lex>f.</lex> आ <i>die Indigopflanze</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "दोल",
+            "eid": "35010",
+            "pagenum": 3,
+            "content": "दोल¦ (von दुल्) <dvsn n='1'> 1) <lex>m.</lex> <i>das Schwingen, Schaukeln</i> <ls>ŚKDR.</ls> <ls>WILS.</ls>; auch wohl <i>Schaukel</i>: °यान <ls>PĀTĀLAKHAṆḌA</ls> im <ls>PĀDMA-P.</ls> <ls>ŚKDR.</ls> °मण्डप <ls>UTKALAKHAṆḌA 42</ls> im <ls>SKANDA-P.</ls> <ls>ŚKDR.</ls> In der Bed. <i>Schaukel, Sänfte</i> gewöhnlich दोला <lex>f.</lex> (auch nom. act. nach <ls>VOP. 26, 192</ls>) <ls>AK. 2, 8, 2, 21.</ls> <ls>H. 785. 1481.</ls> <ls>MED. l. 27.</ls> <ls>HĀR. 214.</ls> क्रीडन्तीं दोलया जुष्टां प्रमदामिव <ls>R. 5, 16, 32.</ls> ताः स्वमङ्कमधिरोप्य दोलया प्रेङ्खयन्परिजनापविद्धया <ls>RAGH. 19,44.</ls> दोलान्दोलन (v. l. दोरा°) <ls>PRAB. 40, 6.</ls> वेला° <ls>MBH. 1, 1214.</ls> दोलेव मुहुरायाति याति चैव सभां प्रति <ls>N. 10, 27.</ls> श्रियो दोलालोला विषयजरसाः <ls>PRAB. 96, 1.</ls> संदेहदोलां प्राप्तं नश्चेतः so v. a. <i>von Zweifeln hin und her geworfen</i> <ls>MBH. 9, 3525.</ls> संदेहदोलास्थ <ls>KĀM. NĪTIS. 9, 75.</ls> विचारदोलामारोहत् <ls>KATHĀS. 9, 87.</ls> दोलाधिरूढेन चित्तेन <ls n='KATHĀS.'>2, 48.</ls> °चलचित्तवत्ति <ls>RAGH. 14, 34.</ls> <ls>Z. d. d. m. G. 14, 574, 20.</ls> दोलाकुलधी <ls>RĀJA-TAR. 6, 59.</ls> In der Bed. <i>Sänfte</i> in folg. Stelle: राज्ञा दोलारूढेन <ls>PAÑCAT. 256, 16.</ls> Die Form दोली <lex>f.</lex> in <ls>ŚABDĀRTHAK.</ls> <ls>ŚKDR.</ls> Vgl. चतुर्दोल . <dvsn n='1'>— 2) <lex>m.</lex> <i>eine best. Stellung der geschlossenen Hand</i> <ls>Verz. d. Oxf. H. 202,a,15. 86,a,34.</ls> <dvsn n='1'>— 3) <lex>f.</lex> आ <i>die Indigopflanze</i> <ls>AK. 2, 4, 3, 13.</ls> <ls>MED.</ls>"
+        },
+        {
+            "word": "दोल",
+            "eid": "76221",
+            "pagenum": 5,
+            "content": "दोल¦ <dvsn n='1'> 1) चिक्रीड दोलया <ls>KATHĀS. 66, 138.</ls> <ls n='KATHĀS.'>112, 70.</ls> गजेन्द्रदन्तदोला <ls n='KATHĀS.'>75.</ls> दोलारूढ इवाभवत् <ls n='KATHĀS.'>83, 31. 119, 190.</ls> दोलारूढमानस <ls n='KATHĀS.'>67, 30. 57, 102.</ls> (यानपात्रिकां तामारुरोह) संजीवनप्रमययोरन्तर्दोलामिवापराम् <ls n='KATHĀS.'>101, 188.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "दोल",
+            "eid": "19807",
+            "pagenum": 355,
+            "content": "दोल¦ m. (-लः) 1. Swinging. 2. A festival on the 14th of Phālgun, the swinging of the juvenile KRISHNA. m. (-लः-ला or ली) 1. A litter, a swinging cot, a dooly. 2. A swing. f. (-ला) The indigo plant. E. दुल् to throw up or toss, to swing, affix अच्; fem. affix टाप् or ङीष् ।"
+        }
+    ],
+    "STC": [
+        {
+            "word": "दोल",
+            "eid": "10967",
+            "pagenum": 327,
+            "content": "<b>dola-</b>¦ <ab>m.</ab> oscillation, balancement ; <i>-ā-</i> <ab>f.</ab> balançoire ; litière, palanquin ; <ab>fig.</ab> hésitation, incertitude ; <i>-ikā- -ī-</i> <ab>f.</ab> berceau ; balançoire.  <P><i>°ghara- -ka-</i> <ab>m.</ab> <ab>nt.</ab> local aménagé pour le jeu de la balançoire.  <P><i>°yuddha-</i> <ab>nt.</ab> combat dont l'issue est incertaine. <lbinfo n='5'/>  <P><i>dolā-cala-citta-</i> <ab>a.</ab> à l'esprit hésitant.  <P><i>dolādhirūḍha-</i> <i>dolārūḍha-</i> <ab>a. v.</ab> monté sur une balançoire, assis dans un palanquin ; agité, inquiet, incertain."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "दोल",
+            "eid": "19821",
+            "pagenum": 426,
+            "content": "दोल¦ m. (-लः) .²1 Swinging. .²2 A festival on the 14th of <i>Phalguna,</i> the swinging of the juvenile KṚṢṆA. mf. (-लः-ला or ली) .²1 A litter, a swinging cot, a <i>dooly.</i> .²2 A swing. f. (-ला) The indigo plant. .E. दुल to throw up or toss, to swing, affix अच्; fem. affix टाप् or ङीष्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "दोल",
+            "eid": "19299",
+            "pagenum": 380,
+            "content": "दोल¦ (लः) 1. <i>m.</i> Swinging. (लः-ला-ली) 1. <i>m. f.</i> 3. <i>f.</i> A swing, a hammock. <i>f.</i> (ला) Indigo plant."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "दोल",
+            "eid": "17138",
+            "pagenum": "2-752-a",
+            "content": "दोलः¦, पुं, दोलनम् । दुलधातोर्भावे घञ्प्रत्ययेन निष्पन्नः । (दोल्यते अस्मिन् कृष्णेनेति । दोलि + अधिकरणे घञ् ।) श्रीकृष्णस्य यात्राविशेषः । अस्य प्रमाणं यथा, पाद्मे पातालखण्डे । “विशेषतः कलियुगे दोलोत्सवो विधीयते । फाल्गुने च चतुर्द्दश्यामष्टमे यामसंज्ञके ॥ अथवा पौर्णमास्यान्तु प्रतिपत्सन्धिसम्मितौ । पूजयेद्बिधिवद्भक्त्या फल्गुचूर्णैश्चतुर्विधैः ॥ सितरक्तेर्गौरपीतैः कर्पूरादिविमिश्रितैः । हरिद्राक्षारयोगाच्च रङ्गरम्यैर्मनोहरैः ॥ अन्यैर्व्वा रङ्गरम्यैश्च प्रीणयेत् परमेश्वरम् । एकादश्यां समारभ्य पञ्चम्यन्तं समापयेत् ॥ पञ्चाहानि त्र्यहाणि स्युर्दोलोत्सवो विधीयते । दक्षिणाभिमुखं कृष्णं दालयानं सकृन्नराः ॥ दृष्ट्वापराधनिचयैर्मुक्तास्ते नात्र संशयः ॥” अपि च । जैमिनिरुवाच । “फाल्गुने मासि कुर्व्वीत दोलारोहणमुत्तमम् । यत्र क्रौडति गोविन्दो लोकानुग्रहणाय वै ॥ प्रत्यर्च्चां देवदेवस्य गोविन्दाख्यान्तु कारयेत् । प्रासादं पुरतः कुर्य्यात् षोडशस्तम्भमुच्छ्रितम् ॥ चतुरस्रं चतुर्द्बारं मण्डपं वेदिकान्वितम् । चारुचन्द्रातपं माल्यचामरध्वजशोभितम् ॥ भद्रासनं वेदिकायां श्रीपर्णीकाष्ठनिर्म्मितम् । फल्गूत्सवं प्रकुर्व्वीत पञ्चाहानि त्र्यहाणि वा ॥ फाल्गुन्याः पूर्व्वतो विप्राश्चतुर्द्दश्यां निशामुखे । वह्र्यत्सवं प्रकुर्व्वीत दोलमण्डपपूर्व्वतः ॥ एतत् सर्व्वं प्रकुर्व्वीत दोलमण्डपपूर्व्वतः । गोविन्दानुगृहीतन्तु यात्राङ्गं तत् प्रकीर्त्तितम् ॥ आचार्य्यवरणं कृत्वा वह्निं निर्म्मथनोद्भवम् । भूमिं संस्कृत्य विधिवत् तृणराशिं महोच्छ्रितम् ॥ सपशुं कारयित्वा तु वह्निं तत्र विनिक्षिपेत् । पूजयित्वा विधानेन कुष्माण्डविधिना हुनेत् ॥ गोविन्दं पूजयित्वा तु भ्रामयेत् सप्त तं विभुम् । तस्मिन् काले हरिं दृष्ट्वा सर्व्वपापैः प्रमुच्यते ॥ यत्नात्तं रक्षयेद्बह्निं यावद्यात्रा समाप्यते ॥ * ॥ प्रान्तयामे चतुर्द्दश्यां गोविन्दप्रतिमां शुभाम् ॥ वासयित्वा हरेरग्रे पूजयेत् पुरुषोत्तमम् । उपचारावशिष्टैस्तु प्रत्यर्च्चामपि पूजयेत् ॥ ततो वरञ्च वसनं मालाञ्च द्बिजसत्तमाः । अर्च्चायां विन्यसेन्मन्त्रं परं ज्योतिर्विभावयन् ॥ ततश्च प्नतिमा साक्षात् जायते पुरुषोत्तमः । रत्नान्दोलिकया तां वै नयेत् स्नानस्य मण्डपम् ॥ नानातूर्य्यनिनादैश्च शङ्खध्वनिपुरःसरम् । जयशब्दैस्तथा स्तोत्रैः पुष्पवृष्टिभिरेव च ॥ छत्रध्वजपताकाभिश्चामरव्यजनैस्तथा । निरन्तरं दीपिकाभिस्तथा कुर्य्यान्महोत्सवम् ॥ आगच्छन्ति तदा देवाः पितामहपुरोगमाः । द्रष्टुमृषिगणैः सार्द्धं गोविन्दस्य महोत्सवम् ॥ भद्रासनेऽधिवास्यैनं पूजयेदुपचारकैः ॥ महास्नानस्य विधिना स्नपनं तस्य कारयेत् । पञ्चामृतैश्च सर्व्वैर्वै तेषामन्यतमेन वा । स्नानान्ते गन्धतोयेन श्रीसूक्तेनाभिषेचयेत् ॥ संप्रोक्ष्य भूषयेद्देवं वस्त्रालङ्कारमाल्यकैः । नीराजयित्वा संपूज्य प्रासादं परिवेष्टयेत् ॥ सप्तकृत्वस्ततो देवं दोलमण्डपमानयेत् । सुसंस्कृतायां रथ्यायां पताकातोरणादिभिः ॥ अधोदेशे मण्डपं तं सप्तशो भ्रामयेत्ततः । ऊर्द्ध्वदेशे पुनः सप्तस्तम्भवेद्यान्तु सप्त वै ॥ यात्रावसाने च पुनर्भ्रामयेदेकविंशतिम् । इयं लीला भगवतः पितामहमुखेरिता ॥ राजर्षिणेन्द्रद्युम्ने न कारिता पूर्व्वमेव हि । फलपुष्पावनम्रैश्च शाखाभिः परिकल्पिते ॥ वृन्दावनान्तरे रम्ये मत्तसारसवारिणि । कोकिलारावमधुरे नानापक्षिगणाकुले ॥ नानोपशोभारचिते कालागुरुसुधूपिते । प्रफुल्लकेतकीषण्डगन्धामोदि-दिगन्तरे ॥ मल्लिकाशोकपुन्नागचम्पकैरुपशोभिते । तत्काननान्तर्घटिते मण्डपे चारुतोरणे ॥ भूषिते माल्यवसनचामरैरुपशोभिते । रत्नखट्वान्दोलिकायां तन्मध्ये वासयेत् प्रभुम् ॥ अनर्घ्यरत्नघटितकुण्डलोद्भासितश्रुतिम् । यथास्थानं यथाशोभं दिव्यालङ्काररञ्जनम् ॥ विकचाम्बुजमध्यस्थं विश्वधात्र्या श्रिया युतम् । शङ्खचक्रगदापद्मधारिणं वनमालिनम् ॥ सुप्रसन्नं सुनासाभ्रपीनवक्षःस्थलोज्ज्वलम् । पुरो व्योमस्थितैर्द्देवैर्ब्रह्माद्यैर्नतकन्धरैः ॥ कृताञ्जलिपुटैर्भक्त्या जयशब्दैरभिष्टुतम् । गन्धर्व्वैरप्सरोभिश्च किन्नरैः सिद्धचारणैः ॥ हाहाहूहूप्रभृतिभिः सत्वरं दिव्यगायनैः । अहंपूर्व्विकया नृत्यगीतवादित्रकारिभिः ॥ नेत्राम्बुजसहस्रैश्च पूज्यमानं मुदान्वितैः । विकिरद्भिः सर्व्वदिक्षु गन्धचन्दनजं रजः ॥ उपवेश्याथ गोविन्दं पूजयेदुपचारकैः । वल्लवीवृन्दमध्यस्थं कदम्बतरुमूलगम् ॥ हावहास्यविलासैश्च क्रीडमानं वनान्तरे । गोपीभिश्चैव गोपालैर्लीलान्दोलिकया नगम् ॥ चिन्तयित्वा जगन्नाथं विकिरेद्गन्धचूर्णकैः । सकर्पूरै रक्तपीतशुक्लैर्दिक्षु समन्ततः ॥ दिव्यैर्वस्त्रैर्दिव्यमाल्यैर्दिव्यगन्धैः सुधूपकैः । चामरान्दोलनैर्गानैः स्तुतिभिश्च समर्च्चितम् ॥ आन्दोलयेत् दोलिकास्थं सप्तवारान् शनैः शनैः । तदा पश्यन्ति ये कृष्णं मुक्तिस्तेषां न संशयः ॥ ब्रह्महत्यादिपापानां पञ्चानां संक्षयो भवेत् । त्रिवारं दोलयेद्देवं सर्व्वपापापनोदनम् ॥ भक्तानुग्राहकं पुंसां भुक्तिमुक्त्येककारणम् । लीलाविचेष्टितं यस्य कृत्रिमं सहजं यथा ॥ अंहःसंघक्षयकरं मूलाविद्यानिवर्त्तकम् । पश्यन् द्बितीयं हरति गोहत्याद्युपपातकम् ॥ क्षिणोत्यशेषपापानि तृतीयं नात्र संशयः । दृष्ट्वा दोलास्थितं देवं सर्व्वपापैः प्रमुच्यते ॥ आध्यात्मिकैराधिदैवैराधिभूतैर्व्विमुच्यते । इमां यात्रां कारयित्वा चक्रवर्त्ती भवेन्नृपः ॥ ब्राह्मणस्तु चतुर्वेदी ज्ञानवान् जायते ध्रुवम् ॥” इति स्कान्दे उत्कलखण्डे ४२ अध्यायः ॥ * ॥ तस्य संक्षेपव्यवस्था यथा, -- यदा अरुणोदयकाले पौर्णमासीलाभस्तत्रैव दोलयात्रा । उभयदिने अरुणोदयकाले पौर्णमासीलाभे पूर्व्वदिने । सङ्गवमध्याह्नकालव्यापित्वात् त्रिसन्ध्यव्यापित्वेन तिथेर्ब्बलवत्त्वाच्च । यदा तिथिक्षयवशादरुणोदयकाले न पौर्णमासीलाभस्तदा कदाचित् सहायभावेन चतुर्द्दश्यादरः । एतेन पूर्व्वदिने अरुणोदयं विना पूर्व्वाह्णे पौर्णमासीलाभः परदिने मुहूर्त्तान्यूनतिथिलाभस्तदा फल्गूत्सवः पूर्व्वदिने युग्मवचनानुरोधादिति निरस्तम् । उभयदिने कर्म्मयोग्यप्रशस्तकालप्राप्ततिथिसन्देह एव युग्मवचनप्रवृत्तेः । एवं पञ्चमीपर्य्यन्तासु तिथिषु तत्करणे अनयैव दिशा व्यवस्थोन्नेयेति । इति दोलयात्रातत्त्वम् ॥ * ॥ चैत्रे मासि दोलस्य प्रमाणं गारुडे । “चैत्रे मासि सिते पक्षे दक्षिणाभिमुखं हरिम् । दोलारूढं समभ्यर्च्य मासमान्दोलयेत् कलौ ॥” तन्नित्यता च पद्मपुराणे । “ऊर्ज्जे रथं मधौ दोलां श्रावणे तन्तु पर्व्व च । चैत्रे मदनकारोपमकुर्व्वाणो व्रजत्यधः ॥ विष्णुं दोलास्थितं दृष्ट्वा त्रैलोक्यस्योत्सवो भवेत् । तस्मात् कार्य्यशतं त्यक्त्वा दोलाहे उत्सवं कुरु ॥” अथ दोलोत्सवविधिः । “चैत्रस्य शुक्लद्वादश्यां प्रातःकृत्यं समाप्य च । नित्यपूजां विधायाथ कुर्य्याद्दोलोत्सवं व्रती ॥ तदर्थञ्च विशेषेण नैवेद्यादिकमर्पयेत् । संमान्य वैष्णवांस्तैश्च गीतनृत्यादि कारयेत् ॥ महानीराजनं कृत्वा प्रक्षिपेदच्युतोपरि । गन्धानुलेपचूर्णानि विचित्राणि विभागशः ॥ सन्तोष्य वैष्णवांस्तैश्च गीतनृत्यादिभिः प्रभुम् । नत्वाभ्यर्थ्याप्रमत्तः सन् दोलामारोहयेच्छुभाम् ॥ नीत्वा वहिर्व्वेदिकायामुत्तुङ्गायां यथाविधि । अभ्यर्च्यान्दोलयेत् कृष्णं सर्व्वलोकावलोकितम् ॥ एवमभ्यर्च्चयन् यामे यामे त्वान्दोलयन् प्रभुम् । महोत्सवेन गमयेद्दिनं रात्रिञ्च यत्नतः ॥ एवं जागरणं कृत्वा वैष्णवैः सह वैष्णवः । प्रणम्य प्रार्थ्य निर्म्मञ्छ्य कृष्णं स्वालयमानयेत् ॥ चैत्रे मासि सिते पक्षे तृतीयायां रमापतिम् । दोलारूढं समभ्यर्च्ये मासमान्दोलयेत् कलौ ॥ यत् फाल्गुनस्य राकादावुत्तराफाल्गुनी यदा । तदा दोलोत्सवः कार्य्यस्तच्च श्रीपुरुषोत्तमे ॥” इति हरिभक्तिविलासः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "दोल",
+            "eid": "26244",
+            "pagenum": "3761,b",
+            "content": "दोल¦ पु० दुल--घञ् । दोलने श्रीकृष्णस्य स्वनामख्याते उत्सवभेदे स च फाल्गुनपौर्णमास्यां कर्तव्यः खण्डतिथौ तस्य कुत्र खण्डे कर्तव्यता तच्च दोलोत्सवतत्त्वे उक्तं यथा <P>“यदा अरुणोदयकाले पौर्णमासीलाभस्तदा तत्रैव दाल यात्रा । उभयदिने अरुणोदयकाले पौर्णमासीलाभे पूर्वदिने सङ्गवमध्याह्नकालव्यापित्वात् त्रिसन्ध्यव्यापित्वेन तिथेर्बलवत्त्वाच्च । यदा तिथिक्षयवशादरुणोदयकाले न पौर्णमासीलाभस्तदाः कदाचित् सहायभावेन चतुर्दश्यादरः । एतेन पूर्वदिने अरुणोदयं विना पूर्वाह्णे पौर्णमासीलाभः परदिने मुहूर्त्तान्यूनतिथिलाभस्तदा फल्गूत्सवः पूर्वदिने युग्मवचनानुरोधादिति निरस्तम् उभयदिने कर्मयोग्यप्रशस्तकालप्राप्ततिथिसन्देह एव युग्मवचनप्रवृत्तेः । एवं पञ्चमीपर्यन्तासु तिथिषु तत्करणे अनयैव दिशा व्यवस्थोन्नेयेति” दोलयात्रातत्त्वम् “विशेषतः कलियुगे दोलोत्सवो विधीयते । फाल्गुने च चतुर्दश्या अष्टमे यामसंज्ञके । अथ वा पौर्णमास्यान्तु प्रतिपत्सन्धिसम्मितौ । पूजयेद्विधिवत् भक्त्या फल्गुचूर्णेश्चतुर्विधैः । सितरक्तैर्गौरपीतैः कर्पूरादिविमिश्रितैः । हरिद्राक्षारयोगाच्च रङ्गरम्यैर्मनोहरैः । अन्यैर्वा रङ्गरम्यैश्च प्रीणयेत् परमेश्वरम् । एकादश्यां समारभ्य पञ्चम्यन्तं समापयेत् । पञ्चाहानि त्र्यहाणि स्युर्दोलोत्सवो विधीयते । दक्षिणाभिमुखं कृष्णं दोलयानं सकृन्नराः । दृष्ट्वापराधनिचयैर्मुक्तास्ते नात्र संशयः” पाद्मे पातालखण्डे । “जैमिनिरुवाच फाल्गुने मासि कुर्वीत दोलारोहणमुत्तमम् । यत्र क्रीडति गोविन्दो लोकानुग्रहणाय वै । प्रत्यर्च्चां देवदेवस्य गोविन्दाख्यान्तु कारयेत् । प्रासादं पुरतः कुर्य्यात् षोढशस्तम्भमुच्छ्रितम् । चतुरस्रं चतुर्द्वारं मण्डपं वेदिकान्वितम् । चारुचन्द्रातप माल्यचामरध्वजशोभितम् । भद्रासनं वेदिकायां श्रीपर्णीकाष्ठनिर्मितम् । फल्गूत्सवं प्रकुर्वीत पञ्चाहानि त्र्यहाणि वै । फाल्गुन्याः पूर्वतो विप्राश्चतुर्दश्यां निशामुखे । वह्न्युत्सवं प्रकुर्वीत दोलमण्डपपूर्वतः । गोविन्दानुगृहीतन्तु यात्राङ्गं तत् प्रकीर्तितम् । आचार्यवरणं कृत्वा वह्निं निर्मथनोद्भवम् । भूमिं संस्कृत्य विधिवत् तृणराशिं महोच्छ्रितम् । सपशुं कारयित्वा तु वह्निं तत्र विनिःक्षिपेत् । पूजयित्वा विधानेन कुष्माण्डविधिनाहुनेत् । गोविन्दं पूजयित्वा तु भ्रामयेत् सप्तधा विभुम् । तस्मिन् काले हरिं दृष्ट्वा सर्वपापैः प्रमुच्यते । यत्नात्तं रक्षयेद्वह्निं यावद् यात्रा समाष्वते । प्रान्तयासे चतुदश्यां गोविन्दप्रतिमां शुभाम् । वासयित्वा हरेरग्रे पूजयेत् पुरुषोत्तमम् । उपचारविशिष्टैस्तु प्रत्यर्चामपि पूजयेत् । ततो वरञ्च वसनं मालाञ्च द्विजसत्तमाः । अर्चायां विन्यसेन् मन्त्रं परं ज्योतिर्विभावयन् । ततश्च प्रतिमा साक्षात् जायते पुरुषोत्तमः । रत्नान्दोलिकया तां वै नयेत् स्नानस्य मण्डपम् । नानातूर्य्यनिनादैश्च शङ्खध्वनिपुरः सरम् । जयशब्दैस्तथा स्तोत्रैः पुष्पवृष्टिभिरेव च । छत्रध्वजपताकाभिश्चामरव्यजनैस्तथा । निरन्तरं दीपिकाभिस्तथा कुर्य्यान्महोत्सवम् । आगच्छन्ति तदा देवाः पितामहपुरोगमाः । द्रष्टुमृषिगणैः सार्द्धं गोविन्दस्य महोत्सवम् । भद्रासनेऽधिवास्यैनं पूजयेदुपचारकैः । महा स्नानस्य विधिना स्नपनं तस्य कारयेत् । पञ्चामृतैश्च वै सर्वैः तेषामन्यतमेन वा । स्नानान्ते गन्धतोयेन श्रीसूक्तेनाभिषेचयेत् । संप्रोक्ष्य भूषयेद्देवं वस्त्रालङ्कारमाल्यकैः । नीराजयित्वा संपूज्य प्रासादं परिवेष्टयेत् । सप्तकृत्वस्ततो देवं दोलमण्डपमानयेत् । सुसंस्कृतायां रथ्यायां पताकातोरणादिभिः । अधोदेशे मण्डपं तं सप्तशोभ्रामयेत्ततः । ऊर्द्ध्वदेशे पुनस्तद्वत् स्तम्भवेद्यान्तु सप्त वै । यात्रावसाने च पुनर्भ्रामयेदेकविंशतिम् । इयं लीला भगवतः पितामहमुखेरिता” स्कान्दे उत्कलखण्डे । गारुडे “चैत्रे मासि सिते पक्षे दक्षिणाभिमुखं हरिम् । दोलारूढं समभ्यर्च्य मासमान्दोलयेत् कलौ” तन्नित्यता च पद्मपुराणे “ऊर्जे रथं मधौ दोलां श्रावणे तन्तुपर्व च । चैत्रे मदनकारोपमकुर्बाणो व्रजत्यधः । विष्णुं दोलास्थितं दृष्ट्वा त्रैलोक्यस्योत्सवो भवेत् । तस्मात् कार्यशतं त्यक्त्वा दोलाहे उत्सवं कुरु” । दोलोत्सवविधिः “चैत्रस्य शुक्लद्वादश्यां प्रातःकृत्यं समाप्य च । नित्यपूजां विधायाथ कुर्य्याद्दोलोत्सवं व्रती । तदर्थञ्च विशेषेण नैविद्यादिकमर्पयेत् । संमान्य वैष्णवांस्तैश्च गीतनृत्यादि कारयेत् । महानीराजनं कृत्वा प्रक्षिपेदच्युतीपरि । गन्धानुलेपचूर्णानि विचित्राणि विभागशः । सन्तोष्य वैष्णवांस्तैश्च गतिनृत्यादिभिः प्रभुः । नत्वाभ्यर्थ्याऽप्रमत्तः सन् दोलामारोहयेच्छुभाम् । नीत्वा बहिर्वेदिकायामुत्तुङ्गाया यथाविधि । अभ्यर्च्यान्दोलयेत् कृष्णं सर्वलोकावलोकितम् । एवमभ्यर्चयन यामे यामे त्वान्दोलयन् प्रभुम् । महोत्सवेन गमयेद्दिनं रात्रिञ्च यत्नतः । एवं जागरणं कृत्वा वैष्णवैः सह वैष्णवः । प्रणम्य प्रार्थ्य निर्मञ्छ्य कृष्ण स्वालयमानयेत् । चैत्रे मासि सिते पक्षे तृतीयाया रमापतिम् । दोलारूढं समभ्यर्च्य मासमान्दोलयेत् कलौ । यत् फाल्गुनस्य राकादावुत्तरा फल्गुनी यदा । तदा दोलोत्सवः कार्यस्तच्च श्रीपुरुषोत्तमे” इति हरिभक्तिविलासः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "दोल",
+            "content": "दोलः पुं. -  दुल् +  घञ् 'झूलना, डोलना,  हिलना'"
+        },
+        {
+            "word": "दोल",
+            "content": "दोलः पुं. -  दुल् +  घञ् 'हिंडोला,  डोली'"
+        },
+        {
+            "word": "दोल",
+            "content": "दोलः पुं. -  दुल् +  घञ् फाल्गुनपूर्णिमा के दिन होने वाला उत्सव जब कि बालकृष्ण की मूर्तियों को हिडोले में झुलाया जाता है"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "दोल",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ತೂಗಾಡುವುದು \\/ಜೋಲಾಡುವುದು",
+            "निष्पत्तिः": "दुल (उत्क्षेपे)'घञ्' (३-३-१८)",
+            "content": ""
+        },
+        {
+            "word": "दोल",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಫಾಲ್ಗುನಮಾಸದ ಹುಣ್ಣಿಮೆಯ ಪ್ರಾತಃಕಾಲ ಮಾಡುವ ಶ್ರೀಕೃಷ್ಣನ ಡೋಲೋತ್ಸವ",
+            "निष्पत्तिः": "दुल -अधि० 'घञ्' (३-३-१२१)",
+            "व्युत्पत्तिः": "दोल्यते अस्मिन् कृष्णेन",
+            "प्रयोगाः": "'विशेषतः कलियुगे दोलोत्सवो विधीयते । फाल्गुने च चतुर्दश्यामष्टमे यामसञ्ज्ञके । अथवा पौर्णमास्यां तु प्रतिपत्सन्धिसमितौ । पूजयेत् विधिवद्भक्त्या फल्गुचूर्णैश्चतुर्विधैः ॥'",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "दोल",
+            "content": "<body><s>dola pu° dula—GaY . dolane SrIkfzRasya svanAmaKyAte utsa­vaBede sa ca PAlgunapOrRamAsyAM kartavyaH KaRqatiTO tasya kutra KaRqe kartavyatA tacca dolotsavatattve uktaM yaTA <q>yadA aruRodayakAle pOrRamAsIlABastadA tatrEva dAla yAtrA . uBayadine aruRodayakAle pOrRamAsIlABe pUrvadine saNgavamaDyAhnakAlavyApitvAt trisanDyavyA­pitvena tiTerbalavattvAcca . yadA tiTikzayavaSAdaruRodaya­kAle na pOrRamAsIlABastadAH kadAcit sahAyaBAvena caturdaSyAdaraH . etena pUrvadine aruRodayaM vinA pU­rvAhRe pOrRamAsIlABaH paradine muhUrttAnyUnatiTilABa­stadA PalgUtsavaH pUrvadine yugmavacanAnuroDAditi nira­stam uBayadine karmayogyapraSastakAlaprAptatiTisandeha eva yugmavacanapravftteH . evaM paYcamIparyantAsu tiTizu tatkaraRe anayEva diSA vyavasTonneyeti</q> dolayAtrA­tattvam <q>viSezataH kaliyuge dolotsavo viDIyate . PAlgune ca caturdaSyA azwame yAmasaMjYake . aTa vA pOrRamAsyAntu pratipatsanDisammitO . pUjayedviDivat BaktyA PalgucUrReScaturviDEH . sitaraktErgOrapItEH karpU­rAdivimiSritEH . haridrAkzArayogAcca raNgaramyErmano­harEH . anyErvA raNgaramyESca prIRayet parameSvaram . ekAdaSyAM samAraBya paYcamyantaM samApayet . paYcAhAni tryahARi syurdolotsavo viDIyate . dakziRABimuKaM kfzRaM dolayAnaM sakfnnarAH . dfzwvAparADanicayErmuktAste nAtra saMSayaH</q> pAdme pAtAlaKaRqe . <q>jEminiruvAca PAlgune mAsi kurvIta dolArohaRamuttamam . yatra krI­qati govindo lokAnugrahaRAya vE . pratyarccAM devadevasya govindAKyAntu kArayet . prAsAdaM purataH kuryyAt zoQaSastamBamucCritam . caturasraM caturdvAraM maRqapaM vedi­kAnvitam . cArucandrAtapa mAlyacAmaraDvajaSoBi­tam . BadrAsanaM vedikAyAM SrIparRIkAzWanirmitam . PalgUtsavaM prakurvIta paYcAhAni tryahARi vE . PAlgunyAH pUrvato viprAScaturdaSyAM niSAmuKe . vahnyutsavaM prakurvIta dolamaRqapapUrvataH . govindAnugfhItantu yAtrANgaM tat prakIrtitam . AcAryavaraRaM kftvA vahniM nirmaTano­dBavam . BUmiM saMskftya viDivat tfRarASiM mahocCri­tam . sapaSuM kArayitvA tu vahniM tatra viniHkzipet . pUjayitvA viDAnena kuzmARqaviDinAhunet . govindaM pUjayitvA tu BrAmayet saptaDA viBum . tasmin kAle hariM dfzwvA sarvapApEH pramucyate . yatnAttaM rakzayedvahniM yAvad yAtrA samAzvate . prAntayAse catudaSyAM govindapra­timAM SuBAm . vAsayitvA hareragre pUjayet puruzotta­mam . upacAraviSizwEstu pratyarcAmapi pUjayet . tato varaYca vasanaM mAlAYca dvijasattamAH . arcAyAM vinyasen mantraM paraM jyotirviBAvayan . tataSca pratimA sAkzAt jAyate puruzottamaH . ratnAndolikayA tAM vE nayet snA­nasya maRqapam . nAnAtUryyaninAdESca SaNKaDvanipuraH saram . jayaSabdEstaTA stotrEH puzpavfzwiBireva ca . Catra­DvajapatAkABiScAmaravyajanEstaTA . nirantaraM dIpikABi­staTA kuryyAnmahotsavam . AgacCanti tadA devAH pitA­mahapurogamAH . drazwumfzigaREH sArdDaM govindasya ma­hotsavam . BadrAsane'DivAsyEnaM pUjayedupacArakEH . mahA snAnasya viDinA snapanaM tasya kArayet . paYcAmftESca vE sarvEH tezAmanyatamena vA . snAnAnte ganDatoyena SrI­sUktenABizecayet . saMprokzya BUzayeddevaM vastrAlaNkAra­mAlyakEH . nIrAjayitvA saMpUjya prAsAdaM parivezwayet . saptakftvastato devaM dolamaRqapamAnayet . susaMskftAyAM raTyAyAM patAkAtoraRAdiBiH . aDodeSe maRqapaM taM saptaSoBrAmayettataH . UrdDvadeSe punastadvat stamBavedyAntu sapta vE . yAtrAvasAne ca punarBrAmayedekaviMSatim . iyaM lIlA BagavataH pitAmahamuKeritA</q> skAnde utkalaKaRqe . gAruqe <q>cEtre mAsi site pakze dakziRABimuKaM harim . dolArUQaM samaByarcya mAsamAndolayet kalO</q> tannityatA ca padmapurARe <q>Urje raTaM maDO dolAM SrAvaRe tantuparva ca . cEtre madanakAropamakurbARo vrajatyaDaH . vizRuM dolAsTitaM dfzwvA trElokyasyotsavo Bavet . tasmAt kArya­SataM tyaktvA dolAhe utsavaM kuru</q> . dolotsavaviDiH <q>cEtrasya SukladvAdaSyAM prAtaHkftyaM samApya ca . nityapUjAM viDAyATa kuryyAddolotsavaM vratI . tadarTaYca viSezeRa nEvi­dyAdikamarpayet . saMmAnya vEzRavAMstESca gItanftyAdi kA­rayet . mahAnIrAjanaM kftvA prakzipedacyutIpari . ganDAnulepacUrRAni vicitrARi viBAgaSaH . santozya vEzRavAMstESca gatinftyAdiBiH praBuH . natvAByarTyA'pramattaH san dolAmArohayecCuBAm . nItvA bahirvedikAyA­muttuNgAyA yaTAviDi . aByarcyAndolayet kfzRaM sarva­lokAvalokitam . evamaByarcayana yAme yAme tvAndolayan praBum . mahotsavena gamayeddinaM rAtriYca yatnataH . evaM jAgaraRaM kftvA vEzRavEH saha vEzRavaH . praRamya prArTya ni­rmaYCya kfzRa svAlayamAnayet . cEtre mAsi site pakze tftIyAyA ramApatim . dolArUQaM samaByarcya mAsamA­ndolayet kalO . yat PAlgunasya rAkAdAvuttarA PalgunI yadA . tadA dolotsavaH kAryastacca SrIpuruzo­ttame</q> iti hariBaktivilAsaH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "दोल",
+            "content": "<H1><h><key1>dola</key1><key2>dola</key2></h><body><s>dola</s>   <lex>m.</lex> (√ <s>dul</s>) swinging, oscillating, <ls>MBh. i, 1214</ls><info lex=\"m\" /></body><tail><L>96978</L><pc>498,2</pc></tail></H1>\n <H1A><h><key1>dola</key1><key2>dola</key2></h><body>  a festival (on the 14th of <s1 slp1=\"PAlguna\">Phālguna</s1>) when images of the boy <s1 slp1=\"kfzRa\">Kṛṣṇa</s1> are swung, <ls>W.</ls><info lex=\"inh\" /></body><tail><L>96979</L><pc>498,2</pc></tail></H1A>\n <H1A><h><key1>dola</key1><key2>dola</key2></h><body>  a <ab>partic.</ab> position of the closed hand, <ls>Cat.</ls><info lex=\"inh\" /></body><tail><L>96980</L><pc>498,2</pc></tail></H1A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "दोल",
+            "content": "<H1><h><key1>dola</key1><key2>dola</key2></h><body><s>dola</s>  <div n=\"1\">m. (<s>-laH</s>) </div><div n=\"2\"> 1. Swinging. </div><div n=\"2\"> 2. A festival on the 14th of Phālgun, the <lb />swinging of the juvenile KRISHNA. </div><div n=\"1\">m. (<s>-laH-lA</s> or <s>lI</s>) </div><div n=\"2\"> 1. A litter, a <lb />swinging cot, a dooly. </div><div n=\"2\"> 2. A swing. </div><div n=\"1\">f. (<s>-lA</s>) The indigo plant.</div><div n=\"E\"> E. <s>dul</s> <lb />to throw up or toss, to swing, affix <s>ac;</s> fem. affix <s>wAp</s> or <s>NIz .</s></div></body><tail><L>19807</L><pc>355-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "दोल",
+            "content": "<span lang=\"sa\">दोल<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತೂಗಾಡುವುದು /ಜೋಲಾಡುವುದು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>दुल (उत्क्षेपे) - \"घञ्\" (३-३-१८)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>दोल<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಫಾಲ್ಗುನಮಾಸದ ಹುಣ್ಣಿಮೆಯ ಪ್ರಾತಃಕಾಲ ಮಾಡುವ ಶ್ರೀಕೃಷ್ಣನ ಡೋಲೋತ್ಸವ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>दुल -अधि० \"घञ्\" (३-३-१२१)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>दोल्यते अस्मिन् कृष्णेन<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"विशेषतः कलियुगे दोलोत्सवो विधीयते । फाल्गुने च चतुर्दश्यामष्टमे यामसञ्ज्ञके । अथवा पौर्णमास्यां तु प्रतिपत्सन्धिसमितौ । पूजयेत् विधिवद्भक्त्या फल्गुचूर्णैश्चतुर्विधैः ॥\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

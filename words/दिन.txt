@@ -1,969 +1,361 @@
-  // There is a bug in Safari where imageSrcSet is not respected on preload links
-        // so we omit the href here if we have imageSrcSet b/c safari will load the wrong image.
-        // This harms older browers that do not support imageSrcSet by making their preloads not work
-        // but this population is shrinking fast and is already small so we accept this tradeoff.
-        href: as === 'image' && options && options.imageSrcSet ? undefined : href,
-        as
-      }, options);
-
-      preloadPropsMap.set(key, preloadProps);
-
-      if (null === ownerDocument.querySelector(preloadSelector)) {
-        if (as === 'style' && ownerDocument.querySelector(getStylesheetSelectorFromKey(key))) {
-          // We already have a stylesheet for this key. We don't need to preload it.
-          return;
-        } else if (as === 'script' && ownerDocument.querySelector(getScriptSelectorFromKey(key))) {
-          // We already have a stylesheet for this key. We don't need to preload it.
-          return;
-        }
-
-        const instance = ownerDocument.createElement('link');
-        setInitialProperties(instance, 'link', preloadProps);
-        markNodeAsHoistable(instance);
-        ownerDocument.head.appendChild(instance);
-      }
-    }
-  }
-}
-
-function preloadModule$1(href, options) {
-
-  const ownerDocument = getDocumentForImperativeFloatMethods();
-
-  if (href) {
-    const as = options && typeof options.as === 'string' ? options.as : 'script';
-    const preloadSelector = "link[rel=\"modulepreload\"][as=\"" + escapeSelectorAttributeValueInsideDoubleQuotes(as) + "\"][href=\"" + escapeSelectorAttributeValueInsideDoubleQuotes(href) + "\"]"; // Some preloads are keyed under their selector. This happens when the preload is for
-    // an arbitrary type. Other preloads are keyed under the resource key they represent a preload for.
-    // Here we figure out which key to use to determine if we have a preload already.
-
-    let key = preloadSelector;
-
-    switch (as) {
-      case 'audioworklet':
-      case 'paintworklet':
-      case 'serviceworker':
-      case 'sharedworker':
-      case 'worker':
-      case 'script':
+{
+    "word": "दिन",
+    "ABCH": [
         {
-          key = getScriptKey(href);
-          break;
+            "word": "दिन",
+            "linga": "क्ली",
+            "pagenum": "9",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "489",
+            "group": "89",
+            "synonyms": [
+                "अहन्",
+                "दिवस",
+                "दिव",
+                "द्यु",
+                "वासर",
+                "घस्र"
+            ],
+            "content": "त्रिंशता तैरहोरात्रस्तत्राहर्दिवसो दिनम् ।\nदिवं द्युर्वासरो घस्रः प्रभातं स्यादहर्मुखम् ॥ १३८ ॥\nव्युष्टं विभातं प्रत्यूषं कल्यप्रत्युषसी उषः ।\nकाल्यं मध्याह्णस्तु दिवामध्यं मध्यंदिनं च सः ॥ १३९ ॥"
         }
-    }
-
-    if (!preloadPropsMap.has(key)) {
-      const props = assign({
-        rel: 'modulepreload',
-        href
-      }, options);
-
-      preloadPropsMap.set(key, props);
-
-      if (null === ownerDocument.querySelector(preloadSelector)) {
-        switch (as) {
-          case 'audioworklet':
-          case 'paintworklet':
-          case 'serviceworker':
-          case 'sharedworker':
-          case 'worker':
-          case 'script':
-            {
-              if (ownerDocument.querySelector(getScriptSelectorFromKey(key))) {
-                return;
-              }
-            }
-        }
-
-        const instance = ownerDocument.createElement('link');
-        setInitialProperties(instance, 'link', props);
-        markNodeAsHoistable(instance);
-        ownerDocument.head.appendChild(instance);
-      }
-    }
-  }
-}
-
-function preinitStyle(href, precedence, options) {
-
-  const ownerDocument = getDocumentForImperativeFloatMethods();
-
-  if (href) {
-    const styles = getResourcesFromRoot(ownerDocument).hoistableStyles;
-    const key = getStyleKey(href);
-    precedence = precedence || 'default'; // Check if this resource already exists
-
-    let resource = styles.get(key);
-
-    if (resource) {
-      // We can early return. The resource exists and there is nothing
-      // more to do
-      return;
-    }
-
-    const state = {
-      loading: NotLoaded,
-      preload: null
-    }; // Attempt to hydrate instance from DOM
-
-    let instance = ownerDocument.querySelector(getStylesheetSelectorFromKey(key));
-
-    if (instance) {
-      state.loading = Loaded | Inserted;
-    } else {
-      // Construct a new instance and insert it
-      const stylesheetProps = assign({
-        rel: 'stylesheet',
-        href,
-        'data-precedence': precedence
-      }, options);
-
-      const preloadProps = preloadPropsMap.get(key);
-
-      if (preloadProps) {
-        adoptPreloadPropsForStylesheet(stylesheetProps, preloadProps);
-      }
-
-      const link = instance = ownerDocument.createElement('link');
-      markNodeAsHoistable(link);
-      setInitialProperties(link, 'link', stylesheetProps);
-      link._p = new Promise((resolve, reject) => {
-        link.onload = resolve;
-        link.onerror = reject;
-      });
-      link.addEventListener('load', () => {
-        state.loading |= Loaded;
-      });
-      link.addEventListener('error', () => {
-        state.loading |= Errored;
-      });
-      state.loading |= Inserted;
-      insertStylesheet(instance, precedence, ownerDocument);
-    } // Construct a Resource and cache it
-
-
-    resource = {
-      type: 'stylesheet',
-      instance,
-      count: 1,
-      state
-    };
-    styles.set(key, resource);
-    return;
-  }
-}
-
-function preinitScript(src, options) {
-
-  const ownerDocument = getDocumentForImperativeFloatMethods();
-
-  if (src) {
-    const scripts = getResourcesFromRoot(ownerDocument).hoistableScripts;
-    const key = getScriptKey(src); // Check if this resource already exists
-
-    let resource = scripts.get(key);
-
-    if (resource) {
-      // We can early return. The resource exists and there is nothing
-      // more to do
-      return;
-    } // Attempt to hydrate instance from DOM
-
-
-    let instance = ownerDocument.querySelector(getScriptSelectorFromKey(key));
-
-    if (!instance) {
-      // Construct a new instance and insert it
-      const scriptProps = assign({
-        src,
-        async: true
-      }, options); // Adopt certain preload props
-
-
-      const preloadProps = preloadPropsMap.get(key);
-
-      if (preloadProps) {
-        adoptPreloadPropsForScript(scriptProps, preloadProps);
-      }
-
-      instance = ownerDocument.createElement('script');
-      markNodeAsHoistable(instance);
-      setInitialProperties(instance, 'link', scriptProps);
-      ownerDocument.head.appendChild(instance);
-    } // Construct a Resource and cache it
-
-
-    resource = {
-      type: 'script',
-      instance,
-      count: 1,
-      state: null
-    };
-    scripts.set(key, resource);
-    return;
-  }
-}
-
-function preinitModuleScript(src, options) {
-
-  const ownerDocument = getDocumentForImperativeFloatMethods();
-
-  if (src) {
-    const scripts = getResourcesFromRoot(ownerDocument).hoistableScripts;
-    const key = getScriptKey(src); // Check if this resource already exists
-
-    let resource = scripts.get(key);
-
-    if (resource) {
-      // We can early return. The resource exists and there is nothing
-      // more to do
-      return;
-    } // Attempt to hydrate instance from DOM
-
-
-    let instance = ownerDocument.querySelector(getScriptSelectorFromKey(key));
-
-    if (!instance) {
-      // Construct a new instance and insert it
-      const scriptProps = assign({
-        src,
-        async: true,
-        type: 'module'
-      }, options); // Adopt certain preload props
-
-
-      const preloadProps = preloadPropsMap.get(key);
-
-      if (preloadProps) {
-        adoptPreloadPropsForScript(scriptProps, preloadProps);
-      }
-
-      instance = ownerDocument.createElement('script');
-      markNodeAsHoistable(instance);
-      setInitialProperties(instance, 'link', scriptProps);
-      ownerDocument.head.appendChild(instance);
-    } // Construct a Resource and cache it
-
-
-    resource = {
-      type: 'script',
-      instance,
-      count: 1,
-      state: null
-    };
-    scripts.set(key, resource);
-    return;
-  }
-} // This function is called in begin work and we should always have a currentDocument set
-
-
-function getResource(type, currentProps, pendingProps) {
-  const resourceRoot = getCurrentResourceRoot();
-
-  if (!resourceRoot) {
-    throw Error(formatProdErrorMessage(446));
-  }
-
-  switch (type) {
-    case 'meta':
-    case 'title':
-      {
-        return null;
-      }
-
-    case 'style':
-      {
-        if (typeof pendingProps.precedence === 'string' && typeof pendingProps.href === 'string') {
-          const key = getStyleKey(pendingProps.href);
-          const styles = getResourcesFromRoot(resourceRoot).hoistableStyles;
-          let resource = styles.get(key);
-
-          if (!resource) {
-            resource = {
-              type: 'style',
-              instance: null,
-              count: 0,
-              state: null
-            };
-            styles.set(key, resource);
-          }
-
-          return resource;
-        }
-
-        return {
-          type: 'void',
-          instance: null,
-          count: 0,
-          state: null
-        };
-      }
-
-    case 'link':
-      {
-        if (pendingProps.rel === 'stylesheet' && typeof pendingProps.href === 'string' && typeof pendingProps.precedence === 'string') {
-          const qualifiedProps = pendingProps;
-          const key = getStyleKey(qualifiedProps.href);
-          const styles = getResourcesFromRoot(resourceRoot).hoistableStyles;
-          let resource = styles.get(key);
-
-          if (!resource) {
-            // We asserted this above but Flow can't figure out that the type satisfies
-            const ownerDocument = getDocumentFromRoot(resourceRoot);
-            resource = {
-              type: 'stylesheet',
-              instance: null,
-              count: 0,
-              state: {
-                loading: NotLoaded,
-                preload: null
-              }
-            };
-            styles.set(key, resource);
-
-            if (!preloadPropsMap.has(key)) {
-              preloadStylesheet(ownerDocument, key, preloadPropsFromStylesheet(qualifiedProps), resource.state);
-            }
-          }
-
-          return resource;
-        }
-
-        return null;
-      }
-
-    case 'script':
-      {
-        if (typeof pendingProps.src === 'string' && pendingProps.async === true) {
-          const scriptProps = pendingProps;
-          const key = getScriptKey(scriptProps.src);
-          const scripts = getResourcesFromRoot(resourceRoot).hoistableScripts;
-          let resource = scripts.get(key);
-
-          if (!resource) {
-            resource = {
-              type: 'script',
-              instance: null,
-              count: 0,
-              state: null
-            };
-            scripts.set(key, resource);
-          }
-
-          return resource;
-        }
-
-        return {
-          type: 'void',
-          instance: null,
-          count: 0,
-          state: null
-        };
-      }
-
-    default:
-      {
-        throw Error(formatProdErrorMessage(444, type));
-      }
-  }
-}
-
-function styleTagPropsFromRawProps(rawProps) {
-  return assign({}, rawProps, {
-    'data-href': rawProps.href,
-    'data-precedence': rawProps.precedence,
-    href: null,
-    precedence: null
-  });
-}
-
-function getStyleKey(href) {
-  const limitedEscapedHref = escapeSelectorAttributeValueInsideDoubleQuotes(href);
-  return "href=\"" + limitedEscapedHref + "\"";
-}
-
-function getStyleTagSelector(href) {
-  const limitedEscapedHref = escapeSelectorAttributeValueInsideDoubleQuotes(href);
-  return "style[data-href~=\"" + limitedEscapedHref + "\"]";
-}
-
-function getStylesheetSelectorFromKey(key) {
-  return "link[rel=\"stylesheet\"][" + key + "]";
-}
-
-function getPreloadStylesheetSelectorFromKey(key) {
-  return "link[rel=\"preload\"][as=\"style\"][" + key + "]";
-}
-
-function stylesheetPropsFromRawProps(rawProps) {
-  return assign({}, rawProps, {
-    'data-precedence': rawProps.precedence,
-    precedence: null
-  });
-}
-
-function preloadStylesheet(ownerDocument, key, preloadProps, state) {
-  preloadPropsMap.set(key, preloadProps);
-
-  if (!ownerDocument.querySelector(getStylesheetSelectorFromKey(key))) {
-    // There is no matching stylesheet instance in the Document.
-    // We will insert a preload now to kick off loading because
-    // we expect this stylesheet to commit
-    const preloadEl = ownerDocument.querySelector(getPreloadStylesheetSelectorFromKey(key));
-
-    if (preloadEl) {
-      // If we find a preload already it was SSR'd and we won't have an actual
-      // loading state to track. For now we will just assume it is loaded
-      state.loading = Loaded;
-    } else {
-      const instance = ownerDocument.createElement('link');
-      state.preload = instance;
-      instance.addEventListener('load', () => state.loading |= Loaded);
-      instance.addEventListener('error', () => state.loading |= Errored);
-      setInitialProperties(instance, 'link', preloadProps);
-      markNodeAsHoistable(instance);
-      ownerDocument.head.appendChild(instance);
-    }
-  }
-}
-
-function preloadPropsFromStylesheet(props) {
-  return {
-    rel: 'preload',
-    as: 'style',
-    href: props.href,
-    crossOrigin: props.crossOrigin,
-    integrity: props.integrity,
-    media: props.media,
-    hrefLang: props.hrefLang,
-    referrerPolicy: props.referrerPolicy
-  };
-}
-
-function getScriptKey(src) {
-  const limitedEscapedSrc = escapeSelectorAttributeValueInsideDoubleQuotes(src);
-  return "[src=\"" + limitedEscapedSrc + "\"]";
-}
-
-function getScriptSelectorFromKey(key) {
-  return 'script[async]' + key;
-}
-
-function acquireResource(hoistableRoot, resource, props) {
-  resource.count++;
-
-  if (resource.instance === null) {
-    switch (resource.type) {
-      case 'style':
+    ],
+    "AP90": [
         {
-          const qualifiedProps = props; // Attempt to hydrate instance from DOM
-
-          let instance = hoistableRoot.querySelector(getStyleTagSelector(qualifiedProps.href));
-
-          if (instance) {
-            resource.instance = instance;
-            markNodeAsHoistable(instance);
-            return instance;
-          }
-
-          const styleProps = styleTagPropsFromRawProps(props);
-          const ownerDocument = getDocumentFromRoot(hoistableRoot);
-          instance = ownerDocument.createElement('style');
-          markNodeAsHoistable(instance);
-          setInitialProperties(instance, 'style', styleProps); // TODO: `style` does not have loading state for tracking insertions. I
-          // guess because these aren't suspensey? Not sure whether this is a
-          // factoring smell.
-          // resource.state.loading |= Inserted;
-
-          insertStylesheet(instance, qualifiedProps.precedence, hoistableRoot);
-          resource.instance = instance;
-          return instance;
+            "word": "दिन",
+            "eid": "15423",
+            "pagenum": 565,
+            "content": "दिनः --नं¦ [द्यति तमः, दो दी वा नक् <lbinfo n='hra#svaH'/> ह्रस्वः; <ls>Uṇ. 2. 49</ls>] <b>1</b> Day (<ab>opp.</ab> रात्रि); दिनांते निहितं तेजः सवित्रेव हुताशनः  <lbinfo n='ls:R.+ 4. 1'/> <ls>R. 4. 1</ls>; यामिनयंति दिनानि च <lbinfo n='suKaduHKava#SIkfte'/> सुखदुःखवशीकृते मनसि <ls>K. P. 10</ls>; दिनांते <lbinfo n='nilayA#ya'/> निलयाय गतुं <ls>R. 2. 15.</ls> <b>--2</b> A day (including the night,) a period of 24 hours; दिने दिने सा परिवर्धमाना <ls>Ku. 1. 25</ls>; सप्त व्यतीयुस्त्रिगुणानि तस्य दिनानि <ls>R. 2. 25.</ls> <b>--Comp.</b> --अंशः any portion of a day, <i><ab>i. e.</ab></i> an hour, a watch, &c. --अंडं darkness. --अत्ययः, --अंतः, --अवसानं evening, sunset; <ls>R. 2. 15</ls>, <ls n='R. 2.'>45.</ls>  <lbinfo n='--a#DISaH'/> --अधीशः the sun. --अर्धः midday, noon. --अंतकः darkness. --आगमः, --आदिः --आरंभः daybreak, morning. --ईशः, --ईश्वरः the sun. °आत्मजः {1} an <lbinfo n='epi+thet'/> epithet of Saturn. {2} of Karṇa. {3} of Sugrīva. --करः, --कर्तृ, --कृत् <i><ab>m.</ab></i> the sun; तुल्योद्योगस्तवदिनकृतश्चाधिकारो मतो नः <ls>V. 2. 1</ls>; दिनकरकुलचंद्र चंद्रकेतो <ls>U. 6. 8</ls>; <ls>R. 9. 23.</ls> °तनयः <ab>N.</ab> of (1) Saturn; (2) Sugrīva; (3) Karṇa; (4) Yama. °तनया <ab>N.</ab> of (1) the river Yamunā; (2) the river Tāptī. --केशरः, --वः darkness. --क्षयः, --पातः evening. --चर्या daily occupation, daily <lbinfo n='rout+ine'/> routine of business. --ज्योतिस् <i><ab>n.</ab></i> <lbinfo n='sun+shine'/> sunshine. --दुःखितः the Cakravāka bird. --पः, --पतिः, --बंधुः, --प्रणीः, --मणिः, --मयूखः, --रत्नं the sun. --बलं <ab>N.</ab> of the fifth, sixth, seventh, eighth, eleventh, and twelfth signs of the zodiac taken collectively. --मलं a month. --मुखं morning; <ls>R. 9. 25.</ls> --मूर्द्धन् <i><ab>m.</ab></i> the eastern mountain behind which the sun is supposed to rise. --यौवनं mid-day, noon (the youth of day)."
         }
-
-      case 'stylesheet':
+    ],
+    "BEN": [
         {
-          // This typing is enforce by `getResource`. If we change the logic
-          // there for what qualifies as a stylesheet resource we need to ensure
-          // this cast still makes sense;
-          const qualifiedProps = props;
-          const key = getStyleKey(qualifiedProps.href); // Attempt to hydrate instance from DOM
-
-          let instance = hoistableRoot.querySelector(getStylesheetSelectorFromKey(key));
-
-          if (instance) {
-            resource.state.loading |= Inserted;
-            resource.instance = instance;
-            markNodeAsHoistable(instance);
-            return instance;
-          }
-
-          const stylesheetProps = stylesheetPropsFromRawProps(props);
-          const preloadProps = preloadPropsMap.get(key);
-
-          if (preloadProps) {
-            adoptPreloadPropsForStylesheet(stylesheetProps, preloadProps);
-          } // Construct and insert a new instance
-
-
-          const ownerDocument = getDocumentFromRoot(hoistableRoot);
-          instance = ownerDocument.createElement('link');
-          markNodeAsHoistable(instance);
-          const linkInstance = instance;
-          linkInstance._p = new Promise((resolve, reject) => {
-            linkInstance.onload = resolve;
-            linkInstance.onerror = reject;
-          });
-          setInitialProperties(instance, 'link', stylesheetProps);
-          resource.state.loading |= Inserted;
-          insertStylesheet(instance, qualifiedProps.precedence, hoistableRoot);
-          resource.instance = instance;
-          return instance;
+            "word": "दिन",
+            "eid": "6466",
+            "pagenum": 399,
+            "content": "दिन¦ <i>dina,</i> <ab>i. e.</ab> <i>div + an + a,</i> <ab>m.</ab> and <ab>n.</ab> Day, <ls>Man.</ls> 11, 144. <b> -- <ab>Comp.</ab></b> <i>Adya-,</i> the present day, <ls>Pañc.</ls> 186, 23. <i>Dus-,</i> <b>I.</b> <ab>n.</ab> 1. a cloudy day. <ls>Hariv.</ls> 7856. 2. rain, rainy weather, <ls>Rām.</ls> 3, 73, 13. <b>II.</b> <ab>adj.</ab> clouded, <ls>Rām.</ls> 6, 90, 90. <i>Vāṣ-</i> <i>pa-dus-dina,</i> <ab>adj.</ab> clouded by tears, <ls>Daśak.</ls> in <ls>Chr.</ls> 187, 16. <i>Hima-dus-,</i> <ab>n.</ab> wintry weather, winter. <i>Su-,</i> <ab>n.</ab> a fine day, fine weather."
         }
-
-      case 'script':
+    ],
+    "BOP": [
         {
-          // This typing is enforce by `getResource`. If we change the logic
-          // there for what qualifies as a stylesheet resource we need to ensure
-          // this cast still makes sense;
-          const borrowedScriptProps = props;
-          const key = getScriptKey(borrowedScriptProps.src); // Attempt to hydrate instance from DOM
-
-          let instance = hoistableRoot.querySelector(getScriptSelectorFromKey(key));
-
-          if (instance) {
-            resource.instance = instance;
-            markNodeAsHoistable(instance);
-            return instance;
-          }
-
-          let scriptProps = borrowedScriptProps;
-          const preloadProps = preloadPropsMap.get(key);
-
-          if (preloadProps) {
-            scriptProps = assign({}, borrowedScriptProps);
-            adoptPreloadPropsForScript(scriptProps, preloadProps);
-          } // Construct and insert a new instance
-
-
-          const ownerDocument = getDocumentFromRoot(hoistableRoot);
-          instance = ownerDocument.createElement('script');
-          markNodeAsHoistable(instance);
-          setInitialProperties(instance, 'link', scriptProps);
-          ownerDocument.head.appendChild(instance);
-          resource.instance = instance;
-          return instance;
+            "word": "दिन",
+            "eid": "4071",
+            "pagenum": 168,
+            "content": "दिन¦ <i>m. n.</i> (a Lassenio apte e दिवन ejectâ syllabâ व explicatur, v. दिवन्) dies. RAM. I. 28. 8. GHAT. 21. (Lith. <i>diē4na</i> f. dies, slav. <i>denj</i> m. id.; cf. lat. <i>peren-dinus</i>, <i>peren-dinatio</i>, quorum pars prior ad पर pertinet. Cum Pottio (II. 148.) huc trahimus goth. <i>sin-teins</i>, Them. <i>sinteina</i> quotidianus; <i>sin</i> = सम्.)"
         }
-
-      case 'void':
+    ],
+    "BUR": [
         {
-          return null;
+            "word": "दिन",
+            "eid": "8715",
+            "pagenum": 320,
+            "content": "दिन¦ <i>dina</i> <ab>m.</ab> <ab>n.</ab> (pour <i>divana, div)</i> jour.  <P><i>dinakara</i> <ab>m.</ab> <i>(kṛ)</i> le Soleil.  <P><i>dinakarātmajā</i> <ab>f.</ab> <i>(ātmaja)</i> la <s1 slp1='yamunA'>Yamunā</s1> fille du Soleil.  <P><i>dinakeśara</i> <ab>m.</ab> obscurité.  <P><i>dinaduḥkhita</i> <ab>m.</ab> l'oie rougeâtre ou anas casarca.  <P><i>dinapraṇī</i> <ab>m.</ab> <i>(pra; nī)</i> celui qui marche à la tête du jour, <ab>c-à-d.</ab> le Soleil.  <P><i>dinamaṇi</i> <ab>m.</ab> le Soleil [joyau du jour].  <P><i>dinamūrdhan</i> <ab>m.</ab> la face du jour. || La montagne orientale où lève le Soleil.  <P><i>dinādi</i> <ab>m.</ab> <i>(ādi)</i> l'aurore.  <P><i>dinānta</i> <ab>m.</ab> <i>(anta)</i> le soir.  <P><i>dināntaka</i> <ab>m.</ab> la nuit [qui met fin au jour].  <P><i>dināvasāna</i> <ab>n.</ab> <i>(avasāna)</i> le soir, la chute du jour."
         }
-
-      default:
+    ],
+    "CAE": [
         {
-          throw Error(formatProdErrorMessage(443, resource.type));
+            "word": "दिन",
+            "eid": "13681",
+            "pagenum": 225,
+            "content": "1 दिन/¦ <ab>v.</ab> 3 दा."
+        },
+        {
+            "word": "दिन",
+            "eid": "13682",
+            "pagenum": 225,
+            "content": "2 दि/न¦ <lex>n.</lex> day."
         }
-    }
-  } else {
-    // In the case of stylesheets, they might have already been assigned an
-    // instance during `suspendResource`. But that doesn't mean they were
-    // inserted, because the commit might have been interrupted. So we need to
-    // check now.
-    //
-    // The other resource types are unaffected because they are not
-    // yet suspensey.
-    //
-    // TODO: This is a bit of a code smell. Consider refactoring how
-    // `suspendResource` and `acquireResource` work together. The idea is that
-    // `suspendResource` does all the same stuff as `acquireResource` except
-    // for the insertion.
-    if (resource.type === 'stylesheet' && (resource.state.loading & Inserted) === NotLoaded) {
-      const qualifiedProps = props;
-      const instance = resource.instance;
-      resource.state.loading |= Inserted;
-      insertStylesheet(instance, qualifiedProps.precedence, hoistableRoot);
-    }
-  }
-
-  return resource.instance;
-}
-function releaseResource(resource) {
-  resource.count--;
-}
-
-function insertStylesheet(instance, precedence, root) {
-  const nodes = root.querySelectorAll('link[rel="stylesheet"][data-precedence],style[data-precedence]');
-  const last = nodes.length ? nodes[nodes.length - 1] : null;
-  let prior = last;
-
-  for (let i = 0; i < nodes.length; i++) {
-    const node = nodes[i];
-    const nodePrecedence = node.dataset.precedence;
-
-    if (nodePrecedence === precedence) {
-      prior = node;
-    } else if (prior !== last) {
-      break;
-    }
-  }
-
-  if (prior) {
-    // We get the prior from the document so we know it is in the tree.
-    // We also know that links can't be the topmost Node so the parentNode
-    // must exist.
-    prior.parentNode.insertBefore(instance, prior.nextSibling);
-  } else {
-    const parent = root.nodeType === DOCUMENT_NODE ? root.head : root;
-    parent.insertBefore(instance, parent.firstChild);
-  }
-}
-
-function adoptPreloadPropsForStylesheet(stylesheetProps, preloadProps) {
-  if (stylesheetProps.crossOrigin == null) stylesheetProps.crossOrigin = preloadProps.crossOrigin;
-  if (stylesheetProps.referrerPolicy == null) stylesheetProps.referrerPolicy = preloadProps.referrerPolicy;
-  if (stylesheetProps.title == null) stylesheetProps.title = preloadProps.title;
-}
-
-function adoptPreloadPropsForScript(scriptProps, preloadProps) {
-  if (scriptProps.crossOrigin == null) scriptProps.crossOrigin = preloadProps.crossOrigin;
-  if (scriptProps.referrerPolicy == null) scriptProps.referrerPolicy = preloadProps.referrerPolicy;
-  if (scriptProps.integrity == null) scriptProps.integrity = preloadProps.integrity;
-}
-
-let tagCaches = null;
-function hydrateHoistable(hoistableRoot, type, props, internalInstanceHandle) {
-  const ownerDocument = getDocumentFromRoot(hoistableRoot);
-  let instance = null;
-
-  getInstance: switch (type) {
-    case 'title':
-      {
-        instance = ownerDocument.getElementsByTagName('title')[0];
-
-        if (!instance || isOwnedInstance(instance) || instance.namespaceURI === SVG_NAMESPACE || instance.hasAttribute('itemprop')) {
-          instance = ownerDocument.createElement(type);
-          ownerDocument.head.insertBefore(instance, ownerDocument.querySelector('head > title'));
+    ],
+    "CCS": [
+        {
+            "word": "दिन",
+            "eid": "9717",
+            "pagenum": 173,
+            "content": "1. दिन/¦ <i>s.</i> 3. दा."
+        },
+        {
+            "word": "दिन",
+            "eid": "9718",
+            "pagenum": 173,
+            "content": "2. दि/न¦ <i>n.</i> Tag."
         }
-
-        setInitialProperties(instance, type, props);
-        precacheFiberNode(internalInstanceHandle, instance);
-        markNodeAsHoistable(instance);
-        return instance;
-      }
-
-    case 'link':
-      {
-        const cache = getHydratableHoistableCache('link', 'href', ownerDocument);
-        const key = type + (props.href || '');
-        const maybeNodes = cache.get(key);
-
-        if (maybeNodes) {
-          const nodes = maybeNodes;
-
-          for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
-
-            if (node.getAttribute('href') !== (props.href == null ? null : props.href) || node.getAttribute('rel') !== (props.rel == null ? null : props.rel) || node.getAttribute('title') !== (props.title == null ? null : props.title) || node.getAttribute('crossorigin') !== (props.crossOrigin == null ? null : props.crossOrigin)) {
-              // mismatch, try the next node;
-              continue;
-            }
-
-            instance = node;
-            nodes.splice(i, 1);
-            break getInstance;
-          }
+    ],
+    "GRA": [
+        {
+            "word": "दिन",
+            "eid": "4225",
+            "pagenum": 600,
+            "content": "<b>diná,</b>¦ <ab>Part.</ab> von <hom>2.</hom> dā und <hom>3.</hom> dā."
+        },
+        {
+            "word": "दिन",
+            "eid": "4226",
+            "pagenum": 600,
+            "content": "<b>(dína),</b>¦ <ab>n.</ab>, <i>Tag</i> [von div 2], enthalten in madhyáṃdina <ab>u. s. w.</ab>"
         }
-
-        instance = ownerDocument.createElement(type);
-        setInitialProperties(instance, type, props);
-        ownerDocument.head.appendChild(instance);
-        break;
-      }
-
-    case 'meta':
-      {
-        const cache = getHydratableHoistableCache('meta', 'content', ownerDocument);
-        const key = type + (props.content || '');
-        const maybeNodes = cache.get(key);
-
-        if (maybeNodes) {
-          const nodes = maybeNodes;
-
-          for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i]; // We coerce content to string because it is the most likely one to
-
-            if (node.getAttribute('content') !== (props.content == null ? null : '' + props.content) || node.getAttribute('name') !== (props.name == null ? null : props.name) || node.getAttribute('property') !== (props.property == null ? null : props.property) || node.getAttribute('http-equiv') !== (props.httpEquiv == null ? null : props.httpEquiv) || node.getAttribute('charset') !== (props.charSet == null ? null : props.charSet)) {
-              // mismatch, try the next node;
-              continue;
-            }
-
-            instance = node;
-            nodes.splice(i, 1);
-            break getInstance;
-          }
+    ],
+    "IEG": [
+        {
+            "word": "दिन",
+            "eid": "1668",
+            "pagenum": 97,
+            "content": "<i>dina</i>¦ (CII 3), a day; used to denote the solar, or more properly civil, day. See also <i>di</i> and <i>divasa.</i> <dvsn n='P'>(<i>IE</i> 7-1-2), ‘fifteen’."
         }
-
-        instance = ownerDocument.createElement(type);
-        setInitialProperties(instance, type, props);
-        ownerDocument.head.appendChild(instance);
-        break;
-      }
-
-    default:
-      throw Error(formatProdErrorMessage(468, type));
-  } // This node is a match
-
-
-  precacheFiberNode(internalInstanceHandle, instance);
-  markNodeAsHoistable(instance);
-  return instance;
-}
-
-function getHydratableHoistableCache(type, keyAttribute, ownerDocument) {
-  let cache;
-  let caches;
-
-  if (tagCaches === null) {
-    cache = new Map();
-    caches = tagCaches = new Map();
-    caches.set(ownerDocument, cache);
-  } else {
-    caches = tagCaches;
-    const maybeCache = caches.get(ownerDocument);
-
-    if (!maybeCache) {
-      cache = new Map();
-      caches.set(ownerDocument, cache);
-    } else {
-      cache = maybeCache;
-    }
-  }
-
-  if (cache.has(type)) {
-    // We use type as a special key that signals that this cache has been seeded for this type
-    return cache;
-  } // Mark this cache as seeded for this type
-
-
-  cache.set(type, null);
-  const nodes = ownerDocument.getElementsByTagName(type);
-
-  for (let i = 0; i < nodes.length; i++) {
-    const node = nodes[i];
-
-    if (!isOwnedInstance(node) && (type !== 'link' || node.getAttribute('rel') !== 'stylesheet') && node.namespaceURI !== SVG_NAMESPACE) {
-      const nodeKey = node.getAttribute(keyAttribute) || '';
-      const key = type + nodeKey;
-      const existing = cache.get(key);
-
-      if (existing) {
-        existing.push(node);
-      } else {
-        cache.set(key, [node]);
-      }
-    }
-  }
-
-  return cache;
-}
-
-function mountHoistable(hoistableRoot, type, instance) {
-  const ownerDocument = getDocumentFromRoot(hoistableRoot);
-  ownerDocument.head.insertBefore(instance, type === 'title' ? ownerDocument.querySelector('head > title') : null);
-}
-function unmountHoistable(instance) {
-  instance.parentNode.removeChild(instance);
-}
-function isHostHoistableType(type, props, hostContext) {
-  let hostContextProd;
-
-  {
-    hostContextProd = hostContext;
-  } // Global opt out of hoisting for anything in SVG Namespace or anything with an itemProp inside an itemScope
-
-
-  if (hostContextProd === HostContextNamespaceSvg || props.itemProp != null) {
-
-    return false;
-  }
-
-  switch (type) {
-    case 'meta':
-    case 'title':
-      {
-        return true;
-      }
-
-    case 'style':
-      {
-        if (typeof props.precedence !== 'string' || typeof props.href !== 'string' || props.href === '') {
-
-          return false;
+    ],
+    "LAN": [
+        {
+            "word": "दिन",
+            "eid": "1945",
+            "pagenum": 169,
+            "content": "<b>dína,</b>¦ <dvsn n='2'/><b>—1.</b> <i>perhaps <ab>adj.</ab></i> clear, <i>in</i> <b>su-dína;</b> <dvsn n='2'/><b>—2.</b> <i>as <ab>n.</ab></i> day. [perhaps <ab>ppl.</ab> of <b>√dī</b> or <b>di,</b> ‘shine,’ <ab>w.</ab> shifted <ab>acct.</ab>]"
         }
-
-        return true;
-      }
-
-    case 'link':
-      {
-        if (typeof props.rel !== 'string' || typeof props.href !== 'string' || props.href === '' || props.onLoad || props.onError) {
-
-          return false;
+    ],
+    "LRV": [
+        {
+            "word": "दिन",
+            "eid": "16834",
+            "pagenum": 331,
+            "content": "dina¦ <i>m.n.</i> 1. A day (comprising also the night), व्यतीयुस्त्रिगुणानि तस्य् दिनानि दीनोद्धरणोचितस्य <ls>R.</ls>ii.25, iii.8; 2. day (as op. to रात्रि), दिनांते निलयाय गंतुम् <ls>R.</ls>ii.15."
         }
-
-        switch (props.rel) {
-          case 'stylesheet':
-            {
-              const precedence = props.precedence,
-                    disabled = props.disabled;
-
-              return typeof precedence === 'string' && disabled == null;
-            }
-
-          default:
-            {
-              return true;
-            }
+    ],
+    "MD": [
+        {
+            "word": "दिन",
+            "eid": "9289",
+            "pagenum": 119,
+            "content": "दिन¦ <hom>1.</hom> diná, <ab>pp.</ab> <i>of</i> √ <hom>2.</hom> dā."
+        },
+        {
+            "word": "दिन",
+            "eid": "9290",
+            "pagenum": 119,
+            "content": "दिन¦ <hom>2.</hom> dína, <lex>n.</lex> day: <b>-kara,</b> <lex>m.</lex> (day-making), 🞄sun; <ab>N.</ab>; <b>-kartavya,</b> <lex>n.</lex> daily observance; 🞄<b>-kartṛ,</b> <lex>m.</lex> (day-maker), sun; <b>-kārya,</b> <lex>n.</lex> 🞄daily observance; <b>-kṛt,</b> <lex>m.</lex> sun; <b>-kṛtya,</b> <lex>n.</lex> 🞄= -kārya; <b>-kṣaya,</b> <lex>m.</lex> decline of day, evening; 🞄<b>-naktam,</b> <lex>ad.</lex> day and night; <b>-nātha,</b> 🞄<lex>m.</lex> (lord of day), sun; <b>-pati,</b> <lex>m.</lex> <ab>id.</ab>; <b>-bhartṛ,</b> 🞄<lex>m.</lex> <ab>id.</ab>; <b>-maṇi,</b> <lex>m.</lex> <ab>id.</ab> (gem of day); <b>-mukha,</b> 🞄<lex>n.</lex> day-break."
         }
-      }
-
-    case 'script':
-      {
-        if (props.async !== true || props.onLoad || props.onError || typeof props.src !== 'string' || !props.src) {
-
-          return false;
+    ],
+    "MW": [
+        {
+            "word": "दिन",
+            "eid": "92123",
+            "pagenum": "478,1",
+            "content": "<hom>1.</hom> दिन/ ¦ <lex>mfn.</lex> (√ दो) cut, divided, mowed, <ls>RV. viii, 67, 10</ls> (<ab>cf.</ab> स्वयं-). <info lex='m:f:n'/>"
+        },
+        {
+            "word": "दिन",
+            "eid": "92124",
+            "pagenum": "478,1",
+            "content": "<hom>2.</hom> दिन ¦ (√ <hom>3.</hom> दा). See अ-सं-"
+        },
+        {
+            "word": "दिन",
+            "eid": "92125",
+            "pagenum": "478,1",
+            "content": "<hom>3.</hom> दि/न ¦ (accented only, <ls>Naigh. i, 9</ls>) <lex>mn.</lex> (<ab>g.</ab> arDarcA<srs/>di, only occurring as <lex type='hwinfo'>n.</lex>) a day, <ls>Mn.</ls>; <ls>Ragh.</ls>; <ls>Pañcat.</ls> &c. (<ab>ifc.</ab> also in Vedic texts) <ab>ifc.</ab> <lex type='hwifc'>f(आ). </lex>, <ls>Rājat. i, 347.</ls><info lex='m:f#A:n'/>"
+        },
+        {
+            "word": "दिन",
+            "eid": "92125.1",
+            "pagenum": "478,1",
+            "content": "दिन ¦ [<ab>cf.</ab> <ab>Lat.</ab> <etym>peren-dinus</etym>, <etym>nūn-dinus</etym> &c.; <ab>Got.</ab> <etym>sin-teins</etym>; <ab>Lit.</ab> <etym>dëna</etym>; <ab>O.Pr.</ab> <ab>acc.</ab> <ab>sg.</ab> <etym>deinan</etym>; <ab>Slav.</ab> <etym>dǐnǐ</etym>.]"
         }
-
-        return true;
-      }
-
-    case 'noscript':
-    case 'template':
-      {
-
-        return false;
-      }
-  }
-
-  return false;
-}
-function mayResourceSuspendCommit(resource) {
-  return resource.type === 'stylesheet' && (resource.state.loading & Inserted) === NotLoaded;
-}
-function preloadInstance(type, props) {
-  // Return true to indicate it's already loaded
-  return true;
-}
-function preloadResource(resource) {
-  if (resource.type === 'stylesheet' && (resource.state.loading & Settled) === NotLoaded) {
-    // we have not finished loading the underlying stylesheet yet.
-    return false;
-  } // Return true to indicate it's already loaded
-
-
-  return true;
-}
-let suspendedState = null; // We use a noop function when we begin suspending because if possible we want the
-// waitfor step to finish synchronously. If it doesn't we'll return a function to
-// provide the actual unsuspend function and that will get completed when the count
-// hits zero or it will get cancelled if the root starts new work.
-
-function noop() {}
-
-function startSuspendingCommit() {
-  suspendedState = {
-    stylesheets: null,
-    count: 0,
-    unsuspend: noop
-  };
-}
-function suspendResource(hoistableRoot, resource, props) {
-  if (suspendedState === null) {
-    throw Error(formatProdErrorMessage(475));
-  }
-
-  const state = suspendedState;
-
-  if (resource.type === 'stylesheet') {
-    if (typeof props.media === 'string') {
-      // If we don't currently match media we avoid suspending on this resource
-      // and let it insert on the mutation path
-      if (matchMedia(props.media).matches === false) {
-        return;
-      }
-    }
-
-    if ((resource.state.loading & Inserted) === NotLoaded) {
-      if (resource.instance === null) {
-        const qualifiedProps = props;
-        const key = getStyleKey(qualifiedProps.href); // Attempt to hydrate instance from DOM
-
-        let instance = hoistableRoot.querySelector(getStylesheetSelectorFromKey(key));
-
-        if (instance) {
-          // If this instance has a loading state it came from the Fizz runtime.
-          // If there is not loading state it is assumed to have been server rendered
-          // as part of the preamble and therefore synchronously loaded. It could have
-          // errored however which we still do not yet have a means to detect. For now
-          // we assume it is loaded.
-          const maybeLoadingState = instance._p;
-
-          if (maybeLoadingState !== null && typeof maybeLoadingState === 'object' && // $FlowFixMe[method-unbinding]
-          typeof maybeLoadingState.then === 'function') {
-            const loadingState = maybeLoadingState;
-            state.count++;
-            const ping = onUnsuspend.bind(state);
-            loadingState.then(ping, ping);
-          }
-
-          resource.state.loading |= Inserted;
-          resource.instance = instance;
-          markNodeAsHoistable(instance);
-          return;
+    ],
+    "MW72": [
+        {
+            "word": "दिन",
+            "eid": "22107",
+            "pagenum": 408,
+            "content": "1. <i>dina, as, ā, am</i>¦ (for 2. <i>dina</i> see p. 412, col. 3), cut, split, destroyed."
+        },
+        {
+            "word": "दिन",
+            "eid": "22361",
+            "pagenum": 412,
+            "content": "दिन 1¦. <i>dina.</i> See rt. 3. <i>dā,</i> p. 408, col. 2."
+        },
+        {
+            "word": "दिन",
+            "eid": "22362",
+            "pagenum": 412,
+            "content": "दिन 2¦. <i>dina, as, am,</i> m. n. (probably for <i>divana</i> and related to 3. <i>div</i> fr. rt. 2. <i>div,</i> said to be fr. rt. <i>do</i>), a day; [cf. <i>dur-d°, puru-d°, madh-</i> <i>yan-d°, su-d°;</i> cf. also Lith. <nsi>die†na,</nsi> f. ‘a day;’ Slav. <nsi>deny,</nsi> ‘a day;’ Lat. <nsi>peren-dinus, peren-dina-</nsi> <nsi>tio, peren = para;</nsi> perhaps Goth. <nsi>sin-teins,</nsi> ‘daily,’ <nsi>sin = sam.</nsi>] <i>—Dina-kara, as, ī, am,</i> making day or light; (<i>ī</i>), f., scil. <i>ṭīkā,</i> N. of a commentary on the Bhāṣā-pariccheda; (<i>as</i>), m. the sun; N. of the author of the work Candrārkī. <i>—Dinakara-</i> <i>tanaya, as,</i> m. ‘the son of the Sun,’ the planet Saturn. <i>—Dinakara-deva, as,</i> m., N. of a poet. <i>—Dinakarātmajā (°ra-āt°),</i> f. ‘the daughter of the Sun,’ an epithet of the Yamunā or Jumnā river. <i>—Dina-kartṛ, tā,</i> m. or <i>dina-kṛt, t,</i> m. ‘the day-maker,’ the sun. <i>—Dina-keśara</i> or <i>dina-kesara</i> or <i>dina-keśava, as,</i> m. ‘the hair of the day,’ the darkness. <i>—Dina-kṣaya, as,</i> m. ‘the decline of day,’ the evening, <i>= tithi-kṣaya;</i> N. of a chapter in the Purāṇa-sarva-sva. <i>—Dina-jyotis, is,</i> n. ‘daylight,’ sunshine. <i>—Dina-duḥkhita, as, ā, am,</i> afflicted by day, sorrowing by day; (<i>as</i>), m. the bird Cakra-vāka, the ruddy goose. <i>—Dina-nakta, am,</i> n. day and night. <i>—Dina-pati, is,</i> m. ‘the lord of the day,’ the sun. <i>—Dina-praṇī, īs,</i> m. ‘the bringer of day,’ the sun; [cf. <i>tithi-praṇī.</i>] <i>—Dina-ban-</i> <i>dhu, us,</i> m. ‘the friend of the day,’ the sun. <i>—Dina-</i> <i>bala, as,</i> m. ‘the strength of the day,’ N. of the fifth, sixth, seventh, eighth, eleventh, and twelfth signs of the zodiac collectively. <i>—Dina-maṇi, is,</i> m. ‘the jewel of day,’ the sun. <i>—Dina-mala, am,</i> n. ‘day-refuse (?),’ a month. <i>—Dina-mūrdhan, ā,</i> m. ‘the head of the day,’ the eastern mountain behind which the sun is supposed to rise; [cf. <i>udaya.</i>] <i>—Dina-ratna, am,</i> n. ‘the jewel of the day,’ the sun. <i>—Dina-rāśi, is,</i> m. ‘the sum or collective amount of days,’ i. e. the number of solar days which have elapsed from one given point of time to another. <i>—Dina-vyāsa-dala, am,</i> n. ‘half-diameter or radius of the sky,’ i. e. the radius of a circle made by an asterism in its daily revolution. <i>—Dināṃśa</i> <i>(°na-aṃśa), as,</i> m. ‘any portion of a day,’ i. e. a watch, an hour, morning, forenoon, afternoon, &c. <i>—Dināgama (°na-āg°), as,</i> m. day-break. <i>—Di-</i> <i>nāṇḍa (°na-aṇḍa?), am,</i> n. ‘day-egg,’ i. e. darkness, (the egg or embryo whence day proceeds.) <i>—Dinātyaya (°na-at°), as,</i> m. ‘the decline of day,’ evening. <i>—Dinādi (°na-ādi), is,</i> m. ‘daybreak,’ dawn. <i>—Dinādhīśa (°na-adh°), as,</i> m. ‘the lord of day,’ the sun. <i>—Dinānta (°na-an°),</i> <i>as,</i> m. ‘end of day,’ sun-set, evening. <i>—Dināntaka</i> <i>(°na-an°), as,</i> m. ‘day-destroyer,’ darkness. <i>—Di-</i> <i>nārambha (°na-ār°), as,</i> m. ‘day-break,’ morning. <i>—Dinārdha (°na-ar°), as,</i> m. ‘the half of the day,’ noon. <i>—Dināvasāna (°na-av°), am,</i> n. ‘close of day,’ evening. <i>—Dināstra (°na-as°), am,</i> n. ‘day-missile,’ N. of a magical formula. <i>—Dinī-kṛ,</i> cl. 8. P. A. <i>-karoti, -kurute, -kartum,</i> to reduce to days. <i>—Dineśa (°na-īśa), as,</i> m. ‘the lord of day,’ the sun; the regent of a day. <i>—Dineśātmaja</i> <i>(°śa-āt°), as,</i> m. ‘the son of the Sun,’ the planet Mercury. <i>—Dineśvara (°na-īś°), as,</i> m. ‘the lord of the day,’ the sun. <i>—Dinaika (°na-eka), as,</i> m. one day."
         }
-
-        const ownerDocument = getDocumentFromRoot(hoistableRoot);
-        const stylesheetProps = stylesheetPropsFromRawProps(props);
-        const preloadProps = preloadPropsMap.get(key);
-
-        if (preloadProps) {
-          adoptPreloadPropsForStylesheet(stylesheetProps, preloadProps);
-        } // Construct and insert a new instance
-
-
-        instance = ownerDocument.createElement('link');
-        markNodeAsHoistable(instance);
-        const linkInstance = instance; // This Promise is a loading state used by the Fizz runtime. We need this incase there is a race
-        // between this resource being rendered on the client and being rendered with a late completed boundary.
-
-        linkInstance._p = new Promise((resolve, reject) => {
-          linkInstance.onload = resolve;
-          linkInstance.onerror = reject;
-        });
-        setInitialProperties(instance, 'link', stylesheetProps);
-        resource.instance = instance;
-      }
-
-      if (state.stylesheets === null) {
-        state.stylesheets = new Map();
-      }
-
-      state.stylesheets.set(resource, hoistableRoot);
-      const preloadEl = resource.state.preload;
-
-      if (preloadEl && (resource.state.loading & Settled) === NotLoaded) {
-        state.count++;
-        const ping = onUnsuspend.bind(state);
-        preloadEl.addEventListener('load', ping);
-        preloadEl.addEventListener('error', ping);
-      }
-    }
-  }
+    ],
+    "PW": [
+        {
+            "word": "दिन",
+            "eid": "50171",
+            "pagenum": 3,
+            "content": "<hom>1.</hom> दिन/¦ <ab>Partic.</ab> von <hom>3.</hom> दा."
+        },
+        {
+            "word": "दिन",
+            "eid": "50172",
+            "pagenum": 3,
+            "content": "<hom>2.</hom> दि/न¦ (accentuirt nur <ls>NAIGH.</ls>) (*<lex>m.</lex>) <lex>n.</lex> <i>Tag</i>. दिनानामधिपतिः <i>die Sonne</i>. Neben तिथि <i>(lunarer Tag) Wochentag</i> <ls>VARĀH. YOGAY. 4,3</ls>. Am Ende eines <ab>adj. Comp.</ab> <lex>f.</lex> आ."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "दिन",
+            "eid": "32886",
+            "pagenum": 3,
+            "content": "1. दिन¦ partic. s. u. 3. दा ."
+        },
+        {
+            "word": "दिन",
+            "eid": "32887",
+            "pagenum": 3,
+            "content": "2. दि/न¦ <ls>NAIGH. 1, 9.</ls> (दिन/ <ls>UJJVAL.</ls> zu <ls>UṆĀDIS. 2, 49</ls>) <lex>m.</lex> <lex>n.</lex> <is>gaṇa</is> अर्धर्चादि zu <ls>P. 2, 4, 31.</ls> <ls>TRIK. 3, 5, 11.</ls> <lex>n.</lex> (nur dieses zu belegen) <ls>SIDDH. K. 249,b,10.</ls> <i>Tag</i> <ls>NAIGH.</ls> <ls>AK. 1, 1, 3, 2.</ls> <ls>TRIK. 1, 1, 103.</ls> <ls>H. 138.</ls> युक्षु - दिनर्क्षेषु <ls>M. 3, 277.</ls> दिनमेकम् <ls n='M.'>11, 144. 6, 22. 2, 220.</ls> <ls>RAGH. 2, 25.</ls> <ls>HIT. I, 78. 20, 18.</ls> <ls>VET. 10, 15.</ls> यौवनदिनानि <ls>PAÑCAT. 128, 2.</ls> दिनेषु गच्छत्सु <ls>RAGH. 3, 8.</ls> <ls>HIT. 20, 11.</ls> दिने दिने <ls n='HIT.'>I, 159.</ls> <ls>VID. 200.</ls> <ls>RAGH. 3, 22.</ls> <ls>DAŚAK.</ls> in <ls>BENF. Chr. 189, 23.</ls> Im Gegens. zur <i>Nacht</i> <ls>RAGH. 2, 20.</ls> नक्तंदिनम् <ls>PAÑCAT. 32, 25.</ls> <ls>KATHĀS. 11, 3.</ls> दिननक्तम् <ls>MĀRK. P. 16, 69.</ls> दिनरात्र्यन्धयोः <ls>SUŚR. 2, 339, 7.</ls> Am Ende eines <lex>adj.</lex> comp. <lex>f.</lex> आ <ls>RĀJA-TAR. 1, 347.</ls> Wohl verwandt mit दिव् <i>Himmel, Tag.</i> <dvsn n='v'>— Vgl. दुर्दिन, पुरु°, मध्यं°, सु° ."
+        },
+        {
+            "word": "दिन",
+            "eid": "75712",
+            "pagenum": 5,
+            "content": "2. दिन¦, दिनानामधिपतिः <i>die Sonne</i> <ls>Spr. 74.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "दिन",
+            "eid": "18948",
+            "pagenum": 340,
+            "content": "दिन¦ mn. (-नः-नं) A day. E. दी to waste, नक् affix, and the vowel made short; or दो to destroy, (darkness,) किनन् Unadi aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "दिन",
+            "eid": "10503",
+            "pagenum": 306,
+            "content": "<b>dina-</b>¦ <ab>nt.</ab> jour ; journée, durée de 24 heures.  <P><i>°kara- °kartṛ- °kṛt-</i> <ab>m.</ab> soleil.  <P><i>°kartavya- °kārya- kṛtya-</i> <ab>nt.</ab> <i>°kriyā-</i> <ab>f.</ab> (qui doit être fait dans la journée) cérémonie journalière <lbinfo n='7'/> ; affaires journalières.  <P><i>°caryā-</i> <ab>f.</ab> occupations de la journée.  <P><i>°pati-</i> (seigneur du jour) <ab>m.</ab> soleil.  <P><i>°pāṭikā-</i> (?) <ab>f.</ab> salaire journalier.  <P><i>°maṇi-</i> <ab>m.</ab> <i>°ratna-</i> <ab>nt.</ab> (joyau du jour) soleil.  <P><i>°mukha-</i> (commencement du jour) <ab>nt.</ab> aurore, aube, matinée.  <P><i>°mūrdhan-</i> <ab>m.</ab> montagne de l'Est derrière laquelle le soleil est censé se lever.  <P><i>dinādi-</i> <ab>m.</ab> = <i>°mukha-.</i>  <P><i>dinādhinātha- dinādhīśa-</i> <ab>m.</ab> = <i>°pati-.</i>  <P><i>dinānta-</i> <ab>m.</ab> <i>dināvasāna-</i> <ab>nt.</ab> fin de la journée, <lbinfo n='3'/> soir, coucher du soleil.  <P><i>dinārdha-</i> <ab>m.</ab> demi-journée."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "दिन",
+            "eid": "18963",
+            "pagenum": 408,
+            "content": "दिन¦ mn. (-नः-नं) A day. .E. दी to waste, नक् affix, and the vowel made short; or दो to destroy, (darkness,) किनन् Uṇādi aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "दिन",
+            "eid": "18435",
+            "pagenum": 363,
+            "content": "दिन¦ (नः-नं) 1. <i>m. n.</i> A day."
+        },
+        {
+            "word": "दिन",
+            "eid": "18437",
+            "pagenum": 363,
+            "content": "दिन,¦ करा-त्म-जा (जा) 1. <i>f.</i> The <i>Jamnā.</i>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "दिन",
+            "eid": "16349",
+            "pagenum": "2-710-b",
+            "content": "दिनं¦, क्ली, (द्यति खण्डयति महाकालमिति । दो छेदे + “बहुलमन्यत्रापि ।” उणां २ । ४९ । इति इनच् ।) कालविशेषः । तत्पर्य्यायः । घसः २ अहः ३ दिवसः ४ वासरः ५ । इत्यमरः । १ । ४ । २ ॥ भास्वरः ६ दिवा ७ । इति राजनिर्घण्टः ॥ वारः ८ अंशकः ९ द्यु १० अंशकम् ११ । इति शब्दरत्नावली ॥ (यथा, रघुः । ३ । ८ । “दिनेसु गच्छत्सु नितान्तपीवरं तदीयमालीनमुखं स्तनद्बयम् ॥”) तत्तु मनुष्यमाने षष्टिदण्डात्मकम् । पितृमाने गौणचान्द्रमासात्मकम् । देवासुरमाने वत्सरात्मकम् । ब्रह्ममाने दिव्यद्बिसहस्रयुगात्मकम् । मनुष्यमाने ब्रह्मणो दिनस्य संख्या । ८,६४०,०००, ००० । इति पुराणम् ॥ तदेव मनुष्याणां सौरसावनचान्द्रनाक्षत्रभेदेन चतुर्व्विधम् । यथा, सावनं दण्डाः षष्टिरहः स्वलग्नखगुणांशाढ्यास्तदैनं भवेत् । १ । उदयादोदयाद्भानोर्भौमसावनवासराः । २ । तिथिनैकेन दिवसश्चान्द्रमाने प्रकीर्त्तितः । ३ । आयुर्द्दाये स्मृतं प्राज्ञैर्नाक्षत्रं षष्टिनाडिकम् ॥ ४ ॥ जीमूतवाहनमते तु सूर्य्यकिरणावच्छिन्नदतुर्यामयुक्तम् ॥"
+        },
+        {
+            "word": "दिन",
+            "eid": "16350",
+            "pagenum": "2-710-b",
+            "content": "दिनं¦, क्ली, (दो छेदे + इनच् ।) सूर्य्यकिरणावच्छिन्नकालः । तद्वैदिकपर्य्यायः । वस्तोः १ द्युः २ भाबुः ३ वासरम् ४ स्वसराणि ५ घ्रंसः ६ घर्म्मः ७ घृणः ८ दिनम् ९ दिवा १० दिवेदिवे ११ द्यविद्यवि १२ । इति द्बादशाहर्नामानि । इति वेदनिघण्टौ १ अध्यायः ॥ * ॥ सिंहकन्यातुलावृश्चिककुम्भमीनलग्नानि । यथा, “अजगोपतियुग्मञ्च कर्किधन्विमृगास्तथा । निशासंज्ञाः स्मृताश्चैते शेषाश्चान्ये दिनात्मकाः ॥” इति ज्योतिस्तत्त्वम् ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "दिन",
+            "eid": "24938",
+            "pagenum": "3577,a",
+            "content": "दिन¦ पु० न० द्यति तमः द--खण्डने दी--क्षये वा नक् ह्रुस्वः । १ सूर्यकिरणावच्छिन्ने काले तद्भेदादिकं अहन् शब्दे ५७६ पृ० दृश्यम् । २ षष्टिदण्डात्मके मानुषे अहोरात्रे चान्द्रे ३ तिथिरूपे काले ४ चान्द्रमासात्मके पैत्र्ये कालभेदे सौरवर्षरूपे ५ दैवे कालभेदे व्राह्मे ६ कल्परूपे काले च “अजगोपतियुग्मञ्च कर्किधन्विमृगास्तथा । निशासंज्ञाः स्मृताश्चैव शेषाश्चान्ये दिनाख्यकाः” इति ज्योतिषतत्त्वोक्ते ७ राशिभेदे । “दिने दिने त्वं तनुरेधि रेऽधिकम्” नैष० “दिनानि दीनोद्धरणोचितस्य” “दिनेषु गच्छत्सु नितान्तपीवरम्” रघुः । “प्रौढध्वान्तं दिनमिह जलदाः” माघः जीमूतवाहनस्तु सूर्यकिरणावच्छिन्नं चतुर्यामात्मकं दिनमित्याह० “दिनं दिनेशस्य यतोऽत्र दर्शने तमी तमोहन्तुरदर्शने सति । कुपृष्ठगानां द्युनिशं यथा तथा पितॄणां शशिपृष्ठवासिनाम्” सि० शि० दिनमानशब्दे दृश्यम् “तिथिश्चान्द्रमसं दिनम” सू० सि० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "दिन",
+            "content": "दिनम् नपुं. -  'द्युति तमः,  दो( दी) +  नक्, ह्रस्वः' दिन"
+        },
+        {
+            "word": "दिन",
+            "content": "दिनम् नपुं. -  'द्युति तमः,  दो( दी) +  नक्, ह्रस्वः' दिन"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "दिन",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ದಿವಸ \\/ಹಗಲು \\/ಸೂರ್ಯನಿರುವ ಕಾಲ",
+            "निष्पत्तिः": "दो (अवखण्डने)'इनच्' (उ० २-४९)",
+            "व्युत्पत्तिः": "द्यति तमः",
+            "प्रयोगाः": "'दिनेनास्या मुखस्येन्दुः सखा यदि तिरस्कृतः । तत्कृता शतपत्राणां तन्मित्राणामपि श्रियः ॥'",
+            "उल्लेखाः": "नैष० २०-५५",
+            "content": ""
+        },
+        {
+            "word": "दिन",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಒಂದು ದಿವಸ \\/ಹಗಲು ರಾತ್ರಿಗಳಿಂದ ಕೂಡಿದ ಕಾಲ",
+            "प्रयोगाः": "'सप्त व्यतीयुः त्रिगुणानि तस्य दिनानि दीनोद्ध्रणोचितस्य' । 'दिने दिने सा परिवर्धमाना लब्धोदया चान्द्रमसीव लेखा' ।",
+            "उल्लेखाः": "रघु० २-२५, कुमा० १-२५",
+            "content": ""
+        },
+        {
+            "word": "दिन",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ತಿಥಿ \\/ಚಂದ್ರನ ಸಂಚಾರಕಾಲ",
+            "content": ""
+        },
+        {
+            "word": "दिन",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸಿಂಹ ಕನ್ಯಾ ತುಲಾ ವೃಶ್ಚಿಕ ಕುಂಭ ಮತ್ತು ಮೀನ ರಾಶಿಗಳು",
+            "प्रयोगाः": "'अजगोपतियुग्मञ्च कर्किधन्विमृगास्तथा । निशासञ्ज्ञाः स्मृताश्चैव शेषाश्चान्ये दिनाख्यकाः ॥'",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "दिन",
+            "linga": "N",
+            "artha": "दिवसः",
+            "synonyms": [
+                "अहन्",
+                "घस्र",
+                "दिन",
+                "अहन्",
+                "दिवस",
+                "वासर",
+                "दिवा"
+            ],
+            "num": "1.4.2",
+            "text": "घस्रो दिनाहनि वा तु क्लीबे दिवसवासरौ । प्रत्यूषोऽहर्मुखं कल्यमुषःप्रत्युषसी अपि ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "दिन",
+            "content": "<body><s>dina pu° na° dyati tamaH da—KaRqane dI—kzaye vA nak hrusvaH . <lb/><b>1</b> sUryakiraRAvacCinne kAle tadBedAdikaM ahan Sabde 576 pf° dfSyam . <lb/><b>2</b> zazwidaRqAtmake mAnuze ahorAtre cAndre <lb/><b>3</b> tiTirUpe kAle <lb/><b>4</b> cAndramAsAtmake pEtrye kAlaBede sO­ravarzarUpe <lb/><b>5</b> dEve kAlaBede vrAhme <lb/><b>6</b> kalparUpe kAle ca <q>ajagopatiyugmaYca karkiDanvimfgAstaTA . niSAsaMjYAH smftAScEva SezAScAnye dinAKyakAH</q> iti jyotizatattvokte <lb/><b>7</b> rASiBede . <q>dine dine tvaM tanureDi re'Dikam</q> nEza° <q>dinAni dInodDaraRocitasya</q> <q>dinezu gacCatsu nitA­ntapIvaram</q> raGuH . <q>prOQaDvAntaM dinamiha jaladAH</q> mAGaH jImUtavAhanastu sUryakiraRAvacCinnaM caturyA­mAtmakaM dinamityAha° <q>dinaM dineSasya yato'tra darSane tamI tamohanturadarSane sati . kupfzWagAnAM dyuniSaM yaTA taTA pitFRAM SaSipfzWavAsinAm</q> si° Si° dinamAnaSabde dfSyam <q>tiTiScAndramasaM dinama</q> sU° si° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "दिन",
+            "content": "<H1><h><key1>dina</key1><key2>dina/</key2><hom>1</hom></h><body><hom>1.</hom> <s>dina/</s>   <lex>mfn.</lex> (√ <s>do</s>) cut, divided, mowed, <ls>RV. viii, 67, 10</ls> (<ab>cf.</ab> <s>svayaM-</s>). <info lex=\"m:f:n\" /></body><tail><L>92123</L><pc>478,1</pc></tail></H1>\n <H1><h><key1>dina</key1><key2>dina</key2><hom>2</hom></h><body><hom>2.</hom> <s>dina</s>   (√ <hom>3.</hom> <s>dA</s>). See <s>a-saM-</s></body><tail><L>92124</L><pc>478,1</pc></tail></H1>\n <H1><h><key1>dina</key1><key2>di/na</key2><hom>3</hom></h><body><hom>3.</hom> <s>di/na</s>   (accented only, <ls>Naigh. i, 9</ls>) <lex>mn.</lex> (<ab>g.</ab> <s>arDarcA<srs />di</s>, only occurring as <lex type=\"hwinfo\">n.</lex>) a day, <ls>Mn.</ls>; <ls>Ragh.</ls>; <ls>Pañcat.</ls> &amp;c. (<ab>ifc.</ab> also in Vedic texts) <ab>ifc.</ab> <lex type=\"hwifc\">f(<s>A</s>). </lex>, <ls>Rājat. i, 347.</ls><info lex=\"m:f#A:n\" /></body><tail><L>92125</L><pc>478,1</pc></tail></H1>\n <H1E><h><key1>dina</key1><key2>dina</key2></h><body><s>dina</s>   [<ab>cf.</ab> <lang>Lat.</lang> <etym>peren-dinus</etym>, <etym>nūn-dinus</etym> &amp;c.; <lang>Got.</lang> <etym>sin-teins</etym>; <lang>Lit.</lang> <etym>dëna</etym>; <lang>O. Pr.</lang> <ab>acc.</ab> <ab>sg.</ab> <etym>deinan</etym>; <lang>Slav.</lang> <etym>dǐnǐ</etym>.]</body><tail><L>92125.1</L><pc>478,1</pc></tail></H1E>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "दिन",
+            "content": "<H1><h><key1>dina</key1><key2>dina</key2></h><body><s>dina</s>  <div n=\"1\">mn. (<s>-naH-naM</s>) A day.</div><div n=\"E\"> E. <s>dI</s> to waste, <s>nak</s> affix, and the vowel made <lb />short; or <s>do</s> to destroy, (darkness,) <s>kinan</s> Unadi aff.</div></body><tail><L>18948</L><pc>340-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "दिन",
+            "content": "<span lang=\"sa\">दिन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದಿವಸ /ಹಗಲು /ಸೂರ್ಯನಿರುವ ಕಾಲ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>दो (अवखण्डने) - \"इनच्\" (उ० २-४९)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>द्यति तमः<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"दिनेनास्या मुखस्येन्दुः सखा यदि तिरस्कृतः । तत्कृता शतपत्राणां तन्मित्राणामपि श्रियः ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>नैष० २०-५५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>दिन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಂದು ದಿವಸ /ಹಗಲು ರಾತ್ರಿಗಳಿಂದ ಕೂಡಿದ ಕಾಲ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"सप्त व्यतीयुः त्रिगुणानि तस्य दिनानि दीनोद्ध्रणोचितस्य\" । \"दिने दिने सा परिवर्धमाना लब्धोदया चान्द्रमसीव लेखा\" ।<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० २-२५, कुमा० १-२५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>दिन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತಿಥಿ /ಚಂದ್ರನ ಸಂಚಾರಕಾಲ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>दिन<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಿಂಹ ಕನ್ಯಾ ತುಲಾ ವೃಶ್ಚಿಕ ಕುಂಭ ಮತ್ತು ಮೀನ ರಾಶಿಗಳು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"अजगोपतियुग्मञ्च कर्किधन्विमृगास्तथा । निशासञ्ज्ञाः स्मृताश्चैव शेषाश्चान्ये दिनाख्यकाः ॥\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-function waitForCommitToBeReady() {
-  if (suspendedState === null) {
-    throw Error(formatProdErrorMessage(475));
-  }
-
-  const state = suspendedState;
-
-  if (state.stylesheets && state.cou

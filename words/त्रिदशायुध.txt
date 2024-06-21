@@ -1,1 +1,138 @@
-splay:none;left:0;pointer-events:none;position:absolute;top:0}.ck-focused .ck-widget_with-resizer.ck-widget_selected>.ck-widget__resizer{display:block}.ck .ck-widget__resizer__handle{pointer-events:all;position:absolute}.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-right,.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-left{cursor:nwse-resize}.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-left,.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-right{cursor:nesw-resize}:root{--ck-resizer-size:10px;--ck-resizer-offset:calc(var(--ck-resizer-size)/-2 - 2px);--ck-resizer-border-width:1px}.ck .ck-widget__resizer{outline:1px solid var(--ck-color-resizer)}.ck .ck-widget__resizer__handle{background:var(--ck-color-focus-border);border:var(--ck-resizer-border-width) solid #fff;border-radius:var(--ck-resizer-border-radius);height:var(--ck-resizer-size);width:var(--ck-resizer-size)}.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-left{left:var(--ck-resizer-offset);top:var(--ck-resizer-offset)}.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-top-right{right:var(--ck-resizer-offset);top:var(--ck-resizer-offset)}.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-right{bottom:var(--ck-resizer-offset);right:var(--ck-resizer-offset)}.ck .ck-widget__resizer__handle.ck-widget__resizer__handle-bottom-left{bottom:var(--ck-resizer-offset);left:var(--ck-resizer-offset)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-widget/theme/widgetresize.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-widget/widgetresize.css"],names:[],mappings:"AAKA,4BAEC,iBACD,CAEA,wBACC,YAAa,CAMb,MAAO,CAFP,mBAAoB,CAHpB,iBAAkB,CAMlB,KACD,CAGC,2EACC,aACD,CAGD,gCAIC,kBAAmB,CAHnB,iBAcD,CATC,4IAEC,kBACD,CAEA,4IAEC,kBACD,CCpCD,MACC,sBAAuB,CAGvB,yDAAiE,CACjE,6BACD,CAEA,wBACC,yCACD,CAEA,gCAGC,uCAAwC,CACxC,gDAA6D,CAC7D,6CAA8C,CAH9C,6BAA8B,CAD9B,4BAyBD,CAnBC,oEAEC,6BAA8B,CAD9B,4BAED,CAEA,qEAEC,8BAA+B,CAD/B,4BAED,CAEA,wEACC,+BAAgC,CAChC,8BACD,CAEA,uEACC,+BAAgC,CAChC,6BACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck .ck-widget_with-resizer {\n\t/* Make the widget wrapper a relative positioning container for the drag handle. */\n\tposition: relative;\n}\n\n.ck .ck-widget__resizer {\n\tdisplay: none;\n\tposition: absolute;\n\n\t/* The wrapper itself should not interfere with the pointer device, only the handles should. */\n\tpointer-events: none;\n\n\tleft: 0;\n\ttop: 0;\n}\n\n.ck-focused .ck-widget_with-resizer.ck-widget_selected {\n\t& > .ck-widget__resizer {\n\t\tdisplay: block;\n\t}\n}\n\n.ck .ck-widget__resizer__handle {\n\tposition: absolute;\n\n\t/* Resizers are the only UI elements that should interfere with a pointer device. */\n\tpointer-events: all;\n\n\t&.ck-widget__resizer__handle-top-left,\n\t&.ck-widget__resizer__handle-bottom-right {\n\t\tcursor: nwse-resize;\n\t}\n\n\t&.ck-widget__resizer__handle-top-right,\n\t&.ck-widget__resizer__handle-bottom-left {\n\t\tcursor: nesw-resize;\n\t}\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t--ck-resizer-size: 10px;\n\n\t/* Set the resizer with a 50% offset. */\n\t--ck-resizer-offset: calc( ( var(--ck-resizer-size) / -2 ) - 2px);\n\t--ck-resizer-border-width: 1px;\n}\n\n.ck .ck-widget__resizer {\n\toutline: 1px solid var(--ck-color-resizer);\n}\n\n.ck .ck-widget__resizer__handle {\n\twidth: var(--ck-resizer-size);\n\theight: var(--ck-resizer-size);\n\tbackground: var(--ck-color-focus-border);\n\tborder: var(--ck-resizer-border-width) solid hsl(0, 0%, 100%);\n\tborder-radius: var(--ck-resizer-border-radius);\n\n\t&.ck-widget__resizer__handle-top-left {\n\t\ttop: var(--ck-resizer-offset);\n\t\tleft: var(--ck-resizer-offset);\n\t}\n\n\t&.ck-widget__resizer__handle-top-right {\n\t\ttop: var(--ck-resizer-offset);\n\t\tright: var(--ck-resizer-offset);\n\t}\n\n\t&.ck-widget__resizer__handle-bottom-right {\n\t\tbottom: var(--ck-resizer-offset);\n\t\tright: var(--ck-resizer-offset);\n\t}\n\n\t&.ck-widget__resizer__handle-bottom-left {\n\t\tbottom: var(--ck-resizer-offset);\n\t\tleft: var(--ck-resizer-offset);\n\t}\n}\n"],sourceRoot:""}]);const a=s},698:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,'.ck .ck-widget .ck-widget__type-around__button{display:block;overflow:hidden;position:absolute;z-index:var(--ck-z-default)}.ck .ck-widget .ck-widget__type-around__button svg{left:50%;position:absolute;top:50%;z-index:calc(var(--ck-z-default) + 2)}.ck .ck-widget .ck-widget__type-around__button.ck-widget__type-around__button_before{left:min(10%,30px);top:calc(var(--ck-widget-outline-thickness)*-.5);transform:translateY
+{
+    "word": "त्रिदशायुध",
+    "CAE": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "12850",
+            "pagenum": 212,
+            "content": "त्रिदशायुध¦ <lex>n.</lex> the divine bow, the rainbow."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "9011",
+            "pagenum": 160,
+            "content": "त्रिदशायुध¦ <i>n.</i> Regenbogen <i>(eig.</i> Götterwaffe. <lbinfo n='6'/>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "16103.1",
+            "pagenum": 318,
+            "content": "tri-daSa˚AyuDa¦ <i>n.</i> Indra’s thunderbolt, <ls>R.</ls>ix.54."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "87778",
+            "pagenum": "458,3",
+            "content": "tri—da°SA<srs/>yuDa ¦ <lex>n.</lex> ‘divine weapon’, the rainbow, <ls>Ragh. ix, 54</ls><info lex='n'/>"
+        },
+        {
+            "word": "त्रिदशायुध",
+            "eid": "87779",
+            "pagenum": "458,3",
+            "content": "¦ the thunderbolt, <ls>L.</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "47481",
+            "pagenum": 3,
+            "content": "त्रिदशायुध¦ <lex>n.</lex> <dvsn n='1'>— 1〉 <i>Regenbogen</i>. <dvsn n='1'>— 2〉 *<i>der Donnerkeil</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "30958",
+            "pagenum": 3,
+            "content": "त्रिदशायुध¦ (त्रिदश + आयुध) <lex>n.</lex> <i>der Götterbogen, Regenbogen</i> <ls>RAGH. 9, 54.</ls> <i>der Donnerkeil</i> <ls>TRIK. 1, 1, 62.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "18058",
+            "pagenum": 324,
+            "content": "त्रिदशायुध¦ n. (-धं) The thunderbolt of INDRA. E. त्रिदश a deity, and आयुध a weapon."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "18075",
+            "pagenum": 389,
+            "content": "त्रिदशायुध¦ n. (-धं) The thunderbolt of INDRA. .E. त्रिदश a deity, and आयुध a weapon."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "17551",
+            "pagenum": 345,
+            "content": "त्रिदशा_युध¦ (धं) 1. <i>n.</i> A thunderbolt"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "15529",
+            "pagenum": "2-657-a",
+            "content": "त्रिदशायुधं¦, क्ली, (त्रिदशानां देवानां आयुधम् ।) वज्रम् । इति त्रिकाण्डशेषः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिदशायुध",
+            "eid": "23645",
+            "pagenum": "3366,b",
+            "content": "त्रिदशायुध¦ न० ६ त० । १ वज्रे त्रिकाण्ड० । २ इन्द्रधनुषि च । “अथ नभस्य इव त्रिदशायुधम् कनकपिङ्गतडिद्गुणसंयुतम्” रघुः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिदशायुध",
+            "content": "त्रिदशायुधम् नपुं. त्रि-दश-आयुधम्  - इन्द्र का वज्र"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिदशायुध",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವಜ್ರಾಯುಧ",
+            "व्युत्पत्तिः": "त्रिदशानामायुधम्",
+            "content": ""
+        },
+        {
+            "word": "त्रिदशायुध",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಇಂದ್ರಧನುಸ್ಸು",
+            "प्रयोगाः": "'अथ नभस्य इव त्रिदशायुधम् कनकपिङ्गतटिद्गुणसंयुतम्'",
+            "उल्लेखाः": "रघु० ९-५४",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिदशायुध",
+            "content": "<body><s>tridaSAyuDa na° 6 ta° . <lb/><b>1</b> vajre trikARqa° . <lb/><b>2</b> indraDanuzi ca . <q>aTa naBasya iva tridaSAyuDam kanakapiNgataqidguRasaM­yutam</q> raGuH .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिदशायुध",
+            "content": "<H1><h><key1>tridaSAyuDa</key1><key2>tridaSAyuDa</key2></h><body><s>tridaSAyuDa</s>  <div n=\"1\">n. (<s>-DaM</s>) The thunderbolt of INDRA.</div><div n=\"E\"> E. <s>tridaSa</s> a deity, and <s>AyuDa</s> <lb />a weapon.</div></body><tail><L>18058</L><pc>324-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिदशायुध",
+            "content": "<span lang=\"sa\">त्रिदशायुध<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಜ್ರಾಯುಧ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिदशानामायुधम्<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिदशायुध<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಇಂದ್ರಧನುಸ್ಸು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"अथ नभस्य इव त्रिदशायुधम् कनकपिङ्गतटिद्गुणसंयुतम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० ९-५४<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

@@ -1,1 +1,97 @@
-unction(t){return kt(t)&&cn(t)};const Bi=function(t,e){if(("constructor"!==e||"function"!=typeof t[e])&&"__proto__"!=e)return t[e]};const Di=function(t){return Te(t,gn(t))};const Si=function(t,e,n,o,i,r,s){var a=Bi(t,n),c=Bi(e,n),l=s.get(c);if(l)yi(t,n,l);else{var d=r?r(a,c,n+"",t,e,s):void 0,h=void 0===d;if(h){var u=mt(c),p=!u&&He(c),g=!u&&!p&&Xe(c);d=c,u||p||g?mt(a)?d=a:Ei(a)?d=An(a):p?(h=!1,d=_n(c,!0)):g?(h=!1,d=so(c,!0)):d=[]:Et(c)||Le(c)?(d=a,Le(a)?d=Di(a):z(a)&&!Ht(a)||(d=ho(c))):h=!1}h&&(s.set(c,d),i(d,c,o,r,s),s.delete(c)),yi(t,n,d)}};const Ti=function t(e,n,o,i,r){e!==n&&xi(n,(function(s,a){if(r||(r=new ye),z(s))Si(e,n,a,o,t,i,r);else{var c=i?i(Bi(e,a),s,a+"",e,n,r):void 0;void 0===c&&(c=s),yi(e,a,c)}}),gn)};const Pi=function(t){return t};const Ii=function(t,e,n){switch(n.length){case 0:return t.call(e);case 1:return t.call(e,n[0]);case 2:return t.call(e,n[0],n[1]);case 3:return t.call(e,n[0],n[1],n[2])}return t.apply(e,n)};var Mi=Math.max;const Ri=function(t,e,n){return e=Mi(void 0===e?t.length-1:e,0),function(){for(var o=arguments,i=-1,r=Mi(o.length-e,0),s=Array(r);++i<r;)s[i]=o[e+i];i=-1;for(var a=Array(e+1);++i<e;)a[i]=o[i];return a[e]=n(s),Ii(t,this,a)}};const Fi=function(t){return function(){return t}};const Li=Ee?function(t,e){return Ee(t,"toString",{configurable:!0,enumerable:!1,value:Fi(e),writable:!0})}:Pi;var Vi=Date.now;const Oi=function(t){var e=0,n=0;return function(){var o=Vi(),i=16-(o-n);if(n=o,i>0){if(++e>=800)return arguments[0]}else e=0;return t.apply(void 0,arguments)}};const zi=Oi(Li);const Ni=function(t,e){return zi(Ri(t,e,Pi),t+"")};const Hi=function(t,e,n){if(!z(n))return!1;var o=typeof e;return!!("number"==o?cn(n)&&qe(e,n.length):"string"==o&&e in n)&&Dt(n[e],t)};const ji=function(t){return Ni((function(e,n){var o=-1,i=n.length,r=i>1?n[i-1]:void 0,s=i>2?n[2]:void 0;for(r=t.length>3&&"function"==typeof r?(i--,r):void 0,s&&Hi(n[0],n[1],s)&&(r=i<3?void 0:r,i=1),e=Object(e);++o<i;){var a=n[o];a&&t(e,a,o,r)}return e}))};const qi=ji((function(t,e,n){Ti(t,e,n)}));function $i(t,e,n=1,o){if("number"!=typeof n)throw new A("translation-service-quantity-not-a-number",null,{quantity:n});const i=o||Fo.window.CKEDITOR_TRANSLATIONS,r=function(t){return Object.keys(t).length}(i);1===r&&(t=Object.keys(i)[0]);const s=e.id||e.string;if(0===r||!function(t,e,n){return!!n[t]&&!!n[t].dictionary[e]}(t,s,i))return 1!==n?e.plural:e.string;const a=i[t].dictionary,c=i[t].getPluralForm||(t=>1===t?0:1),l=a[s];if("string"==typeof l)return l;return l[Number(c(n))]}Fo.window.CKEDITOR_TRANSLATIONS||(Fo.window.CKEDITOR_TRANSLATIONS={});const Gi=["ar","ara","dv","div","fa","per","fas","he","heb","ku","kur","ug","uig"];function Ki(t){return Gi.includes(t)?"rtl":"ltr"}class Ui{constructor({uiLanguage:t="en",contentLanguage:e,translations:n}={}){this.uiLanguage=t,this.contentLanguage=e||this.uiLanguage,this.uiLanguageDirection=Ki(this.uiLanguage),this.contentLanguageDirection=Ki(this.contentLanguage),this.translations=function(t){return Array.isArray(t)?t.reduce(((t,e)=>qi(t,e))):t}(n),this.t=(t,e)=>this._t(t,e)}get language(){return console.warn("locale-deprecated-language-property: The Locale#language property has been deprecated and will be removed in the near future. Please use #uiLanguage and #contentLanguage properties instead."),this.uiLanguage}_t(t,e=[]){e=vi(e),"string"==typeof t&&(t={string:t});const n=!!t.plural?e[0]:1;return function(t,e){return t.replace(/%(\d+)/g,((t,n)=>n<e.length?e[n]:t))}($i(this.uiLanguage,t,n,this.translations),e)}}class Wi extends(P()){constructor(t={},e={}){super();const n=et(t);if(n||(e=t),this._items=[],this._itemMap=new Map,this._idProperty=e.idProperty||"id",this._bindToExternalToInternalMap=new WeakMap,this._bindToInternalToExternalMap=new WeakMap,this._skippedIndexesFromExternal=[],n)for(const e of t)this._items.push(e),this._itemMap.set(this._getItemIdBeforeAdding(e),e)}get length(){return this._items.length}get first(){return this._items[0]||null}get last(){return this._items[this.length-1]||null}add(t,e){return this.addMany([t],e)}addMany(t,e){if(void 0===e)e=this._items.length;else if(e>this._items.length||e<0)throw new A("collection-add-item-invalid-index",this);let n=0;for(const o of t){const t=this._getItemIdBeforeAdding(o),i=e+n;this._items.splice(i,0,o),this._itemMap.set(t,o),this.fire("add",o,i),n++}return this.fire("change",{added:t,removed:[],index:e}),this}get(t){let e;if("string"==typeof t)e=this._itemMap.get(t);else{if("number"!=typeof t)throw new A("collection-get-invalid-arg",this);e=this._items[t]}return e||null}has(t){if("string"==typeof t)return this._itemMap.has(t);{const e=t[this._idProperty];return e&&this._itemMap.has(e)}}getIndex(t){let e;return e="string"==typeof t?this._itemMap.get(t):t,e?this._items.indexOf(e):-1}remove(t){const[e,n]=this._remove(t);return this.fire("change",{added:[],removed:[e],index:n}),e}map(t,e){return this._items.map(t,e)}forEach(t,e){this._items.forEach(t,e)}find(t,e){return this._items.find(t,e)}filter(t,e){return this._items.filter(t,e)}clear(){this._bindToCollection&&(this.stopListening(this._bindToCollection),this._bindToCollection=null);const t=Array.from(this._items);for(;this.length;)this._remove(0);this.fire("change",{added:[],removed:t,index:0})}bindTo(t){if(this._bindToCollection)throw new A("collection-bind-to-rebind",this);return this._bindToCollection=t,{as:t=>{this._setUpBindToBinding((e=>new t(e)))},using:t=>{"function"==typeof t?this._setUpBindToBinding(t):this._setUpBindToBinding((e=>e[t]))}}}_setUpBindToBinding(t){const e=this._bindToCollection,n=(n,o,i)=>{const r=e._bindToCollection==this,s=e._bindToInternalToExternalMap.get(o);if(r&&s)this._bindToExternalToInternalMap.set(o,s),this._bindToInternalToExternalMap.set(s,o);else{const n=t(o);if(!n)return void this._skippedIndexesFromExternal.push(i);let r=i;for(const t of this._skippedIndexesFromExternal)i>t&&r--;for(const t of e._skippedIndexesFromExternal)r>=t&&r++;this._bindToExternalToInternalMap.set(o,n),this._bindToInternalToExternalMap.set(n,o),this.add(n,r);for(let t=0;t<e._skippedIndexesFromExternal.length;t++)r<=e._skippedIndexesFromExternal[t]&&e._skippedIndexesFromExternal[t]++}};for(const t of e)n(0,t,e.getIndex(t));this.listenTo(e,"add",n),this.listenTo(e,"remove",((t,e,n)=>{const o=this._bindToExternalToInternalMap.get(e);o&&this.remove(o),this._skippedIndexesFromExternal=this._skippedIndexesFromExternal.reduce(((t,e)=>(n<e&&t.push(e-1),n>e&&t.push(e),t)),[])}))}_getItemIdBeforeAdding(t){const e=this._idProperty;let n;if(e in t){if(n=t[e],"string"!=typeof n)throw new A("collection-add-invalid-id",this);if(this.get(n))throw new A("collection-add-item-already-exists",this)}else t[e]=n=f();return n}_remove(t){let e,n,o,i=!1;const r=this._idProperty;if("string"==typeof t?(n=t,o=this._itemMap.get(n),i=!o,o&&(e=this._items.indexOf(o))):"number"==typeof t?(e=t,o=this._items[e],i=!o,o&&(n=o[r])):(o=t,n=o[r],e=this._items.indexOf(o),i=-1==e||!this._itemMap.get(n)),i)throw new A("collection-remove-404",this);this._items.splice(e,1),this._itemMap.delete(n);const s=this._bindToInternalToExternalMap.get(o);return this._bindToInternalToExternalMap.delete(o),this._bindToExternalToInternalMap.delete(s),this.fire("remove",o,e),[o,e]}[Symbol.iterator](){return this._items[Symbol.iterator]()}}function Zi(t){const e=t.next();return e.done?null:e.value}class Ji extends(Po(K())){constructor(){super(),this._elements=new Set,this._nextEventLoopTimeout=null,this.set("isFocused",!1),this.set("focusedElement",null)}add(t){if(this._elements.has(t))throw new A("focustracker-add-element-already-exist",this);this.
+{
+    "word": "त्रिजटा",
+    "BHS": [
+        {
+            "word": "त्रिजटा",
+            "eid": "7087",
+            "pagenum": 257,
+            "content": "<b>Trijaṭā</b>¦, <ab>n.</ab> of a nāga maid: <ls>Kv</ls> 〔3.23〕."
+        }
+    ],
+    "INM": [
+        {
+            "word": "त्रिजटा",
+            "eid": "10937",
+            "pagenum": 681,
+            "content": "<b>Trijaṭā</b>,¦ a Rākṣasī. § 532 (Sītāsāntvana): III, <b>280</b>, 16146 (<i>Rākṣasī</i>), 16164, 16165 (consoled Sītā).—§ 533 (SītāRāvaṇasaṃv.): III, <b>281</b>, 16196.—§ 543 (Rāmābhiṣeka): III, <b>291</b>, 16571 (honoured by Rāma). Cf. Rākṣasī."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिजटा",
+            "eid": "16091",
+            "pagenum": 318,
+            "content": "tri-jawA¦ <i>f.</i> name of a Rākshasī who was friendly to Sītā at Rāvaṇa’s house, <ls>R.</ls>xii.74."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिजटा",
+            "eid": "87702",
+            "pagenum": "458,2",
+            "content": "त्रि—जटा ¦ <lex>f.</lex> <bot>Aegle Marmelos</bot>, <ls>Jñānabhair.</ls><info lex='f'/>"
+        },
+        {
+            "word": "त्रिजटा",
+            "eid": "87703",
+            "pagenum": "458,2",
+            "content": "¦ <ab>N.</ab> of a <s1 slp1='rAkzasI'>Rākṣasī</s1> (who was friendly to <s1 slp1='sItA'>Sītā</s1>), <ls>R. iii</ls>, <ls n='R.'>v f.</ls>; <ls>Ragh. xii, 74</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिजटा",
+            "eid": "87704",
+            "pagenum": "458,2",
+            "content": "¦ of a <s1 slp1='nAga'>Nāga</s1> virgin, <ls>Kāraṇḍ. i, 43</ls><info lex='inh'/>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिजटा",
+            "eid": "15515",
+            "pagenum": "2-656-b",
+            "content": "त्रिजटा¦, स्त्री, (तिस्रो जटा यस्याः ।) राक्षसीविशेषः । यथा, “सीतां ताभिरनार्य्याभिर्दृष्ट्वा सन्तर्ज्जितां तदा । राक्षसी त्रिजटा वृद्धा प्रबुद्धा वाक्यमब्रवीत् ॥” इति रामायणे सुन्दरकाण्डे २७ अध्यायः ॥ * ॥ विल्ववृक्षः । यथा, ज्ञानभैरवतन्त्रे ६ पटोले । “शृणु देवि ! प्रवक्ष्यामि रहस्यं त्रिजटोत्तमम् । पत्रं ब्रह्ममयं देवि ! अद्भुतं वरवर्णिनि ! ॥ श्रीशैलशिखरे जातः श्रीफलः श्रीनिकेतनः । विष्णुप्रीतिकरश्चैव मम प्रीतिकरः सदा ॥ ब्रह्मविष्णुशिवाः पत्रे वृन्तञ्च शक्तिरूपिणी । वृन्तमूले तु वज्रं स्यात् पत्रं ब्रह्म त्विदं प्रिये ! ॥ एकञ्च त्रिजटापत्रैर्हरं वा हरिमर्च्चयेत् । कैवल्यं तस्य तेनैव शक्तिपूजा विशेषतः ॥” अन्यत् विल्वशब्दे द्रष्टव्यम् ॥ (भगवती । सा च गायत्त्रीस्वरूपा । यथा, देवीभागवते । १२ । ६ । ७२ । “त्रिजटा तित्तिरी तृष्णा त्रिविधा तरुणाकृतिः ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिजटा",
+            "eid": "23616",
+            "pagenum": "3365,a",
+            "content": "त्रिजटा¦ स्त्री त्रिस्रो जटा यस्याः । १ रावणालयस्थे सीतापक्षपातिराक्षसीभेदे “सीतां ताभिरनार्याभिर्दृष्ट्वा संतर्जितां तदा । राक्षसी त्रिजटा वृद्धा प्रबुद्धा वाक्यमब्रवीत्” । “एवमुक्तास्त्रिजटया राक्षस्यः क्रोधमूर्च्छिताः” राभा० २७ अ० “हनुमानपि विक्रान्तः सर्वं शुश्राव तत्त्वतः । सीतायास्त्रिजटायाश्च राक्षसानाञ्च गर्ज्जितम्” ३० अ० । “सीतां मायेति शंसन्ती त्रिजटा समजीवयत्” रघुः । २ शिवे पु० । “त्रिजटाय त्रिशीर्षाय त्रिशूलायुधपा णिने । त्र्यम्बकाय त्रिनेत्राय त्रिपुरघ्नाय वै नमः” भा० अनु० २८६ । ३ विस्ववृक्षे पु० । “शृणु १ देवि! प्रवक्ष्यामि रहस्यं त्रिजटोत्तमम् । पत्रं ब्रह्ममयं देवि! अद्भुतं वरवर्णिनि! । श्रीशैलशिखरे जातः श्रीफलः श्रोनिकेतनः । विष्णुप्रीतिकरश्चैव मम प्रीतिकरः सदा । ब्रह्मविष्णुशिवाः पत्रे वृन्ते च शक्तिरूपिणी । वृन्तमूले तु वज्रं स्यात् पत्रं ब्रह्म त्विदं प्रिये! । एवञ्च त्रिजटापत्रैर्हरं वा हरिमर्च्चयेत् । कैवल्यं तस्य तेनैव शक्तिपूजा विशेषतः” ज्ञानभैरवीतन्त्रे ६ प० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिजटा",
+            "content": "त्रिजटा स्त्री. त्रि-जटा  - एक राक्षसी"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिजटा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಒಬ್ಬ ರಾಕ್ಷಸಿ",
+            "प्रयोगाः": "'सीतां ताभिरनार्याभिः दृष्ट्वा सन्तर्जितां तदा । राक्षसी त्रिजटा वृद्धा शयाना वाक्रमब्रवीत् ॥'",
+            "उल्लेखाः": "रामा०",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रिजटा",
+            "content": "<segmenthd>\n<dentry>त्रिजटा</dentry>\n<prAwipaxikam>त्रिजटा</prAwipaxikam>\n<seg>त्रि-जटा</seg>\n<grammar>स्त्री*</grammar>\n<sense no=\"1\">एक राक्षसी जिसको रावण ने अशोकवाटिका में सीता के देखरेख के लिए नियत किया था जब वह बन्दी के रुप में रखी गई। उस समय त्रिजटा ने स्वयं सीता के साथ बहुत अच्छा व्यवहार किया, तथा अपनी दूसरी सहचारियों को भी प्रेरित किया कि वह भी ऐसा ही करे ।</sense></segmenthd>\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिजटा",
+            "content": "<body><s>trijawA strI trisro jawA yasyAH . <lb/><b>1</b> rAvaRAlayasTe sItApakza­pAtirAkzasIBede <q>sItAM tABiranAryABirdfzwvA saMtarjitAM tadA . rAkzasI trijawA vfdDA prabudDA vAkyamabravIt</q> . <q>evamuktAstrijawayA rAkzasyaH kroDamUrcCitAH</q> rABA° 27 a° <q>hanumAnapi vikrAntaH sarvaM SuSrAva tattvataH . sItA­yAstrijawAyASca rAkzasAnAYca garjjitam</q> 3° a° . <q>sItAM mAyeti SaMsantI trijawA samajIvayat</q> raGuH . <lb/><b>2</b> Sive pu° . <q>trijawAya triSIrzAya triSUlAyuDapA Rine . tryambakAya trinetrAya tripuraGnAya vE namaH</q> BA° anu° 286 . <lb/><b>3</b> visvavfkze pu° . <q>SfRu 1 devi! pravakzyAmi rahasyaM trijawottamam . patraM brahmamayaM devi! adButaM varavarRini! . SrISElaSiKare jAtaH SrIPalaH SroniketanaH . vizRuprItikaraScEva mama prItikaraH sadA . brahmavizRuSivAH patre vfnte ca SaktirUpiRI . vfntamUle tu vajraM syAt patraM brahma tvidaM priye! . evaYca trijawA­patrErharaM vA harimarccayet . kEvalyaM tasya tenEva Sakti­pUjA viSezataH</q> jYAnaBEravItantre 6 pa° .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिजटा",
+            "content": "<span lang=\"sa\">त्रिजटा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಬ್ಬ ರಾಕ್ಷಸಿ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"सीतां ताभिरनार्याभिः दृष्ट्वा सन्तर्जितां तदा । राक्षसी त्रिजटा वृद्धा शयाना वाक्रमब्रवीत् ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रामा०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

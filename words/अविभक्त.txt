@@ -1,257 +1,253 @@
-"use strict";
-(() => {
-var exports = {};
-exports.id = 6331;
-exports.ids = [6331];
-exports.modules = {
-
-/***/ 4082:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5893);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-
-
-const ContentCard = ({ children , border , padding , className  })=>{
-    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-            className: `bg-card ${border ? border : "border"} border-solid border-b_color  ${padding ? padding : ""} ${className ? className : ""}`,
-            children: children
-        })
-    });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ContentCard);
-
-
-/***/ }),
-
-/***/ 6679:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5893);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6689);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-
-
-const TitleCard = ({ className , children , borderradius , textsize , padding , zindex , backGroundImage  })=>{
-    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-        children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-            className: `${className} text-center bg-primary sticky top-[52px] md:top-[60px] text-secondary
-        ${textsize ? textsize : "text-sm sm:text-xl md:text-2xl"}
-        ${zindex ? zindex : "z-10"}
-        ${padding ? padding : "p-2 md:p-3"}
-        ${borderradius ? borderradius : "rounded-t-md"}
-        `,
-            children: children
-        })
-    });
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TitleCard);
-
-
-/***/ }),
-
-/***/ 8764:
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5893);
-/* harmony import */ var _components_Card_ContentCard__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4082);
-/* harmony import */ var _components_Card_TitleCard__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6679);
-/* harmony import */ var _utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6420);
-/* harmony import */ var _utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2361);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1664);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6689);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_6__);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_4__]);
-_utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_4__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
-
-
-
-
-
-
-
-const Sutratype = ({ sutratype_id  })=>{
-    const { sutraani , sutratypeArray  } = (0,react__WEBPACK_IMPORTED_MODULE_6__.useContext)(_utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_4__/* .SutraaniContext */ .i);
-    const [sutraData, setSutraData] = (0,react__WEBPACK_IMPORTED_MODULE_6__.useState)();
-    const [title, setTitle] = (0,react__WEBPACK_IMPORTED_MODULE_6__.useState)();
-    const arr = [];
-    sutraani?.data?.map((s)=>{
-        arr.push(s.type.split("##"));
-    });
-    const data = [
-        ...new Set(arr.reduce((acc, curr)=>acc.concat(curr), []))
-    ];
-    const getSutraTypeData = (key)=>{
-        const finalData = [];
-        const S = [];
-        data?.map((d)=>{
-            if (d.split("$")[0] == key) {
-                S.push(d);
-            }
-        });
-        S.map((s)=>{
-            const data = sutraani?.data?.map((sutra)=>{
-                if (sutra?.type.includes(s)) {
-                    return sutra;
-                }
-            });
-            // const datas = {
-            //   name: s.split("$")[1],
-            //   data: data.filter((e) => e !== undefined),
-            // };
-            finalData.push({
-                name: s.split("$")[1],
-                data: data.filter((e)=>e !== undefined)
-            });
-        });
-        setSutraData(finalData);
-    };
-    const getAdhikaarData = (data)=>{
-        const adhikaarArray = data.split("##");
-        const newData = adhikaarArray.map((a)=>{
-            if (a.split("$")[0] == "AD") {
-                const sdata = sutraani?.data?.map((s)=>{
-                    if (s?.i == a.split("$")[2]) {
-                        return `<span class="text-black">${s.s}</span><a class="text-[#00d]" href=/ashtadhyayi/sutraani/${s.i}> ${(0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .convertToHindi */ .ZS)(s.a)}.${(0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .convertToHindi */ .ZS)(s.p)}.${(0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .convertToHindi */ .ZS)(s.n)}</a>`;
-                    }
-                });
-                return sdata.filter((f)=>f !== undefined);
-            }
-        });
-        return newData.filter((f)=>f !== undefined);
-    };
-    (0,react__WEBPACK_IMPORTED_MODULE_6__.useEffect)(()=>{
-        sutratypeArray.map((e)=>{
-            if (e.route == sutratype_id) {
-                getSutraTypeData(e.key);
-                setTitle(e.type);
-            }
-        });
-    }, [
-        sutratype_id,
-        sutratypeArray
-    ]);
-    return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-        children: [
-            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Card_TitleCard__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z, {
-                backGroundImage: true,
-                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("h1", {
-                    children: "अष्टाध्याय्यां " + title
-                })
-            }),
-            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_components_Card_ContentCard__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z, {
-                children: sutraData?.map((f, i)=>{
-                    return /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
-                        children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                            className: "border-b border-x border-b_color p-2 font-medium text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl max-w-full",
-                            children: [
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                    className: "mr-2 mb-1 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
-                                    children: (0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .convertToHindi */ .ZS)(i + 1)
-                                }),
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                    className: "text-red font-bold break-words align-baseline inline-block",
-                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                        children: f.name
-                                    })
-                                }),
-                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("div", {
-                                    children: f?.data?.map((d)=>{
-                                        return /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
-                                            className: "mt-1",
-                                            children: [
-                                                "• ",
-                                                d.s,
-                                                " ",
-                                                /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx((next_link__WEBPACK_IMPORTED_MODULE_5___default()), {
-                                                    href: "/ashtadhyayi/sutraani/[sutraani_id]",
-                                                    as: "/ashtadhyayi/sutraani/" + d?.i,
-                                                    children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                        className: "ml-2 text-[#00d]",
-                                                        children: (0,_utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_3__/* .stringNumberHindi */ .rE)(`${d.a}.${d.p}.${d.n}`)
-                                                    })
-                                                }),
-                                                sutratype_id == "adhikaar" && /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("span", {
-                                                    className: "text-muted",
-                                                    dangerouslySetInnerHTML: {
-                                                        __html: ` इत्यतः ${getAdhikaarData(d.type)} इति यावत् ।`
-                                                    }
-                                                })
-                                            ]
-                                        }, d?.i);
-                                    })
-                                })
-                            ]
-                        })
-                    });
-                })
-            })
-        ]
-    });
-};
-Sutratype.getInitialProps = ({ query  })=>{
-    const { sutratype_id: sutratype_id  } = query;
-    return {
-        sutratype_id: sutratype_id
-    };
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Sutratype);
-
-__webpack_async_result__();
-} catch(e) { __webpack_async_result__(e); } });
-
-/***/ }),
-
-/***/ 3280:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/app-router-context.js");
-
-/***/ }),
-
-/***/ 4964:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/router-context.js");
-
-/***/ }),
-
-/***/ 1751:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/router/utils/add-path-prefix.js");
-
-/***/ }),
-
-/***/ 3938:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/router/utils/format-url.js");
-
-/***/ }),
-
-/***/ 1109:
-/***/ ((module) => {
-
-module.exports = require("next/dist/shared/lib/router/utils/is-local-url.js");
-
-/***/ }),
-
-/***/ 8854:
-/***/ ((module) => {
-
-module.exports = requi
+{
+    "word": "अविभक्त",
+    "AP90": [
+        {
+            "word": "अविभक्त",
+            "eid": "5066",
+            "pagenum": 195,
+            "content": "अविभक्त¦ <i><ab>a.</ab></i> <b>1</b> Undivided, <lbinfo n='unpar+titioned'/> unpartitioned, joint, (as property of a family, or co-heirs); अविभक्ता विभक्ता वा सपिंडाः स्थावरे समाः. <b>--2</b> Not broken, entire. <b>--3</b> Not different. <b>--4</b> Existing everywhere."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "अविभक्त",
+            "eid": "1714",
+            "pagenum": 57,
+            "content": "अविभक्त¦ <i>avibhakta</i> <ab>pp.</ab> <i>(bhañj)</i> non partagé, <lbinfo n='5'/> indivis."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "अविभक्त",
+            "eid": "3335",
+            "pagenum": 48,
+            "content": "अविभक्त¦ <lex>a.</lex> undivided, unseparated, joint."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "अविभक्त",
+            "eid": "2109",
+            "pagenum": 33,
+            "content": "अविभक्त¦ ungeteilt, in Gütergemeinschaft lebend."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "अविभक्त",
+            "eid": "04003",
+            "pagenum": 78,
+            "content": "aviBakta¦ <i>a. (f. क्ता)</i> 1. Undivided, entire; 2. unpartitioned, joint in interest, as a family or property (in law)."
+        }
+    ],
+    "MD": [
+        {
+            "word": "अविभक्त",
+            "eid": "2912",
+            "pagenum": 31,
+            "content": "अविभक्त¦ a-vi-bhakta, <ab>pp.</ab> undivided; having 🞄community of goods; <b>-bhāga,</b> <lex>m.</lex> no division."
+        }
+    ],
+    "MW": [
+        {
+            "word": "अविभक्त",
+            "eid": "18909",
+            "pagenum": "109,2",
+            "content": "अ-विभक्त ¦ <lex>mfn.</lex> undivided, <ls>Lāṭy.</ls>; <ls>Bhag. xiii, 16</ls>; <ls>Rājat.</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "अविभक्त",
+            "eid": "18910",
+            "pagenum": "109,2",
+            "content": "¦ ‘not shared’, see -त्व un-separated, Joint (as co-heirs who have not divided their inheritance), <ls>Mn. ix, 215</ls>; <ls>BhP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "अविभक्त",
+            "eid": "18910.1",
+            "pagenum": "1317,2",
+            "content": "¦ (<ab>MS.</ab>).<info n='sup'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "अविभक्त",
+            "eid": "6946",
+            "pagenum": 97,
+            "content": "अविभक्त¦ <i>a-vibhakta, as, ā, am</i> (rt. <i>bhaj</i>), undivided, unpartitioned; unseparated, joint, not sharing (applied to co-heirs who have not divided their inheritance.)"
+        }
+    ],
+    "PW": [
+        {
+            "word": "अविभक्त",
+            "eid": "11071",
+            "pagenum": 1,
+            "content": "अविभक्त¦ <lex>Adj.</lex> <dvsn n='1'>— 1〉 <i>ungetheilt</i> <ls>LĀṬY. 1,9,12</ls>. <i>nicht vertheilt</i>. Dazu <ab>Nom. abstr.</ab> °त्व <lex>n.</lex> <ls>JAIM. 4,1,2</ls>. <dvsn n='1'>— 2〉 <i>keine Theilung vorgenommen habend, in Gütergemeinschaft lebend</i>. Auch so <ab>v. a.</ab> <i>ein nächster Verwandter, gesetzlicher Erbe</i>. <dvsn n='1'>— 3〉 <i>ununterschieden</i>. Dazu <ab>Nom. abstr.</ab> °त्व <lex>n.</lex> <ls>JAIM. 6,6,8</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "अविभक्त",
+            "eid": "65630",
+            "pagenum": 5,
+            "content": "अविभक्त¦ (3. अ + वि°) <lex>adj.</lex> <dvsn n='1'> 1) <i>nicht vertheilt, nicht geschieden</i> <ls>BHĀG. 13, 16.</ls> यस्याविभक्तं वसु - सहायैः so v. a. <i>gemeinschaftlich, auch den Genossen angehörend</i> <ls>MBH. 3, 259.</ls> <ls>R. 4, 7, 7.</ls> <ls n='R.'>7, 11, 32.</ls> <ls n='R. 7,'>23, 13.</ls> <ls n='R. 7,'>34, 41.</ls> <dvsn n='1'>— 2) <i>keine Theilung vorgenommen habend, in Gütergemeinschaft lebend</i> <ls>M. 9, 215.</ls> so v. a. <i>ein nächster Verwandter</i> <ls>Schol.</ls> zu <ls>KĀTY. ŚR. 8, 6, 36.</ls> <dvsn n='1'>— 3) <i>unverändert</i> <ls>AIT. BR. 8, 1.</ls>"
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "अविभक्त",
+            "eid": "22242",
+            "pagenum": 7,
+            "content": "अ/विभक्त¦ I. 1〉 <ls>MAITR. S. 1,6,4 (91,18)</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "अविभक्त",
+            "eid": "5608",
+            "pagenum": 76,
+            "content": "<i>ávibhakta</i>¦ 1. <ls>Maitr. S.</ls> 1, 6, 4 (91, 18). {part=,seq=5684,type=,n=1}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "अविभक्त",
+            "eid": "4047",
+            "pagenum": 70,
+            "content": "अविभक्त¦ mfn. (-क्तः-क्ता-क्तं) 1. Undivided, unpartitioned. 2. Joint, unseparated, (as coparceners.) E. अ neg. विभक्त divided."
+        }
+    ],
+    "STC": [
+        {
+            "word": "अविभक्त",
+            "eid": "4329",
+            "pagenum": 93,
+            "content": "<b>a-vibhakta-</b>¦ <ab>a. v.</ab> non divisé, joint, commun. <lbinfo n='3'/>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "अविभक्त",
+            "eid": "4049",
+            "pagenum": 84,
+            "content": "अविभक्त¦ mfn. (-क्तः-क्ता-क्तं) .²1 Undivided, unpartitioned. .²2 Joint, unseparated, (as coparceners.) .E. अ neg. विभक्त divided."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "अविभक्त",
+            "eid": "3462",
+            "pagenum": 66,
+            "content": "अ-विभक्त¦ (क्तः-क्ता-क्तं) <i>a.</i> Undivided."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "अविभक्त",
+            "eid": "2651",
+            "pagenum": "1-132-a",
+            "content": "अविभक्तः¦, त्रि, (न विभक्तः । नञ्तत्पुरुषः ।) अपृथक् । यथा कृत्यचिन्तामणौ । “विभक्ता अविभक्ता वा कुर्य्युः श्राद्धमदैविकं । मघासु च तथान्यत्र नाधिकारः पृथग्विना” ॥ इति मलमासतत्त्वं ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "अविभक्त",
+            "eid": "5207",
+            "pagenum": "0461,a",
+            "content": "अविभक्त¦ त्रि० वि + भज--क्त न० त० । १ संसृष्टेविभागरहिते २ द्रव्ये३ तत्स्वामिनि च । “अविभक्तं स्थावरं यत् सर्व्वेषामेव तद्भवेदिति” “अविभक्ता विभक्ता वा सपिण्डाः स्थावरे समाः” इति च स्मृतिः । ४ अभिन्ने एकभावापन्नेऽर्थे ५ अव्यावृत्ते अधिष्ठानतया ६ सर्व्वत्रानुस्यूते वाधाशून्यत्वेन स्वस्मिन् ७ वर्त्तमाने च ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "अविभक्त",
+            "content": "अविभक्त 'वि . ,न.ब . '  - 'न बाँटा हुआ, अविभाजित, संयुक्त'"
+        },
+        {
+            "word": "अविभक्त",
+            "content": "अविभक्त 'वि . ,न.ब . '  - 'जो टूटा न हो, समस्त'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "अविभक्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಬೇರೆ ಮಾದಲ್ಪಡದ \\/ಒಟ್ಟಿಗೆ ಸೇರಿರುವ",
+            "प्रयोगाः": "'अविभक्तं स्थावरं यत् सर्वेषामेव तद्भवेत्'",
+            "content": ""
+        },
+        {
+            "word": "अविभक्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಭಾಗ ಹೊಂದದ \\/ಆಸ್ತಿಯನ್ನು ಪಾಲುಮಾಡಿಕೊಳ್ಳದೆ ಒಂದೇ ಕುಟುಂಬದಲ್ಲಿರುವ ಸೋದರರು",
+            "प्रयोगाः": "'अविभक्ता विभक्ता वा सपिण्डाः स्थावरे समाः'",
+            "content": ""
+        },
+        {
+            "word": "अविभक्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಒಡೆಯಲ್ಪಡದ",
+            "content": ""
+        },
+        {
+            "word": "अविभक्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಒಟ್ಟಿಗೆ ಸೇರಿಕೊಂಡಿರುವ",
+            "content": ""
+        },
+        {
+            "word": "अविभक्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ವಿವೇಕಶೂನ್ಯನಾದ \\/ವಿವೇಚನೆಯಿಲ್ಲದ",
+            "content": ""
+        },
+        {
+            "word": "अविभक्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ರಹಸ್ಯವಾಗಿಲ್ಲದ \\/ಜನನಿಬಿಡವಾದ",
+            "व्युत्पत्तिः": "न विविक्तम्",
+            "content": ""
+        },
+        {
+            "word": "अविभक्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಪರಿಶುದ್ಧವಲ್ಲದ",
+            "विस्तारः": "'विविक्तं त्रिष्वसम्पृक्ते रहःपूतविवेकिषु'मेदि०",
+            "content": ""
+        },
+        {
+            "word": "अविभक्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ವಿವೇಚನೆಯಿಂದ ಬೇರೆ ಬೇರೆಯಾಗಿ ತಿಳಿಯಲ್ಪಡದ",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "अविभक्त",
+            "content": "<lexhead no=\"3413\">\n<dentry>अविभक्त</dentry>\n<prAwipaxikam>अविभक्त</prAwipaxikam>\n<grammar>वि* न* ब*</grammar>\n<prAwipaxikam gen=\"स्त्री\">अविभक्त</prAwipaxikam>\n<sense no=\"1\">न बाँटा हुआ, अविभाजित, संयुक्त, जैसे कि पारिवारिक सम्पत्ति</sense>\n<sense n=\"2\">जो टूटा न हो, समस्त</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "अविभक्त",
+            "content": "<body><s>aviBakta tri° vi + Baja—kta na° ta° . <lb/><b>1</b> saMsfzweviBAgarahite <lb/><b>2</b> dravye­3 tatsvAmini ca . <q>aviBaktaM sTAvaraM yat sarvvezAmeva tadBa­vediti</q> <q>aviBaktA viBaktA vA sapiRqAH sTAvare samAH</q> iti ca smftiH . 4 aBinne ekaBAvApanne'rTe 5 avyAvftte aDizWAnatayA 6 sarvvatrAnusyUte vADASUnyatvena svasmin 7 varttamAne ca .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "अविभक्त",
+            "content": "<H1><h><key1>aviBakta</key1><key2>a-viBakta</key2></h><body><s>a-viBakta</s>   <lex>mfn.</lex> undivided, <ls>Lāṭy.</ls>; <ls>Bhag. xiii, 16</ls>; <ls>Rājat.</ls><info lex=\"m:f:n\" /></body><tail><L>18909</L><pc>109,2</pc></tail></H1>\n <H1A><h><key1>aviBakta</key1><key2>a-viBakta</key2></h><body>  ‘not shared’, see <s>-tva</s> unseparated, joint (as co-heirs who have not divided their inheritance), <ls>Mn. ix, 215</ls>; <ls>BhP.</ls><info lex=\"inh\" /></body><tail><L>18910</L><pc>109,2</pc></tail></H1A>\n <H1A><h><key1>aviBakta</key1><key2>a/-viBakta</key2></h><body>  (<ab>MS.</ab>).<info n=\"sup\" /></body><tail><L>18910.1</L><pc>1317,2</pc></tail></H1A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "अविभक्त",
+            "content": "<H1><h><key1>aviBakta</key1><key2>aviBakta</key2></h><body><s>aviBakta</s>  <div n=\"1\">mfn. (<s>-ktaH-ktA-ktaM</s>) </div><div n=\"2\"> 1. Undivided, unpartitioned. </div><div n=\"2\"> 2. Joint, unsepa- <lb />rated, (as coparceners.)</div><div n=\"E\"> E. <s>a</s> neg. <s>viBakta</s> divided.</div></body><tail><L>4047</L><pc>070-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "अविभक्त",
+            "content": "<span lang=\"sa\">अविभक्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬೇರೆ ಮಾದಲ್ಪಡದ /ಒಟ್ಟಿಗೆ ಸೇರಿರುವ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"अविभक्तं स्थावरं यत् सर्वेषामेव तद्भवेत्\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div>अविभक्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಭಾಗ ಹೊಂದದ /ಆಸ್ತಿಯನ್ನು ಪಾಲುಮಾಡಿಕೊಳ್ಳದೆ ಒಂದೇ ಕುಟುಂಬದಲ್ಲಿರುವ ಸೋದರರು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"अविभक्ता विभक्ता वा सपिण्डाः स्थावरे समाः\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div>अविभक्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಡೆಯಲ್ಪಡದ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>अविभक्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಟ್ಟಿಗೆ ಸೇರಿಕೊಂಡಿರುವ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>अविभक्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿವೇಕಶೂನ್ಯನಾದ /ವಿವೇಚನೆಯಿಲ್ಲದ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>अविभक्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ರಹಸ್ಯವಾಗಿಲ್ಲದ /ಜನನಿಬಿಡವಾದ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>न विविक्तम्<div class=\"h-2\"> </div><div class=\"h-2\"> </div>अविभक्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪರಿಶುದ್ಧವಲ್ಲದ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"विविक्तं त्रिष्वसम्पृक्ते रहःपूतविवेकिषु\" - मेदि०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>अविभक्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿವೇಚನೆಯಿಂದ ಬೇರೆ ಬೇರೆಯಾಗಿ ತಿಳಿಯಲ್ಪಡದ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

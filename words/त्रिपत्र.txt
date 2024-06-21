@@ -1,1 +1,83 @@
-none;\n\t-ms-user-select: none;\n\tuser-select: none\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_disabled.css";\n@import "../../../mixins/_rounded.css";\n@import "../../../mixins/_shadow.css";\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n\n:root {\n\t--ck-list-button-padding:\n\t\tcalc(.11 * var(--ck-line-height-base) * var(--ck-font-size-base))\n\t\tcalc(.4 * var(--ck-line-height-base) * var(--ck-font-size-base));\n}\n\n.ck.ck-list {\n\t@mixin ck-rounded-corners;\n\n\tlist-style-type: none;\n\tbackground: var(--ck-color-list-background);\n}\n\n.ck.ck-list__item {\n\tcursor: default;\n\tmin-width: 12em;\n\n\t& > .ck-button {\n\t\tmin-height: unset;\n\t\twidth: 100%;\n\t\tborder-radius: 0;\n\n\t\t@mixin ck-dir ltr {\n\t\t\ttext-align: left;\n\t\t}\n\n\t\t@mixin ck-dir rtl {\n\t\t\ttext-align: right;\n\t\t}\n\n\t\t/* List items should have the same height. Use absolute units to make sure it is so\n\t\t   because e.g. different heading styles may have different height\n\t\t   https://github.com/ckeditor/ckeditor5-heading/issues/63 */\n\t\tpadding: var(--ck-list-button-padding);\n\n\t\t&:active {\n\t\t\tbox-shadow: none;\n\t\t}\n\n\t\t&.ck-on {\n\t\t\tbackground: var(--ck-color-list-button-on-background);\n\t\t\tcolor: var(--ck-color-list-button-on-text);\n\n\t\t\t&:active {\n\t\t\t\tbox-shadow: none;\n\t\t\t}\n\n\t\t\t&:hover:not(.ck-disabled) {\n\t\t\t\tbackground: var(--ck-color-list-button-on-background-focus);\n\t\t\t}\n\n\t\t\t&:focus:not(.ck-switchbutton):not(.ck-disabled) {\n\t\t\t\tborder-color: var(--ck-color-base-background);\n\t\t\t}\n\t\t}\n\n\t\t&:hover:not(.ck-disabled) {\n\t\t\tbackground: var(--ck-color-list-button-hover-background);\n\t\t}\n\t}\n\n\t/* It\'s unnecessary to change the background/text of a switch toggle; it has different ways\n\tof conveying its state (like the switcher) */\n\t& > .ck-switchbutton {\n\t\t&.ck-on {\n\t\t\tbackground: var(--ck-color-list-background);\n\t\t\tcolor: inherit;\n\n\t\t\t&:hover:not(.ck-disabled) {\n\t\t\t\tbackground: var(--ck-color-list-button-hover-background);\n\t\t\t\tcolor: inherit;\n\t\t\t}\n\t\t}\n\t}\n}\n\n.ck-list .ck-list__group {\n\tpadding-top: var(--ck-spacing-medium);\n\n\t/* The group should have a border when it\'s not the first item. */\n\t*:not(.ck-hidden) ~ & {\n\t\tborder-top: 1px solid var(--ck-color-base-border);\n\t}\n\n\t& > .ck-label {\n\t\tfont-size: 11px;\n\t\tfont-weight: bold;\n\t\tpadding: var(--ck-spacing-medium) var(--ck-spacing-medium) 0 var(--ck-spacing-medium);\n\t}\n}\n\n.ck.ck-list__separator {\n\theight: 1px;\n\twidth: 100%;\n\tbackground: var(--ck-color-base-border);\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * Implements rounded corner interface for .ck-rounded-corners class.\n *\n * @see $ck-border-radius\n */\n@define-mixin ck-rounded-corners {\n\tborder-radius: 0;\n\n\t@nest .ck-rounded-corners &,\n\t&.ck-rounded-corners {\n\t\tborder-radius: var(--ck-border-radius);\n\t\t@mixin-content;\n\t}\n}\n"],sourceRoot:""}]);const a=s},3779:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-menu-bar{background:var(--ck-color-base-background);border:1px solid var(--ck-color-toolbar-border);display:flex;flex-wrap:wrap;gap:var(--ck-spacing-small);justify-content:flex-start;padding:var(--ck-spacing-small);width:100%}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/menubar/menubar.css"],names:[],mappings:"AAKA,gBAIC,0CAA2C,CAG3C,+CAAgD,CANhD,YAAa,CACb,cAAe,CAIf,2BAA4B,CAH5B,0BAA2B,CAE3B,+BAAgC,CAGhC,UACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-menu-bar {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\tjustify-content: flex-start;\n\tbackground: var(--ck-color-base-background);\n\tpadding: var(--ck-spacing-small);\n\tgap: var(--ck-spacing-small);\n\tborder: 1px solid var(--ck-color-toolbar-border);\n\twidth: 100%;\n}\n"],sourceRoot:""}]);con
+{
+    "word": "त्रिपत्र",
+    "SHS": [
+        {
+            "word": "त्रिपत्र",
+            "eid": "18081",
+            "pagenum": 324,
+            "content": "त्रिपत्र¦ mfn. (-त्रः-त्रा-त्रं) Three-leaved trefoil. m. (-त्रः) A bell tree, (Ægle marmelos.) E. त्रि, and पत्र leaf."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिपत्र",
+            "eid": "18098",
+            "pagenum": 390,
+            "content": "त्रिपत्र¦ mfn. (-त्रः-त्रा-त्रं) Three-leaved trefoil. m. (-त्रः) A fruit tree, (Ægle marmelos.) .E. त्रि, and पत्र leaf."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिपत्र",
+            "eid": "17574",
+            "pagenum": 345,
+            "content": "त्रि-पत्र¦ (त्रः-त्रा-त्रं) 1. <i>m. f. n.</i> Threeleaved, trefoil. <i>m.</i> Ægle marmelos."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिपत्र",
+            "eid": "15554",
+            "pagenum": "2-658-a",
+            "content": "त्रिपत्रं¦, क्ली, (त्रीणि त्रीणि पत्राणि यत्र ।) दलत्रययुक्तविल्वपत्रम् । यथा, विष्णुरुवाच । “ऊर्द्ध्वपत्रं हरो ज्ञेयः पत्रं वामं विधिः स्वयम् । अहं दक्षिणपत्रञ्च त्रिपत्रदलमित्युत ॥” इति बृहद्धर्म्मपुराणे बिल्वपत्रमाहात्म्ये ११ अध्यायः ॥"
+        },
+        {
+            "word": "त्रिपत्र",
+            "eid": "15555",
+            "pagenum": "2-658-a",
+            "content": "त्रिपत्रः¦, पुं, (त्रीणि त्रीणि पत्राणि यस्य ।) बिल्वः । इति राजनिर्घण्टः ॥ पत्रत्रये, स्त्री ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिपत्र",
+            "eid": "23682",
+            "pagenum": "3369,a",
+            "content": "त्रिपत्र¦ पु० त्रीणि त्रीणि पत्राणि प्रतिपत्रं यस्य सप्तच्छदवत् संख्याशब्दस्य वृत्तौ वीप्सार्थत्वम् । १ विल्ववृक्षे । तदीयपत्रेषु ब्रह्मादीनां स्थितिरुक्ता यथा “ऊर्द्ध्वपत्रं हरो ज्ञेयः पत्रं वामं विधिः स्वयम् । अहं दक्षिणपत्रं च त्रिपत्रदलमित्युत” वृहद्धर्म्म पु० ११ अ० । २ पुत्त्रत्रययुक्ते त्रि० । समा० द्विगुः । ३ पत्रत्रये न० ।"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिपत्र",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಬಿಲ್ವವೃಕ್ಷ",
+            "व्युत्पत्तिः": "त्रीणि त्रीणि पत्राणि यस्य",
+            "प्रयोगाः": "'ऊर्ध्वपत्रं हरो ज्ञेयः पत्रं वामं विधिः स्वयम् । अहं दक्षिणपत्रं च त्रिपत्रदलमित्युत ॥'",
+            "content": ""
+        },
+        {
+            "word": "त्रिपत्र",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಮುತ್ತುಗದ ಮರ \\/ಪಲಾಶದ ವೃಕ್ಷ",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिपत्र",
+            "content": "<body><s>tripatra pu° trIRi trIRi patrARi pratipatraM yasya saptacCadavat saMKyASabdasya vfttO vIpsArTatvam . <lb/><b>1</b> vilvavfkze . tadIya­patrezu brahmAdInAM sTitiruktA yaTA <q>UrdDvapatraM haro jYeyaH patraM vAmaM viDiH svayam . ahaM dakziRapatraM ca tripatradalamityuta</q> vfhadDarmma pu° 11 a° . <lb/><b>2</b> puttratrayayukte tri° . samA° dviguH . <lb/><b>3</b> patratraye na° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिपत्र",
+            "content": "<H1><h><key1>tripatra</key1><key2>tripatra</key2></h><body><s>tripatra</s>  <div n=\"1\">mfn. (<s>-traH-trA-traM</s>) Three-leaved trefoil. </div><div n=\"1\">m. (<s>-traH</s>) A bell tree, (Ægle <lb />marmelos.)</div><div n=\"E\"> E. <s>tri,</s> and <s>patra</s> leaf.</div></body><tail><L>18081</L><pc>324-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिपत्र",
+            "content": "<span lang=\"sa\">त्रिपत्र<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬಿಲ್ವವೃಕ್ಷ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीणि त्रीणि पत्राणि यस्य<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"ऊर्ध्वपत्रं हरो ज्ञेयः पत्रं वामं विधिः स्वयम् । अहं दक्षिणपत्रं च त्रिपत्रदलमित्युत ॥\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिपत्र<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮುತ್ತುಗದ ಮರ /ಪಲಾಶದ ವೃಕ್ಷ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

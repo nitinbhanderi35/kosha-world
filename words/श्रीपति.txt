@@ -1,778 +1,405 @@
 {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'epigraph [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$t = docEpigraphRole;
-	docEpigraphRole$1.default = _default$t;
-
-	var docEpilogueRole$1 = {};
-
-	Object.defineProperty(docEpilogueRole$1, "__esModule", {
-	  value: true
-	});
-	docEpilogueRole$1.default = void 0;
-	var docEpilogueRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'epilogue [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$s = docEpilogueRole;
-	docEpilogueRole$1.default = _default$s;
-
-	var docErrataRole$1 = {};
-
-	Object.defineProperty(docErrataRole$1, "__esModule", {
-	  value: true
-	});
-	docErrataRole$1.default = void 0;
-	var docErrataRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'errata [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$r = docErrataRole;
-	docErrataRole$1.default = _default$r;
-
-	var docExampleRole$1 = {};
-
-	Object.defineProperty(docExampleRole$1, "__esModule", {
-	  value: true
-	});
-	docExampleRole$1.default = void 0;
-	var docExampleRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$q = docExampleRole;
-	docExampleRole$1.default = _default$q;
-
-	var docFootnoteRole$1 = {};
-
-	Object.defineProperty(docFootnoteRole$1, "__esModule", {
-	  value: true
-	});
-	docFootnoteRole$1.default = void 0;
-	var docFootnoteRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'footnote [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$p = docFootnoteRole;
-	docFootnoteRole$1.default = _default$p;
-
-	var docForewordRole$1 = {};
-
-	Object.defineProperty(docForewordRole$1, "__esModule", {
-	  value: true
-	});
-	docForewordRole$1.default = void 0;
-	var docForewordRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'foreword [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$o = docForewordRole;
-	docForewordRole$1.default = _default$o;
-
-	var docGlossaryRole$1 = {};
-
-	Object.defineProperty(docGlossaryRole$1, "__esModule", {
-	  value: true
-	});
-	docGlossaryRole$1.default = void 0;
-	var docGlossaryRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'glossary [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['definition'], ['term']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$n = docGlossaryRole;
-	docGlossaryRole$1.default = _default$n;
-
-	var docGlossrefRole$1 = {};
-
-	Object.defineProperty(docGlossrefRole$1, "__esModule", {
-	  value: true
-	});
-	docGlossrefRole$1.default = void 0;
-	var docGlossrefRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'glossref [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command', 'link']]
-	};
-	var _default$m = docGlossrefRole;
-	docGlossrefRole$1.default = _default$m;
-
-	var docIndexRole$1 = {};
-
-	Object.defineProperty(docIndexRole$1, "__esModule", {
-	  value: true
-	});
-	docIndexRole$1.default = void 0;
-	var docIndexRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'index [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
-	};
-	var _default$l = docIndexRole;
-	docIndexRole$1.default = _default$l;
-
-	var docIntroductionRole$1 = {};
-
-	Object.defineProperty(docIntroductionRole$1, "__esModule", {
-	  value: true
-	});
-	docIntroductionRole$1.default = void 0;
-	var docIntroductionRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'introduction [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$k = docIntroductionRole;
-	docIntroductionRole$1.default = _default$k;
-
-	var docNoterefRole$1 = {};
-
-	Object.defineProperty(docNoterefRole$1, "__esModule", {
-	  value: true
-	});
-	docNoterefRole$1.default = void 0;
-	var docNoterefRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'noteref [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command', 'link']]
-	};
-	var _default$j = docNoterefRole;
-	docNoterefRole$1.default = _default$j;
-
-	var docNoticeRole$1 = {};
-
-	Object.defineProperty(docNoticeRole$1, "__esModule", {
-	  value: true
-	});
-	docNoticeRole$1.default = void 0;
-	var docNoticeRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'notice [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'note']]
-	};
-	var _default$i = docNoticeRole;
-	docNoticeRole$1.default = _default$i;
-
-	var docPagebreakRole$1 = {};
-
-	Object.defineProperty(docPagebreakRole$1, "__esModule", {
-	  value: true
-	});
-	docPagebreakRole$1.default = void 0;
-	var docPagebreakRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'pagebreak [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'separator']]
-	};
-	var _default$h = docPagebreakRole;
-	docPagebreakRole$1.default = _default$h;
-
-	var docPagelistRole$1 = {};
-
-	Object.defineProperty(docPagelistRole$1, "__esModule", {
-	  value: true
-	});
-	docPagelistRole$1.default = void 0;
-	var docPagelistRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'page-list [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
-	};
-	var _default$g = docPagelistRole;
-	docPagelistRole$1.default = _default$g;
-
-	var docPartRole$1 = {};
-
-	Object.defineProperty(docPartRole$1, "__esModule", {
-	  value: true
-	});
-	docPartRole$1.default = void 0;
-	var docPartRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'part [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$f = docPartRole;
-	docPartRole$1.default = _default$f;
-
-	var docPrefaceRole$1 = {};
-
-	Object.defineProperty(docPrefaceRole$1, "__esModule", {
-	  value: true
-	});
-	docPrefaceRole$1.default = void 0;
-	var docPrefaceRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'preface [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$e = docPrefaceRole;
-	docPrefaceRole$1.default = _default$e;
-
-	var docPrologueRole$1 = {};
-
-	Object.defineProperty(docPrologueRole$1, "__esModule", {
-	  value: true
-	});
-	docPrologueRole$1.default = void 0;
-	var docPrologueRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'prologue [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$d = docPrologueRole;
-	docPrologueRole$1.default = _default$d;
-
-	var docPullquoteRole$1 = {};
-
-	Object.defineProperty(docPullquoteRole$1, "__esModule", {
-	  value: true
-	});
-	docPullquoteRole$1.default = void 0;
-	var docPullquoteRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'pullquote [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['none']]
-	};
-	var _default$c = docPullquoteRole;
-	docPullquoteRole$1.default = _default$c;
-
-	var docQnaRole$1 = {};
-
-	Object.defineProperty(docQnaRole$1, "__esModule", {
-	  value: true
-	});
-	docQnaRole$1.default = void 0;
-	var docQnaRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'qna [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$b = docQnaRole;
-	docQnaRole$1.default = _default$b;
-
-	var docSubtitleRole$1 = {};
-
-	Object.defineProperty(docSubtitleRole$1, "__esModule", {
-	  value: true
-	});
-	docSubtitleRole$1.default = void 0;
-	var docSubtitleRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'subtitle [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'sectionhead']]
-	};
-	var _default$a = docSubtitleRole;
-	docSubtitleRole$1.default = _default$a;
-
-	var docTipRole$1 = {};
-
-	Object.defineProperty(docTipRole$1, "__esModule", {
-	  value: true
-	});
-	docTipRole$1.default = void 0;
-	var docTipRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'help [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'note']]
-	};
-	var _default$9 = docTipRole;
-	docTipRole$1.default = _default$9;
-
-	var docTocRole$1 = {};
-
-	Object.defineProperty(docTocRole$1, "__esModule", {
-	  value: true
-	});
-	docTocRole$1.default = void 0;
-	var docTocRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'toc [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
-	};
-	var _default$8 = docTocRole;
-	docTocRole$1.default = _default$8;
-
-	Object.defineProperty(ariaDpubRoles$1, "__esModule", {
-	  value: true
-	});
-	ariaDpubRoles$1.default = void 0;
-	var _docAbstractRole = _interopRequireDefault$5(docAbstractRole$1);
-	var _docAcknowledgmentsRole = _interopRequireDefault$5(docAcknowledgmentsRole$1);
-	var _docAfterwordRole = _interopRequireDefault$5(docAfterwordRole$1);
-	var _docAppendixRole = _interopRequireDefault$5(docAppendixRole$1);
-	var _docBacklinkRole = _interopRequireDefault$5(docBacklinkRole$1);
-	var _docBiblioentryRole = _interopRequireDefault$5(docBiblioentryRole$1);
-	var _docBibliographyRole = _interopRequireDefault$5(docBibliographyRole$1);
-	var _docBibliorefRole = _interopRequireDefault$5(docBibliorefRole$1);
-	var _docChapterRole = _interopRequireDefault$5(docChapterRole$1);
-	var _docColophonRole = _interopRequireDefault$5(docColophonRole$1);
-	var _docConclusionRole = _interopRequireDefault$5(docConclusionRole$1);
-	var _docCoverRole = _interopRequireDefault$5(docCoverRole$1);
-	var _docCreditRole = _interopRequireDefault$5(docCreditRole$1);
-	var _docCreditsRole = _interopRequireDefault$5(docCreditsRole$1);
-	var _docDedicationRole = _interopRequireDefault$5(docDedicationRole$1);
-	var _docEndnoteRole = _interopRequireDefault$5(docEndnoteRole$1);
-	var _docEndnotesRole = _interopRequireDefault$5(docEndnotesRole$1);
-	var _docEpigraphRole = _interopRequireDefault$5(docEpigraphRole$1);
-	var _docEpilogueRole = _interopRequireDefault$5(docEpilogueRole$1);
-	var _docErrataRole = _interopRequireDefault$5(docErrataRole$1);
-	var _docExampleRole = _interopRequireDefault$5(docExampleRole$1);
-	var _docFootnoteRole = _interopRequireDefault$5(docFootnoteRole$1);
-	var _docForewordRole = _interopRequireDefault$5(docForewordRole$1);
-	var _docGlossaryRole = _interopRequireDefault$5(docGlossaryRole$1);
-	var _docGlossrefRole = _interopRequireDefault$5(docGlossrefRole$1);
-	var _docIndexRole = _interopRequireDefault$5(docIndexRole$1);
-	var _docIntroductionRole = _interopRequireDefault$5(docIntroductionRole$1);
-	var _docNoterefRole = _
+    "word": "श्रीपति",
+    "ABCH": [
+        {
+            "word": "श्रीपति",
+            "linga": "पुं",
+            "pagenum": "13",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "692",
+            "group": "173",
+            "synonyms": [
+                "विष्णु",
+                "जिष्णु",
+                "जनार्दन",
+                "हरिकेश",
+                "हृषीकेश",
+                "अच्युत",
+                "केशव",
+                "दाशार्ह",
+                "पुरुषोत्तम",
+                "अब्धिशयन",
+                "उपेन्द्र",
+                "अज",
+                "इन्द्रानुज",
+                "विष्वक्सेन",
+                "नरायण",
+                "जलशय",
+                "नारायण",
+                "दैत्यारि",
+                "पुराणपुरुष",
+                "यज्ञपुरुष",
+                "तार्क्ष्यध्वज",
+                "अधोक्षज",
+                "गोविन्द",
+                "षड्बिन्दु",
+                "मुकुन्द",
+                "कृष्ण",
+                "वैकुण्ठ",
+                "पद्मेशय",
+                "पद्मनाभ",
+                "वृषाकपि",
+                "माधव",
+                "वासुदेव",
+                "विश्वम्भर",
+                "श्रीधर",
+                "विश्वरूप",
+                "दामोदर",
+                "शौरि",
+                "सनातन",
+                "विधु",
+                "पीताम्बर",
+                "मार्ज",
+                "जीन",
+                "कुमोदक",
+                "त्रिविक्रम",
+                "जह्नु",
+                "चतुर्भुज",
+                "पुनर्वसु",
+                "शतावर्त",
+                "गदाग्रज",
+                "स्वभू",
+                "मुञ्जकेशिन्",
+                "वनमालिन्",
+                "पुण्डरीकाक्ष",
+                "बभ्रु",
+                "शशबिन्दु",
+                "पृश्निशृङ्ग",
+                "धरणीधर",
+                "पाण्डवायन",
+                "सुवर्णबिन्दु",
+                "श्रीवत्स",
+                "देवकीसूनु",
+                "गोपेन्द्र",
+                "विष्टरश्रवस्",
+                "सोमसिन्धु",
+                "जगन्नाथ",
+                "गोवर्धनधर",
+                "यदुनाथ",
+                "गदाभृत्",
+                "शार्ङ्गभृत्",
+                "चक्रभृत्",
+                "श्रीवत्सभृत्",
+                "शङ्खभृत्"
+            ],
+            "content": "विष्णुर्जिष्णुजनार्दनौ हरिहृषीकेशाच्युताः केशवो\nदाशार्हः पुरुषोत्तमोऽब्धिशयनोपेन्द्रावजेन्द्रानुजौ ।\nविष्वक्सेननरायणौ जलशयो नारायणः श्रीपति-\nर्दैत्यारिश्च पुराणयज्ञपुरुषस्तार्क्ष्यध्वजोऽधोक्षजः ॥ २१४ ॥\nगोविन्दषड्बिन्दुमुकुन्दकृष्णा वैकुण्ठपद्मेशयपद्मनाभाः ।\nवृषाकपिर्माधववासुदेवौ विश्वंभरः श्रीधरविश्वरूपौ ॥ २१५ ॥\nदामोदरः शौरिसनातनौ विधुः पीताम्बरो मार्जजिनौ कुमोदकः ।\nत्रिविक्रमो जह्नुचतुर्भुजौ पुनर्वसुः शतावर्तगदाग्रजौ स्वभूः ॥ २१६ ॥\nमुञ्जकेशिवनमालिपुण्डरीकाक्षवभ्रुशशबिन्दुवेधसः ।\nपृश्निशृङ्गधरणीधरात्मभूः पाण्डवायनसुवर्णबिन्दवः ॥ २१७ ॥\nश्रीवत्सो देवकीसूनुर्गोपेन्द्रो विष्टरश्रवाः ।\nसोमसिन्धुर्जगन्नाथो गोवर्धनधरोऽपि च ॥ २१८ ॥\nयदुनाथो गदाशार्ङ्गचक्रश्रीवत्सशङ्खभृत् ।"
+        }
+    ],
+    "ACC": [
+        {
+            "word": "श्रीपति",
+            "eid": "26122",
+            "pagenum": 1,
+            "content": "श्रीपति¦ father of Kṛṣṇajī, grandfather of Nārāyaṇa (Śāṅkhāyanagṛhyabhāṣya). W. p. 33."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "26126",
+            "pagenum": 1,
+            "content": "श्रीपति¦ poet. Skm."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "26127",
+            "pagenum": 1,
+            "content": "श्रीपति¦ grammarian. Quoted in Prakriyākaumudīṭīkā W. p. 214."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "26128",
+            "pagenum": 1,
+            "content": "श्रीपति¦ astronomer: <HI1>Candragrahaṇasādhana. <HI1>Tattvapradīpa. <HI1>Tithipattranīrājanāvali. <HI1>Daivajñavallabha (or by Nīlakaṇṭha). <HI1>Dhīkoṭī. <HI1>Dhruvamānasa. <HI1>Padyapañcāśikā. <HI1>Parvaprakāśa. <HI1>Muhūrtaratnamālā and <symbol n='C.'>C.</symbol>. <HI1>Sārāvali."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "26129",
+            "pagenum": 1,
+            "content": "श्रीपति¦ <HI1>Prastāvataraṅgiṇī."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "26130",
+            "pagenum": 1,
+            "content": "श्रीपति¦ <HI1>Śrutikalpalatā, vedānta."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "26131",
+            "pagenum": 1,
+            "content": "श्रीपति¦ <HI1>Siddhāntaśekhara jy."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "26133",
+            "pagenum": 1,
+            "content": "श्रीपति¦ son of Lakṣmīnṛsiṃha Bhaṭṭa: <HI1>Ramalasāra."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "38091",
+            "pagenum": 2,
+            "content": "श्रीपति¦ son of Nārāyaṇa, father of Guṇākara (Horāmakaranda)."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "38092",
+            "pagenum": 2,
+            "content": "श्रीपति¦ father of Mahādeva (Nibandhasarvasva)."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "38094",
+            "pagenum": 2,
+            "content": "श्रीपति¦ grammarian. Quoted by Ramānātha in Manoramā."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "38095",
+            "pagenum": 2,
+            "content": "श्रीपति¦ wrote a <symbol n='C.'>C.</symbol> on Keśava's Jātakapaddhati in 1584. Fl. 291."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "38096",
+            "pagenum": 2,
+            "content": "श्रीपति¦ <HI1>Prākṛtapiṅgalaṭīkā. <HI1>Vṛttaratnāvalī."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "47418",
+            "pagenum": 3,
+            "content": "श्रीपति¦ <HI1>Adbhutasāgarasāra jy."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "47419",
+            "pagenum": 3,
+            "content": "श्रीपति¦ <HI1>Amarakośaṭīkā Jñānadīpikā."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "47420",
+            "pagenum": 3,
+            "content": "श्रीपति¦ <HI1>Jātakatattvaprakāśikā."
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "47421",
+            "pagenum": 3,
+            "content": "श्रीपति¦ <HI1>Jyotirvallabhā."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "श्रीपति",
+            "eid": "33375",
+            "pagenum": 561,
+            "content": "श्रीपति¦ <lex>m.</lex> = श्रीनाथ."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "श्रीपति",
+            "eid": "25212",
+            "pagenum": 455,
+            "content": "श्रीपति¦ <i>m.</i> = श्रीनाथ."
+        }
+    ],
+    "INM": [
+        {
+            "word": "श्रीपति",
+            "eid": "2721",
+            "pagenum": 215,
+            "content": "<b>Śrīpati</b>¦ = Viṣṇu (1000 names)."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "श्रीपति",
+            "eid": "38573",
+            "pagenum": 732,
+            "content": "SrI-pati¦ <i>m.</i> 1. an epithet of Vishṇu, श्रीपतिः पतिरसाववनेश्च परस्परं संकथामृतमनेकमसिस्वदतामुभौ <ls>Sis.</ls>xiii.69; 2. a king, a prince."
+        }
+    ],
+    "MW": [
+        {
+            "word": "श्रीपति",
+            "eid": "223071",
+            "pagenum": "1099,2",
+            "content": "श्री—पति ¦ <lex>m.</lex> ‘lord of fortune’, a king, prince, <ls>L.</ls><info lex='m'/>"
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "223072",
+            "pagenum": "1099,2",
+            "content": "¦ ‘husband of <s1 slp1='SrI'>Śrī</s1>’, (श्रियः पति) <ab>N.</ab> of <s1 slp1='vizRu-kfzRa'>Viṣṇu-Kṛṣṇa</s1> (<ab>esp.</ab> as worshipped on the hill <s1 slp1='veNkawa'>Veṅkaṭa</s1> <ab>q.v.</ab>), <ls>VarBṛS.</ls>; <ls>Śiś.</ls>; <ls>BhP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "223073",
+            "pagenum": "1099,2",
+            "content": "¦ <ab>N.</ab> of the father of <s1 slp1='kfzRajI'>Kṛṣṇajī</s1>, <ls>Cat.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "श्रीपति",
+            "eid": "223074",
+            "pagenum": "1099,2",
+            "content": "¦ (also with द्वि-वेदिन्, भट्ट, and शर्मन्) of various authors &c., <ls>ib.</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "श्रीपति",
+            "eid": "115149",
+            "pagenum": 6,
+            "content": "श्रीपति¦ <lex>m.</lex> <dvsn n='1'>— 1〉 *<i>Fürst, König</i>. <dvsn n='1'>— 2〉 <ab>Bein.</ab> <is>Viṣṇu-Kṛṣṇa</is>ʼs <ls>Spr. 7822</ls>. <ls>ŚIŚ. 13,69. 18,80</ls>. Statt dessen श्रियः पतिः <ls n='Chr.'>15,27</ls>. <dvsn n='1'>— 3〉 <ab>N. pr.</ab> verschiedener [Page6-274-c] Männer. Auch °भट्ट."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "श्रीपति",
+            "eid": "101679",
+            "pagenum": 7,
+            "content": "श्रीपति¦ <lex>m.</lex> <dvsn n='1'> 1) <i>Herr der hohen Stellung, ein Fürst</i> <ls>H. an. 3, 306.</ls> <ls>MED. t. 163.</ls> <dvsn n='1'>— 2) <i>Gatte der</i> <is>Śrī</is>, Bez. <is>Viṣṇu's</is> (<is>Kṛṣṇa's</is>) <ls>AK. 1, 1, 1, 16.</ls> <ls>H. 214.</ls> <ls>H. an.</ls> <ls>MED.</ls> <ls>HALĀY. 1, 21.</ls> <ls>ŚIŚ. 13, 69.</ls> <ls>VARĀH. BṚH. S. 43, 4.</ls> <ls>CHANDOM. 122.</ls> <ls>BHĀG. P. 10, 47, 47.</ls> <ls>WEBER, KṚṢṆAJ. 295.</ls> <ls>Verz. d. Oxf. H. 122,a,25. fg.</ls> <ls n='Verz. d. Oxf. H.'>148,b,19.</ls> <ls>SARVADARŚANAS. 68, 1.</ls> <ls>VOP. 25, 21.</ls> <dvsn n='1'>— 3) N. pr. verschiedener Männer <ls>COLEBR. Misc. Ess. 2, 323. 363.</ls> <ls>Ind. St. 2, 245. 250. fgg.</ls> <ls>Verz. d. B. H. No. 129. 230. 740. 881. 1006</ls> (श्रीमति die Hdschr.). <ls>Verz. d. Oxf. H. 110,b,10.</ls> <ls n='Verz. d. Oxf. H.'>162,b,28</ls>  (= °दत्त).  <ls n='Verz. d. Oxf. H.'>279,b,30.</ls> <ls n='Verz. d. Oxf. H.'>292,b,28.</ls> <ls n='Verz. d. Oxf. H.'>331,b,No. 782</ls>  (°भट्ट).  <ls n='Verz. d. Oxf. H.'>336,a,No. 790.</ls> <ls n='Verz. d. Oxf. H.'>338,a,20.</ls> <ls n='Verz. d. Oxf. H.'>341,a,34.</ls> <ls>HALL 171.</ls> <ls>Verz. d. Cambr. H. 15. 43. 68.</ls> °भट्ट <ls n='Verz. d. Cambr. H.'>54. 65.</ls> °संहिता, °समुच्चय (auch <ls>Verz. d. Oxf. H. 292,b,28</ls>) <ls n='Verz. d. Cambr. H.'>68.</ls> °भाष्य <ls>Verz. d. B. H. No. 865.</ls> <dvsn n='v'>— Vgl. मूल° ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "श्रीपति",
+            "eid": "41090",
+            "pagenum": 734,
+            "content": "श्रीपति¦ m. (-तिः) 1. VISHṆU. 2. A king, a prince. E. श्री the goddess of fortune or rank, and पति husband or master."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "श्रीपति",
+            "eid": "39196",
+            "pagenum": 863,
+            "content": "श्रीपति¦ m. (-तिः) .²1 VIṢṆU. .²2 A king, a prince. .E. श्री the goddess of fortune or rank, and पति husband or master."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "श्रीपति",
+            "eid": "38855",
+            "pagenum": 783,
+            "content": "श्री-पति¦ (तिः) 2. <i>m. Idem;</i> a king."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "श्रीपति",
+            "eid": "36610",
+            "pagenum": "5-166-c",
+            "content": "श्रीपतिः¦, पुं, (श्रियः पतिः ।) विष्णुः । इत्यमरः ॥ (यथा, मुकुन्दमालायाम् । १६ । “सेव्यः श्रोपतिरेव सर्व्वजगतामेकान्ततः साक्षिणः प्रह्लादश्च विभीषणश्च करिराट् पाञ्चाल्यहल्या ध्रुवः ॥”) पृथिवीनाथः । इति मेदिनी ॥"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "श्रीपति",
+            "content": "श्रीपतिः पुं. श्री-पतिः  - विष्णु का विशेषण"
+        },
+        {
+            "word": "श्रीपति",
+            "content": "श्रीपतिः पुं. श्री-पतिः  - 'राजा, प्रभु'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "श्रीपति",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಶ್ರೀಕೃಷ್ಣ \\/ಮಹಾವಿಷ್ಣು",
+            "व्युत्पत्तिः": "श्रियः पतिः",
+            "प्रयोगाः": "'उपालब्धेवोच्चैर्गिरिपतिरिति श्रीपतिमसौ'",
+            "उल्लेखाः": "माघ० ५-६९",
+            "content": ""
+        },
+        {
+            "word": "श्रीपति",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ರಾಜ \\/ದೊರೆ",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "श्रीपति",
+            "linga": "P",
+            "artha": "विष्णुः",
+            "synonyms": [
+                "विष्णु",
+                "नारायण",
+                "कृष्ण",
+                "वैकुण्ठ",
+                "विष्टरश्रवस्",
+                "दामोदर",
+                "हृषीकेश",
+                "केशव",
+                "माधव",
+                "स्वभू",
+                "दैत्यारि",
+                "पुण्डरीकाक्ष",
+                "गोविन्द",
+                "गरुडध्वज",
+                "पीताम्बर",
+                "अच्युत",
+                "शार्ङ्गिन्",
+                "विष्वक्सेन",
+                "जनार्दन",
+                "उपेन्द्र",
+                "इन्द्रावरज",
+                "चक्रपाणि",
+                "चतुर्भुज",
+                "पद्मनाभ",
+                "मधुरिपु",
+                "वासुदेव",
+                "त्रिविक्रम",
+                "देवकीनन्दन",
+                "शौरि",
+                "श्रीपति",
+                "पुरुषोत्तम",
+                "वनमालिन्",
+                "बलिध्वंसिन्",
+                "कंसाराति",
+                "अधोक्षज",
+                "विश्वम्भर",
+                "कैटभजित्",
+                "विधु",
+                "श्रीवत्सलाञ्छन",
+                "पुराणपुरुष",
+                "यज्ञपुरुष",
+                "नरकान्तक",
+                "जलशायिन्",
+                "विश्वरूप",
+                "मुकुन्द",
+                "मुरमर्दन",
+                "लक्ष्मीपति",
+                "मुरारि",
+                "अज",
+                "अजित",
+                "अव्यक्त",
+                "वृषाकपि",
+                "बभ्रु",
+                "हरि",
+                "वेधस्"
+            ],
+            "num": "1.1.22",
+            "text": "देवकीनन्दनः शौरिः श्रीपतिः पुरुषोत्तमः । वनमाली बलिध्वंसी कंसारातिरधोक्षजः ॥",
+            "content": ""
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "श्रीपति",
+            "content": "<H1><h><key1>SrIpati</key1><key2>SrIpati</key2></h><body><s>SrIpati</s>  <div n=\"1\">m. (<s>-tiH</s>) </div><div n=\"2\"> 1. VISHṆU. </div><div n=\"2\"> 2. A king, a prince.</div><div n=\"E\"> E. <s>SrI</s> the goddess of <lb />fortune or rank, and <s>pati</s> husband or master.</div></body><tail><L>41090</L><pc>734-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "श्रीपति",
+            "content": "<span lang=\"sa\">श्रीपति<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶ್ರೀಕೃಷ್ಣ /ಮಹಾವಿಷ್ಣು<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>श्रियः पतिः<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"उपालब्धेवोच्चैर्गिरिपतिरिति श्रीपतिमसौ\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० ५-६९<div class=\"h-2\"> </div><div class=\"h-2\"> </div>श्रीपति<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ರಾಜ /ದೊರೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

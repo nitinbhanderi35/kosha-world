@@ -1,1217 +1,304 @@
- null;
-let treeForkCount = 0;
-const idStack = [];
-let idStackIndex = 0;
-let treeContextProvider = null;
-let treeContextId = 1;
-let treeContextOverflow = '';
-function isForkedChild(workInProgress) {
-  return (workInProgress.flags & Forked) !== NoFlags$1;
-}
-function getForksAtLevel(workInProgress) {
-  return treeForkCount;
-}
-function getTreeId() {
-  const overflow = treeContextOverflow;
-  const idWithLeadingBit = treeContextId;
-  const id = idWithLeadingBit & ~getLeadingBit(idWithLeadingBit);
-  return id.toString(32) + overflow;
-}
-function pushTreeFork(workInProgress, totalChildren) {
-  forkStack[forkStackIndex++] = treeForkCount;
-  forkStack[forkStackIndex++] = treeForkProvider;
-  treeForkProvider = workInProgress;
-  treeForkCount = totalChildren;
-}
-function pushTreeId(workInProgress, totalChildren, index) {
-  idStack[idStackIndex++] = treeContextId;
-  idStack[idStackIndex++] = treeContextOverflow;
-  idStack[idStackIndex++] = treeContextProvider;
-  treeContextProvider = workInProgress;
-  const baseIdWithLeadingBit = treeContextId;
-  const baseOverflow = treeContextOverflow; // The leftmost 1 marks the end of the sequence, non-inclusive. It's not part
-  // of the id; we use it to account for leading 0s.
-
-  const baseLength = getBitLength(baseIdWithLeadingBit) - 1;
-  const baseId = baseIdWithLeadingBit & ~(1 << baseLength);
-  const slot = index + 1;
-  const length = getBitLength(totalChildren) + baseLength; // 30 is the max length we can store without overflowing, taking into
-  // consideration the leading 1 we use to mark the end of the sequence.
-
-  if (length > 30) {
-    // We overflowed the bitwise-safe range. Fall back to slower algorithm.
-    // This branch assumes the length of the base id is greater than 5; it won't
-    // work for smaller ids, because you need 5 bits per character.
-    //
-    // We encode the id in multiple steps: first the base id, then the
-    // remaining digits.
-    //
-    // Each 5 bit sequence corresponds to a single base 32 character. So for
-    // example, if the current id is 23 bits long, we can convert 20 of those
-    // bits into a string of 4 characters, with 3 bits left over.
-    //
-    // First calculate how many bits in the base id represent a complete
-    // sequence of characters.
-    const numberOfOverflowBits = baseLength - baseLength % 5; // Then create a bitmask that selects only those bits.
-
-    const newOverflowBits = (1 << numberOfOverflowBits) - 1; // Select the bits, and convert them to a base 32 string.
-
-    const newOverflow = (baseId & newOverflowBits).toString(32); // Now we can remove those bits from the base id.
-
-    const restOfBaseId = baseId >> numberOfOverflowBits;
-    const restOfBaseLength = baseLength - numberOfOverflowBits; // Finally, encode the rest of the bits using the normal algorithm. Because
-    // we made more room, this time it won't overflow.
-
-    const restOfLength = getBitLength(totalChildren) + restOfBaseLength;
-    const restOfNewBits = slot << restOfBaseLength;
-    const id = restOfNewBits | restOfBaseId;
-    const overflow = newOverflow + baseOverflow;
-    treeContextId = 1 << restOfLength | id;
-    treeContextOverflow = overflow;
-  } else {
-    // Normal path
-    const newBits = slot << baseLength;
-    const id = newBits | baseId;
-    const overflow = baseOverflow;
-    treeContextId = 1 << length | id;
-    treeContextOverflow = overflow;
-  }
-}
-function pushMaterializedTreeId(workInProgress) {
-  // in its children.
-
-  const returnFiber = workInProgress.return;
-
-  if (returnFiber !== null) {
-    const numberOfForks = 1;
-    const slotIndex = 0;
-    pushTreeFork(workInProgress, numberOfForks);
-    pushTreeId(workInProgress, numberOfForks, slotIndex);
-  }
-}
-
-function getBitLength(number) {
-  return 32 - clz32(number);
-}
-
-function getLeadingBit(id) {
-  return 1 << getBitLength(id) - 1;
-}
-
-function popTreeContext(workInProgress) {
-  // Restore the previous values.
-  // This is a bit more complicated than other context-like modules in Fiber
-  // because the same Fiber may appear on the stack multiple times and for
-  // different reasons. We have to keep popping until the work-in-progress is
-  // no longer at the top of the stack.
-  while (workInProgress === treeForkProvider) {
-    treeForkProvider = forkStack[--forkStackIndex];
-    forkStack[forkStackIndex] = null;
-    treeForkCount = forkStack[--forkStackIndex];
-    forkStack[forkStackIndex] = null;
-  }
-
-  while (workInProgress === treeContextProvider) {
-    treeContextProvider = idStack[--idStackIndex];
-    idStack[idStackIndex] = null;
-    treeContextOverflow = idStack[--idStackIndex];
-    idStack[idStackIndex] = null;
-    treeContextId = idStack[--idStackIndex];
-    idStack[idStackIndex] = null;
-  }
-}
-function getSuspendedTreeContext() {
-
-  if (treeContextProvider !== null) {
-    return {
-      id: treeContextId,
-      overflow: treeContextOverflow
-    };
-  } else {
-    return null;
-  }
-}
-function restoreSuspendedTreeContext(workInProgress, suspendedContext) {
-  idStack[idStackIndex++] = treeContextId;
-  idStack[idStackIndex++] = treeContextOverflow;
-  idStack[idStackIndex++] = treeContextProvider;
-  treeContextId = suspendedContext.id;
-  treeContextOverflow = suspendedContext.overflow;
-  treeContextProvider = workInProgress;
-}
-
-// This may have been an insertion or a hydration.
-
-let hydrationParentFiber = null;
-let nextHydratableInstance = null;
-let isHydrating = false; // This flag allows for warning supression when we expect there to be mismatches
-
-let hydrationErrors = null;
-let rootOrSingletonContext = false;
-
-function enterHydrationState(fiber) {
-
-  const parentInstance = fiber.stateNode.containerInfo;
-  nextHydratableInstance = getFirstHydratableChildWithinContainer(parentInstance);
-  hydrationParentFiber = fiber;
-  isHydrating = true;
-  hydrationErrors = null;
-  rootOrSingletonContext = true;
-  return true;
-}
-
-function reenterHydrationStateFromDehydratedSuspenseInstance(fiber, suspenseInstance, treeContext) {
-
-  nextHydratableInstance = getFirstHydratableChildWithinSuspenseInstance(suspenseInstance);
-  hydrationParentFiber = fiber;
-  isHydrating = true;
-  hydrationErrors = null;
-  rootOrSingletonContext = false;
-
-  if (treeContext !== null) {
-    restoreSuspendedTreeContext(fiber, treeContext);
-  }
-
-  return true;
-}
-
-function deleteHydratableInstance(returnFiber, instance) {
-  const childToDelete = createFiberFromHostInstanceForDeletion();
-  childToDelete.stateNode = instance;
-  childToDelete.return = returnFiber;
-  const deletions = returnFiber.deletions;
-
-  if (deletions === null) {
-    returnFiber.deletions = [childToDelete];
-    returnFiber.flags |= ChildDeletion;
-  } else {
-    deletions.push(childToDelete);
-  }
-}
-
-function insertNonHydratedInstance(returnFiber, fiber) {
-  fiber.flags = fiber.flags & ~Hydrating | Placement;
-}
-
-function tryHydrateInstance(fiber, nextInstance) {
-  // fiber is a HostComponent Fiber
-  const instance = canHydrateInstance(nextInstance, fiber.type, fiber.pendingProps, rootOrSingletonContext);
-
-  if (instance !== null) {
-    fiber.stateNode = instance;
-    hydrationParentFiber = fiber;
-    nextHydratableInstance = getFirstHydratableChild(instance);
-    rootOrSingletonContext = false;
-    return true;
-  }
-
-  return false;
-}
-
-function tryHydrateText(fiber, nextInstance) {
-  // fiber is a HostText Fiber
-  const text = fiber.pendingProps;
-  const textInstance = canHydrateTextInstance(nextInstance, text, rootOrSingletonContext);
-
-  if (textInstance !== null) {
-    fiber.stateNode = textInstance;
-    hydrationParentFiber = fiber; // Text Instances don't have children so there's nothing to hydrate.
-
-    nextHydratableInstance = null;
-    return true;
-  }
-
-  return false;
-}
-
-function tryHydrateSuspense(fiber, nextInstance) {
-  // fiber is a SuspenseComponent Fiber
-  const suspenseInstance = canHydrateSuspenseInstance(nextInstance, rootOrSingletonContext);
-
-  if (suspenseInstance !== null) {
-    const suspenseState = {
-      dehydrated: suspenseInstance,
-      treeContext: getSuspendedTreeContext(),
-      retryLane: OffscreenLane
-    };
-    fiber.memoizedState = suspenseState; // Store the dehydrated fragment as a child fiber.
-    // This simplifies the code for getHostSibling and deleting nodes,
-    // since it doesn't have to consider all Suspense boundaries and
-    // check if they're dehydrated ones or not.
-
-    const dehydratedFragment = createFiberFromDehydratedFragment(suspenseInstance);
-    dehydratedFragment.return = fiber;
-    fiber.child = dehydratedFragment;
-    hydrationParentFiber = fiber; // While a Suspense Instance does have children, we won't step into
-    // it during the first pass. Instead, we'll reenter it later.
-
-    nextHydratableInstance = null;
-    return true;
-  }
-
-  return false;
-}
-
-function shouldClientRenderOnMismatch(fiber) {
-  return (fiber.mode & ConcurrentMode) !== NoMode && (fiber.flags & DidCapture) === NoFlags$1;
-}
-
-function throwOnHydrationMismatch(fiber) {
-  throw Error(formatProdErrorMessage(418));
-}
-
-function claimHydratableSingleton(fiber) {
-  {
-    if (!isHydrating) {
-      return;
-    }
-
-    const currentRootContainer = getRootHostContainer();
-    const instance = fiber.stateNode = resolveSingletonInstance(fiber.type, fiber.pendingProps, currentRootContainer);
-    hydrationParentFiber = fiber;
-    rootOrSingletonContext = true;
-    nextHydratableInstance = getFirstHydratableChild(instance);
-  }
-}
-
-function tryToClaimNextHydratableInstance(fiber) {
-  if (!isHydrating) {
-    return;
-  }
-
-  const initialInstance = nextHydratableInstance;
-  const nextInstance = nextHydratableInstance;
-
-  if (!nextInstance) {
-    if (shouldClientRenderOnMismatch(fiber)) {
-      throwOnHydrationMismatch();
-    } // Nothing to hydrate. Make it an insertion.
-
-
-    insertNonHydratedInstance(hydrationParentFiber, fiber);
-    isHydrating = false;
-    hydrationParentFiber = fiber;
-    nextHydratableInstance = initialInstance;
-    return;
-  }
-
-  const firstAttemptedInstance = nextInstance;
-
-  if (!tryHydrateInstance(fiber, nextInstance)) {
-    if (shouldClientRenderOnMismatch(fiber)) {
-      throwOnHydrationMismatch();
-    } // If we can't hydrate this instance let's try the next one.
-    // We use this as a heuristic. It's based on intuition and not data so it
-    // might be flawed or unnecessary.
-
-
-    nextHydratableInstance = getNextHydratableSibling(nextInstance);
-    const prevHydrationParentFiber = hydrationParentFiber;
-
-    if (!nextHydratableInstance || !tryHydrateInstance(fiber, nextHydratableInstance)) {
-      // Nothing to hydrate. Make it an insertion.
-      insertNonHydratedInstance(hydrationParentFiber, fiber);
-      isHydrating = false;
-      hydrationParentFiber = fiber;
-      nextHydratableInstance = initialInstance;
-      return;
-    } // We matched the next one, we'll now assume that the first one was
-    // superfluous and we'll delete it. Since we can't eagerly delete it
-    // we'll have to schedule a deletion. To do that, this node needs a dummy
-    // fiber associated with it.
-
-
-    deleteHydratableInstance(prevHydrationParentFiber, firstAttemptedInstance);
-  }
-}
-
-function tryToClaimNextHydratableTextInstance(fiber) {
-  if (!isHydrating) {
-    return;
-  }
-
-  const text = fiber.pendingProps;
-  const isHydratable = isHydratableText(text);
-  const initialInstance = nextHydratableInstance;
-  const nextInstance = nextHydratableInstance;
-
-  if (!nextInstance || !isHydratable) {
-    // We exclude non hydrabable text because we know there are no matching hydratables.
-    // We either throw or insert depending on the render mode.
-    if (shouldClientRenderOnMismatch(fiber)) {
-      throwOnHydrationMismatch();
-    } // Nothing to hydrate. Make it an insertion.
-
-
-    insertNonHydratedInstance(hydrationParentFiber, fiber);
-    isHydrating = false;
-    hydrationParentFiber = fiber;
-    nextHydratableInstance = initialInstance;
-    return;
-  }
-
-  const firstAttemptedInstance = nextInstance;
-
-  if (!tryHydrateText(fiber, nextInstance)) {
-    if (shouldClientRenderOnMismatch(fiber)) {
-      throwOnHydrationMismatch();
-    } // If we can't hydrate this instance let's try the next one.
-    // We use this as a heuristic. It's based on intuition and not data so it
-    // might be flawed or unnecessary.
-
-
-    nextHydratableInstance = getNextHydratableSibling(nextInstance);
-    const prevHydrationParentFiber = hydrationParentFiber;
-
-    if (!nextHydratableInstance || !tryHydrateText(fiber, nextHydratableInstance)) {
-      // Nothing to hydrate. Make it an insertion.
-      insertNonHydratedInstance(hydrationParentFiber, fiber);
-      isHydrating = false;
-      hydrationParentFiber = fiber;
-      nextHydratableInstance = initialInstance;
-      return;
-    } // We matched the next one, we'll now assume that the first one was
-    // superfluous and we'll delete it. Since we can't eagerly delete it
-    // we'll have to schedule a deletion. To do that, this node needs a dummy
-    // fiber associated with it.
-
-
-    deleteHydratableInstance(prevHydrationParentFiber, firstAttemptedInstance);
-  }
-}
-
-function tryToClaimNextHydratableSuspenseInstance(fiber) {
-  if (!isHydrating) {
-    return;
-  }
-
-  const initialInstance = nextHydratableInstance;
-  const nextInstance = nextHydratableInstance;
-
-  if (!nextInstance) {
-    if (shouldClientRenderOnMismatch(fiber)) {
-      throwOnHydrationMismatch();
-    } // Nothing to hydrate. Make it an insertion.
-
-
-    insertNonHydratedInstance(hydrationParentFiber, fiber);
-    isHydrating = false;
-    hydrationParentFiber = fiber;
-    nextHydratableInstance = initialInstance;
-    return;
-  }
-
-  const firstAttemptedInstance = nextInstance;
-
-  if (!tryHydrateSuspense(fiber, nextInstance)) {
-    if (shouldClientRenderOnMismatch(fiber)) {
-      throwOnHydrationMismatch();
-    } // If we can't hydrate this instance let's try the next one.
-    // We use this as a heuristic. It's based on intuition and not data so it
-    // might be flawed or unnecessary.
-
-
-    nextHydratableInstance = getNextHydratableSibling(nextInstance);
-    const prevHydrationParentFiber = hydrationParentFiber;
-
-    if (!nextHydratableInstance || !tryHydrateSuspense(fiber, nextHydratableInstance)) {
-      // Nothing to hydrate. Make it an insertion.
-      insertNonHydratedInstance(hydrationParentFiber, fiber);
-      isHydrating = false;
-      hydrationParentFiber = fiber;
-      nextHydratableInstance = initialInstance;
-      return;
-    } // We matched the next one, we'll now assume that the first one was
-    // superfluous and we'll delete it. Since we can't eagerly delete it
-    // we'll have to schedule a deletion. To do that, this node needs a dummy
-    // fiber associated with it.
-
-
-    deleteHydratableInstance(prevHydrationParentFiber, firstAttemptedInstance);
-  }
-}
-
-function tryToClaimNextHydratableFormMarkerInstance(fiber) {
-  if (!isHydrating) {
-    return false;
-  }
-
-  if (nextHydratableInstance) {
-    const markerInstance = canHydrateFormStateMarker(nextHydratableInstance, rootOrSingletonContext);
-
-    if (markerInstance) {
-      // Found the marker instance.
-      nextHydratableInstance = getNextHydratableSibling(markerInstance); // Return true if this marker instance should use the state passed
-      // to hydrateRoot.
-      // TODO: As an optimization, Fizz should only emit these markers if form
-      // state is passed at the root.
-
-      return isFormStateMarkerMatching(markerInstance);
-    }
-  } // Should have found a marker instance. Throw an error to trigger client
-  // rendering. We don't bother to check if we're in a concurrent root because
-  // useFormState is a new API, so backwards compat is not an issue.
-
-
-  throwOnHydrationMismatch();
-  return false;
-}
-
-function prepareToHydrateHostInstance(fiber, hostContext) {
-
-  const instance = fiber.stateNode;
-  hydrateInstance(instance, fiber.type, fiber.memoizedProps, hostContext, fiber);
-}
-
-function prepareToHydrateHostTextInstance(fiber) {
-
-  const textInstance = fiber.stateNode;
-  const textContent = fiber.memoizedProps;
-  const shouldUpdate = hydrateTextInstance(textInstance, textContent, fiber);
-
-  if (shouldUpdate) {
-    // We assume that prepareToHydrateHostTextInstance is called in a context where the
-    // hydration parent is the parent host component of this host text.
-    const returnFiber = hydrationParentFiber;
-
-    if (returnFiber !== null) {
-      switch (returnFiber.tag) {
-        case HostRoot:
-          {
-            const parentContainer = returnFiber.stateNode.containerInfo;
-            const isConcurrentMode = (returnFiber.mode & ConcurrentMode) !== NoMode;
-            didNotMatchHydratedContainerTextInstance(parentContainer, textInstance, textContent, // TODO: Delete this argument when we remove the legacy root API.
-            isConcurrentMode);
-
-            if (isConcurrentMode && enableClientRenderFallbackOnTextMismatch) {
-              // In concurrent mode we never update the mismatched text,
-              // even if the error was ignored.
-              return false;
-            }
-
-            break;
-          }
-
-        case HostSingleton:
-        case HostComponent:
-          {
-            const parentType = returnFiber.type;
-            const parentProps = returnFiber.memoizedProps;
-            const parentInstance = returnFiber.stateNode;
-            const isConcurrentMode = (returnFiber.mode & ConcurrentMode) !== NoMode;
-            didNotMatchHydratedTextInstance(parentType, parentProps, parentInstance, textInstance, textContent, // TODO: Delete this argument when we remove the legacy root API.
-            isConcurrentMode);
-
-            if (isConcurrentMode && enableClientRenderFallbackOnTextMismatch) {
-              // In concurrent mode we never update the mismatched text,
-              // even if the error was ignored.
-              return false;
-            }
-
-            break;
-          }
-      }
-    }
-  }
-
-  return shouldUpdate;
-}
-
-function prepareToHydrateHostSuspenseInstance(fiber) {
-
-  const suspenseState = fiber.memoizedState;
-  const suspenseInstance = suspenseState !== null ? suspenseState.dehydrated : null;
-
-  if (!suspenseInstance) {
-    throw Error(formatProdErrorMessage(317));
-  }
-
-  hydrateSuspenseInstance(suspenseInstance, fiber);
-}
-
-function skipPastDehydratedSuspenseInstance(fiber) {
-
-  const suspenseState = fiber.memoizedState;
-  const suspenseInstance = suspenseState !== null ? suspenseState.dehydrated : null;
-
-  if (!suspenseInstance) {
-    throw Error(formatProdErrorMessage(317));
-  }
-
-  return getNextHydratableInstanceAfterSuspenseInstance(suspenseInstance);
-}
-
-function popToNextHostParent(fiber) {
-  hydrationParentFiber = fiber.return;
-
-  while (hydrationParentFiber) {
-    switch (hydrationParentFiber.tag) {
-      case HostRoot:
-      case HostSingleton:
-        rootOrSingletonContext = true;
-        return;
-
-      case HostComponent:
-      case SuspenseComponent:
-        rootOrSingletonContext = false;
-        return;
-
-      default:
-        hydrationParentFiber = hydrationParentFiber.return;
-    }
-  }
-}
-
-function popHydrationState(fiber) {
-
-  if (fiber !== hydrationParentFiber) {
-    // We're deeper than the current hydration context, inside an inserted
-    // tree.
-    return false;
-  }
-
-  if (!isHydrating) {
-    // If we're not currently hydrating but we're in a hydration context, then
-    // we were an insertion and now need to pop up reenter hydration of our
-    // siblings.
-    popToNextHostParent(fiber);
-    isHydrating = true;
-    return false;
-  }
-
-  let shouldClear = false;
-
-  {
-    // With float we never clear the Root, or Singleton instances. We also do not clear Instances
-    // that have singleton text content
-    if (fiber.tag !== HostRoot && fiber.tag !== HostSingleton && !(fiber.tag === HostComponent && (!shouldDeleteUnhydratedTailInstances(fiber.type) || shouldSetTextContent(fiber.type, fiber.memoizedProps)))) {
-      shouldClear = true;
-    }
-  }
-
-  if (shouldClear) {
-    let nextInstance = nextHydratableInstance;
-
-    if (nextInstance) {
-      if (shouldClientRenderOnMismatch(fiber)) {
-        warnIfUnhydratedTailNodes();
-        throwOnHydrationMismatch();
-      } else {
-        while (nextInstance) {
-          deleteHydratableInstance(fiber, nextInstance);
-          nextInstance = getNextHydratableSibling(nextInstance);
+{
+    "word": "षष्ठी",
+    "ACPH": [
+        {
+            "word": "षष्ठी",
+            "linga": "स्त्री",
+            "pagenum": "2",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "679",
+            "group": "27",
+            "synonyms": [
+                "गौतमी",
+                "कौशिकी",
+                "कृष्णा",
+                "तामसी",
+                "बाभ्रवी",
+                "जया",
+                "कालरात्रि",
+                "महामाया",
+                "भ्रामरी",
+                "यादवी",
+                "वरा",
+                "बर्हिध्वजा",
+                "शूलधरा",
+                "परमब्रह्मचारिणी",
+                "अमोघा",
+                "विन्ध्यनिलया",
+                "कान्तारवासिनी",
+                "जाङ्गुली",
+                "बदरीवासा",
+                "वरदा",
+                "कृष्णपिङ्गला",
+                "दृषद्वती",
+                "इन्द्रभगिनी",
+                "प्रगल्भा",
+                "रेवती",
+                "महाविद्या",
+                "सिनीवाली",
+                "रक्तदन्ती",
+                "एकपाटला",
+                "एकपर्णा",
+                "बजुभुजा",
+                "नन्दपुत्री",
+                "महाजया",
+                "भद्रकाली",
+                "महाकाली",
+                "योगिनी",
+                "गणनायिका",
+                "हासा",
+                "भीमा",
+                "प्रकूष्माण्डी",
+                "गदिनी",
+                "वारुणी",
+                "हिमा",
+                "अनन्ता",
+                "विजया",
+                "क्षेमा",
+                "मानस्तोका",
+                "कुहावती",
+                "चारणा",
+                "पितृगणा",
+                "स्कन्दमाता",
+                "घनाञ्जनी",
+                "गान्धर्वी",
+                "कर्बुरा",
+                "गार्गी",
+                "सावित्री",
+                "ब्रह्मचारिणी",
+                "कोटिश्री",
+                "मन्दरावासा",
+                "केशी",
+                "मलयवासिनी",
+                "कालायनी",
+                "विशालाक्षी",
+                "किराती",
+                "गोकुलोद्भवा",
+                "एकानसी",
+                "नारायणी",
+                "शैला",
+                "शाकम्भरी",
+                "ईश्वरी",
+                "प्रकीर्णकेशी",
+                "कुण्डा",
+                "नीलवस्त्रा",
+                "उग्रचारिणी",
+                "अष्टादशभुजा",
+                "पौत्री",
+                "शिवदूती",
+                "यमस्वसा",
+                "सुनन्दा",
+                "विकचा",
+                "लम्बा",
+                "जयन्ती",
+                "नकुला",
+                "कुला",
+                "विलङ्का",
+                "नन्दिनी",
+                "नन्दा",
+                "नन्दयन्ती",
+                "निरञ्जना",
+                "कालञ्जरी",
+                "शतमुखी",
+                "विकराला",
+                "करालिका",
+                "विरजस्",
+                "पुरला",
+                "जारी",
+                "बहुपुत्री",
+                "कुलेश्वरी",
+                "कैटभी",
+                "कालदमनी",
+                "दर्दुरा",
+                "कुलदेवता",
+                "रौद्री",
+                "कुन्द्रा",
+                "महारौद्री",
+                "कालङ्गमा",
+                "महानिशा",
+                "बलदेवस्वसृ",
+                "पुत्री",
+                "हीरी",
+                "क्षेमङ्करी",
+                "प्रभा",
+                "मारी",
+                "हैमवती",
+                "गोला",
+                "शिखरवासिनी"
+            ],
+            "content": "गौतमी कौशिकी कृष्णा तामसी बाभ्रवी जया ॥ ४७ ॥\nकालरात्रिर्महामाया भ्रामरी यादवी वरा ।\nबर्हिध्वजा शूलधरा परमब्रह्मचारिणी ॥ ४८ ॥\nअमोघा विन्ध्यनिलया षष्ठी कान्तारवासिनी ।\nजाङ्गुली बदरीवासा वरदा कृष्णपिङ्गला ॥ ४९ ॥\nदृषद्वतीन्द्रभगिनी प्रगल्भा रेवती तथा ।\nमहाविद्या सिनीवाली रक्तदन्त्येकपाटला ॥ ५० ॥\nएकपर्णा बहुभुजा नन्दपुत्री महाजया ।\nभद्रकाली महाकाली योगिनी गणनायिका ॥ ५१ ॥\nहासा भीमा प्रकूष्माण्डी गदिनी वारुणी हिमा ।\nअनन्ता विजया क्षेमा मानस्तोका कुहावती ॥ ५२ ॥\nचारणा च पितृगणा स्कन्दमाता घनाञ्जनी ।\nगान्धर्वी कर्वरी गार्गी सावित्री ब्रह्मचारिणी ॥ ५३ ॥\nकोटिश्रीर्सन्दरावासा केशी मलयवासिनी ।\nकालायनी विशालाक्षी किराती गोकुलोद्भवा ॥ ५४ ॥\nएकानसी नारायणी शैला शाकंभरीश्वरी ।\nप्रकीर्णकेशी कुण्डा च नीलवस्त्रोग्रचारिणी ॥ ५५ ॥\nअष्टादशभुजा पौत्री शिवदूती यमस्वसा ।\nसुनन्दा विकचा लम्बा जयन्ती नकुलाकुला ॥ ५६ ॥\nविलङ्का नन्दिनी नन्दा नन्दयन्ती निरञ्जना ।\nकालंजरी शतमुखी विकराली करालिका ॥ ५७ ॥\nविरजाः पुरला जीरी बहुपुत्री कुलेश्वरी ।\nकैटभी कालदमनी दर्दुरा कुलदेवता ॥ ५८ ॥\nरौद्री कुन्द्रा महारौद्री कालंगमा महानिशा ।\nबलदेवस्वसा पुत्री हीरी क्षेमंकरी प्रभा ॥ ५९ ॥\nमारी हैमवती चापि गोला शिखरवासिनी ।"
         }
-      }
-    }
-  }
-
-  popToNextHostParent(fiber);
-
-  if (fiber.tag === SuspenseComponent) {
-    nextHydratableInstance = skipPastDehydratedSuspenseInstance(fiber);
-  } else {
-    nextHydratableInstance = hydrationParentFiber ? getNextHydratableSibling(fiber.stateNode) : null;
-  }
-
-  return true;
-}
-
-function hasUnhydratedTailNodes() {
-  return isHydrating && nextHydratableInstance !== null;
-}
-
-function warnIfUnhydratedTailNodes(fiber) {
-  let nextInstance = nextHydratableInstance;
-
-  while (nextInstance) {
-    nextInstance = getNextHydratableSibling(nextInstance);
-  }
-}
-
-function resetHydrationState() {
-
-  hydrationParentFiber = null;
-  nextHydratableInstance = null;
-  isHydrating = false;
-}
-
-function upgradeHydrationErrorsToRecoverable() {
-  if (hydrationErrors !== null) {
-    // Successfully completed a forced client render. The errors that occurred
-    // during the hydration attempt are now recovered. We will log them in
-    // commit phase, once the entire tree has finished.
-    queueRecoverableErrors(hydrationErrors);
-    hydrationErrors = null;
-  }
-}
-
-function getIsHydrating() {
-  return isHydrating;
-}
-
-function queueHydrationError(error) {
-  if (hydrationErrors === null) {
-    hydrationErrors = [error];
-  } else {
-    hydrationErrors.push(error);
-  }
-}
-
-// we wait until the current render is over (either finished or interrupted)
-// before adding it to the fiber/hook queue. Push to this array so we can
-// access the queue, fiber, update, et al later.
-
-const concurrentQueues = [];
-let concurrentQueuesIndex = 0;
-let concurrentlyUpdatedLanes = NoLanes;
-function finishQueueingConcurrentUpdates() {
-  const endIndex = concurrentQueuesIndex;
-  concurrentQueuesIndex = 0;
-  concurrentlyUpdatedLanes = NoLanes;
-  let i = 0;
-
-  while (i < endIndex) {
-    const fiber = concurrentQueues[i];
-    concurrentQueues[i++] = null;
-    const queue = concurrentQueues[i];
-    concurrentQueues[i++] = null;
-    const update = concurrentQueues[i];
-    concurrentQueues[i++] = null;
-    const lane = concurrentQueues[i];
-    concurrentQueues[i++] = null;
-
-    if (queue !== null && update !== null) {
-      const pending = queue.pending;
-
-      if (pending === null) {
-        // This is the first update. Create a circular list.
-        update.next = update;
-      } else {
-        update.next = pending.next;
-        pending.next = update;
-      }
-
-      queue.pending = update;
-    }
-
-    if (lane !== NoLane) {
-      markUpdateLaneFromFiberToRoot(fiber, update, lane);
-    }
-  }
-}
-function getConcurrentlyUpdatedLanes() {
-  return concurrentlyUpdatedLanes;
-}
-
-function enqueueUpdate$1(fiber, queue, update, lane) {
-  // Don't update the `childLanes` on the return path yet. If we already in
-  // the middle of rendering, wait until after it has completed.
-  concurrentQueues[concurrentQueuesIndex++] = fiber;
-  concurrentQueues[concurrentQueuesIndex++] = queue;
-  concurrentQueues[concurrentQueuesIndex++] = update;
-  concurrentQueues[concurrentQueuesIndex++] = lane;
-  concurrentlyUpdatedLanes = mergeLanes(concurrentlyUpdatedLanes, lane); // The fiber's `lane` field is used in some places to check if any work is
-  // scheduled, to perform an eager bailout, so we need to update it immediately.
-  // TODO: We should probably move this to the "shared" queue instead.
-
-  fiber.lanes = mergeLanes(fiber.lanes, lane);
-  const alternate = fiber.alternate;
-
-  if (alternate !== null) {
-    alternate.lanes = mergeLanes(alternate.lanes, lane);
-  }
-}
-
-function enqueueConcurrentHookUpdate(fiber, queue, update, lane) {
-  const concurrentQueue = queue;
-  const concurrentUpdate = update;
-  enqueueUpdate$1(fiber, concurrentQueue, concurrentUpdate, lane);
-  return getRootForUpdatedFiber(fiber);
-}
-function enqueueConcurrentHookUpdateAndEagerlyBailout(fiber, queue, update) {
-  // This function is used to queue an update that doesn't need a rerender. The
-  // only reason we queue it is in case there's a subsequent higher priority
-  // update that causes it to be rebased.
-  const lane = NoLane;
-  const concurrentQueue = queue;
-  const concurrentUpdate = update;
-  enqueueUpdate$1(fiber, concurrentQueue, concurrentUpdate, lane); // Usually we can rely on the upcoming render phase to process the concurrent
-  // queue. However, since this is a bail out, we're not scheduling any work
-  // here. So the update we just queued will leak until something else happens
-  // to schedule work (if ever).
-  //
-  // Check if we're currently in the middle of rendering a tree, and if not,
-  // process the queue immediately to prevent a leak.
-
-  const isConcurrentlyRendering = getWorkInProgressRoot() !== null;
-
-  if (!isConcurrentlyRendering) {
-    finishQueueingConcurrentUpdates();
-  }
-}
-function enqueueConcurrentClassUpdate(fiber, queue, update, lane) {
-  const concurrentQueue = queue;
-  const concurrentUpdate = update;
-  enqueueUpdate$1(fiber, concurrentQueue, concurrentUpdate, lane);
-  return getRootForUpdatedFiber(fiber);
-}
-function enqueueConcurrentRenderForLane(fiber, lane) {
-  enqueueUpdate$1(fiber, null, null, lane);
-  return getRootForUpdatedFiber(fiber);
-} // Calling this function outside this module should only be done for backwards
-// compatibility and should always be accompanied by a warning.
-
-function unsafe_markUpdateLaneFromFiberToRoot(sourceFiber, lane) {
-  // NOTE: For Hyrum's Law reasons, if an infinite update loop is detected, it
-  // should throw before `markUpdateLaneFromFiberToRoot` is called. But this is
-  // undefined behavior and we can change it if we need to; it just so happens
-  // that, at the time of this writing, there's an internal product test that
-  // happens to rely on this.
-  const root = getRootForUpdatedFiber(sourceFiber);
-  markUpdateLaneFromFiberToRoot(sourceFiber, null, lane);
-  return root;
-}
-
-function markUpdateLaneFromFiberToRoot(sourceFiber, update, lane) {
-  // Update the source fiber's lanes
-  sourceFiber.lanes = mergeLanes(sourceFiber.lanes, lane);
-  let alternate = sourceFiber.alternate;
-
-  if (alternate !== null) {
-    alternate.lanes = mergeLanes(alternate.lanes, lane);
-  } // Walk the parent path to the root and update the child lanes.
-
-
-  let isHidden = false;
-  let parent = sourceFiber.return;
-  let node = sourceFiber;
-
-  while (parent !== null) {
-    parent.childLanes = mergeLanes(parent.childLanes, lane);
-    alternate = parent.alternate;
-
-    if (alternate !== null) {
-      alternate.childLanes = mergeLanes(alternate.childLanes, lane);
-    }
-
-    if (parent.tag === OffscreenComponent) {
-      // Check if this offscreen boundary is currently hidden.
-      //
-      // The instance may be null if the Offscreen parent was unmounted. Usually
-      // the parent wouldn't be reachable in that case because we disconnect
-      // fibers from the tree when they are deleted. However, there's a weird
-      // edge case where setState is called on a fiber that was interrupted
-      // before it ever mounted. Because it never mounts, it also never gets
-      // deleted. Because it never gets deleted, its return pointer never gets
-      // disconnected. Which means it may be attached to a deleted Offscreen
-      // parent node. (This discovery suggests it may be better for memory usage
-      // if we don't attach the `return` pointer until the commit phase, though
-      // in order to do that we'd need some other way to track the return
-      // pointer during the initial render, like on the stack.)
-      //
-      // This case is always accompanied by a warning, but we still need to
-      // account for it. (There may be other cases that we haven't discovered,
-      // too.)
-      const offscreenInstance = parent.stateNode;
-
-      if (offscreenInstance !== null && !(offscreenInstance._visibility & OffscreenVisible)) {
-        isHidden = true;
-      }
-    }
-
-    node = parent;
-    parent = parent.return;
-  }
-
-  if (isHidden && update !== null && node.tag === HostRoot) {
-    const root = node.stateNode;
-    markHiddenUpdate(root, update, lane);
-  }
-}
-
-function getRootForUpdatedFiber(sourceFiber) {
-  // TODO: We will detect and infinite update loop and throw even if this fiber
-  // has already unmounted. This isn't really necessary but it happens to be the
-  // current behavior we've used for several release cycles. Consider not
-  // performing this check if the updated fiber already unmounted, since it's
-  // not possible for that to cause an infinite update loop.
-  throwIfInfiniteUpdateLoopDetected(); // When a setState happens, we must ensure the root is scheduled. Because
-  let node = sourceFiber;
-  let parent = node.return;
-
-  while (parent !== null) {
-    node = parent;
-    parent = node.return;
-  }
-
-  return node.tag === HostRoot ? node.stateNode : null;
-}
-
-const UpdateState = 0;
-const ReplaceState = 1;
-const ForceUpdate = 2;
-const CaptureUpdate = 3; // Global state that is reset at the beginning of calling `processUpdateQueue`.
-// It should only be read right after calling `processUpdateQueue`, via
-// `checkHasForceUpdateAfterProcessing`.
-
-let hasForceUpdate = false;
-
-function initializeUpdateQueue(fiber) {
-  const queue = {
-    baseState: fiber.memoizedState,
-    firstBaseUpdate: null,
-    lastBaseUpdate: null,
-    shared: {
-      pending: null,
-      lanes: NoLanes,
-      hiddenCallbacks: null
-    },
-    callbacks: null
-  };
-  fiber.updateQueue = queue;
-}
-function cloneUpdateQueue(current, workInProgress) {
-  // Clone the update queue from current. Unless it's already a clone.
-  const queue = workInProgress.updateQueue;
-  const currentQueue = current.updateQueue;
-
-  if (queue === currentQueue) {
-    const clone = {
-      baseState: currentQueue.baseState,
-      firstBaseUpdate: currentQueue.firstBaseUpdate,
-      lastBaseUpdate: currentQueue.lastBaseUpdate,
-      shared: currentQueue.shared,
-      callbacks: null
-    };
-    workInProgress.updateQueue = clone;
-  }
-}
-function createUpdate(lane) {
-  const update = {
-    lane,
-    tag: UpdateState,
-    payload: null,
-    callback: null,
-    next: null
-  };
-  return update;
-}
-function enqueueUpdate(fiber, update, lane) {
-  const updateQueue = fiber.updateQueue;
-
-  if (updateQueue === null) {
-    // Only occurs if the fiber has been unmounted.
-    return null;
-  }
-
-  const sharedQueue = updateQueue.shared;
-
-  if (isUnsafeClassRenderPhaseUpdate()) {
-    // This is an unsafe render phase update. Add directly to the update
-    // queue so we can process it immediately during the current render.
-    const pending = sharedQueue.pending;
-
-    if (pending === null) {
-      // This is the first update. Create a circular list.
-      update.next = update;
-    } else {
-      update.next = pending.next;
-      pending.next = update;
-    }
-
-    sharedQueue.pending = update; // Update the childLanes even though we're most likely already rendering
-    // this fiber. This is for backwards compatibility in the case where you
-    // update a different component during render phase than the one that is
-    // currently renderings (a pattern that is accompanied by a warning).
-
-    return unsafe_markUpdateLaneFromFiberToRoot(fiber, lane);
-  } else {
-    return enqueueConcurrentClassUpdate(fiber, sharedQueue, update, lane);
-  }
-}
-function entangleTransitions(root, fiber, lane) {
-  const updateQueue = fiber.updateQueue;
-
-  if (updateQueue === null) {
-    // Only occurs if the fiber has been unmounted.
-    return;
-  }
-
-  const sharedQueue = updateQueue.shared;
-
-  if (isTransitionLane(lane)) {
-    let queueLanes = sharedQueue.lanes; // If any entangled lanes are no longer pending on the root, then they must
-    // have finished. We can remove them from the shared queue, which represents
-    // a superset of the actually pending lanes. In some cases we may entangle
-    // more than we need to, but that's OK. In fact it's worse if we *don't*
-    // entangle when we should.
-
-    queueLanes = intersectLanes(queueLanes, root.pendingLanes); // Entangle the new transition lane with the other transition lanes.
-
-    const newQueueLanes = mergeLanes(queueLanes, lane);
-    sharedQueue.lanes = newQueueLanes; // Even if queue.lanes already include lane, we don't know for certain if
-    // the lane finished since the last time we entangled it. So we need to
-    // entangle it again, just to be sure.
-
-    markRootEntangled(root, newQueueLanes);
-  }
-}
-function enqueueCapturedUpdate(workInProgress, capturedUpdate) {
-  // Captured updates are updates that are thrown by a child during the render
-  // phase. They should be discarded if the render is aborted. Therefore,
-  // we should only put them on the work-in-progress queue, not the current one.
-  let queue = workInProgress.updateQueue; // Check if the work-in-progress queue is a clone.
-
-  const current = workInProgress.alternate;
-
-  if (current !== null) {
-    const currentQueue = current.updateQueue;
-
-    if (queue === currentQueue) {
-      // The work-in-progress queue is the same as current. This happens when
-      // we bail out on a parent fiber that then captures an error thrown by
-      // a child. Since we want to append the update only to the work-in
-      // -progress queue, we need to clone the updates. We usually clone during
-      // processUpdateQueue, but that didn't happen in this case because we
-      // skipped over the parent when we bailed out.
-      let newFirst = null;
-      let newLast = null;
-      const firstBaseUpdate = queue.firstBaseUpdate;
-
-      if (firstBaseUpdate !== null) {
-        // Loop through the updates and clone them.
-        let update = firstBaseUpdate;
-
-        do {
-          const clone = {
-            lane: update.lane,
-            tag: update.tag,
-            payload: update.payload,
-            // When this update is rebased, we should not fire its
-            // callback again.
-            callback: null,
-            next: null
-          };
-
-          if (newLast === null) {
-            newFirst = newLast = clone;
-          } else {
-            newLast.next = clone;
-            newLast = clone;
-          } // $FlowFixMe[incompatible-type] we bail out when we get a null
-
-
-          update = update.next;
-        } while (update !== null); // Append the captured update the end of the cloned list.
-
-
-        if (newLast === null) {
-          newFirst = newLast = capturedUpdate;
-        } else {
-          newLast.next = capturedUpdate;
-          newLast = capturedUpdate;
+    ],
+    "AP90": [
+        {
+            "word": "षष्ठी",
+            "eid": "28526",
+            "pagenum": 1066,
+            "content": "षष्ठी¦ <b>1</b> The sixth day of a lunar fortnight <b>--2</b> The sixth or genitive case (in <ab>gram.</ab>). <b>--3</b> An epithet of Durgā in the form of Kātyāyanī, one of the 16 divine mothers. <b>--Comp.</b> --तत्पुरुषः the genitive <lbinfo n='Tat+purusha'/> Tatpurusha compound, one in which, when dissolved, the first member usually stands in the genitive case. --पूजनं, --पूजा worship of the <lbinfo n='god+dess'/> goddess षष्ठी performed on the sixth day after a woman's delivery."
         }
-      } else {
-        // There are no base updates.
-        newFirst = newLast = capturedUpdate;
-      }
-
-      queue = {
-        baseState: currentQueue.baseState,
-        firstBaseUpdate: newFirst,
-        lastBaseUpdate: newLast,
-        shared: currentQueue.shared,
-        callbacks: currentQueue.callbacks
-      };
-      workInProgress.updateQueue = queue;
-      return;
-    }
-  } // Append the update to the end of the list.
-
-
-  const lastBaseUpdate = queue.lastBaseUpdate;
-
-  if (lastBaseUpdate === null) {
-    queue.firstBaseUpdate = capturedUpdate;
-  } else {
-    lastBaseUpdate.next = capturedUpdate;
-  }
-
-  queue.lastBaseUpdate = capturedUpdate;
-}
-
-function getStateFromUpdate(workInProgress, queue, update, prevState, nextProps, instance) {
-  switch (update.tag) {
-    case ReplaceState:
-      {
-        const payload = update.payload;
-
-        if (typeof payload === 'function') {
-
-          const nextState = payload.call(instance, prevState, nextProps);
-
-          return nextState;
-        } // State object
-
-
-        return payload;
-      }
-
-    case CaptureUpdate:
-      {
-        workInProgress.flags = workInProgress.flags & ~ShouldCapture | DidCapture;
-      }
-    // Intentional fallthrough
-
-    case UpdateState:
-      {
-        const payload = update.payload;
-        let partialState;
-
-        if (typeof payload === 'function') {
-
-          partialState = payload.call(instance, prevState, nextProps);
-        } else {
-          // Partial state object
-          partialState = payload;
+    ],
+    "BHS": [
+        {
+            "word": "षष्ठी",
+            "eid": "15376",
+            "pagenum": 538,
+            "content": "[<b>ṣaṣṭhī</b>¦, in <ls>Mv</ls> 〔ii.21.2〕 (<ab>vs</ab>): (atra kiṃ kāraṇaṃ uktaṃ yaṃ sapta kramate kramān,) na ca aṣṭa na ca ṣaṣṭhī atra āgamanaṃ śṛṇu, <i>… why he takes seven steps, and not eight or … (?)</i> <ls>Senart</ls> <ab>em.</ab> ṣaṣṭi, <i>sixty</i>, which seems to be correct; see <ls>P. Mus, Barabudur</ls> 〔492, 480〕; <ls>Mv</ls> 〔i.318.10〕 caṅkrama-ṣaṣṭiḥ, <i>a promenade of sixty paces</i>. The only alternative, so far as I see, would be the unattractive one of understanding the ordinal ṣaṣṭhī in the <ab>mg.</ab> of the cardinal, <i>six</i>; the sense would, to be sure, then be simple.]"
         }
-
-        if (partialState === null || partialState === undefined) {
-          // Null and undefined are treated as no-ops.
-          return prevState;
-        } // Merge the partial state and the previous state.
-
-
-        return assign({}, prevState, partialState);
-      }
-
-    case ForceUpdate:
-      {
-        hasForceUpdate = true;
-        return prevState;
-      }
-  }
-
-  return prevState;
-}
-
-function processUpdateQueue(workInProgress, props, instance, renderLanes) {
-  // This is always non-null on a ClassComponent or HostRoot
-  const queue = workInProgress.updateQueue;
-  hasForceUpdate = false;
-
-  let firstBaseUpdate = queue.firstBaseUpdate;
-  let lastBaseUpdate = queue.lastBaseUpdate; // Check if there are pending updates. If so, transfer them to the base queue.
-
-  let pendingQueue = queue.shared.pending;
-
-  if (pendingQueue !== null) {
-    queue.shared.pending = null; // The pending queue is circular. Disconnect the pointer between first
-    // and last so that it's non-circular.
-
-    const lastPendingUpdate = pendingQueue;
-    const firstPendingUpdate = lastPendingUpdate.next;
-    lastPendingUpdate.next = null; // Append pending updates to base queue
-
-    if (lastBaseUpdate === null) {
-      firstBaseUpdate = firstPendingUpdate;
-    } else {
-      lastBaseUpdate.next = firstPendingUpdate;
-    }
-
-    lastBaseUpdate = lastPendingUpdate; // If there's a current queue, and it's different from the base queue, then
-    // we need to transfer the updates to that queue, too. Because the base
-    // queue is a singly-linked list with no cycles, we can append to both
-    // lists and take advantage of structural sharing.
-    // TODO: Pass `current` as argument
-
-    const current = workInProgress.alternate;
-
-    if (current !== null) {
-      // This is always non-null on a ClassComponent or HostRoot
-      const currentQueue = current.updateQueue;
-      const currentLastBaseUpdate = currentQueue.lastBaseUpdate;
-
-      if (currentLastBaseUpdate !== lastBaseUpdate) {
-        if (currentLastBaseUpdate === null) {
-          currentQueue.firstBaseUpdate = firstPendingUpdate;
-        } else {
-          currentLastBaseUpdate.next = firstPendingUpdate;
+    ],
+    "LRV": [
+        {
+            "word": "षष्ठी",
+            "eid": "38898",
+            "pagenum": 738,
+            "content": "zazWI¦ <i>f.</i> 1. The sixth day of a lunar fortnight; 2. the sixth or genetive case (in gram.); 3. an epithet of Durgā as one of the sixteen divine mothers."
         }
-
-        currentQueue.lastBaseUpdate = lastPendingUpdate;
-      }
-    }
-  } // These values may change as we process the queue.
-
-
-  if (firstBaseUpdate !== null) {
-    // Iterate through the list of updates to compute the result.
-    let newState = queue.baseState; // TODO: Don't need to accumulate this. Instead, we can remove renderLanes
-    // from the original lanes.
-
-    let newLanes = NoLanes;
-    let newBaseState = null;
-    let newFirstBaseUpdate = null;
-    let newLastBaseUpdate = null;
-    let update = firstBaseUpdate;
-
-    do {
-      // An extra OffscreenLane bit is added to updates that were made to
-      // a hidden tree, so that we can distinguish them from updates that were
-      // already there when the tree was hidden.
-      const updateLane = removeLanes(update.lane, OffscreenLane);
-      const isHiddenUpdate = updateLane !== update.lane; // Check if this update was made while the tree was hidden. If so, then
-      // it's not a "base" update and we should disregard the extra base lanes
-      // that were added to renderLanes when we entered the Offscreen tree.
-
-      const shouldSkipUpdate = isHiddenUpdate ? !isSubsetOfLanes(getWorkInProgressRootRenderLanes(), updateLane) : !isSubsetOfLanes(renderLanes, updateLane);
-
-      if (shouldSkipUpdate) {
-        // Priority is insufficient. Skip this update. If this is the first
-        // skipped update, the previous update/state is the new base
-        // update/state.
-        const clone = {
-          lane: updateLane,
-          tag: update.tag,
-          payload: update.payload,
-          callback: update.callback,
-          next: null
-        };
-
-        if (newLastBaseUpdate === null) {
-          newFirstBaseUpdate = newLastBaseUpdate = clone;
-          newBaseState = newState;
-        } else {
-          newLastBaseUpdate = newLastBaseUpdate.next = clone;
-        } // Update the remaining priority in the queue.
-
-
-        newLanes = mergeLanes(newLanes, updateLane);
-      } else {
-        // This update does have sufficient priority.
-        if (newLastBaseUpdate !== null) {
-          const clone = {
-            // This update is going to be committed so we never want uncommit
-            // it. Using NoLane works because 0 is a subset of all bitmasks, so
-            // this will never be skipped by the check above.
-            lane: NoLane,
-            tag: update.tag,
-            payload: update.payload,
-            // When this update is rebased, we should not fire its
-            // callback again.
-            callback: null,
-            next: null
-          };
-          newLastBaseUpdate = newLastBaseUpdate.next = clone;
-        } // Process this update.
-
-
-        newState = getStateFromUpdate(workInProgress, queue, update, newState, props, instance);
-        const callback = update.callback;
-
-        if (callback !== null) {
-          workInProgress.flags |= Callback;
-
-          if (isHiddenUpdate) {
-            workInProgress.flags |= Vi
+    ],
+    "MCI": [
+        {
+            "word": "षष्ठी",
+            "eid": "957",
+            "pagenum": 274,
+            "content": "<b>Ṣaṣṭhī</b>¦ f.: Name of the sixth day of the bright half of the month of Māgha (?). <b>A.</b> Description: important (<i>mahātithi</i>) 3. 218. 49. <b>B.</b> Mythological Event: Skanda married Devasenā on the fifth day of the month of Māgha, and on the sixth day he achieved his objective; hence Ṣaṣṭhī is an important day (<i>ṣaṣṭyāṃ kṛtārtho</i> <i>'bhūd yasmāt tasmāt ṣaṣṭhī mahātithiḥ</i>) 3. 218. 49."
+        }
+    ],
+    "MD": [
+        {
+            "word": "षष्ठी",
+            "eid": "18419",
+            "pagenum": 324,
+            "content": "षष्ठी¦ ṣaṣṭh-ī, <lex>f.</lex> sixth (<ab>sc.</ab> tithi) day <i>of a 🞄fortnight</i>; sixth (<ab>sc.</ab> vibhakti) case, genitive; 🞄<i>personification of</i> the sixth day <i>after the 🞄birth of a child</i> (<i>when the main risks are 🞄[Page324-3] 🞄over</i>): <b>-jāgara,</b> <lex>m.</lex> watch on the sixth day 🞄<i>after the birth of a child</i> (<i>a certain ceremony</i>); 🞄<b>-tatpuruṣa,</b> <lex>m.</lex> genitive Tatpuruṣa 🞄compound (<i>in which the first member has the 🞄sense of a genitive</i>); <b>-samāsa,</b> <lex>m.</lex> compound 🞄in <i>which the first member has the sense of a</i> 🞄genitive."
+        }
+    ],
+    "MW": [
+        {
+            "word": "षष्ठी",
+            "eid": "225349",
+            "pagenum": "1110,1",
+            "content": "षष्ठी <hom>a</hom> ¦ (ई), <lex>f.</lex> See below<info lex='f'/>"
+        },
+        {
+            "word": "षष्ठी",
+            "eid": "225372",
+            "pagenum": "1110,1",
+            "content": "षष्ठी <hom>b</hom> ¦ <lex>f.</lex> the sixth day of a lunar fortnight, <ls>MBh.</ls>; <ls>Hariv.</ls> &c.<info lex='f'/>"
+        },
+        {
+            "word": "षष्ठी",
+            "eid": "225373",
+            "pagenum": "1110,1",
+            "content": "¦ a <ab>partic.</ab> <s1 slp1='tiTi'>Tithi</s1> when homage is offered to the sixth lunar digit, <ls>MW.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "षष्ठी",
+            "eid": "225374",
+            "pagenum": "1110,1",
+            "content": "¦ the sixth or genitive case, <ls>ŚrS.</ls>; <ls>Nir.</ls> &c.<info lex='inh'/>"
+        },
+        {
+            "word": "षष्ठी",
+            "eid": "225375",
+            "pagenum": "1110,1",
+            "content": "¦ <ab>N.</ab> of a <ab>partic.</ab> brick the length of which equals the 6th part of a man, <ls>Śulbas.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "षष्ठी",
+            "eid": "225376",
+            "pagenum": "1110,1",
+            "content": "¦ the personification of a portion of <s1 slp1='prakfti'>Prakṛti</s1>, <ls>Cat.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "षष्ठी",
+            "eid": "225377",
+            "pagenum": "1110,1",
+            "content": "¦ <ab>N.</ab> of a personification of the sixth day after the birth of a child (when the chief danger for mother and child is over)<info lex='inh'/>"
+        },
+        {
+            "word": "षष्ठी",
+            "eid": "225378",
+            "pagenum": "1110,1",
+            "content": "¦ <ab>N.</ab> of a divine mother or goddess often regarded as a form of <s1 slp1='durgA'>Durgā</s1> (supposed to protect children and worshipped on the sixth day after delivery), <ls>NṛsUp.</ls>; <ls>Saṃskārak.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "षष्ठी",
+            "eid": "225379",
+            "pagenum": "1110,1",
+            "content": "¦ = इन्द्र-सेना, <ls>NṛsUp.</ls>; <ls>RTL. 229.</ls><info lex='inh'/>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "षष्ठी",
+            "eid": "37010",
+            "pagenum": "5-192-b",
+            "content": "षष्ठी¦, स्त्री, (षष्ठ + ङीप् ।) कात्यायनी । इति मेदिनी ॥ षोडशमातृकान्तर्गतमातृकाविशेषः । सा प्रकृतेः षष्ठीकला स्कन्दभार्य्या च । तस्याः स्वरूपादिर्यथा, “प्रधानांशस्वरूपा या देवसेना च नारद ! । मातृकासु पूज्यतमा सा च षष्ठी प्रकीर्त्तिता ॥ शिशूनां प्रतिविश्वेषु प्रतिपालनकारिणी । तपस्विनी विष्णुभक्ता कार्त्तिकेयस्य कामिनी ॥ षष्ठांशरूपा प्रकृतेस्तेन षष्ठी प्रकीर्त्तिता । पुत्त्रपौत्त्रप्रदात्री च धात्री त्रिजगतां सती ॥ सुन्दरी युवती रम्या सन्ततं भर्त्तुरन्तिके । स्थाने शिशूनां परमा वृद्धरूपा च योगिनी ॥ पूजा द्वादशमासेषु यस्या विश्वेषु सन्ततम् । पूजा च सूतिकागारे परा षष्ठदिने शिशोः । एकविंशतिमे चैव पूजा कल्याणहेतुकी । शश्वन्नियमिता चैषा नित्या काम्याहुतिः परा ॥ मातृरूपा दयारूपा शश्वद्रक्षणरूपिणी । जले स्थले चान्तरीक्षे शिशूनां स्वप्नगोचरे ॥” इति ब्रह्मवैवर्त्ते प्रकृतिखण्डे १ अध्यायः ॥ * ॥ अपि च । श्रीनारायण उवाच । “षष्ठांशा प्रकृतेर्या च सा तु षष्ठी प्रकीर्त्तिता । तस्याः पूजाविधौ ब्रह्मन् इतिहासमिमं शृणु ॥ राजा प्रियव्रतश्चासीत् स्वायम्भुवमनोः सुतः । योगीन्द्रो न वहेद्भार्य्यां तपस्यासु रतः सदा ॥ ब्रह्माज्ञया च यत्रेन कृतदारो बभूव सः । सुचिरं कृतदारश्च न लेभे तनयं ततः ॥ पुत्त्रेष्टियज्ञं तञ्चापि कारयामास कश्यपः । मानिन्यै तस्य कान्तायै मुनिर्यज्ञचरुं ददौ ॥ भुक्त्वा चरुञ्च तस्याश्च सद्यो गर्भो बभूव ह । दधार तञ्च सा देवी दैवं द्वादशवत्सरम् ॥ ततः सुषाव सा ब्रह्मन् कुमारं कनकप्रभम् । सर्व्वावयवसम्पन्नं मृतमुत्तानलोचनम् ॥ श्मशानञ्च ययौ राजा गृहीत्वा बालकं मुने । एतस्मिन्नन्तरे तत्र विमानञ्च ददर्श ह ॥ ददर्श तत्र देवीञ्च कमनीयां मनोहराम् । दृष्ट्वा तां पुरतो राजा तुष्टाव परमादरम् ॥ पप्रच्छ राजा तां दृष्ट्वा ग्रीष्मसूर्य्यसमप्रभाम् । तेजसा ज्वलितां कान्तां शान्तां स्कन्दस्य नारद ॥ प्रियव्रत उवाच । का त्वं सुशोभने कस्य कान्ते कान्तासि सुव्रते । कस्य कन्या वरारोहा धन्या मान्या च योषिताम् ॥ देवसेनोवाच । ब्रह्मणो मानसी कन्या देवसेनाहमीश्वरी । दृष्ट्वा मां मनसा धाता ददौ स्कन्दाय भूमिप ॥ मातृकासु च विख्याता स्कन्दभार्य्या च सुव्रता बिश्वे षष्ठीति विख्याता षष्ठाशा प्रकृतेर्यतः ॥ इत्येवमुक्त्वा सा देवी गृहीत्वा बालकं मुने । महाज्ञानेन तपसा जीवयामास लीलया ॥ गृहीत्वा बालकं देवी गगनं गन्तुमुद्यता । पुनस्तुष्टाव तां राजा शुष्ककण्ठौष्ठतालुकः ॥ नृपस्तोत्रेण सा देवी परितुष्टा बभूव ह । उवाच तं नृपं ब्रह्मन् ! वेदोक्तं कर्म्मनिर्म्मितम् ॥ देवसेनोवाच । त्रिषु लोकेषु राजा त्वं स्वायम्भुवमनोः सुतः । मम पूजाञ्च सर्व्वत्र कारयित्वा स्वयं कुरु ॥ तदा दास्यामि पुत्त्रन्ते कुलपद्ममनोहरम् । इत्येवमुक्त्वा सा देवी तस्मै तद्बालकं ददौ ॥ राजा चकार स्वीकारं तत्पूजार्थञ्च सुव्रतः । जगाम देवी स्वर्गञ्च दत्त्वा तस्मै शुभं वरम् ॥ आजगाम महाराजः स्वगृहं हृष्टमानसः । देवीं तां पूजयामास ब्राह्मणेभ्यो धनं ददौ ॥ राजा च प्रतिमासेषु शुक्लषष्ठ्यां महोत्सवम् । षष्ठ्या देव्याश्च यत्नेन कारयामास सर्व्वतः ॥ बालानां सूतिकागारे षष्ठाहे यत्नपूर्व्वकम् । तापूजां कारयामास चैकविंशतिवासरे ॥ बालानां शुभकार्य्ये च शुभान्नप्राशने तथा । सर्व्वत्र वर्द्धयामास स्वयमेव चकार ह ॥ ध्यानं पूजाविधानञ्च स्तीत्रं मत्तो निशामय । यत् श्रुतं धर्म्मवक्त्रेण कौथुमोक्तञ्च सुव्रत ॥ शालग्रामे घटे वाथ वटमूलेऽथवा मुने । भित्तौ पुत्तलिकां कृत्वा पूजयेद्वा विचक्षणः ॥ षष्ठांशां प्रकृतेः शुद्धां सुप्रतिष्ठाञ्च सुप्रभाम् । सुपुत्त्रदाञ्च शुभदां दयारूपां जगत्प्रसूम् ॥ श्वेतचम्पकवर्णाभां रत्नभूषणभूषिताम् । पवित्ररूपां परमां देवसेनामहं भजे ॥ इति ध्यात्वा स्वशिरसि पुष्पं दत्त्वा विचक्षणः पुनर्ध्यात्वा च मूलेन पूजयेत् सुव्रतां सतीम् ॥ पाद्यार्घ्याचमनीयैश्च गन्धधूपप्रदीपकैः । नैवेद्यैर्विविधैश्चापि फलेन शोभनेन च ॥ मूलेनौँ ह्रीँ षष्ठीदेव्यै स्वाहेति विधिपूर्व्वकम् अष्टाक्षरं महामन्त्रं यथाशक्ति जपेन्नरः ॥ ततः स्तुत्वा च प्रणमेद्भक्तियुक्तः समाहितः । स्तोत्रञ्च सामवेदोक्तं वरपुत्त्रफलप्रदम् ॥ अष्टाक्षरं महामन्त्रं लक्षधा यो जपेन्मुने । स पुत्त्रं लभते नूनमित्याह कमलोद्भवः ॥ * ॥ स्तोत्रं शृणु मुनिश्रेष्ठ सर्व्वकामशुभावहम् । आज्ञाप्रदञ्च सर्व्वेषां गूढं वेदेषु नारद ॥ प्रियव्रत उवाच । नमो देव्यै महादेव्यै सिद्ध्यै शान्त्यै नमो नमः शुभायै देवसेनायै षष्ठ्यै देव्यै नमो नमः ॥ वरदायै पुत्त्रदायै धनदायै नमो नमः । सुखदायै मोक्षदायै षष्ठीदेव्यै नमो नमः ॥ शक्तिषष्ठांशरूपायै सिद्धायै च नमो नमः । मायायै सिद्धयोगिन्यै षष्ठीदेव्यै नमो नमः ॥ सारायै सारदायै च पारायै सर्व्वकारिण्यै । बालाधिष्ठातृदेव्यै च षष्ठीदेव्यै नमो नमः ॥ कल्याणदायै कल्याण्यै फलदायै च कर्म्मणाम् । प्रत्यक्षायै च भक्तानां षष्ठीदेव्यै नमो नमः ॥ पूज्यायै स्कन्दकान्तायै सर्व्वेषां सर्व्वकर्म्मसु । देवरक्षणकारिण्यै षष्ठीदेव्यै नमो नमः ॥ शुद्धसत्त्वस्वरूपायै वन्दितायै नृणां सदा । हिंसाक्रोधवर्ज्जितायै षष्ठीदेव्यै नमो नमः ॥ धनं देहि प्रियां देहि पुत्त्रं देति सुरेश्वरि । धर्म्मं देहि यशो देहि षष्ठीदेव्यै नमो नमः ॥ देहि भूमिं प्रजां देहि विद्यां देहि सुपूजिते । कल्याणञ्च जयं देहि षष्ठीदेव्यै नमो नमः ॥ इति देवीञ्च संस्तूय लेभे पुत्त्रं प्रियव्रतः । यशस्विनञ्च राजेन्द्रं षष्ठीदेवीप्रसादतः ॥ षष्ठीस्तोत्रमिदं ब्रह्मन् यः शृणोति च वत्सरम् । अपुत्त्रो लभते पुत्त्रं वरं सुचिरजीविनम् ॥ वर्षमेकञ्च या भक्ता संस्तुत्येदं शृणोति च । सर्व्वपापविनिर्म्मुक्त्या महाबन्ध्या प्रसूयते ॥ वीरं पुत्त्रञ्च गुणिनं विद्यावन्तं यशस्विनम् । शुचिं चिरायुष्मन्तमेव षष्ठीदेवीपसादतः ॥ काकबन्ध्या च या नारी मृतापत्या च या भवेत् वर्षं श्रुत्वा लभेत् पुत्त्रं षष्ठीदेवीप्रसादतः ॥ रोगयुक्ते च बाले च पिता माता शृणोति चेत् मासञ्च मुच्यते बालः षष्ठीदेवीप्रसादतः ॥ इति ब्रह्मवैवर्त्ते प्रकृतिखण्डे ४० अध्यायः ॥ * ॥ चन्द्रस्य षष्ठकलाक्रियारूपतिथिविशेषः । स तु शुक्लकृष्णपक्षभेदेन द्विविधः । तत्र चन्द्रस्य वृद्ध्यनुकूलषष्ठकलाक्रियारूपः शुक्लपक्षीयः । तस्य ह्रासानुकूलषष्ठकलाक्रियारूपः कृष्णपक्षीयः । * ॥ वैशाखादिषु तस्या विशेषनामानि यथा, “प्रसूत्या द्वादशे मासि सम्पूज्यापत्यवृद्धये । सुते जाते तथा षष्ठ्यां षष्ठी द्वादशरूपिणी ॥ वैशाखे चान्दनी षष्ठी ज्यैष्ठे चारण्यसंज्ञिता । आषाढे कार्द्दमी ज्ञेया श्रावणे लुण्ठनी तथा ॥ भाद्रे चपेटी विख्याता दुर्गाख्याश्वयुजे तथा । नाड्याख्या कार्त्तिके मासि मार्गे मूलकरूपिणी पौषे मास्यन्नरूपा च शीतला तपसि स्मृता । गोरूपिणी फाल्गुने च चेत्रेऽशोका प्रकीर्त्तिता ॥” इति स्कन्दपुराणम् ॥ तत्कृत्यादि यथा, अथ षष्ठी सा सप्तमीयुता ग्राह्या युग्मात् । राजमार्त्तण्डे । “ज्यैष्ठे मासि सिते पक्षे षष्ठी चारण्यसंज्ञिता व्यजनैककरास्तस्यामटन्ति विपिने स्त्रियः ॥ तां विन्ध्यवासिनीं स्कन्दषष्ठीमाराधयन्ति च । कन्दमूलफलाहारा लभन्ते सन्ततिं शुभाम् ॥” कन्दं सूरणादि । मूलं तदितरत् । भविष्ये । “येयं मार्गशिरे मासि षष्ठी भरतसत्तम । पुण्या पापहरा धन्या शिवा शान्तागुहप्रिया ॥” देवीपुराणे चैत्रमधिकृत्य । “षष्ठ्यां स्कन्दस्य कर्त्तव्या पूजा सर्व्वोपचारिका तहैव सुखसौभाग्यमन्ते विष्णुपुरं व्रजेत् ॥” इयमेव स्कन्दषष्ठी पञ्चमीयुतैवोपोष्या । “कृष्णाष्टमी स्कन्दषष्ठी शिवरात्रिचतुर्दशी । एताः पूर्व्वयुताः कार्य्यास्तिथ्यन्ते पारणं भवेत् ॥” इति ब्रह्मवैवर्त्तवचनात् ॥ विष्णुधर्म्मोत्तरे । “अष्टमीञ्च तथा षष्ठीं नवमीञ्च चतुर्दशीम् । शिरोऽभ्यङ्गं न कुर्व्वीत पर्व्वसन्धौ तथैव च ॥” इति तिथ्यादितत्त्वम् ॥ * ॥ सा च कार्त्तिकेयाभिषेकतिथिः । यथा, “स्वयं स्कन्दो महादेवः सर्व्वपापप्रणाशनः । तस्य षष्ठीं तिथिं प्रादादभिषेके पितामहः ॥ अस्यां फलाशनो यस्तु यजेन्नियतमानसः । अपुत्त्रोऽपि लभेत् पुत्त्रान् अधनोऽपि लभेत् धनम् यं यमिच्छेत मनसा तं तं लभति मानवः ॥ यश्चैतत् पठति स्तोत्रं कार्त्तिकेयस्य मानवः । तस्य गेहे कुमाराणां क्षेमारोग्यं भवेद्ध्रुवम् ॥” इति वाराहे स्कन्दोत्पत्तिनामाध्यायः ॥ * ॥ तत्र जातफलम् । “विद्वान् वरिष्ठश्चतुरः सुकीर्त्तिः प्रलम्बबाहुर्व्रणकीर्णगात्रः । सत्यप्रतिष्ठो धनपुत्त्रयुक्तः षष्ठीप्रसूतो मनुजश्चिरायुः ॥” इति कोष्ठीप्रदीपः ॥ * ॥ तत्र यात्राकरणदोषो यथा, “पञ्चम्यामीप्सितार्थः स्यात् षष्ठ्यां व्याधियुतो भवेत् । सप्तम्यामर्थलाभः स्यादष्टम्यामस्त्रपीडनम् । षष्ठ्यष्टमीद्वादशीषु न गच्छेत्त्रिदिनस्पृशि ॥” इति ज्योतिस्तत्त्वम् ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "षष्ठी",
+            "eid": "44545",
+            "pagenum": "5168,b",
+            "content": "षष्ठी¦ स्त्री षण्णां पूरणी डट् थुट् ङीप् । चन्द्रमसः षष्ठकलाया ह्रासवृद्धिरूपक्रियारूपे १ तिथिभेद स्कन्दभार्य्यारूपे २ मातृकाभेदे “मातृकासु पूज्यतमा सा च षष्ठी प्रकीर्त्तिता । शिशूनां प्रतिविश्वेषु प्रतिपालनकारिणी तपस्विनी विष्णुभक्ता कार्त्तिकेयस्य कामिनी । षष्ठांशरूपा प्रकृते स्तेन षष्ठा प्रकीर्त्तिता । पुत्रपौत्रप्रदात्री च धात्री त्रिजगतां सती । सुन्दरी युवती रम्या सन्ततं भर्तुरन्तिके । स्थाने शिशूनां परमा वृद्धरूपा च यागिनी । पूजा द्वादशमासेषु यस्या विश्वेषु सन्ततम् । पूजा च सूतिकागारे पुरा षष्ठदिने शिशोः । एकविंशतिमे चैव पूजा कल्याणहेतुकी । शश्वन्नियमिता चैषा नित्या काम्याहुतिः परा । मातृरूपा दयारूपा शश्वद्रक्षणरूपिणी । जले स्थले चान्तरीक्षे शिशूनां स्वप्नगोचरे” ब्रह्म० वै० प्र० १ अ० । “ब्रह्मणो मानसी कन्या देवसेना हलीश्वरी । दृष्ट्वा मां मनसा धाता ददौ स्कन्दाय भूमिप । मातृकासु च विख्याता स्कन्दभार्य्या च सुव्रता । विश्वे षष्ठिति विख्याता षष्ठांशात् प्रकृतेर्यतः” ४० अ० । “प्रसूत्या द्वादशे मासि सम्पूज्याऽपत्यवृद्धये । सुते जाते तथा षष्ट्यां षष्ठो द्वादशरूपिणी । वैशाखे चान्दनी षष्ठी ज्यैष्ठे चारण्यसंज्ञिता । आषाढे कार्दमी ज्ञेया श्रावणे लुण्ठनी तथा । भाद्रे चपेटी विख्याता दुर्गाख्याश्वयुजे तथा । नाद्याख्या कार्त्तिके मासि मार्गे मूलकरूपिणी । पौषे मास्यन्नरूपा च शीतला तपसि स्मृता । गोरूपिणी फाल्गुने च चैत्रेऽशोका प्रकीर्त्तिता” स्कन्दपु० । षष्ठीविहितकालव्यषस्था तिथिशव्दे दृश्या ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "षष्ठी",
+            "content": "षष्ठी स्त्री. -  षष्ठ + ङीप् चान्द्रमास के किसी पक्ष की छठ"
+        },
+        {
+            "word": "षष्ठी",
+            "content": "षष्ठी स्त्री. -  षष्ठ + ङीप् (व्या.में ) छठी विभक्ति या सम्बन्ध कारक"
+        },
+        {
+            "word": "षष्ठी",
+            "content": "षष्ठी स्त्री. -  षष्ठ + ङीप् 'कात्यायनी के रूप में दुर्गा का विशेषण, जो सोलह दिव्य मातृकाओं में से एक है'"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "षष्ठी",
+            "content": "the sixth case; the genitive case. This case is generally an ordinary case or विभक्ति as contrasted with कारकविभक्ति. A noun in the genitive case shows a relation in general, with another noun connected with it in a sentence. Commentators have mentioned many kinds of relations denoted by the genitive case and the phrase एकशतं षष्ठ्यर्थाः (the genitive case has senses a hundred and one in all),. is frequently used by grammarians cf. षष्टि शेषे P. II. 3.50; cf. also बहवो हि षष्ठ्यर्थाः स्वस्वाम्यनन्तरसमीपसमूह्विकारावयवाद्यास्तत्र यावन्तः शब्दे संभवन्ति तेषु सर्वेषु प्राप्तेषु नियमः क्रियते षष्ठी स्थानेयोगा इति । Kas. on P. I. 1.49. The genitive case is used in the sense of any karaka when that karaka ; is not to be considered as a karaka; cf. कारकत्वेन अविवक्षिते शेषे षष्ठी भविष्यति. A noun standing as a subject or object of an activity is put in the genitive case when that activity is expressed by a verbal derivative, and not by a verb itself; cf. कर्तुकर्मणोः कृति P. II. 3 .65. For the senses and use of the genitive case, cf. P. II. 3.50 to 73."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "षष्ठी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಕಾತ್ಯಾಯನಿ \\/ದುರ್ಗಾದೇವಿ",
+            "विस्तारः": "'प्रधानांशस्वरूपा या देवसेना च नारद । मातृकासु पूज्यतमा सा च षष्ठी प्रकीर्तिता ॥'स्कान्द०",
+            "content": ""
+        },
+        {
+            "word": "षष्ठी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಶುಕ್ಲ ಮತ್ತು ಕೃಷ್ಣ ಪಕ್ಷಗಳ ಆರನೆಯ ತಿಥಿ",
+            "content": ""
+        },
+        {
+            "word": "षष्ठी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ವ್ಯಾಕರಣದಲ್ಲಿ ಆರನೆಯ ವಿಭಕ್ತಿ",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "षष्ठी",
+            "content": "<lexhead no=\"14\">\n<dentry>षष्ठी</dentry>\n<prAwipaxikam>षष्ठी</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[षष्ठ+ङीप्]</etymology>\n<sense no=\"1\">चान्द्रमास के किसी पक्ष की छठ</sense>\n<sense n=\"2\">(व्या* में ) छठी विभक्ति या सम्बन्ध कारक</sense>\n<sense n=\"3\">कात्यायनी के रूप में दुर्गा का विशेषण, जो सोलह दिव्य मातृकाओं में से एक है</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "षष्ठी",
+            "content": "<body><s>zazWI strI zaRRAM pUraRI qaw Tuw NIp . candramasaH zazWakalAyA hrAsavfdDirUpakriyArUpe <lb/><b>1</b> tiTiBeda skandaBAryyArUpe <lb/><b>2</b> mA­tfkABede <q>mAtfkAsu pUjyatamA sA ca zazWI prakIrttitA . SiSUnAM prativiSvezu pratipAlanakAriRI tapasvinI vizRuBaktA kArttikeyasya kAminI . zazWAMSarUpA prakfte stena zazWA prakIrttitA . putrapOtrapradAtrI ca DAtrI tri­jagatAM satI . sundarI yuvatI ramyA santataM Barturantike . sTAne SiSUnAM paramA vfdDarUpA ca yAginI . pUjA dvA­daSamAsezu yasyA viSvezu santatam . pUjA ca sUtikA­gAre purA zazWadine SiSoH . ekaviMSatime cEva pUjA kalyARahetukI . SaSvanniyamitA cEzA nityA kAmyA­hutiH parA . mAtfrUpA dayArUpA SaSvadrakzaRarUpiRI . jale sTale cAntarIkze SiSUnAM svapnagocare</q> brahma° vE° pra° 1 a° . <q>brahmaRo mAnasI kanyA devasenA halISvarI . dfzwvA mAM manasA DAtA dadO skandAya BUmipa . mAtfkAsu ca viKyAtA skandaBAryyA ca suvratA . viSve zazWiti vi­KyAtA zazWAMSAt prakfteryataH</q> 4° a° . <q>prasUtyA dvAdaSe mAsi sampUjyA'patyavfdDaye . sute jAte taTA zazwyAM zazWo dvAdaSarUpiRI . vESAKe cAndanI zazWI jyEzWe cAraRyasaMjYitA . AzAQe kArdamI jYeyA SrAvaRe luRWanI taTA . BAdre capewI viKyAtA durgAKyASvayuje taTA . nAdyAKyA kArttike mAsi mArge mUlakarUpiRI . pOze mAsyannarUpA ca SItalA tapasi smftA . gorUpiRI PA­lgune ca cEtre'SokA prakIrttitA</q> skandapu° . zazWI­vihitakAlavyazasTA tiTiSavde dfSyA .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "षष्ठी",
+            "content": "<span lang=\"sa\">षष्ठी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕಾತ್ಯಾಯನಿ /ದುರ್ಗಾದೇವಿ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"प्रधानांशस्वरूपा या देवसेना च नारद । मातृकासु पूज्यतमा सा च षष्ठी प्रकीर्तिता ॥\" - स्कान्द०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>षष्ठी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶುಕ್ಲ ಮತ್ತು ಕೃಷ್ಣ ಪಕ್ಷಗಳ ಆರನೆಯ ತಿಥಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>षष्ठी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವ್ಯಾಕರಣದಲ್ಲಿ ಆರನೆಯ ವಿಭಕ್ತಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

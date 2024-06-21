@@ -1,110 +1,110 @@
-/* eslint-disable */ var Module = function() {
-    return function(Module) {
-        Module = Module || {};
-        var Module = typeof Module !== "undefined" ? Module : {};
-        var readyPromiseResolve, readyPromiseReject;
-        Module["ready"] = new Promise(function(resolve, reject) {
-            readyPromiseResolve = resolve;
-            readyPromiseReject = reject;
-        });
-        var moduleOverrides = {};
-        var key;
-        for(key in Module){
-            if (Module.hasOwnProperty(key)) {
-                moduleOverrides[key] = Module[key];
-            }
+{
+    "word": "त्रिशङ्कुयाजिन्",
+    "ABCH": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "linga": "पुं",
+            "pagenum": "34",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "2581",
+            "group": "999",
+            "synonyms": [
+                "गाधेय",
+                "विश्वामित्र",
+                "कौशिक"
+            ],
+            "content": "त्रिशङ्कुयाजी गाधेयो विश्वामित्त्रश्च कौशिकः ।"
         }
-        var arguments_ = [];
-        var thisProgram = "./this.program";
-        var quit_ = function(status, toThrow) {
-            throw toThrow;
-        };
-        var ENVIRONMENT_IS_WEB = false;
-        var ENVIRONMENT_IS_WORKER = false;
-        var ENVIRONMENT_IS_NODE = true;
-        var scriptDirectory = "";
-        function locateFile(path) {
-            if (Module["locateFile"]) {
-                return Module["locateFile"](path, scriptDirectory);
-            }
-            return scriptDirectory + path;
+    ],
+    "MW": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "eid": "88326",
+            "pagenum": "460,3",
+            "content": "त्रि—शङ्कु—याजिन् ¦ <lex>m.</lex> ‘sacrificing for <ab n='Triśaṃku' slp1='triSaNku'>T°</ab>’, <s1 slp1='viSvA-mitra'>Viśvā-mitra</s1>, <ls>L.</ls><info lex='m'/>"
         }
-        var read_, readBinary;
-        var nodeFS;
-        var nodePath;
-        if (ENVIRONMENT_IS_NODE) {
-            if (ENVIRONMENT_IS_WORKER) {
-                scriptDirectory = require("path").dirname(scriptDirectory) + "/";
-            } else {
-                scriptDirectory = __dirname + "/";
-            }
-            read_ = function shell_read(filename, binary) {
-                if (!nodeFS) nodeFS = require("fs");
-                if (!nodePath) nodePath = require("path");
-                filename = nodePath["normalize"](filename);
-                return nodeFS["readFileSync"](filename, binary ? null : "utf8");
-            };
-            readBinary = function readBinary(filename) {
-                var ret = read_(filename, true);
-                if (!ret.buffer) {
-                    ret = new Uint8Array(ret);
-                }
-                assert(ret.buffer);
-                return ret;
-            };
-            if (process["argv"].length > 1) {
-                thisProgram = process["argv"][1].replace(/\\/g, "/");
-            }
-            arguments_ = process["argv"].slice(2);
-            quit_ = function(status) {
-                process["exit"](status);
-            };
-            Module["inspect"] = function() {
-                return "[Emscripten Module object]";
-            };
-        } else {}
-        var out = Module["print"] || console.log.bind(console);
-        var err = Module["printErr"] || console.warn.bind(console);
-        for(key in moduleOverrides){
-            if (moduleOverrides.hasOwnProperty(key)) {
-                Module[key] = moduleOverrides[key];
-            }
+    ],
+    "PW": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "eid": "47825",
+            "pagenum": 3,
+            "content": "*त्रिशङ्कुयाजिन्¦ <lex>m.</lex> <ab>Bein.</ab> <is>Viśvāmitra</is>ʼs."
         }
-        moduleOverrides = null;
-        if (Module["arguments"]) arguments_ = Module["arguments"];
-        if (Module["thisProgram"]) thisProgram = Module["thisProgram"];
-        if (Module["quit"]) quit_ = Module["quit"];
-        var tempRet0 = 0;
-        var setTempRet0 = function(value) {
-            tempRet0 = value;
-        };
-        var wasmBinary;
-        if (Module["wasmBinary"]) wasmBinary = Module["wasmBinary"];
-        var noExitRuntime = Module["noExitRuntime"] || true;
-        if (typeof WebAssembly !== "object") {
-            abort("no native wasm support detected");
+    ],
+    "PWG": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "eid": "31164",
+            "pagenum": 3,
+            "content": "त्रिशङ्कुयाजिन्¦ (त्रि° + या°) <lex>m.</lex> Bein. <is>Viśvāmitra's</is> (<i>für</i> <ab n='?'>Tr.</ab> <i>opfernd</i>) <ls>H. 850.</ls>"
         }
-        var wasmMemory;
-        var ABORT = false;
-        var EXITSTATUS;
-        function assert(condition, text) {
-            if (!condition) {
-                abort("Assertion failed: " + text);
-            }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "eid": "18147",
+            "pagenum": 326,
+            "content": "त्रिशङ्कुयाजिन्¦ m. (-जी) VISWAMITRA, a celebrated sage and saint. E. त्रिशङ्कु the king so named, and याजिन् causing to worship; being the family priest of the monarch."
         }
-        var UTF8Decoder = new TextDecoder("utf8");
-        function UTF8ArrayToString(heap, idx, maxBytesToRead) {
-            var endIdx = idx + maxBytesToRead;
-            var endPtr = idx;
-            while(heap[endPtr] && !(endPtr >= endIdx))++endPtr;
-            return UTF8Decoder.decode(heap.subarray ? heap.subarray(idx, endPtr) : new Uint8Array(heap.slice(idx, endPtr)));
+    ],
+    "WIL": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "eid": "18164",
+            "pagenum": 391,
+            "content": "त्रिशङ्कुयाजिन्¦ m. (-जी) VIŚVĀMITRA, a celebrated sage and saint. .E. त्रिशङ्कु the king so named, and याजिन् causing to worship; being the family priest of the monarch."
         }
-        function UTF8ToString(ptr, maxBytesToRead) {
-            if (!ptr) return "";
-            var maxPtr = ptr + maxBytesToRead;
-            for(var end = ptr; !(end >= maxPtr) && HEAPU8[end];)++end;
-            return UTF8Decoder.decode(HEAPU8.subarray(ptr, end));
+    ],
+    "YAT": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "eid": "17640",
+            "pagenum": 347,
+            "content": "त्रिशङ्कु-याजिन्¦ (जी) 5. <i>m. Vishwamitra.</i>"
         }
-        function stringToUTF8Array(str, heap, outIdx, maxBytesToWrite) {
-            if (!(maxBytesToWrite > 0)) return 0;
-  
+    ],
+    "VCP": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "eid": "23809",
+            "pagenum": "3386,a",
+            "content": "त्रिशङ्कुयाजिन्¦ पु० त्रिशङ्कुं याजयति यज--णिनि । विश्वाभित्रे हेमच० त्रिशङ्कुशब्दे दृश्यम् ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "content": "त्रिशङ्कुयाजिन् पुं. त्रि-शङ्कु-याजिन्  - विश्वामित्र का विशेषण"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ತ್ರಿಶಂಕುವಿನ ಯಾಗವನ್ನು ಮಾಡಿಸಿದ ವಿಶ್ವಾಮಿತ್ರ ಮಹರ್ಷಿ",
+            "निष्पत्तिः": "यज (देवपूजायाम्) + णिच्'णिनिः' (३-१-१३४)",
+            "व्युत्पत्तिः": "त्रिशङ्कुं याजयति",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "content": "<body><s>triSaNkuyAjin pu° triSaNkuM yAjayati yaja—Rini . viSvABitre hemaca° triSaNkuSabde dfSyam .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "content": "<H1><h><key1>triSaNkuyAjin</key1><key2>triSaNkuyAjin</key2></h><body><s>triSaNkuyAjin</s>  <div n=\"1\">m. (<s>-jI</s>) VISWAMITRA, a celebrated sage and saint.</div><div n=\"E\"> E. <s>triSaNku</s> <lb />the king so named, and <s>yAjin</s> causing to worship; being the <lb />family priest of the monarch.</div></body><tail><L>18147</L><pc>326-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिशङ्कुयाजिन्",
+            "content": "<span lang=\"sa\">त्रिशङ्कुयाजिन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತ್ರಿಶಂಕುವಿನ ಯಾಗವನ್ನು ಮಾಡಿಸಿದ ವಿಶ್ವಾಮಿತ್ರ ಮಹರ್ಷಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>यज (देवपूजायाम्) + णिच् - \"णिनिः\" (३-१-१३४)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिशङ्कुं याजयति<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

@@ -1,136 +1,39 @@
-     return {};
+{
+    "word": "त्रिशङ्कुः",
+    "SKD": [
+        {
+            "word": "त्रिशङ्कुः",
+            "eid": "15629",
+            "pagenum": "2-662-c",
+            "content": "त्रिशङ्कुः¦, पुं, (त्रीणि शङ्कूनि व्यतिक्रमाणि यस्य ।) सूर्य्यवंशीयराजविशेषः । स तु इक्ष्वाकुवंशोद्भवपृथुराजपुत्त्रः । (अस्य नामनिरुक्तिर्यथा, हरिवंशे । १३ । १९ । “एवं त्रीण्यस्य शङ्कूनि तानि दृष्ट्वा महायशाः । त्रिशङ्कुरिति होवाच त्रिशङ्कुरिति स स्मृतः ॥”) एष वशिष्ठमाह अहं सशरीरेण स्वर्गं गन्तुं यजेयं वशिष्ठ एतदशक्यमित्याह ततो राजा तस्य पुत्त्रानुवाच सशरीरो यज्ञेन स्वर्गं यथाप्नुयां तथा कुरुत यदि भवद्भिः परित्यक्तस्तदान्यं गुरुमुपासिष्ये वशिष्ठपुत्त्रास्तच्छ्रुत्वा राजानमूचुर्वशिष्ठो भगवान् अशक्यमिति यत् प्राह तदस्माभिः कथं शक्यम् । राजोवाच यष्टुमन्यां गतिं गमिष्यामि तच्छ्रुत्वा ऋषिपुत्त्रा राजानं शेपुः श्वश्चाण्डालो भविष्यसि । ततस्तस्यां रात्र्यामतीतायां स चाण्डालदर्शनो भूत्वा विश्वामित्रं शरणमाययौ विश्वामित्रस्तं स्वीयद्रव्येण याजयामास तस्मिन् यज्ञे देवा भागार्थं नागच्छन् ततो विश्वामित्रः क्रोधात् राजानमब्रवीत् मया बाल्यात् प्रभृति यत्तपः कृतं तेन त्वं दिवं व्रज तदा राजा सशरीरो दिवं ययौ । तदा शक्रस्तमुवाच त्रिशङ्को ! त्वं भूमौ पत ततोऽवाक्शिराः पतन् राजा पाहीति विश्वामित्रमुवाच विश्वामित्रस्तिष्ठेति तमुक्त्वा स्वर्गदक्षिणमार्गेऽपरान् सप्तर्षीन् सृष्ट्वापरं नक्षत्रचक्रं स्रष्टुमुपचक्रमे देवाः सम्भ्रान्ता ऋषिमूचुरयं सशरीरः स्वर्गं गन्तुं नार्हति विश्वामित्रस्तानुवाच अहमस्य स्वर्गारोहणं प्रतिज्ञाय कथमनृतं करिष्यामि अतो यावल्लोकाः स्थास्यन्ति तावदमूनि नक्षत्राण्यत्रैव तिष्ठन्तु त्रिशङ्कुरप्यवाक्शिरास्तिष्ठतु । इति रामायणम् ॥ * ॥ विडालः । शलभः । इति मेदिनी । के, १०१ ॥ चातकपक्षी । इति शब्दरत्नावली ॥ खद्योतः । इति शब्दमाला ॥ (महादेवः । यथा, महाभारते । १३ । १७ । १०२ । “अजैकपाच्च कापाली त्रिशङ्कुरजितः शिवः ॥”)"
         }
-        function callRuntimeCallbacks(callbacks) {
-            while(callbacks.length > 0){
-                var callback = callbacks.shift();
-                if (typeof callback == "function") {
-                    callback(Module);
-                    continue;
-                }
-                var func = callback.func;
-                if (typeof func === "number") {
-                    if (callback.arg === undefined) {
-                        wasmTable.get(func)();
-                    } else {
-                        wasmTable.get(func)(callback.arg);
-                    }
-                } else {
-                    func(callback.arg === undefined ? null : callback.arg);
-                }
-            }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिशङ्कुः",
+            "content": "त्रिशङ्कुः पुं. त्रि-शङ्कुः  - 'अयोध्या का विख्यात सूर्यवंशी राजा, हरिश्चन्द्र का पिता'"
+        },
+        {
+            "word": "त्रिशङ्कुः",
+            "content": "त्रिशङ्कुः पुं. त्रि-शङ्कुः  - चातकपक्षी"
+        },
+        {
+            "word": "त्रिशङ्कुः",
+            "content": "त्रिशङ्कुः पुं. त्रि-शङ्कुः  - बिल्ली"
+        },
+        {
+            "word": "त्रिशङ्कुः",
+            "content": "त्रिशङ्कुः पुं. त्रि-शङ्कुः  - टिड्डा"
+        },
+        {
+            "word": "त्रिशङ्कुः",
+            "content": "त्रिशङ्कुः पुं. त्रि-शङ्कुः  - जुगनू"
         }
-        var runtimeKeepaliveCounter = 0;
-        function keepRuntimeAlive() {
-            return noExitRuntime || runtimeKeepaliveCounter > 0;
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रिशङ्कुः",
+            "content": "<segmenthd>\n<dentry>त्रिशङ्कुः</dentry>\n<prAwipaxikam>त्रिशङ्कु</prAwipaxikam>\n<seg>त्रि-शङ्कुः</seg>\n<grammar>पुं*</grammar>\n<sense no=\"1\">अयोध्या का विख्यात सूर्यवंशी राजा, हरिश्चन्द्र का पिता त्रिशंकु बुद्धिमान धर्मात्मा और न्याय-परायण राजा था, परन्तु उसमें यह एक बड़ा दोष था कि वह अपने व्यक्तित्व को बहुत प्रेम करता था। उसने इसी शरीर से स्वर्ग जाने की इच्छा से यज्ञ करना चाहा, फलतः उसने अपने कुलगुरु वशिष्ठ से यज्ञ कराने की प्रार्थना की, परन्तु जब उन्होनें इस प्रार्थना को स्वीकार नहीं किया तो उसने उसके सौ पुत्रों से प्रार्थना की, परन्तु उन्होनें भी इस प्रस्ताव को बेहूदा बताकर ठुकरा दिया। त्रिशंकु ने उन सबको कायर और नपुंसक कहा, और इसके बदले उन्होंने उसे ‘चाण्डाल बनने’ का शाप दे दिया। जब त्रिशंकु की ऐसी दुर्दशा हुई तो विश्वामित्र ने जिसका परिवार एक दुर्भिक्ष के समय त्रिशंकु का आभारग्रस्त हो गया था - उसका यज्ञ सम्पन्न कराना स्वीकार कर लिया। उसने यज्ञ में देवताओं का आह्वान किया - जब देवता यज्ञ में न आये तो विश्वामित्र ने क्रुद्ध हो अपनी शक्ति से त्रिशंकु को इसी शरीर से ऊपर स्वर्ग में भेजा। त्रिशंकु ऊपर ही ऊपर उड़ता चला गया और आकाशमण्डल से जा टकराया। वहाँ इन्द्र तथा दूसरे देवताओं ने उसे सिर के बल धकेल दिया। तो भी तेजस्वी विश्वामित्र ने नीचे आते हुए त्रिशंकु को बीच में ही ‘त्रिशंकु वहीं ठहरो’ कहकर रोक दिया। फलतः भाग्यहीन राजा सिर के बल वहीं दक्षिणगोलार्ध में नक्षत्रपुंज के रुप में अटक गया। इसीलिए यह लोकोक्ति ‘त्रिशंकुरिवान्तरा तिष्ठ’ श* २ प्रसिद्ध हो गई।</sense>\n<sense no=\"2\">चातकपक्षी</sense>\n<sense no=\"3\">बिल्ली</sense>\n<sense no=\"4\">टिड्डा</sense></segmenthd>\n <segmenthd>\n<dentry>त्रिशङ्कुः</dentry>\n<prAwipaxikam>त्रिशङ्कु</prAwipaxikam>\n<seg>त्रि-शङ्कुः</seg>\n<grammar>पुं*</grammar>\n<sense no=\"4\">जुगनू</sense></segmenthd>\n"
         }
-        function _atexit(func, arg) {}
-        function ___cxa_thread_atexit(a0, a1) {
-            return _atexit(a0, a1);
-        }
-        var structRegistrations = {};
-        function runDestructors(destructors) {
-            while(destructors.length){
-                var ptr = destructors.pop();
-                var del = destructors.pop();
-                del(ptr);
-            }
-        }
-        function simpleReadValueFromPointer(pointer) {
-            return this["fromWireType"](HEAPU32[pointer >> 2]);
-        }
-        var awaitingDependencies = {};
-        var registeredTypes = {};
-        var typeDependencies = {};
-        var char_0 = 48;
-        var char_9 = 57;
-        function makeLegalFunctionName(name) {
-            if (undefined === name) {
-                return "_unknown";
-            }
-            name = name.replace(/[^a-zA-Z0-9_]/g, "$");
-            var f = name.charCodeAt(0);
-            if (f >= char_0 && f <= char_9) {
-                return "_" + name;
-            } else {
-                return name;
-            }
-        }
-        function createNamedFunction(name, body) {
-            name = makeLegalFunctionName(name);
-            return new Function("body", "return function " + name + "() {\n" + '    "use strict";' + "    return body.apply(this, arguments);\n" + "};\n")(body);
-        }
-        function extendError(baseErrorType, errorName) {
-            var errorClass = createNamedFunction(errorName, function(message) {
-                this.name = errorName;
-                this.message = message;
-                var stack = new Error(message).stack;
-                if (stack !== undefined) {
-                    this.stack = this.toString() + "\n" + stack.replace(/^Error(:[^\n]*)?\n/, "");
-                }
-            });
-            errorClass.prototype = Object.create(baseErrorType.prototype);
-            errorClass.prototype.constructor = errorClass;
-            errorClass.prototype.toString = function() {
-                if (this.message === undefined) {
-                    return this.name;
-                } else {
-                    return this.name + ": " + this.message;
-                }
-            };
-            return errorClass;
-        }
-        var InternalError = undefined;
-        function throwInternalError(message) {
-            throw new InternalError(message);
-        }
-        function whenDependentTypesAreResolved(myTypes, dependentTypes, getTypeConverters) {
-            myTypes.forEach(function(type) {
-                typeDependencies[type] = dependentTypes;
-            });
-            function onComplete(typeConverters) {
-                var myTypeConverters = getTypeConverters(typeConverters);
-                if (myTypeConverters.length !== myTypes.length) {
-                    throwInternalError("Mismatched type converter count");
-                }
-                for(var i = 0; i < myTypes.length; ++i){
-                    registerType(myTypes[i], myTypeConverters[i]);
-                }
-            }
-            var typeConverters = new Array(dependentTypes.length);
-            var unregisteredTypes = [];
-            var registered = 0;
-            dependentTypes.forEach(function(dt, i) {
-                if (registeredTypes.hasOwnProperty(dt)) {
-                    typeConverters[i] = registeredTypes[dt];
-                } else {
-                    unregisteredTypes.push(dt);
-                    if (!awaitingDependencies.hasOwnProperty(dt)) {
-                        awaitingDependencies[dt] = [];
-                    }
-                    awaitingDependencies[dt].push(function() {
-                        typeConverters[i] = registeredTypes[dt];
-                        ++registered;
-                        if (registered === unregisteredTypes.length) {
-                            onComplete(typeConverters);
-                        }
-                    });
-                }
-            });
-            if (0 === unregisteredTypes.length) {
-                onComplete(typeConverters);
-            }
-        }
-        function __embind_finalize_value_object(structType) {
-            var reg = structRegistrations[structType];
-            delete structRegistrations[structType];
-            var rawConstructor = reg.rawConstructor;
-            var rawDestructor = reg.rawDestructor;
-            var fieldRecords = reg.fields;
-            var fieldTypes = fieldRecords.map(function(field) {
-                return field.getterReturnType;
-            }).concat(fieldRecords.map(function(field) {
-                return field.setterArgumentType;
-            }));
-            whenDependentTypesAreResolved([
-                structType
-     
+    ]
+}

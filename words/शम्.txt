@@ -1,619 +1,586 @@
-declare module 'mongoose' {
-
-  /**
-   * [Expressions reference](https://www.mongodb.com/docs/manual/meta/aggregation-quick-reference/#expressions)
-   */
-  type AggregationVariables =
-    SpecialPathVariables |
-    '$$NOW' |
-    '$$CLUSTER_TIME' |
-    '$$DESCEND' |
-    '$$PRUNE' |
-    '$$KEEP';
-
-  type SpecialPathVariables =
-    '$$ROOT' |
-    '$$CURRENT' |
-    '$$REMOVE';
-
-  export namespace Expression {
-    export interface Abs {
-      /**
-       * Returns the absolute value of a number.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/abs/#mongodb-expression-exp.-abs
-       */
-      $abs: Path | ArithmeticExpressionOperator;
-    }
-
-    export interface Add {
-      /**
-       * Adds numbers to return the sum, or adds numbers and a date to return a new date. If adding numbers and a date, treats the numbers as milliseconds. Accepts any number of argument expressions, but at most, one expression can resolve to a date.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/add/#mongodb-expression-exp.-add
-       */
-      $add: Expression[];
-    }
-
-    export interface Ceil {
-      /**
-       * Returns the smallest integer greater than or equal to the specified number.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/ceil/#mongodb-expression-exp.-ceil
-       */
-      $ceil: NumberExpression;
-    }
-
-    export interface Divide {
-      /**
-       * Returns the result of dividing the first number by the second. Accepts two argument expressions.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/divide/#mongodb-expression-exp.-divide
-       */
-      $divide: NumberExpression[];
-    }
-
-    export interface Exp {
-      /**
-       * Raises e to the specified exponent.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/exp/#mongodb-expression-exp.-exp
-       */
-      $exp: NumberExpression;
-    }
-
-    export interface Floor {
-      /**
-       * Returns the largest integer less than or equal to the specified number.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/floor/#mongodb-expression-exp.-floor
-       */
-      $floor: NumberExpression;
-    }
-
-    export interface Ln {
-      /**
-       * Calculates the natural log of a number.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/ln/#mongodb-expression-exp.-ln
-       */
-      $ln: NumberExpression;
-    }
-
-    export interface Log {
-      /**
-       * Calculates the log of a number in the specified base.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/log/#mongodb-expression-exp.-log
-       */
-      $log: [NumberExpression, NumberExpression];
-    }
-
-    export interface Log10 {
-      /**
-       * Calculates the log base 10 of a number.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/log10/#mongodb-expression-exp.-log10
-       */
-      $log10: NumberExpression;
-    }
-
-    export interface Mod {
-      /**
-       * Returns the remainder of the first number divided by the second. Accepts two argument expressions.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/mod/#mongodb-expression-exp.-mod
-       */
-      $mod: [NumberExpression, NumberExpression];
-    }
-    export interface Multiply {
-      /**
-       * Multiplies numbers to return the product. Accepts any number of argument expressions.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/multiply/#mongodb-expression-exp.-multiply
-       */
-      $multiply: NumberExpression[];
-    }
-
-    export interface Pow {
-      /**
-       * Raises a number to the specified exponent.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/pow/#mongodb-expression-exp.-pow
-       */
-      $pow: [NumberExpression, NumberExpression];
-    }
-
-    export interface Round {
-      /**
-       * Rounds a number to to a whole integer or to a specified decimal place.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/round/#mongodb-expression-exp.-round
-       */
-      $round: [NumberExpression, NumberExpression?];
-    }
-
-    export interface Sqrt {
-      /**
-       * Calculates the square root.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/sqrt/#mongodb-expression-exp.-sqrt
-       */
-      $sqrt: NumberExpression;
-    }
-
-    export interface Subtract {
-      /**
-       * Returns the result of subtracting the second value from the first. If the two values are numbers, return the difference. If the two values are dates, return the difference in milliseconds. If the two values are a date and a number in milliseconds, return the resulting date. Accepts two argument expressions. If the two values are a date and a number, specify the date argument first as it is not meaningful to subtract a date from a number.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/subtract/#mongodb-expression-exp.-subtract
-       */
-      $subtract: (NumberExpression | DateExpression)[];
-    }
-
-    export interface Trunc {
-      /**
-       * Truncates a number to a whole integer or to a specified decimal place.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/trunc/#mongodb-expression-exp.-trunc
-       */
-      $trunc: [NumberExpression, NumberExpression?];
-    }
-
-    export interface Sin {
-      /**
-       * Returns the sine of a value that is measured in radians.
-       *
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/sin/#mongodb-expression-exp.-sin
-       */
-      $sin: NumberExpression;
-    }
-
-    export interface Cos {
-      /**
-       * Returns the cosine of a value that is measured in radians.
-       *
-       * @version 4.2
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/cos/#mongodb-expression-exp.-cos
-       */
-      $cos: NumberExpression;
-    }
-
-    export interface Tan {
-      /**
-       * Returns the tangent of a value that is measured in radians.
-       *
-       * @version 4.2
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/tan/#mongodb-expression-exp.-tan
-       */
-      $tan: NumberExpression;
-    }
-
-    export interface Asin {
-      /**
-       * Returns the inverse sin (arc sine) of a value in radians.
-       *
-       * @version 4.2
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/asin/#mongodb-expression-exp.-asin
-       */
-      $asin: NumberExpression;
-    }
-
-    export interface Acos {
-      /**
-       * Returns the inverse cosine (arc cosine) of a value in radians.
-       *
-       * @version 4.2
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/acos/#mongodb-expression-exp.-acos
-       */
-      $acos: NumberExpression;
-    }
-
-    export interface Atan {
-      /**
-       * Returns the inverse tangent (arc tangent) of a value in radians.
-       *
-       * @version 4.2
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/atan/#mongodb-expression-exp.-atan
-       */
-      $atan: NumberExpression;
-    }
-
-    export interface Atan2 {
-      /**
-       * Returns the inverse tangent (arc tangent) of y / x in radians, where y and x are the first and second values passed to the expression respectively.
-       *
-       * @version 4.2
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/atan2/#mongodb-expression-exp.-atan2
-       */
-      $atan2: NumberExpression;
-    }
-
-    export interface Asinh {
-      /**
-       * Returns the inverse hyperbolic sine (hyperbolic arc sine) of a value in radians.
-       *
-       * @version 4.2
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/asinh/#mongodb-expression-exp.-asinh
-       */
-      $asinh: NumberExpression;
-    }
-
-    export interface Acosh {
-      /**
-       * Returns the i"use strict";
-/*
- * ATTENTION: An "eval-source-map" devtool has been used.
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
-self["webpackHotUpdate_N_E"]("pages/harililakalpataru/[...harililakalpataru_id]",{
-
-/***/ "./src/pages/harililakalpataru/[...harililakalpataru_id].js":
-/*!******************************************************************!*\
-  !*** ./src/pages/harililakalpataru/[...harililakalpataru_id].js ***!
-  \******************************************************************/
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-eval(__webpack_require__.ts("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"./node_modules/react/jsx-dev-runtime.js\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/dynamic */ \"./node_modules/next/dynamic.js\");\n/* harmony import */ var next_dynamic__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_dynamic__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var use_debounce__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! use-debounce */ \"./node_modules/use-debounce/dist/index.module.js\");\n/* harmony import */ var _components_button_NavButton__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/button/NavButton */ \"./src/components/button/NavButton.js\");\n/* harmony import */ var _barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! __barrel_optimize__?names=FaArrowLeft,FaArrowRight,FaChevronLeft,FaChevronRight,FaEdit,FaHome!=!react-icons/fa */ \"__barrel_optimize__?names=FaArrowLeft,FaArrowRight,FaChevronLeft,FaChevronRight,FaEdit,FaHome!=!./node_modules/react-icons/fa/index.esm.js\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! next/router */ \"./node_modules/next/router.js\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_4__);\n/* harmony import */ var _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/utils/axiosInstance */ \"./src/utils/axiosInstance.js\");\n/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! next/link */ \"./node_modules/next/link.js\");\n/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_6__);\n/* harmony import */ var _utils_function__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/utils/function */ \"./src/utils/function.js\");\n\nvar _s = $RefreshSig$();\n\n\n\n\n\n\n\n\n\nconst CustomEditor = next_dynamic__WEBPACK_IMPORTED_MODULE_2___default()(()=>__webpack_require__.e(/*! import() */ \"src_components_custom-editor_js\").then(__webpack_require__.bind(__webpack_require__, /*! ../../components/custom-editor */ \"./src/components/custom-editor.js\")), {\n    loadableGenerated: {\n        modules: [\n            \"harililakalpataru\\\\[...harililakalpataru_id].js -> \" + \"../../components/custom-editor\"\n        ]\n    },\n    ssr: false\n});\n_c = CustomEditor;\nconst HarililakalpataruId = (param)=>{\n    let { harililakalpataru_id } = param;\n    _s();\n    const router = (0,next_router__WEBPACK_IMPORTED_MODULE_4__.useRouter)();\n    const [currentSkanda, setCurrentSkanda] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({});\n    const [currentAdhyayList, setCurrentAdhyayList] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const [currentAdhyay, setCurrentAdhyay] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const [harililakalpataruSkanda, setHarililakalpataruSkanda] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([]);\n    const [content, setContent] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(\"\");\n    const [status, setStatus] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(\"Saved!\");\n    const [saveContent] = (0,use_debounce__WEBPACK_IMPORTED_MODULE_8__.useDebounce)(content, 500);\n    const [focus, setFocus] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);\n    const [activeTab, setActiveTab] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(\"header\");\n    const [tabs, setTabs] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)([\n        {\n            name: \"header\",\n            val: \"header\"\n        },\n        {\n            name: \"footer\",\n            val: \"footer\"\n        }\n    ]);\n    const handleTab = (type)=>{\n        setActiveTab(type);\n    // router.push({\n    //   pathname: `/satsangijeevan/${satsangijeevan_id.join(\"/\")}`,\n    //   query: { tab: type },\n    // });\n    };\n    const getAllSkanda = async ()=>{\n        try {\n            var _response_data;\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/skanda\");\n            setHarililakalpataruSkanda(response === null || response === void 0 ? void 0 : (_response_data = response.data) === null || _response_data === void 0 ? void 0 : _response_data.data);\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    const getCurrentSkanda = async (id)=>{\n        try {\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/skanda\", {\n                params: {\n                    id: id\n                }\n            });\n            setContent(response.data.data[activeTab]);\n            setCurrentSkanda(response.data.data);\n            return;\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    const getCurrentAdhyayList = async (id)=>{\n        try {\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/adhyay\", {\n                params: {\n                    skandaId: id\n                }\n            });\n            setCurrentAdhyayList(response.data.data);\n            return;\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    const getCurrentAdhyay = async (skandaId, id)=>{\n        try {\n            const response = await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].get(\"/harililakalpataru/adhyay\", {\n                params: {\n                    skandaId: skandaId,\n                    id: id\n                }\n            });\n            setContent(response.data.data[activeTab]);\n            setCurrentAdhyay(response.data.data);\n            return;\n        } catch (error) {\n            console.error(\"Error geting data:\", error);\n        }\n    };\n    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{\n        getAllSkanda();\n        if (harililakalpataru_id.length >= 1) {\n            getCurrentSkanda(harililakalpataru_id[0]);\n            getCurrentAdhyayList(harililakalpataru_id[0]);\n        }\n        if (harililakalpataru_id.length >= 1) {\n            getCurrentAdhyay(harililakalpataru_id[0], harililakalpataru_id[1]);\n        }\n    }, [\n        router.query,\n        activeTab,\n        harililakalpataru_id\n    ]);\n    // console.log(\"harililakalpataruSkanda----------\", harililakalpataruSkanda);\n    // console.log(\"currentSkanda----------\", currentSkanda);\n    // console.log(\"currentAdhyayList----------\", currentAdhyayList);\n    console.log(\"currentAdhyay----------\", currentAdhyay);\n    // console.log(\"content----------\", content);\n    const handleSave = async ()=>{\n        try {\n            await _utils_axiosInstance__WEBPACK_IMPORTED_MODULE_5__[\"default\"].post(\"/harililakalpataru/skanda\", {\n                id: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda._id,\n                body: content,\n                key: activeTab\n            });\n            setStatus(\"Saved!\");\n        } catch (error) {\n            console.error(\"Error inserting data:\", error);\n        }\n    };\n    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(()=>{\n        if (focus) {\n            handleSave();\n        }\n    }, [\n        saveContent\n    ]);\n    const handlePage = (page)=>{\n    // if (harililakalpataru_id.length === 1) {\n    //   const currentObject =\n    //     satsangijeevan &&\n    //     satsangijeevan?.data?.find(\n    //       (obj) => obj.adhyayKey == harililakalpataru_id[0]\n    //     );\n    //   const currentIndexInArray = satsangijeevan?.data?.indexOf(currentObject);\n    //   if (page == \"NEXT\") {\n    //     const nextObject = satsangijeevan?.data?.[currentIndexInArray + 1];\n    //     return nextObject ? nextObject.adhyayKey : harililakalpataru_id;\n    //   }\n    //   if (page == \"PREVIOUS\") {\n    //     const nextObject = satsangijeevan?.data?.[currentIndexInArray - 1];\n    //     return nextObject ? nextObject.adhyayKey : harililakalpataru_id;\n    //   }\n    // } else if (harililakalpataru_id.length === 2) {\n    //   const currentObject =\n    //     currentSatsangijeevans &&\n    //     currentSatsangijeevans?.items?.find(\n    //       (obj) => obj.id == harililakalpataru_id[1]\n    //     );\n    //   const currentIndexInArray =\n    //     currentSatsangijeevans?.items?.indexOf(currentObject);\n    //   if (page == \"NEXT\") {\n    //     const nextObject =\n    //       currentSatsangijeevans?.items?.[currentIndexInArray + 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${nextObject.id}`\n    //         : `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}`\n    //     }`;\n    //   }\n    //   if (page == \"PREVIOUS\") {\n    //     const nextObject =\n    //       currentSatsangijeevans?.items?.[currentIndexInArray - 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${nextObject.id}`\n    //         : `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}`\n    //     }`;\n    //   }\n    // } else if (harililakalpataru_id.length === 3) {\n    //   const currentData =\n    //     currentSatsangijeevansVerse &&\n    //     currentSatsangijeevansVerse?.items?.filter((a) => a.id !== -1);\n    //   const currentObject =\n    //     currentData &&\n    //     currentData?.find((obj) => obj.id == harililakalpataru_id[2]);\n    //   const currentIndexInArray = currentData?.indexOf(currentObject);\n    //   if (page == \"NEXT\") {\n    //     const nextObject = currentData?.[currentIndexInArray + 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}/${nextObject.id}?tab=${activeTab}`\n    //         : `${harililakalpataru_id.join(\"/\")}?tab=${activeTab}`\n    //     }`;\n    //   }\n    //   if (page == \"PREVIOUS\") {\n    //     const nextObject = currentData?.[currentIndexInArray - 1];\n    //     return `${\n    //       nextObject\n    //         ? `${harililakalpataru_id[0]}/${harililakalpataru_id[1]}/${nextObject.id}?tab=${activeTab}`\n    //         : `${harililakalpataru_id.join(\"/\")}?tab=${activeTab}`\n    //     }`;\n    //   }\n    // }\n    };\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n        children: [\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"nav\", {\n                className: \"flex justify-between gap-2 items-center z-30 sticky top-0 bg-secondary p-2 -m-4 mb-1\",\n                children: [\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                        className: \"grow-0 gap-2 items-center\",\n                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"flex gap-2 items-center\",\n                            children: [\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_button_NavButton__WEBPACK_IMPORTED_MODULE_3__.NavButton, {\n                                    type: \"link\",\n                                    link: \"/dashboard\",\n                                    label: \"back-btn\",\n                                    className: \"flex\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaHome, {}, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 216,\n                                        columnNumber: 15\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 210,\n                                    columnNumber: 13\n                                }, undefined),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_components_button_NavButton__WEBPACK_IMPORTED_MODULE_3__.NavButton, {\n                                    type: \"link\",\n                                    link: \"/satsangijeevan/\".concat(harililakalpataru_id.slice(0, -1).join(\"/\")),\n                                    label: \"back-btn\",\n                                    className: \"flex\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaArrowLeft, {}, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 226,\n                                        columnNumber: 15\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 218,\n                                    columnNumber: 13\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 209,\n                            columnNumber: 11\n                        }, undefined)\n                    }, void 0, false, {\n                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                        lineNumber: 208,\n                        columnNumber: 9\n                    }, undefined),\n                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                        className: \"grow text-primary text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl\",\n                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                            className: \"flex justify-center\",\n                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                className: \"capitalize\",\n                                children: [\n                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                        className: \"hover:underline\",\n                                        href: \"/harililakalpataru\",\n                                        children: \"॥ हरिलीलाकल्पतरु ॥\"\n                                    }, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 233,\n                                        columnNumber: 15\n                                    }, undefined),\n                                    currentSkanda && \" > \",\n                                    currentSkanda && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                        className: \"hover:underline\",\n                                        href: \"/harililakalpataru/\".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id),\n                                        children: currentSkanda && (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.title)\n                                    }, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 239,\n                                        columnNumber: 17\n                                    }, undefined),\n                                    currentAdhyay && \" > \",\n                                    currentAdhyay && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                        className: \"hover:underline\",\n                                        href: \"/harililakalpataru/\".concat(currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.id),\n                                        children: currentAdhyay && (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.title)\n                                    }, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 249,\n                                        columnNumber: 17\n                                    }, undefined)\n                                ]\n                            }, void 0, true, {\n                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                lineNumber: 232,\n                                columnNumber: 13\n                            }, undefined)\n                        }, void 0, false, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 231,\n                            columnNumber: 11\n                        }, undefined)\n                    }, void 0, false, {\n                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                        lineNumber: 230,\n                        columnNumber: 9\n                    }, undefined)\n                ]\n            }, void 0, true, {\n                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                lineNumber: 207,\n                columnNumber: 7\n            }, undefined),\n            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                children: harililakalpataru_id.length === 1 && router.query.edit === \"skanda\" ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                    children: [\n                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"flex justify-between items-center\",\n                            children: [\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                    className: \"grow flex mb-2 overflow-x-auto no-scrollbar gap-2\",\n                                    children: tabs.map((tab, index)=>{\n                                        var _currentSkanda_tab_val, _currentSkanda_tab_val1;\n                                        return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {\n                                            children: tab.val && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                onClick: ()=>handleTab(tab === null || tab === void 0 ? void 0 : tab.val),\n                                                className: \"cursor-pointer flex-shrink-0 flex items-center py-2 mx-1 text-sm md:text-lg  \".concat(activeTab === (tab === null || tab === void 0 ? void 0 : tab.val) ? \"active  text-red  border-b-2 border-red font-bold\" : \" font-bold  text-gray-500\"),\n                                                children: [\n                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                        class: \"inline-flex items-center\",\n                                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"label\", {\n                                                            class: \"relative flex items-center rounded-full cursor-pointer\",\n                                                            htmlFor: \"custom\",\n                                                            children: [\n                                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"input\", {\n                                                                    checked: true,\n                                                                    type: \"checkbox\",\n                                                                    class: \"peer relative appearance-none w-5 h-5  rounded-md  \".concat(((_currentSkanda_tab_val = currentSkanda[tab === null || tab === void 0 ? void 0 : tab.val]) === null || _currentSkanda_tab_val === void 0 ? void 0 : _currentSkanda_tab_val.length) > 0 || activeTab === (tab === null || tab === void 0 ? void 0 : tab.val) && (content === null || content === void 0 ? void 0 : content.length) > 0 ? \"checked:bg-green-500\" : \"checked:bg-red\"),\n                                                                    id: \"custom\"\n                                                                }, void 0, false, {\n                                                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                    lineNumber: 282,\n                                                                    columnNumber: 29\n                                                                }, undefined),\n                                                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                                                    class: \"absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100\",\n                                                                    children: ((_currentSkanda_tab_val1 = currentSkanda[tab === null || tab === void 0 ? void 0 : tab.val]) === null || _currentSkanda_tab_val1 === void 0 ? void 0 : _currentSkanda_tab_val1.length) > 0 || activeTab === (tab === null || tab === void 0 ? void 0 : tab.val) && (content === null || content === void 0 ? void 0 : content.length) > 0 ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"svg\", {\n                                                                        xmlns: \"http://www.w3.org/2000/svg\",\n                                                                        class: \"h-3.5 w-3.5\",\n                                                                        viewBox: \"0 0 20 20\",\n                                                                        fill: \"currentColor\",\n                                                                        stroke: \"currentColor\",\n                                                                        \"stroke-width\": \"1\",\n                                                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"path\", {\n                                                                            \"fill-rule\": \"evenodd\",\n                                                                            d: \"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\",\n                                                                            \"clip-rule\": \"evenodd\"\n                                                                        }, void 0, false, {\n                                                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                            lineNumber: 306,\n                                                                            columnNumber: 35\n                                                                        }, undefined)\n                                                                    }, void 0, false, {\n                                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                        lineNumber: 298,\n                                                                        columnNumber: 33\n                                                                    }, undefined) : /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"svg\", {\n                                                                        class: \"h-3.5 w-3.5\",\n                                                                        xmlns: \"http://www.w3.org/2000/svg\",\n                                                                        viewBox: \"0 0 384 512\",\n                                                                        fill: \"currentColor\",\n                                                                        stroke: \"currentColor\",\n                                                                        \"stroke-width\": \"1\",\n                                                                        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"path\", {\n                                                                            \"fill-rule\": \"evenodd\",\n                                                                            d: \"M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z\",\n                                                                            \"clip-rule\": \"evenodd\"\n                                                                        }, void 0, false, {\n                                                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                            lineNumber: 321,\n                                                                            columnNumber: 35\n                                                                        }, undefined)\n                                                                    }, void 0, false, {\n                                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                        lineNumber: 313,\n                                                                        columnNumber: 33\n                                                                    }, undefined)\n                                                                }, void 0, false, {\n                                                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                                    lineNumber: 294,\n                                                                    columnNumber: 29\n                                                                }, undefined)\n                                                            ]\n                                                        }, void 0, true, {\n                                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                            lineNumber: 278,\n                                                            columnNumber: 27\n                                                        }, undefined)\n                                                    }, void 0, false, {\n                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                        lineNumber: 277,\n                                                        columnNumber: 25\n                                                    }, undefined),\n                                                    /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                                        className: \"mx-2\",\n                                                        children: tab.name\n                                                    }, void 0, false, {\n                                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                        lineNumber: 331,\n                                                        columnNumber: 25\n                                                    }, undefined)\n                                                ]\n                                            }, index, true, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 268,\n                                                columnNumber: 23\n                                            }, undefined)\n                                        }, void 0, false);\n                                    })\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 264,\n                                    columnNumber: 15\n                                }, undefined),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                    className: \"bg-white flex-none h-10 min-w-[200px] flex items-center select-none\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                        className: \"ml-2 flex items-center gap-2\",\n                                        children: [\n                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"b\", {\n                                                children: \"Status:\"\n                                            }, void 0, false, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 339,\n                                                columnNumber: 19\n                                            }, undefined),\n                                            /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"span\", {\n                                                className: \"\".concat(status === \"Saved!\" ? \"text-green-500\" : \"text-red\"),\n                                                children: status\n                                            }, void 0, false, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 340,\n                                                columnNumber: 19\n                                            }, undefined),\n                                            status === \"Saving...\" && /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                class: \"flex justify-center items-center\",\n                                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                                    class: \"w-5 h-5 rounded-full border-4 border-gray-400 border-t-orange-500 animate-spin\"\n                                                }, void 0, false, {\n                                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                    lineNumber: 349,\n                                                    columnNumber: 23\n                                                }, undefined)\n                                            }, void 0, false, {\n                                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                                lineNumber: 348,\n                                                columnNumber: 21\n                                            }, undefined)\n                                        ]\n                                    }, void 0, true, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 338,\n                                        columnNumber: 17\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 337,\n                                    columnNumber: 15\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 263,\n                            columnNumber: 13\n                        }, undefined),\n                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"overflow-auto\",\n                            children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                className: \"w-full\",\n                                children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(CustomEditor, {\n                                    value: content ? content : \"\",\n                                    onChange: setContent,\n                                    setStatus: setStatus,\n                                    onFocus: ()=>setFocus(true),\n                                    onBlur: ()=>setFocus(false)\n                                }, router.query.tab, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 357,\n                                    columnNumber: 17\n                                }, undefined)\n                            }, void 0, false, {\n                                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                lineNumber: 356,\n                                columnNumber: 15\n                            }, undefined)\n                        }, void 0, false, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 355,\n                            columnNumber: 13\n                        }, undefined)\n                    ]\n                }, void 0, true, {\n                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                    lineNumber: 262,\n                    columnNumber: 11\n                }, undefined) : harililakalpataru_id.length === 1 ? /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                    className: \"bg-card border-b\",\n                    children: currentAdhyayList && (currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.map((e, k)=>{\n                        return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                            className: \"flex items-center border-b border-x border-b_color p-2 sm:p-2 text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full\",\n                            children: [\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                    className: \"grow flex items-center\",\n                                    href: \"/harililakalpataru/\".concat(harililakalpataru_id.join(\"/\"), \"/\").concat(e === null || e === void 0 ? void 0 : e.id),\n                                    children: [\n                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                            className: \"mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle\",\n                                            children: (0,_utils_function__WEBPACK_IMPORTED_MODULE_7__.convertToHindi)(k + 1)\n                                        }, void 0, false, {\n                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                            lineNumber: 381,\n                                            columnNumber: 23\n                                        }, undefined),\n                                        /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                                            className: \"break-words text-justify align-baseline text-red font-bold\",\n                                            children: e === null || e === void 0 ? void 0 : e.title\n                                        }, void 0, false, {\n                                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                            lineNumber: 384,\n                                            columnNumber: 23\n                                        }, undefined)\n                                    ]\n                                }, k, true, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 374,\n                                    columnNumber: 21\n                                }, undefined),\n                                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)((next_link__WEBPACK_IMPORTED_MODULE_6___default()), {\n                                    href: \"/harililakalpataru/\".concat(harililakalpataru_id.join(\"/\"), \"/\").concat(e === null || e === void 0 ? void 0 : e.id, \"?edit=adhyay\"),\n                                    className: \"border-2 border-secondary rounded p-2\",\n                                    children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_barrel_optimize_names_FaArrowLeft_FaArrowRight_FaChevronLeft_FaChevronRight_FaEdit_FaHome_react_icons_fa__WEBPACK_IMPORTED_MODULE_9__.FaEdit, {}, void 0, false, {\n                                        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                        lineNumber: 394,\n                                        columnNumber: 23\n                                    }, undefined)\n                                }, void 0, false, {\n                                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                                    lineNumber: 388,\n                                    columnNumber: 21\n                                }, undefined)\n                            ]\n                        }, void 0, true, {\n                            fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                            lineNumber: 373,\n                            columnNumber: 19\n                        }, undefined);\n                    }))\n                }, void 0, false, {\n                    fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                    lineNumber: 369,\n                    columnNumber: 11\n                }, undefined) : harililakalpataru_id.length === 2 && router.query.edit === \"skanda\" ? \"adhyay\" : \"hello\"\n            }, void 0, false, {\n                fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n                lineNumber: 260,\n                columnNumber: 7\n            }, undefined)\n        ]\n    }, void 0, true, {\n        fileName: \"H:\\\\DHRUVIK\\\\sanskritam-admin\\\\src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_id].js\",\n        lineNumber: 206,\n        columnNumber: 5\n    }, undefined);\n};\n_s(HarililakalpataruId, \"MiDlCH6V4hJlDc4sLTEPsgyGRfU=\", false, function() {\n    return [\n        next_router__WEBPACK_IMPORTED_MODULE_4__.useRouter,\n        use_debounce__WEBPACK_IMPORTED_MODULE_8__.useDebounce\n    ];\n});\n_c1 = HarililakalpataruId;\nHarililakalpataruId.getInitialProps = async (param)=>{\n    let { query } = param;\n    const { harililakalpataru_id } = query;\n    return {\n        harililakalpataru_id\n    };\n};\n/* harmony default export */ __webpack_exports__[\"default\"] = (HarililakalpataruId);\nvar _c, _c1;\n$RefreshReg$(_c, \"CustomEditor\");\n$RefreshReg$(_c1, \"HarililakalpataruId\");\n\n\n;\n    // Wrapped in an IIFE to avoid polluting the global scope\n    ;\n    (function () {\n        var _a, _b;\n        // Legacy CSS implementations will `eval` browser code in a Node.js context\n        // to extract CSS. For backwards compatibility, we need to check we're in a\n        // browser context before continuing.\n        if (typeof self !== 'undefined' &&\n            // AMP / No-JS mode does not inject these helpers:\n            '$RefreshHelpers$' in self) {\n            // @ts-ignore __webpack_module__ is global\n            var currentExports = module.exports;\n            // @ts-ignore __webpack_module__ is global\n            var prevSignature = (_b = (_a = module.hot.data) === null || _a === void 0 ? void 0 : _a.prevSignature) !== null && _b !== void 0 ? _b : null;\n            // This cannot happen in MainTemplate because the exports mismatch between\n            // templating and execution.\n            self.$RefreshHelpers$.registerExportsForReactRefresh(currentExports, module.id);\n            // A module can be accepted automatically based on its exports, e.g. when\n            // it is a Refresh Boundary.\n            if (self.$RefreshHelpers$.isReactRefreshBoundary(currentExports)) {\n                // Save the previous exports signature on update so we can compare the boundary\n                // signatures. We avoid saving exports themselves since it causes memory leaks (https://github.com/vercel/next.js/pull/53797)\n                module.hot.dispose(function (data) {\n                    data.prevSignature =\n                        self.$RefreshHelpers$.getRefreshBoundarySignature(currentExports);\n                });\n                // Unconditionally accept an update to this module, we'll check if it's\n                // still a Refresh Boundary later.\n                // @ts-ignore importMeta is replaced in the loader\n                module.hot.accept();\n                // This field is set when the previous version of this module was a\n                // Refresh Boundary, letting us know we need to check for invalidation or\n                // enqueue an update.\n                if (prevSignature !== null) {\n                    // A boundary can become ineligible if its exports are incompatible\n                    // with the previous exports.\n                    //\n                    // For example, if you add/remove/change exports, we'll want to\n                    // re-execute the importing modules, and force those components to\n                    // re-render. Similarly, if you convert a class component to a\n                    // function, we want to invalidate the boundary.\n                    if (self.$RefreshHelpers$.shouldInvalidateReactRefreshBoundary(prevSignature, self.$RefreshHelpers$.getRefreshBoundarySignature(currentExports))) {\n                        module.hot.invalidate();\n                    }\n                    else {\n                        self.$RefreshHelpers$.scheduleUpdate();\n                    }\n                }\n            }\n            else {\n                // Since we just executed the code for the module, it's possible that the\n                // new exports made it ineligible for being a boundary.\n                // We only care about the case when we were _previously_ a boundary,\n                // because we already accepted this update (accidental side effect).\n                var isNoLongerABoundary = prevSignature !== null;\n                if (isNoLongerABoundary) {\n                    module.hot.invalidate();\n                }\n            }\n        }\n    })();\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9zcmMvcGFnZXMvaGFyaWxpbGFrYWxwYXRhcnUvWy4uLmhhcmlsaWxha2FscGF0YXJ1X2lkXS5qcyIsIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7QUFBMkQ7QUFDeEI7QUFDUTtBQUNlO0FBUWxDO0FBQ2dCO0FBQ1U7QUFDckI7QUFDcUI7QUFFbEQsTUFBTWlCLGVBQWViLG1EQUFPQSxDQUFDLElBQU0sdU1BQXdDOzs7Ozs7SUFDekVjLEtBQUs7O0tBREREO0FBSU4sTUFBTUUsc0JBQXNCO1FBQUMsRUFBRUMsb0JBQW9CLEVBQUU7O0lBQ25ELE1BQU1DLFNBQVNSLHNEQUFTQTtJQUN4QixNQUFNLENBQUNTLGVBQWVDLGlCQUFpQixHQUFHcEIsK0NBQVFBLENBQUMsQ0FBQztJQUNwRCxNQUFNLENBQUNxQixtQkFBbUJDLHFCQUFxQixHQUFHdEIsK0NBQVFBLENBQUMsRUFBRTtJQUM3RCxNQUFNLENBQUN1QixlQUFlQyxpQkFBaUIsR0FBR3hCLCtDQUFRQSxDQUFDLEVBQUU7SUFDckQsTUFBTSxDQUFDeUIseUJBQXlCQywyQkFBMkIsR0FBRzFCLCtDQUFRQSxDQUFDLEVBQUU7SUFDekUsTUFBTSxDQUFDMkIsU0FBU0MsV0FBVyxHQUFHNUIsK0NBQVFBLENBQUM7SUFDdkMsTUFBTSxDQUFDNkIsUUFBUUMsVUFBVSxHQUFHOUIsK0NBQVFBLENBQUM7SUFDckMsTUFBTSxDQUFDK0IsWUFBWSxHQUFHN0IseURBQVdBLENBQUN5QixTQUFTO0lBQzNDLE1BQU0sQ0FBQ0ssT0FBT0MsU0FBUyxHQUFHakMsK0NBQVFBLENBQUM7SUFDbkMsTUFBTSxDQUFDa0MsV0FBV0MsYUFBYSxHQUFHbkMsK0NBQVFBLENBQUM7SUFDM0MsTUFBTSxDQUFDb0MsTUFBTUMsUUFBUSxHQUFHckMsK0NBQVFBLENBQUM7UUFDL0I7WUFBRXNDLE1BQU07WUFBVUMsS0FBSztRQUFTO1FBQ2hDO1lBQUVELE1BQU07WUFBVUMsS0FBSztRQUFTO0tBQ2pDO0lBRUQsTUFBTUMsWUFBWSxDQUFDQztRQUNqQk4sYUFBYU07SUFDYixnQkFBZ0I7SUFDaEIsZ0VBQWdFO0lBQ2hFLDBCQUEwQjtJQUMxQixNQUFNO0lBQ1I7SUFFQSxNQUFNQyxlQUFlO1FBQ25CLElBQUk7Z0JBRXlCQztZQUQzQixNQUFNQSxXQUFXLE1BQU1oQyxnRUFBaUIsQ0FBQztZQUN6Q2UsMkJBQTJCaUIscUJBQUFBLGdDQUFBQSxpQkFBQUEsU0FBVUUsSUFBSSxjQUFkRixxQ0FBQUEsZUFBZ0JFLElBQUk7UUFDakQsRUFBRSxPQUFPQyxPQUFPO1lBQ2RDLFFBQVFELEtBQUssQ0FBQyxzQkFBc0JBO1FBQ3RDO0lBQ0Y7SUFFQSxNQUFNRSxtQkFBbUIsT0FBT0M7UUFDOUIsSUFBSTtZQUNGLE1BQU1OLFdBQVcsTUFBTWhDLGdFQUFpQixDQUFDLDZCQUE2QjtnQkFDcEV1QyxRQUFRO29CQUNORCxJQUFJQTtnQkFDTjtZQUNGO1lBQ0FyQixXQUFXZSxTQUFTRSxJQUFJLENBQUNBLElBQUksQ0FBQ1gsVUFBVTtZQUN4Q2QsaUJBQWlCdUIsU0FBU0UsSUFBSSxDQUFDQSxJQUFJO1lBQ25DO1FBQ0YsRUFBRSxPQUFPQyxPQUFPO1lBQ2RDLFFBQVFELEtBQUssQ0FBQyxzQkFBc0JBO1FBQ3RDO0lBQ0Y7SUFFQSxNQUFNSyx1QkFBdUIsT0FBT0Y7UUFDbEMsSUFBSTtZQUNGLE1BQU1OLFdBQVcsTUFBTWhDLGdFQUFpQixDQUFDLDZCQUE2QjtnQkFDcEV1QyxRQUFRO29CQUNORSxVQUFVSDtnQkFDWjtZQUNGO1lBQ0EzQixxQkFBcUJxQixTQUFTRSxJQUFJLENBQUNBLElBQUk7WUFDdkM7UUFDRixFQUFFLE9BQU9DLE9BQU87WUFDZEMsUUFBUUQsS0FBSyxDQUFDLHNCQUFzQkE7UUFDdEM7SUFDRjtJQUVBLE1BQU1PLG1CQUFtQixPQUFPRCxVQUFVSDtRQUN4QyxJQUFJO1lBQ0YsTUFBTU4sV0FBVyxNQUFNaEMsZ0VBQWlCLENBQUMsNkJBQTZCO2dCQUNwRXVDLFFBQVE7b0JBQ05FLFVBQVVBO29CQUNWSCxJQUFJQTtnQkFDTjtZQUNGO1lBQ0FyQixXQUFXZSxTQUFTRSxJQUFJLENBQUNBLElBQUksQ0FBQ1gsVUFBVTtZQUN4Q1YsaUJBQWlCbUIsU0FBU0UsSUFBSSxDQUFDQSxJQUFJO1lBQ25DO1FBQ0YsRUFBRSxPQUFPQyxPQUFPO1lBQ2RDLFFBQVFELEtBQUssQ0FBQyxzQkFBc0JBO1FBQ3RDO0lBQ0Y7SUFFQWhELGdEQUFTQSxDQUFDO1FBQ1I0QztRQUNBLElBQUl6QixxQkFBcUJxQyxNQUFNLElBQUksR0FBRztZQUNwQ04saUJBQWlCL0Isb0JBQW9CLENBQUMsRUFBRTtZQUN4Q2tDLHFCQUFxQmxDLG9CQUFvQixDQUFDLEVBQUU7UUFDOUM7UUFDQSxJQUFJQSxxQkFBcUJxQyxNQUFNLElBQUksR0FBRztZQUNwQ0QsaUJBQWlCcEMsb0JBQW9CLENBQUMsRUFBRSxFQUFFQSxvQkFBb0IsQ0FBQyxFQUFFO1FBQ25FO0lBQ0YsR0FBRztRQUFDQyxPQUFPcUMsS0FBSztRQUFFckI7UUFBV2pCO0tBQXFCO0lBRWxELDZFQUE2RTtJQUM3RSx5REFBeUQ7SUFDekQsaUVBQWlFO0lBQ2pFOEIsUUFBUVMsR0FBRyxDQUFDLDJCQUEyQmpDO0lBQ3ZDLDZDQUE2QztJQUU3QyxNQUFNa0MsYUFBYTtRQUNqQixJQUFJO1lBQ0YsTUFBTTlDLGlFQUFrQixDQUFDLDZCQUE2QjtnQkFDcERzQyxFQUFFLEVBQUU5QiwwQkFBQUEsb0NBQUFBLGNBQWV3QyxHQUFHO2dCQUN0QkMsTUFBTWpDO2dCQUNOa0MsS0FBSzNCO1lBQ1A7WUFDQUosVUFBVTtRQUNaLEVBQUUsT0FBT2dCLE9BQU87WUFDZEMsUUFBUUQsS0FBSyxDQUFDLHlCQUF5QkE7UUFDekM7SUFDRjtJQUVBaEQsZ0RBQVNBLENBQUM7UUFDUixJQUFJa0MsT0FBTztZQUNUeUI7UUFDRjtJQUNGLEdBQUc7UUFBQzFCO0tBQVk7SUFFaEIsTUFBTStCLGFBQWEsQ0FBQ0M7SUFDbEIsMkNBQTJDO0lBQzNDLDBCQUEwQjtJQUMxQix3QkFBd0I7SUFDeEIsa0NBQWtDO0lBQ2xDLDBEQUEwRDtJQUMxRCxTQUFTO0lBQ1QsOEVBQThFO0lBQzlFLDBCQUEwQjtJQUMxQiwwRUFBMEU7SUFDMUUsdUVBQXVFO0lBQ3ZFLE1BQU07SUFDTiw4QkFBOEI7SUFDOUIsMEVBQTBFO0lBQzFFLHVFQUF1RTtJQUN2RSxNQUFNO0lBQ04sa0RBQWtEO0lBQ2xELDBCQUEwQjtJQUMxQixnQ0FBZ0M7SUFDaEMsMkNBQTJDO0lBQzNDLG1EQUFtRDtJQUNuRCxTQUFTO0lBQ1QsZ0NBQWdDO0lBQ2hDLDZEQUE2RDtJQUM3RCwwQkFBMEI7SUFDMUIseUJBQXlCO0lBQ3pCLGtFQUFrRTtJQUNsRSxpQkFBaUI7SUFDakIsbUJBQW1CO0lBQ25CLDBEQUEwRDtJQUMxRCxvRUFBb0U7SUFDcEUsVUFBVTtJQUNWLE1BQU07SUFDTiw4QkFBOEI7SUFDOUIseUJBQXlCO0lBQ3pCLGtFQUFrRTtJQUNsRSxpQkFBaUI7SUFDakIsbUJBQW1CO0lBQ25CLDBEQUEwRDtJQUMxRCxvRUFBb0U7SUFDcEUsVUFBVTtJQUNWLE1BQU07SUFDTixrREFBa0Q7SUFDbEQsd0JBQXdCO0lBQ3hCLHFDQUFxQztJQUNyQyxzRUFBc0U7SUFDdEUsMEJBQTBCO0lBQzFCLHFCQUFxQjtJQUNyQixxRUFBcUU7SUFDckUscUVBQXFFO0lBQ3JFLDBCQUEwQjtJQUMxQixpRUFBaUU7SUFDakUsaUJBQWlCO0lBQ2pCLG1CQUFtQjtJQUNuQixzR0FBc0c7SUFDdEcsaUVBQWlFO0lBQ2pFLFVBQVU7SUFDVixNQUFNO0lBQ04sOEJBQThCO0lBQzlCLGlFQUFpRTtJQUNqRSxpQkFBaUI7SUFDakIsbUJBQW1CO0lBQ25CLHNHQUFzRztJQUN0RyxpRUFBaUU7SUFDakUsVUFBVTtJQUNWLE1BQU07SUFDTixJQUFJO0lBQ047SUFFQSxxQkFDRSw4REFBQ0M7OzBCQUNDLDhEQUFDQztnQkFBSUMsV0FBVTs7a0NBQ2IsOERBQUNGO3dCQUFJRSxXQUFVO2tDQUNiLDRFQUFDRjs0QkFBSUUsV0FBVTs7OENBQ2IsOERBQUMvRCxtRUFBU0E7b0NBQ1JzQyxNQUFLO29DQUNMMEIsTUFBSztvQ0FDTEMsT0FBTTtvQ0FDTkYsV0FBVTs4Q0FFViw0RUFBQ3pELDZJQUFNQTs7Ozs7Ozs7Ozs4Q0FFVCw4REFBQ04sbUVBQVNBO29DQUNSc0MsTUFBSztvQ0FDTDBCLE1BQU0sbUJBRU8sT0FGWWxELHFCQUN0Qm9ELEtBQUssQ0FBQyxHQUFHLENBQUMsR0FDVkMsSUFBSSxDQUFDO29DQUNSRixPQUFNO29DQUNORixXQUFVOzhDQUVWLDRFQUFDOUQsa0pBQVdBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7a0NBSWxCLDhEQUFDNEQ7d0JBQUlFLFdBQVU7a0NBQ2IsNEVBQUNLOzRCQUFLTCxXQUFZO3NDQUNoQiw0RUFBQ0s7Z0NBQUtMLFdBQVU7O2tEQUNkLDhEQUFDdEQsa0RBQUlBO3dDQUFDc0QsV0FBVTt3Q0FBa0JNLE1BQU87a0RBQXFCOzs7Ozs7b0NBSTdEckQsaUJBQWlCO29DQUNqQkEsK0JBQ0MsOERBQUNQLGtEQUFJQTt3Q0FDSHNELFdBQVU7d0NBQ1ZNLE1BQU0sc0JBQXdDLE9BQWxCckQsMEJBQUFBLG9DQUFBQSxjQUFlOEIsRUFBRTtrREFFNUM5QixrQkFBaUJBLDBCQUFBQSxvQ0FBQUEsY0FBZXNELEtBQUs7Ozs7OztvQ0FJekNsRCxpQkFBaUI7b0NBQ2pCQSwrQkFDQyw4REFBQ1gsa0RBQUlBO3dDQUNIc0QsV0FBVTt3Q0FDVk0sTUFBTSxzQkFBd0MsT0FBbEJqRCwwQkFBQUEsb0NBQUFBLGNBQWUwQixFQUFFO2tEQUU1QzFCLGtCQUFpQkEsMEJBQUFBLG9DQUFBQSxjQUFla0QsS0FBSzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OzswQkFPbEQsOERBQUNUOzBCQUNFL0MscUJBQXFCcUMsTUFBTSxLQUFLLEtBQUtwQyxPQUFPcUMsS0FBSyxDQUFDbUIsSUFBSSxLQUFLLHlCQUMxRCw4REFBQ1Y7O3NDQUNDLDhEQUFDQTs0QkFBSUUsV0FBVTs7OENBQ2IsOERBQUNGO29DQUFJRSxXQUFVOzhDQUNaOUIsS0FBS3VDLEdBQUcsQ0FBQyxDQUFDQyxLQUFLQzs0Q0FxQkExRCx3QkFTREE7NkRBN0JiO3NEQUNHeUQsSUFBSXJDLEdBQUcsa0JBQ04sOERBQUN5QjtnREFFQ2MsU0FBUyxJQUFNdEMsVUFBVW9DLGdCQUFBQSwwQkFBQUEsSUFBS3JDLEdBQUc7Z0RBQ2pDMkIsV0FBVyxnRkFJVixPQUhDaEMsZUFBYzBDLGdCQUFBQSwwQkFBQUEsSUFBS3JDLEdBQUcsSUFDbEIsc0RBQ0E7O2tFQUdOLDhEQUFDeUI7d0RBQUllLE9BQU07a0VBQ1QsNEVBQUNYOzREQUNDVyxPQUFNOzREQUNOQyxTQUFROzs4RUFFUiw4REFBQ0M7b0VBQ0NDLE9BQU87b0VBQ1B6QyxNQUFLO29FQUNMc0MsT0FBTyxzREFLTixPQUpDNUQsRUFBQUEseUJBQUFBLGFBQWEsQ0FBQ3lELGdCQUFBQSwwQkFBQUEsSUFBS3JDLEdBQUcsQ0FBQyxjQUF2QnBCLDZDQUFBQSx1QkFBeUJtQyxNQUFNLElBQUcsS0FDakNwQixlQUFjMEMsZ0JBQUFBLDBCQUFBQSxJQUFLckMsR0FBRyxLQUFJWixDQUFBQSxvQkFBQUEsOEJBQUFBLFFBQVMyQixNQUFNLElBQUcsSUFDekMseUJBQ0E7b0VBRU5MLElBQUc7Ozs7Ozs4RUFHTCw4REFBQ3NCO29FQUFLUSxPQUFNOzhFQUNUNUQsRUFBQUEsMEJBQUFBLGFBQWEsQ0FBQ3lELGdCQUFBQSwwQkFBQUEsSUFBS3JDLEdBQUcsQ0FBQyxjQUF2QnBCLDhDQUFBQSx3QkFBeUJtQyxNQUFNLElBQUcsS0FDbENwQixlQUFjMEMsZ0JBQUFBLDBCQUFBQSxJQUFLckMsR0FBRyxLQUNyQlosQ0FBQUEsb0JBQUFBLDhCQUFBQSxRQUFTMkIsTUFBTSxJQUFHLGtCQUNsQiw4REFBQzZCO3dFQUNDQyxPQUFNO3dFQUNOTCxPQUFNO3dFQUNOTSxTQUFRO3dFQUNSQyxNQUFLO3dFQUNMQyxRQUFPO3dFQUNQQyxnQkFBYTtrRkFFYiw0RUFBQ0M7NEVBQ0NDLGFBQVU7NEVBQ1ZDLEdBQUU7NEVBQ0ZDLGFBQVU7Ozs7Ozs7Ozs7a0dBSWQsOERBQUNUO3dFQUNDSixPQUFNO3dFQUNOSyxPQUFNO3dFQUNOQyxTQUFRO3dFQUNSQyxNQUFLO3dFQUNMQyxRQUFPO3dFQUNQQyxnQkFBYTtrRkFFYiw0RUFBQ0M7NEVBQ0NDLGFBQVU7NEVBQ1ZDLEdBQUU7NEVBQ0ZDLGFBQVU7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztrRUFPdEIsOERBQUNyQjt3REFBS0wsV0FBVTtrRUFBUVUsSUFBSXRDLElBQUk7Ozs7Ozs7K0NBOUQzQnVDOzs7Ozs7Ozs7Ozs7OENBb0VmLDhEQUFDYjtvQ0FBSUUsV0FBVTs4Q0FDYiw0RUFBQ0s7d0NBQUtMLFdBQVU7OzBEQUNkLDhEQUFDMkI7MERBQUU7Ozs7OzswREFDSCw4REFBQ3RCO2dEQUNDTCxXQUFXLEdBRVYsT0FEQ3JDLFdBQVcsV0FBVyxtQkFBbUI7MERBRzFDQTs7Ozs7OzRDQUVGQSxXQUFXLDZCQUNWLDhEQUFDbUM7Z0RBQUllLE9BQU07MERBQ1QsNEVBQUNmO29EQUFJZSxPQUFNOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O3NDQU1yQiw4REFBQ2Y7NEJBQUlFLFdBQVU7c0NBQ2IsNEVBQUNGO2dDQUFJRSxXQUFVOzBDQUNiLDRFQUFDcEQ7b0NBRUNnRixPQUFPbkUsVUFBVUEsVUFBVTtvQ0FDM0JvRSxVQUFVbkU7b0NBQ1ZFLFdBQVdBO29DQUNYa0UsU0FBUyxJQUFNL0QsU0FBUztvQ0FDeEJnRSxRQUFRLElBQU1oRSxTQUFTO21DQUxsQmYsT0FBT3FDLEtBQUssQ0FBQ3FCLEdBQUc7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O2dDQVUzQjNELHFCQUFxQnFDLE1BQU0sS0FBSyxrQkFDbEMsOERBQUNVO29CQUFJRSxXQUFVOzhCQUNaN0Msc0JBQ0NBLDhCQUFBQSx3Q0FBQUEsa0JBQW1Cc0QsR0FBRyxDQUFDLENBQUN1QixHQUFHQzt3QkFDekIscUJBQ0UsOERBQUNuQzs0QkFBSUUsV0FBVTs7OENBQ2IsOERBQUN0RCxrREFBSUE7b0NBQ0hzRCxXQUFVO29DQUVWTSxNQUFNLDZCQUFzQnZELHFCQUFxQnFELElBQUksQ0FDbkQsTUFDQSxLQUFTLE9BQU40QixjQUFBQSx3QkFBQUEsRUFBR2pELEVBQUU7O3NEQUVWLDhEQUFDZTs0Q0FBSUUsV0FBVTtzREFDWnJELCtEQUFjQSxDQUFDc0YsSUFBSTs7Ozs7O3NEQUV0Qiw4REFBQ25DOzRDQUFJRSxXQUFVO3NEQUNaZ0MsY0FBQUEsd0JBQUFBLEVBQUd6QixLQUFLOzs7Ozs7O21DQVROMEI7Ozs7OzhDQVlQLDhEQUFDdkYsa0RBQUlBO29DQUNINEQsTUFBTSw2QkFBc0J2RCxxQkFBcUJxRCxJQUFJLENBQ25ELE1BQ0EsS0FBUyxPQUFONEIsY0FBQUEsd0JBQUFBLEVBQUdqRCxFQUFFLEVBQUM7b0NBQ1hpQixXQUFVOzhDQUVWLDRFQUFDMUQsNklBQU1BOzs7Ozs7Ozs7Ozs7Ozs7O29CQUlmOzs7OztnQ0FFRlMscUJBQXFCcUMsTUFBTSxLQUFLLEtBQUtwQyxPQUFPcUMsS0FBSyxDQUFDbUIsSUFBSSxLQUFLLFdBQVcsV0FDeEU7Ozs7Ozs7Ozs7OztBQUtWO0dBaFlNMUQ7O1FBQ1dOLGtEQUFTQTtRQU9GUixxREFBV0E7OztNQVI3QmM7QUFrWU5BLG9CQUFvQm9GLGVBQWUsR0FBRztRQUFPLEVBQUU3QyxLQUFLLEVBQUU7SUFDcEQsTUFBTSxFQUFFdEMsb0JBQW9CLEVBQUUsR0FBR3NDO0lBQ2pDLE9BQU87UUFBRXRDO0lBQXFCO0FBQ2hDO0FBRUEsK0RBQWVELG1CQUFtQkEsRUFBQyIsInNvdXJjZXMiOlsid2VicGFjazovL19OX0UvLi9zcmMvcGFnZXMvaGFyaWxpbGFrYWxwYXRhcnUvWy4uLmhhcmlsaWxha2FscGF0YXJ1X2lkXS5qcz8zMzZiIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyB1c2VFZmZlY3QsIHVzZVJlZiwgdXNlU3RhdGUgfSBmcm9tIFwicmVhY3RcIjtcclxuaW1wb3J0IGR5bmFtaWMgZnJvbSBcIm5leHQvZHluYW1pY1wiO1xyXG5pbXBvcnQgeyB1c2VEZWJvdW5jZSB9IGZyb20gXCJ1c2UtZGVib3VuY2VcIjtcclxuaW1wb3J0IHsgTmF2QnV0dG9uIH0gZnJvbSBcIkAvY29tcG9uZW50cy9idXR0b24vTmF2QnV0dG9uXCI7XHJcbmltcG9ydCB7XHJcbiAgRmFBcnJvd0xlZnQsXHJcbiAgRmFBcnJvd1JpZ2h0LFxyXG4gIEZhQ2hldnJvbkxlZnQsXHJcbiAgRmFDaGV2cm9uUmlnaHQsXHJcbiAgRmFFZGl0LFxyXG4gIEZhSG9tZSxcclxufSBmcm9tIFwicmVhY3QtaWNvbnMvZmFcIjtcclxuaW1wb3J0IHsgdXNlUm91dGVyIH0gZnJvbSBcIm5leHQvcm91dGVyXCI7XHJcbmltcG9ydCBheGlvc0luc3RhbmNlIGZyb20gXCJAL3V0aWxzL2F4aW9zSW5zdGFuY2VcIjtcclxuaW1wb3J0IExpbmsgZnJvbSBcIm5leHQvbGlua1wiO1xyXG5pbXBvcnQgeyBjb252ZXJ0VG9IaW5kaSB9IGZyb20gXCJAL3V0aWxzL2Z1bmN0aW9uXCI7XHJcblxyXG5jb25zdCBDdXN0b21FZGl0b3IgPSBkeW5hbWljKCgpID0+IGltcG9ydChcIi4uLy4uL2NvbXBvbmVudHMvY3VzdG9tLWVkaXRvclwiKSwge1xyXG4gIHNzcjogZmFsc2UsXHJcbn0pO1xyXG5cclxuY29uc3QgSGFyaWxpbGFrYWxwYXRhcnVJZCA9ICh7IGhhcmlsaWxha2FscGF0YXJ1X2lkIH0pID0+IHtcclxuICBjb25zdCByb3V0ZXIgPSB1c2VSb3V0ZXIoKTtcclxuICBjb25zdCBbY3VycmVudFNrYW5kYSwgc2V0Q3VycmVudFNrYW5kYV0gPSB1c2VTdGF0ZSh7fSk7XHJcbiAgY29uc3QgW2N1cnJlbnRBZGh5YXlMaXN0LCBzZXRDdXJyZW50QWRoeWF5TGlzdF0gPSB1c2VTdGF0ZShbXSk7XHJcbiAgY29uc3QgW2N1cnJlbnRBZGh5YXksIHNldEN1cnJlbnRBZGh5YXldID0gdXNlU3RhdGUoW10pO1xyXG4gIGNvbnN0IFtoYXJpbGlsYWthbHBhdGFydVNrYW5kYSwgc2V0SGFyaWxpbGFrYWxwYXRhcnVTa2FuZGFdID0gdXNlU3RhdGUoW10pO1xyXG4gIGNvbnN0IFtjb250ZW50LCBzZXRDb250ZW50XSA9IHVzZVN0YXRlKFwiXCIpO1xyXG4gIGNvbnN0IFtzdGF0dXMsIHNldFN0YXR1c10gPSB1c2VTdGF0ZShcIlNhdmVkIVwiKTtcclxuICBjb25zdCBbc2F2ZUNvbnRlbnRdID0gdXNlRGVib3VuY2UoY29udGVudCwgNTAwKTtcclxuICBjb25zdCBbZm9jdXMsIHNldEZvY3VzXSA9IHVzZVN0YXRlKGZhbHNlKTtcclxuICBjb25zdCBbYWN0aXZlVGFiLCBzZXRBY3RpdmVUYWJdID0gdXNlU3RhdGUoXCJoZWFkZXJcIik7XHJcbiAgY29uc3QgW3RhYnMsIHNldFRhYnNdID0gdXNlU3RhdGUoW1xyXG4gICAgeyBuYW1lOiBcImhlYWRlclwiLCB2YWw6IFwiaGVhZGVyXCIgfSxcclxuICAgIHsgbmFtZTogXCJmb290ZXJcIiwgdmFsOiBcImZvb3RlclwiIH0sXHJcbiAgXSk7XHJcblxyXG4gIGNvbnN0IGhhbmRsZVRhYiA9ICh0eXBlKSA9PiB7XHJcbiAgICBzZXRBY3RpdmVUYWIodHlwZSk7XHJcbiAgICAvLyByb3V0ZXIucHVzaCh7XHJcbiAgICAvLyAgIHBhdGhuYW1lOiBgL3NhdHNhbmdpamVldmFuLyR7c2F0c2FuZ2lqZWV2YW5faWQuam9pbihcIi9cIil9YCxcclxuICAgIC8vICAgcXVlcnk6IHsgdGFiOiB0eXBlIH0sXHJcbiAgICAvLyB9KTtcclxuICB9O1xyXG5cclxuICBjb25zdCBnZXRBbGxTa2FuZGEgPSBhc3luYyAoKSA9PiB7XHJcbiAgICB0cnkge1xyXG4gICAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGF4aW9zSW5zdGFuY2UuZ2V0KFwiL2hhcmlsaWxha2FscGF0YXJ1L3NrYW5kYVwiKTtcclxuICAgICAgc2V0SGFyaWxpbGFrYWxwYXRhcnVTa2FuZGEocmVzcG9uc2U/LmRhdGE/LmRhdGEpO1xyXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcclxuICAgICAgY29uc29sZS5lcnJvcihcIkVycm9yIGdldGluZyBkYXRhOlwiLCBlcnJvcik7XHJcbiAgICB9XHJcbiAgfTtcclxuXHJcbiAgY29uc3QgZ2V0Q3VycmVudFNrYW5kYSA9IGFzeW5jIChpZCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBheGlvc0luc3RhbmNlLmdldChcIi9oYXJpbGlsYWthbHBhdGFydS9za2FuZGFcIiwge1xyXG4gICAgICAgIHBhcmFtczoge1xyXG4gICAgICAgICAgaWQ6IGlkLFxyXG4gICAgICAgIH0sXHJcbiAgICAgIH0pO1xyXG4gICAgICBzZXRDb250ZW50KHJlc3BvbnNlLmRhdGEuZGF0YVthY3RpdmVUYWJdKTtcclxuICAgICAgc2V0Q3VycmVudFNrYW5kYShyZXNwb25zZS5kYXRhLmRhdGEpO1xyXG4gICAgICByZXR1cm47XHJcbiAgICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgICBjb25zb2xlLmVycm9yKFwiRXJyb3IgZ2V0aW5nIGRhdGE6XCIsIGVycm9yKTtcclxuICAgIH1cclxuICB9O1xyXG5cclxuICBjb25zdCBnZXRDdXJyZW50QWRoeWF5TGlzdCA9IGFzeW5jIChpZCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBheGlvc0luc3RhbmNlLmdldChcIi9oYXJpbGlsYWthbHBhdGFydS9hZGh5YXlcIiwge1xyXG4gICAgICAgIHBhcmFtczoge1xyXG4gICAgICAgICAgc2thbmRhSWQ6IGlkLFxyXG4gICAgICAgIH0sXHJcbiAgICAgIH0pO1xyXG4gICAgICBzZXRDdXJyZW50QWRoeWF5TGlzdChyZXNwb25zZS5kYXRhLmRhdGEpO1xyXG4gICAgICByZXR1cm47XHJcbiAgICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgICBjb25zb2xlLmVycm9yKFwiRXJyb3IgZ2V0aW5nIGRhdGE6XCIsIGVycm9yKTtcclxuICAgIH1cclxuICB9O1xyXG5cclxuICBjb25zdCBnZXRDdXJyZW50QWRoeWF5ID0gYXN5bmMgKHNrYW5kYUlkLCBpZCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBheGlvc0luc3RhbmNlLmdldChcIi9oYXJpbGlsYWthbHBhdGFydS9hZGh5YXlcIiwge1xyXG4gICAgICAgIHBhcmFtczoge1xyXG4gICAgICAgICAgc2thbmRhSWQ6IHNrYW5kYUlkLFxyXG4gICAgICAgICAgaWQ6IGlkLFxyXG4gICAgICAgIH0sXHJcbiAgICAgIH0pO1xyXG4gICAgICBzZXRDb250ZW50KHJlc3BvbnNlLmRhdGEuZGF0YVthY3RpdmVUYWJdKTtcclxuICAgICAgc2V0Q3VycmVudEFkaHlheShyZXNwb25zZS5kYXRhLmRhdGEpO1xyXG4gICAgICByZXR1cm47XHJcbiAgICB9IGNhdGNoIChlcnJvcikge1xyXG4gICAgICBjb25zb2xlLmVycm9yKFwiRXJyb3IgZ2V0aW5nIGRhdGE6XCIsIGVycm9yKTtcclxuICAgIH1cclxuICB9O1xyXG5cclxuICB1c2VFZmZlY3QoKCkgPT4ge1xyXG4gICAgZ2V0QWxsU2thbmRhKCk7XHJcbiAgICBpZiAoaGFyaWxpbGFrYWxwYXRhcnVfaWQubGVuZ3RoID49IDEpIHtcclxuICAgICAgZ2V0Q3VycmVudFNrYW5kYShoYXJpbGlsYWthbHBhdGFydV9pZFswXSk7XHJcbiAgICAgIGdldEN1cnJlbnRBZGh5YXlMaXN0KGhhcmlsaWxha2FscGF0YXJ1X2lkWzBdKTtcclxuICAgIH1cclxuICAgIGlmIChoYXJpbGlsYWthbHBhdGFydV9pZC5sZW5ndGggPj0gMSkge1xyXG4gICAgICBnZXRDdXJyZW50QWRoeWF5KGhhcmlsaWxha2FscGF0YXJ1X2lkWzBdLCBoYXJpbGlsYWthbHBhdGFydV9pZFsxXSk7XHJcbiAgICB9XHJcbiAgfSwgW3JvdXRlci5xdWVyeSwgYWN0aXZlVGFiLCBoYXJpbGlsYWthbHBhdGFydV9pZF0pO1xyXG5cclxuICAvLyBjb25zb2xlLmxvZyhcImhhcmlsaWxha2FscGF0YXJ1U2thbmRhLS0tLS0tLS0tLVwiLCBoYXJpbGlsYWthbHBhdGFydVNrYW5kYSk7XHJcbiAgLy8gY29uc29sZS5sb2coXCJjdXJyZW50U2thbmRhLS0tLS0tLS0tLVwiLCBjdXJyZW50U2thbmRhKTtcclxuICAvLyBjb25zb2xlLmxvZyhcImN1cnJlbnRBZGh5YXlMaXN0LS0tLS0tLS0tLVwiLCBjdXJyZW50QWRoeWF5TGlzdCk7XHJcbiAgY29uc29sZS5sb2coXCJjdXJyZW50QWRoeWF5LS0tLS0tLS0tLVwiLCBjdXJyZW50QWRoeWF5KTtcclxuICAvLyBjb25zb2xlLmxvZyhcImNvbnRlbnQtLS0tLS0tLS0tXCIsIGNvbnRlbnQpO1xyXG5cclxuICBjb25zdCBoYW5kbGVTYXZlID0gYXN5bmMgKCkgPT4ge1xyXG4gICAgdHJ5IHtcclxuICAgICAgYXdhaXQgYXhpb3NJbnN0YW5jZS5wb3N0KFwiL2hhcmlsaWxha2FscGF0YXJ1L3NrYW5kYVwiLCB7XHJcbiAgICAgICAgaWQ6IGN1cnJlbnRTa2FuZGE/Ll9pZCxcclxuICAgICAgICBib2R5OiBjb250ZW50LFxyXG4gICAgICAgIGtleTogYWN0aXZlVGFiLFxyXG4gICAgICB9KTtcclxuICAgICAgc2V0U3RhdHVzKFwiU2F2ZWQhXCIpO1xyXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcclxuICAgICAgY29uc29sZS5lcnJvcihcIkVycm9yIGluc2VydGluZyBkYXRhOlwiLCBlcnJvcik7XHJcbiAgICB9XHJcbiAgfTtcclxuXHJcbiAgdXNlRWZmZWN0KCgpID0+IHtcclxuICAgIGlmIChmb2N1cykge1xyXG4gICAgICBoYW5kbGVTYXZlKCk7XHJcbiAgICB9XHJcbiAgfSwgW3NhdmVDb250ZW50XSk7XHJcblxyXG4gIGNvbnN0IGhhbmRsZVBhZ2UgPSAocGFnZSkgPT4ge1xyXG4gICAgLy8gaWYgKGhhcmlsaWxha2FscGF0YXJ1X2lkLmxlbmd0aCA9PT0gMSkge1xyXG4gICAgLy8gICBjb25zdCBjdXJyZW50T2JqZWN0ID1cclxuICAgIC8vICAgICBzYXRzYW5naWplZXZhbiAmJlxyXG4gICAgLy8gICAgIHNhdHNhbmdpamVldmFuPy5kYXRhPy5maW5kKFxyXG4gICAgLy8gICAgICAgKG9iaikgPT4gb2JqLmFkaHlheUtleSA9PSBoYXJpbGlsYWthbHBhdGFydV9pZFswXVxyXG4gICAgLy8gICAgICk7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnRJbmRleEluQXJyYXkgPSBzYXRzYW5naWplZXZhbj8uZGF0YT8uaW5kZXhPZihjdXJyZW50T2JqZWN0KTtcclxuICAgIC8vICAgaWYgKHBhZ2UgPT0gXCJORVhUXCIpIHtcclxuICAgIC8vICAgICBjb25zdCBuZXh0T2JqZWN0ID0gc2F0c2FuZ2lqZWV2YW4/LmRhdGE/LltjdXJyZW50SW5kZXhJbkFycmF5ICsgMV07XHJcbiAgICAvLyAgICAgcmV0dXJuIG5leHRPYmplY3QgPyBuZXh0T2JqZWN0LmFkaHlheUtleSA6IGhhcmlsaWxha2FscGF0YXJ1X2lkO1xyXG4gICAgLy8gICB9XHJcbiAgICAvLyAgIGlmIChwYWdlID09IFwiUFJFVklPVVNcIikge1xyXG4gICAgLy8gICAgIGNvbnN0IG5leHRPYmplY3QgPSBzYXRzYW5naWplZXZhbj8uZGF0YT8uW2N1cnJlbnRJbmRleEluQXJyYXkgLSAxXTtcclxuICAgIC8vICAgICByZXR1cm4gbmV4dE9iamVjdCA/IG5leHRPYmplY3QuYWRoeWF5S2V5IDogaGFyaWxpbGFrYWxwYXRhcnVfaWQ7XHJcbiAgICAvLyAgIH1cclxuICAgIC8vIH0gZWxzZSBpZiAoaGFyaWxpbGFrYWxwYXRhcnVfaWQubGVuZ3RoID09PSAyKSB7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnRPYmplY3QgPVxyXG4gICAgLy8gICAgIGN1cnJlbnRTYXRzYW5naWplZXZhbnMgJiZcclxuICAgIC8vICAgICBjdXJyZW50U2F0c2FuZ2lqZWV2YW5zPy5pdGVtcz8uZmluZChcclxuICAgIC8vICAgICAgIChvYmopID0+IG9iai5pZCA9PSBoYXJpbGlsYWthbHBhdGFydV9pZFsxXVxyXG4gICAgLy8gICAgICk7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnRJbmRleEluQXJyYXkgPVxyXG4gICAgLy8gICAgIGN1cnJlbnRTYXRzYW5naWplZXZhbnM/Lml0ZW1zPy5pbmRleE9mKGN1cnJlbnRPYmplY3QpO1xyXG4gICAgLy8gICBpZiAocGFnZSA9PSBcIk5FWFRcIikge1xyXG4gICAgLy8gICAgIGNvbnN0IG5leHRPYmplY3QgPVxyXG4gICAgLy8gICAgICAgY3VycmVudFNhdHNhbmdpamVldmFucz8uaXRlbXM/LltjdXJyZW50SW5kZXhJbkFycmF5ICsgMV07XHJcbiAgICAvLyAgICAgcmV0dXJuIGAke1xyXG4gICAgLy8gICAgICAgbmV4dE9iamVjdFxyXG4gICAgLy8gICAgICAgICA/IGAke2hhcmlsaWxha2FscGF0YXJ1X2lkWzBdfS8ke25leHRPYmplY3QuaWR9YFxyXG4gICAgLy8gICAgICAgICA6IGAke2hhcmlsaWxha2FscGF0YXJ1X2lkWzBdfS8ke2hhcmlsaWxha2FscGF0YXJ1X2lkWzFdfWBcclxuICAgIC8vICAgICB9YDtcclxuICAgIC8vICAgfVxyXG4gICAgLy8gICBpZiAocGFnZSA9PSBcIlBSRVZJT1VTXCIpIHtcclxuICAgIC8vICAgICBjb25zdCBuZXh0T2JqZWN0ID1cclxuICAgIC8vICAgICAgIGN1cnJlbnRTYXRzYW5naWplZXZhbnM/Lml0ZW1zPy5bY3VycmVudEluZGV4SW5BcnJheSAtIDFdO1xyXG4gICAgLy8gICAgIHJldHVybiBgJHtcclxuICAgIC8vICAgICAgIG5leHRPYmplY3RcclxuICAgIC8vICAgICAgICAgPyBgJHtoYXJpbGlsYWthbHBhdGFydV9pZFswXX0vJHtuZXh0T2JqZWN0LmlkfWBcclxuICAgIC8vICAgICAgICAgOiBgJHtoYXJpbGlsYWthbHBhdGFydV9pZFswXX0vJHtoYXJpbGlsYWthbHBhdGFydV9pZFsxXX1gXHJcbiAgICAvLyAgICAgfWA7XHJcbiAgICAvLyAgIH1cclxuICAgIC8vIH0gZWxzZSBpZiAoaGFyaWxpbGFrYWxwYXRhcnVfaWQubGVuZ3RoID09PSAzKSB7XHJcbiAgICAvLyAgIGNvbnN0IGN1cnJlbnREYXRhID1cclxuICAgIC8vICAgICBjdXJyZW50U2F0c2FuZ2lqZWV2YW5zVmVyc2UgJiZcclxuICAgIC8vICAgICBjdXJyZW50U2F0c2FuZ2lqZWV2YW5zVmVyc2U/Lml0ZW1zPy5maWx0ZXIoKGEpID0+IGEuaWQgIT09IC0xKTtcclxuICAgIC8vICAgY29uc3QgY3VycmVudE9iamVjdCA9XHJcbiAgICAvLyAgICAgY3VycmVudERhdGEgJiZcclxuICAgIC8vICAgICBjdXJyZW50RGF0YT8uZmluZCgob2JqKSA9PiBvYmouaWQgPT0gaGFyaWxpbGFrYWxwYXRhcnVfaWRbMl0pO1xyXG4gICAgLy8gICBjb25zdCBjdXJyZW50SW5kZXhJbkFycmF5ID0gY3VycmVudERhdGE/LmluZGV4T2YoY3VycmVudE9iamVjdCk7XHJcbiAgICAvLyAgIGlmIChwYWdlID09IFwiTkVYVFwiKSB7XHJcbiAgICAvLyAgICAgY29uc3QgbmV4dE9iamVjdCA9IGN1cnJlbnREYXRhPy5bY3VycmVudEluZGV4SW5BcnJheSArIDFdO1xyXG4gICAgLy8gICAgIHJldHVybiBgJHtcclxuICAgIC8vICAgICAgIG5leHRPYmplY3RcclxuICAgIC8vICAgICAgICAgPyBgJHtoYXJpbGlsYWthbHBhdGFydV9pZFswXX0vJHtoYXJpbGlsYWthbHBhdGFydV9pZFsxXX0vJHtuZXh0T2JqZWN0LmlkfT90YWI9JHthY3RpdmVUYWJ9YFxyXG4gICAgLy8gICAgICAgICA6IGAke2hhcmlsaWxha2FscGF0YXJ1X2lkLmpvaW4oXCIvXCIpfT90YWI9JHthY3RpdmVUYWJ9YFxyXG4gICAgLy8gICAgIH1gO1xyXG4gICAgLy8gICB9XHJcbiAgICAvLyAgIGlmIChwYWdlID09IFwiUFJFVklPVVNcIikge1xyXG4gICAgLy8gICAgIGNvbnN0IG5leHRPYmplY3QgPSBjdXJyZW50RGF0YT8uW2N1cnJlbnRJbmRleEluQXJyYXkgLSAxXTtcclxuICAgIC8vICAgICByZXR1cm4gYCR7XHJcbiAgICAvLyAgICAgICBuZXh0T2JqZWN0XHJcbiAgICAvLyAgICAgICAgID8gYCR7aGFyaWxpbGFrYWxwYXRhcnVfaWRbMF19LyR7aGFyaWxpbGFrYWxwYXRhcnVfaWRbMV19LyR7bmV4dE9iamVjdC5pZH0/dGFiPSR7YWN0aXZlVGFifWBcclxuICAgIC8vICAgICAgICAgOiBgJHtoYXJpbGlsYWthbHBhdGFydV9pZC5qb2luKFwiL1wiKX0/dGFiPSR7YWN0aXZlVGFifWBcclxuICAgIC8vICAgICB9YDtcclxuICAgIC8vICAgfVxyXG4gICAgLy8gfVxyXG4gIH07XHJcblxyXG4gIHJldHVybiAoXHJcbiAgICA8ZGl2PlxyXG4gICAgICA8bmF2IGNsYXNzTmFtZT1cImZsZXgganVzdGlmeS1iZXR3ZWVuIGdhcC0yIGl0ZW1zLWNlbnRlciB6LTMwIHN0aWNreSB0b3AtMCBiZy1zZWNvbmRhcnkgcC0yIC1tLTQgbWItMVwiPlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3Jvdy0wIGdhcC0yIGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGdhcC0yIGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgICA8TmF2QnV0dG9uXHJcbiAgICAgICAgICAgICAgdHlwZT1cImxpbmtcIlxyXG4gICAgICAgICAgICAgIGxpbms9XCIvZGFzaGJvYXJkXCJcclxuICAgICAgICAgICAgICBsYWJlbD1cImJhY2stYnRuXCJcclxuICAgICAgICAgICAgICBjbGFzc05hbWU9XCJmbGV4XCJcclxuICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgIDxGYUhvbWUgLz5cclxuICAgICAgICAgICAgPC9OYXZCdXR0b24+XHJcbiAgICAgICAgICAgIDxOYXZCdXR0b25cclxuICAgICAgICAgICAgICB0eXBlPVwibGlua1wiXHJcbiAgICAgICAgICAgICAgbGluaz17YC9zYXRzYW5naWplZXZhbi8ke2hhcmlsaWxha2FscGF0YXJ1X2lkXHJcbiAgICAgICAgICAgICAgICAuc2xpY2UoMCwgLTEpXHJcbiAgICAgICAgICAgICAgICAuam9pbihcIi9cIil9YH1cclxuICAgICAgICAgICAgICBsYWJlbD1cImJhY2stYnRuXCJcclxuICAgICAgICAgICAgICBjbGFzc05hbWU9XCJmbGV4XCJcclxuICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgIDxGYUFycm93TGVmdCAvPlxyXG4gICAgICAgICAgICA8L05hdkJ1dHRvbj5cclxuICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgIDwvZGl2PlxyXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3JvdyB0ZXh0LXByaW1hcnkgdGV4dC14cyAyeHM6dGV4dC14cyB4czp0ZXh0LWJhc2UgbWQ6dGV4dC1sZyBsZzp0ZXh0LXhsXCI+XHJcbiAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9e2BmbGV4ICR7XCJqdXN0aWZ5LWNlbnRlclwifWB9PlxyXG4gICAgICAgICAgICA8c3BhbiBjbGFzc05hbWU9XCJjYXBpdGFsaXplXCI+XHJcbiAgICAgICAgICAgICAgPExpbmsgY2xhc3NOYW1lPVwiaG92ZXI6dW5kZXJsaW5lXCIgaHJlZj17YC9oYXJpbGlsYWthbHBhdGFydWB9PlxyXG4gICAgICAgICAgICAgICAg4KWlIOCkueCksOCkv+CksuClgOCksuCkvuCkleCksuCljeCkquCkpOCksOClgSDgpaVcclxuICAgICAgICAgICAgICA8L0xpbms+XHJcblxyXG4gICAgICAgICAgICAgIHtjdXJyZW50U2thbmRhICYmIFwiID4gXCJ9XHJcbiAgICAgICAgICAgICAge2N1cnJlbnRTa2FuZGEgJiYgKFxyXG4gICAgICAgICAgICAgICAgPExpbmtcclxuICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPVwiaG92ZXI6dW5kZXJsaW5lXCJcclxuICAgICAgICAgICAgICAgICAgaHJlZj17YC9oYXJpbGlsYWthbHBhdGFydS8ke2N1cnJlbnRTa2FuZGE/LmlkfWB9XHJcbiAgICAgICAgICAgICAgICA+XHJcbiAgICAgICAgICAgICAgICAgIHtjdXJyZW50U2thbmRhICYmIGN1cnJlbnRTa2FuZGE/LnRpdGxlfVxyXG4gICAgICAgICAgICAgICAgPC9MaW5rPlxyXG4gICAgICAgICAgICAgICl9XHJcblxyXG4gICAgICAgICAgICAgIHtjdXJyZW50QWRoeWF5ICYmIFwiID4gXCJ9XHJcbiAgICAgICAgICAgICAge2N1cnJlbnRBZGh5YXkgJiYgKFxyXG4gICAgICAgICAgICAgICAgPExpbmtcclxuICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPVwiaG92ZXI6dW5kZXJsaW5lXCJcclxuICAgICAgICAgICAgICAgICAgaHJlZj17YC9oYXJpbGlsYWthbHBhdGFydS8ke2N1cnJlbnRBZGh5YXk/LmlkfWB9XHJcbiAgICAgICAgICAgICAgICA+XHJcbiAgICAgICAgICAgICAgICAgIHtjdXJyZW50QWRoeWF5ICYmIGN1cnJlbnRBZGh5YXk/LnRpdGxlfVxyXG4gICAgICAgICAgICAgICAgPC9MaW5rPlxyXG4gICAgICAgICAgICAgICl9XHJcbiAgICAgICAgICAgIDwvc3Bhbj5cclxuICAgICAgICAgIDwvc3Bhbj5cclxuICAgICAgICA8L2Rpdj5cclxuICAgICAgPC9uYXY+XHJcbiAgICAgIDxkaXY+XHJcbiAgICAgICAge2hhcmlsaWxha2FscGF0YXJ1X2lkLmxlbmd0aCA9PT0gMSAmJiByb3V0ZXIucXVlcnkuZWRpdCA9PT0gXCJza2FuZGFcIiA/IChcclxuICAgICAgICAgIDxkaXY+XHJcbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleCBqdXN0aWZ5LWJldHdlZW4gaXRlbXMtY2VudGVyXCI+XHJcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJncm93IGZsZXggbWItMiBvdmVyZmxvdy14LWF1dG8gbm8tc2Nyb2xsYmFyIGdhcC0yXCI+XHJcbiAgICAgICAgICAgICAgICB7dGFicy5tYXAoKHRhYiwgaW5kZXgpID0+IChcclxuICAgICAgICAgICAgICAgICAgPD5cclxuICAgICAgICAgICAgICAgICAgICB7dGFiLnZhbCAmJiAoXHJcbiAgICAgICAgICAgICAgICAgICAgICA8ZGl2XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIGtleT17aW5kZXh9XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IGhhbmRsZVRhYih0YWI/LnZhbCl9XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT17YGN1cnNvci1wb2ludGVyIGZsZXgtc2hyaW5rLTAgZmxleCBpdGVtcy1jZW50ZXIgcHktMiBteC0xIHRleHQtc20gbWQ6dGV4dC1sZyAgJHtcclxuICAgICAgICAgICAgICAgICAgICAgICAgICBhY3RpdmVUYWIgPT09IHRhYj8udmFsXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA/IFwiYWN0aXZlICB0ZXh0LXJlZCAgYm9yZGVyLWItMiBib3JkZXItcmVkIGZvbnQtYm9sZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA6IFwiIGZvbnQtYm9sZCAgdGV4dC1ncmF5LTUwMFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgIH1gfVxyXG4gICAgICAgICAgICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPVwiaW5saW5lLWZsZXggaXRlbXMtY2VudGVyXCI+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgPGxhYmVsXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGFzcz1cInJlbGF0aXZlIGZsZXggaXRlbXMtY2VudGVyIHJvdW5kZWQtZnVsbCBjdXJzb3ItcG9pbnRlclwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICBodG1sRm9yPVwiY3VzdG9tXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICA+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aW5wdXRcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hlY2tlZFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0eXBlPVwiY2hlY2tib3hcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGFzcz17YHBlZXIgcmVsYXRpdmUgYXBwZWFyYW5jZS1ub25lIHctNSBoLTUgIHJvdW5kZWQtbWQgICR7XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY3VycmVudFNrYW5kYVt0YWI/LnZhbF0/Lmxlbmd0aCA+IDAgfHxcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYWN0aXZlVGFiID09PSB0YWI/LnZhbCAmJiBjb250ZW50Py5sZW5ndGggPiAwKVxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPyBcImNoZWNrZWQ6YmctZ3JlZW4tNTAwXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDogXCJjaGVja2VkOmJnLXJlZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH1gfVxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZD1cImN1c3RvbVwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAvPlxyXG5cclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPVwiYWJzb2x1dGUgdGV4dC13aGl0ZSB0cmFuc2l0aW9uLW9wYWNpdHkgb3BhY2l0eS0wIHBvaW50ZXItZXZlbnRzLW5vbmUgdG9wLTIvNCBsZWZ0LTIvNCAtdHJhbnNsYXRlLXktMi80IC10cmFuc2xhdGUteC0yLzQgcGVlci1jaGVja2VkOm9wYWNpdHktMTAwXCI+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHtjdXJyZW50U2thbmRhW3RhYj8udmFsXT8ubGVuZ3RoID4gMCB8fFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAoYWN0aXZlVGFiID09PSB0YWI/LnZhbCAmJlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnRlbnQ/Lmxlbmd0aCA+IDApID8gKFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzdmdcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHhtbG5zPVwiaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmdcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xhc3M9XCJoLTMuNSB3LTMuNVwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2aWV3Qm94PVwiMCAwIDIwIDIwXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGw9XCJjdXJyZW50Q29sb3JcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Ryb2tlPVwiY3VycmVudENvbG9yXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cm9rZS13aWR0aD1cIjFcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID5cclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGwtcnVsZT1cImV2ZW5vZGRcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkPVwiTTE2LjcwNyA1LjI5M2ExIDEgMCAwMTAgMS40MTRsLTggOGExIDEgMCAwMS0xLjQxNCAwbC00LTRhMSAxIDAgMDExLjQxNC0xLjQxNEw4IDEyLjU4Nmw3LjI5My03LjI5M2ExIDEgMCAwMTEuNDE0IDB6XCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xpcC1ydWxlPVwiZXZlbm9kZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA+PC9wYXRoPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvc3ZnPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICApIDogKFxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzdmdcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsYXNzPVwiaC0zLjUgdy0zLjVcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgeG1sbnM9XCJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Z1wiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2aWV3Qm94PVwiMCAwIDM4NCA1MTJcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsbD1cImN1cnJlbnRDb2xvclwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJva2U9XCJjdXJyZW50Q29sb3JcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3Ryb2tlLXdpZHRoPVwiMVwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPHBhdGhcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsbC1ydWxlPVwiZXZlbm9kZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGQ9XCJNMzQyLjYgMTUwLjZjMTIuNS0xMi41IDEyLjUtMzIuOCAwLTQ1LjNzLTMyLjgtMTIuNS00NS4zIDBMMTkyIDIxMC43IDg2LjYgMTA1LjRjLTEyLjUtMTIuNS0zMi44LTEyLjUtNDUuMyAwcy0xMi41IDMyLjggMCA0NS4zTDE0Ni43IDI1NiA0MS40IDM2MS40Yy0xMi41IDEyLjUtMTIuNSAzMi44IDAgNDUuM3MzMi44IDEyLjUgNDUuMyAwTDE5MiAzMDEuMyAyOTcuNCA0MDYuNmMxMi41IDEyLjUgMzIuOCAxMi41IDQ1LjMgMHMxMi41LTMyLjggMC00NS4zTDIzNy4zIDI1NiAzNDIuNiAxNTAuNnpcIlxyXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGlwLXJ1bGU9XCJldmVub2RkXCJcclxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9zdmc+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICl9XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8L3NwYW4+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgICAgPC9sYWJlbD5cclxuICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cIm14LTJcIj57dGFiLm5hbWV9PC9zcGFuPlxyXG4gICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgKX1cclxuICAgICAgICAgICAgICAgICAgPC8+XHJcbiAgICAgICAgICAgICAgICApKX1cclxuICAgICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImJnLXdoaXRlIGZsZXgtbm9uZSBoLTEwIG1pbi13LVsyMDBweF0gZmxleCBpdGVtcy1jZW50ZXIgc2VsZWN0LW5vbmVcIj5cclxuICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cIm1sLTIgZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTJcIj5cclxuICAgICAgICAgICAgICAgICAgPGI+U3RhdHVzOjwvYj5cclxuICAgICAgICAgICAgICAgICAgPHNwYW5cclxuICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9e2Ake1xyXG4gICAgICAgICAgICAgICAgICAgICAgc3RhdHVzID09PSBcIlNhdmVkIVwiID8gXCJ0ZXh0LWdyZWVuLTUwMFwiIDogXCJ0ZXh0LXJlZFwiXHJcbiAgICAgICAgICAgICAgICAgICAgfWB9XHJcbiAgICAgICAgICAgICAgICAgID5cclxuICAgICAgICAgICAgICAgICAgICB7c3RhdHVzfVxyXG4gICAgICAgICAgICAgICAgICA8L3NwYW4+XHJcbiAgICAgICAgICAgICAgICAgIHtzdGF0dXMgPT09IFwiU2F2aW5nLi4uXCIgJiYgKFxyXG4gICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9XCJmbGV4IGp1c3RpZnktY2VudGVyIGl0ZW1zLWNlbnRlclwiPlxyXG4gICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz1cInctNSBoLTUgcm91bmRlZC1mdWxsIGJvcmRlci00IGJvcmRlci1ncmF5LTQwMCBib3JkZXItdC1vcmFuZ2UtNTAwIGFuaW1hdGUtc3BpblwiPjwvZGl2PlxyXG4gICAgICAgICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgICAgICApfVxyXG4gICAgICAgICAgICAgICAgPC9zcGFuPlxyXG4gICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJvdmVyZmxvdy1hdXRvXCI+XHJcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ3LWZ1bGxcIj5cclxuICAgICAgICAgICAgICAgIDxDdXN0b21FZGl0b3JcclxuICAgICAgICAgICAgICAgICAga2V5PXtyb3V0ZXIucXVlcnkudGFifVxyXG4gICAgICAgICAgICAgICAgICB2YWx1ZT17Y29udGVudCA/IGNvbnRlbnQgOiBcIlwifVxyXG4gICAgICAgICAgICAgICAgICBvbkNoYW5nZT17c2V0Q29udGVudH1cclxuICAgICAgICAgICAgICAgICAgc2V0U3RhdHVzPXtzZXRTdGF0dXN9XHJcbiAgICAgICAgICAgICAgICAgIG9uRm9jdXM9eygpID0+IHNldEZvY3VzKHRydWUpfVxyXG4gICAgICAgICAgICAgICAgICBvbkJsdXI9eygpID0+IHNldEZvY3VzKGZhbHNlKX1cclxuICAgICAgICAgICAgICAgIC8+XHJcbiAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgKSA6IGhhcmlsaWxha2FscGF0YXJ1X2lkLmxlbmd0aCA9PT0gMSA/IChcclxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiYmctY2FyZCBib3JkZXItYlwiPlxyXG4gICAgICAgICAgICB7Y3VycmVudEFkaHlheUxpc3QgJiZcclxuICAgICAgICAgICAgICBjdXJyZW50QWRoeWF5TGlzdD8ubWFwKChlLCBrKSA9PiB7XHJcbiAgICAgICAgICAgICAgICByZXR1cm4gKFxyXG4gICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggaXRlbXMtY2VudGVyIGJvcmRlci1iIGJvcmRlci14IGJvcmRlci1iX2NvbG9yIHAtMiBzbTpwLTIgdGV4dC14cyAyeHM6dGV4dC14cyB4czp0ZXh0LWJhc2UgbWQ6dGV4dC1sZyBsZzp0ZXh0LXhsIGZvbnQtbWVkaXVtIHRleHQtZm9udCBtYXgtdy1mdWxsXCI+XHJcbiAgICAgICAgICAgICAgICAgICAgPExpbmtcclxuICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImdyb3cgZmxleCBpdGVtcy1jZW50ZXJcIlxyXG4gICAgICAgICAgICAgICAgICAgICAga2V5PXtrfVxyXG4gICAgICAgICAgICAgICAgICAgICAgaHJlZj17YC9oYXJpbGlsYWthbHBhdGFydS8ke2hhcmlsaWxha2FscGF0YXJ1X2lkLmpvaW4oXHJcbiAgICAgICAgICAgICAgICAgICAgICAgIFwiL1wiXHJcbiAgICAgICAgICAgICAgICAgICAgICApfS8ke2U/LmlkfWB9XHJcbiAgICAgICAgICAgICAgICAgICAgPlxyXG4gICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtci0yIHRleHQtc2Vjb25kYXJ5IGJnLVt1cmwoJy9pbmRleEJHLndlYnAnKV0gYmctY2VudGVyIGJnLWNvdmVyIGlubGluZS1ibG9jayBweC1bMC40ZW1dIHB5LVswLjJlbV0gdGV4dC1jZW50ZXIgcm91bmRlZCB3aGl0ZXNwYWNlLXByZS13cmFwIGFsaWduLW1pZGRsZVwiPlxyXG4gICAgICAgICAgICAgICAgICAgICAgICB7Y29udmVydFRvSGluZGkoayArIDEpfVxyXG4gICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImJyZWFrLXdvcmRzIHRleHQtanVzdGlmeSBhbGlnbi1iYXNlbGluZSB0ZXh0LXJlZCBmb250LWJvbGRcIj5cclxuICAgICAgICAgICAgICAgICAgICAgICAge2U/LnRpdGxlfVxyXG4gICAgICAgICAgICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgICAgICAgICAgPC9MaW5rPlxyXG4gICAgICAgICAgICAgICAgICAgIDxMaW5rXHJcbiAgICAgICAgICAgICAgICAgICAgICBocmVmPXtgL2hhcmlsaWxha2FscGF0YXJ1LyR7aGFyaWxpbGFrYWxwYXRhcnVfaWQuam9pbihcclxuICAgICAgICAgICAgICAgICAgICAgICAgXCIvXCJcclxuICAgICAgICAgICAgICAgICAgICAgICl9LyR7ZT8uaWR9P2VkaXQ9YWRoeWF5YH1cclxuICAgICAgICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImJvcmRlci0yIGJvcmRlci1zZWNvbmRhcnkgcm91bmRlZCBwLTJcIlxyXG4gICAgICAgICAgICAgICAgICAgID5cclxuICAgICAgICAgICAgICAgICAgICAgIDxGYUVkaXQgLz5cclxuICAgICAgICAgICAgICAgICAgICA8L0xpbms+XHJcbiAgICAgICAgICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICAgICAgICAgKTtcclxuICAgICAgICAgICAgICB9KX1cclxuICAgICAgICAgIDwvZGl2PlxyXG4gICAgICAgICkgOiBoYXJpbGlsYWthbHBhdGFydV9pZC5sZW5ndGggPT09IDIgJiYgcm91dGVyLnF1ZXJ5LmVkaXQgPT09IFwic2thbmRhXCIgPyBcImFkaHlheVwiOiAoXHJcbiAgICAgICAgICBcImhlbGxvXCJcclxuICAgICAgICApfVxyXG4gICAgICA8L2Rpdj5cclxuICAgIDwvZGl2PlxyXG4gICk7XHJcbn07XHJcblxyXG5IYXJpbGlsYWthbHBhdGFydUlkLmdldEluaXRpYWxQcm9wcyA9IGFzeW5jICh7IHF1ZXJ5IH0pID0+IHtcclxuICBjb25zdCB7IGhhcmlsaWxha2FscGF0YXJ1X2lkIH0gPSBxdWVyeTtcclxuICByZXR1cm4geyBoYXJpbGlsYWthbHBhdGFydV9pZCB9O1xyXG59O1xyXG5cclxuZXhwb3J0IGRlZmF1bHQgSGFyaWxpbGFrYWxwYXRhcnVJZDtcclxuIl0sIm5hbWVzIjpbIlJlYWN0IiwidXNlRWZmZWN0IiwidXNlUmVmIiwidXNlU3RhdGUiLCJkeW5hbWljIiwidXNlRGVib3VuY2UiLCJOYXZCdXR0b24iLCJGYUFycm93TGVmdCIsIkZhQXJyb3dSaWdodCIsIkZhQ2hldnJvbkxlZnQiLCJGYUNoZXZyb25SaWdodCIsIkZhRWRpdCIsIkZhSG9tZSIsInVzZVJvdXRlciIsImF4aW9zSW5zdGFuY2UiLCJMaW5rIiwiY29udmVydFRvSGluZGkiLCJDdXN0b21FZGl0b3IiLCJzc3IiLCJIYXJpbGlsYWthbHBhdGFydUlkIiwiaGFyaWxpbGFrYWxwYXRhcnVfaWQiLCJyb3V0ZXIiLCJjdXJyZW50U2thbmRhIiwic2V0Q3VycmVudFNrYW5kYSIsImN1cnJlbnRBZGh5YXlMaXN0Iiwic2V0Q3VycmVudEFkaHlheUxpc3QiLCJjdXJyZW50QWRoeWF5Iiwic2V0Q3VycmVudEFkaHlheSIsImhhcmlsaWxha2FscGF0YXJ1U2thbmRhIiwic2V0SGFyaWxpbGFrYWxwYXRhcnVTa2FuZGEiLCJjb250ZW50Iiwic2V0Q29udGVudCIsInN0YXR1cyIsInNldFN0YXR1cyIsInNhdmVDb250ZW50IiwiZm9jdXMiLCJzZXRGb2N1cyIsImFjdGl2ZVRhYiIsInNldEFjdGl2ZVRhYiIsInRhYnMiLCJzZXRUYWJzIiwibmFtZSIsInZhbCIsImhhbmRsZVRhYiIsInR5cGUiLCJnZXRBbGxTa2FuZGEiLCJyZXNwb25zZSIsImdldCIsImRhdGEiLCJlcnJvciIsImNvbnNvbGUiLCJnZXRDdXJyZW50U2thbmRhIiwiaWQiLCJwYXJhbXMiLCJnZXRDdXJyZW50QWRoeWF5TGlzdCIsInNrYW5kYUlkIiwiZ2V0Q3VycmVudEFkaHlheSIsImxlbmd0aCIsInF1ZXJ5IiwibG9nIiwiaGFuZGxlU2F2ZSIsInBvc3QiLCJfaWQiLCJib2R5Iiwia2V5IiwiaGFuZGxlUGFnZSIsInBhZ2UiLCJkaXYiLCJuYXYiLCJjbGFzc05hbWUiLCJsaW5rIiwibGFiZWwiLCJzbGljZSIsImpvaW4iLCJzcGFuIiwiaHJlZiIsInRpdGxlIiwiZWRpdCIsIm1hcCIsInRhYiIsImluZGV4Iiwib25DbGljayIsImNsYXNzIiwiaHRtbEZvciIsImlucHV0IiwiY2hlY2tlZCIsInN2ZyIsInhtbG5zIiwidmlld0JveCIsImZpbGwiLCJzdHJva2UiLCJzdHJva2Utd2lkdGgiLCJwYXRoIiwiZmlsbC1ydWxlIiwiZCIsImNsaXAtcnVsZSIsImIiLCJ2YWx1ZSIsIm9uQ2hhbmdlIiwib25Gb2N1cyIsIm9uQmx1ciIsImUiLCJrIiwiZ2V0SW5pdGlhbFByb3BzIl0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./src/pages/harililakalpataru/[...harililakalpataru_id].js\n"));
-
-/***/ })
-
-});                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        db-expression-exp.-toBool
-       */
-      $toBool: Expression;
-    }
-
-    export interface ToDecimal {
-      /**
-       * Converts a value to a decimal. If the value cannot be converted to a decimal, $toDecimal errors. If the value
-       * is null or missing, $toDecimal returns null.
-       *
-       * @version 4.0
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toDecimal/#mongodb-expression-exp.-toDecimal
-       */
-      $toDecimal: Expression;
-    }
-
-    export interface ToDouble {
-      /**
-       * Converts a value to a double. If the value cannot be converted to an double, $toDouble errors. If the value is
-       * null or missing, $toDouble returns null.
-       *
-       * @version 4.0
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toDouble/#mongodb-expression-exp.-toDouble
-       */
-      $toDouble: Expression;
-    }
-
-    export interface ToInt {
-      /**
-       * Converts a value to a long. If the value cannot be converted to a long, $toLong errors. If the value is null or
-       * missing, $toLong returns null.
-       *
-       * @version 4.0
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toInt/#mongodb-expression-exp.-toInt
-       */
-      $toInt: Expression;
-    }
-
-    export interface ToLong {
-      /**
-       * Converts a value to a long. If the value cannot be converted to a long, $toLong errors. If the value is null or
-       * missing, $toLong returns null.
-       *
-       * @version 4.0
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toLong/#mongodb-expression-exp.-toLong
-       */
-      $toLong: Expression;
-    }
-
-    export interface ToObjectId {
-      /**
-       * Converts a value to an ObjectId(). If the value cannot be converted to an ObjectId, $toObjectId errors. If the
-       * value is null or missing, $toObjectId returns null.
-       *
-       * @version 4.0
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toObjectId/#mongodb-expression-exp.-toObjectId
-       */
-      $toObjectId: Expression;
-    }
-
-    export interface Top {
-      $top: {
-        sortBy: AnyObject,
-        output: Expression
-      };
-    }
-
-    export interface TopN {
-      $topN: {
-        n: Expression,
-        sortBy: AnyObject,
-        output: Expression
-      };
-    }
-
-    export interface ToString {
-      /**
-       * Converts a value to a string. If the value cannot be converted to a string, $toString errors. If the value is
-       * null or missing, $toString returns null.
-       *
-       * @version 4.0
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/toString/#mongodb-expression-exp.-toString
-       */
-      $toString: Expression;
-    }
-
-    export interface Type {
-      /**
-       * Returns a string that specifies the BSON type of the argument.
-       *
-       * @version 3.4
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/type/#mongodb-expression-exp.-type
-       */
-      $type: Expression;
-    }
-
-    export interface BinarySize {
-      /**
-       * Returns the size of a given string or binary data value's content in bytes.
-       *
-       * @version 4.4
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/binarySize/#mongodb-expression-exp.-binarySize
-       */
-      $binarySize: NullExpression | StringExpression | BinaryExpression;
-    }
-
-    export interface BsonSize {
-      /**
-       * Returns the size in bytes of a given document (i.e. bsontype Object) when encoded as BSON. You can use
-       * $bsonSize as an alternative to the Object.bsonSize() method.
-       *
-       * @version 4.4
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/bsonSize/#mongodb-expression-exp.-bsonSize
-       */
-      $bsonSize: NullExpression | ObjectExpression;
-    }
-
-    export interface Function {
-      /**
-       * Defines a custom aggregation function or expression in JavaScript.
-       *
-       * @version 4.4
-       * @see https://www.mongodb.com/docs/manual/reference/operator/aggregation/function/#mongodb-expression-exp.-function
-       */
-      $function: {
-        /**
-         * 	The function definition. You can specify the function definition as either BSON type Code or String.
-         */
-        body: CodeExpression;
-        /**
-         * Arguments passed to the function body. If the body function does not take an argument, you can specify an
-         * empty array [ ]
-         */
-        args: ArrayExpression;
-        /**
-         * The language used in the body. You must specify lang: "js".
-         */
-        lang: 'js'
-      };
-    }
-  }
-
-  type Path = string;
-
-
-  export type Expression =
-    Path |
-    ArithmeticExpressionOperator |
-    ArrayExpressionOperator |
-    BooleanExpressionOperator |
-    ComparisonExpressionOperator |
-    ConditionalExpressionOperator |
-    CustomAggregationExpressionOperator |
-    DataSizeOperator |
-    DateExpressionOperator |
-    LiteralExpressionOperator |
-    MiscellaneousExpressionOperator |
-    ObjectExpressionOperator |
-    SetExpressionOperator |
-    StringExpressionOperator |
-    TextExpressionOperator |
-    TrigonometryExpressionOperator |
-    TypeExpressionOperator |
-    AccumulatorOperator |
-    VariableExpressionOperator |
-    WindowOperator |
-    Expression.Top |
-    Expression.TopN |
-    any;
-
-  export type NullExpression = null;
-
-  export type CodeExpression =
-    string |
-    Function;
-
-  export type BinaryExpression =
-    Path;
-
-  export type FunctionExpression =
-    Expression.Function;
-
-  export type AnyExpression =
-    ArrayExpression |
-    BooleanExpression |
-    NumberExpression |
-    ObjectExpression |
-    StringExpression |
-    DateExpression |
-    BinaryExpression |
-    FunctionExpression |
-    ObjectIdExpression |
-    ConditionalExpressionOperator |
-    any;
-
-  export type ObjectIdExpression =
-    TypeExpressionOperatorReturningObjectId;
-
-  export type ArrayExpression<T = any> =
-    T[] |
-    Path |
-    ArrayExpressionOperatorReturningAny |
-    ArrayExpressionOperatorReturningArray |
-    StringExpressionOperatorReturningArray |
-    ObjectExpressionOperatorReturningArray |
-    SetExpressionOperatorReturningArray |
-    LiteralExpressionOperatorReturningAny |
-    WindowOperatorReturningArray |
-    CustomAggregationExpressionOperatorReturningAny |
-    WindowOperatorReturningAny;
-
-  export type BooleanExpression =
-    boolean |
-    Path |
-    BooleanExpressionOperator |
-    ArrayExpressionOperatorReturningAny |
-    ComparisonExpressionOperatorReturningBoolean |
-    StringExpressionOperatorReturningBoolean |
-    SetExpressionOperatorReturningBoolean |
-    LiteralExpressionOperatorReturningAny |
-    CustomAggregationExpressionOperatorReturningAny |
-    TypeExpressionOperatorReturningBoolean;
-
-  export type NumberExpression =
-    number |
-    Path |
-    ArrayExpressionOperatorReturningAny |
-    ArrayExpressionOperatorReturningNumber |
-    ArithmeticExpressionOperator |
-    ComparisonExpressionOperatorReturningNumber |
-    TrigonometryExpressionOperator |
-    MiscellaneousExpressionOperatorReturningNumber |
-    StringExpressionOperatorReturningNumber |
-    LiteralExpressionOperatorReturningAny |
-    ObjectExpressionOperator |
-    SetExpressionOperator |
-    WindowOperatorReturningNumber |
-    WindowOperatorReturningAny |
-    DataSizeOperatorReturningNumber |
-    CustomAggregationExpressionOperatorReturningAny |
-    TypeExpressionOperatorReturningNumber |
-    DateExpression |
-    DateExpressionOperatorReturningNumber;
-
-  export type ObjectExpression =
-    Path |
-    ArrayExpressionOperatorReturningAny |
-    DateExpressionOperatorReturningObject |
-    StringExpressionOperatorReturningObject |
-    ObjectExpressionOperatorReturningObject |
-    CustomAggregationExpressionOperatorReturningAny |
-    LiteralExpressionOperatorReturningAny;
-
-  export type StringExpression<T = string> =
-    Path |
-    ArrayExpressionOperatorReturningAny |
-    DateExpressionOperatorReturningString |
-    StringExpressionOperatorReturningString |
-    LiteralExpressionReturningAny |
-    CustomAggregationExpressionOperatorReturningAny |
-    TypeExpressionOperatorReturningString |
-    T;
-
-  export type DateExpression =
-    Path |
-    NativeDate |
-    DateExpressionOperatorReturningDate |
-    TypeExpressionOperatorReturningDate |
-    LiteralExpressionReturningAny;
-
-  export type ArithmeticExpressionOperator =
-    Expression.Abs |
-    Expression.Add |
-    Expression.Ceil |
-    Expression.Divide |
-    Expression.Exp |
-    Expression.Floor |
-    Expression.Ln |
-    Expression.Log |
-    Expression.Log10 |
-    Expression.Mod |
-    Expression.Multiply |
-    Expression.Pow |
-    Expression.Round |
-    Expression.Sqrt |
-    Expression.Subtract |
-    Expression.Trunc;
-
-  export type ArrayExpressionOperator =
-    ArrayExpressionOperatorReturningAny |
-    ArrayExpressionOperatorReturningBoolean |
-    ArrayExpressionOperatorReturningNumber |
-    ArrayExpressionOperatorReturningObject;
-
-  export type LiteralExpressionOperator =
-    Expression.Literal;
-
-  export type LiteralExpressionReturningAny =
-    LiteralExpressionOperatorReturningAny;
-
-  export type LiteralExpressionOperatorReturningAny =
-    Expression.Literal;
-
-  export type MiscellaneousExpressionOperator =
-    Expression.Rand |
-    Expression.SampleRate;
-
-  export type MiscellaneousExpressionOperatorReturningNumber =
-    Expression.Rand;
-
-  export type ArrayExpressionOperatorReturningAny =
-    Expression.ArrayElemAt |
-    Expression.First |
-    Expression.Last |
-    Expression.Reduce;
-
-  export type ArrayExpressionOperatorReturningArray =
-    Expression.ConcatArrays |
-    Expression.Filter |
-    Expression.Map |
-    Expression.ObjectToArray |
-    Expression.Range |
-    Expression.ReverseArray |
-    Expression.Slice |
-    Expression.Zip;
-
-  export type ArrayExpressionOperatorReturningNumber =
-    Expression.IndexOfArray |
-    Expression.Size;
-
-  export type ArrayExpressionOperatorReturningObject =
-    Expression.ArrayToObject;
-
-  export type ArrayExpressionOperatorReturningBoolean =
-    Expression.In |
-    Expression.IsArray;
-
-  export type BooleanExpressionOperator =
-    Expression.And |
-    Expression.Or |
-    Expression.Not;
-
-  export type ComparisonExpressionOperator =
-    ComparisonExpressionOperatorReturningBoolean |
-    ComparisonExpressionOperatorReturningNumber;
-
-  export type ComparisonExpressionOperatorReturningBoolean =
-    Expression.Eq |
-    Expression.Gt |
-    Expression.Gte |
-    Expression.Lt |
-    Expression.Lte |
-    Expression.Ne;
-
-  export type ComparisonExpressionOperatorReturningNumber
+{
+    "word": "शम्",
+    "ABCH": [
+        {
+            "word": "शम्",
+            "linga": "अ",
+            "pagenum": "57",
+            "kanda": "अव्ययवर्गः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4563",
+            "group": "1950",
+            "synonyms": [
+                "सुख"
+            ],
+            "content": "शं सुखे बलवत्सुष्ठु किमुतातीव निर्भरे ।"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "शम्",
+            "eid": "27618",
+            "pagenum": 1033,
+            "content": "शम्¦ <i><ab>ind.</ab></i> A particle meaning welfare, happiness, prosperity, health, and generally used to <lbinfo n='ex+press'/> express a blessing or pious wish, (with <ab>dat.</ab> or <ab>gen.</ab>); शं देवदत्ताय or देवदत्तस्य (often used in modern letters as an auspicious conclusion; इति शम्). <b>--Comp.</b> --कर see <ab>s. v.</ab> --ताति <i><ab>a.</ab></i> conferring happiness, propitious, auspicious. --पाकः {1} lac, red dye. {2} cooking, <lbinfo n='matur+ing'/> maturing. --भु see <ab>s. v.</ab>"
+        },
+        {
+            "word": "शम्",
+            "eid": "27619",
+            "pagenum": 1033,
+            "content": "शम्¦ {vI.v} {c4c} <ab>P.</ab> (शाम्यति, शांत) <b>1</b> To be calm, quiet or tranquil, be <lbinfo n='ap+peased'/> appeased or pacified; (as a <lbinfo n='per+son'/> person); शाम्येत्प्रत्यपकारेण नोपकारेण दुर्जनः <ls>Ku. 2. 40</ls>; काकुत्स्थमुद्दिश्य <lbinfo n='sa#matsaro'/> समत्सरोऽपि शशाम तेत क्षितिपाललोकः  <lbinfo n='ls:R.+ 7. 3'/> <ls>R. 7. 3</ls>; शांतो लवः <ls>U. 6. 7.</ls> <b>--2</b> To cease, stop, come to an end; चिंता शशाम सकलाऽपि सरोरुहाणां <ls>Bv. 3. 7</ls>; न जातु कामः कामानामुपभोगेन शाम्यति  <lbinfo n='ls:Ms.+ 2. 94'/> <ls>Ms. 2. 94</ls> ‘is not satisfied’. <b>--3</b> To be quelled, be extinguished or <lbinfo n='quench+ed'/> quenched; शशाम वृष्ट्र्यापि विना दवाग्निः <ls>R. 2. 14</ls>, <ls>U. 5. 7.</ls> <b>--4</b> To desist, leave off (speaking &c.). <b>--5</b> To put an end to, destroy, kill (also {c9c} <ab>P.</ab> in this sense). <i>--<ab>Caus.</ab></i> (शमयति-ते, but  <lbinfo n='SAmaya#ti'/> शामयति-ते in the sense of ‘seeing’, see शम् II). <b>1</b> To appease, allay, calm, <lbinfo n='tran+quillize'/> tranquillize, pacify, soothe; कः शीतलैः <lbinfo n='Sa#mayitA'/> शमयिता वचनैस्तवाधिं <ls>Bv. 3. 1</ls>; संरंभं <lbinfo n='Sa#mayAmAsa'/> शमयामास <ls>R. 15. 85</ls>, <ls n='R.'>17. 55</ls>; <ls>Ś. 5. 7.</ls> <b>--2</b> To put an end, to stop;  <lbinfo n='ls:Ku. 2.+ 56.'/> <ls>Ku. 2. 56.</ls> <b>--3</b> To remove, avert; प्रतिकूलं दैवं शमयितुं <ls>Ś. 1.</ls> <b>--4</b> To subdue, tame, defeat, conquer, vanquish; शमयति गजानन्यान् गंधद्विपः कलभोऽपि सन्  <lbinfo n='ls:V.+ 5. 18'/> <ls>V. 5. 18</ls>; <ls>R. 9. 12</ls>, <ls n='R.'>11. 59.</ls> <b>--5</b> To kill, destroy, slay; <ls>Ve. 5. 5.</ls> <b>--6</b> To quench, extinguish; सुतप्तमपि पानीयं शमयत्येव पावकं <ls>H. 1. 88</ls>, <ls>Me. 53.</ls> <b>--7</b> To leave off, desist, cease. {vII.v} {c10c} <ab>U.</ab> शामयति-ते <b>1</b> To see, look at, inspect. <b>--2</b> To show, display."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "शम्",
+            "eid": "14449",
+            "pagenum": 932,
+            "content": "1. शम्¦ <i>ŚAM,</i> i. 4, <i>śāmya,</i> <ab>Par.</ab> (the original signification is ‘To get tired’), <b>1.</b> To cease, Man, 2, 94. <b>2.</b> To grow calm, to be appeased, <ls>MBh.</ls> 2, 1936; to grow satisfied and pacified, <ls>Rājat.</ls> 5, 400. <b>3.</b> To be calm, undisturbed, <ls>MBh.</ls> 1, 6362. <b>4.</b> To sacrifice, <ls>Chr.</ls> 292, 12 = <ls>Rigv.</ls> i. 85, 12; <ls>Chr.</ls> 292, 8 = <ls>Rigv.</ls> i. 86, 8. <ab>Ptcple.</ab> of the <ab>pf.</ab> <ab>pass.</ab> <i>śānta.</i> <b>1.</b> Hushed, stilled (as wind). <b>2.</b> Ceased, <ls>Hit.</ls> 80, 21; extinguished, <ls>Kir.</ls> 17, 16. <b>3.</b> Allayed, alleviated. <b>4.</b> Calm, undisturbed, <ls>Utt. Rāmac.</ls> 7, 7; tranquil, pacified, free from passions, <ls>Pañc.</ls> i. <ab>d.</ab> 181; content, <ls>Hit.</ls> i. <ab>d.</ab> 142, <ab>M.M.</ab> <b>5.</b> Meek, humble, <ls>Chr.</ls> 48, 10. <b>6.</b> Purified, cleansed. <b>7.</b> Repelled, <ls>MBh.</ls> 1, 212. <b>8.</b> <i>°tam,</i> <ab>adv.</ab> <b>a.</b> Enough, <ls>Utt. Rāmac.</ls> 71, 2. <b>b.</b> A prohibitive word, implying negation, <ls>Utt. Rāmac.</ls> 114, 1 (it must not befall), aversion, disgust, fie, for shame, heaven forbid, <ls>Śāk.</ls> 67, 13; <ls>Daśak.</ls> in <ls>Chr.</ls> 200, 13; hush, <ls>Utt. Rāmac.</ls> 10, 1. <b>9.</b> Killed, <ls>MBh.</ls> 1, 7523. <ab>m.</ab> An ascetic. <ab>n.</ab> Appeasing, pacifying. <ab>f.</ab> <i>tā,</i> A proper name, <ls>Utt. Rāmac.</ls> 103, 3; 173, 9. <ab>Caus.</ab>, and i. 10, <b>I.</b> <i>śamaya.</i> <b>1.</b> To cause to cease, to extinguish, <ls>Megh.</ls> 54; <ls>Hit.</ls> i. <ab>d.</ab> 87, <ab>M.M.</ab> <b>2.</b> To tame, <ls>Vikr.</ls> <ab>d.</ab> 156; to appease, Vedāntas. in <ls>Chr.</ls> 218, 6. <b>3.</b> To remove. <ls>MBh.</ls> 5, 238; to avert, <ls>Śāk.</ls> 7, 16. <b>4.</b> To subdue, <ls>MBh.</ls> 3, 14620. <b>5.</b> To desist, <ls>Johns. Sel.</ls> 48, 84. <b>II.</b> <i>śāmaya,</i> <ab>Ātm.</ab> To look at or inspect. -- With the <ab>prep.</ab> उप <i>upa,</i> <b>1.</b> To cease, <ls>MBh.</ls> 4, 1775. <b>2.</b> To grow quiet, <ls>MBh.</ls> 3, 1008. <ab>Caus.</ab> <i>śāmaya,</i> <b>1.</b> To allay, <ls>Daśak.</ls> in <ls>Chr.</ls> 184, 16; 17. <b>2.</b> To kill, <ls>MBh.</ls> 3, 8541. -- With अभ्युप <i>abhi-upa,</i> <i>abhyupaśānta,</i> Appeased, <ls>Ṛt.</ls> 1, 1.  With <i>ni</i> <i>ni,</i> <b>1.</b> To see, <ls>MBh.</ls> 2, 1740. <b>2.</b> To hear, <ls>Rām.</ls> 2, 44, 25. <i>niśānta,</i> Quiet, patient. <ab>n.</ab> A house, a dwelling, <ls>Ragh.</ls> 16, 40. <ab>Caus.</ab> <i>śāmaya,</i> <b>1.</b> To see, <ls>Rām.</ls> 1, 2, 6. <b>2.</b> To hear, 2, 57, 21. -- With अभिनि <i>abhi-ni,</i> <ab>Caus.</ab> <i>śāmaya,</i> To perceive, <ls>Daśak.</ls> 201, 14. -- With विनि <i>vi-ni,</i> To hear, <ls>MBh.</ls> 3, 1878. -- With संनि <i>sam-ni,</i> To hear, <ls>MBh.</ls> 2, 1658. <ab>Caus.</ab> <i>śāmaya,</i> To summon, <ls>Chr.</ls> 52, 10. -- With परि <i>pari,</i> <ab>Caus.</ab> <i>śamaya,</i> To allay, <ls>Gīt.</ls> 7, 20. -- With प्र <i>pra,</i> <b>1.</b> To cease, <ls>Rām.</ls> 2, 40, 33; to fade, <ls>Man.</ls> 4, 186. <b>2.</b> To be restrained, <ls>Pañc.</ls> i. <ab>d.</ab> 357; to become extinguished, <ls>Pañc.</ls> iii. <ab>d.</ab> 54. <b>3.</b> To be appeased, soothed, <ls>Chr.</ls> 22, 14; <ls>Pañc.</ls> i. <ab>d.</ab> 315. <b>4.</b> To grow calm, <ls>MBh.</ls> 2, 1941. <b>5.</b> To heal, <ls>Pañc.</ls> 253, 23. <i>praśānta,</i> <b>1.</b> Ceased, <ls>Utt. Rāmac.</ls> 148, 16 (withdrawn). <b>2.</b> Dead, <ls>Rājat.</ls> 5, 21. <b>3.</b> Calmed, tranquillised, <ls>Nal.</ls> 26, 35; <ls>Vedāntas.</ls> in <ls>Chr.</ls> 203, 21. <b>4.</b> Tamed, <ls>Lass.</ls> 53, 15. <b>5.</b> Relieved. <ab>Caus.</ab> <b>I.</b> <i>śamaya.</i> <b>1.</b> To allay, <ls>MBh.</ls> 2, 12978; to soothe, <ls>Man.</ls> 8, 391. <b>2.</b> To extinguish, <ls>MBh.</ls> 1, 8156. <b>3.</b> To kill, <ls>MBh.</ls> 2, 2031. <b>II.</b> <i>śāmaya,</i> To conquer, <ls>MBh.</ls> 3, 12196. -- With सम् <i>sam, saṃśānta,</i> Extinguished, <ls>Rām.</ls> 2, 66, 1. <ab>Caus.</ab> <i>śamaya,</i> To allay, <ls>Rām.</ls> 2, 98, 1; to settle, <ls>Pañc.</ls> i. <ab>d.</ab> 421. -- <ab>Cf.</ab> <lang n='greek'>κάμνω</lang> (<ab>cf.</ab> <ab>ved.</ab> <i>śam,</i> ii. 9, <i>śamnā</i>), <lang n='greek'>σιδηρο-κμής, κημός</lang> (<ab>cf.</ab> <i>śamyā</i>); <ab>O.H.G.</ab> chamo."
+        },
+        {
+            "word": "शम्",
+            "eid": "14450",
+            "pagenum": 933,
+            "content": "2. शम्¦ <i>śam,</i> <b>I.</b> (sbst.), Work, <ls>Chr.</ls>, 293, 5 = <ls>Rigv.</ls> i. 87, 5. <b>II.</b> indecl. <b>1.</b> Happy, happily, auspiciously. <b>2.</b> Hail, happiness, <ls>Bhāg. P.</ls> 1, 17, 34; 8, 3, 23; <ls>Nalod.</ls> 3, 46."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "शम्",
+            "eid": "7755",
+            "pagenum": 344,
+            "content": "1. शम्¦ 4. <i>P.</i> शाम्यामि (gr. 331^<i>a</i>).) sedari, tranquillari, placari, extingui. GITA-GOV. 7. 41.: शाम्यतु देहदा- हः; RAGH. 2. 14.: शशाम वृष्द्या ऽपि विना दवाग्निः; MAN. 2. 94.: न जातु कामः कामानाम् उपभोगेन शाम्यति; MAH. 2. 1936.: शाम्य मा शुचः; RAGH. 7. 3.: समत्सरो ऽपि शशाम तेन क्षितिपाललोकः. -- शान्त 1) sedatus, pacatus, tranquillus, placidus. H. 1. 49.: शा- न्तार्चिर् इव पावकः; HIT. 80. 21.: शान्ते पानीय- तोये; N. 12. 112.: सुशान्ततोयाम्…ह्रदिनीम्; 24. 53.: शान्तज्वरा; SA. 6. 18.: शान्तायान् दिशि. 2) interfectus (v. Caus.). MAH. 1. 7523.: दिष्ट्या शान्तः पुरोच- नः. -- <i>Caus.</i> शमयामि 1) sedare, tranquillare, domare, extinguere. MAH. 3. 72.: मानसं (दुःखम्) शमयेत् तस्माज् ज्ञानेना ऽग्निम् इवा ऽम्बुना; HIT. 24. 6.: सु- तप्तम् अपि पानीयं शमयत्य् एव पावकम्. 2) occidere, interficere. MAH. 3. 14620.: सो ऽयन् त्वया म- हाबाहो शमितो देव कण्टकः. (Hib. <i>samh</i> «pleasant, still, calm, tranquil»; lith. <i>kenćiu, kentē4ju</i> patior, tolero, <i>kanćia</i> dolor, <i>kantrùs</i> patiens, tolerans, <i>pa-kintu</i> patientiam adhibeo, v. शान्ति; fortasse nostrum <i>san-f-t</i>, inserto <i>f</i>, - v. gr. comp. 96. - mutatà gutturali in sib.; germ. vet. <i>samft</i>, angl. <i>soft</i>, fortasse etiam germ. vet. <i>sûmjan</i> tardare (nostrum <i>säumen</i>), <i>sûmig</i> negligens; island. vet. <i>sems</i> tardatio; gr. <lang n='greek'>ϰηλέω</lang>. Cf. क्षम्.) <dvsn n='pfx'>c. उप <i>i. q. simpl.</i> MAH. 3. 72. et 1008.: नो ऽपशाम्यति मे मनः. -- <i>Caus.</i> उपशामयामि 1) sedare, tranquillare. MAH. 1. 6577.: पुष्पायुधम्…उपशामय कल्याणि आ- त्मदानेन. 2) occidere, interficere. MAH. 3. 8541.: अग- स्त्येने ऽह वातापिः किमर्थम् उपशामितः. <dvsn n='pfx'>c. नि <i>Caus.</i> निशामयमि 1) videre, conspicere. R. Schl. I. 2. 6.: अकर्दमम् इदन् तीर्थन् निशामय. <i>Gerund.</i> निशाम्य et निशम्य (v. Caus. rad. simpl. शमयामि); R. Schl. I. 69. 18.: राघवौ पुत्रौ निशाम्य; II. 46. 18.: प्र- कृतीस् ता निशाम्य; MAH. 1. 1137.: निशाम्य ते दुःखम् इदम्; N. 26. 6.: निशम्या ऽथ हयज्ञस्य लिङ्गानि; A. 10. 57. 58.: रौद्रास्त्रनिष्पिष्टान्…निशम्य; R. Schl. II. 52. 14.: सरथम् मान् निशम्यै ऽकम्. 2) audire. R. Schl. II. 57. 21.: तद् वाक्यं राजस्त्रीणान् निशामयन्. <i>Gerund.</i> निशम्य. BR. 3. 1.: तयोर् दुःखितयोर् वा- क्यम्…निशम्य; R. Schl. I. 2. 17. II. 44. 25. 52. 4. 66. 10. RAGH. 2. 61. <dvsn n='pfx'>c. नि praef. वि <i>Caus.</i> audire. <i>Gerund.</i> विनिशम्य. IN. 5. 62. <dvsn n='pfx'>c. नि praef. सम् Caus. <i>id.</i> MAH. 2. 1658. सन्निशम्य. <dvsn n='pfx'>c. परि <i>Caus.</i> परिशमयामि sedare. GITA-GOV. 7. 20.: प- रिशमितम्. <dvsn n='pfx'>c. प्र <i>i. q. simpl.</i> R. Schl. II. 40. 33.: पौरजनाश्रुभिर् अभ्य- वहितम् प्रशशाम महीरजः; MAH. 2. 1944.: प्रशाम्य भ- रतर्षभ. -- प्रशान्त sedatus. N. 26. 34. A. 9. 34. <i>Caus.</i> प्रशमयामि 1) sedare, tranquillare, extinguere. MAH. 3. 12978.: प्रविष्टो मानुषन् देहं सर्वम् प्रशम- याम्य् अहम्; MAH. 1. 8156.: प्रशमितः खाण्डवे ह- व्यवाहनः. Interficere, occidere. MAH. 3. 2031. Expugnare. A. 9. 35.: प्रशाम्य नगरम् (productâ vocali, v. praef. उप et नि). <dvsn n='pfx'>c. सम् <i>i. q. simpl.</i> R. Schl. II. 66. 1.: तम् अग्निम् इव संशान्तम्. <i>Caus.</i> sedare, tranquillare. R. Schl. II. 98. 1.: लक्ष्मणङ् क्रोधमूर्छितं रामः संशमयामास."
+        },
+        {
+            "word": "शम्",
+            "eid": "7756",
+            "pagenum": 345,
+            "content": "2. शम्¦ 10. <i>P. A.</i> शामयामि, °ये (आलोचने <i>K.</i> आलोचे <i>V.</i>; proprie Caus. r. 1. शम्, v. praef. नि) videre, conspicere. (Cf. goth. <i>gaumja</i> observo, video.)"
+        }
+    ],
+    "BUR": [
+        {
+            "word": "शम्",
+            "eid": "16549",
+            "pagenum": 637,
+            "content": "*शम्¦ <i>śam.</i> <i>śāmyāmi</i> 4; <ab>p.</ab> <i>śaśāma;</i> <ab>f2.</ab> <i>śamiṣyāmi;</i> <ab>a2.</ab> <i>aśamam;</i> <ab>pp.</ab> <i>śānta;</i> <ab>gér.</ab> <i>śamitvā</i> et <i>śāntvā.</i>  <P>I. S'apaiser, devenir immobile; <i>śāmyati rajas</i> la poussière s'abat; || se calmer, cesser: <lbinfo n='4'/> <i>śānte varṣe</i> la pluie ayant cessé; <i>śaśāma <lbinfo n='4'/> davāgnis</i> l'incendie de la forêt s'apaisa. <lbinfo n='6'/> || Au <ab>fig.</ab> se calmer moralement; <i>śāmya mā śucas</i> calme-toi, ne gémis pas; || être en paix, être exempt de trouble.  <P>II. Faire déposer, clarifier; <i>havis</i> le beurre sacré. || Mettre au repos, rendre immobile: <i>arjunena astram astreṇa śāntam</i> par son arme <s1 slp1='arjuna'>Arjuna</s1> rendit l'arme inutile. || Tuer.  <P>= <i>śamnāmi</i> 9. Tuer."
+        },
+        {
+            "word": "शम्",
+            "eid": "16550",
+            "pagenum": 637,
+            "content": "*शम्¦ <i>śam.</i> <i>śāmyāmi, śāmye</i> 10. Regarder, <lbinfo n='7'/> voir. || <ab>Qqf.</ab> montrer."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "शम्",
+            "eid": "31843",
+            "pagenum": 537,
+            "content": "1 शम्¦ श/मति शम्यति <vlex type='root'/> <ab>pp.</ab> शमित/ labour, work; make ready, prepare (<ab>(r.)</ab>). — Cf. शशमान/."
+        },
+        {
+            "word": "शम्",
+            "eid": "31844",
+            "pagenum": 537,
+            "content": "2 शम्¦ शाम्यति शाम्य°ते <vlex type='root'/> (शमति), <ab>pp.</ab> शान्त/ (<ab>q.v.</ab>)  be quiet, still, or content; be allayed or extinguished; cease, desist, stop. <ab>C.</ab> शम/यति (शामयति) quiet, still, pacify, allay, extinguish, subdue, destroy, kill. <dvsn n='p'>— अभि cease, stop. <dvsn n='p'>समव <ab>C.</ab> pacify, still. <dvsn n='p'>उप cease, stop, be allayed or extinguished. <ab>C.</ab> tranquillize, pacify, cool, allay. <dvsn n='p'>व्युप & समुप cease, leave off. <dvsn n='p'>नि & परि <ab>C.</ab> appease, allay. <dvsn n='p'>प्र become calm or tranquil, be extinguished, stop, cease. <ab>C.</ab> appease, quench, allay, subdue, kill, destroy. (प्रति <ab>C.</ab> appease, allay*). <dvsn n='p'>सम् become thoroughly calm or pacified, make peace with (<ab>instr.</ab> ±सह), be allayed or extinguished, stop (tr. & intr.). <ab>C.</ab> mitigate, calm, soothe, allay, extinguish, finish, kill, destroy. Cf. अभ्युपशान्त, अवशान्त, उपशान्त, प्रशान्त, संशान्त."
+        },
+        {
+            "word": "शम्",
+            "eid": "31845",
+            "pagenum": 538,
+            "content": "3 शम्¦ (शम्नीते) harm."
+        },
+        {
+            "word": "शम्",
+            "eid": "31846",
+            "pagenum": 538,
+            "content": "4 शम्¦ शमयति <vlex type='root'/> & शामयति <ab>w.</ab> नि note, perceive, hear, learn. <dvsn n='p'>— अनुनि, समनुनि, अभिनि, उपनि, प्रणि, विनि, संनि = <ab>S.</ab>"
+        },
+        {
+            "word": "शम्",
+            "eid": "31847",
+            "pagenum": 538,
+            "content": "5 श/म्¦ <ab>indecl.</ab> (±यो/स्) blessing, welfare, prosperity, happiness."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "शम्",
+            "eid": "24144",
+            "pagenum": 436,
+            "content": "1. शम्,¦ श/मति, शम्यति <i>(Imperat.)</i> शमीष्व) sich mühen; zurichten, bereiten <i>(r.).</i> <i>Partic.</i> शशमान/ geschäftig, eifrig; <i>p. p.</i> शमित/."
+        },
+        {
+            "word": "शम्",
+            "eid": "24145",
+            "pagenum": 436,
+            "content": "2. शम्,¦ शम्यति, °ते (शमति)) ruhig werden, auf hören, erlöschen, sich legen. <i>p. p.</i> शान्त/ ruhig, still, sanft, mild, faustus <i>(r.).</i> verloschen, aufgehört, gestorben. <i>n.</i> शान्तम् <i>allein=</i> °पापम् <i>(s. d.). Caus.</i> शम/यति, °ते (शामयति) beruhigen, beschwichtigen, gut machen, sühnen, auslöschen, <lbinfo n='8'/> vernichten, töten, bezwingen, überwinden. उप = <i>Simpl. p. p.</i> उपशान्त beruhigt, erloschen, aufgehört, <i>Caus.</i> beruhigen, stillen, beschwichtigen, auslöschen. <lbinfo n='8'/> प्र = <i>Simpl. p.p.</i> प्रशान्त beruhigt, <lbinfo n='7'/> zufrieden, gleichgültig; erloschen, aufgehört, gestorben, tot. <i>Caus.</i> beruhigen, stillen, schlichten. सम् vollständig zur Ruhe kommen, erlöschen, <lbinfo n='8'/> aufhören, <i>p. p.</i> संशान्त <i>auch</i> gestorben, tot. <i>Caus.</i> beruhigen, beschwichtigen, <lbinfo n='13'/> auslöschen, zu Ende bringen, vernichten, beilegen."
+        },
+        {
+            "word": "शम्",
+            "eid": "24146",
+            "pagenum": 436,
+            "content": "3. शम्¦ (शम्नीते) ein Leid thun."
+        },
+        {
+            "word": "शम्",
+            "eid": "24147",
+            "pagenum": 436,
+            "content": "4. शम्,¦ शमयति <i>u.</i> शामयति, <i>mit</i> नि gewahr <lbinfo n='4'/> werden, hören, erfahren."
+        },
+        {
+            "word": "शम्",
+            "eid": "24148",
+            "pagenum": 436,
+            "content": "5. श/म्¦ <i>Indecl.</i> wohlthätig, heilsam, lieb, Heil, Wohl. श/ं यो/स् <i>o.</i> श/ं च यो/श्च Glück und Segen."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "शम्",
+            "eid": "8659",
+            "pagenum": 1378,
+            "content": "<b>√śam</b>¦ [<ab>vgl.</ab> <ls>Fi.</ls> <hom>1.</hom> kam]. Im <ls>RV.</ls> tritt die Grundbedeutung [Page1379] „wirken, arbeiten, thätig seín“ überall hervor, aus welcher sich im späteren <lang>Sanskrit</lang> die Bedeutung „ermüdet sein, ruhen“, ähnlich wie aus dem <lang>gr.</lang> <gk>ϰάμ-νω</gk> entwickelt hat. 1〉 <i>wirken, mit Eifer thätig sein, sich abmühen;</i> insbesondere 2〉 mit dem <ab>Instr.</ab> dessen, wodurch oder womit man thätig ist; 3〉 <i>beim Gottesdienst thätig sein</i> (durch Opferbereiten), <i>eifrig beten;</i> 4〉 einem Gotte [<ab>D.</ab>] <i>eifrig dienen</i> (durch Gebet oder Opferbereitung); 5〉 <i>wirksam sichern</i> vor [purā́ <ab n='mit'>m.</ab> <ab>Ab.</ab>]. — <ab>Vgl.</ab> śamāy und ścam. <dvsn n='H'><ab>Perf.</ab> <b>śaśam:</b> <dvsn n='TS'>-mé 2〉 śámībhis {444,2} (neben ījé). — 3〉 mártas {442,9} (neben īje). — 4〉 devátātaye {710,1}. <dvsn n='H'><ab>Conj.</ab> <ab>Perf.</ab> <b>śaśáma:</b> <dvsn n='TS'>-ate 4〉 te sudā́nave {443,4} (mártas). <dvsn n='H'><ab>Aor.</ab> <b>áśamis</b> (tonlos {263,16}): <dvsn n='TS'>-ṣṭhās 1〉 (agne) {263,16}. <dvsn n='TS'>-ṣṭa 3〉 {356,7} (〰 hí ṣás). <dvsn n='H'>(<ab>Part.</ab> <b>śámat</b>): <dvsn n='TS'>-atas 3〉 mártasya 〰 <ls>SV.</ls>-Variante zu mártas śaśámate {443,4}. <dvsn n='H'><ab>Part.</ab> <ab>Perf.</ab> <b>śaśamāná:</b> <dvsn n='TS'>-ás 1〉 (agnís) {837,5}. — 2〉 yajñaís {151,7}; ukthaís {347,7}. — 3〉 {298,9}; {319,4}. — 5〉 yás cid hí te itthā́ bhágas 〰 purā́ nidás {24,4}. <dvsn n='TS'>-ám 3〉 neben śáṃsantam {211,3}; {203,14}. <dvsn n='TS'>-ā́ya 3〉 {85,12}; {298,13}; ījānā́ya 〰 {113,20}; 〰 sunvaté {141,10}; {327,8}; {675,2}. <dvsn n='TS'>-ásya 1〉 {86,8}; {968,6} (agnés). — 2〉 śámī {318,8}. — 3〉 dāśúṣas {142,2}; yájyos {319,2}; substantivisch: śáṃsas {890,10}; śámīm {396,10}. <dvsn n='TS'>-ā́sas 2〉 ukthaís {312,15}. — 1〉 {918,7}. <dvsn n='TS'>-ā́s 1〉 náras {383,12}. <dvsn n='TS'>-ébhias 3〉 nṛ́bhyas {337,3}. <dvsn n='TS'>-éṣu 3〉 {252,4}. <dvsn n='H'>Verbale <b>śám</b> <dvsn n='P'>siehe das folgende."
+        },
+        {
+            "word": "शम्",
+            "eid": "8660",
+            "pagenum": 1379,
+            "content": "<b>śám,</b>¦ <ab>n.</ab> [von śam], 1〉 ursprünglich wol <i>Werk, heilsames Werk;</i> daher 2〉 <i>Heil, Segen;</i> insbesondere 3〉 mit as oder bhū jemandem [<ab>D.</ab>] <i>zum Heile gereichen,</i> ihm <i>lieb, angenehm sein;</i> 4〉 ebenso ohne ausgedrücktes as oder bhū; 5〉 śám yós oder 6〉 śám ca yós ca <i>Heil und Segen</i>. <dvsn n='TS'>-ám [<ab>N.</ab> <ab>A.</ab> <ab>s.</ab>] 2〉 {43,6}; {157,3}; {247,6}; {297,3}; {404,5}; {522,2} (rājiám); {625,20}; {638,8}. _{638,9}; {723,3}. _{723,7}; {772,4}; {773,15}; {781,7}; {803,6}; {863,10}; {885,8}. — 3〉 te {361,9} (dhā́yase); nas {90,9}; {551,1}—_{551,15}; {554,7}; {602,8}; {863,10}; {1008,2}; {835,4} (abhíṣṭaye); vām {428,9}; hṛdé {365,5}; {637,6}; {668,4}; {688,7}; {691,3}; nas dvipáde cátuṣpade {114,1}; {515,1}; {570,1}; {911,43}. _{911,44}; {991,1}; góbhyas púruṣebhyas {991,3}; stotṛ́bhyas, āpáye {229,11}; {524,6}. — 4〉 me {165,4}; te {173,8}; {404,5}; {633,11}; mánase {462,4} (várāya); hṛdé {912,15}; asmai {475,3}; śākíne {486,22}. — 5〉 und 6〉 siehe unter yós."
+        },
+        {
+            "word": "शम्",
+            "eid": "12611",
+            "pagenum": 1771,
+            "content": "<b>śám</b>¦<info vn='add 550 gra'/> <dvsn n='P'>3〉 te {5,7}; hṛdé {923,18}; 4〉 prajā́yai {821,5}."
+        }
+    ],
+    "IEG": [
+        {
+            "word": "शम्",
+            "eid": "5063",
+            "pagenum": 288,
+            "content": "<i>śam</i>¦ (ML) ‘to prevent’."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "शम्",
+            "eid": "4112",
+            "pagenum": 256,
+            "content": "<b>√1śam</b>¦ (<b>śámyati; śaśamé; áśamiṣṭa;</b> <b>śamitá</b>). get weary by working, work. [<ab>cf.</ab> <lang n='greek'>κάμ-νω</lang>, ‘get weary by working.’]"
+        },
+        {
+            "word": "शम्",
+            "eid": "4113",
+            "pagenum": 256,
+            "content": "<b>√2śam</b>¦ (<b>śā́myati</b> [<ls n='wg,763'>763]</ls>; <b>śaśā́ma, śemús;</b> <b>áśamat; śāntá</b> [<ls n='wg,955'>955a</ls>]; <b>śamáyati</b>). be quiet <i>or</i> still <i>or</i> content; stop; <i>for these</i> <i>senses, <ab>cf.</ab></i> <b>√ram; śāntá,</b> <i>see <ab>s. v.</ab>; <ab>caus.</ab></i> quiet, still; <i>euphemistically,</i> kill. <dvsn n='p'/><b>+ upa,</b> be quiet; stop. <dvsn n='p'/><b>+ pra,</b> come to rest; stop; go out; <b>praśānta,</b> extinguished."
+        },
+        {
+            "word": "शम्",
+            "eid": "4114",
+            "pagenum": 256,
+            "content": "<b>√3śam</b>¦ (<b>śamnīté</b>). harm."
+        },
+        {
+            "word": "शम्",
+            "eid": "4115",
+            "pagenum": 256,
+            "content": "<b>√4śam</b>¦  (<b>śānta; -śámya; śamáyati, śāmáyati</b> <lbinfo n='śāmá-yati'/> ). <i>used only with</i> <b>ni.</b> observe; perceive; <lbinfo n='per-ceive;'/> hear."
+        },
+        {
+            "word": "शम्",
+            "eid": "4116",
+            "pagenum": 256,
+            "content": "<b>śám</b>¦ [<ls n='wg,384'>384<sup>2</sup></ls>], <i><ab>n.</ab></i> welfare; happiness; blessing. <lbinfo n='bless-ing.'/>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "शम्",
+            "eid": "37082",
+            "pagenum": 708,
+            "content": "Sam¦ <i>vt. or vi. 4P (pp. शांत; pres. शाम्यति)</i> 1. To be appeased, to grow calm, to become quiet or tranquil, शाम्येत् प्रत्यपकारेण नोपकारेण दुर्जनः <ls>K.S.</ls>ii.40, <ls>R.</ls>vii.3; 2. to put an end to, to destroy; 3. to stop, to cease, न जातु कामः कामानामुपभोगेन शाम्यति <ls>M.</ls>ii.94, शशाम वृष्ट्यापि विना दवाग्निः <ls>R.</ls>ii.14.<P>With उप्-, 1. to become calm or quiet, <ls>Bt.</ls>xx.5; 2. to cease, to be extinguished.<P>With नि-, to hear, to know.<P>With प्र-, 1. to become calm or tranquil; 2. to be soothed; 3. to cease, to be extinguished; 4. to fade away.<P>With सम्-, to be allayed, to be extinguished, सत्वं संशाम्यतीव मे <ls>Bt.</ls>xviii.28."
+        },
+        {
+            "word": "शम्",
+            "eid": "37083",
+            "pagenum": 708,
+            "content": "Sam¦ <i>Caus. (pres. शमयति-ते, शामयति-ते)</i> 1. to appease, to calm, to tranquillize, to soothe; 2. to cause to cease, to destroy, to extinguish; 3. to remove, to avert, <ls>K.S.</ls>ii.56; 4. to tame, to subdue, to conquer, वैनतेयशामितस्य भोगिनो भोगवेष्टित इव च्युतो मणिः <ls>R.</ls>xi.59, <ls>R.</ls>ix.12; 5. to leave off, to desist.<P>With प्र-, 1. to allay, to appease, to extinguish, त्वामासारप्रशामितवनोपप्लवम् <ls>Megh.</ls>i.17; 2. to vent, to remove, तमन्विष्य प्रशमग्नेर्भवितासि ततः कृती <ls>R.</ls>xv.47; 3. to adjust, to settle, प्रशमयसि विवादम् <ls>Sak.</ls>v.; 4. to conquer, to subdue."
+        },
+        {
+            "word": "शम्",
+            "eid": "37084",
+            "pagenum": 708,
+            "content": "Sam¦ <i>(II) vt. 10U (pres. शामयति-ते)</i> 1. To look at, to inspect; 2. to show, to display.<P>With नि-, 1. to observe, to perceive, to see; 2. to hear, to listen, <ls>R.</ls>ii.42, 52, 61."
+        },
+        {
+            "word": "शम्",
+            "eid": "37085",
+            "pagenum": 709,
+            "content": "Sam¦ <i>ind.</i> A particle meaning- welfare, prosperity, blessing, health, (with a dat. or gen., e.g. शं देवदत्ताय or देवदत्तस्य)."
+        }
+    ],
+    "MD": [
+        {
+            "word": "शम्",
+            "eid": "17509",
+            "pagenum": 308,
+            "content": "शम्¦ <hom>1.</hom> ŚAM, <cl>Ⅱ.</cl> <lex>Ā.</lex> <b>śamīṣva, śamīdhvam</b> (<ab>V.</ab>), <cl>Ⅳ.</cl> <lex>P.</lex> <b>śamyati</b> (<ab>V.</ab>, <i>rare</i>), 🞄toil, labour, be active (<ab>esp.</ab> <i>in worship</i>); prepare; 🞄<ab>pf.</ab> <ab>pt.</ab> <b>śaśam-āná,</b> toiling, zealous, 🞄working (<ab>esp.</ab> <i>for the gods</i>); <ab>pp.</ab> <b>śamitá</b>."
+        },
+        {
+            "word": "शम्",
+            "eid": "17510",
+            "pagenum": 308,
+            "content": "शम्¦ <hom>2.</hom> ŚAM, <cl>Ⅳ.</cl> <lex>P.</lex> (<lex>Ā.</lex> <ab>metr.</ab>) <b>śā́mya,</b> be 🞄calm, quiet, <i>or</i> tranquil; be satisfied; 🞄be appeased, abate, cease, be extinguished: 🞄<ab>pp.</ab> <b>śāntá,</b> appeased, tranquilized, calm, free 🞄from passions, quiet, still, gentle; soft, yielding; 🞄auspicious (<i>in augury</i>); extinguished; 🞄abated, subsided, removed, ceased, stopped; 🞄gone to rest, deceased, died out: <b>śāntaṃ pāpam,</b> (<ab>sts.</ab> <ab>rep.</ab>) <i>may</i> evil <i>be</i> averted = heaven 🞄forbid; <b>śāntam</b> (<i>alone</i>), <ab>id.</ab>; so help me God; 🞄<b>dhik pāpam,</b> heaven forbid; <b>śānte pitari,</b> 🞄after <i>his</i> fatherʼs death; <ab>cs.</ab> <b>śamáya,</b> <lex>P.</lex> appease, 🞄calm, allay; put an end to, remove; 🞄extinguish (<i>fire</i>); overcome, subdue, conquer; 🞄destroy, slay; <ab>intv.</ab> <b>śaṃśamīti,</b> completely 🞄extinguish. <b>ava,</b> <ab>pp.</ab> extinguished. 🞄<b>upa,</b> <lex>P.</lex> (<lex>Ā.</lex> <i>rare</i>) grow calm <i>or</i> tranquil; 🞄be extinguished; be allayed, cease: <ab>pp.</ab> 🞄<b>upaśānta,</b> pacified; extinguished; allayed, 🞄ceased; <ab>cs.</ab> calm, pacify, allay; extinguish; 🞄cause to cease. <b>abhi‿upa,</b> <ab>pp.</ab> appeased. 🞄<b>vi‿upa,</b> grow calm; be allayed, cease. <b>ni,</b> 🞄<ab>pp.</ab> customary; <ab>cs.</ab> calm; cool. <b>pari,</b> <ab>cs.</ab> 🞄cause to cease. <b>pra,</b> grow calm; be extinguished; 🞄be allayed; cease: <ab>pp.</ab> <b>praśānta,</b> 🞄grown calm, tranquil; careless (<i>rare</i>); auspicious 🞄(<i>in augary</i>); extinguished; removed; 🞄abated, ceased, come to an end, vanished; 🞄gone to rest, dead; <ab>cs.</ab> (<ab>sts.</ab> śām-) allay, 🞄soothe; extinguish; cause to cease, terminate; 🞄destroy: <ab>pp.</ab> <b>praśamita,</b> caused to 🞄cease; quenched, quelled; destroyed (<i>foe</i>). 🞄<b>sam,</b> grow perfectly calm; be extinguished; 🞄cease: <ab>pp.</ab> completely pacified, extinguished, 🞄<i>or</i> allayed; dead; <ab>cs.</ab> allay; extinguish; cause 🞄to cease, remove; bring to an end, settle."
+        },
+        {
+            "word": "शम्",
+            "eid": "17511",
+            "pagenum": 308,
+            "content": "शम्¦ <hom>3.</hom> ŚAM, <cl>Ⅸ.</cl> <lex>Ā.</lex> <i>only</i> <b>śamnīṣe, śamnīthās,</b> injure (<i>any one</i>; <ab>V.</ab>)."
+        },
+        {
+            "word": "शम्",
+            "eid": "17512",
+            "pagenum": 308,
+            "content": "शम्¦ <hom>4.</hom> ŚAM, <cl>Ⅹ.</cl> <lex>P.</lex> <b>-śamaya,</b> <ab>E.</ab> <b>-śāmaya,</b> 🞄<b>ni,</b> perceive, hear, learn, come to know, 🞄that — is <i>or</i> was (<ab>pred.</ab> <ab>ac.</ab>); <ab>gd.</ab> <b>ni-śamya, niśamayya,</b> 🞄<b>ni-śāmya</b> (<ab>E.</ab>, <ab>P.</ab>); <ab>ps.</ab> <b>-śamyate,</b> 🞄<b>abhi-ni,</b> <ab>id.</ab>; <ab>gd.</ab> <b>-śāmya</b>. <b>saṃ-ni,</b> hear, 🞄come to know."
+        },
+        {
+            "word": "शम्",
+            "eid": "17513",
+            "pagenum": 308,
+            "content": "शम्¦ śám, <ab>indecl.</ab> auspiciously (<ab>V.</ab>); <lex>ɴ.</lex> blessing, 🞄welfare, prosperity (<i>with</i> <ab>d.</ab>, <ab>g.</ab>)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "शम्",
+            "eid": "212911",
+            "pagenum": "1053,3",
+            "content": "<hom>1.</hom> शम् ¦ <ab>cl.</ab> 4. <ab>P.</ab> (<ls>Dhātup. xxvi, 92</ls>), शा/म्यति (rarely °ते, and <ab>ep.</ab> also शमति, °ते; <ab>Ved.</ab> शम्यति, शिम्यति, and <ab>cl.</ab> 9. शम्नाति [<ls>Naigh. ii, 9</ls>], शम्नीषे, शम्नीथास् <ab>Impv.</ab> शम्नीष्व, शमीष्व, शमिष्व, शमीध्वम्; <ab>pf.</ab> शशाम, शेमुः, <ls>Br.</ls> &c.; शशमे/ <ab>Subj.</ab> शश/मते, <ls>RV.</ls>; <ab>p.</ab> शशमान/ [<ab>q.v.</ab>]; <ab>aor.</ab> अ/शमिष्ठास्, <ls>RV.</ls>; अशमत्, <ls>Br.</ls> [<ab>cf.</ab> <ab>pres.</ab>]; <ab>Prec.</ab> शम्यात् <ab>Gr.</ab>; <ab>fut.</ab> शमिता, शमिष्यति, <ls>ib.</ls>; <ab>ind.p.</ab> शमित्वा, शान्त्वा, SA<shortlong/>mam, <ls>ib.</ls>), <dvsn n='to'/>to toil at, fatigue or exert one's self (<ab>esp.</ab> in performing ritual acts), <ls>RV.</ls>; <ls>TBr.</ls>; <dvsn n='to'/>to prepare, arrange, <ls>VS.</ls>; <dvsn n='to'/>to become tired, finish, stop, come to an end, rest, be quiet or calm or satisfied or contented, <ls>TS.</ls>; <ls>ŚBr.</ls> &c.; <dvsn n='to'/>to cease, be allayed or extinguished, <ls>MBh.</ls>; <ls>Kāv.</ls> &c.; <dvsn n='to'/> <ab>cl.</ab> 9. (<ab>cf.</ab> above) to put an end to, hurt, injure, destroy, <ls>Kāṭh.</ls> : <dvsn n='vp'/><ab>Pass.</ab> शम्यते (<ab>aor.</ab> अशमि), <ls>Pāṇ. vii, 3, 34</ls> : <dvsn n='vp'/><ab>Caus.</ab> शम/यति (<ab>mc.</ab> also शामयति; <ab>aor.</ab> अशीशमत्; <ab>Pass.</ab> शाम्यते), <dvsn n='to'/>to appease, allay, alleviate, pacify, calm, soothe, settle, <ls>RV.</ls> &c. &c.; <dvsn n='to'/>to put to an end or to death, kill, slay, destroy, remove, extinguish. sup. press, <ls>TS.</ls> &c. &c.; <dvsn n='to'/>to leave off, desist, <ls>MBh.</ls>; <dvsn n='to'/>to conquer, subdue, <ls>Kālid.</ls>; <ls>Bhaṭṭ.</ls> : <dvsn n='vp'/><ab>Desid.</ab> शिशमिषति <ab>Gr.</ab>: <dvsn n='vp'/><ab>Intens.</ab> शंशमीति (<ls>Bālar.</ls>), शंशम्यते, शंशन्ति (<ab>Gr.</ab>), to be entirely appeased or extinguished (<ab>pf.</ab> शंशमां चक्रुः, <ls>Bhaṭṭ.</ls>). [<ab>cf.</ab> <ab>Gk.</ab> <lang n='greek'>κάμνω</lang>], <info westergaard='Samu,26.92,04.0099'/><info whitneyroots='Sam1,171;Sam2,171;Sam3,171'/><info verb='genuineroot' cp='4P,9'/>"
+        },
+        {
+            "word": "शम्",
+            "eid": "213058",
+            "pagenum": "1054,2",
+            "content": "<hom>2.</hom> श/म् ¦ <lex>ind.</lex> (<ab>g.</ab> cA<srs/>di and स्वर्-आदि) auspiciously, fortunately, happily, well (frequently used in the <s1 slp1='veda'>Veda</s1>, rarely in later language; often to be translated by a <ab>subst.</ab>, <ab>esp.</ab> in the frequent phrase श/ं यो/ः or श/ं च यो/श् च, ‘happiness and welfare’, sometimes joined with the verbs भू, अस्, कृ, दा, वह्, या, sometimes occurring without any verb; with <ab>dat.</ab> or <ab>gen.</ab> [<ab>cf.</ab> <ls>Pāṇ. ii, 3, 73</ls>, <ab>Sch.</ab>]; in some cases corresponding to an <ab>adj.</ab>, <ab>e.g.</ab> शं तद् अस्मै, that is pleasant to him), <ls>RV.</ls>; &c.<info lex='ind'/>"
+        },
+        {
+            "word": "शम्",
+            "eid": "213070",
+            "pagenum": "1054,2",
+            "content": "शं ¦ in <ab>comp.</ab> for <hom>2.</hom> शम्."
+        }
+    ],
+    "MW72": [
+        {
+            "word": "शम्",
+            "eid": "46117",
+            "pagenum": 992,
+            "content": "शम् 1¦. <i>śam,</i> cl. 4. P. <i>śāmyati, śaśāma,</i> <i>śamiṣyati, aśamat,</i> (the form <i>śaśa-</i> <i>mate = śāmyati</i> or <i>stauti,</i> Ṛg-veda VI. 2, 4), <i>śamitum</i> (originally ‘to become tired’), to be appeased, grow calm, become pacified, be satisfied, become quiet or tranquil, be undisturbed or quiescent; to cease, stop, leave off, desist; to pacify, cause to cease, put an end to, destroy, kill, sacrifice, (in these transitive senses also cl. 9. P. <i>śamnāti,</i> according to Naigh. II. 19, and probably in some cases the forms used are referrible to Caus.); cl. 10. A. <i>śāmayate, -yitum,</i> to look at, inspect; to show, display: Pass. <i>śāmyate, śamyate</i> (referrible also to Caus.), Aor. <i>aśami</i> or <i>aśāmi,</i> to be appeased or quieted, &c.: Caus. <i>śamayati</i> or <i>śāmayati, -yi-</i> <i>tum,</i> Aor. <i>asīśamat,</i> to appease, allay, pacify, calm, tranquillize, soothe, settle; to console; to cause to cease, stop, suppress, extinguish, destroy; to remove, avert; to tame, subdue, defeat, conquer; to leave off, desist, (<i>śamayām-babhūvuḥ,</i> they desisted): Desid. <i>śiśamiṣati:</i> Intens. <i>śaṃśamyate, śaṃśanti,</i> to be entirely appeased, become tranquil; to cease; [cf. Gr. <lang n='greek'>κάμνω, αιδηρο-κμής, κημός:</lang> Old Germ. <nsi>chamo.</nsi>]"
+        },
+        {
+            "word": "शम्",
+            "eid": "46142",
+            "pagenum": 993,
+            "content": "शम् 2¦. <i>śam,</i> ind. (perhaps to be connected with rt. 1. <i>śam,</i> but also referrible to 2. <i>śa</i>), happiness, welfare, prosperity, blessing, beatitude, health, hail, (according to Pāṇ. II. 3, 73. with dat. or gen., e. g. <i>śaṃ devadattāya</i> or <i>śaṃ devadattasya,</i> hail to Devadatta); happy, auspicious, pleasant, sweet, kind, agreeable; happily, auspiciously, well; (used in the Veda as a subst., adj., and adv.; frequently found in the phrase <i>śaṃ yos</i> or <i>śaṃ ca yoś ca,</i> ‘prosperity and succour,’ or ‘blessing and protection,’ Ṛg-veda I. 114, 2, II. 33, 13, &c., cf. <i>yos;</i> sometimes joined with the verbs <i>bhū, as, kṛ, yā,</i> &c., and sometimes occurring without any verb, e. g. <i>śaṃ no</i> <i>bhavatv Aryamā,</i> may Aryaman be kind or propitious to us; <i>Somaḥ śam astu te hṛde,</i> may the Soma be agreeable to thy heart; <i>śaṃ naḥ karato</i> <i>Aśvinā,</i> may the two Aśvins do us good; <i>śaṃ yāti,</i> he attains happiness or becomes prosperous; <i>śaṃ</i> <i>tad asmai,</i> that is pleasant to him.) <i>—Śaṃ-vat,</i> <i>ān, atī, at,</i> containing the word <i>śam</i>. <i>—Śaṃ-stha,</i> <i>as, ā, am,</i> or <i>śaṃ-sthā, ās, ās, am,</i> being in prosperity, happy, prosperous, faring well. <i>—Śaṃ-kara,</i> <i>as, ā</i> or <i>ī, am,</i> causing happiness, &c. <i>= śaṅ-</i> <i>kara,</i> p. 988, col. 1. <i>—Śaṃ-gaya, as, ā</i> or <i>ī,</i> <i>am,</i> Ved. having a pleasant house, happily domiciled, (in Ṛg-veda IX. 97, 17. the fem. <i>śaṃ-gayīm</i> occurs.) <i>—Śaṃ-tama, as, ā, am,</i> Ved. most happy, very fortunate, most pleasant or auspicious. <i>—Śaṃ-tāti,</i> <i>is, is, i,</i> Ved. causing happiness, auspicious, (Sāy. <i>=</i> <i>śānti-kara,</i> Ṛg-veda VIII. 18, 7); (<i>is</i>), f., Ved. happiness, prosperity. <i>—Śam-pāka, as,</i> m. a kind of Cassia, Cassia Fistula (<i>= ārag-badha</i>); lac, the red dye (<i>= yāvaka</i>); bringing to maturity or ripeness, cooking, maturing, (probably for <i>sam-pāka.</i>) <i>—Śam-pāta, as,</i> m. Cassia Fistula. <i>—Śam-bhavi-</i> <i>ṣṭha, as, ā, am,</i> Ved. being greatly for happiness or welfare, granting much happiness or beatitude. <i>—Śam-bhu, us, us, u,</i> being for happiness or welfare, granting or causing happiness; (<i>us</i>), m., N. of a Vedic deity, (Sāy. <i>= sukhasya bhāvayitā,</i> Ṛgveda VII. 35, 10); N. of Śiva; of Brahmā; a sage, venerable man; a Jina or Jaina sanctified teacher; a particular semi-divine being (<i>= siddha</i>); N. of one of the eleven Rudras (according to the ViṣṇuPurāṇa); N. of an author; (<i>us</i>), f., N. of a wife of Dhruva. <i>—Śambhu-tanaya</i> or <i>śambhu-nandana,</i> <i>as,</i> m. ‘son of Śiva,’ an epithet of Kārttikeya; of Gaṇeśa. <i>—Śambhu-nātha, as,</i> m. a proper N. <i>—Śambhu-priyā,</i> f. ‘dear to Śiva,’ an epithet of Durgā; Emblic Myrobalan. <i>—Śambhu-rahasya, am,</i> n., N. of a work. <i>—Śambhu-vallabha, as, ā, am,</i> beloved by Śiva; (<i>am</i>), n. the white lotus. <i>—Śam-</i> <i>bhū, ūs, ūs, u,</i> auspicious (Ved.); (<i>ūs</i>), m. a proper N. <i>—Śambhū-nātha, as,</i> m., N. of the author of the Kāla-jñāna and of the Vaidyaka-sāra-saṅgraha."
+        }
+    ],
+    "PW": [
+        {
+            "word": "शम्",
+            "eid": "110318",
+            "pagenum": 6,
+            "content": "<hom>1.</hom> √शम्¦ (शमीश्व, शमीध्वम्, शम्यति, शशमे/, शश/मते, <ab>Partic.</ab> श/मन्त् [<ls>SV. 1,4,2,3,6</ls>] und शमित/) <dvsn n='1'>— 1〉 <i>sich mühen, eifrig sein, arbeiten;</i> <ab>insbes.</ab> von der Thätigkeit beim Cultus. <dvsn n='1'>— 2〉 <i>zurichten, zubereiten</i>. <ab>v. l.</ab> शिम्. <dvsn n='1'>— 3〉 शशमान/ <i>eifrig bemüht, beschäftigt, fleissig;</i> namentlich in der Arbeit für die Götter."
+        },
+        {
+            "word": "शम्",
+            "eid": "110319",
+            "pagenum": 6,
+            "content": "<hom>2.</hom> √शम्¦, शा/म्यति (metrisch auch <ab>Med.</ab> und शमेत्; *<ab>Pass.</ab> <ab>impers.</ab> शम्यते, अशमि) <dvsn n='1'>— 1〉 <i>ruhig —, still werden, befriedigt sein</i>. <dvsn n='1'>— 2〉 <i>aufhören, nachlassen, sich legen, erlöschen</i>. <dvsn n='1'>— 3〉 शान्त/ <dvsn n='2'>— a〉 <i>beruhigt, zur innern Ruhe gelangt, frei von aller Leidenschaft</i>. <dvsn n='2'>— b〉 <i>ruhig, still, sanft, mild</i>. <ab>Superl.</ab> शान्त/तम. <dvsn n='2'>— c〉 <i>weich, schmiegsam</i>. <dvsn n='2'>— d〉 im Ritual und in der Auguralkunde <i>zahm, mild, freundlich</i> (im Gegensatz zu <i>wild, der Ordnung widerstrebend</i>), <i>faustus</i>. <dvsn n='2'>— e〉 <i>erloschen</i>. <dvsn n='2'>— f〉 <i>nachgelassen, aufgehört, gewichen</i>. <dvsn n='2'>— g〉 von Geschossen so <ab>v. a.</ab> <i>unwirksam —, unschädlich geworden, — gemacht</i>. <dvsn n='2'>— h〉 <i>zur Ruhe gekommen,</i> so <ab>v. a.</ab> <i>zum Tode befördert, gestorben, ausgestorben</i>. <dvsn n='2'>— i〉 शान्तं पापम् (auch wiederholt) <i>abgewehrt sei das Uebel,</i> ein Ausruf, mit den man ein Unheil, das ein ausgesprochenes Wort bewirken könnte, abwehren will. धिक् शान्तम् so <ab>v. a.</ab> <i>behüte Gott! bei Leibe nicht!</i> शान्तम् allein = शान्तं पापम् und auch so <ab>v. a.</ab> <i>so wahr mir Gott helfen möge!</i> <dvsn n='m'>— <ab>Caus.</ab> शम/यति (metrisch auch शामयति; <ab>Pass.</ab> शाम्यते [auch <ls>VAITĀN. 10,18</ls> und zu <ls>Spr. 6899</ls>] <ab>u. s. w.</ab> wohl nur fehlerhaft) <dvsn n='1'>— 1〉 <i>beruhigen, stillen, beschwichtigen</i>. <dvsn n='1'>— 2〉 <i>zurechtbringen,</i> einen Fehler —, ein Uebel <i>gut machen, placare</i>. <dvsn n='1'>— 3〉 <i>auslöschen</i> (<ab>trans.</ab>) <ls>PRASANNAR. 136,5</ls>. <dvsn n='1'>— 4〉 <i>Jmd bezwingen, überwinden, sich (sibi) unterwerfen</i>. <dvsn n='1'>— 5〉 euphemistisch so <ab>v. a.</ab> <i>zum Tode bringen, schlachten</i> (<ls>VAITĀN. 10,18</ls>), <i>Jmd aus dem Wege räumen, unschädlich machen, vernichten</i> <ls>PRASANNAR. 136,5</ls>. <dvsn n='1'>— 6〉 <i>sich beruhigen,</i> so <ab>v. a.</ab> <i>von Etwas abstehen</i>. <dvsn n='m'>— <ab>Intens.</ab> शंशमीति, *शंशन्ति <i>vollständig erlöschen</i> <ls>BĀLAR. 136,8</ls>. शंशमां चक्रुः <ls>BHAṬṬ.</ls> <dvsn n='p'>— Mit अनु <i>hinterher ruhig werden, — aufhören, — sich legen</i>. <dvsn n='p'>— Mit अभि <i>aufhören, sich legen</i>. <dvsn n='p'>— Mit अव, अवशान्त <i>erlöschen</i>. <dvsn n='p'>— Mit व्यव, व्य/वशान्त <ab>dass.</ab> <ls>MAITR. S. 1,8,6 (123,12)</ls> = <ls>ĀPAST. ŚR. 6,9,2</ls>. <dvsn n='p'>— Mit समव <ab>Caus.</ab> <i>placare</i>. <dvsn n='p'>— Mit उप (<ab>Med.</ab> hier und da auch in ungebundener Rede) [Page6-206-c] <dvsn n='1'>— 1〉 <i>ruhig —, still werden</i>. <dvsn n='1'>— 2〉 <i>erlöschen</i> <ls>Spr. 7848</ls>. <dvsn n='1'>— 3〉 <i>aufhören, sich legen</i>. <dvsn n='1'>— 4〉 उपशान्त <dvsn n='2'>— a〉 <i>beruhigt</i>. <dvsn n='2'>— b〉 <i>erloschen</i>. <dvsn n='2'>— c〉 <i>aufgehört, sich gelegt habend</i>. <dvsn n='m'>— <ab>Caus.</ab> <dvsn n='1'>— 1〉 <i>beruhigen, stillen, beschwichtigen, placare</i>. <dvsn n='1'>— 2〉 <i>auslöschen</i> (<ab>trans.</ab>) <ls n='Chr.'>290,9</ls>. <dvsn n='1'>— 3〉 <i>abkühlen</i>. <dvsn n='1'>— 4〉 <i>aufhören machen</i>. <dvsn n='1'>— 5〉 <i>zur ewigen Ruhe bringen</i>. <dvsn n='p'>— Mit अभ्युप, °शान्त <i>gestillt, abgekühlt</i>. <dvsn n='p'>— Mit व्युप <dvsn n='1'>— 1〉 <i>sich beruhigen</i> <ls>MBH. 6,121,52</ls>. <dvsn n='1'>— 2〉 <i>aufhören, sich legen</i>. दुःखं व्युपशान्तम् <ls>KĀRAṆḌ. 48,9</ls>. <dvsn n='p'>— Mit समुप <i>aufhören, sich legen</i> <ls>CARAKA. 6,10</ls>. <dvsn n='p'>— Mit नि, निशान्त <dvsn n='1'>— 1〉 *<i>beruhigt, ruhig</i> <ls>H. an. 3,271</ls>. <ls>MED. t. 119</ls>. <dvsn n='1'>— 2〉 <i>hergebracht, üblich</i>. <dvsn n='m'>— <ab>Caus.</ab> <dvsn n='1'>— 1〉 <i>zur Ruhe —, zurecht bringen</i>. <dvsn n='1'>— 2〉 <i>abkühlen</i> <ls>SĀY. zu ṚV. 10,39,9</ls>. <ab>Vgl.</ab> <hom>4.</hom> शम् mit नि. <dvsn n='p'>— Mit प्रणि <i>sich beruhigen</i> <ls>BHAṬṬ.</ls> <dvsn n='p'>— Mit परि <ab>Caus.</ab> <i>aufhören machen</i>. <dvsn n='p'>— Mit प्र <dvsn n='1'>— 1〉 <i>sich beruhigen, zur Ruhe kommen</i>. <dvsn n='1'>— 2〉 <i>erlöschen</i>. <dvsn n='1'>— 3〉 <i>aufhören, sich legen</i>. <dvsn n='1'>— 4〉 प्रशान्त <dvsn n='2'>— a〉 <i>ruhig geworden, beruhigt, ruhig</i>. <dvsn n='2'>— b〉 <i>ruhig,</i> so <ab>v. a.</ab> <i>gleichgültig, fahrlässig</i>. <dvsn n='2'>— c〉 in der Auguralkunde <i>nichts Schlimmes bedeutend, boni ominis</i>. <dvsn n='2'>— d〉 <i>erloschen</i>. <dvsn n='2'>— e〉 <i>beseitigt, entfernt</i>. <dvsn n='2'>— f〉 <i>aufgehört —, sich gelegt habend, verschwunden, zu Ende gegangen, nicht da seiend, sich nicht sehen lassend</i>. <dvsn n='2'>— g〉 <i>zu Schanden geworden</i>. <dvsn n='2'>— h〉 <i>zur ewigen Ruhe eingegangen, gestorben, todt</i>. <dvsn n='m'>— <ab>Caus.</ab> (hier und da mit Dehnung des Wurzelvocals auch ohne metrische Veranlassung) <dvsn n='1'>— 1〉 <i>beruhigen, beschwichtigen</i>. <dvsn n='1'>— 2〉 <i>auslöschen</i> (<ab>trans.</ab>). <dvsn n='1'>— 3〉 <i>stillen, aufhören machen</i>. प्रशमित <ls>ŚIŚ. 17,38</ls>. <ls>VĀSAV. 281,2</ls>. <dvsn n='1'>— 4〉 <i>unschädlich machen, vernichten</i>. <dvsn n='1'>— 5〉 <i>sich (silbi) unterwerfen, wiedererobern</i>. <dvsn n='p'>— Mit अनुप्र in अनुप्रशमन्. <dvsn n='p'>— Mit संप्र, संप्रशान्त <i>aufgehört, gewichen, geschwunden</i>. <dvsn n='p'>— Mit प्रति <dvsn n='1'>— 1〉 <i>erlöschen</i>. <dvsn n='1'>— 2〉 प्रतिशान्त <i>aufgehört, gewichen, geschwunden</i>. <dvsn n='m'>— <ab>Caus.</ab> प्रतिशाम्य (<ls>VAJRACCH. 19,9</ls>) und °शामयित्वा (<ls>MAHĀVASTU 56,2</ls>) <i>wieder an seinen Platz bringen</i>. <ab>Vgl.</ab> <hom>1.</hom> श्रम् mit प्रवि <ab>Caus.</ab> <dvsn n='p'>— Mit सम् <dvsn n='1'>— 1〉 <i>vollständig zur Ruhe gelangen</i>. <dvsn n='1'>— 2〉 mit <ab>Instr.</ab> der Person (mit und ohne सह) <i>Frieden schliessen mit</i>. <dvsn n='1'>— 3〉 <i>erlöschen</i>. <dvsn n='1'>— 4〉 <i>aufhören, sich legen</i>. <dvsn n='1'>— 5〉 <i>wirkungslos werden</i> (von einem Geschosse). <dvsn n='1'>— 6〉 <i>beruhigen, stillen, beschwichtigen</i>. <dvsn n='1'>— 7〉 संशान्त <dvsn n='2'>— a〉 <i>vollständig beruhigt</i>. <dvsn n='2'>— b〉 <i>vollkommen erloschen</i>. <dvsn n='2'>— c〉 <i>vollständig sich gelegt habend, — aufgehört</i>. <dvsn n='2'>— d〉 <i>gestorben, todt</i>. <dvsn n='m'>— <ab>Caus.</ab> <dvsn n='1'>— 1〉 <i>beruhigen, beschwichtigen</i>. <dvsn n='1'>— 2〉 <i>auslöchen</i> (<ab>trans.</ab>). <dvsn n='1'>— 3〉 <i>beseitigen, aufhören machen</i>. <dvsn n='1'>— 4〉 <i>zu Ende bringen, vollbringen, beilegen</i>. <dvsn n='1'>— 5〉 <i>zur ewiger Ruhe bringen, den Garaus machen</i>."
+        },
+        {
+            "word": "शम्",
+            "eid": "110320",
+            "pagenum": 6,
+            "content": "<hom>3.</hom> √शम्¦, *शम्ना/ति (वधकर्मन्) <i>Jmd ein Leid zufügen</i>. Nur शम्नीषे und शम्नीथास् zu belegen."
+        },
+        {
+            "word": "शम्",
+            "eid": "110321",
+            "pagenum": 6,
+            "content": "<hom>4.</hom> √शम्¦, शमयति und शामयति. <dvsn n='p'>— Mit नि <i>inne —, gewahr werden, vernehmen, hören, erfahren, kennen lernen, — dass ist</i> oder <i>war</i> (mit prädicativem <ab>Acc.</ab>). Einmal auch mit <ab>Gen.</ab> <ab>st.</ab> <ab>Acc.</ab> <ab>Absol.</ab> निशम्य, निशाम्य und निशमय्य (<ls>ŚIŚ. 16,38</ls>). निशम्यमान mit <ab>act.</ab> (!) <ab>Bed.</ab> und <ab>Gen.</ab> (<ab>v. l.</ab> aber निशम्य). <dvsn n='p'>— Mit अनुनि <dvsn n='1'>— 1〉 <i>vernehmen</i> <ls>CARAKA. 6,10</ls>. <dvsn n='1'>— 2〉 <i>dem Geiste vorführen</i>. <dvsn n='p'>— Mit समनुनि <i>erkennen</i>. <dvsn n='p'>— Mit अभिनि <i>gewahr werden</i>. <dvsn n='p'>— Mit उपनि <i>vernehmen, hören</i>. <dvsn n='p'>— Mit प्रणि <ab>dass.</ab> <dvsn n='p'>— Mit विनि <ab>dass.</ab> <dvsn n='p'>— Mit संनि <i>vernehmen, kennen lernen</i>."
+        },
+        {
+            "word": "शम्",
+            "eid": "110322",
+            "pagenum": 6,
+            "content": "<hom>5.</hom> श/म्¦ <lex>Indecl.</lex> <dvsn n='1'>— 1〉 <i>wohlthätig, zum Vortheil, — Heil</i>. <dvsn n='1'>— 2〉 substantivisch <i>Heil, Wohl, Glück, Segen,</i> mit <ab>Dat.</ab> oder <ab>Gen.</ab>"
+        }
+    ],
+    "PWG": [
+        {
+            "word": "शम्",
+            "eid": "97898",
+            "pagenum": 7,
+            "content": "1. शम्¦, शमीष्व, शमीध्वम् <ls>P. 7, 3, 95</ls> und die Erkll. शम्यतु (s. u. 2), शशमे/, शश/मते 3. sg., अशमिष्ट, अशमिष्ठाः, partic. शमित/ . <dvsn n='1'> 1) <i>sich mühen, eifrig sein, arbeiten</i>; insbes. von der Thätigkeit beim Cultus. <ls>ṚV. 6, 1, 9.</ls> ई\\जे य\\ज्ञेभि^ः शश\\मे शमी^भिः <ls n='ṚV. 6,'>3, 2.</ls> ऋध\\द्यस्ते^ सु\\दान^वे धि\\या मर्त^ः श\\शम^ते <ls n='ṚV. 6,'>2, 4.</ls> ऋध^गि\\त्था स मर्त्य^ः शश\\मे दे\\वता^तये <ls n='ṚV.'>8, 90, 1.</ls> ध्रु\\वम^या ध्रु\\वमु\\ताश^मिष्ठाः <ls n='ṚV.'>3, 29, 16.</ls> <ls n='ṚV.'>5, 2, 7.</ls> सुशमि शमीध्वम् <ls>TBR. 3, 6, 6, 4.</ls> <dvsn n='1'>— 2) <i>zurichten, zubereiten</i>: स इ\\दं दे\\वेभ्यो^ ह\\विः श^मीष्व <ls>VS. 1, 15.</ls> वी\\तं ह\\विः श^मि\\तम्, श^मि\\ता य\\जध्यै^ <ls n='VS.'>17, 57.</ls> सू\\चीभि^ः शम्यन्तु त्वा <ls n='VS.'>23, 33. 37. 40.</ls> कस्ते\\ गात्रा^णि शम्यति <ls n='VS.'>39. 42.</ls> In den entsprechenden Stellen lesen <ls>TS.</ls> und <ls>KĀṬH.</ls> शिम्यन्तु, शिम्यति u. s. w. <dvsn n='1'>— 3) partic. शशमान/ <i>eifrig bemüht, beschäftigt, fleissig</i>; namentlich in der Arbeit für die Götter <ls>NAIGH. 3, 14</ls> (अर्चतिकर्मन्). <ls n='NAIGH.'>4, 3.</ls> <ls>NIR. 6, 8</ls> (= शंसमान). <ls>ṚV. 1, 85, 12.</ls> श\\श\\मा\\नस्य^ वा नर\\ः स्वेद^स्य । वि\\दा काम^स्य\\ वेन^तः <ls n='ṚV. 1,'>86, 8.</ls> <ls n='ṚV. 1,'>113, 20.</ls> <ls n='ṚV. 1,'>142, 2.</ls> <ls n='ṚV.'>3, 18, 4.</ls> <ls n='ṚV.'>4, 2, 9.</ls> <ls n='ṚV. 4, 2,'>13.</ls> श्र\\व\\स्यव^ः शशमा\\नास^ उ\\क्थैः <ls n='ṚV. 4,'>16, 15.</ls> <ls n='ṚV. 4,'>51, 7.</ls> <ls n='ṚV.'>4, 22, 8.</ls> यज्यु <ls n='ṚV. 4,'>23, 2.</ls> <ls n='ṚV. 4, 12,'>4.</ls> सुन्वन्त् <ls n='ṚV. 4,'>31, 8.</ls> <ls n='ṚV.'>1, 141, 10.</ls> <ls n='ṚV.'>8, 55, 2.</ls> — <ls n='ṚV.'>4, 41, 3.</ls> गव्य^ं चिदू\\र्वं नर^ः शशमा\\ना अप^ व्रन् <ls n='ṚV.'>5, 29, 12.</ls> यो व\\ः शमी^ं शशमा\\नस्य\\ निन्दा^त् <ls n='ṚV. 5,'>42, 10.</ls> यो वा^ं य\\ज्ञैः श^शमा\\नो ह\\ दाश^ति <ls n='ṚV.'>1, 151, 7.</ls> <ls n='ṚV.'>2, 12, 14.</ls> <ls n='ṚV. 2,'>20, 3.</ls> <ls n='ṚV.'>8, 55, 2.</ls> <ls n='ṚV.'>10, 11, 5.</ls> शंस^ः शशमा\\नस्य^ <ls n='ṚV. 10,'>64, 10.</ls> <ls n='ṚV. 10,'>92, 7.</ls> उत्ते^ अग्ने शशमा\\नस्य\\ वाजा^ः (जिहताम्) <ls n='ṚV. 10,'>142, 6.</ls> <ls>AV. 12, 2, 10.</ls> ये अ\\ग्रव^ः शशमा\\नाः प^रे\\युः <ls n='AV.'>18, 2, 47.</ls> <ls>VS. 20, 65.</ls> <dvsn n='v'>— Vgl. <lang n='greek'>κάμνω</lang>."
+        },
+        {
+            "word": "शम्",
+            "eid": "97899",
+            "pagenum": 7,
+            "content": "2. शम्¦, शा/म्यति <ls>DHĀTUP. 26, 92</ls> (उपशमे). <ls>P. 7, 3, 74.</ls> <ls>VOP. 11, 3. 5.</ls> (प्र) शमेत् <ls>R. GORR. 1, 8, 14.</ls> शशाम, अशमत्; im Epos aus metrischen Rücksichten auch med.; शमित्वा und शान्त्वा <ls>P. 7, 2, 56.</ls> <ls>VOP. 26, 208.</ls> absol. शमम् und शामम् (angeblich vom caus.) <ls>P. 6, 4, 93</ls>, Schol. pass. impers. शम्यते, अशमि <ls>P. 7, 3, 34.</ls> <ls>VOP. 24, 6.</ls> partic. शान्त s. bes. <i>ruhig —, still werden, befriedigt sein; aufhören, sich legen, erlöschen</i>: भू\\तान्यशा^म्यन् <ls>VS. 14, 31.</ls> इ\\मौ लो\\कावशा^म्यताम् <ls>TS. 2, 5, 8, 2.</ls> नो न्वेवात्राशमत् <i>es ist noch nicht zur Ruhe gekommen</i> <ls>ŚAT. BR. 1, 7, 4, 7.</ls> शाम्य मा शुचः <ls>MBH. 2, 1936.</ls> <ls n='MBH.'>5, 7319.</ls> शाम्येत्प्रत्यपकारेण नोपकारेण दुर्जनः <ls>KUMĀRAS. 2, 40.</ls> समत्सरो ऽपि शशाम तेन क्षितिपाललोकः <ls>RAGH. 7, 3.</ls> <ls>Spr. (II) 2026.</ls> <ls n='Spr.'>(I) 2132.</ls> <ls>KATHĀS. 14, 51.</ls> <ls>PRAB. 5, 14.</ls> <ls>BHĀG. P. 1, 6, 36.</ls> <ls>BHAṬṬ. 14, 106.</ls> ब्रह्मर्षी शाम्यन्तौ <i>beruhigt</i> <ls>MBH. 1, 6362.</ls> <ls n='MBH.'>4, 651.</ls> <ls>R. 4, 44, 45.</ls> शाम्यते <ls>MBH. 5, 3864.</ls> नहि ते जातु शाम्येरन्नृते राज्येन <ls n='MBH. 5,'>4678.</ls> यदा शाम्यन्ति विप्रुषः <ls>ŚAT. BR. 14, 2, 2, 28.</ls> <ls>ṢAḌV. BR. 5, 10.</ls> <ls>ŚĀṄKH. GṚHY. 6, 6.</ls> <ls>KAUŚ. 85. 116.</ls> शूलम् <ls>SUŚR. 2, 347, 1.</ls> आक्रन्दितध्वान <ls>RĀJA-TAR. 3, 17.</ls> न जातु कामः कामानामुपभोगेन शाम्यति <ls>Spr. (II) 3241.</ls> <ls n='Spr.'>(I) 4678.</ls> विग्रहः <ls>KATHĀS. 56, 96.</ls> वैरम्  <ls>MBH. 14, 2509</ls> (med.). पित्तं शर्करया <ls>Spr. 3243.</ls> वृद्धं रजः <ls>BHAṬṬ. 17, 63.</ls> शाम्यन्निमेष <ls n='BHAṬṬ.'>11, 31.</ls> अस्त्रम् <ls>MĀRK. P. 63, 35.</ls> हिमेन हिमं शाम्येद्दुष्कृतेनेव दुष्कृतम् <ls>RĀJA-TAR. 5, 400.</ls> शेमुश्च पापानि नरेन्द्रसूनोः <ls>HARIV. 8404.</ls> अशेषाणि घोराणि <ls>MĀRK. P. 58, 72.</ls> <ls>PAÑCAR. 4, 3, 1</ls> (साम्येत् geder.). दिव्यम् (sc. वैकृतम्) <ls>VARĀH. BṚH. S. 46, 5. 48, 84.</ls> ब्राह्मणस्त्वनधीयानस्तृणाग्निरिव शाम्यति <ls>M. 3, 168.</ls> तेजः <ls n='M.'>9, 321.</ls> तेजांसि च तमांसि च <ls>MBH. 13, 3038.</ls> अग्निमारुतौ <ls>HARIV. 95</ls> (med.). <ls n='HARIV.'>13954</ls> (शाम्यमाने तु समरे पावके mit der neueren Ausg. zu lesen). दवाग्निः <ls>RAGH. 2, 14.</ls> कोपाग्निः <ls>Spr. (II) 3422</ls> (med.). शशाम दहनो न पुनः क्रन्दितध्वनिः <ls>KATHĀS. 16, 15.</ls> देहदाहः <ls>GĪT. 7, 41.</ls> <ls>BHĀG. P. 9, 5, 12.</ls>  <dvsn n='p'>— caus. <dvsn n='1'> 1) शमयति (hier und da auch med. aus metrischen Rücksichten) <ls>DHĀTUP. 19, 70.</ls> <ls>P. 6, 4, 92.</ls> <ls>VOP. 18, 24.</ls> अशीशमत्; Bildung des pass. <ls>P. 6, 4, 62.</ls> <ls n='P. 6, 4,'>93.</ls> <ls>VOP. 24, 5.</ls> partic. शमित (nach <ls>P. 7, 2, 27.</ls> <ls>VOP. 26, 114</ls> und den Lexicographen angeblich auch शान्त). <dvsn n='2'> a) <i>beruhigen, stillen, beschwichtigen; zurechtbringen</i> überh.; <i>einen Fehler gut machen, placare</i>: रोग^म् <ls>AV. 2, 3, 4.</ls> अ\\ग्निम् <ls n='AV.'>3, 21, 8.</ls> म\\न्युम् <ls n='AV.'>7, 74, 3.</ls> <ls>VS. S.</ls> ५८. शुच^म् <ls>TS. 5, 1, 5, 1.</ls> <ls>AIT. BR. 1, 13.</ls> <ls n='AIT. BR.'>3, 36.</ls> <ls n='AIT. BR.'>6, 21.</ls> das Feuer श\\म्या^शमयत् <ls>TBR. 1, 1, 3, 11. 6, 7.</ls> हे\\तिम् <ls n='TBR.'>2, 1, 6.</ls> वरु^णम् <ls>TS. 2, 1, 9, 3.</ls> <ls n='TS.'>3, 4, 1, 3.</ls> लो\\केभ्य^ः (abl.) <ls n='TS.'>5, 4, 3, 4.</ls> प्रा\\णेभ्य^ ए\\वास्य\\ शुच^ं शमयति <ls n='TS.'>6, 3, 9, 1.</ls> — चित्तं विक्षिप्तम् <ls>VEDĀNTAS. (Allah.) No. 41.</ls> क्रुद्धं जनार्दनम् । अर्जुनः शमयामास <ls>MBH. 3, 468.</ls>  <ls>R. GORR. 2, 21, 1.</ls> <ls>KĀM. NĪTIS. 12, 40.</ls> <ls>BHĀG. P. 4, 30, 46.</ls> मृगाश्च (boni ominis) शमयन्तः पक्षिणः (mali ominis) <ls>R. GORR. 1, 76, 11.</ls> अथर्वा सजते घोरमद्भुतं शमयेत्तथा <ls>AV. PARIŚ.</ls> in <ls>Ind. St. 1, 296.</ls> पापकृत्याम् <ls>MBH. 1, 672.</ls> ब्रह्मास्त्रेणैव सर्वमशीशमत् <ls n='MBH.'>7, 8624.</ls> उपद्रवम् <ls>KATHĀS. 115, 112.</ls> दैवं प्रतिकूलम् <ls>ŚĀK. 7, 16.</ls> शान्तिभिः <ls>VARĀH. BṚH. S. 43, 61.</ls> दुरितानि <ls n='VARĀH. BṚH. S.'>103, 13. 104, 48.</ls> तपः <ls>KUMĀRAS. 2, 56.</ls> तद्वचः <ls>MBH. 1, 576.</ls> अस्त्रमस्त्रेण ebend. und <ls n='MBH.'>4, 398.</ls> <ls>HARIV. 14005.</ls> अश्मवर्षं वायुं च <ls>MBH. 5, 2394.</ls> यज्ञविप्लवम् <ls>RĀJA-TAR. 1, 184.</ls> विकृतीः <ls>PAÑCAR. 3, 13, 22.</ls> पापम् <ls>MĀRK. P. 108, 29</ls> (med.). कृच्छ्रम् <ls>BHĀG. P. 4, 30, 4.</ls> कश्मलम् <ls n='BHĀG. P.'>3, 9, 28.</ls> भयम् <ls>MBH. 5, 238</ls> (med.). <ls>R. GORR. 1, 76, 14.</ls> <ls n='R. GORR.'>3, 10, 14.</ls> दर्पम् <ls>MBH. 14, 2257.</ls> पराजयव्यलीकम् <ls>RAGH. 4, 87.</ls> आधिम् <ls n='RAGH.'>8, 27.</ls> संरम्भम् <ls n='RAGH.'>15, 85.</ls> प्रकृतिवैराग्यम् <ls n='RAGH.'>17, 55.</ls> तृषम् <ls>Spr. 2956.</ls> दोषान् <ls>MĀRK. P. 100, 17.</ls> दुःखम् <ls>MBH. 3, 72.</ls> <ls>KATHĀS. 118, 176.</ls> शमिताशेषतद्व्यथ <ls n='KATHĀS.'>2, 75.</ls> विषादम् <ls>BHĀG. P. 1, 11, 1.</ls> शोकम् <ls n='BHĀG. P.'>3, 4, 23.</ls> रोषं समुत्थम् <ls n='BHĀG. P.'>17, 29.</ls> क्रोधम् <ls>R. 4, 6, 1.</ls> प्रकोपम् <ls>KĀM. NĪTIS. 15, 22.</ls> परिदेवितम् <ls>BHĀG. P. 4, 17, 25.</ls> वायुम् <ls>SUŚR. 1, 23, 10.</ls> भवतापम् <ls>GĪT. 1, 10.</ls> परितापम् <ls>ŚĀK. 104.</ls> <ls>BHĀG. P. 6, 9, 40.</ls> क्लमम् <ls>RĀJA-TAR. 1, 205.</ls> क्रन्दितध्वनिम् <ls n='RĀJA-TAR.'>4, 296.</ls> दुर्वचः <ls>KATHĀS. 32, 90.</ls> ध्वान्तम् <ls>CHANDOM. 53.</ls> संसारम् <ls>PRAB. 108, 17.</ls> बुद्धिं मरणे ऽग्निमिव <ls>R. 4, 61, 22.</ls> बलमुद्वृत्तमग्निमिवाम्भसा <ls n='R. 4,'>9, 78.</ls> यथा वह्निं मन्युम् <ls>BHĀG. P. 10, 89, 4.</ls> अग्निम् <ls>MBH. 1, 1136.</ls> दावम् <ls n='MBH. 1,'>8297.</ls> <ls n='MBH.'>4, 397</ls> (med.). <ls n='MBH.'>5, 1880.</ls> <ls>R. 5, 87, 10.</ls> <ls>ṚT. 1, 4.</ls> <ls>RAGH. 7, 45.</ls> <ls>MEGH. 54. ad 18.</ls> <ls>Spr. (II) 2723.</ls> <ls n='Spr.'>(I) 2940.</ls> <ls>RĀJA-TAR. 4, 125.</ls> <ls>BHĀG. P. 7, 9, 25.</ls>Inschr. in <ls>Journ. of the Am. Or. S. 7, 25, Śl. 3.</ls> अशमितनख so v. a. <i>nicht in Ordnung gehalten, vernachlässigt</i> <ls>MEGH. 89, v. l.</ls> für अनियमितनख . <dvsn n='2'>— b) euphemistisch so v. a. <i>zum Tode bringen; Jmd aus dem Wege räumen, unschädlich machen, vernichten</i>: प्र\\जां प\\शून् <ls>TS. 3, 1, 3, 2.</ls> वैनतेयशमितस्य भोगिनः <ls>RAGH. 11, 59.</ls> देवकण्टकम् <ls>MBH. 3, 14620.</ls> <ls>HARIV. 8178</ls> (med.). राक्षसान् <ls>MBH. 9, 2255.</ls> <ls n='MBH.'>4, 1521.</ls> संहरन्तं प्रजाः कालं कालः शमयते पुनः <ls>Spr. (II) 1696.</ls> <i>Jmd bezwingen, überwinden</i>: शमयति गजानन्यान्गन्धद्विपः कलभो ऽपि सन् <ls n='Spr.'>(I) 5063.</ls> पक्षबलम् <ls>RAGH. 9,12.</ls> संग्रामे ललाटंतपं रविम् <ls>BHAṬṬ. 6, 99.</ls> प्राचीम् <i>sich unterwerfen</i> <ls>KATHĀS. 19, 89.</ls> <dvsn n='2'>— c) <i>sich beruhigen</i> so v. a. <i>abstehen von Etwas</i> <ls>MBH. 1, 7023.</ls> <dvsn n='1'>— 2) शामयति ( <ls>VOP. 18, 24</ls>) aus metrischen Rücksichten: द्रोणास्त्रम् - अशामयत् (am Ende eines <is>Śloka</is>) <ls>MBH. 7, 4000.</ls> तस्मिंस्तमसि शामिते (नाशिते <ls>ed. Bomb.</ls>) <ls n='MBH.'>9, 633.</ls> pass. शाम्यताम् <ls>R. 5, 41, 4.</ls> <ls>MĀRK. P. 114, 33</ls> in der Bed. <i>werde aus dem Wege geräumt, - unschädlich gemacht</i> vielleicht fehlerhaft für शम्यताम् .  <dvsn n='p'>— intens. शंशन्ति, शंशान्तस् <ls>P. 6, 4, 15</ls>, Schol. <i>vollständig erlöschen</i>: तेजांसि शंशमां चक्रुः <ls>BHAṬṬ. 14, 67.</ls>  <dvsn n='p'>— अनु <i>hinterher ruhig werden, - aufhören, - sich legen</i>: °शाम्यत med. <ls>BHĀG. P. 10, 86, 11.</ls> वादस्तमनु (so nach dem Comm.) शाम्यति <ls n='BHĀG. P.'>11, 22, 6.</ls>  <dvsn n='p'>— अभि <i>aufhören, sich legen</i>: कुत्सा संजायते, अभिशाम्यति <ls>MBH. 12, 6020.</ls>  <dvsn n='p'>— अव partic. °शान्त <i>erloschen</i> <ls>AIT. BR. 3, 34.</ls>  <dvsn n='p'>— समव caus. <i>placare</i>: चितिं समवशमयन्ति <ls>ŚAT. BR. 7, 3, 2, 1. 2.</ls>  <dvsn n='p'>— उप <i>ruhig —, still werden; aufhören, sich legen, erlöschen</i>: खलः केनोपशाम्यति <ls>Spr. 3197, v. l.</ls> <ls>MBH. 3, 1405.</ls> <ls>BHĀG. P. 11, 20, 16.</ls> <ls>KULL.</ls> zu <ls>M. 8, 129.</ls> नोपशाम्यति मे मनः <ls>MBH. 3, 1008.</ls> उपशाम्यतु ते बुद्धिः <ls>BHAṬṬ. 20, 5.</ls> दुःखं शारीरम् <ls>MBH. 3, 72.</ls> शब्दः <ls n='MBH.'>16, 38.</ls> रजो भौमम् <ls n='MBH.'>4, 1051</ls> (उपा° <ls>ed. Bomb.</ls>) <ls n='MBH. 4,'>1775.</ls> <ls n='MBH.'>6, 78.</ls> अग्निः <ls>ĀŚV. GṚHY. 1, 9, 3.</ls> <ls>AIT. BR. 7, 5.</ls> <ls>NIR. 4, 14.</ls> <ls>KAUŚ. 73.</ls> <ls>CHĀND. UP. 2, 12, 1.</ls> <ls>Spr. 2975.</ls> कोपाग्निः <ls>MBH. 13, 7178.</ls> med. : त्यक्त्वा मन्युमुपशाम्यस्व (व्युप° <ls>ed. Bomb.</ls>) <ls n='MBH.'>6, 5812.</ls> उपशाम्येरन् (अग्नयः) <ls>AIT. BR. 7, 8.</ls> यथा निरिन्धनो वह्निः स्वयोना उपशाम्यते । तथा वृत्तिक्षयाच्चित्तं स्वयोना उपशाम्यते ॥ <ls>MAITRYUP. 6, 34.</ls> उपशान्त <i>beruhigt</i>, von Personen <ls>KATHĀS. 72, 100.</ls> <ls>BHĀG. P. 3, 22, 27. 5, 4, 13. 7, 14, 3.</ls> उपशान्तात्मन् <lex>adj.</lex> <ls n='BHĀG. P.'>1, 13, 50. 4, 13, 7.</ls> <i>aufgehört, sich gelegt habend</i>: °वैर <lex>adj.</lex> <ls>VARĀH. BṚH. S. 8, 30.</ls> <i>erloschen</i> <ls>PRAŚNOP. 3, 9.</ls> <ls>R. 4, 17, 2.</ls> Vgl. उपशम fg. und उपशान्ति . — caus. <i>beruhigen, stillen, beschwichtigen, aufhören machen, placare</i> <ls>VARĀH. BṚH. S. 97,17.</ls> <ls>DAŚAK. 67,18.</ls> <ls>Verz. d. Oxf. H. 145,b, No. 306, Z. 13.</ls> mit verlängertem Wurzelvocal (aus metrischen Rücksichten): पुष्पायुधम् - उपशामय <ls>MBH. 1, 6577.</ls> अगस्त्येनापि वातापिः किंमर्थमुपशामितः so v. a. <i>zur ewigen Ruhe gebracht</i> <ls n='MBH.'>3, 8541.</ls> <ls n='MBH. 3,'>8645.</ls> मुखवातोपशामित <i>durch Blasen abgekühlt</i> (Speise) <ls>MĀRK. P. 50, 45.</ls> <dvsn n='v'>— Vgl. उपशमन fg.  <dvsn n='p'>— अभ्युप, partic. °शान्त <i>gestillt, abgekühlt</i>: °मन्मथ <ls>ṚT. 1, 1.</ls>  <dvsn n='p'>— व्युप <i>sich beruhigen, aufhören, sich legen</i>: त्यक्त्वा मन्युं व्युपशाम्यस्व (so <ls>ed. Bomb.</ls>) <ls>MBH. 6, 5812.</ls> इयं चिन्ता मे शश्वन्न व्युपशाम्यति <ls n='MBH.'>5, 2363.</ls> तत्तमो व्युपशशाम <ls n='MBH.'>7, 9427.</ls> न चापि वैरं वैरेण व्युपशाम्यति <ls>Spr. (II) 3233.</ls> Vgl. व्युपशम .  <dvsn n='p'>— समुप dass.: शब्दः समुपशाम्यति <ls>MBH. 12, 10583.</ls>  <dvsn n='p'>— नि caus. <i>zur Ruhe —, zurecht bringen</i> <ls>AV. 6, 52, 3.</ls> मन\\ उद्यु^तम् <ls n='AV. 6,'>111, 2.</ls>  <dvsn n='p'>— प्रणि <ls>P. 8, 4, 17.</ls> <ls>VOP. 8, 22. 11, 5.</ls> <i>sich beruhigen</i>: प्रणिशाम्य दशग्रीव <ls>BHAṬṬ. 9, 100.</ls>  <dvsn n='p'>— परि caus. <i>beschwichtigen, aufhören machen</i>: कलिकलुषं जनयतु परिशमितम् <ls>GĪT. 7, 20.</ls>  <dvsn n='p'>— प्र <i>sich beruhigen; zur Ruhe kommen, aufhören, sich legen, erlöschen</i>: प्रशाम्य <i>beruhige dich</i> <ls>MBH. 2, 1944.</ls> <ls n='MBH.'>5, 7063.</ls> <ls>Spr. 3730, v. l.</ls> यथा च प्रशमेदियम् (अनावृष्टिः) <ls>R. GORR. 1, 8, 14.</ls> प्रशशाम महीरजः <ls>R. SCHL. 2, 40, 33.</ls> ईतयस्ते (so zu lesen) प्रशाम्यन्तु <ls>SUŚR. 1, 17, 19.</ls> क्षारः <ls n='SUŚR.'>34, 8.</ls> गर्वः  <ls>Spr. 5335.</ls> संभ्रमः <ls>KATHĀS. 106, 185.</ls> वह्निदावदोषः <ls>PAÑCAT. 253, 23.</ls> विषम् <ls>Spr. 2706.</ls> वह्निः <ls n='Spr.'>(II) 770.</ls> ब्राह्मं तेजः <ls>M. 4, 186.</ls> <ls>BHĀG. P. 8, 19, 26.</ls> प्रशान्त <i>ruhig geworden, beruhigt, ruhig</i>: क्षत्ररोषात् <ls>R. 1, 75, 6.</ls> अन्धवत्पश्य रूपाणि शब्दं बधिरवच्छृणु । काष्ठवत्पश्य ते देहं प्रशान्तस्येति लक्षणम् ॥ <ls>AMṚTAN. UP.</ls> in <ls>Ind. St. 9, 28. 2, 11.</ls> <ls>M. 12, 27.</ls> <ls>MBH. 14, 196.</ls> <ls>R. GORR. 1, 77, 8.</ls> <ls n='R. GORR.'>2, 50, 7.</ls> <ls n='R. GORR.'>3, 70, 12.</ls> <ls>Spr. (II) 1916.</ls> <ls n='Spr. (II)'>4479.</ls> धीर° <ls>SĀH. D. 65. 69.</ls> <ls>BHĀG. P. 1, 19, 31. 2, 7, 47. 3, 1, 25. 15, 32. 32, 5. 5, 5, 2. 6, 9, 21.</ls> °चित्त <ls>VEDĀNTAS. (Allah.) No. 14.</ls> प्रशान्तात्मन् <ls>BHAG. 6, 14.</ls> <ls>BHĀG. P. 6, 14, 5.</ls> °धी <ls n='BHĀG. P.'>3, 24, 44.</ls> <ls>KATHĀS. 12, 123.</ls> प्रशान्तात्मेन्द्रियाशय <ls>BHĀG. P. 2, 6, 40. 7, 10.</ls> प्रशान्तारुणलोचन <ls n='BHĀG. P.'>3, 4, 7.</ls> °मूर्ति <ls>VARĀH. BṚH. S. 58, 45.</ls> स्वान्त <ls>Spr. (II) 1956.</ls> °वाहिता चेतसः <ls>Verz. d. Oxf. H. 229,b,10.</ls> पुर <ls>MBH. 3, 3063.</ls> राष्ट्र <ls>R. 1, 7, 15.</ls> <i>ruhig</i> so v. a. <i>gleichgiltig, fahrlässig</i> <ls>Spr. (II) 2831, v. l.</ls> <ls n='Spr. (II)'>4507.</ls> <i>aufgehört, sich gelegt habend, verschwunden</i>: प्रशान्ताध्यायसत्कथा <ls>R. 2, 48, 27.</ls> °गीतोत्सवनृत्यवादना <ls n='R. 2, 48,'>29.</ls> रोष <ls>R. GORR. 1, 77, 7.</ls> परुषो वायुः <ls n='R. GORR.'>6, 70, 51.</ls> भय <ls n='R. GORR.'>7, 71, 8.</ls> °स्वर <ls>ŚĀK. 27, 10.</ls> चापल <ls>Spr. (II) 4279.</ls> वैर <ls n='Spr. (II)'>3451.</ls> शोक <ls>KATHĀS. 14, 18.</ls> सा दशा मम <ls n='KATHĀS.'>25, 279.</ls> भृङ्गसंपात <ls>RĀJA-TAR. 3, 409.</ls> शोकावेश <ls>PRAB. 96, 11.</ls> °काम <ls>BHĀG. P. 7, 4, 33. 9, 8, 24.</ls> रजनीचराः so v. a. <i>sich nicht mehr sehen lassend</i> <ls>R. 3, 17, 21.</ls> रात्रि <i>zu Ende gegangen</i> <ls>LALIT. ed. Calc. 4, 14.</ls> प्रशान्तभूमिपालाभूत्कतिचिद्दिवसानि भूः so v. a. <i>ohne Fürsten</i> <ls>RĀJA-TAR. 2, 81.</ls> प्रशान्तोल्मुक <i>erloschen</i> <ls>VARĀH. BṚH. S. 89, 1.</ls> अनल <ls>MĀRK. P. 99, 17.</ls> कोपज्वलन <ls>PRAB. 5, 13.</ls> प्रशान्तार्चिरिवानलः <ls>BHĀG. P. 4, 13, 10.</ls> °कलिकापलाशकुसुम <i>zu Schanden geworden</i> <ls>BHAṬṬ. 8, 131.</ls> अस्त्र so v. a. <i>beseitigt, entfernt</i> <ls>UTTARAR. 110, 1 (148, 16).</ls> <i>zur ewigen Ruhe eingegangen, gestorben, todt</i> <ls>MBH. 7, 56.</ls> <ls>RĀJA-TAR. 1, 95. 5, 127.</ls> प्रशान्ताराति <ls>PRAB. 117, 11.</ls> in der Auguralkunde = शान्त <i>nichts Schlimmes bedeutend, boni ominis</i>: दिश् <ls>YOGAYĀTRĀ 2, 22</ls> in <ls>Ind. St. 10, 170.</ls> <ls>VARĀH. BṚH. S. 85, 9.</ls> von Thieren <ls n='VARĀH. BṚH. S.'>86, 16.</ls> <ls>R. 2, 34, 50.</ls> <ls n='R.'>3, 12, 13.</ls> <ls n='R. 3,'>17, 18.</ls> <ls n='R. 3,'>18, 21.</ls> <ls>BRAHMA-P. in LA. (III) 52, 17.</ls> °रुतचेष्टित <ls>VARĀH. BṚH. S. 86, 52.</ls> Vgl. प्रशम fg. und प्रशान् fgg.; zu प्रशा/म् hinzuzufügen die Stelle: अरुर्वै पुरुषस्याक्षि प्रशान्ममेति <i>wund ist des Mannes Auge, heil (schmerzlos) das meinige</i> <ls>ŚAT. BR. 3, 1, 3, 10.</ls> — caus. <i>beruhigen, beschwichtigen; stillen, aufhören machen, löschen</i>: सान्त्वेन <ls>M. 8, 391.</ls> <ls>MBH. 2, 2309.</ls> <ls n='MBH.'>3, 12978.</ls> <ls n='MBH.'>8, 3355</ls> (wohl प्रशमय माद्य zu lesen st. मे ऽद्य der <ls>ed. Calc.</ls> und प्रशमयसेद्य der <ls>ed. Bomb.</ls>). निजतनयं प्रशमय्य तं प्रकोपात् <ls>KATHĀS. 109, 150.</ls> ते तत्पापं प्रशमयन्त्युत <ls>MBH. 13, 7592.</ls> उपस्थितं भयं घोरं मृगाः (boni ominis) प्रशमयन्त्येते <ls>R. 1, 74, 12.</ls> वनोपप्लवम् <ls>MEGH. 17.</ls> अपचारम् <ls>RAGH. 15, 47.</ls> विवादम् <ls>ŚĀK. 105.</ls> बाधाम् <ls>CHANDOM. 64.</ls> <ls>SUŚR. 1, 61, 14.</ls> मन्युम् <ls>BHĀG. P. 6, 4, 6.</ls> शुचः <ls n='BHĀG. P.'>1, 6, 21.</ls> सप्तकृत्वः प्रशमितः खाण्डवे हव्यवाहनः <ls>MBH. 1, 8156.</ls> <ls>HARIV. 11939.</ls> प्रशमित <i>zur Ruhe gebracht</i> so v. a. <i>unschädlich gemacht, vernichtet</i> <ls>MBH. 3, 2031.</ls> प्रशमितरिपु <ls>MṚCCH. 178, 12.</ls> <ls>RAGH. 1, 61.</ls> Mit Dehnung des Wurzelvocals: प्रशामित (रजः शोणितेन) <ls>MBH. 9, 633.</ls> hier aus metrischer Rücksicht, ohne alle Veranlassung dagegen in den folgenden Stellen: प्रशाम्यमान <i>beschwichtigt werdend</i> <ls>MBH. 7, 9185.</ls> प्रकृतिव्यसनं यस्मात्तत्प्रशाम्य <ls>KĀM. NĪTIS. 13, 18.</ls> तेजः परं तेजसैव तपसा च तपस्तथा । प्रशाम्यते <ls>MĀRK. P. 16, 47.</ls> प्रशाम्य (= प्रकर्षेण आलोच्य <ls>NĪLAK.</ls>, also zu 4. शम् gezogen) नगरम् <i>sich unterwerfen, wiedererobern</i> <ls>MBH. 3, 12196.</ls> प्रशामित <ls>HARIV. 11939.</ls> Vgl. प्रशमन .  <dvsn n='p'>— अनुप्र caus. s. अनुप्रशमन .  <dvsn n='p'>— संप्र, partic. °शान्त <i>aufgehört, gewichen, geschwunden</i>: °रजस्तमस् <ls>MBH. 1, 8249.</ls>  <dvsn n='p'>— प्रति, partic. °शान्त dass.: °शोक <ls>MBH. 12, 891.</ls> absol. °शाम्य <i>erloschen seiend</i> <ls n='MBH. 12,'>454.</ls> Vgl. प्रतिशम .  <dvsn n='p'>— सम् <dvsn n='1'> 1) <i>vollständig zur Ruhe gelangen</i>: संशाम्य मा शुचः <ls>R. GORR. 2, 23, 6.</ls> <ls n='R. GORR.'>1, 76, 26.</ls> <ls n='R. GORR.'>2, 18, 47.</ls> संशाम्य तेन (auch सह तेन) so v. a. <i>schliesse Frieden mit</i> <ls>MBH. 5, 3087.</ls> <ls n='MBH.'>6, 5810.</ls> <ls n='MBH.'>7, 2031.</ls> <ls n='MBH. 7,'>4881. fgg.</ls> <ls n='MBH.'>8, 275.</ls> <ls n='MBH.'>13, 7747.</ls> <i>erlöschen</i> <ls>CHĀND. UP. 2, 12, 1.</ls> <ls>ŚAT. BR. 2, 3, 2, 12.</ls> <ls n='ŚAT. BR.'>4, 1, 2, 4.</ls> सत्त्वं संशाम्यतीव मे <ls>BHAṬṬ. 18, 28.</ls> अस्त्रम् so v. a. <i>wirkungslos werden</i> <ls>BHĀG. P. 1, 8, 15.</ls> संशाम्यतां तावन्ममापि बलवाञ्छ्रमः <i>aufhören, sich legen</i> <ls>MBH. 15, 262.</ls> संशान्त <i>vollständig beruhigt</i> <ls>MBH. 1, 3299.</ls> <ls n='MBH.'>3, 17064.</ls> <ls n='MBH.'>5, 2873.</ls> <ls>BHĀG. P. 4, 6, 34.</ls> <i>vollständig sich gelegt habend, - aufgehört</i>: जलसंशान्तरेणु <ls>R. GORR. 1, 5, 4.</ls> <ls n='R. GORR. 1,'>76, 18.</ls> <i>vollkommen erloschen</i>: अग्नि <ls n='R. GORR.'>2, 68, 1</ls> (<ls n='SCHL. 2,'>66, 1</ls> <ls>SCHL.</ls>). <ls>R. SCHL. 2, 69, 13.</ls> so v. a. <i>todt</i> <ls>MBH. 9, 1789.</ls> <dvsn n='1'>— 2) <i>beruhigen, stillen, beschwichtigen</i> <ls>ŚAT. BR. 1, 7, 3, 11.</ls> <ls n='ŚAT. BR.'>3, 4, 3, 1.</ls> <dvsn n='v'>— Vgl. संशम . — caus. dass. <ls>ŚĀṄKH. ŚR. 14, 29, 3. 5.</ls> <ls>MBH. 1, 992.</ls> <ls>R. 2, 98, 1</ls> (<ls n='GORR. 2,'>107, 1</ls> <ls>GORR.</ls>). अस्त्रमस्त्रेण <ls>MBH. 10, 706.</ls> रतिम् <ls>R. GORR. 2, 106, 11.</ls> प्रकोपम् <ls>KĀM. NĪTIS. 15, 22.</ls> रेणुम् <ls>HARIV. 13757.</ls> कार्याणि <i>zu Ende bringen, vollbringen, beilegen</i> <ls>Spr. (II) 1682.</ls> अग्निम् <i>auslöschen</i> <ls>R. 2, 97, 15.</ls> त्वामपि कालः संशमयिष्यति so v. a. <i>zur ewigen Ruhe bringen</i> <ls>MBH. 12, 8143.</ls> भारतयुद्धपृष्ठम् <i>den Garaus machen</i> <ls n='MBH.'>5, 5780.</ls> Vgl. संशमन fg."
+        },
+        {
+            "word": "शम्",
+            "eid": "97900",
+            "pagenum": 7,
+            "content": "3. शम्¦, शम्नाति = वधकर्मन् <ls>NAIGH. 2, 19.</ls> <ls>NIR. 1, 10</ls> (= हिनस्ति D.). <i>Jmd ein Leid zufügen</i>: मा नः शम्नीथाः कथा नः शम्नीष इति <ls>KĀṬH. 10, 7.</ls> <dvsn n='v'>— Vgl. 2. शम् caus. 1) <i>b</i>)."
+        },
+        {
+            "word": "शम्",
+            "eid": "97901",
+            "pagenum": 7,
+            "content": "4. शम्¦, शमयति und शामयति (vgl. <ls>DHĀTUP. 19, 70. 33, 22.</ls> das med. nicht zu belegen). Mit नि <i>inne —, gewahr werden, vernehmen, hören, erfahren, kennen lernen</i>: निशम्य absol. <ls>MBH. 1, 1237.</ls> <ls n='MBH. 1,'>4228.</ls> तं निशम्य वृतं पाण्डुम् <i>dass</i> <ls n='MBH. 1,'>4419.</ls> <ls n='MBH. 1,'>6181.</ls> <ls n='MBH. 1,'>6199. fg.</ls> <ls n='MBH.'>2, 1740.</ls> <ls n='MBH.'>3, 2212. fg.</ls> <ls n='MBH. 3,'>2280.</ls> <ls n='MBH. 3,'>2927.</ls> <ls n='MBH. 3,'>10671.</ls> <ls n='MBH. 3,'>12254.</ls> <ls n='MBH.'>4, 163.</ls> <ls>R. 1, 2, 17.</ls> <ls n='R.'>2, 21, 50.</ls> <ls n='R. 2,'>40, 49.</ls> <ls n='R. 2,'>44, 25.</ls> <ls n='R. 2,'>52, 4.</ls> <ls n='R. 2, 52,'>6.</ls> <ls n='R. 2, 52,'>40.</ls> <ls n='R. 2,'>66, 10.</ls> <ls>R. GORR. 2, 111, 9.</ls> <ls n='R. GORR.'>4, 9, 13.</ls> <ls n='R. GORR. 4,'>29, 18</ls> (mit gen., विशम्य fehlerhaft für निशम्य). <ls>RAGH. 2, 41. 52. 61. 3, 47. 4, 2. 5, 12.</ls> <ls>Spr. (II) 991.</ls> <ls n='Spr.'>(I) 4930.</ls> <ls>UTTARAR. 106 5 (144, 3).</ls> <ls>KATHĀS. 17, 170.</ls> <ls n='KATHĀS.'>22, 171.</ls> <ls n='KATHĀS.'>28, 83.</ls> <ls>RĀJA-TAR. 5, 81.</ls> <ls>MĀRK. P. 105, 21.</ls> <ls>DAŚAK. 65, 12.</ls> <ls>LA. (III) 56, 18. 89, 21.</ls> <ls>BHĀG. P. 1, 18, 41. 2, 3, 13. 3, 13, 1. 25. 20, 8. 33, 1. 4, 4, 32.</ls> <ls>BHAṬṬ. 2, 9.</ls> निशम्यते <ls>R. ed. Bomb. 1, 8, 20.</ls> <ls>R. GORR. 2, 125, 19.</ls> निशम्यमान <ls>KATHĀS. 103, 239.</ls> निशम्यताम् <ls n='KATHĀS.'>27, 10. 46, 162. 52, 55. 68. 54, 97. 61, 17. 188. 193.</ls> <ls>RAGH. 11, 41.</ls> निशामयन्त् <ls>HARIV. 9877.</ls> <ls>R. 2, 57, 21.</ls> <ls>BHĀG. P. 5, 3, 19. 4, 18.</ls> अस्यन्तं दिव्यमस्त्रं मां चित्रमद्य निशामय <ls>MBH. 4, 1968.</ls> <ls n='MBH.'>5, 5406.</ls> <ls n='MBH.'>6, 41.</ls> <ls n='MBH.'>12, 9055.</ls> <ls n='MBH.'>13, 1038.</ls> तन्मे निशामय <ls n='MBH.'>14, 2281.</ls> <ls n='MBH.'>18, 145.</ls> <ls>HARIV. 1009.</ls> <ls n='HARIV.'>3147.</ls> <ls>R. 1, 2, 6.</ls> <ls n='R. 1,'>17, 11.</ls> <ls n='R.'>7, 35, 18.</ls> <ls n='R. 7,'>53, 3.</ls> <ls>MĀRK. P. 30, 1. 51, 52. 94, 27. 29. 99, 1. 119, 21. 125, 53.</ls> <ls>BHĀG. P. 4, 29, 52.</ls> <ls>PAÑCAR. 1, 2, 26. 30. 2, 1, 17. 4, 13.</ls> निशामयत <ls>R. 6, 21, 20.</ls> न्यशामयम् <ls>DAŚAK. 59, 6.</ls> निशाम्य absol. <ls>MBH. 3, 1137.</ls> <ls>R. 1, 69, 18.</ls> <ls n='R.'>2, 46, 18.</ls> <ls>BHĀG. P. 3, 9, 26. 12, 16. 19, 7. 23, 35. 8, 23, 5. 10, 25, 25. 1, 13, 56. 2, 9, 42. 3, 6, 1. 4, 17, 14</ls> (an den 4 letzten Stellen निशम्य <ls>ed. Bomb.</ls>). निशाम्यते <ls>R. 2, 114, 9.</ls> निशामित <ls>MBH. 7, 3073.</ls> <ls n='MBH.'>8, 2075.</ls> <ls>HARIV. 1012.</ls> <ls>MĀRK. P. 14, 63.</ls> — निशम्यमान mit act. Bed. und gen. <ls>R. ed. Bomb. 2, 66, 10.</ls> Vgl. निशमन, निशाम, निशामन .  <dvsn n='p'>— नि, partic. °शान्त (s. auch bes.) <i>erprobt, bewährt</i>: यद्भेषजं निशान्तं   स्यात्तन्निगदेत् <ls>ĀŚV. ŚR. 10, 7, 3. 4. 6.</ls> यथानिशान्तम् so v. a. <i>nach der angenommenen üblichen Weise</i> <ls n='ĀŚV. ŚR.'>7, 12, 13. fg. 8, 3, 22.</ls>  <dvsn n='p'>— अनुनि = निः रुदितमनुनिशम्य <ls>BHĀG. P. 10, 7, 25.</ls> इदमिदमिति तृष्णयाभिभूतं जनमनवाप्तधनं विषीदमानम् । निपुणमनुनिशम्य तत्त्वबुद्ध्या <i>dem Geiste vorführend</i> <ls>MBH. 12, 6680.</ls>  <dvsn n='p'>— समनुनि dass.: स्वसुतवचनमादृतः प्रियं तत्समनुनिशम्य <i>erkennend</i> <ls>R. 7, 29, 37.</ls>  <dvsn n='p'>— अभिनि dass.: °शाम्य absol. <ls>DAŚAK. 94, 16.</ls>  <dvsn n='p'>— उपनि dass.: तदुपनिशम्य वचः <ls>MBH. 8, 1738.</ls>  <dvsn n='p'>— प्रणि dass. <ls>R. ed. Ser. 1, 8, 19</ls> (nach <ls>WESTERGAARD</ls>).   <dvsn n='p'>— विनि dass.: इदम् - घोरं शुचि चरितं विनिशम्य फाल्गुनस्य <ls>MBH. 3, 1878.</ls>  <dvsn n='p'>— संनि dass.: भ्रातुर्ज्येष्ठस्य वचनं संनिशम्य <ls>MBH. 2, 1658.</ls> <ls>KATHĀS. 40, 115.</ls> सर्वान्राज्ञः कुलतः संनिशाम्य <ls>MBH. 5, 7418.</ls> आयव्ययौ विपुलौ संनिशाम्य <ls n='MBH.'>12, 4389.</ls>"
+        },
+        {
+            "word": "शम्",
+            "eid": "97902",
+            "pagenum": 7,
+            "content": "5. श/म्¦ indecl. <is>gaṇa</is> स्वरादि zu <ls>P. 1, 1, 37.</ls> चादि zu <ls n='P. 1,'>4, 57.</ls> = सुख, आनन्द, कल्याण u.s.w. <ls>NAIGH. 3, 6.</ls> <ls>AK. 3, 5, 10.</ls> <ls>TRIK. 1, 1, 113.</ls> <ls>H. 1535. an. 7, 15.</ls> <ls>MED. <is>avy</is>. 54.</ls> <ls>HALĀY. 1, 123.</ls> <i>wohlthätig, zum Vortheil, - Heil; wohl, gut, bene</i>: हि\\न्वन्ति\\ शं रा\\ज्यं रोद^स्योः <ls>ṚV. 7, 6, 2.</ls> शं न^ः शोच <ls n='ṚV.'>3, 13, 6.</ls> शमु\\ पत्या^ त\\न्वं१^\\ सं स्पृ^शस्व <ls>AV. 14, 1, 40.</ls> शं त^प माति^ तपः <ls n='AV.'>18, 2, 36.</ls> शं नो\\ वातो^ वातु <ls n='AV.'>7, 69, 1.</ls> Substantivisch (mit dat. oder gen. <ls>P. 2, 3, 73</ls>, Schol. <ls>VOP. 5, 17</ls>) <i>Heil, Wohl, Glück, Segen</i>; <dvsn n='2'> a) als subj.: तदु ह्येव शमिव यो मृत्योर्मुच्यातै <i>das ist gut, wenn Einer u.s.w.</i> <ls>ŚAT. BR. 2, 6, 2, 12.</ls> शं रा\\ये शं स्व\\स्तये^ <ls>ṚV. 5, 50, 5.</ls> कस्ते^ य\\ज्ञो मन^से\\ शं वरा^य <ls n='ṚV.'>6, 21, 4.</ls> <ls n='ṚV. 6,'>34, 3.</ls> <ls n='ṚV.'>1, 165, 4.</ls> <ls>VS. 6, 15.</ls> शं नो मित्रः शं वरुणः <ls>TAITT. UP. 1, 12.</ls> शं यदा\\पये\\ भवा^ति <ls>ṚV. 7, 8, 6.</ls> <ls n='ṚV. 7,'>35, 1.</ls> fgg. <ls n='ṚV. 7,'>38, 7.</ls> <ls n='ṚV. 7,'>86, 8.</ls> <ls>AV. 2, 3, 16.</ls> यथा शं सुहृदां भवेत् <ls>BHĀG. P. 10, 48, 35.</ls> यथा\\ शमस^द्द्वि\\पदे^ <ls>ṚV. 1, 114, 1.</ls> <ls n='ṚV.'>5, 7, 9.</ls> <ls n='ṚV. 5,'>11, 5.</ls> <ls>VS. 4, 1.</ls> <ls>MĀRK. P. 106, 54.</ls> <ls>BHĀG. P. 3, 16, 29.</ls> <dvsn n='2'>— b) als obj. (acc.): शं न^ः कर\\त्यर्व^ते <ls>ṚV. 1, 43, 6.</ls> <ls n='ṚV.'>4, 1, 3.</ls> <ls>AV. 1, 3, 1.</ls> <ls>ŚAT. BR. 2, 5, 2, 12.</ls> शं नो द्यौरभयं कृणोतु <ls>PĀR. GṚHY. 3, 3.</ls> त्रिलोक्याः शं चिकीर्षुणा <ls>BHĀG. P. 5, 24, 28. 3, 2, 25.</ls> स्वपित्रोश्चिकीर्षया शम् <ls n='BHĀG. P.'>3, 1.</ls> शं न\\ आ व^क्षद्द्वि\\पदे^ <ls>ṚV. 1, 157, 3.</ls> शं जन्मसु न विन्दति <ls>MBH. 3, 1180.</ls> शं विधातुं मित्राणाम् <ls n='MBH.'>5, 2593.</ls> <ls>BHĀG. P. 3, 13, 44. 15, 9. 9, 4, 59.</ls> लभते शमनन्ततः <ls>MBH. 12, 7121.</ls> शं पुष्णाति <ls>Spr. 3346, v. l.</ls> भक्तानां शमभीप्सवः <ls>BHĀG. P. 1, 6, 10.</ls> यजतां शं तनोति <ls n='BHĀG. P.'>17, 34. 5, 19, 28.</ls> वितनोति <ls n='BHĀG. P.'>4, 22, 19.</ls> आशंसन् <ls n='BHĀG. P.'>10, 29.</ls> अनुभावयन्तः <ls n='BHĀG. P.'>5, 22, 17.</ls> नाभ्यपद्यत शम् <ls n='BHĀG. P.'>10, 76, 12.</ls> उपैमि कदा नु शमनाशम् <ls>NALOD. 3, 46.</ls> या <ls>VOP. 25, 19.</ls> दा <ls n='VOP.'>3, 143. 5, 26.</ls> आदिश वर्त्मशं (<ab>d. i.</ab> वर्त्मनः शं, bei <ls>BURNOUF</ls> getrennt) नः <ls>BHĀG. P. 3, 5, 4.</ls> शं योः s. u. योस् . Sammlung von Beispielen bei <ls>M.</ls> <ls>MÜLLER</ls>, Transl. <ls n='M.'>1, 180.</ls>"
+        },
+        {
+            "word": "शम्",
+            "eid": "122281",
+            "pagenum": 7,
+            "content": "2. शम्¦, intens. absol. शंशमम् und शंशामम् <ls>PAT. a. a. O. 6 (4),32,b.</ls>"
+        },
+        {
+            "word": "शम्",
+            "eid": "122282",
+            "pagenum": 7,
+            "content": "4. शम्¦ mit नि, absol. निशम्य und निशमय्य <ls>VĀMANA 5, 2, 76.</ls>  <dvsn n='p'>— अनुनि <ls>PAT. a. a. O. 1,16,b.</ls>"
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "शम्",
+            "eid": "21427",
+            "pagenum": 7,
+            "content": "<hom>1.</hom> शम्¦ mit नि VI. <i>erlöschen</i> <ls>DHARMAŚARM. 13,41</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "शम्",
+            "eid": "24809",
+            "pagenum": 342,
+            "content": "1. <i>śam</i>¦ mit <i>ni</i> erlöschen, <ls>Dharmaśarm.</ls> 13, 41. {part=,seq=25149,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "शम्",
+            "eid": "39508",
+            "pagenum": 707,
+            "content": "शम्(इर् उ)इरश्मु¦ r. 4th cl. (शाम्यति) 1. To be pacified, to be calmed or appeased. 2. To pacify, to calm. 3. To be tranquil, to have the passions tamed and quiescent. r. 10th cl. (शामयते) To look, to look at or inspect. (शमयति-ते) To allay, to appease. (शामयति) To display. With उप prefixed, To tranquillize, to ally, to tame. With नि, 1. To hear. 2. To observe, to perceive. 3. To restrain or prevent. With प्र, 1. To destroy. 2. To be very tranquil. 3. To be soothed. 4. To cease. 5. To fade away. With सम्, To be extinguished."
+        },
+        {
+            "word": "शम्",
+            "eid": "39509",
+            "pagenum": 707,
+            "content": "शम्¦ Ind. A particle meaning “welfare, prosperity, blessing, health,” (with a dat. or gen.)"
+        }
+    ],
+    "STC": [
+        {
+            "word": "शम्",
+            "eid": "20049",
+            "pagenum": 717,
+            "content": "<b>1 ŚAM-</b>¦ <i>śāmyati -te</i> (<i>śamet</i>) ; <i>śaśāma</i> (<i>śemuḥ</i>) ; <i>aśīśamat ; śamayati -te śāmayati</i> (<i>śāmyate</i>) ; <i>śānta-</i> -- être calme, être apaisé ; se reposer, cesser, se désister, s'éteindre ; <ab>caus.</ab> calmer, apaiser ; renoncer, se désister ; assujettir, <lbinfo n='6'/> soumettre ; détruire, tuer, supprimer."
+        },
+        {
+            "word": "शम्",
+            "eid": "20050",
+            "pagenum": 717,
+            "content": "<b>2 ŚAM-</b>¦ <ab>pass.</ab> <i>śamyate</i> <ab>caus.</ab> <i>śāmayati</i> (<i>śāmyate</i>) <lbinfo n='5'/> ; <i>°śā̆mya</i> (<i>°śamayya</i>) -- observer ; <ab>caus.</ab> <ab>id.</ab> ; simple inusité, <ab>v.</ab> <i>ni-ŚAM-</i> <i>2.</i>"
+        },
+        {
+            "word": "शम्",
+            "eid": "20051",
+            "pagenum": 717,
+            "content": "<b>3 śam</b>¦ <ab>indécl.</ab> (en fonction de sujet ou d'objet) salut, bénédiction, propitiation, bonheur, <lbinfo n='4'/> bien (<ab>dat.</ab> <ab>gén.</ab>) ; <i>-ṃtama-</i> <ab>v. s. v.</ab>  <P><i>śaṃ-tanu-</i> <ab>m.</ab> <ab>v.</ab> <i>śāṃtanu-.</i>"
+        }
+    ],
+    "YAT": [
+        {
+            "word": "शम्",
+            "eid": "37345",
+            "pagenum": 748,
+            "content": "शम्¦ (य, उ) शाम्यति 4. <i>a.</i> To be pacified, calm, or tranquil; to pacify. (क) शमयति 10. <i>a. Idem.</i> शामयति 10. <i>a.</i> To display. शामयते 10. <i>d.</i> To inspect. With prep. आ, to tame; नि, to hear; restrain; प्र, to destroy."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "शम्",
+            "eid": "34621",
+            "pagenum": "5-001-a",
+            "content": "शं¦, क्ली, शुभम् । इति त्रिकाण्डशेषशब्दरत्नावल्यौ ॥ (यथा, देवीभागवते । ३ । १८ । ७ । “न च हर्म्ये वने शं मे दीर्घिंकायां न पर्व्वते ॥”)"
+        },
+        {
+            "word": "शम्",
+            "eid": "34622",
+            "pagenum": "5-001-b",
+            "content": "शं¦, [म्] व्य, कल्याणम् । (यथा, राजेन्द्रकर्णपुरे । ५१ । “यः कीर्त्तौ भवतो वतो नृपगुणैर्यः शंतनुः शन्तनुः ॥”) शुभम् । शास्त्रम् । इति शब्दरत्नावली ॥"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "शम्",
+            "content": "शम् नपुं. - आनन्द"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् अव्य. -  शम् + क्विप 'कल्याण, आनन्द, समृद्धि, स्वास्थ्य को द्योतन करने वाला अव्यय, आशीर्वाद या मंगल कामना प्रकट करने के लिए प्रयुक्त'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा.पर. शाम्यन्ति  ,   शान्त  '  - 'शान्त होना, चुप होना, संतुष्ट होना, प्रसन्न होना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा.पर. शाम्यन्ति  ,   शान्त  '  - 'थमना, ठहरना, समाप्त होना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा.पर. शाम्यन्ति  ,   शान्त  '  - 'शांत होना, बुझना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा.पर. शाम्यन्ति  ,   शान्त  '  - 'काम तमाम करना, नष्ट करना, मार डालना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा . उभ. , प्रेर. शमयति  ,  शमयते  '  - 'प्रसन्न करना, उपशमन करना, शान्त करना, धीरज देना, सांत्वना देना, ढाढस बंधाना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा . उभ. , प्रेर. शमयति  ,  शमयते  '  - 'अन्त करना, रोकना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा . उभ. , प्रेर. शमयति  ,  शमयते  '  - 'हटाना, परे करना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा . उभ. , प्रेर. शमयति  ,  शमयते  '  - 'दमन करना, पालतू बनाना, हराना, छीनना,परास्त करना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा . उभ. , प्रेर. शमयति  ,  शमयते  '  - 'मार डालना, नष्ट करना, वध करना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा . उभ. , प्रेर. शमयति  ,  शमयते  '  - 'शान्त करना, बुझाना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'दिवा . उभ. , प्रेर. शमयति  ,  शमयते  '  - 'त्याग देना, रुकना, थमना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'चुरा.उभ. शामयति  ,  शामयते  '  - 'देखना, निगाह डालना, निरीक्षण करना'"
+        },
+        {
+            "word": "शम्",
+            "content": "शम् 'चुरा.उभ. शामयति  ,  शामयते  '  - 'बतलाना, प्रदर्शन करना'"
+        }
+    ],
+    "UPSC": [
+        {
+            "word": "शम्",
+            "upasarga": "प्र",
+            "dhatu": "शम्",
+            "artha": "शमु उपशमे, शम लक्ष आलोचने",
+            "baseindex": "04.0098,10.0218",
+            "examples": [
+                "'प्रशाम्य नगरं दानवांश्च निहत्य तान्' (भा॰वन॰१७२.३५)। <hl>प्रशाम्य प्रकर्षेणालोच्येति नीलकण्ठः</hl> ।",
+                "'प्रशान्तं पावकास्त्रम्' (उत्तर॰६)। <hl>निर्वाणमित्यर्थः।</hl>",
+                "'निर्वाते ज्वलितो वह्निः स्वयमेव प्रशाम्यति' (पञ्चत॰३.५६)। <hl>उक्तोऽर्थः।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "शम्",
+            "upasarga": "सम्",
+            "dhatu": "शम्",
+            "artha": "शमु उपशमे",
+            "baseindex": "04.0098",
+            "examples": [
+                "'तावत् संशाम्य पाण्डवैः' (भा० द्रोण० १२२।१९)। <hl>शमं गच्छ, सन्धत्स्वेत्यर्थः।</hl>",
+                "'वासूदेवेन तीर्थेन पुत्र संशाम्य पाण्डवैः' (भा० द्रोण० ८५।२३)। <hl>शमं गच्छ, सन्धत्स्व।</hl>",
+                "'सत्त्वं संशाम्यतीव मे' (भट्टि० १८।२८)। <hl>संशाम्यति=नश्यति।</hl>",
+                "'बुद्ध्या संशमयन्ति नीतिकुशलाः साम्नैव ते मन्त्रिणः' (पञ्चत० १।३७६)। <hl>विरोधम् इत्यध्याहार्यम्।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "शम्",
+            "upasarga": "वि + अव",
+            "dhatu": "शम्",
+            "artha": "शमु उपशमे",
+            "baseindex": "04.0098",
+            "examples": [
+                "'यदङ्गारेषु व्यवशान्तेषु लेलायद्वीव चरति तद् देवानामास्यम्' (आप० श्रौ० ६।३।९।२)।"
+            ],
+            "content": ""
+        },
+        {
+            "word": "शम्",
+            "upasarga": "नि",
+            "dhatu": "शम्",
+            "artha": "शमु उपशमे, शम लक्ष आलोचने",
+            "baseindex": "04.0098,10.0218",
+            "examples": [
+                "'निशम्य च बहून्वालान्कृष्णान्पुच्छसमाश्रितान्' (भा० आदि० २३।३)। <hl>निशम्य दृष्ट्वा। अन्यत्र प्रायशो निशान्यतिः श्रवणे प्रसिद्धः।</hl>",
+                "'क्रीडतो बालकस्येव तरय निशामय' (वि० पु० १।२।१८)। <hl>निशामय जानीहि।</hl>",
+                "'चक्षुर्ददानि ते पुत्र युद्धं तत्र निशामय' (भा० भीष्म० २।६)। <hl>निशामय पश्य।</hl>",
+                "'अग्निष्टे निशमयतु यदि ते मन उद्यतम्' (अथर्व० ६।१११।१)। <hl>नितरां शान्तं करोत्वित्याह।</hl>",
+                "'आगच्छता महाराज वाहीकेषु निशामितम' (भा० कर्ण० ४५।५)। <hl>निशामितं श्रुतम्।</hl>",
+                "'पुनर्वृद्धिभयात् किञ्चिदनिवृत्तं (भयम्) निशामयेत्' (भा० शां० १४०।३५)। <hl>निशामयेत् पश्येत्, जानीयात्।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "शम्",
+            "upasarga": "उप",
+            "dhatu": "शम्",
+            "artha": "शमु उपशमे",
+            "baseindex": "04.0098",
+            "examples": [
+                "'तथायमपि कृतकर्तव्यः सम्प्रति परमुपशमं प्राप्तः' (प्र० च०)। <hl>उपशमो विश्रमः।</hl>",
+                "'ग्रन्थिः पाषाणकठिनो यदा नैवोपशाम्यति' (चरक० चि० २१।१३१)। <hl>शाम्यतीत्येवार्थः।</hl>"
+            ],
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "शम्",
+            "content": "<lexhead no=\"2\">\n<dentry>शम्</dentry>\n<prAwipaxikam>श</prAwipaxikam>\n<grammar>नपुं*</grammar>\n<sense no=\"1\">आनन्द<citation>भर्तृ* २।१६</citation></sense>\n</lexhead>\n\n <lexhead no=\"127\">\n<dentry>शम्</dentry>\n<prAwipaxikam>शम्</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<etymology>[शम्+क्विप]</etymology>\n<sense no=\"1\">कल्याण, आनन्द, समृद्धि, स्वास्थ्य को द्योतन करने वाला अव्यय, आशीर्वाद या मंगल कामना प्रकट करने के लिए प्रयुक्त, शं देवदत्ताय- देवदत्तस्य वा,<vform>संप्र* या संबं* के साथ</vform>,<vform>आधुनिक पत्रों में शुभ समाप्तिसूचक प्रयोग - इति शम्</vform></sense>\n<sense n=\"2\">शान्त होना, चुप होना, संतुष्ट होना, प्रसन्न होनाशाम्येत्प्रत्यपकारेण नोपकारेण दुर्जन:<citation>कु* २।४०</citation><citation>रघु* ७।६</citation>शान्तो लव:<citation>उत्तर* ६।७</citation></sense>\n<sense n=\"3\">थमना, ठहरना, समाप्त होनाचिन्ता शशाम सकलाऽपि सरोरुहाणाम<citation>भामि* ३।७</citation>न जातु काम: कामानामुपभोगेन शाम्यत<citation>मनु* २।९४सन्तुष्ट नहीं होता</citation></sense>\n<sense n=\"4\">शांत होना, बुझनाशशाम वृष्ट्यापि विना दवाग्नि:<citation>रघु* २।१४</citation><citation>उत्तर* ५।७</citation></sense>\n<sense n=\"5\">काम तमाम करना, नष्ट करना, मार डालनाइसी अर्थ में क्र्या* भी</sense>\n<sense n=\"6\">प्रसन्न करना, उपशमन करना, शान्त करना, धीरज देना, सांत्वना देना, ढाढस बंधानाक: शीतलै: शमयिता वचनैस्तवाधिम्<citation>भामि* ३।१</citation><citation>श* ५।७परन्तु देखना अर्थ में ’शामयति-ते’ दे* शम् २</citation></sense>\n<sense n=\"7\">अन्त करना, रोकना<citation>कु* २।५६</citation></sense>\n<sense n=\"8\">हटाना, परे करनाप्रतिकूलं दैवं शमयितुम्<citation>श* १</citation></sense>\n<sense n=\"9\">दमन करना, पालतू बनाना, हराना, छीनना, परास्त करनाशमयति गजानन्यान् गन्धद्विप: कलभोऽपि सन्<citation>विक्रम* ५।१८</citation><citation>रघु* ९।१२</citation>११।५९</sense>\n<sense n=\"10\">मार डालना, नष्ट करना, वध करना<citation>वेणी* ५।५</citation></sense>\n<sense n=\"11\">शान्त करना, बुझाना<citation>मेघ* ५३</citation><citation>हि* १।८८</citation></sense>\n<sense n=\"12\">त्याग देना, रुकना, थमना</sense>\n<sense n=\"13\">देखना, निगाह डालना, निरीक्षण करना</sense>\n<sense n=\"14\">बतलाना, प्रदर्शन करना</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "शम्",
+            "content": "<H1><h><key1>Sam</key1><key2>Sam</key2><hom>1</hom></h><body><hom>1.</hom> <s>Sam</s>   <ab>cl.</ab> 4. <ab>P.</ab> (<ls>Dhātup. xxvi, 92</ls>), <s>SA/myati</s> (rarely <s>°te</s>, and <lang>ep.</lang> also <s>Samati</s>, <s>°te</s>; <lang>Ved.</lang> <s>Samyati</s>, <s>Simyati</s>, and <ab>cl.</ab> 9. <s>SamnAti</s> [<ls>Naigh. ii, 9</ls>], <s>SamnIze</s>, <s>SamnITAs</s> <ab>Impv.</ab> <s>SamnIzva</s>, <s>SamIzva</s>, <s>Samizva</s>, <s>SamIDvam</s>; <ab>pf.</ab> <s>SaSAma</s>, <s>SemuH</s>, <ls>Br.</ls> &amp;c.; <s>SaSame/</s> <ab>Subj.</ab> <s>SaSa/mate</s>, <ls>RV.</ls>; <ab>p.</ab> <s>SaSamAna/</s> [<ab>q.v.</ab>]; <ab>aor.</ab> <s>a/SamizWAs</s>, <ls>RV.</ls>; <s>aSamat</s>, <ls>Br.</ls> [<ab>cf.</ab> <ab>pres.</ab>]; <ab>Prec.</ab> <s>SamyAt</s> <ab>Gr.</ab>; <ab>fut.</ab> <s>SamitA</s>, <s>Samizyati</s>, <ls>ib.</ls>; <ab>ind.p.</ab> <s>SamitvA</s>, <s>SAntvA</s>, <s>SA<shortlong />mam</s>, <ls>ib.</ls>), <div n=\"to\" />to toil at, fatigue or exert one's self (<ab>esp.</ab> in performing ritual acts), <ls>RV.</ls>; <ls>TBr.</ls>; <div n=\"to\" />to prepare, arrange, <ls>VS.</ls>; <div n=\"to\" />to become tired, finish, stop, come to an end, rest, be quiet or calm or satisfied or contented, <ls>TS.</ls>; <ls>ŚBr.</ls> &amp;c.; <div n=\"to\" />to cease, be allayed or extinguished, <ls>MBh.</ls>; <ls>Kāv.</ls> &amp;c.; <div n=\"to\" /> <ab>cl.</ab> 9. (<ab>cf.</ab> above) to put an end to, hurt, injure, destroy, <ls>Kāṭh.</ls> : <div n=\"vp\" /><ab>Pass.</ab> <s>Samyate</s> (<ab>aor.</ab> <s>aSami</s>), <ls>Pāṇ. vii, 3, 34</ls> : <div n=\"vp\" /><ab>Caus.</ab> <s>Sama/yati</s> (<ab>mc.</ab> also <s>SAmayati</s>; <ab>aor.</ab> <s>aSISamat</s>; <ab>Pass.</ab> <s>SAmyate</s>), <div n=\"to\" />to appease, allay, alleviate, pacify, calm, soothe, settle, <ls>RV.</ls> &amp;c. &amp;c.; <div n=\"to\" />to put to an end or to death, kill, slay, destroy, remove, extinguish. sup. press, <ls>TS.</ls> &amp;c. &amp;c.; <div n=\"to\" />to leave off, desist, <ls>MBh.</ls>; <div n=\"to\" />to conquer, subdue, <ls>Kālid.</ls>; <ls>Bhaṭṭ.</ls> : <div n=\"vp\" /><ab>Desid.</ab> <s>SiSamizati</s> <ab>Gr.</ab>: <div n=\"vp\" /><ab>Intens.</ab> <s>SaMSamIti</s> (<ls>Bālar.</ls>), <s>SaMSamyate</s>, <s>SaMSanti</s> (<ab>Gr.</ab>), to be entirely appeased or extinguished (<ab>pf.</ab> <s>SaMSamAM cakruH</s>, <ls>Bhaṭṭ.</ls>). [<ab>cf.</ab> <lang>Gk.</lang> <gk>κάμνω</gk>], <info westergaard=\"Samu,26.92,04.0099\" /><info whitneyroots=\"Sam1,171;Sam2,171;Sam3,171\" /><info verb=\"genuineroot\" cp=\"4P,9\" /></body><tail><L>212911</L><pc>1053,3</pc></tail></H1>\n <H1><h><key1>Sam</key1><key2>Sa/m</key2><hom>2</hom></h><body><hom>2.</hom> <s>Sa/m</s>   <lex>ind.</lex> (<ab>g.</ab> <s>cA<srs />di</s> and <s>svar-Adi</s>) auspiciously, fortunately, happily, well (frequently used in the <s1 slp1=\"veda\">Veda</s1>, rarely in later language; often to be translated by a <ab>subst.</ab>, <ab>esp.</ab> in the frequent phrase <s>Sa/M yo/H</s> or <s>Sa/M ca yo/S ca</s>, ‘happiness and welfare’, sometimes joined with the verbs <s>BU</s>, <s>as</s>, <s>kf</s>, <s>dA</s>, <s>vah</s>, <s>yA</s>, sometimes occurring without any verb; with <ab>dat.</ab> or <ab>gen.</ab> [<ab>cf.</ab> <ls>Pāṇ. ii, 3, 73</ls>, <ab>Sch.</ab>]; in some cases corresponding to an <ab>adj.</ab>, <ab>e.g.</ab> <s>SaM tad asmE</s>, that is pleasant to him), <ls>RV.</ls>; &amp;c.<info lex=\"ind\" /></body><tail><L>213058</L><pc>1054,2</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "शम्",
+            "content": "<H1><h><key1>Sam</key1><key2>Sam(ir u)iraSmu</key2></h><body><s>Sam(ir u)iraSmu</s> <div n=\"1\">r. 4th cl. (<s>SAmyati</s>) </div><div n=\"2\"> 1. To be pacified, to be calmed or <lb />appeased. </div><div n=\"2\"> 2. To pacify, to calm. </div><div n=\"2\"> 3. To be tranquil, to have the <lb />passions tamed and quiescent.</div><div n=\"1\">r. 10th cl. (<s>SAmayate</s>) To look, to look <lb />at or inspect. (<s>Samayati-te</s>) To allay, to appease. (<s>SAmayati</s>) To display. <lb />With <s>upa</s> prefixed, To tranquillize, to ally, to tame.</div><div n=\"1\">With <s>ni,</s> </div><div n=\"2\"> 1. <lb />To hear. </div><div n=\"2\"> 2. To observe, to perceive. </div><div n=\"2\"> 3. To restrain or prevent. With <lb /><s>pra,</s> </div><div n=\"2\"> 1. To destroy. </div><div n=\"2\"> 2. To be very tranquil. </div><div n=\"2\"> 3. To be soothed. </div><div n=\"2\"> 4. To <lb />cease. </div><div n=\"2\"> 5. To fade away.</div><div n=\"1\">With <s>sam,</s> To be extinguished.</div></body><tail><L>39508</L><pc>707-b</pc></tail></H1>\n <H1><h><key1>Sam</key1><key2>Sam</key2></h><body><s>Sam</s>  Ind. A particle meaning “welfare, prosperity, blessing, health,” <lb />(with a dat. or gen.)</body><tail><L>39509</L><pc>707-b</pc></tail></H1>\n"
+        }
+    ]
+}

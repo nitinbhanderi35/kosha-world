@@ -1,757 +1,95 @@
-id': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'Device Independence Delivery Unit'
-	    }
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure']]
-	};
-	var _default$1$ = applicationRole;
-	applicationRole$1.default = _default$1$;
-
-	var articleRole$1 = {};
-
-	Object.defineProperty(articleRole$1, "__esModule", {
-	  value: true
-	});
-	articleRole$1.default = void 0;
-	var articleRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-posinset': null,
-	    'aria-setsize': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'article'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'document']]
-	};
-	var _default$1_ = articleRole;
-	articleRole$1.default = _default$1_;
-
-	var bannerRole$1 = {};
-
-	Object.defineProperty(bannerRole$1, "__esModule", {
-	  value: true
-	});
-	bannerRole$1.default = void 0;
-	var bannerRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      constraints: ['direct descendant of document'],
-	      name: 'header'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1Z = bannerRole;
-	bannerRole$1.default = _default$1Z;
-
-	var blockquoteRole$1 = {};
-
-	Object.defineProperty(blockquoteRole$1, "__esModule", {
-	  value: true
-	});
-	blockquoteRole$1.default = void 0;
-	var blockquoteRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1Y = blockquoteRole;
-	blockquoteRole$1.default = _default$1Y;
-
-	var buttonRole$1 = {};
-
-	Object.defineProperty(buttonRole$1, "__esModule", {
-	  value: true
-	});
-	buttonRole$1.default = void 0;
-	var buttonRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-pressed': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'aria-pressed'
-	      }, {
-	        name: 'type',
-	        value: 'checkbox'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'aria-expanded',
-	        value: 'false'
-	      }],
-	      name: 'summary'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'aria-expanded',
-	        value: 'true'
-	      }],
-	      constraints: ['direct descendant of details element with the open attribute defined'],
-	      name: 'summary'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'button'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'image'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'reset'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'submit'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'button'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'trigger'
-	    },
-	    module: 'XForms'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command']]
-	};
-	var _default$1X = buttonRole;
-	buttonRole$1.default = _default$1X;
-
-	var captionRole$1 = {};
-
-	Object.defineProperty(captionRole$1, "__esModule", {
-	  value: true
-	});
-	captionRole$1.default = void 0;
-	var captionRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: ['figure', 'grid', 'table'],
-	  requiredContextRole: ['figure', 'grid', 'table'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1W = captionRole;
-	captionRole$1.default = _default$1W;
-
-	var cellRole$1 = {};
-
-	Object.defineProperty(cellRole$1, "__esModule", {
-	  value: true
-	});
-	cellRole$1.default = void 0;
-	var cellRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-colindex': null,
-	    'aria-colspan': null,
-	    'aria-rowindex': null,
-	    'aria-rowspan': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      constraints: ['descendant of table'],
-	      name: 'td'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: ['row'],
-	  requiredContextRole: ['row'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1V = cellRole;
-	cellRole$1.default = _default$1V;
-
-	var checkboxRole$1 = {};
-
-	Object.defineProperty(checkboxRole$1, "__esModule", {
-	  value: true
-	});
-	checkboxRole$1.default = void 0;
-	var checkboxRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-checked': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-invalid': null,
-	    'aria-readonly': null,
-	    'aria-required': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'checkbox'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'option'
-	    },
-	    module: 'ARIA'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-checked': null
-	  },
-	  superClass: [['roletype', 'widget', 'input']]
-	};
-	var _default$1U = checkboxRole;
-	checkboxRole$1.default = _default$1U;
-
-	var codeRole$1 = {};
-
-	Object.defineProperty(codeRole$1, "__esModule", {
-	  value: true
-	});
-	codeRole$1.default = void 0;
-	var codeRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1T = codeRole;
-	codeRole$1.default = _default$1T;
-
-	var columnheaderRole$1 = {};
-
-	Object.defineProperty(columnheaderRole$1, "__esModule", {
-	  value: true
-	});
-	columnheaderRole$1.default = void 0;
-	var columnheaderRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-sort': null
-	  },
-	  relatedConcepts: [{
-	    attributes: [{
-	      name: 'scope',
-	      value: 'col'
-	    }],
-	    concept: {
-	      name: 'th'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: ['row'],
-	  requiredContextRole: ['row'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'structure', 'section', 'cell', 'gridcell'], ['roletype', 'widget', 'gridcell'], ['roletype', 'structure', 'sectionhead']]
-	};
-	var _default$1S = columnheaderRole;
-	columnheaderRole$1.default = _default$1S;
-
-	var comboboxRole$1 = {};
-
-	Object.defineProperty(comboboxRole$1, "__esModule", {
-	  value: true
-	});
-	comboboxRole$1.default = void 0;
-	var comboboxRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-activedescendant': null,
-	    'aria-autocomplete': null,
-	    'aria-errormessage': null,
-	    'aria-invalid': null,
-	    'aria-readonly': null,
-	    'aria-required': null,
-	    'aria-expanded': 'false',
-	    'aria-haspopup': 'listbox'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'email'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'search'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'tel'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'text'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'url'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'url'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'multiple'
-	      }, {
-	        constraints: ['undefined'],
-	        name: 'size'
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'multiple'
-	      }, {
-	        name: 'size',
-	        value: 1
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'select'
-	    },
-	    module: 'XForms'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-controls': null,
-	    'aria-expanded': 'false'
-	  },
-	  superClass: [['roletype', 'widget', 'input']]
-	};
-	var _default$1R = comboboxRole;
-	comboboxRole$1.default = _default$1R;
-
-	var complementaryRole$1 = {};
-
-	Object.defineProperty(complementaryRole$1, "__esModule", {
-	  value: true
-	});
-	complementaryRole$1.default = void 0;
-	var complementaryRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'aside'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1Q = complementaryRole;
-	complementaryRole$1.default = _default$1Q;
-
-	var contentinfoRole$1 = {};
-
-	Object.defineProperty(contentinfoRole$1, "__esModule", {
-	  value: true
-	});
-	contentinfoRole$1.default = void 0;
-	var contentinfoRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      constraints: ['direct descendant of document'],
-	      name: 'footer'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1P = contentinfoRole;
-	contentinfoRole$1.default = _default$1P;
-
-	var definitionRole$1 = {};
-
-	Object.defineProperty(definitionRole$1, "__esModule", {
-	  value: true
-	});
-	definitionRole$1.default = void 0;
-	var definitionRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'dd'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1O = definitionRole;
-	definitionRole$1.default = _default$1O;
-
-	var deletionRole$1 = {};
-
-	Object.defineProperty(deletionRole$1, "__esModule", {
-	  value: true
-	});
-	deletionRole$1.default = void 0;
-	var deletionRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1N = deletionRole;
-	deletionRole$1.default = _default$1N;
-
-	var dialogRole$1 = {};
-
-	Object.defineProperty(dialogRole$1, "__esModule", {
-	  value: true
-	});
-	dialogRole$1.default = void 0;
-	var dialogRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'dialog'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'window']]
-	};
-	var _default$1M = dialogRole;
-	dialogRole$1.default = _default$1M;
-
-	var directoryRole$1 = {};
-
-	Object.defineProperty(directoryRole$1, "__esModule", {
-	  value: true
-	});
-	directoryRole$1.default = void 0;
-	var directoryRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    module: 'DAISY Guide'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'list']]
-	};
-	var _default$1L = directoryRole;
-	directoryRole$1.default = _default$1L;
-
-	var documentRole$1 = {};
-
-	Object.defineProperty(documentRole$1, "__esModule", {
-	  value: true
-	});
-	documentRole$1.default = void 0;
-	var documentRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'Device Independence Delivery Unit'
-	    }
-	  }, {
-	    concept: {
-	      name: 'body'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure']]
-	};
-	var _default$1K = documentRole;
-	documentRole$1.default = _default$1K;
-
-	var emphasisRole$1 = {};
-
-	Object.defineProperty(emphasisRole$1, "__esModule", {
-	  value: true
-	});
-	emphasisRole$1.default = void 0;
-	var emphasisRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1J = emphasisRole;
-	emphasisRole$1.default = _default$1J;
-
-	var feedRole$1 = {};
-
-	Object.defineProperty(feedRole$1, "__esModule", {
-	  value: true
-	});
-	feedRole$1.default = void 0;
-	var feedRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['article']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'list']]
-	};
-	var _default$1I = feedRole;
-	f
+{
+    "word": "समाधिः",
+    "AP90": [
+        {
+            "word": "समाधिः",
+            "eid": "29389",
+            "pagenum": 1096,
+            "content": "समाधिः¦ <b>1</b> Collecting, composing, concentrating (as mind). <b>--2</b> <lbinfo n='Pro+found'/> Profound or abstract meditation, <lbinfo n='con+centration'/> concentration of mind on one object, perfect absorption of thought into the one object of meditation, <i><ab>i. e.</ab></i> the Supreme Spirit, (the 8th and last stage of Yoga); आत्मेश्वराणां न हि जातु विघ्नाः समाधिभेदप्रभवो भवंति <ls>Ku. 3. 40</ls>, <ls n='Ku. 3.'>50</ls>; <ls>Mk. 1. 1.</ls>; <ls>Bh. 3. 54</ls>; <ls>R. 8. 79</ls>; <ls>Śi. 4. 55.</ls> <b>--3</b> Intentness, concentration (in general), fixing of thoughts; तस्यां लग्नसमाधि (मानसं) <ls>Gīt. 3.</ls> <b>--4</b> Penance, religious obligation, <lbinfo n='de+votion'/> devotion (to penance);  <lbinfo n='astyetsamADi#BIrutvaM'/> अस्त्येत्समाधिभीरुत्वं देवानां <ls>Ś. 1</ls>; तपःसमाधि  <lbinfo n='ls:Ku.+ 3. 24'/> <ls>Ku. 3. 24</ls>; अथोपयंतारमलं समाधिना  <lbinfo n='ls:5.+24'/> <ls n='Ku.'>5. 24</ls>, <ls n='Ku.'>5. 6</ls>; <ls n='Ku.'>1. 59</ls>. <b>--5</b> Bringing together, concentration, <lbinfo n='combina+tion'/> combination, collection; तं वेधा विदधे नूनं <lbinfo n='ma#hABUtasamADinA'/> महाभूतसमाधिना <ls>R. 1. 29.</ls> <b>--6</b> <lbinfo n='Re+conciliation'/> Reconciliation, settling or composing differences. <b>--7</b> Silence. <b>--8</b> <lbinfo n='Agree+ment'/> Agreement, assent, promise. <b>--9</b> <lbinfo n='Requi+tal'/> Requital. <b>--10</b> Completion, <lbinfo n='accomplish+ment'/> accomplishment. <b>--11</b> Perseverance in <lbinfo n='ex+treme'/> extreme difficulties. <b>--12</b> Attempting impossibilities. <b>--13</b> Laying up corn (in times of famine), storing grain. <b>--14</b> A tomb. <b>--15</b> The joint of the neck; a particular position of the neck; <ls>Ki. 16. 21.</ls> <b>--16</b> (In <ab>Rhet.</ab>) A figure of speech thus defined by Mammaṭa; समाधिः सुकरं कार्यं कारणांतरयोगतः <ls>K. P. 10</ls>; see <ls>S. D. 614.</ls> <b>--17</b> One of the ten Guṇas or merits of style; see  <lbinfo n='ls:Kāv.+ 1. 93.'/> <ls>Kāv. 1. 93.</ls> <b>--18</b> A religious vow or self-imposed restraint. <b>--19</b> Support, upholding. <b>--Comp.</b> --भंगः <lbinfo n='inter+ruption'/> interruption of meditation. --स्थ <i><ab>a.</ab></i> <lbinfo n='ab+sorbed'/> absorbed in meditation or <lbinfo n='contempla+tion'/> contemplation."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समाधिः",
+            "eid": "37940",
+            "pagenum": "5-271-c",
+            "content": "समाधिः¦, पुं, (समाधीयतेऽस्मिन् मनो जनैरिति । सम् + आ + धा + “उपसर्ग धोः किः ।” इति किः ।) समर्थनम् । नीवाकः । नियमः । इत्यमरः ॥ (यथा, कुमारे । ५ । ६ । “अयाचतारण्यनिवासमात्मनः फलोदयान्ताय तपःसमाधये ॥”) समर्थनं अशक्ये अध्यवसायः दुर्घटस्य घटनत्वं वा । नीवाको वचनाभावः । इति स्वामी ॥ धान्यादिषु मूल्योत्कर्षपूर्व्वको जनादरः । इति सुभूतिः ॥ नियमः अङ्गीकारः । एते समाधयः । समाधीयतेऽस्मिन् मनो जनैरिति किः । इति भरतः ॥ ध्यानम् । काव्यगुणविशेषः । इति मेदिनी ॥ (अर्थालङ्कारविशेषः । यथा, साहित्यदर्पणे । १० । ७४० । “समाधिः सुकरे कार्य्ये दैवाद्बस्त्वन्तरागमात् ॥” यथा, “मानमस्या निराकर्त्तुं पादयोर्मे पतिष्यतः । उपकाराय दिष्ट्येदमुदीर्णं घनगर्जितम् ॥” समाधीयतेऽनेनेति करणे किः । कारणसामग्री । यथा, रघुः । १ । २९ । “तं वेधा विदधे नूनं महाभूतसमाधिना । तथाहि सर्व्वे तस्यासन् परार्थैकफला गुणाः ॥”) इन्द्रियनिरोधनम् । इति शब्दरत्नावली ॥ * ॥ समाधिलक्षणं यथा, गारुडे ४४ अध्याये । “नित्यं शुद्धं बुद्धियुक्तं सत्यमानन्दमद्वयम् । तुरीयमक्षरं ब्रह्म अहमस्मि परं पदम् । अहं ब्रह्मेत्यवस्थानं समाधिरिति गीयते ॥” अपि च तत्रैव २४० अध्याये । “द्बादशध्यानपर्य्यन्तं मनो ब्रह्मणि यो नरः । तुष्टे तु संयतो मुक्तः समाधिः सोऽभिधीयते ॥ ध्येयमेव हि सर्व्वत्र ध्याता तल्लयतां गतः । पश्यति द्वतरहितं समाधिः सोऽभिधीयते ॥” अन्यच्च विष्णुपुराणे । ६ । ७ । ९० । “तस्यैव कल्पनाहीनं स्वरूपग्रहणं हि यत् । मनसा ध्याननिष्पाद्यं समाधिः सोऽभिधीयते ॥” अपरञ्च । “इमं गुणसमाहारमनात्मत्वेन पश्यतः । अन्तः शीतलता यस्य समाधिरिति कथ्यते ॥” इति योगवाशिष्ठे उपशमप्रकरणम् ॥ योगाङ्गविशेषः । यथा । समाधिस्तु द्विविधः । सविकल्पको निर्व्विकल्पश्चेति । तत्र सविकल्पको नाम ज्ञातृज्ञानादिविकल्पलयानपेक्षया द्वितीयवस्तुनि तदाकाराकारितायाच्चित्तवृत्तेरवस्थानम् । तदा मृण्मयगजादिभाणेऽपि मृद्भाणवत् द्वैतभाणेऽप्यद्वैतं वस्तु भासते । तदुक्तमभियुक्तैः । “दृशि स्वरूपं गगनोपमं परं सकृद्विभातं त्वजमेकमव्ययम् । अलेपकं सर्व्वगतं यदद्वयं तदेव चाहं सततं विमुक्तम् ॥ दृशिस्तु शुद्धोऽहमविक्रियात्मको न मेऽस्ति बद्धो न च मे विमोक्षः ॥” इत्यादि ॥ * ॥ निर्व्विकल्पकस्तु । ज्ञातृज्ञानादिभेदलयापेक्षया द्वितीयवस्तुनि तदाकाराकारिताया बुद्धिवृत्तेरतितरामेकीभावेनावस्थानम् । तदा तु जलाकाराकारितलवणानवभासेन जलमात्रावभासवदद्वितीयवस्त्वाकारांकारितचित्तवृत्त्यनवभासेनाद्वितीयवस्तुमात्रमेवावभासते । ततश्चास्य सुषुप्तेश्चाभेदशङ्का न भवति उभयत्र वृत्त्यभाणे समानेऽपि तत्सद्भावासद्भावमात्रेणानयोर्भेदोपपत्तेः ॥ अस्याङ्गानि । यमनियमासनप्राणायामप्रत्याहारधारणाध्यानसमाधयः । तत्र अहिंसासत्यास्तेयब्रह्मचर्य्यापरिग्रहाः यमाः । १ । शौचसन्तोषतपःस्वाध्यायेश्वण्प्रणिधानानि नियमाः । २ करचरणादिसंस्थानविशषलक्षणानि पद्मस्वस्तिकादीनि आसनानि । ३ । रेचकपूरककुम्भकलक्षणाः प्राणनिग्रहोपायाः प्राणायामाः । ४ । इन्द्रिवरणां स्वस्वविषयेभ्यः प्रत्याहरणं प्रत्याहारः । ५ । अद्वितीयवस्तुन्यन्तरिन्द्रियधारणं धारणा । ६ । तत्राद्बितीयवस्तुनि विच्छिद्य विच्छिद्य अन्तरिन्द्रियवृत्तिप्रवाहो ध्यानम् । ७ । समाधिस्तु उक्तः सविकल्पक एव । ८ । एवमस्याङ्गिनो निर्व्विकल्पकस्य लयविक्षेपकषायरसास्वादलक्षणश्चत्वारो विघ्नाः सम्भवन्ति । लयस्तावत् अखण्डवस्त्वनवलम्बनेन चित्तवृत्तेर्निद्रा । १ । अखण्डवस्त्वनवलम्बनेन चित्तवृत्तेरन्यावलम्बनं विक्षेपः । २ । लयविक्षेपाभावेऽपि चित्तवृत्ते रागादिवासनया स्तब्धीभावात् अखण्डवस्त्वनवलम्बनं कषायः । ३ । अखण्डवस्त्वनवलम्बनेनापि चित्तवृत्तेः सविकल्पानन्दास्वादनं रसास्वादः । समाध्यारम्भसमये सविकल्पानन्दास्वादनं वा । ४ । अनेन विघ्नचतुष्टयेन रहितं चित्तं निर्व्वातदीपवदचलं सदखण्डचैतन्यमात्रमवतिष्टते यदा तदा निर्व्विकल्पकः समाधिरित्युच्यते ॥ * ॥ तदुक्तम् । “लये सम्बोधयेत् चित्तं विक्षिप्तं शमयेत् पुनः । सकषायं विजानीयात् शमप्राप्तं न चालयेत् ॥ नास्वादयेद्रसं तत्र निःसङ्गः प्रज्ञया भवेत् ॥” इत्यादि । यथा दीपो निवातस्थो नेङ्गते इत्यादि च । इति श्रीसदानन्दयोगीन्द्रविरचितवेदान्तसारः ॥ (स्वनामख्यातवैश्यविशेषः । अयं हि महामायामाराध्य परं ज्ञानमलभत् । अस्य विशेषवृत्तान्तस्तु देवीमाहात्म्यतो द्रष्टव्यः ॥)"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'संग्रह करना, स्वस्थ करना, एकाग्र करना'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'भावचिन्तन, किसी एक विषय पर मन को केन्द्रित करना, ब्रह्मचिन्तन में पूर्णलीनता अर्थात् योग की आठवीं और अन्तिम अवस्था'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'एक निष्ठता, संकेन्द्रण, मनोयोग'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'तपस्या, घर्मकृत्य, साधना'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'साथ मिलाना, संकेन्द्रण, सम्मिश्रण, संग्रह'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'पुनर्मिलन, मतभेद दूर करना'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि निस्तब्धता"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'अंगीकार, स्वीकृति, प्रतिज्ञा'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि प्रतिदान"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'पूर्ति, सम्पन्नता'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि अत्यन्त कठिनाईयों में धैर्य धारण करना"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि असम्भव बात के लिए प्रयत्न करना"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'अनाज बचा कर रखना, अन्न संचय करना'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'मकबरा, शव प्रकोष्ठ'"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि 'गरदन का जोड़, गरदन की विशेष अवस्था '"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि (अलं से) एक अलंकार जिसकी मम्मट ने निम्नाङ्कित परिभाषा की है"
+        },
+        {
+            "word": "समाधिः",
+            "content": "समाधिः पुं. -  सम् + आ + धा + कि शैली के दस गुणों में से एक"
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "समाधिः",
+            "content": "<lexhead no=\"710\">\n<dentry>समाधिः</dentry>\n<prAwipaxikam>समाधि</prAwipaxikam>\n<grammar>पुं*</grammar>\n<etymology>[सम्+आ+धा+कि]</etymology>\n<upAXi>समूहः</upAXi>\n<jAwi>शब्दः</jAwi>\n<kind_of>देवः</kind_of>\n<jAwi>मानसिकभावः</jAwi>\n<jAwi>मानसिकभावः</jAwi>\n<sense no=\"1\">संग्रह करना, स्वस्थ करना, एकाग्र करना, मन को</sense>\n<sense n=\"2\">भावचिन्तन, किसी एक विषय पर मन को केन्द्रित करना, ब्रह्मचिन्तन में पूर्णलीनता अर्थात् योग की आठवीं और अन्तिम अवस्थाआत्मेश्वराणां न हि जातु विघ्नाः समाधिभेदप्रभवो भवन्ति<citation>कु* ३।४०</citation>५०<citation>मृच्छ* १।१</citation><citation>भर्तृ* ३।५४</citation><citation>रघु* ८।७८</citation><citation>शि* ४।५५</citation></sense>\n<sense n=\"3\">एक निष्ठता, संकेन्द्रण, मनोयोगतस्यां लग्नसमाधिं (मानसम्)<citation>गीत*</citation></sense>\n<sense n=\"4\">तपस्या, घर्मकृत्य, साधनाअस्त्येतदन्यसमाधिभीरुत्वं देवानाम्<citation>श* १</citation>तपः समाधिः<citation>कु* ३।२४</citation>५।६, १।५९, ५।४५</sense>\n<sense n=\"5\">साथ मिलाना, संकेन्द्रण, सम्मिश्रण, संग्रहतं वेधा विदधे नूनं महाभूत समाधिना<citation>रघु* १।२९</citation></sense>\n<sense n=\"6\">पुनर्मिलन, मतभेद दूर करना</sense>\n<sense n=\"7\">निस्तब्धता</sense>\n<sense n=\"8\">अंगीकार, स्वीकृति, प्रतिज्ञा</sense>\n<sense n=\"9\">प्रतिदान</sense>\n<sense n=\"10\">पूर्ति, सम्पन्नता</sense>\n<sense n=\"11\">अत्यन्त कठिनाईयों में धैर्य धारण करना</sense>\n<sense n=\"12\">असम्भव बात के लिए प्रयत्न करना</sense>\n<sense n=\"13\">अनाज बचा कर रखना, अन्न संचय करनादुर्भिक्ष के अवसर पर</sense>\n<sense n=\"14\">मकबरा, शव प्रकोष्ठ</sense>\n<sense n=\"15\">गरदन का जोड़, गरदन की विशेष अवस्था<citation>कि* १६।२१</citation></sense>\n<sense n=\"16\">(अलं से) एक अलंकार जिसकी मम्मट ने निम्नाङ्कित परिभाषा की हैसमाधिः सुकरं कार्यं कारणान्तरयो गतः<citation>काव्य*१० दे*</citation><citation>सा* द* ६।१४</citation></sense>\n<sense n=\"17\">शैली के दस गुणों में से एकदे*<citation>काव्या* १।९३</citation></sense>\n</lexhead>\n\n"
+        }
+    ]
+}

@@ -1,1 +1,261 @@
-Error("Property delegate of YieldExpression cannot be true if there is no argument")}}),{type:"boolean"})),default:false},argument:{optional:true,validate:(0,l.assertNodeType)("Expression")}}});c("AwaitExpression",{builder:["argument"],visitor:["argument"],aliases:["Expression","Terminatorless"],fields:{argument:{validate:(0,l.assertNodeType)("Expression")}}});c("Import",{aliases:["Expression"]});c("BigIntLiteral",{builder:["value"],fields:{value:{validate:(0,l.assertValueType)("string")}},aliases:["Expression","Pureish","Literal","Immutable"]});c("ExportNamespaceSpecifier",{visitor:["exported"],aliases:["ModuleSpecifier"],fields:{exported:{validate:(0,l.assertNodeType)("Identifier")}}});c("OptionalMemberExpression",{builder:["object","property","computed","optional"],visitor:["object","property"],aliases:["Expression"],fields:{object:{validate:(0,l.assertNodeType)("Expression")},property:{validate:function(){const e=(0,l.assertNodeType)("Identifier");const t=(0,l.assertNodeType)("Expression");const r=Object.assign((function(r,n,s){const i=r.computed?t:e;i(r,n,s)}),{oneOfNodeTypes:["Expression","Identifier"]});return r}()},computed:{default:false},optional:{validate:!process.env.BABEL_TYPES_8_BREAKING?(0,l.assertValueType)("boolean"):(0,l.chain)((0,l.assertValueType)("boolean"),(0,l.assertOptionalChainStart)())}}});c("OptionalCallExpression",{visitor:["callee","arguments","typeParameters","typeArguments"],builder:["callee","arguments","optional"],aliases:["Expression"],fields:{callee:{validate:(0,l.assertNodeType)("Expression")},arguments:{validate:(0,l.chain)((0,l.assertValueType)("array"),(0,l.assertEach)((0,l.assertNodeType)("Expression","SpreadElement","JSXNamespacedName","ArgumentPlaceholder")))},optional:{validate:!process.env.BABEL_TYPES_8_BREAKING?(0,l.assertValueType)("boolean"):(0,l.chain)((0,l.assertValueType)("boolean"),(0,l.assertOptionalChainStart)())},typeArguments:{validate:(0,l.assertNodeType)("TypeParameterInstantiation"),optional:true},typeParameters:{validate:(0,l.assertNodeType)("TSTypeParameterInstantiation"),optional:true}}});c("ClassProperty",{visitor:["key","value","typeAnnotation","decorators"],builder:["key","value","typeAnnotation","decorators","computed","static"],aliases:["Property"],fields:Object.assign({},classMethodOrPropertyCommon(),{value:{validate:(0,l.assertNodeType)("Expression"),optional:true},definite:{validate:(0,l.assertValueType)("boolean"),optional:true},typeAnnotation:{validate:(0,l.assertNodeType)("TypeAnnotation","TSTypeAnnotation","Noop"),optional:true},decorators:{validate:(0,l.chain)((0,l.assertValueType)("array"),(0,l.assertEach)((0,l.assertNodeType)("Decorator"))),optional:true},readonly:{validate:(0,l.assertValueType)("boolean"),optional:true},declare:{validate:(0,l.assertValueType)("boolean"),optional:true},variance:{validate:(0,l.assertNodeType)("Variance"),optional:true}})});c("ClassAccessorProperty",{visitor:["key","value","typeAnnotation","decorators"],builder:["key","value","typeAnnotation","decorators","computed","static"],aliases:["Property","Accessor"],fields:Object.assign({},classMethodOrPropertyCommon(),{key:{validate:(0,l.chain)(function(){const e=(0,l.assertNodeType)("Identifier","StringLiteral","NumericLiteral","BigIntLiteral","PrivateName");const t=(0,l.assertNodeType)("Expression");return function(r,n,s){const i=r.computed?t:e;i(r,n,s)}}(),(0,l.assertNodeType)("Identifier","StringLiteral","NumericLiteral","BigIntLiteral","Expression","PrivateName"))},value:{validate:(0,l.assertNodeType)("Expression"),optional:true},definite:{validate:(0,l.assertValueType)("boolean"),optional:true},typeAnnotation:{validate:(0,l.assertNodeType)("TypeAnnotation","TSTypeAnnotation","Noop"),optional:true},decorators:{validate:(0,l.chain)((0,l.assertValueType)("array"),(0,l.assertEach)((0,l.assertNodeType)("Decorator"))),optional:true},readonly:{validate:(0,l.assertValueType)("boolean"),optional:true},declare:{validate:(0,l.assertValueType)("boolean"),optional:true},variance:{validate:(0,l.assertNodeType)("Variance"),optional:true}})});c("ClassPrivateProperty",{visitor:["key","value","decorators","typeAnnotation"],builder:["key","value","decorators","static"],aliases:["Property","Private"],fields:{key:{validate:(0,l.assertNodeType)("PrivateName")},value:{validate:(0,l.assertNodeType)("Expression"),optional:true},typeAnnotation:{validate:(0,l.assertNodeType)("TypeAnnotation","TSTypeAnnotation","Noop"),optional:true},decorators:{validate:(0,l.chain)((0,l.assertValueType)("array"),(0,l.assertEach)((0,l.assertNodeType)("Decorator"))),optional:true},static:{validate:(0,l.assertValueType)("boolean"),default:false},readonly:{validate:(0,l.assertValueType)("boolean"),optional:true},definite:{validate:(0,l.assertValueType)("boolean"),optional:true},variance:{validate:(0,l.assertNodeType)("Variance"),optional:true}}});c("ClassPrivateMethod",{builder:["kind","key","params","body","static"],visitor:["key","params","body","decorators","returnType","typeParameters"],aliases:["Function","Scopable","BlockParent","FunctionParent","Method","Private"],fields:Object.assign({},classMethodOrDeclareMethodCommon(),functionTypeAnnotationCommon(),{kind:{validate:(0,l.assertOneOf)("get","set","method"),default:"method"},key:{validate:(0,l.assertNodeType)("PrivateName")},body:{validate:(0,l.assertNodeType)("BlockStatement")}})});c("PrivateName",{visitor:["id"],aliases:["Private"],fields:{id:{validate:(0,l.assertNodeType)("Identifier")}}});c("StaticBlock",{visitor:["body"],fields:{body:{validate:(0,l.chain)((0,l.assertValueType)("array"),(0,l.assertEach)((0,l.assertNodeType)("Statement")))}},aliases:["Scopable","BlockParent","FunctionParent"]})},4482:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t.DEPRECATED_ALIASES=void 0;const r={ModuleDeclaration:"ImportOrExportDeclaration"};t.DEPRECATED_ALIASES=r},6851:(e,t,r)=>{"use strict";var n=r(3706);(0,n.default)("ArgumentPlaceholder",{});(0,n.default)("BindExpression",{visitor:["object","callee"],aliases:["Expression"],fields:!process.env.BABEL_TYPES_8_BREAKING?{object:{validate:Object.assign((()=>{}),{oneOfNodeTypes:["Expression"]})},callee:{validate:Object.assign((()=>{}),{oneOfNodeTypes:["Expression"]})}}:{object:{validate:(0,n.assertNodeType)("Expression")},callee:{validate:(0,n.assertNodeType)("Expression")}}});(0,n.default)("ImportAttribute",{visitor:["key","value"],fields:{key:{validate:(0,n.assertNodeType)("Identifier","StringLiteral")},value:{validate:(0,n.assertNodeType)("StringLiteral")}}});(0,n.default)("Decorator",{visitor:["expression"],fields:{expression:{validate:(0,n.assertNodeType)("Expression")}}});(0,n.default)("DoExpression",{visitor:["body"],builder:["body","async"],aliases:["Expression"],fields:{body:{validate:(0,n.assertNodeType)("BlockStatement")},async:{validate:(0,n.assertValueType)("boolean"),default:false}}});(0,n.default)("ExportDefaultSpecifier",{visitor:["exported"],aliases:["ModuleSpecifier"],fields:{exported:{validate:(0,n.assertNodeType)("Identifier")}}});(0,n.default)("RecordExpression",{visitor:["properties"],aliases:["Expression"],fields:{properties:{validate:(0,n.chain)((0,n.assertValueType)("array"),(0,n.assertEach)((0,n.assertNodeType)("ObjectProperty","SpreadElement")))}}});(0,n.default)("TupleExpression",{fields:{elements:{validate:(0,n.chain)((0,n.assertValueType)("array"),(0,n.assertEach)((0,n.assertNodeType)("Expression","SpreadElement"))),default:[]}},visitor:["elements"],aliases:["Expression"]});(0,n.default)("DecimalLiteral",{builder:["value"],fields:{value:{validate:(0,n.assertValueType)("string")}},aliases:["Expression","Pureish","Literal","Immutable"]});(0,n.default)("ModuleExpression",{visitor:["body"],fields:{body:{validate:(0,n.assertNodeType)("Program")}},aliases:["Expression"]});(0,n.default)("TopicReference",{aliases:["Expression"]});(0,n.default)("PipelineTopicExpression",{builder:["expression"],visitor:["expression"],fields:{expression:{validate:(0,n.assertNodeType)("Expression")}},aliases:["Expression"]});(0,n.default)("PipelineBareFunction",{builder:["callee"],visitor:["callee"],fields:{callee:{validate:(0,n.assertNodeType)("Expression")}},aliases:["Expression"]});(0,n.default)("PipelinePrimaryTopicReference",{aliases:["Expression"]})},9563:(e,t,r)=>{"use strict";var n=r(3706);const s=(0,n.defineAliasedType)("Flow");const defineInterfaceishType=e=>{const t=e==="DeclareClass";s(e,{builder:["id","typeParameters","extends","body"],visitor:["id","typeParameters","extends",...t?["mixins","implements"]:[],"body"],aliases:["FlowDeclaration","Statement","Declaration"],fields:Object.assign({id:(0,n.validateType)("Identifier"),typeParameters:(0,n.validateOptionalType)("TypeParameterDeclaration"),extends:(0,n.validateOptional)((0,n.arrayOfType)("InterfaceExtends"))},t?{mixins:(0,n.validateOptional)((0,n.arrayOfType)("InterfaceExtends")),implements:(0,n.validateOptional)((0,n.arrayOfType)("ClassImplements"))}:{},{body:(0,n.validateType)("ObjectTypeAnnotation")})})};s("AnyTypeAnnotation",{aliases:["FlowType","FlowBaseAnnotation"]});s("ArrayTypeAnnotation",{visitor:["elementType"],aliases:["FlowType"],fields:{elementType:(0,n.validateType)("FlowType")}});s("BooleanTypeAnnotation",{aliases:["FlowType","FlowBaseAnnotation"]});s("BooleanLiteralTypeAnnotation",{builder:["value"],aliases:["FlowType"],fields:{value:(0,n.validate)((0,n.assertValueType)("boolean"))}});s("NullLiteralTypeAnnotation",{aliases:["FlowType","FlowBaseAnnotation"]});s("ClassImplements",{visitor:["id","typeParameters"],fields:{id:(0,n.validateType)("Identifier"),typeParameters:(0,n.validateOptionalType)("TypeParameterInstantiation")}});defineInterfaceishType("DeclareClass");s("DeclareFunction",{visitor:["id"],aliases:["FlowDeclaration","Statement","Declaration"],fields:{id:(0,n.validateType)("Identifier"),predicate:(0,n.validateOptionalType)("DeclaredPredicate")}});defineInterfaceishType("DeclareInterface");s("DeclareModule",{builder:["id","body","kind"],visitor:["id","body"],aliases:["FlowDeclaration","Statement","Declaration"],fields:{id:(0,n.validateType)(["Identifier","StringLiteral"]),body:(0,n.validateType)("BlockStatement"),kind:(0,n.validateOptional)((0,n.assertOneOf)("CommonJS","ES"))}});s("DeclareModuleExports",{visitor:["typeAnnotation"],aliases:["FlowDeclaration","Statement","Declaration"],fields:{typeAnnotation:(0,n.validateType)("TypeAnnotation")}});s("DeclareTypeAlias",{visitor:["id","typeParameters","right"],aliases:["FlowDeclaration","Statement","Declaration"],fields:{id:(0,n.validateType)("Identifier"),typeParameters:(0,n.validateOptionalType)("TypeParameterDeclaration"),right:(0,n.validateType)("FlowType")}});s("DeclareOpaqueType",{visitor:["id","typeParameters","supertype"],aliases:["FlowDeclaration","Statement","Declaration"],fields:{id:(0,n.validateType)("Identifier"),typeParameters:(0,n.validateOptionalType)("TypeParameterDeclaration"),supertype:(0,n.validateOptionalType)("FlowType"),impltype:(0,n.validateOptionalType)("FlowType")}});s("DeclareVariable",{visitor:["id"],aliases:["FlowDeclaration","Statement","Declaration"],fields:{id:(0,n.validateType)("Identifier")}});s("DeclareExportDeclaration",{visitor:["declaration","specifiers","source"],aliases:["FlowDeclaration","Statement","Declaration"],fields:{declaration:(0,n.validateOptionalType)("Flow"),specifiers:(0,n.validateOptional)((0,n.arrayOfType)(["ExportSpecifier","ExportNamespaceSpecifier"])),source:(0,n.validateOptionalType)("StringLiteral"),default:(0,n.validateOptional)((0,n.assertValueType)("boolean"))}});s("DeclareExportAllDeclaration",{visitor:["source"],aliases:["FlowDeclaration","Statement","Declaration"],fields:{source:(0,n.validateType)("StringLiteral"),exportKind:(0,n.validateOptional)((0,n.assertOneOf)("type","value"))}});s("DeclaredPredicate",{visitor:["value"],aliases:["FlowPredicate"],fields:{value:(0,n.validateType)("Flow")}});s("ExistsTypeAnnotation",{aliases:["FlowType"]});s("FunctionTypeAnnotation",{visitor:["typeParameters","params","rest","returnType"],aliases:["FlowType"],fields:{typeParameters:(0,n.validateOptionalType)("TypeParameterDeclaration"),params:(0,n.validate)((0,n.arrayOfType)("FunctionTypeParam")),rest:(0,n.validateOptionalType)("FunctionTypeParam"),this:(0,n.validateOptionalType)("FunctionTypeParam"),returnType:(0,n.validateType)("FlowType")}});s("FunctionTypeParam",{visitor:["name","typeAnnotation"],fields:{name:(0,n.validateOptionalType)("Identifier"),typeAnnotation:(0,n.validateType)("FlowType"),optional:(0,n.validateOptional)((0,n.assertValueType)("boolean"))}});s("GenericTypeAnnotation",{visitor:["id","typeParameters"],aliases:["FlowType"],fields:{id:(0,n.validateType)(["Identifier","QualifiedTypeIdentifier"]),typeParameters:(0,n.validateOptionalType)("TypeParameterInstantiation")}});s("InferredPredicate",{aliases:["FlowPredicate"]});s("InterfaceExtends",{visitor:["id","typeParameters"],fields:{id:(0,n.validateType)(["Identifier","QualifiedTypeIdentifier"]),typeParameters:(0,n.validateOptionalType)("TypeParameterInstantiation")}});defineInterfaceishType("InterfaceDeclaration");s("InterfaceTypeAnnotation",{visitor:["extends","body"],aliases:["FlowType"],fields:{extends:(0,n.validateOptional)((0,n.arrayOfType)("InterfaceExtends")),body:(0,n.validateType)("ObjectTypeAnnotation")}});s("IntersectionTypeAnnotation",{visitor:["types"],aliases:["FlowType"],fields:{types:(0,n.validate)((0,n.arrayOfType)("FlowType"))}});s("MixedTypeAnnotation",{aliases:["FlowType","FlowBaseAnnotation"]});s("EmptyTypeAnnotation",{aliases:["FlowType","FlowBaseAnnotation"]});s("NullableTypeAnnotation",{visitor:["typeAnnotation"],aliases:["FlowType"],fields:{typeAnnotation:(0,n.validateType)("FlowType")}});s("NumberLiteralTypeAnnotation",{builder:["value"],aliases:["FlowType"],f
+{
+    "word": "हंसक",
+    "ABCH": [
+        {
+            "word": "हंसक",
+            "linga": "पुंक्ली",
+            "pagenum": "28",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "2019",
+            "group": "733",
+            "synonyms": [
+                "नूपुर",
+                "तुलाकोटि",
+                "पादकटक",
+                "पादाङ्गद",
+                "मञ्जीर",
+                "शिञ्जिनी"
+            ],
+            "content": "नूपुरं तु तुलाकोटिः पादतः कटकाङ्गदे ॥ ६६५ ॥\nमञ्जीरं हंसकं शिञ्जिन्यंशुकं वस्त्रमम्बरम् ।\nसिचयो वसनं चीराच्छादौ सिक्चेलवाससी ॥ ६६६ ॥\nपटः प्रौतोऽञ्चलोऽस्यान्तो वर्तिर्वस्तिश्च तद्दशाः ।"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "हंसक",
+            "eid": "31232",
+            "pagenum": 1164,
+            "content": "हंसकः¦ <b>1</b> A goose, flamingo. <b>--2</b> An ornament for the ankles (नूपुर or पादकटक); सरित इव <lbinfo n='saviBramaprapAtapra#RaditahaMsakaBUzaRA'/> सविभ्रमप्रपातप्रणदितहंसकभूषणा विरेजुः <ls>Śi. 7. 23</ls> (where the word is used in the first sense also; see हंस above for other senses)."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "हंसक",
+            "eid": "16948",
+            "pagenum": 1101,
+            "content": "हंसक¦ <i>haṃsa + ka,</i> <ab>m.</ab> <b>1.</b> The flamingo. <b>2.</b> An ornament for the feet."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "हंसक",
+            "eid": "39264",
+            "pagenum": 656,
+            "content": "हंसक¦ <lex>m.</lex> little or miserable goose, goose <ab>i.g.</ab> (<lex>f.</lex> हंसिका); <ab>s.</ab> anklet."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "हंसक",
+            "eid": "29150",
+            "pagenum": 525,
+            "content": "हंसक¦ <i>m. dass.</i> (<i>f.</i> हंहिका); *Fußring."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "हंसक",
+            "eid": "42882",
+            "pagenum": 825,
+            "content": "haMsaka¦ <i>m.</i> 1. A goose, a flamingo; 2. an ornament for the ankles, सरित इव सविभ्रमश्रयातप्रणदितहंसकभूषणा विरेजुः <ls>Sis.</ls>vii.23 (where the word is used in both the senses).<P>(हंसक may be used in all the senses of हंस.)"
+        }
+    ],
+    "MW": [
+        {
+            "word": "हंसक",
+            "eid": "260194",
+            "pagenum": "1286,3",
+            "content": "हंसक ¦ <lex>m.</lex> a goose, gander, swan, flamingo (also ‘a little or poor goose &c.’), <ls>Kāv.</ls>; <ls>BhP.</ls><info lex='m'/>"
+        },
+        {
+            "word": "हंसक",
+            "eid": "260195",
+            "pagenum": "1286,3",
+            "content": "¦ (in music) a kind of measure, <ls>Saṃgīt.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हंसक",
+            "eid": "260196",
+            "pagenum": "1286,3",
+            "content": "¦ <ab>N.</ab> of a son of <s1 slp1='brahma-datta'>Brahma-datta</s1>, <ls>Hariv.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हंसक",
+            "eid": "260197",
+            "pagenum": "1286,3",
+            "content": "हंसक ¦ <lex>mn.</lex> an ornament for the feet or ankles (said to be formed like a goose's foot), <ls>Śiś. vii, 23</ls><info lex='m:n'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "हंसक",
+            "eid": "53843",
+            "pagenum": 1163,
+            "content": "<i>Haṃsaka, as,</i>¦ m. a goose, gander, flamingo; an ornament for the feet or ankles (said to be formed like a goose's foot)."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "हंसक",
+            "eid": "17133",
+            "pagenum": 3,
+            "content": "<i>Haṃsaka</i>¦ — a Dānava king. <dvsn n='P'/>Br. IV. 29. 122."
+        }
+    ],
+    "PW": [
+        {
+            "word": "हंसक",
+            "eid": "133284",
+            "pagenum": 7,
+            "content": "हंसक¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <dvsn n='2'>— a〉 <i>Gänschen, eine arme Gans und Gans</i> <ab>überh.</ab> <ls>ŚIŚ. 7,23</ls>. <ls>KĀD. 2,86,19 (106,20)</ls>. <dvsn n='2'>— b〉 <i>ein <ab>best.</ab> Tact</i>. <dvsn n='2'>— c〉 <ab>N. pr.</ab> eines Sohnes des <is>Brahmadatta</is>. <dvsn n='1'>— 2〉 (*<lex>m.</lex> <lex>n.</lex>) <i>Fussring</i>. <dvsn n='1'>— 3〉 <lex>f.</lex> हंसिका <dvsn n='2'>— a〉 <i>eine weibliche Gans</i>. <dvsn n='2'>— b〉 <ab>N. pr.</ab> einer mythischen Kuh."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "हंसक",
+            "eid": "115850",
+            "pagenum": 7,
+            "content": "हंसक¦ (von हंस) <is>gaṇa</is> पक्षादि zu <ls>P. 4, 2, 80.</ls> <dvsn n='1'> 1) <lex>m.</lex> <dvsn n='2'> a) <i>eine arme Gans</i> <ls>Spr. (II) 6035.</ls> <i>Gans</i> überh. <ls>BHĀG. P. 10, 12, 8.</ls> <i>Flamingo</i> <ls>ŚABDAC.</ls> im <ls>ŚKDR.</ls> <dvsn n='2'>— b) <i>ein best. Tact</i> <ls>SAM̃GĪTADĀM.</ls> im <ls>ŚKDR.</ls> <dvsn n='2'>— c) N. pr. eines Mannes <is>gaṇa</is> नडादि zu <ls>P. 4, 1, 99.</ls> = हंस ein Sohn <is>Brahmadatta's</is> und Heerführer des <is>Jarāsaṃdha</is> <ls>HARIV. 16072.</ls> <dvsn n='1'>— 2) <lex>m.</lex> ( <ls>AK.</ls> und <ls>HĀR.</ls>) und <lex>n.</lex> ( <ls>H.</ls> und <ls>HALĀY.</ls>) <i>Fussring</i> <ls>AK. 2, 6, 3, 11.</ls> <ls>H. 666.</ls> <ls>HĀR. 173.</ls> <ls>HALĀY. 2, 406.</ls> °भूषण <ls>ŚIŚ. 7, 23.</ls> <dvsn n='1'>— 3) <lex>f.</lex> ह/ंसिका <ls>UṆĀDIS. 4, 153.</ls> <dvsn n='2'> a) <i>eine weibliche Gans</i> <ls>ŚABDAR.</ls> im <ls>ŚKDR.</ls> <ls>UJJVAL.</ls> <ls>KATHĀS. 69, 154.</ls> <ls>NALOD. 2, 40.</ls> <dvsn n='2'>— b) N. pr. einer mythischen Kuh <ls>MBH. 5, 3609.</ls> <dvsn n='v'>— Vgl. हांसकायन ."
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "हंसक",
+            "eid": "22033",
+            "pagenum": 7,
+            "content": "हंसक¦ VII. 2〉 <ls>PĀDĀRAVINDAŚ. 27</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "हंसक",
+            "eid": "27385",
+            "pagenum": 375,
+            "content": "<i>haṃsaka</i>¦ 2. Fußring <ls>Pādāravindaś.</ls> 27. — [<ls>S</ls> I, 399, 1; nach dem Ko. *m.] {part=,seq=27749,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "हंसक",
+            "eid": "46455",
+            "pagenum": 826,
+            "content": "हंसक¦ m. (-कः) 1. An ornament for the feet, described as being made like a goose's foot. 2. The flamingo. E. कन् added to the last."
+        }
+    ],
+    "STC": [
+        {
+            "word": "हंसक",
+            "eid": "24325",
+            "pagenum": 883,
+            "content": "<b>haṃsaka-</b>¦ <ab>m.</ab> oie (=<i>haṃsa-</i>) ; petite oie ; anneau pour chevilles ; <ab>f.</ab> <i>-ikā-</i> = <i>haṃsī-.</i>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "हंसक",
+            "eid": "43855",
+            "pagenum": 967,
+            "content": "हंसक¦ m. (-कः) .²1 An ornament for the feet, described as being made like a goose's foot. .²2 The flamingo. .E. कन् added to the last."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "हंसक",
+            "eid": "43664",
+            "pagenum": 891,
+            "content": "हंसक¦ (कः) 1. <i>m.</i> An ornament for the feet; a flamingo."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "हंसक",
+            "eid": "41306",
+            "pagenum": "5-500-b",
+            "content": "हंसकः¦, पुं, (हंस इव कायति मधुरध्वनित्वात् । कैशब्दे + कः ।) पादकटकः । यथा, “पादाङ्कदं तुलाकोटिर्मञ्जीरो नूपूरोऽस्त्रियाम् । हंसकः पादकटकः किङ्किणी क्षुद्रघण्टिका ॥” इत्यमरः । २ । ६ । १०९ ॥ “षट् नूपुरे । केचित्तु पादाङ्गदादिचतुष्कं चरणभूषणे नूपुर इति ख्याते । हंसकादिद्वयं रवशून्ये हंसाकृतिचरणभूषणे इत्याहुः । हंस इव कायति मधुरध्वनित्वात् हंसकः । कै शब्दे डः । हंसाकृतित्वात् हंस इव हंसकः इति वा । इवार्थेविकारसंघ इत्यादिना कः ।” इति भरतः ॥ (हंस इवेति । इवे प्रतिकृताविति कन् । स्वार्थे कन् वा) राजहंसः । इति शब्दचन्द्रिका ॥ (यथा, माघे । ७ । २३ । “सरित इव सविभ्रमप्रवातप्रणदितहंसकभूषणा विरेजुः ॥” तालप्रभेदः । यथा, “लघुर्गुरुर्लघुर्यत्र स तालो हंसकः स्मृतः ॥” इति सङ्गीतदामोदरः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "हंसक",
+            "eid": "47718",
+            "pagenum": "5395,b",
+            "content": "हंसक¦ पु० हंस इव कायति कै--क । १ पादकटके नूपूरादौ अमरः । संज्ञायां कन् । २ राजहंसे शब्दच० । स्वार्थे क । ३ हंसशब्दार्थे “लघुर्गुरुर्लघुर्यत्र स तालो हंसकः स्मृतः” संगातदा० उक्ते ४ तालभेदे ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "हंसक",
+            "content": "हंसकः पुं. -  'हंस + कन्, हंस + कै + क वा' 'कारंडव, मराल '"
+        },
+        {
+            "word": "हंसक",
+            "content": "हंसकः पुं. - 'पैरों का आभूषण, नूपुर, पायजेब'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "हंसक",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಕಾಲುತೊಡಿಗೆ ಯನೂಪುರಯಕಾಲಿನ ಗೊಲಸು",
+            "निष्पत्तिः": "कै (शब्दे) 'कः' (३-२-३)",
+            "व्युत्पत्तिः": "हंस इव कायति",
+            "content": ""
+        },
+        {
+            "word": "हंसक",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಹಂಸಪಕ್ಷಿ",
+            "निष्पत्तिः": "स्वार्थे 'कः'",
+            "व्युत्पत्तिः": "हंस एव",
+            "प्रयोगाः": "'सरित इव सविभ्रमप्रयातप्रणदितहंसकभूषणा विरेजुः'",
+            "उल्लेखाः": "माघ० ७-२३",
+            "content": ""
+        },
+        {
+            "word": "हंसक",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಒಂದು ತಾಳದ ಭೇದ",
+            "प्रयोगाः": "'लघुर्गुरुर्लुघुर्यत्र स तालो हंसकः स्मृतः'",
+            "उल्लेखाः": "सङ्गीतदामोदरः",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "हंसक",
+            "linga": "P",
+            "artha": "मणियुक्तनूपुरः",
+            "synonyms": [
+                "हंसक",
+                "पादकटक"
+            ],
+            "num": "2.6.111",
+            "text": "हंसकः पादकटकः किङ्किणी क्षुद्रघण्टिका । त्वक्फलकृमिरोमाणि वस्त्रयोनिर्दश त्रिषु ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "हंसक",
+            "content": "<body><s>haMsaka pu° haMsa iva kAyati kE—ka . <lb/><b>1</b> pAdakawake nUpUrAdO amaraH . saMjYAyAM kan . <lb/><b>2</b> rAjahaMse Sabdaca° . svArTe ka . <lb/><b>3</b> haMsaSabdArTe <q>laGurgururlaGuryatra sa tAlo haMsakaH smftaH</q> saMgAtadA° ukte <lb/><b>4</b> tAlaBede .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "हंसक",
+            "content": "<H2><h><key1>haMsaka</key1><key2>haMsaka</key2></h><body><s>haMsaka</s>   <lex>m.</lex> a goose, gander, swan, flamingo (also ‘a little or poor goose &amp;c.’), <ls>Kāv.</ls>; <ls>BhP.</ls><info lex=\"m\" /></body><tail><L>260194</L><pc>1286,3</pc></tail></H2>\n <H2A><h><key1>haMsaka</key1><key2>haMsaka</key2></h><body>  (in music) a kind of measure, <ls>Saṃgīt.</ls><info lex=\"inh\" /></body><tail><L>260195</L><pc>1286,3</pc></tail></H2A>\n <H2A><h><key1>haMsaka</key1><key2>haMsaka</key2></h><body>  <ab>N.</ab> of a son of <s1 slp1=\"brahma-datta\">Brahma-datta</s1>, <ls>Hariv.</ls><info lex=\"inh\" /></body><tail><L>260196</L><pc>1286,3</pc></tail></H2A>\n <H2B><h><key1>haMsaka</key1><key2>haMsaka</key2></h><body><s>haMsaka</s>   <lex>mn.</lex> an ornament for the feet or ankles (said to be formed like a goose's foot), <ls>Śiś. vii, 23</ls><info lex=\"m:n\" /></body><tail><L>260197</L><pc>1286,3</pc></tail></H2B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "हंसक",
+            "content": "<H1><h><key1>haMsaka</key1><key2>haMsaka</key2></h><body><s>haMsaka</s>  <div n=\"1\">m. (<s>-kaH</s>) </div><div n=\"2\"> 1. An ornament for the feet, described as being made <lb />like a goose's foot. </div><div n=\"2\"> 2. The flamingo.</div><div n=\"E\"> E. <s>kan</s> added to the last.</div></body><tail><L>46455</L><pc>826-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "हंसक",
+            "content": "<span lang=\"sa\">हंसक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕಾಲುತೊಡಿಗೆ ಯನೂಪುರಯಕಾಲಿನ ಗೊಲಸು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>कै (शब्दे) \"कः\" (३-२-३)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>हंस इव कायति<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हंसक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹಂಸಪಕ್ಷಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>स्वार्थे \"कः\"<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>हंस एव<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"सरित इव सविभ्रमप्रयातप्रणदितहंसकभूषणा विरेजुः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० ७-२३<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हंसक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಂದು ತಾಳದ ಭೇದ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"लघुर्गुरुर्लुघुर्यत्र स तालो हंसकः स्मृतः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>सङ्गीतदामोदरः<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

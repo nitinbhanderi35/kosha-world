@@ -1,124 +1,153 @@
-   }
+{
+    "word": "त्रिवर्णक",
+    "BUR": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "8283",
+            "pagenum": 305,
+            "content": "त्रिवर्णक¦ <i>trivarṇaka</i> <ab>n.</ab> <i>(varṇa)</i> les trois épices, <ab>cf.</ab> <i>trikaṭu;</i> || les trois myrobalans. || Ruellia longifolia, <ab>bot.</ab>"
         }
-    }
-    src = typeof src === "string" ? src : staticSrc;
-    let isLazy = !priority && (loading === "lazy" || typeof loading === "undefined");
-    if (!src || src.startsWith("data:") || src.startsWith("blob:")) {
-        // https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs
-        unoptimized = true;
-        isLazy = false;
-    }
-    if (config.unoptimized) {
-        unoptimized = true;
-    }
-    if (isDefaultLoader && src.endsWith(".svg") && !config.dangerouslyAllowSVG) {
-        // Special case to make svg serve as-is to avoid proxying
-        // through the built-in Image Optimization API.
-        unoptimized = true;
-    }
-    if (priority) {
-        fetchPriority = "high";
-    }
-    const qualityInt = getInt(quality);
-    if (process.env.NODE_ENV !== "production") {
-        if (config.output === "export" && isDefaultLoader && !unoptimized) {
-            throw new Error("Image Optimization using the default loader is not compatible with `{ output: 'export' }`.\n  Possible solutions:\n    - Remove `{ output: 'export' }` and run \"next start\" to run server mode including the Image Optimization API.\n    - Configure `{ images: { unoptimized: true } }` in `next.config.js` to disable the Image Optimization API.\n  Read more: https://nextjs.org/docs/messages/export-image-api");
+    ],
+    "LRV": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "16175",
+            "pagenum": 318,
+            "content": "tri-varRaka¦ <i>n.</i> the first three of the four castes of the Hindus (collectively)."
         }
-        if (!src) {
-            // React doesn't show the stack trace and there's
-            // no `src` to help identify which image, so we
-            // instead console.error(ref) during mount.
-            unoptimized = true;
-        } else {
-            if (fill) {
-                if (width) {
-                    throw new Error('Image with src "' + src + '" has both "width" and "fill" properties. Only one should be used.');
-                }
-                if (height) {
-                    throw new Error('Image with src "' + src + '" has both "height" and "fill" properties. Only one should be used.');
-                }
-                if ((style == null ? void 0 : style.position) && style.position !== "absolute") {
-                    throw new Error('Image with src "' + src + '" has both "fill" and "style.position" properties. Images with "fill" always use position absolute - it cannot be modified.');
-                }
-                if ((style == null ? void 0 : style.width) && style.width !== "100%") {
-                    throw new Error('Image with src "' + src + '" has both "fill" and "style.width" properties. Images with "fill" always use width 100% - it cannot be modified.');
-                }
-                if ((style == null ? void 0 : style.height) && style.height !== "100%") {
-                    throw new Error('Image with src "' + src + '" has both "fill" and "style.height" properties. Images with "fill" always use height 100% - it cannot be modified.');
-                }
-            } else {
-                if (typeof widthInt === "undefined") {
-                    throw new Error('Image with src "' + src + '" is missing required "width" property.');
-                } else if (isNaN(widthInt)) {
-                    throw new Error('Image with src "' + src + '" has invalid "width" property. Expected a numeric value in pixels but received "' + width + '".');
-                }
-                if (typeof heightInt === "undefined") {
-                    throw new Error('Image with src "' + src + '" is missing required "height" property.');
-                } else if (isNaN(heightInt)) {
-                    throw new Error('Image with src "' + src + '" has invalid "height" property. Expected a numeric value in pixels but received "' + height + '".');
-                }
-            }
+    ],
+    "MW": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "88224",
+            "pagenum": "460,2",
+            "content": "त्रि—वर्णक ¦ <lex>mn.</lex> = -कट, <ls>L.</ls><info lex='m:n'/>"
+        },
+        {
+            "word": "त्रिवर्णक",
+            "eid": "88225",
+            "pagenum": "460,2",
+            "content": "त्रि—वर्णक ¦ <lex>n.</lex> = -कटु, <ls>Suśr. i, 44</ls><info lex='n'/>"
+        },
+        {
+            "word": "त्रिवर्णक",
+            "eid": "88226",
+            "pagenum": "460,2",
+            "content": "¦ the 3 <bio>Myrobalans</bio> (-फला), <ls>L.</ls><info lex='inh'/>"
         }
-        if (!VALID_LOADING_VALUES.includes(loading)) {
-            throw new Error('Image with src "' + src + '" has invalid "loading" property. Provided "' + loading + '" should be one of ' + VALID_LOADING_VALUES.map(String).join(",") + ".");
+    ],
+    "PW": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "47757",
+            "pagenum": 3,
+            "content": "त्रिवर्णक¦ <dvsn n='1'>— 1〉 *<lex>m.</lex> <lex>n.</lex> <i><bot>Asteracantha longifolia</bot></i>. <dvsn n='1'>— 2〉 <lex>n.</lex> <dvsn n='2'>— a〉 *<i>die drei Myrobalaneen</i> (त्रिफला). <dvsn n='2'>— b〉 <i>die drei scharfen Stoffe</i> (त्रिकटु) <ls>SUŚR. 1,161,5</ls>."
         }
-        if (priority && loading === "lazy") {
-            throw new Error('Image with src "' + src + '" has both "priority" and "loading=\'lazy\'" properties. Only one should be used.');
+    ],
+    "PWG": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "31123",
+            "pagenum": 3,
+            "content": "त्रिवर्णक¦ (wie eben) <dvsn n='1'> 1) <i>eine best. Pflanze</i>, = गोक्षुरक, <lex>m.</lex> <ls>H. an. 4, 14.</ls> n. <ls>MED. k. 192.</ls> <dvsn n='1'>— 2) <lex>n.</lex> <i>die drei Myrobalanen</i> (s. त्रिफला) <ls>H. an.</ls> <ls>MED.</ls> viell. <ls>SUŚR. 1, 161, 5.</ls> <dvsn n='1'>— 3) <lex>n.</lex> <i>die drei scharfen Stoffe</i> (s. त्रिकटु) <ls>H. an.</ls> <ls>MED.</ls>"
         }
-        if (placeholder !== "empty" && placeholder !== "blur" && !placeholder.startsWith("data:image/")) {
-            throw new Error('Image with src "' + src + '" has invalid "placeholder" property "' + placeholder + '".');
+    ],
+    "SHS": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "18131",
+            "pagenum": 325,
+            "content": "त्रिवर्णक¦ n. (-कं) 1. The three myrobalans. 2. The three spices. 3. A plant, (Ruellia longifolia:) see गीक्षुरक. E. त्रि three, वर्ण a class, and कन् added."
         }
-        if (placeholder !== "empty") {
-            if (widthInt && heightInt && widthInt * heightInt < 1600) {
-                (0, _warnonce.warnOnce)('Image with src "' + src + '" is smaller than 40x40. Consider removing the "placeholder" property to improve performance.');
-            }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "18148",
+            "pagenum": 391,
+            "content": "त्रिवर्णक¦ n. (-कं) .²1 The three myrobalans. .²2 The three spices. .²3 A plant, (<bot>Ruellia longifolia</bot>:) see गोक्षुरक. .E. त्रि three, वर्ण a class, and कन् added."
         }
-        if (placeholder === "blur" && !blurDataURL) {
-            const VALID_BLUR_EXT = [
-                "jpeg",
-                "png",
-                "webp",
-                "avif"
-            ] // should match next-image-loader
-            ;
-            throw new Error('Image with src "' + src + '" has "placeholder=\'blur\'" property but is missing the "blurDataURL" property.\n        Possible solutions:\n          - Add a "blurDataURL" property, the contents should be a small Data URL to represent the image\n          - Change the "src" property to a static import with one of the supported file types: ' + VALID_BLUR_EXT.join(",") + ' (animated images not supported)\n          - Remove the "placeholder" property, effectively no blur effect\n        Read more: https://nextjs.org/docs/messages/placeholder-blur-data-url');
+    ],
+    "YAT": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "17624",
+            "pagenum": 346,
+            "content": "त्रि-वर्णक¦ (कं) 1. <i>n.</i> The three myrobalans; three spices."
         }
-        if ("ref" in rest) {
-            (0, _warnonce.warnOnce)('Image with src "' + src + '" is using unsupported "ref" property. Consider using the "onLoad" property instead.');
+    ],
+    "SKD": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "15616",
+            "pagenum": "2-662-a",
+            "content": "त्रिवर्णकं¦, क्ली, (त्रयो वर्णाः सन्त्यवयवादौ यस्य । कप् ।) गोक्षुरकः । त्रिफला । (यथा, सुश्रुते । १ । ४४ । “त्रिवर्णकत्र्यूषणयुक्तमेतद् गुडेन लिह्यादनवेन चूर्णम् ॥”) त्रिकटु । इति मेदिनी । के, १९२ ॥ (ब्राह्म णादिवर्णत्रये, श्यामरक्तपीतात्मके वर्णत्रये च ॥)"
         }
-        if (!unoptimized && !isDefaultLoader) {
-            const urlStr = loader({
-                config,
-                src,
-                width: widthInt || 400,
-                quality: qualityInt || 75
-            });
-            let url;
-            try {
-                url = new URL(urlStr);
-            } catch (err) {}
-            if (urlStr === src || url && url.pathname === src && !url.search) {
-                (0, _warnonce.warnOnce)('Image with src "' + src + '" has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.' + "\nRead more: https://nextjs.org/docs/messages/next-image-missing-loader-width");
-            }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिवर्णक",
+            "eid": "23780",
+            "pagenum": "3379,a",
+            "content": "त्रिवर्णक¦ न० त्रयो वर्णाः पुष्पेष्वस्य कप्० । १ गोक्षुरे । २ त्रिफलायां, ३ त्रिकटौ । समा० द्वि० पात्रा० स्वार्थे कन् । ४ ब्राह्मणक्षत्त्रियवैश्यरूपे द्विजातिवर्णत्रये न० मेदि० । ५ श्यामरक्तपीतात्मके वर्णत्रये च ।"
         }
-        if (onLoadingComplete) {
-            (0, _warnonce.warnOnce)('Image with src "' + src + '" is using deprecated "onLoadingComplete" property. Please use the "onLoad" property instead.');
+    ],
+    "APHI": [
+        {
+            "word": "त्रिवर्णक",
+            "content": "त्रिवर्णकम् नपुं. त्रि-वर्णकम्  - पहले तीन वर्णो का समाहार"
         }
-        for (const [legacyKey, legacyValue] of Object.entries({
-            layout,
-            objectFit,
-            objectPosition,
-            lazyBoundary,
-            lazyRoot
-        })){
-            if (legacyValue) {
-                (0, _warnonce.warnOnce)('Image with src "' + src + '" has legacy prop "' + legacyKey + '". Did you forget to run the codemod?' + "\nRead more: https://nextjs.org/docs/messages/next-image-upgrade-to-13");
-            }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिवर्णक",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ತ್ರಿಫಲ \\/ನೆಲ್ಲಿಕಾಯಿ ಅಳಲೆಕಾಯಿ ಮತ್ತು ತಾರೆಕಾಯಿ",
+            "content": ""
+        },
+        {
+            "word": "त्रिवर्णक",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ತ್ರಿಕಟು \\/ಶುಂಠಿ ಹಿಪ್ಪಲಿ ಮತ್ತು ಮೆಣಸು ಈ ಮೂರರ ಗುಂಪು",
+            "content": ""
+        },
+        {
+            "word": "त्रिवर्णक",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ನೆಗ್ಗಿಲುಗಿಡ",
+            "content": ""
+        },
+        {
+            "word": "त्रिवर्णक",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಬ್ರಾಹ್ಮಣ ಕ್ಷತ್ರಿಯ ಮತ್ತು ವೈಶ್ಯರೆಂಬ ದ್ವಿಜಾತಿತ್ರಯ",
+            "विस्तारः": "'त्रिवर्णकं गोक्षुरके त्रिफलायां कटुत्रिके'मेदि० ।",
+            "content": ""
+        },
+        {
+            "word": "त्रिवर्णक",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಕಸ್ತೂರಿ ಗೋರೋಚನ ಮತ್ತು ಕುಂಕುಮಕೇಸರಿ",
+            "विस्तारः": "'त्रिफलायां त्रिकटुके त्रिगन्धे च त्रिवर्णकम्'नानार्थर० ।",
+            "content": ""
         }
-        if (typeof window !== "undefined" && !perfObserver && window.PerformanceObserver) {
-            perfObserver = new PerformanceObserver((entryList)=>{
-                for (const entry of entryList.getEntries()){
-                    var _entry_element;
-                    // @ts-ignore - missing "LargestContentfulPaint" class with "element" prop
-                    const imgSrc = (entry == null ? void 0 : (_entry_element = entry.element) == null ? void 0 : _entry_element.src) || "";
-                    const lcpImage = allImgs.get(img
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिवर्णक",
+            "content": "<body><s>trivarRaka na° trayo varRAH puzpezvasya kap° . <lb/><b>1</b> gokzure . <lb/><b>2</b> tri­PalAyAM, <lb/><b>3</b> trikawO . samA° dvi° pAtrA° svArTe kan . <lb/><b>4</b> brAhmaRakzattriyavESyarUpe dvijAtivarRatraye na° medi° . <lb/><b>5</b> SyAmaraktapItAtmake varRatraye ca .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिवर्णक",
+            "content": "<H1><h><key1>trivarRaka</key1><key2>trivarRaka</key2></h><body><s>trivarRaka</s>  <div n=\"1\">n. (<s>-kaM</s>) </div><div n=\"2\"> 1. The three myrobalans. </div><div n=\"2\"> 2. The three spices. </div><div n=\"2\"> 3. A <lb />plant, (Ruellia longifolia:) see <s>gIkzuraka</s>.</div><div n=\"E\"> E. <s>tri</s> three, <s>varRa</s> a class, and <lb /><s>kan</s> added.</div></body><tail><L>18131</L><pc>325-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिवर्णक",
+            "content": "<span lang=\"sa\">त्रिवर्णक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತ್ರಿಫಲ /ನೆಲ್ಲಿಕಾಯಿ ಅಳಲೆಕಾಯಿ ಮತ್ತು ತಾರೆಕಾಯಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिवर्णक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತ್ರಿಕಟು /ಶುಂಠಿ ಹಿಪ್ಪಲಿ ಮತ್ತು ಮೆಣಸು ಈ ಮೂರರ ಗುಂಪು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिवर्णक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನೆಗ್ಗಿಲುಗಿಡ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिवर्णक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬ್ರಾಹ್ಮಣ ಕ್ಷತ್ರಿಯ ಮತ್ತು ವೈಶ್ಯರೆಂಬ ದ್ವಿಜಾತಿತ್ರಯ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"त्रिवर्णकं गोक्षुरके त्रिफलायां कटुत्रिके\" - मेदि० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिवर्णक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕಸ್ತೂರಿ ಗೋರೋಚನ ಮತ್ತು ಕುಂಕುಮಕೇಸರಿ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"त्रिफलायां त्रिकटुके त्रिगन्धे च त्रिवर्णकम्\" - नानार्थर० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

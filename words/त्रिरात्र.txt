@@ -1,6 +1,206 @@
-sult","Proportional to":"Proportional to",Purple:"Purple","Question exclamation mark":"Question exclamation mark",Red:"Red","Red pen":"Red pen",Redo:"Redo","Registered sign":"Registered sign","Remove color":"Remove color","Remove Format":"Remove Format","Remove highlight":"Remove highlight",Replace:"Replace","Replace all":"Replace all","Replace with…":"Replace with…","Restore default":"Restore default","Reversed order":"Reversed order","Reversed paragraph sign":"Reversed paragraph sign","Revert autoformatting action":"Revert autoformatting action","Rich Text Editor":"Rich Text Editor",Ridge:"Ridge","Right double quotation mark":"Right double quotation mark","Right single quotation mark":"Right single quotation mark","Right-pointing double angle quotation mark":"Right-pointing double angle quotation mark","rightwards arrow to bar":"rightwards arrow to bar","rightwards dashed arrow":"rightwards dashed arrow","rightwards double arrow":"rightwards double arrow","rightwards simple arrow":"rightwards simple arrow",Row:"Row","Ruble sign":"Ruble sign","Rupee sign":"Rupee sign",Save:"Save","Saving changes":"Saving changes","Section sign":"Section sign","Select all":"Select all","Select column":"Select column","Select row":"Select row","Show blocks":"Show blocks","Show more items":"Show more items","Single left-pointing angle quotation mark":"Single left-pointing angle quotation mark","Single low-9 quotation mark":"Single low-9 quotation mark","Single right-pointing angle quotation mark":"Single right-pointing angle quotation mark",Small:"Small",Solid:"Solid","soon with rightwards arrow above":"soon with rightwards arrow above","Special characters":"Special characters","Spesmilo sign":"Spesmilo sign","Split cell horizontally":"Split cell horizontally","Split cell vertically":"Split cell vertically",Square:"Square","Square root":"Square root","Start at":"Start at","Start index must be greater than 0.":"Start index must be greater than 0.",Strikethrough:"Strikethrough","Strikethrough text":"Strikethrough text",Style:"Style",Subscript:"Subscript",Superscript:"Superscript",Table:"Table","Table alignment toolbar":"Table alignment toolbar","Table cell text alignment":"Table cell text alignment","Table properties":"Table properties","Table toolbar":"Table toolbar","Tenge sign":"Tenge sign",Text:"Text","Text highlight toolbar":"Text highlight toolbar","Text to find must not be empty.":"Text to find must not be empty.",'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".':'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".','The value is invalid. Try "10px" or "2em" or simply "2".':'The value is invalid. Try "10px" or "2em" or simply "2".',"There exists":"There exists","These keyboard shortcuts allow for quick access to content editing features.":"These keyboard shortcuts allow for quick access to content editing features.","This link has no URL":"This link has no URL","Tilde operator":"Tilde operator",Tiny:"Tiny","Tip: Find some text first in order to replace it.":"Tip: Find some text first in order to replace it.","To-do List":"To-do List","Toggle caption off":"Toggle caption off","Toggle caption on":"Toggle caption on","Toggle the circle list style":"Toggle the circle list style","Toggle the decimal list style":"Toggle the decimal list style","Toggle the decimal with leading zero list style":"Toggle the decimal with leading zero list style","Toggle the disc list style":"Toggle the disc list style","Toggle the lower–latin list style":"Toggle the lower–latin list style","Toggle the lower–roman list style":"Toggle the lower–roman list style","Toggle the square list style":"Toggle the square list style","Toggle the upper–latin list style":"Toggle the upper–latin list style","Toggle the upper–roman list style":"Toggle the upper–roman list style","top with upwards arrow above":"top with upwards arrow above","Trade mark sign":"Trade mark sign","Tugrik sign":"Tugrik sign","Turkish lira sign":"Turkish lira sign",Turquoise:"Turquoise","Two dot leader":"Two dot leader","Type or paste your content here.":"Type or paste your content here.","Type your title":"Type your title",Underline:"Underline","Underline text":"Underline text",Undo:"Undo",Union:"Union",Unlink:"Unlink","up down arrow with base":"up down arrow with base","Upper-latin":"Upper-latin","Upper-roman":"Upper-roman","upwards arrow to bar":"upwards arrow to bar","upwards dashed arrow":"upwards dashed arrow","upwards double arrow":"upwards double arrow","upwards simple arrow":"upwards simple arrow","Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface.":"Use the following keystrokes for more efficient navigation in the CKEditor 5 user interface.","User interface and content navigation keystrokes":"User interface and content navigation keystrokes","Vertical text alignment toolbar":"Vertical text alignment toolbar","Vulgar fraction one half":"Vulgar fraction one half","Vulgar fraction one quarter":"Vulgar fraction one quarter","Vulgar fraction three quarters":"Vulgar fraction three quarters",White:"White","Whole words only":"Whole words only","Widget toolbar":"Widget toolbar",Width:"Width","Won sign":"Won sign",Yellow:"Yellow","Yellow marker":"Yellow marker","Yen sign":"Yen sign"})}(window.CKEDITOR_TRANSLATIONS||(window.CKEDITOR_TRANSLATIONS={})),
-/*!
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md.
- */
-function(t,e){"object"==typeof exports&&"object"==typeof module?module.exports=e():"function"==typeof define&&define.amd?define([],e):"object"==typeof exports?exports.ClassicEditor=e():t.ClassicEditor=e()}(self,(()=>(()=>{var t,e,n={5659:(t,e,n)=>{const o=n(8156),i={};for(const t of Object.keys(o))i[o[t]]=t;const r={rgb:{channels:3,labels:"rgb"},hsl:{channels:3,labels:"hsl"},hsv:{channels:3,labels:"hsv"},hwb:{channels:3,labels:"hwb"},cmyk:{channels:4,labels:"cmyk"},xyz:{channels:3,labels:"xyz"},lab:{channels:3,labels:"lab"},lch:{channels:3,labels:"lch"},hex:{channels:1,labels:["hex"]},keyword:{channels:1,labels:["keyword"]},ansi16:{channels:1,labels:["ansi16"]},ansi256:{channels:1,labels:["ansi256"]},hcg:{channels:3,labels:["h","c","g"]},apple:{channels:3,labels:["r16","g16","b16"]},gray:{channels:1,labels:["gray"]}};t.exports=r;for(const t of Object.keys(r)){if(!("channels"in r[t]))throw new Error("missing channels property: "+t);if(!("labels"in r[t]))throw new Error("missing channel labels property: "+t);if(r[t].labels.length!==r[t].channels)throw new Error("channel and label counts mismatch: "+t);const{channels:e,labels:n}=r[t];delete r[t].channels,delete r[t].labels,Object.defineProperty(r[t],"channels",{value:e}),Object.defineProperty(r[t],"labels",{value:n})}r.rgb.hsl=function(t){const e=t[0]/255,n=t[1]/255,o=t[2]/255,i=Math.min(e,n,o),r=Math.max(e,n,o),s=r-i;let a,c;r===i?a=0:e===r?a=(n-o)/s:n===r?a=2+(o-e)/s:o===r&&(a=4+(e-n)/s),a=Math.min(60*a,360),a<0&&(a+=360);const l=(i+r)/2;return c=r===i?0:l<=.5?s/(r+i):s/(2-r-i),[a,100*c,100*l]},r.rgb.hsv=function(t){let e,n,o,i,r;const s=t[0]/255,a=t[1]/255,c=t[2]/255,l=Math.max(s,a,c),d=l-Math.min(s,a,c),h=function(t){return(l-t)/6/d+.5};return 0===d?(i=0,r=0):(r=d/l,e=h(s),n=h(a),o=h(c),s===l?i=o-n:a===l?i=1/3+e-o:c===l&&(i=2/3+n-e),i<0?i+=1:i>1&&(i-=1)),[360*i,100*r,100*l]},r.rgb.hwb=function(t){const e=t[0],n=t[1];let o=t[2];const i=r.rgb.hsl(t)[0],s=1/255*Math.min(e,Math.min(n,o));return o=1-1/255*Math.max(e,Math.max(n,o)),[i,100*s,100*o]},r.rgb.cmyk=function(t){const e=t[0]/255,n=t[1]/255,o=t[2]/255,i=Math.min(1-e,1-n,1-o);return[100*((1-e-i)/(1-i)||0),100*((1-n-i)/(1-i)||0),100*((1-o-i)/(1-i)||0),100*i]},r.rgb.keyword=function(t){const e=i[t];if(e)return e;let n,r=1/0;for(const e of Object.keys(o)){const i=o[e],c=(a=i,((s=t)[0]-a[0])**2+(s[1]-a[1])**2+(s[2]-a[2])**2);c<r&&(r=c,n=e)}var s,a;return n},r.keyword.rgb=function(t){return o[t]},r.rgb.xyz=function(t){let e=t[0]/255,n=t[1]/255,o=t[2]/255;e=e>.04045?((e+.055)/1.055)**2.4:e/12.92,n=n>.04045?((n+.055)/1.055)**2.4:n/12.92,o=o>.04045?((o+.055)/1.055)**2.4:o/12.92;return[100*(.4124*e+.3576*n+.1805*o),100*(.2126*e+.7152*n+.0722*o),100*(.0193*e+.1192*n+.9505*o)]},r.rgb.lab=function(t){const e=r.rgb.xyz(t);let n=e[0],o=e[1],i=e[2];n/=95.047,o/=100,i/=108.883,n=n>.008856?n**(1/3):7.787*n+16/116,o=o>.008856?o**(1/3):7.787*o+16/116,i=i>.008856?i**(1/3):7.787*i+16/116;return[116*o-16,500*(n-o),200*(o-i)]},r.hsl.rgb=function(t){const e=t[0]/360,n=t[1]/100,o=t[2]/100;let i,r,s;if(0===n)return s=255*o,[s,s,s];i=o<.5?o*(1+n):o+n-o*n;const a=2*o-i,c=[0,0,0];for(let t=0;t<3;t++)r=e+1/3*-(t-1),r<0&&r++,r>1&&r--,s=6*r<1?a+6*(i-a)*r:2*r<1?i:3*r<2?a+(i-a)*(2/3-r)*6:a,c[t]=255*s;return c},r.hsl.hsv=function(t){const e=t[0];let n=t[1]/100,o=t[2]/100,i=n;const r=Math.max(o,.01);o*=2,n*=o<=1?o:2-o,i*=r<=1?r:2-r;return[e,100*(0===o?2*i/(r+i):2*n/(o+n)),100*((o+n)/2)]},r.hsv.rgb=function(t){const e=t[0]/60,n=t[1]/100;let o=t[2]/100;const i=Math.floor(e)%6,r=e-Math.floor(e),s=255*o*(1-n),a=255*o*(1-n*r),c=255*o*(1-n*(1-r));switch(o*=255,i){case 0:return[o,c,s];case 1:return[a,o,s];case 2:return[s,o,c];case 3:return[s,a,o];case 4:return[c,s,o];case 5:return[o,s,a]}},r.hsv.hsl=function(t){const e=t[0],n=t[1]/100,o=t[2]/100,i=Math.max(o,.01);let r,s;s=(2-n)*o;const a=(2-n)*i;return r=n*i,r/=a<=1?a:2-a,r=r||0,s/=2,[e,100*r,100*s]},r.hwb.rgb=function(t){const e=t[0]/360;let n=t[1]/100,o=t[2]/100;const i=n+o;let r;i>1&&(n/=i,o/=i);const s=Math.floor(6*e),a=1-o;r=6*e-s,1&s&&(r=1-r);const c=n+r*(a-n);let l,d,h;switch(s){default:case 6:case 0:l=a,d=c,h=n;break;case 1:l=c,d=a,h=n;break;case 2:l=n,d=a,h=c;break;case 3:l=n,d=c,h=a;break;case 4:l=c,d=n,h=a;break;case 5:l=a,d=n,h=c}return[255*l,255*d,255*h]},r.cmyk.rgb=function(t){const e=t[0]/100,n=t[1]/100,o=t[2]/100,i=t[3]/100;return[255*(1-Math.min(1,e*(1-i)+i)),255*(1-Math.min(1,n*(1-i)+i)),255*(1-Math.min(1,o*(1-i)+i))]},r.xyz.rgb=function(t){const e=t[0]/100,n=t[1]/100,o=t[2]/100;let i,r,s;return i=3.2406*e+-1.5372*n+-.4986*o,r=-.9689*e+1.8758*n+.0415*o,s=.0557*e+-.204*n+1.057*o,i=i>.0031308?1.055*i**(1/2.4)-.055:12.92*i,r=r>.0031308?1.055*r**(1/2.4)-.055:12.92*r,s=s>.0031308?1.055*s**(1/2.4)-.055:12.92*s,i=Math.min(Math.max(0,i),1),r=Math.min(Math.max(0,r),1),s=Math.min(Math.max(0,s),1),[255*i,255*r,255*s]},r.xyz.lab=function(t){let e=t[0],n=t[1],o=t[2];e/=95.047,n/=100,o/=108.883,e=e>.008856?e**(1/3):7.787*e+16/116,n=n>.008856?n**(1/3):7.787*n+16/116,o=o>.008856?o**(1/3):7.787*o+16/116;return[116*n-16,500*(e-n),200*(n-o)]},r.lab.xyz=function(t){let e,n,o;n=(t[0]+16)/116,e=t[1]/500+n,o=n-t[2]/200;const i=n**3,r=e**3,s=o**3;return n=i>.008856?i:(n-16/116)/7.787,e=r>.008856?r:(e-16/116)/7.787,o=s>.008856?s:(o-16/116)/7.787,e*=95.047,n*=100,o*=108.883,[e,n,o]},r.lab.lch=function(t){const e=t[0],n=t[1],o=t[2];let i;i=360*Math.atan2(o,n)/2/Math.PI,i<0&&(i+=360);return[e,Math.sqrt(n*n+o*o),i]},r.lch.lab=function(t){const e=t[0],n=t[1],o=t[2]/360*2*Math.PI;return[e,n*Math.cos(o),n*Math.sin(o)]},r.rgb.ansi16=function(t,e=null){const[n,o,i]=t;let s=null===e?r.rgb.hsv(t)[2]:e;if(s=Math.round(s/50),0===s)return 30;let a=30+(Math.round(i/255)<<2|Math.round(o/255)<<1|Math.round(n/255));return 2===s&&(a+=60),a},r.hsv.ansi16=function(t){return r.rgb.ansi16(r.hsv.rgb(t),t[2])},r.rgb.ansi256=function(t){const e=t[0],n=t[1],o=t[2];if(e===n&&n===o)return e<8?16:e>248?231:Math.round((e-8)/247*24)+232;return 16+36*Math.round(e/255*5)+6*Math.round(n/255*5)+Math.round(o/255*5)},r.ansi16.rgb=function(t){let e=t%10;if(0===e||7===e)return t>50&&(e+=3.5),e=e/10.5*255,[e,e,e];const n=.5*(1+~~(t>50));return[(1&e)*n*255,(e>>1&1)*n*255,(e>>2&1)*n*255]},r.ansi256.rgb=function(t){if(t>=232){const e=10*(t-232)+8;return[e,e,e]}let e;t-=16;return[Math.floor(t/36)/5*255,Math.floor((e=t%36)/6)/5*255,e%6/5*255]},r.rgb.hex=function(t){const e=(((255&Math.round(t[0]))<<16)+((255&Math.round(t[1]))<<8)+(255&Math.round(t[2]))).toString(16).toUpperCase();return"000000".substring(e.length)+e},r.hex.rgb=function(t){const e=t.toString(16).match(/[a-f0-9]{6}|[a-f0-9]{3}/i);if(!e)return[0,0
+{
+    "word": "त्रिरात्र",
+    "BOP": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "3903",
+            "pagenum": 160,
+            "content": "त्रिरात्र¦ <i>n.</i> (<i>DVIGU</i>, gr. 674., e त्रि et रात्र pro रात्रि, gr. 681.) tres noctes. N. 9. 7. 10."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "8277",
+            "pagenum": 304,
+            "content": "त्रिरात्र¦ <i>trirātra</i> <ab>n.</ab> trois nuits durant."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "12909",
+            "pagenum": 212,
+            "content": "त्रिरात्र/¦ <lex>a.</lex> lasting three days (<ab>lit.</ab> nights); <lex>m.</lex> such a festival; <lex>n.</lex> such a period <ab>i.g.</ab>, <ab>acc.</ab> for three days, <ab>abl.</ab> & <ab>instr.</ab> after three days."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "9062",
+            "pagenum": 161,
+            "content": "त्रिरात्र/¦ drei Tage <i>(eig.</i> Nächte) dauernd. <i>m.</i> eine dreitägige Feier. <i>n.</i> ein Zeitraum <lbinfo n='4'/> von drei Tagen; <i>Acc.</i> drei Tage hindurch; <i>Instr. u. Abl.</i> nach drei Tagen."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "1829",
+            "pagenum": 166,
+            "content": "<b>tri-rātrá,</b>¦ <i><ab>n.</ab></i> space of three nights, trinoctium. <lbinfo n='tri-noctium.'/> [<b>rā́tri,</b> <ls n='wg,1315'>1315b</ls>, <ls n='wg,1312'>1312<sup>3, 4</sup></ls>: <ab>cf.</ab> the <ab>Eng.</ab> usage in <i>sen-night, fort-night.</i>]"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "16166",
+            "pagenum": 318,
+            "content": "tri-rAtra¦ <i>n.</i> a period of three nights."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "88151",
+            "pagenum": "460,1",
+            "content": "त्रि—रात्र/ ¦ <lex>n.</lex> <ab>sg.</ab> 3 (nights or) days, <ls>ŚBr.</ls>; <ls>KātyŚr.</ls>; <ls>Kauś.</ls><info lex='n'/>"
+        },
+        {
+            "word": "त्रिरात्र",
+            "eid": "88152",
+            "pagenum": "460,1",
+            "content": "¦ (<ab>pl.</ab> <ls>MBh. iii, 82, 18</ls>)<info lex='inh'/>"
+        },
+        {
+            "word": "त्रिरात्र",
+            "eid": "88153",
+            "pagenum": "460,1",
+            "content": "त्रि—रात्र/ ¦ <lex>mfn.</lex> lasting (3 nights or) days, <ls>ŚBr. xiii</ls>; <ls>ŚāṅkhŚr.</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिरात्र",
+            "eid": "88154",
+            "pagenum": "460,1",
+            "content": "त्रि—रात्र/ ¦ <lex>m.</lex> a sacrificial performance of 3 days, <ls>TāṇḍyaBr.</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिरात्र",
+            "eid": "88155",
+            "pagenum": "460,1",
+            "content": "¦ <ab>cf.</ab> अश्व-, गर्ग-, बैद-<info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "47709",
+            "pagenum": 3,
+            "content": "<hom>1.</hom> त्रिरात्र/¦ <lex>n.</lex> <ab>Sg.</ab> und <ab>Pl.</ab> (<ls>MBH. 3,82,18</ls>) <i>ein Zeitraum von drei Nächten</i> (Tagen). °त्रम् <i>drei Tage lang,</i> °त्रात् und °त्रेण <i>nach drei Tagen,</i> °त्रैस्त्रिभिः <i>nach neun Tagen</i>. °रात्रावरम् <i>wenigstens drei Tage</i> <ls>GAUT. 23,24</ls>."
+        },
+        {
+            "word": "त्रिरात्र",
+            "eid": "47710",
+            "pagenum": 3,
+            "content": "<hom>2.</hom> त्रिरात्र/¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>drei Tage dauernd</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <i>eine dreitägige Feier</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "31099",
+            "pagenum": 3,
+            "content": "1. त्रिरात्र/¦ (त्रि + रात्रि) <lex>n.</lex> <i>ein Zeitraum von drei Nächten</i> <ab>d. i.</ab> <i>Tagen</i> <ls>ŚAT. BR. 4, 5, 8, 1.</ls> <ls n='ŚAT. BR.'>14, 9, 4, 12.</ls> <ls>KĀTY. ŚR. 25, 11, 16.</ls> <ls>KAUŚ. 139.</ls> °त्रम् adv. <i>drei Tage lang</i> <ls>KĀTY. ŚR. 4, 10, 16. 11, 3. 19, 1, 21.</ls> <ls>ĀŚV. GṚHY. 1, 8.</ls> त्रिरात्रमक्षारलवणाशिनः स्युः <ls n='ĀŚV. GṚHY.'>4, 4.</ls> <ls>M. 4, 119. 5, 76. 80. 81. 11, 132. 166.</ls> <ls>N. 9, 7. 10.</ls> <ls>R. GORR. 1, 170, 1.</ls> त्रिरात्रात् <i>nach drei Tagen</i> <ls>M. 5, 67. 71.</ls> त्रिरात्रेण dass. <ls n='M.'>88. 101.</ls> त्रिरात्रैरेव च त्रिभिः 64."
+        },
+        {
+            "word": "त्रिरात्र",
+            "eid": "31100",
+            "pagenum": 3,
+            "content": "2. त्रिरात्र/¦ (wie eben) <dvsn n='1'> 1) <lex>adj.</lex> <i>drei Tage dauernd</i> <ls>ŚAT. BR. 13, 4, 1, 1.</ls> <ls>ŚĀṄKH. ŚR. 14, 8, 2. 16, 1, 2.</ls> <dvsn n='1'>— 2) <lex>m.</lex> <i>eine dreitägige Feier</i> (vgl. त्र्यह)ः गर्ग° <ls>ŚĀṄKH. ŚR. 16, 22, 2.</ls> अश्व° <ls n='ŚĀṄKH. ŚR.'>3.</ls> <ls>LĀṬY. 2, 12, 6.</ls> वैद° <ls n='LĀṬY.'>2, 4. 7, 8.</ls> <ls>KĀTY. ŚR. 13, 4, 5.</ls> <ls>PAÑCAV. BR. 10, 5. 20, 14.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "18123",
+            "pagenum": 325,
+            "content": "त्रिरात्र¦ n. (-त्रं) Three nights collectively, or the duration of three nights. E. त्रि three, and रात्रि night; compounded with a numeral रात्रि substitutes अ for its final, and becomes neuter. तिसृणां रात्रीणां समाहारः ।"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "18140",
+            "pagenum": 391,
+            "content": "त्रिरात्र¦ n. (-त्रं) Three nights collectively, or the duration of three nights. .E. त्रि three, and रात्रि a night; compounded with a numeral रात्रि substitutes अ for its final, and becomes neuter."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "17616",
+            "pagenum": 346,
+            "content": "त्रि-रात्र¦ (त्रं) 1. <i>n.</i> Three nights collectively or their duration."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "15604",
+            "pagenum": "2-661-b",
+            "content": "त्रिरात्रं¦, क्ली, रात्रित्रयम् । तिसृणां रात्रीणां समाहारः । इति लिङ्गादिसंग्रहटीकायां भरतः ॥ (यथा, मनुः । ४ । ११९ । “उपाकर्म्मणि चोत्सर्गे त्रिरात्रं क्षेपणं स्मृतम् । अष्टकासु त्वहोरात्रमृत्वन्तासु च रात्रिषु ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिरात्र",
+            "eid": "23762",
+            "pagenum": "3378,a",
+            "content": "त्रिरात्र¦ न० त्रिसृणां रात्रीणां समाहारः अच् समा० । “अह्नाहान्ताः क्ष्वेडभेदाः रात्रान्ताः प्रागसंख्यकाः” इत्यमरोक्तेः संख्यापूर्वत्वात् क्लीवता । १ रात्रित्रये २ तदुपलक्षिते दिनत्रये च । “उपाकर्मणि चोत्सर्गे त्रिरात्रं क्षपणं स्मृतम्” “अतिक्रान्ते दशाहे तु त्रिरात्रमशुचिर्भवेत्” मनुः । त्रिभिः रात्रिभिः निर्वृत्तम् ठञ् तस्य लुक् । तद्धितार्थद्विगुत्वात् अच् समा० । ३ दिनत्रयोवाससाध्ये व्रतभेदे न० । “एकरात्रं त्रिरात्रं वा षड्रात्रं वा विधीयते” प्रा० वि० धृतवचनम् । रात्रित्रयसाध्ये ४ गर्गवेदादौ यज्ञभेदे पु० । “सहस्रदक्षिणे त्रिरात्रे” कात्या० श्रौ० १३ । ४ । १५ । गर्गत्रिरात्रशब्दे २५४५ पृ० दृश्यम् ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिरात्र",
+            "content": "त्रिरात्रम् नपुं. त्रि-रात्रम्  - तीन रातों का समय"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिरात्र",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮೂರು ರಾತ್ರಿಗಳು",
+            "निष्पत्तिः": "'अच्' (५-४-८७)",
+            "व्युत्पत्तिः": "तिसृणां रात्रीणां समाहारः",
+            "content": ""
+        },
+        {
+            "word": "त्रिरात्र",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮೂರು ರಾತ್ರಿಗಳಿಂದ ಕೂಡಿದ ಮೂರು ದಿನಗಳು",
+            "प्रयोगाः": "'उपकर्मणि चोत्सर्गे त्रिरात्रं क्षेपणं स्मृतम्'",
+            "उल्लेखाः": "मनु० ४-११९",
+            "content": ""
+        },
+        {
+            "word": "त्रिरात्र",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮೂರು ರಾತ್ರಿಗಳಲ್ಲಿ ಮಾಡಬಹುದಾದ ಒಂದು ವ್ರತ",
+            "प्रयोगाः": "'एकरात्रं त्रिरात्रं वा षड्रात्रं वा विधीयते'",
+            "content": ""
+        },
+        {
+            "word": "त्रिरात्र",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಮೂರು ರಾತ್ರಿಗಳಲ್ಲಿ",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिरात्र",
+            "content": "<body><s>trirAtra na° trisfRAM rAtrIRAM samAhAraH ac samA° . <q>ahnAhAntAH kzveqaBedAH rAtrAntAH prAgasaMKyakAH</q> ityamarokteH saMKyApUrvatvAt klIvatA . <lb/><b>1</b> rAtritraye <lb/><b>2</b> tadupa­lakzite dinatraye ca . <q>upAkarmaRi cotsarge trirAtraM kzapaRaM smftam</q> <q>atikrAnte daSAhe tu trirAtramaSucirBavet</q> manuH . triBiH rAtriBiH nirvfttam WaY tasya luk . tadDi­tArTadvigutvAt ac samA° . <lb/><b>3</b> dinatrayovAsasADye vrataBede na° . <q>ekarAtraM trirAtraM vA zaqrAtraM vA viDIyate</q> prA° vi° Dftavacanam . rAtritrayasADye <lb/><b>4</b> gargavedAdO yajYaBede pu° . <q>sahasradakziRe trirAtre</q> kAtyA° SrO° 13 . 4 . 15 . gargatrirAtraSabde 2545 pf° dfSyam .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिरात्र",
+            "content": "<H1><h><key1>trirAtra</key1><key2>trirAtra</key2></h><body><s>trirAtra</s>  <div n=\"1\">n. (<s>-traM</s>) Three nights collectively, or the duration of three nights. <lb />E. <s>tri</s> three, and <s>rAtri</s> night; compounded with a numeral <s>rAtri</s> sub- <lb />stitutes <s>a</s> for its final, and becomes neuter. <s>tisfRAM rAtrIRAM samAhAraH .</s></div></body><tail><L>18123</L><pc>325-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिरात्र",
+            "content": "<span lang=\"sa\">त्रिरात्र<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ರಾತ್ರಿಗಳು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"अच्\" (५-४-८७)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>तिसृणां रात्रीणां समाहारः<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिरात्र<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ರಾತ್ರಿಗಳಿಂದ ಕೂಡಿದ ಮೂರು ದಿನಗಳು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"उपकर्मणि चोत्सर्गे त्रिरात्रं क्षेपणं स्मृतम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० ४-११९<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिरात्र<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ರಾತ್ರಿಗಳಲ್ಲಿ ಮಾಡಬಹುದಾದ ಒಂದು ವ್ರತ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"एकरात्रं त्रिरात्रं वा षड्रात्रं वा विधीयते\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिरात्र<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ರಾತ್ರಿಗಳಲ್ಲಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

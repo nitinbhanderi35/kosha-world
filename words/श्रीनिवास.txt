@@ -1,489 +1,387 @@
-interopRequireDefault$5(docQnaRole$1);
-	var _docSubtitleRole = _interopRequireDefault$5(docSubtitleRole$1);
-	var _docTipRole = _interopRequireDefault$5(docTipRole$1);
-	var _docTocRole = _interopRequireDefault$5(docTocRole$1);
-	function _interopRequireDefault$5(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-	var ariaDpubRoles = [['doc-abstract', _docAbstractRole.default], ['doc-acknowledgments', _docAcknowledgmentsRole.default], ['doc-afterword', _docAfterwordRole.default], ['doc-appendix', _docAppendixRole.default], ['doc-backlink', _docBacklinkRole.default], ['doc-biblioentry', _docBiblioentryRole.default], ['doc-bibliography', _docBibliographyRole.default], ['doc-biblioref', _docBibliorefRole.default], ['doc-chapter', _docChapterRole.default], ['doc-colophon', _docColophonRole.default], ['doc-conclusion', _docConclusionRole.default], ['doc-cover', _docCoverRole.default], ['doc-credit', _docCreditRole.default], ['doc-credits', _docCreditsRole.default], ['doc-dedication', _docDedicationRole.default], ['doc-endnote', _docEndnoteRole.default], ['doc-endnotes', _docEndnotesRole.default], ['doc-epigraph', _docEpigraphRole.default], ['doc-epilogue', _docEpilogueRole.default], ['doc-errata', _docErrataRole.default], ['doc-example', _docExampleRole.default], ['doc-footnote', _docFootnoteRole.default], ['doc-foreword', _docForewordRole.default], ['doc-glossary', _docGlossaryRole.default], ['doc-glossref', _docGlossrefRole.default], ['doc-index', _docIndexRole.default], ['doc-introduction', _docIntroductionRole.default], ['doc-noteref', _docNoterefRole.default], ['doc-notice', _docNoticeRole.default], ['doc-pagebreak', _docPagebreakRole.default], ['doc-pagelist', _docPagelistRole.default], ['doc-part', _docPartRole.default], ['doc-preface', _docPrefaceRole.default], ['doc-prologue', _docPrologueRole.default], ['doc-pullquote', _docPullquoteRole.default], ['doc-qna', _docQnaRole.default], ['doc-subtitle', _docSubtitleRole.default], ['doc-tip', _docTipRole.default], ['doc-toc', _docTocRole.default]];
-	var _default$7 = ariaDpubRoles;
-	ariaDpubRoles$1.default = _default$7;
-
-	var ariaGraphicsRoles$1 = {};
-
-	var graphicsDocumentRole$1 = {};
-
-	Object.defineProperty(graphicsDocumentRole$1, "__esModule", {
-	  value: true
-	});
-	graphicsDocumentRole$1.default = void 0;
-	var graphicsDocumentRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    module: 'GRAPHICS',
-	    concept: {
-	      name: 'graphics-object'
-	    }
-	  }, {
-	    module: 'ARIA',
-	    concept: {
-	      name: 'img'
-	    }
-	  }, {
-	    module: 'ARIA',
-	    concept: {
-	      name: 'article'
-	    }
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'document']]
-	};
-	var _default$6 = graphicsDocumentRole;
-	graphicsDocumentRole$1.default = _default$6;
-
-	var graphicsObjectRole$1 = {};
-
-	Object.defineProperty(graphicsObjectRole$1, "__esModule", {
-	  value: true
-	});
-	graphicsObjectRole$1.default = void 0;
-	var graphicsObjectRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    module: 'GRAPHICS',
-	    concept: {
-	      name: 'graphics-document'
-	    }
-	  }, {
-	    module: 'ARIA',
-	    concept: {
-	      name: 'group'
-	    }
-	  }, {
-	    module: 'ARIA',
-	    concept: {
-	      name: 'img'
-	    }
-	  }, {
-	    module: 'GRAPHICS',
-	    concept: {
-	      name: 'graphics-symbol'
-	    }
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'group']]
-	};
-	var _default$5 = graphicsObjectRole;
-	graphicsObjectRole$1.default = _default$5;
-
-	var graphicsSymbolRole$1 = {};
-
-	Object.defineProperty(graphicsSymbolRole$1, "__esModule", {
-	  value: true
-	});
-	graphicsSymbolRole$1.default = void 0;
-	var graphicsSymbolRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'img']]
-	};
-	var _default$4 = graphicsSymbolRole;
-	graphicsSymbolRole$1.default = _default$4;
-
-	Object.defineProperty(ariaGraphicsRoles$1, "__esModule", {
-	  value: true
-	});
-	ariaGraphicsRoles$1.default = void 0;
-	var _graphicsDocumentRole = _interopRequireDefault$4(graphicsDocumentRole$1);
-	var _graphicsObjectRole = _interopRequireDefault$4(graphicsObjectRole$1);
-	var _graphicsSymbolRole = _interopRequireDefault$4(graphicsSymbolRole$1);
-	function _interopRequireDefault$4(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-	var ariaGraphicsRoles = [['graphics-document', _graphicsDocumentRole.default], ['graphics-object', _graphicsObjectRole.default], ['graphics-symbol', _graphicsSymbolRole.default]];
-	var _default$3 = ariaGraphicsRoles;
-	ariaGraphicsRoles$1.default = _default$3;
-
-	Object.defineProperty(rolesMap$1, "__esModule", {
-	  value: true
-	});
-	rolesMap$1.default = void 0;
-	var _ariaAbstractRoles = _interopRequireDefault$3(ariaAbstractRoles$1);
-	var _ariaLiteralRoles = _interopRequireDefault$3(ariaLiteralRoles$1);
-	var _ariaDpubRoles = _interopRequireDefault$3(ariaDpubRoles$1);
-	var _ariaGraphicsRoles = _interopRequireDefault$3(ariaGraphicsRoles$1);
-	var _iterationDecorator$2 = _interopRequireDefault$3(iterationDecorator$1);
-	function _interopRequireDefault$3(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-	function _defineProperty(obj, key, value) {
-	  if (key in obj) {
-	    Object.defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-	  return obj;
-	}
-	function _createForOfIteratorHelper$2(o, allowArrayLike) {
-	  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-	  if (!it) {
-	    if (Array.isArray(o) || (it = _unsupportedIterableToArray$2(o)) || allowArrayLike && o && typeof o.length === "number") {
-	      if (it) o = it;
-	      var i = 0;
-	      var F = function F() {};
-	      return {
-	        s: F,
-	        n: function n() {
-	          if (i >= o.length) return {
-	            done: true
-	          };
-	          return {
-	            done: false,
-	            value: o[i++]
-	          };
-	        },
-	        e: function e(_e2) {
-	          throw _e2;
-	        },
-	        f: F
-	      };
-	    }
-	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	  }
-	  var normalCompletion = true,
-	    didErr = false,
-	    err;
-	  return {
-	    s: function s() {
-	      it = it.call(o);
-	    },
-	    n: function n() {
-	      var step = it.next();
-	      normalCompletion = step.done;
-	      return step;
-	    },
-	    e: function e(_e3) {
-	      didErr = true;
-	      err = _e3;
-	    },
-	    f: function f() {
-	      try {
-	        if (!normalCompletion && it.return != null) it.return();
-	      } finally {
-	        if (didErr) throw err;
-	      }
-	    }
-	  };
-	}
-	function _slicedToArray$2(arr, i) {
-	  return _arrayWithHoles$2(arr) || _iterableToArrayLimit$2(arr, i) || _unsupportedIterableToArray$2(arr, i) || _nonIterableRest$2();
-	}
-	function _nonIterableRest$2() {
-	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	}
-	function _unsupportedIterableToArray$2(o, minLen) {
-	  if (!o) return;
-	  if (typeof o === "string") return _arrayLikeToArray$2(o, minLen);
-	  var n = Object.prototype.toString.call(o).slice(8, -1);
-	  if (n === "Object" && o.constructor) n = o.constructor.name;
-	  if (n === "Map" || n === "Set") return Array.from(o);
-	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$2(o, minLen);
-	}
-	function _arrayLikeToArray$2(arr, len) {
-	  if (len == null || len > arr.length) len = arr.length;
-	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-	    arr2[i] = arr[i];
-	  }
-	  return arr2;
-	}
-	function _iterableToArrayLimit$2(arr, i) {
-	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-	  if (_i == null) return;
-	  var _arr = [];
-	  var _n = true;
-	  var _d = false;
-	  var _s, _e;
-	  try {
-	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-	      _arr.push(_s.value);
-	      if (i && _arr.length === i) break;
-	    }
-	  } catch (err) {
-	    _d = true;
-	    _e = err;
-	  } finally {
-	    try {
-	      if (!_n && _i["return"] != null) _i["return"]();
-	    } finally {
-	      if (_d) throw _e;
-	    }
-	  }
-	  return _arr;
-	}
-	function _arrayWithHoles$2(arr) {
-	  if (Array.isArray(arr)) return arr;
-	}
-	var roles$1 = [].concat(_ariaAbstractRoles.default, _ariaLiteralRoles.default, _ariaDpubRoles.default, _ariaGraphicsRoles.default);
-	roles$1.forEach(function (_ref) {
-	  var _ref2 = _slicedToArray$2(_ref, 2),
-	    roleDefinition = _ref2[1];
-	  // Conglomerate the properties
-	  var _iterator = _createForOfIteratorHelper$2(roleDefinition.superClass),
-	    _step;
-	  try {
-	    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-	      var superClassIter = _step.value;
-	      var _iterator2 = _createForOfIteratorHelper$2(superClassIter),
-	        _step2;
-	      try {
-	        var _loop = function _loop() {
-	          var superClassName = _step2.value;
-	          var superClassRoleTuple = roles$1.find(function (_ref3) {
-	            var _ref4 = _slicedToArray$2(_ref3, 1),
-	              name = _ref4[0];
-	            return name === superClassName;
-	          });
-	          if (superClassRoleTuple) {
-	            var superClassDefinition = superClassRoleTuple[1];
-	            for (var _i2 = 0, _Object$keys = Object.keys(superClassDefinition.props); _i2 < _Object$keys.length; _i2++) {
-	              var prop = _Object$keys[_i2];
-	              if (
-	              // $FlowIssue Accessing the hasOwnProperty on the Object prototype is fine.
-	              !Object.prototype.hasOwnProperty.call(roleDefinition.props, prop)) {
-	                Object.assign(roleDefinition.props, _defineProperty({}, prop, superClassDefinition.props[prop]));
-	              }
-	            }
-	          }
-	        };
-	        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-	          _loop();
-	        }
-	      } catch (err) {
-	        _iterator2.e(err);
-	      } finally {
-	        _iterator2.f();
-	      }
-	    }
-	  } catch (err) {
-	    _iterator.e(err);
-	  } finally {
-	    _iterator.f();
-	  }
-	});
-	var rolesMap = {
-	  entries: function entries() {
-	    return roles$1;
-	  },
-	  forEach: function forEach(fn) {
-	    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-	    var _iterator3 = _createForOfIteratorHelper$2(roles$1),
-	      _step3;
-	    try {
-	      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-	        var _step3$value = _slicedToArray$2(_step3.value, 2),
-	          key = _step3$value[0],
-	          values = _step3$value[1];
-	        fn.call(thisArg, values, key, roles$1);
-	      }
-	    } catch (err) {
-	      _iterator3.e(err);
-	    } finally {
-	      _iterator3.f();
-	    }
-	  },
-	  get: function get(key) {
-	    var item = roles$1.find(function (tuple) {
-	      return tuple[0] === key ? true : false;
-	    });
-	    return item && item[1];
-	  },
-	  has: function has(key) {
-	    return !!rolesMap.get(key);
-	  },
-	  keys: function keys() {
-	    return roles$1.map(function (_ref5) {
-	      var _ref6 = _slicedToArray$2(_ref5, 1),
-	        key = _ref6[0];
-	      return key;
-	    });
-	  },
-	  values: function values() {
-	    return roles$1.map(function (_ref7) {
-	      var _ref8 = _slicedToArray$2(_ref7, 2),
-	        values = _ref8[1];
-	      return values;
-	    });
-	  }
-	};
-	var _default$2 = (0, _iterationDecorator$2.default)(rolesMap, rolesMap.entries());
-	rolesMap$1.default = _default$2;
-
-	var elementRoleMap$1 = {};
-
-	var toStr$9 = Object.prototype.toString;
-	var isArguments$3 = function isArguments(value) {
-	  var str = toStr$9.call(value);
-	  var isArgs = str === '[object Arguments]';
-	  if (!isArgs) {
-	    isArgs = str !== '[object Array]' && value !== null && typeof value === 'object' && typeof value.length === 'number' && value.length >= 0 && toStr$9.call(value.callee) === '[object Function]';
-	  }
-	  return isArgs;
-	};
-
-	var implementation$b;
-	var hasRequiredImplementation;
-	function requireImplementation() {
-	  if (hasRequiredImplementation) return implementation$b;
-	  hasRequiredImplementation = 1;
-	  var keysShim;
-	  if (!Object.keys) {
-	    // modified from https://github.com/es-shims/es5-shim
-	    var has = Object.prototype.hasOwnProperty;
-	    var toStr = Object.prototype.toString;
-	    var isArgs = isArguments$3; // eslint-disable-line global-require
-	    var isEnumerable = Object.prototype.propertyIsEnumerable;
-	    var hasDontEnumBug = !isEnumerable.call({
-	      toString: null
-	    }, 'toString');
-	    var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
-	    var dontEnums = ['toString', 'toLocaleString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor'];
-	    var equalsConstructorPrototype = function (o) {
-	      var ctor = o.constructor;
-	      return ctor && ctor.prototype === o;
-	    };
-	    var excludedKeys = {
-	      $applicationCache: true,
-	      $console: true,
-	      $external: true,
-	      $frame: true,
-	      $frameElement: true,
-	      $frames: true,
-	      $innerHeight: true,
-	      $innerWidth: true,
-	      $onmozfullscreenchange: true,
-	      $onmozfullscreenerror: true,
-	      $outerHeight: true,
-	      $outerWidth: true,
-	      $pageXOffset: true,
-	      $pageYOffset: true,
-	      $parent: true,
-	      $scrollLeft: true,
-	      $scrollTop: true,
-	      $scrollX: true,
-	      $scrollY: true,
-	      $self: true,
-	      $webkitIndexedDB: true,
-	      $webkitStorageInfo: true,
-	      $window: true
-	    };
-	    var hasAutomationEqualityBug = function () {
-	      /* global window */
-	      if (typeof window === 'undefined') {
-	        return false;
-	      }
-	      for (var k in window) {
-	        try {
-	          if (!excludedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
-	            try {
-	              equalsConstructorPrototype(window[k]);
-	            } catch (e) {
-	              return true;
-	            }
-	          }
-	        } catch (e) {
-	          return true;
-	        }
-	      }
-	      return false;
-	    }();
-	    var equalsConstructorPrototypeIfNotBuggy = function (o) {
-	      /* global window */
-	      if (typeof window === 'undefined' || !hasAutomationEqualityBug) {
-	        return equalsConstructorPrototype(o);
-	      }
-	      try {
-	        return equalsConstructorPrototype(o);
-	      } catch (e) {
-	        return false;
-	      }
-	    };
-	    keysShim = function keys(object) {
-	      var isObject = object !== null && typeof object === 'object';
-	      var isFunction = toStr.call(object) === '[object Function]';
-	      var isArguments = isArgs(object);
-	      var isString = isObject && toStr.call(object) === '[object String]';
-	      var theKeys = [];
-	      if (!isObject && !isFunction && !isArguments) {
-	        throw new TypeError('Object.keys called on a non-object');
-	      }
-	      var skipProto = hasProtoEnumBug && isFunction;
-	      if (isString && object.length > 0 && !has.call(object, 0)) {
-	        for (var i = 0; i < object.length; ++i) {
-	          theKeys.push(String(i));
-	        }
-	      }
-	      if (isArguments && object.length > 0) {
-	        for (var j = 0; j < object.length; ++j) {
-	          theKeys.push(String(j));
-	        }
-	      } else {
-	        for (var name in object) {
-	          if (!(skipProto && name === 'prototype') && has.call(object, name)) {
-	            theKeys.push(String(name));
-	       
+{
+    "word": "श्रीनिवास",
+    "ACC": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "26039",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Adhikaraṇamīmāṃsā mīm."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26042",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Abhinavavṛttaratnākaraṭippaṇa. <HI1>Alaṃkārakaustubha. <HI1>Kāvyadarpaṇa. <HI1>Chandovṛtti."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26046",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Upādhikhaṇḍanaṭippaṇī, vedānta."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26049",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Kalpadīpikā jy. See Dīpikā. <HI1>Sahamakalpalatā jy."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26051",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Kāvyasārasaṃgraha."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26052",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Kṛṣṇarājagadya. <HI1>Kṛṣṇarājaprabhāvodaya."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26054",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Gāyatrīmāhātmya."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26055",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Gosvāmyaṣṭaka."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26058",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ pupil of Satyanātha: <HI1>Tattvasaṃgraha, vedānta. <HI1>Satyanidhivilāsa, kāvya."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26063",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ pupil of Niyamānanda, guru of Puruṣottamaprasāda (Śrutyantasuradruma): <HI1>Nigada. Hall p. 204. <HI1>Vedabhāṣya. Quoted by Devarāja in Nighaṇṭubhāṣya p. 4. 104. 161. 177. 415. 440."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26065",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1><symbol n='C.'>C.</symbol> on Jayatīrtha's Nyāyasudhā. See Brahmasūtrānuvyākhyāna. <HI1>Prameyamuktāvalī, a <symbol n='C.'>C.</symbol> on Jayatīrtha's Tattvaprakāśikā. <HI1>Bhāgavatatātparyaprakāśa, a <symbol n='C.'>C.</symbol> on Ānandatīrtha's Bhāgavatatātparyanirṇaya. <HI1>Bhāvacandrikā, a <symbol n='C.'>C.</symbol> on Ānandatīrtha's Mahābhāratatātparyanirṇaya. <HI1><symbol n='C.'>C.</symbol> on Jayatīrtha's Māyāvādakhaṇḍanavivaraṇa. <HI1>Vādārthadīpikā, a <symbol n='C.'>C.</symbol> on Jayatīrtha's Viṣṇutattvanirṇayadīpikā. <HI1>He quotes Raghūttama and Vedeśa."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26066",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ of the Kauśika race: <HI1>Nyāsatilaka and <symbol n='C.'>C.</symbol>, bhakti."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26067",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Paribhāṣābhāskaraṭīkā gr."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26069",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Prameyatattvabodha ny."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26074",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Rāgatattvavibodha, music."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26075",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Lakṣmīsvayaṃvara nāṭaka."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26079",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Śatadūṣaṇī, vedānta."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26080",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Śrīnivāsacampū."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26081",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Śleṣacūḍāmaṇi. <HI1>Sāhityasūkṣmasaraṇi."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26082",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Sadācārasaṃgraha."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26083",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Sāradīpikā, vedānta."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26084",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Siddhāntacintāmaṇi."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26085",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Siddhāntaśikṣā and <symbol n='C.'>C.</symbol>."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26090",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Saugandhikavivaraṇavyākhyā."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26093",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ <HI1>Haṭharatnāvalī, yoga."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "26094",
+            "pagenum": 1,
+            "content": "श्रीनिवास¦ son of Anantaya: <HI1>Nyāyasiddhāntamañjarī vaiś."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "38077",
+            "pagenum": 2,
+            "content": "श्रीनिवास¦ guru of Nirmalācārya (Dvaitasiddhi)."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "38078",
+            "pagenum": 2,
+            "content": "श्रीनिवास¦ <HI1>Karaṇaprakāśaṭīkā Prabhā."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "38080",
+            "pagenum": 2,
+            "content": "श्रीनिवास¦ <HI1>Prakāśa on Jayatīrtha's Vādāvalī. <HI1>Stavapañcakamāhātmya."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "38084",
+            "pagenum": 2,
+            "content": "श्रीनिवास¦ son of Śrīniketana: <HI1>Śivārcanacandrikā."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "41400",
+            "pagenum": 2,
+            "content": "श्रीनिवास¦ <HI1>Laghustavarāja."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "47406",
+            "pagenum": 3,
+            "content": "श्रीनिवास¦ <HI1>Aṣṭaślokīṭīkā."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "47407",
+            "pagenum": 3,
+            "content": "श्रीनिवास¦ <HI1>Gosvāmināṃ Guṇaleśavarṇanam."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "47408",
+            "pagenum": 3,
+            "content": "श्रीनिवास¦ <HI1>Drāhyāyaṇagṛhyasūtraṭīkā Subodhinī."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "47410",
+            "pagenum": 3,
+            "content": "श्रीनिवास¦ <HI1>Bhaktiviveka."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "47411",
+            "pagenum": 3,
+            "content": "श्रीनिवास¦ <HI1>Prakāśa on Ānandatīrtha's Bhāgavatatātparyanirṇaya."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "47412",
+            "pagenum": 3,
+            "content": "श्रीनिवास¦ <HI1>Vaibhavaprakāśikā stotra."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "47413",
+            "pagenum": 3,
+            "content": "श्रीनिवास¦ <HI1>Setudarpaṇa, a C. on the Setubandha."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "47415",
+            "pagenum": 3,
+            "content": "श्रीनिवास¦ son of Timmaya: <HI1>Abhijñānaśākuntalaṭīkā."
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "47416",
+            "pagenum": 3,
+            "content": "श्रीनिवास¦ son of Rāmānuja: <HI1>Lakṣmīsvayaṃvara nāṭaka."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "33374",
+            "pagenum": 561,
+            "content": "श्री°निवास¦ <lex>m.</lex> the same (receptacle or abode of Śrī)."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "25211",
+            "pagenum": 455,
+            "content": "श्रीनिवास¦ <i>u.</i> °निधि <i>m. dass.</i> (Wohlnstätte <i>o.</i> Behälter der Śrī)."
+        }
+    ],
+    "INM": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "2717",
+            "pagenum": 215,
+            "content": "<b>Śrīnivāsa</b>¦ = Viṣṇu (1000 names)."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "38572.1",
+            "pagenum": 732,
+            "content": "SrI-nivAsa¦ <i>m.</i> an epithet of Vishṇu."
+        }
+    ],
+    "MW": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "223056",
+            "pagenum": "1099,2",
+            "content": "श्री—निवास ¦ <lex>m.</lex> abode of <s1 slp1='SrI'>Śrī</s1>, <ls>Kāv.</ls><info lex='m'/>"
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "223057",
+            "pagenum": "1099,2",
+            "content": "¦ <ab>N.</ab> of <s1 slp1='vizRu'>Viṣṇu</s1>, <ls>Chandom.</ls>; <ls>BhP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "223058",
+            "pagenum": "1099,2",
+            "content": "¦ <ab>N.</ab> of various authors and other men (also with आचार्य, कवि, दीक्षित, भट्ट &c.), <ls>Cat.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "श्रीनिवास",
+            "eid": "223060",
+            "pagenum": "1099,2",
+            "content": "श्री—निवास ¦ <lex>m.</lex> or <lex>n.</lex> (?) the resin of <bot>Pinus Longifolia</bot>, <ls>L.</ls> (also °सक, <ls>Car.</ls>)<info lex='m:n'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "115144",
+            "pagenum": 6,
+            "content": "श्रीनिवास¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <dvsn n='2'>— a〉 <i>die Wohnstätte der</i> <is>Śrī</is>. <dvsn n='2'>— b〉 <ab>Bein.</ab> <is>Viṣṇu-Kṛṣṇa</is>ʼs. <dvsn n='2'>— c〉 <ab>N. pr.</ab> verschiedener Männer. Auch °दास (<ls>BURNELL, T.</ls>), °दीक्षित (<ls>ebend.</ls>), °भट्ट, °वासाचार्य (<ls>BURNELL, T.</ls>) und °वासातिरात्रयाजिन् (<ls>ebend.</ls>). <dvsn n='2'>— d〉 *<i>das Harz der <bot>Pinus longifolia</bot></i>. <dvsn n='1'>— 2〉 <lex>f.</lex> आ <ab>Bein.</ab> der <is>Rādhā</is>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "101677",
+            "pagenum": 7,
+            "content": "श्रीनिवास¦ <dvsn n='1'> 1) <lex>m.</lex> <dvsn n='2'> a) <i>die Wohnstätte der</i> <is>Śrī</is>: गोमयं श्रीनिवासः <ls>Spr. (II) 2871.</ls> <dvsn n='2'>— b) <i>die Wohnstätte der Schönheit</i>, Bez. <is>Viṣṇu's</is> (<is>Kṛṣṇa's</is>) <ls>TRIK. 1,1,29.</ls> <ls>JAṬĀDH.</ls> in <ls>Verz. d. Oxf. H. 190,b,14.</ls> <ls>CHANDOM. 122.</ls> <ls>BHĀG. P. 1,16,31. 3,7,28. 4,7,36. 6,18,64. 19,14. 9,4,60. 10,80,26.</ls> <ls>PAÑCAR. 1,1,8. 3,83.</ls> <dvsn n='2'>— c) N. pr. verschiedener Männer <ls>Verz. d. B. H. No. 941.</ls> <ls>Verz. d. Oxf. H. 336,b,No. 792.</ls> <ls>WILSON, Sel. Works 1, 159.</ls> <ls>WEBER, PRATIJÑĀS. 73.</ls> <ls>HALL 112. 114. 118. 204.</ls> °भट्ट <ls n='HALL'>202.</ls> <dvsn n='2'>— d) = 2. श्रीवास <ls>AUSH. 106.</ls> <dvsn n='1'>— 2) <lex>f.</lex> आ ein N. der <is>Rādhā</is> <ls>PAÑCAR. 5, 5, 58.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "41089",
+            "pagenum": 734,
+            "content": "श्रीनिवास¦ m. (-सः) VISHṆU. E. श्री the goddess, and निवास abode."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "39195",
+            "pagenum": 863,
+            "content": "श्रीनिवास¦ m. (-सः) VIṢṆU. .E. श्री the goddess, and निवास abode."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "38854",
+            "pagenum": 783,
+            "content": "श्री-निवास¦ (सः) 1. <i>m. Idem.</i>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "श्रीनिवास",
+            "eid": "36607",
+            "pagenum": "5-166-c",
+            "content": "श्रीनिवासः¦, पुं, (श्रियो निवास आश्रयस्थानम् । विष्णुः । इति त्रिकाण्डशेषः ॥"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "श्रीनिवास",
+            "content": "श्रीनिवासः पुं. श्री-निवासः  - विष्णु के विशेषण"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "श्रीनिवास",
+            "content": "a grammarian who has written a commentary on the Paribhasabhaskara of Haribhaskara."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "श्रीनिवास",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಮಹಾವಿಷ್ಣು \\/ಲಕ್ಷ್ಮಿಯ ಪತಿ",
+            "व्युत्पत्तिः": "श्रियाः निवासः",
+            "प्रयोगाः": "'श्रीदः श्रीशः श्रीनिवासः श्रीनिधिः श्रीविभावनः'",
+            "उल्लेखाः": "वि० स०",
+            "विस्तारः": "'नित्योपघ्ननिवासत्वात् श्रीनिवासः श्रियः स्मृतः'निरुक्तिः",
+            "content": ""
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "श्रीनिवास",
+            "content": "<H1><h><key1>SrInivAsa</key1><key2>SrInivAsa</key2></h><body><s>SrInivAsa</s>  <div n=\"1\">m. (<s>-saH</s>) VISHṆU.</div><div n=\"E\"> E. <s>SrI</s> the goddess, and <s>nivAsa</s> abode.</div></body><tail><L>41089</L><pc>734-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "श्रीनिवास",
+            "content": "<span lang=\"sa\">श्रीनिवास<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮಹಾವಿಷ್ಣು /ಲಕ್ಷ್ಮಿಯ ಪತಿ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>श्रियाः निवासः<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"श्रीदः श्रीशः श्रीनिवासः श्रीनिधिः श्रीविभावनः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>वि० स०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"नित्योपघ्ननिवासत्वात् श्रीनिवासः श्रियः स्मृतः\" - निरुक्तिः<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

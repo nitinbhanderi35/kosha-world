@@ -1,1 +1,140 @@
-el) .ck-menu-bar__menu__button>.ck-menu-bar__menu__button__arrow{margin-left:var(--ck-spacing-standard);right:var(--ck-spacing-standard)}[dir=rtl] .ck.ck-menu-bar__menu:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button>.ck-menu-bar__menu__button__arrow{left:var(--ck-spacing-standard);margin-right:var(--ck-spacing-small)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/menubar/menubarmenubutton.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/menubar/menubarmenubutton.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_disabled.css"],names:[],mappings:"AAMC,mFACC,mBAAoB,CACpB,2BACD,CCIA,iDACC,qCAAsC,CACtC,UAuBD,CArBC,mEACC,WAAY,CACZ,eAAgB,CAChB,sBACD,CAEA,+ECdD,kCDgBC,CAGC,qFACC,oCACD,CAIA,qFACC,qCACD,CAOF,6EAEC,gBAAiB,CADjB,wDAgBD,CAbC,+FAEC,iBAAkB,CADlB,WAED,CAEA,mFACC,2BAA4B,CAC5B,4BACD,CAEA,sFACC,YACD,CAMD,mFACC,eAiDD,CA/CC,yFACC,wBAAyB,CACzB,eAKD,CAHC,qGACC,0DACD,CAID,iIACC,+DACD,CAEA,qHACC,mCASD,CAVA,+HAIE,wBAMF,CAVA,+HAQE,uBAEF,CAEA,iICrFD,kCDuFC,CAGC,+HAIC,sCAAuC,CAHvC,gCAID,CAIA,+HACC,+BAAgC,CAGhC,oCACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-menu-bar__menu  {\n\t& > .ck-menu-bar__menu__button > .ck-menu-bar__menu__button__arrow {\n\t\tpointer-events: none;\n\t\tz-index: var(--ck-z-default);\n\t}\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_disabled.css";\n@import "../../mixins/_button.css";\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n\n.ck.ck-menu-bar__menu {\n\t/*\n\t * All menu buttons.\n\t */\n\t& > .ck-menu-bar__menu__button {\n\t\tpadding: var(--ck-list-button-padding);\n\t\twidth: 100%;\n\n\t\t& > .ck-button__label {\n\t\t\tflex-grow: 1;\n\t\t\toverflow: hidden;\n\t\t\ttext-overflow: ellipsis;\n\t\t}\n\n\t\t&.ck-disabled > .ck-button__label {\n\t\t\t@mixin ck-disabled;\n\t\t}\n\n\t\t@mixin ck-dir ltr {\n\t\t\t&:not(.ck-button_with-text) {\n\t\t\t\tpadding-left: var(--ck-spacing-small);\n\t\t\t}\n\t\t}\n\n\t\t@mixin ck-dir rtl {\n\t\t\t&:not(.ck-button_with-text) {\n\t\t\t\tpadding-right: var(--ck-spacing-small);\n\t\t\t}\n\t\t}\n\t}\n\n\t/*\n\t * Top-level menu buttons only.\n\t */\n\t&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {\n\t\tpadding: var(--ck-spacing-small) var(--ck-spacing-medium);\n\t\tmin-height: unset;\n\n\t\t& .ck-button__label {\n\t\t\twidth: unset;\n\t\t\tline-height: unset;\n\t\t}\n\n\t\t&.ck-on {\n\t\t\tborder-bottom-left-radius: 0;\n\t\t\tborder-bottom-right-radius: 0;\n\t\t}\n\n\t\t& .ck-icon {\n\t\t\tdisplay: none;\n\t\t}\n\t}\n\n\t/*\n\t * Sub-menu buttons.\n\t */\n\t&:not(.ck-menu-bar__menu_top-level) .ck-menu-bar__menu__button {\n\t\tborder-radius: 0;\n\n\t\t&:focus {\n\t\t\tborder-color: transparent;\n\t\t\tbox-shadow: none;\n\n\t\t\t&:not(.ck-on) {\n\t\t\t\tbackground: var(--ck-color-button-default-hover-background);\n\t\t\t}\n\t\t}\n\n\t\t/* Spacing in buttons that miss the icon. */\n\t\t&:not(:has(.ck-button__icon)) > .ck-button__label {\n\t\t\tmargin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));\n\t\t}\n\n\t\t& > .ck-menu-bar__menu__button__arrow {\n\t\t\twidth: var(--ck-dropdown-arrow-size);\n\n\t\t\t@mixin ck-dir ltr {\n\t\t\t\ttransform: rotate(-90deg);\n\t\t\t}\n\n\t\t\t@mixin ck-dir rtl {\n\t\t\t\ttransform: rotate(90deg);\n\t\t\t}\n\t\t}\n\n\t\t&.ck-disabled > .ck-menu-bar__menu__button__arrow {\n\t\t\t@mixin ck-disabled;\n\t\t}\n\n\t\t@mixin ck-dir ltr {\n\t\t\t& > .ck-menu-bar__menu__button__arrow {\n\t\t\t\tright: var(--ck-spacing-standard);\n\n\t\t\t\t/* A space to accommodate the triangle. */\n\t\t\t\tmargin-left: var(--ck-spacing-standard);\n\t\t\t}\n\t\t}\n\n\t\t@mixin ck-dir rtl {\n\t\t\t& > .ck-menu-bar__menu__button__arrow {\n\t\t\t\tleft: var(--ck-spacing-standard);\n\n\t\t\t\t/* A space to accommodate the triangle. */\n\t\t\t\tmargin-right: var(--ck-spacing-small);\n\t\t\t}\n\t\t}\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A class which indicates that an element holding it is disabled.\n */\n@define-mixin ck-disabled {\n\topacity: var(--ck-disabled-opacity);\n}\n"],sourceRoot:""}]);const a=s},3835:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,":root{--ck-menu-bar-menu-item-min-width:18em}.ck.ck-menu-bar__menu .ck.ck-menu-bar__menu__item{min-width:var(--ck-menu-bar-menu-item-min-width)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/menubar/menubarmenulistitem.css"],names:[],mappings:"AAKA,MACC,sCACD,CAEA,kDACC,gDACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t--ck-menu-bar-menu-item-min-width: 18em;\n}\n\n.ck.ck-menu-bar__menu .ck.ck-menu-bar__menu__item {\n\tmin-width: var(--ck-menu-bar-menu-item-min-width);\n}\n"],sourceRoot:""}]);const a=s},5519:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button{border-radius:0}.ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button>.ck-spinner-container,.ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button>.ck-spinner-container .ck-spinner{--ck-toolbar-spinner-size:20px}.ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button>.ck-spinner-container{margin-left:calc(var(--ck-spacing-small)*-1);margin-right:var(--ck-spacing-small)}.ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button:focus{border-color:transparent;box-shadow:none}.ck.ck-menu-bar__menu .ck-button.ck-menu-bar__menu__item__button:focus:not(.ck-on){background:var(--ck-color-button-default-hover-background)}.ck.ck-menu-bar__menu.ck-menu-bar__menu_top-level>.ck-menu-bar__menu__panel>ul>.ck-menu-bar__menu__item>.ck-menu-bar__menu__item__button:not(:has(.ck-button__icon))>.ck-button__label{margin-left:calc(var(--ck-icon-size) - var(--ck-spacing-small))}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/menubar/menubarmenulistitembutton.css"],names:[],mappings:"AASC,iEACC,eA0BD,CAxBC,0LAGC,8BACD,CAEA,uFAEC,4CAA+C,CAC/C,oCACD,CAMA,uEACC,wBAAyB,CACzB,eAKD,CAHC,mFACC,0DACD,CASD,uLACC,+DACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-menu-bar__menu {\n\t/*\n\t * List item buttons.\n\t */\n\t& .ck-button.ck-menu-bar__menu__item__button {\n\t\tborder-radius: 0;\n\n\t\t& > .ck-spinner-container,\n\t\t& > .ck-spinner-container .ck-spinner {\n\t\t\t/* These styles correspond to .ck-icon so that the spinner seamlessly replaces the icon. */\n\t\t\t--ck-toolbar-spinner-size: 20px;\n\t\t}\n\n\t\t& > .ck-spinner-container {\n\t\t\t/* These margins are the same as for .ck-icon. */\n\t\t\tmargin-left: calc(-1 * var(--ck-spacing-small));\n\t\t\tmargin-right: var(--ck-spacing-small);\n\t\t}\n\n\t\t/*\n\t\t * Hovered items automatically get focused. Default focus styles look odd\n\t\t * while moving across a huge list of items so let's get rid of them\n\t\t */\n\t\t&:focus {\n\t\t\tborder-color: transparent;\n\t\t\tbox-shadow: none;\n\n\t\t\t&:not(.ck-on) {\n\t\t\t\tbackground: var(--ck-color-button-default-hover-background);\n\t\t\t}\n\t\t}\n\t}\n\n\t/*\n\t * First-level sub-menu item buttons.\n\t */\n\t&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__panel > ul > .ck-menu
+{
+    "word": "त्रिपताक",
+    "BUR": [
+        {
+            "word": "त्रिपताक",
+            "eid": "8250",
+            "pagenum": 304,
+            "content": "त्रिपताक¦ <i>tripatāka</i> <ab>m.</ab> front marqué de ses trois rides horizontales."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिपताक",
+            "eid": "16131",
+            "pagenum": 318,
+            "content": "tri-patAka¦ <i>m.</i> 1. the hand with three fingers stretched out; 2. the forehead marked naturally with three horizontal lines."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिपताक",
+            "eid": "87877",
+            "pagenum": "459,1",
+            "content": "त्रि—पताक ¦ <lex>mfn.</lex> (with कर, हस्त, the hand) with 3 fingers stretched out (in <ab>dram.</ab> introductory to words meant janA<srs/>ntikam), <ls>Bālar. iii, 4/5</ls>; <ls>Sāh. vi, 139</ls>; <ls>PSarv.</ls>; <ls>Hastar.</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिपताक",
+            "eid": "87878",
+            "pagenum": "459,1",
+            "content": "¦ (°काकर), <ls>Daśar.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिपताक",
+            "eid": "87879",
+            "pagenum": "459,1",
+            "content": "¦ (with ललाट, the forehead) marked naturally with 3 wrinkles, <ls>L.</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिपताक",
+            "eid": "47542",
+            "pagenum": 3,
+            "content": "त्रिपताक¦ <lex>Adj.</lex> <dvsn n='1'>— 1〉 in Verbindung mit कर् <ab>u. s. w.</ab> <i>eine Hand mit drei ausgestreckten Fingern (Zeigefinger, Mittelfinger und kleiner Finger)</i> <ls>BĀLAR. 54,19</ls>. Dieses Zeichen giebt man, wenn man auf der Bühne Etwas जनान्तिकम् sagen will. <dvsn n='1'>— 2〉 *in Verbindung mit ललाट <ab>u. s. w.</ab> <i>eine Stirn mit drei feinen Falten</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिपताक",
+            "eid": "31002",
+            "pagenum": 3,
+            "content": "त्रिपताक¦ (त्रि + पताका) <lex>adj.</lex> <dvsn n='1'> 1) in Verb. mit हस्त u. s. w. <i>die Hand mit drei ausgestreckten Fingern</i> Cit. beim Schol. zu <ls>ŚĀK. 13,12.</ls> <ls>SĀH. D. 170,12.</ls> <ls>Verz. d. Oxf. H. 86,a,27.</ls> <dvsn n='1'>— 2) in Verb. mit ललाट u. s. w. <i>eine Stirn mit drei feinen Falten</i> <ls>HĀR. 114.</ls>"
+        },
+        {
+            "word": "त्रिपताक",
+            "eid": "75292",
+            "pagenum": 5,
+            "content": "त्रिपताक¦ <dvsn n='1'> 1) beschrieben <ls>Verz. d. Oxf. H. 202,a,39. fg.</ls> <ls>SĀH. D. 170, 17.</ls> त्रिपताकाकर <ls>DAŚAR. 1, 59.</ls> <dvsn n='v'>— Vgl. पताक ."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "त्रिपताक",
+            "eid": "14897",
+            "pagenum": 205,
+            "content": "<i>tripatāka</i>¦ Adj. 1. auch <ls>H</ls> 23, 59. {part=,seq=15130,type=,n=1}"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिपताक",
+            "eid": "18097",
+            "pagenum": 390,
+            "content": "त्रिपताक¦ m. (-कः) .²1 The forehead marked naturally with three horizontal lines. .²2 The hand with three fingers erect. .E. त्रि three or three-fold, and पताका a banner, a symbol."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिपताक",
+            "eid": "17573",
+            "pagenum": 345,
+            "content": "त्रि-पताक¦ (कः) 1. <i>m.</i> The forehead naturally marked with three horizontal lines; the hand with three fingers erect."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिपताक",
+            "eid": "15553",
+            "pagenum": "2-658-a",
+            "content": "त्रिपताकं¦, क्ली, (तिस्रः पताका इव रेखा यत्र ।) रेखात्रयाङ्कितभालम् । इति हारावली । ११४ ॥ (तिस्रः पताका इव अङ्गुलयो यत्र । त्रिपताकलक्षणान्विते हस्ते, पुं । यथा, साहित्यदर्पणे । ६ । १५४ । “त्रिपताककरेणान्यानपवार्य्यान्तरा कथाम् । अन्योन्यामन्त्रणं यत् स्याज्जनान्ते तज्जनान्तिकम् ॥” “यः कश्चिदर्थो यस्माद् गोपनीयस्तस्यान्तरत ऊर्द्ध्वं सर्व्वाङ्गुलिनामितानामिकं त्रिपताकलक्षणं करं कृत्वान्येन सह यन्मन्त्र्यते तत्जनान्तिकम् ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिपताक",
+            "eid": "23681",
+            "pagenum": "3369,a",
+            "content": "त्रिपताक¦ न० तिस्रः पताका इव यस्मिन् । पताकाकारवलित्रयान्विते १ ललाटे, हारा० मध्यमानामिकासङ्कोचेनावशिष्टाङ्गुलित्रयोन्नतत्वेन २ त्रिपताकाकारिते करे पु० । “त्रिपताकं करं कृत्वा” इत्यादि सा० द० जनान्तिकशब्दनिर्वचने स्थितम् ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिपताक",
+            "content": "त्रिपताकः पुं. त्रि-पताकः  - हाथ जिसकी तीन अंगुलियाँ फैली हुई हों"
+        },
+        {
+            "word": "त्रिपताक",
+            "content": "त्रिपताकः पुं. त्रि-पताकः  - त्रिपुंड तिलक लगा हुआ मस्तक"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिपताक",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮೂರು ರೇಖೆಗಳಿಂದ ಕೂಡಿದ ಹಣೆ",
+            "व्युत्पत्तिः": "तिस्रः पताका इव रेखा यत्र",
+            "विस्तारः": "'रेखात्रयाङ्कितं फालं त्रिपताकं विदुर्बुधाः'हारा० ।",
+            "content": ""
+        },
+        {
+            "word": "त्रिपताक",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಮೂರು ಪತಾಕೆಗಳಂತೆ ಬಿಚ್ಚಿದ ಬೆರಳುಗಳುಳ್ಳ ಹಸ್ತ",
+            "विस्तारः": "'प्रसारिताः समाः सर्वा यस्याङ्गुल्यो भवन्ति हि । कुञ्चितश्च तथाङ्गुष्ठः स पताक इति स्मृतः'",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिपताक",
+            "content": "<body><s>tripatAka na° tisraH patAkA iva yasmin . patAkAkAravali­trayAnvite <lb/><b>1</b> lalAwe, hArA° maDyamAnAmikAsaNkocenA­vaSizwANgulitrayonnatatvena <lb/><b>2</b> tripatAkAkArite kare pu° . <q>tripatAkaM karaM kftvA</q> ityAdi sA° da° janAntikaSabda­nirvacane sTitam .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिपताक",
+            "content": "<span lang=\"sa\">त्रिपताक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ರೇಖೆಗಳಿಂದ ಕೂಡಿದ ಹಣೆ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>तिस्रः पताका इव रेखा यत्र<div class=\"h-2\"> </div><b>विस्तारः - </b>\"रेखात्रयाङ्कितं फालं त्रिपताकं विदुर्बुधाः\" - हारा० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिपताक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ಪತಾಕೆಗಳಂತೆ ಬಿಚ್ಚಿದ ಬೆರಳುಗಳುಳ್ಳ ಹಸ್ತ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"प्रसारिताः समाः सर्वा यस्याङ्गुल्यो भवन्ति हि । कुञ्चितश्च तथाङ्गुष्ठः स पताक इति स्मृतः\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

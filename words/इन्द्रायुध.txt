@@ -1,1 +1,215 @@
-VwiLCBgc2NhbGUoJHtwZigxIC8gd2lkdGgpfSAke3BmKC0xIC8gaGVpZ2h0KX0pYCk7XG5cbiAgICAgIGlmIChtYXNrKSB7XG4gICAgICAgIG1hc2suYXBwZW5kKGltZ0VsKTtcbiAgICAgIH0gZWxzZSB7XG4gICAgICAgIHRoaXMuX2Vuc3VyZVRyYW5zZm9ybUdyb3VwKCkuYXBwZW5kKGltZ0VsKTtcbiAgICAgIH1cbiAgICB9XG5cbiAgICBwYWludEltYWdlTWFza1hPYmplY3QoaW1nRGF0YSkge1xuICAgICAgY29uc3QgY3VycmVudCA9IHRoaXMuY3VycmVudDtcbiAgICAgIGNvbnN0IHdpZHRoID0gaW1nRGF0YS53aWR0aDtcbiAgICAgIGNvbnN0IGhlaWdodCA9IGltZ0RhdGEuaGVpZ2h0O1xuICAgICAgY29uc3QgZmlsbENvbG9yID0gY3VycmVudC5maWxsQ29sb3I7XG4gICAgICBjdXJyZW50Lm1hc2tJZCA9IGBtYXNrJHttYXNrQ291bnQrK31gO1xuICAgICAgY29uc3QgbWFzayA9IHRoaXMuc3ZnRmFjdG9yeS5jcmVhdGVFbGVtZW50KFwic3ZnOm1hc2tcIik7XG4gICAgICBtYXNrLnNldEF0dHJpYnV0ZU5TKG51bGwsIFwiaWRcIiwgY3VycmVudC5tYXNrSWQpO1xuICAgICAgY29uc3QgcmVjdCA9IHRoaXMuc3ZnRmFjdG9yeS5jcmVhdGVFbGVtZW50KFwic3ZnOnJlY3RcIik7XG4gICAgICByZWN0LnNldEF0dHJpYnV0ZU5TKG51bGwsIFwieFwiLCBcIjBcIik7XG4gICAgICByZWN0LnNldEF0dHJpYnV0ZU5TKG51bGwsIFwieVwiLCBcIjBcIik7XG4gICAgICByZWN0LnNldEF0dHJpYnV0ZU5TKG51bGwsIFwid2lkdGhcIiwgcGYod2lkdGgpKTtcbiAgICAgIHJlY3Quc2V0QXR0cmlidXRlTlMobnVsbCwgXCJoZWlnaHRcIiwgcGYoaGVpZ2h0KSk7XG4gICAgICByZWN0LnNldEF0dHJpYnV0ZU5TKG51bGwsIFwiZmlsbFwiLCBmaWxsQ29sb3IpO1xuICAgICAgcmVjdC5zZXRBdHRyaWJ1dGVOUyhudWxsLCBcIm1hc2tcIiwgYHVybCgjJHtjdXJyZW50Lm1hc2tJZH0pYCk7XG4gICAgICB0aGlzLmRlZnMuYXBwZW5kKG1hc2spO1xuXG4gICAgICB0aGlzLl9lbnN1cmVUcmFuc2Zvcm1Hcm91cCgpLmFwcGVuZChyZWN0KTtcblxuICAgICAgdGhpcy5wYWludElubGluZUltYWdlWE9iamVjdChpbWdEYXRhLCBtYXNrKTtcbiAgICB9XG5cbiAgICBwYWludEZvcm1YT2JqZWN0QmVnaW4obWF0cml4LCBiYm94KSB7XG4gICAgICBpZiAoQXJyYXkuaXNBcnJheShtYXRyaXgpICYmIG1hdHJpeC5sZW5ndGggPT09IDYpIHtcbiAgICAgICAgdGhpcy50cmFuc2Zvcm0obWF0cml4WzBdLCBtYXRyaXhbMV0sIG1hdHJpeFsyXSwgbWF0cml4WzNdLCBtYXRyaXhbNF0sIG1hdHJpeFs1XSk7XG4gICAgICB9XG5cbiAgICAgIGlmIChiYm94KSB7XG4gICAgICAgIGNvbnN0IHdpZHRoID0gYmJveFsyXSAtIGJib3hbMF07XG4gICAgICAgIGNvbnN0IGhlaWdodCA9IGJib3hbM10gLSBiYm94WzFdO1xuICAgICAgICBjb25zdCBjbGlwcmVjdCA9IHRoaXMuc3ZnRmFjdG9yeS5jcmVhdGVFbGVtZW50KFwic3ZnOnJlY3RcIik7XG4gICAgICAgIGNsaXByZWN0LnNldEF0dHJpYnV0ZU5TKG51bGwsIFwieFwiLCBiYm94WzBdKTtcbiAgICAgICAgY2xpcHJlY3Quc2V0QXR0cmlidXRlTlMobnVsbCwgXCJ5XCIsIGJib3hbMV0pO1xuICAgICAgICBjbGlwcmVjdC5zZXRBdHRyaWJ1dGVOUyhudWxsLCBcIndpZHRoXCIsIHBmKHdpZHRoKSk7XG4gICAgICAgIGNsaXByZWN0LnNldEF0dHJpYnV0ZU5TKG51bGwsIFwiaGVpZ2h0XCIsIHBmKGhlaWdodCkpO1xuICAgICAgICB0aGlzLmN1cnJlbnQuZWxlbWVudCA9IGNsaXByZWN0O1xuICAgICAgICB0aGlzLmNsaXAoXCJub256ZXJvXCIpO1xuICAgICAgICB0aGlzLmVuZFBhdGgoKTtcbiAgICAgIH1cbiAgICB9XG5cbiAgICBwYWludEZvcm1YT2JqZWN0RW5kKCkge31cblxuICAgIF9pbml0aWFsaXplKHZpZXdwb3J0KSB7XG4gICAgICBjb25zdCBzdmcgPSB0aGlzLnN2Z0ZhY3RvcnkuY3JlYXRlKHZpZXdwb3J0LndpZHRoLCB2aWV3cG9ydC5oZWlnaHQpO1xuICAgICAgY29uc3QgZGVmaW5pdGlvbnMgPSB0aGlzLnN2Z0ZhY3RvcnkuY3JlYXRlRWxlbWVudChcInN2ZzpkZWZzXCIpO1xuICAgICAgc3ZnLmFwcGVuZChkZWZpbml0aW9ucyk7XG4gICAgICB0aGlzLmRlZnMgPSBkZWZpbml0aW9ucztcbiAgICAgIGNvbnN0IHJvb3RHcm91cCA9IHRoaXMuc3ZnRmFjdG9yeS5jcmVhdGVFbGVtZW50KFwic3ZnOmdcIik7XG4gICAgICByb290R3JvdXAuc2V0QXR0cmlidXRlTlMobnVsbCwgXCJ0cmFuc2Zvcm1cIiwgcG0odmlld3BvcnQudHJhbnNmb3JtKSk7XG4gICAgICBzdmcuYXBwZW5kKHJvb3RHcm91cCk7XG4gICAgICB0aGlzLnN2ZyA9IHJvb3RHcm91cDtcbiAgICAgIHJldHVybiBzdmc7XG4gICAgfVxuXG4gICAgX2Vuc3VyZUNsaXBHcm91cCgpIHtcbiAgICAgIGlmICghdGhpcy5jdXJyZW50LmNsaXBHcm91cCkge1xuICAgICAgICBjb25zdCBjbGlwR3JvdXAgPSB0aGlzLnN2Z0ZhY3RvcnkuY3JlYXRlRWxlbWVudChcInN2ZzpnXCIpO1xuICAgICAgICBjbGlwR3JvdXAuc2V0QXR0cmlidXRlTlMobnVsbCwgXCJjbGlwLXBhdGhcIiwgdGhpcy5jdXJyZW50LmFjdGl2ZUNsaXBVcmwpO1xuICAgICAgICB0aGlzLnN2Zy5hcHBlbmQoY2xpcEdyb3VwKTtcbiAgICAgICAgdGhpcy5jdXJyZW50LmNsaXBHcm91cCA9IGNsaXBHcm91cDtcbiAgICAgIH1cblxuICAgICAgcmV0dXJuIHRoaXMuY3VycmVudC5jbGlwR3JvdXA7XG4gICAgfVxuXG4gICAgX2Vuc3VyZVRyYW5zZm9ybUdyb3VwKCkge1xuICAgICAgaWYgKCF0aGlzLnRncnApIHtcbiAgICAgICAgdGhpcy50Z3JwID0gdGhpcy5zdmdGYWN0b3J5LmNyZWF0ZUVsZW1lbnQoXCJzdmc6Z1wiKTtcbiAgICAgICAgdGhpcy50Z3JwLnNldEF0dHJpYnV0ZU5TKG51bGwsIFwidHJhbnNmb3JtXCIsIHBtKHRoaXMudHJhbnNmb3JtTWF0cml4KSk7XG5cbiAgICAgICAgaWYgKHRoaXMuY3VycmVudC5hY3RpdmVDbGlwVXJsKSB7XG4gICAgICAgICAgdGhpcy5fZW5zdXJlQ2xpcEdyb3VwKCkuYXBwZW5kKHRoaXMudGdycCk7XG4gICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgdGhpcy5zdmcuYXBwZW5kKHRoaXMudGdycCk7XG4gICAgICAgIH1cbiAgICAgIH1cblxuICAgICAgcmV0dXJuIHRoaXMudGdycDtcbiAgICB9XG5cbiAgfTtcbn1cblxuLyoqKi8gfSksXG4vKiAzMiAqL1xuLyoqKi8gKChfX3VudXNlZF93ZWJwYWNrX21vZHVsZSwgZXhwb3J0cywgX193X3BkZmpzX3JlcXVpcmVfXykgPT4ge1xuXG5cblxuT2JqZWN0LmRlZmluZVByb3BlcnR5KGV4cG9ydHMsIFwiX19lc01vZHVsZVwiLCAoe1xuICB2YWx1ZTogdHJ1ZVxufSkpO1xuZXhwb3J0cy5QREZOb2RlU3RyZWFtID0gdm9pZCAwO1xuXG52YXIgX3V0aWwgPSBfX3dfcGRmanNfcmVxdWlyZV9fKDEpO1xuXG52YXIgX25ldHdvcmtfdXRpbHMgPSBfX3dfcGRmanNfcmVxdWlyZV9fKDMzKTtcblxuO1xuXG5jb25zdCBmcyA9IHJlcXVpcmUoXCJmc1wiKTtcblxuY29uc3QgaHR0cCA9IHJlcXVpcmUoXCJodHRwXCIpO1xuXG5jb25zdCBodHRwcyA9IHJlcXVpcmUoXCJodHRwc1wiKTtcblxuY29uc3QgdXJsID0gcmVxdWlyZShcInVybFwiKTtcblxuY29uc3QgZmlsZVVyaVJlZ2V4ID0gL15maWxlOlxcL1xcL1xcL1thLXpBLVpdOlxcLy87XG5cbmZ1bmN0aW9uIHBhcnNlVXJsKHNvdXJjZVVybCkge1xuICBjb25zdCBwYXJzZWRVcmwgPSB1cmwucGFyc2Uoc291cmNlVXJsKTtcblxuICBpZiAocGFyc2VkVXJsLnByb3RvY29sID09PSBcImZpbGU6XCIgfHwgcGFyc2VkVXJsLmhvc3QpIHtcbiAgICByZXR1cm4gcGFyc2VkVXJsO1xuICB9XG5cbiAgaWYgKC9eW2Etel06Wy9cXFxcXS9pLnRlc3Qoc291cmNlVXJsKSkge1xuICAgIHJldHVybiB1cmwucGFyc2UoYGZpbGU6Ly8vJHtzb3VyY2VVcmx9YCk7XG4gIH1cblxuICBpZiAoIXBhcnNlZFVybC5ob3N0KSB7XG4gICAgcGFyc2VkVXJsLnByb3RvY29sID0gXCJmaWxlOlwiO1xuICB9XG5cbiAgcmV0dXJuIHBhcnNlZFVybDtcbn1cblxuY2xhc3MgUERGTm9kZVN0cmVhbSB7XG4gIGNvbnN0cnVjdG9yKHNvdXJjZSkge1xuICAgIHRoaXMuc291cmNlID0gc291cmNlO1xuICAgIHRoaXMudXJsID0gcGFyc2VVcmwoc291cmNlLnVybCk7XG4gICAgdGhpcy5pc0h0dHAgPSB0aGlzLnVybC5wcm90b2NvbCA9PT0gXCJodHRwOlwiIHx8IHRoaXMudXJsLnByb3RvY29sID09PSBcImh0dHBzOlwiO1xuICAgIHRoaXMuaXNGc1VybCA9IHRoaXMudXJsLnByb3RvY29sID09PSBcImZpbGU6XCI7XG4gICAgdGhpcy5odHRwSGVhZGVycyA9IHRoaXMuaXNIdHRwICYmIHNvdXJjZS5odHRwSGVhZGVycyB8fCB7fTtcbiAgICB0aGlzLl9mdWxsUmVxdWVzdFJlYWRlciA9IG51bGw7XG4gICAgdGhpcy5fcmFuZ2VSZXF1ZXN0UmVhZGVycyA9IFtdO1xuICB9XG5cbiAgZ2V0IF9wcm9ncmVzc2l2ZURhdGFMZW5ndGgoKSB7XG4gICAgcmV0dXJuIHRoaXMuX2Z1bGxSZXF1ZXN0UmVhZGVyPy5fbG9hZGVkID8/IDA7XG4gIH1cblxuICBnZXRGdWxsUmVhZGVyKCkge1xuICAgICgwLCBfdXRpbC5hc3NlcnQpKCF0aGlzLl9mdWxsUmVxdWVzdFJlYWRlciwgXCJQREZOb2RlU3RyZWFtLmdldEZ1bGxSZWFkZXIgY2FuIG9ubHkgYmUgY2FsbGVkIG9uY2UuXCIpO1xuICAgIHRoaXMuX2Z1bGxSZXF1ZXN0UmVhZGVyID0gdGhpcy5pc0ZzVXJsID8gbmV3IFBERk5vZGVTdHJlYW1Gc0Z1bGxSZWFkZXIodGhpcykgOiBuZXcgUERGTm9kZVN0cmVhbUZ1bGxSZWFkZXIodGhpcyk7XG4gICAgcmV0dXJuIHRoaXMuX2Z1bGxSZXF1ZXN0UmVhZGVyO1xuICB9XG5cbiAgZ2V0UmFuZ2VSZWFkZXIoc3RhcnQsIGVuZCkge1xuICAgIGlmIChlbmQgPD0gdGhpcy5fcHJvZ3Jlc3NpdmVEYXRhTGVuZ3RoKSB7XG4gICAgICByZXR1cm4gbnVsbDtcbiAgICB9XG5cbiAgICBjb25zdCByYW5nZVJlYWRlciA9IHRoaXMuaXNGc1VybCA/IG5ldyBQREZOb2RlU3RyZWFtRnNSYW5nZVJlYWRlcih0aGlzLCBzdGFydCwgZW5kKSA6IG5ldyBQREZOb2RlU3RyZWFtUmFuZ2VSZWFkZXIodGhpcywgc3RhcnQsIGVuZCk7XG5cbiAgICB0aGlzLl9yYW5nZVJlcXVlc3RSZWFkZXJzLnB1c2gocmFuZ2VSZWFkZXIpO1xuXG4gICAgcmV0dXJuIHJhbmdlUmVhZGVyO1xuICB9XG5cbiAgY2FuY2VsQWxsUmVxdWVzdHMocmVhc29uKSB7XG4gICAgaWYgKHRoaXMuX2Z1bGxSZXF1ZXN0UmVhZGVyKSB7XG4gICAgICB0aGlzLl9mdWxsUmVxdWVzdFJlYWRlci5jYW5jZWwocmVhc29uKTtcbiAgICB9XG5cbiAgICBmb3IgKGNvbnN0IHJlYWRlciBvZiB0aGlzLl9yYW5nZVJlcXVlc3RSZWFkZXJzLnNsaWNlKDApKSB7XG4gICAgICByZWFkZXIuY2FuY2VsKHJlYXNvbik7XG4gICAgfVxuICB9XG5cbn1cblxuZXhwb3J0cy5QREZOb2RlU3RyZWFtID0gUERGTm9kZVN0cmVhbTtcblxuY2xhc3MgQmFzZUZ1bGxSZWFkZXIge1xuICBjb25zdHJ1Y3RvcihzdHJlYW0pIHtcbiAgICB0aGlzLl91cmwgPSBzdHJlYW0udXJsO1xuICAgIHRoaXMuX2RvbmUgPSBmYWxzZTtcbiAgICB0aGlzLl9zdG9yZWRFcnJvciA9IG51bGw7XG4gICAgdGhpcy5vblByb2dyZXNzID0gbnVsbDtcbiAgICBjb25zdCBzb3VyY2UgPSBzdHJlYW0uc291cmNlO1xuICAgIHRoaXMuX2NvbnRlbnRMZW5ndGggPSBzb3VyY2UubGVuZ3RoO1xuICAgIHRoaXMuX2xvYWRlZCA9IDA7XG4gICAgdGhpcy5fZmlsZW5hbWUgPSBudWxsO1xuICAgIHRoaXMuX2Rpc2FibGVSYW5nZSA9IHNvdXJjZS5kaXNhYmxlUmFuZ2UgfHwgZmFsc2U7XG4gICAgdGhpcy5fcmFuZ2VDaHVua1NpemUgPSBzb3VyY2UucmFuZ2VDaHVua1NpemU7XG5cbiAgICBpZiAoIXRoaXMuX3JhbmdlQ2h1bmtTaXplICYmICF0aGlzLl9kaXNhYmxlUmFuZ2UpIHtcbiAgICAgIHRoaXMuX2Rpc2FibGVSYW5nZSA9IHRydWU7XG4gICAgfVxuXG4gICAgdGhpcy5faXNTdHJlYW1pbmdTdXBwb3J0ZWQgPSAhc291cmNlLmRpc2FibGVTdHJlYW07XG4gICAgdGhpcy5faXNSYW5nZVN1cHBvcnRlZCA9ICFzb3VyY2UuZGlzYWJsZVJhbmdlO1xuICAgIHRoaXMuX3JlYWRhYmxlU3RyZWFtID0gbnVsbDtcbiAgICB0aGlzLl9yZWFkQ2FwYWJpbGl0eSA9ICgwLCBfdXRpbC5jcmVhdGVQcm9taXNlQ2FwYWJpbGl0eSkoKTtcbiAgICB0aGlzLl9oZWFkZXJzQ2FwYWJpbGl0eSA9ICgwLCBfdXRpbC5jcmVhdGVQcm9taXNlQ2FwYWJpbGl0eSkoKTtcbiAgfVxuXG4gIGdldCBoZWFkZXJzUmVhZHkoKSB7XG4gICAgcmV0dXJuIHRoaXMuX2hlYWRlcnNDYXBhYmlsaXR5LnByb21pc2U7XG4gIH1cblxuICBnZXQgZmlsZW5hbWUoKSB7XG4gICAgcmV0dXJuIHRoaXMuX2ZpbGVuYW1lO1xuICB9XG5cbiAgZ2V0IGNvbnRlbnRMZW5ndGgoKSB7XG4gICAgcmV0dXJuIHRoaXMuX2NvbnRlbnRMZW5ndGg7XG4gIH1cblxuICBnZXQgaXNSYW5nZVN1cHBvcnRlZCgpIHtcbiAgICByZXR1cm4gdGhpcy5faXNSYW5nZVN1cHBvcnRlZDtcbiAgfVxuXG4gIGdldCBpc1N0cmVhbWluZ1N1cHBvcnRlZCgpIHtcbiAgICByZXR1cm4gdGhpcy5faXNTdHJlYW1pbmdTdXBwb3J0ZWQ7XG4gIH1cblxuICBhc3luYyByZWFkKCkge1xuICAgIGF3YWl0IHRoaXMuX3JlYWRDYXBhYmlsaXR5LnByb21pc2U7XG5cbiAgICBpZiAodGhpcy5fZG9uZSkge1xuICAgICAgcmV0dXJuIHtcbiAgICAgICAgdmFsdWU6IHVuZGVmaW5lZCxcbiAgICAgICAgZG9uZTogdHJ1ZVxuICAgICAgfTtcbiAgICB9XG5cbiAgICBpZiAodGhpcy5fc3RvcmVkRXJyb3IpIHtcbiAgICAgIHRocm93IHRoaXMuX3N0b3JlZEVycm9yO1xuICAgIH1cblxuICAgIGNvbnN0IGNodW5rID0gdGhpcy5fcmVhZGFibGVTdHJlYW0ucmVhZCgpO1xuXG4gICAgaWYgKGNodW5rID09PSBudWxsKSB7XG4gICAgICB0aGlzLl9yZWFkQ2FwYWJpbGl0eSA9ICgwLCBfdXRpbC5jcmVhdGVQcm9taXNlQ2FwYWJpbGl0eSkoKTtcbiAgICAgIHJldHVybiB0aGlzLnJlYWQoKTtcbiAgICB9XG5cbiAgICB0aGlzLl9sb2FkZWQgKz0gY2h1bmsubGVuZ3RoO1xuXG4gICAgaWYgKHRoaXMub25Qcm9ncmVzcykge1xuICAgICAgdGhpcy5vblByb2dyZXNzKHtcbiAgICAgICAgbG9hZGVkOiB0aGlzLl9sb2FkZWQsXG4gICAgICAgIHRvdGFsOiB0aGlzLl9jb250ZW50TGVuZ3RoXG4gICAgICB9KTtcbiAgICB9XG5cbiAgICBjb25zdCBidWZmZXIgPSBuZXcgVWludDhBcnJheShjaHVuaykuYnVmZmVyO1xuICAgIHJldHVybiB7XG4gICAgICB2YWx1ZTogYnVmZmVyLFxuICAgICAgZG9uZTogZmFsc2VcbiAgICB9O1xuICB9XG5cbiAgY2FuY2VsKHJlYXNvbikge1xuICAgIGlmICghdGhpcy5fcmVhZGFibGVTdHJlYW0pIHtcbiAgICAgIHRoaXMuX2Vycm9yKHJlYXNvbik7XG5cbiAgICAgIHJldHVybjtcbiAgICB9XG5cbiAgICB0aGlzLl9yZWFkYWJsZVN0cmVhbS5kZXN0cm95KHJlYXNvbik7XG4gIH1cblxuICBfZXJyb3IocmVhc29uKSB7XG4gICAgdGhpcy5fc3RvcmVkRXJyb3IgPSByZWFzb247XG5cbiAgICB0aGlzLl9yZWFkQ2FwYWJpbGl0eS5yZXNvbHZlKCk7XG4gIH1cblxuICBfc2V0UmVhZGFibGVTdHJlYW0ocmVhZGFibGVTdHJlYW0pIHtcbiAgICB0aGlzLl9yZWFkYWJsZVN0cmVhbSA9IHJlYWRhYmxlU3RyZWFtO1xuICAgIHJlYWRhYmxlU3RyZWFtLm9uKFwicmVhZGFibGVcIiwgKCkgPT4ge1xuICAgICAgdGhpcy5fcmVhZENhcGFiaWxpdHkucmVzb2x2ZSgpO1xuICAgIH0pO1xuICAgIHJlYWRhYmxlU3RyZWFtLm9uKFwiZW5kXCIsICgpID0+IHtcbiAgICAgIHJlYWRhYmxlU3RyZWFtLmRlc3Ryb3koKTtcbiAgICAgIHRoaXMuX2RvbmUgPSB0cnVlO1xuXG4gICAgICB0aGlzLl9yZWFkQ2FwYWJpbGl0eS5yZXNvbHZlKCk7XG4gICAgfSk7XG4gICAgcmVhZGFibGVTdHJlYW0ub24oXCJlcnJvclwiLCByZWFzb24gPT4ge1xuICAgICAgdGhpcy5fZXJyb3IocmVhc29uKTtcbiAgICB9KTtcblxuICAgIGlmICghdGhpcy5faXNTdHJlYW1pbmdTdXBwb3J0ZWQgJiYgdGhpcy5faXNSYW5nZVN1cHBvcnRlZCkge1xuICAgICAgdGhpcy5fZXJyb3IobmV3IF91dGlsLkFib3J0RXhjZXB0aW9uKFwic3RyZWFtaW5nIGlzIGRpc2FibGVkXCIpKTtcbiAgICB9XG5cbiAgICBpZiAodGhpcy5fc3RvcmVkRXJyb3IpIHtcbiAgICAgIHRoaXMuX3JlYWRhYmxlU3RyZWFtLmRlc3Ryb3kodGhpcy5fc3RvcmVkRXJyb3IpO1xuICAgIH1cbiAgfVxuXG59XG5cbmNsYXNzIEJhc2VSYW5nZVJlYWRlciB7XG4gIGNvbnN0cnVjdG9yKHN0cmVhbSkge1xuICAgIHRoaXMuX3VybCA9IHN0cmVhbS51cmw7XG4gICAgdGhpcy5fZG9uZSA9IGZhbHNlO1xuICAgIHRoaXMuX3N0b3JlZEVycm9yID0gbnVsbDtcbiAgICB0aGlzLm9uUHJvZ3Jlc3MgPSBudWxsO1xuICAgIHRoaXMuX2xvYWRlZCA9IDA7XG4gICAgdGhpcy5fcmVhZGFibGVTdHJlYW0gPSBudWxsO1xuICAgIHRoaXMuX3JlYWRDYXBhYmlsaXR5ID0gKDAsIF91dGlsLmNyZWF0ZVByb21pc2VDYXBhYmlsaXR5KSgpO1xuICAgIGNvbnN0IHNvdXJjZSA9IHN0cmVhbS5zb3VyY2U7XG4gICAgdGhpcy5faXNTdHJlYW1pbmdTdXBwb3J0ZWQgPSAhc291cmNlLmRpc2FibGVTdHJlYW07XG4gIH1cblxuICBnZXQgaXNTdHJlYW1pbmdTdXBwb3J0ZWQoKSB7XG4gICAgcmV0dXJuIHRoaXMuX2lzU3RyZWFtaW5nU3VwcG9ydGVkO1xuICB9XG5cbiAgYXN5bmMgcmVhZCgpIHtcbiAgICBhd2FpdCB0aGlzLl9yZWFkQ2FwYWJpbGl0eS5wcm9taXNlO1xuXG4gICAgaWYgKHRoaXMuX2RvbmUpIHtcbiAgICAgIHJldHVybiB7XG4gICAgICAgIHZhbHVlOiB1bmRlZmluZWQsXG4gICAgICAgIGRvbmU6IHRydWVcbiAgICAgIH07XG4gICAgfVxuXG4gICAgaWYgKHRoaXMuX3N0b3JlZEVycm9yKSB7XG4gICAgICB0aHJvdyB0aGlzLl9zdG9yZWRFcnJvcjtcbiAgICB9XG5cbiAgICBjb25zdCBjaHVuayA9IHRoaXMuX3JlYWRhYmxlU3RyZWFtLnJlYWQoKTtcblxuICAgIGlmIChjaHVuayA9PT0gbnVsbCkge1xuICAgICAgdGhpcy5fcmVhZENhcGFiaWxpdHkgPSAoMCwgX3V0aWwuY3JlYXRlUHJvbWlzZUNhcGFiaWxpdHkpKCk7XG4gICAgICByZXR1cm4gdGhpcy5yZWFkKCk7XG4gICAgfVxuXG4gICAgdGhpcy5fbG9hZGVkICs9IGNodW5rLmxlbmd0aDtcblxuICAgIGlmICh0aGlzLm9uUHJvZ3Jlc3MpIHtcbiAgICAgIHRoaXMub25Qcm9ncmVzcyh7XG4gICAgICAgIGxvYWRlZDogdGhpcy5fbG9hZGVkXG4gICAgICB9KTtcbiAgICB9XG5cbiAgICBjb25zdCBidWZmZXIgPSBuZXcgVWludDhBcnJheShjaHVuaykuYnVmZmVyO1xuICAgIHJldHVybiB7XG4gICAgICB2YWx1ZTogYnVmZmVyLFxuICAgICAgZG9uZTogZmFsc2VcbiAgICB9O1xuICB9XG5cbiAgY2FuY2VsKHJlYXNvbikge1xuICAgIGlmICghdGhpcy5fcmVhZGFibGVTdHJlYW0pIHtcbiAgICAgIHRoaXMuX2Vycm9yKHJlYXNvbik7XG5cbiAgICAgIHJldHVybjtcbiAgICB9XG5cbiAgICB0aGlzLl9yZWFkYWJsZVN0cmVhbS5kZXN0cm95KHJlYXNvbik7XG4gIH1cblxuICBfZXJyb3IocmVhc29uKSB7XG4gICAgdGhpcy5fc3RvcmVkRXJyb3IgPSByZWFzb2
+{
+    "word": "इन्द्रायुध",
+    "BOP": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "1142",
+            "pagenum": 40,
+            "content": "इन्द्रायुध¦ <i>m.</i> (ex इन्द्र et आयुध telum, arma) arcus coelestis. AM."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "4983",
+            "pagenum": 75,
+            "content": "इन्द्रायुध¦ <lex>n.</lex> Indra's weapon or bow, the rainbow; <lex>f.</lex> आ a kind of leech."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "3100",
+            "pagenum": 50,
+            "content": "इन्द्रायुध¦ <i>n.</i> Regenbogen; <i>f.</i> अ Blutegelart. <lbinfo n='4'/>"
+        }
+    ],
+    "LAN": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "723",
+            "pagenum": 129,
+            "content": "<b>indrāyudha,</b>¦ <i><ab>n.</ab></i> Indra's weapon, the rainbow. [<b>āyudha.</b>]"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "05807",
+            "pagenum": 118,
+            "content": "indra-AyuDa¦ <i>n.</i> Indra’s weapon, the rainbow."
+        }
+    ],
+    "MD": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "4140",
+            "pagenum": 46,
+            "content": "इन्द्रायुध¦ indra‿āyudha, <lex>n.</lex> Indraʼs weapon, 🞄rainbow; <lex>m.</lex> horse with black spots on the 🞄eyes; <b>ā,</b> <lex>f.</lex> <i>kind of leech</i>; <b>-maya,</b> <lex>a.</lex> consisting 🞄altogether of rainbow."
+        }
+    ],
+    "MW": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "29176",
+            "pagenum": "167,1",
+            "content": "indrA<srs/>yuDa ¦ <lex>n.</lex> ‘<s1 slp1='indra'>Indra</s1>'s weapon’, the rainbow, <ls>MBh.</ls>; <ls>VarBṛS.</ls>; <ls>Ragh.</ls><info lex='n'/>"
+        },
+        {
+            "word": "इन्द्रायुध",
+            "eid": "29177",
+            "pagenum": "167,1",
+            "content": "¦ diamond, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "इन्द्रायुध",
+            "eid": "29178",
+            "pagenum": "167,1",
+            "content": "indrA<srs/>yuDa ¦ <lex>m.</lex> a horse marked with black about the eyes<info lex='m'/>"
+        }
+    ],
+    "PUI": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "1571",
+            "pagenum": 1,
+            "content": "<i>Indrāyudha</i>¦ — the rainbow appearing in cloudless sky or at night, a bad sign for a state. <dvsn n='P'/>M. 233. 7."
+        }
+    ],
+    "PW": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "17120",
+            "pagenum": 1,
+            "content": "<hom>1.</hom> इन्द्रायुध¦ <lex>n.</lex> <dvsn n='1'>— 1〉 <i>Regenbogen</i>. <dvsn n='1'>— 2〉 *<i>Diamant</i> <ls>RĀJAN. 13,176</ls>."
+        },
+        {
+            "word": "इन्द्रायुध",
+            "eid": "17121",
+            "pagenum": 1,
+            "content": "<hom>2.</hom> इन्द्रायुध¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <i>ein Pferd mit schwarzen Flecken an den Augen</i>. <dvsn n='1'>— 2〉 <lex>f.</lex> आ <i>eine Blutegelart</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "10252",
+            "pagenum": 1,
+            "content": "इन्द्रायुध¦ (इ° + आ°) <dvsn n='1'> 1) <lex>n.</lex> <is>Indra's</is> <i>Waffe, der Regenbogen</i> <ls>AK. 1, 1, 2, 12.</ls> <ls>M. 4, 59.</ls> <ls>MBH. 3, 8288.</ls> <ls>VARĀH. BṚH. S.</ls> in <ls>Verz. d. B. H. 243 (35).</ls> <ls>RAGH. 7, 4.</ls> <ls n='RAGH.'>12, 79.</ls> <dvsn n='1'>— 2) <lex>m.</lex> N. pr. eines Pferdes <ls>KĀD.</ls> in <ls>Z. d. d. m. G. 7, 584, 3.</ls> <dvsn n='1'>— 3) <lex>f.</lex> °धा <i>eine Blutegelart (regenbogenfarbig</i> oder <i>mit bogenförmiger Zeichnung</i>) <ls>SUŚR. 1, 40, 10.</ls>"
+        },
+        {
+            "word": "इन्द्रायुध",
+            "eid": "67287",
+            "pagenum": 5,
+            "content": "इन्द्रायुध¦ <dvsn n='1'> 1) <ls>VARĀH. BṚH. S. 11,9.</ls> <ls>Verz. d. Oxf. H. 51,b,20.</ls> <dvsn n='1'>— 2) <i>ein Pferd mit schwarzen Flecken an den Augen</i> <ls>HALĀY. 2, 283</ls>; vgl. <ls>AUFRECHT</ls> ebend. im Index."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "6333",
+            "pagenum": 108,
+            "content": "इन्द्रायुध¦ m. (-धः) The rainbow. f. (-धा) A kind of leech of various tints on the back. E. इन्द्र and आयुध a weapon; INDRA'S weapon."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "6335",
+            "pagenum": 132,
+            "content": "इन्द्रायुध¦ m. (-धः) The rainbow. f. (-धा) A kind of leech of various tints on the back. .E. इन्द्र and आयुध a weapon; INDRA'S weapon."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "5723",
+            "pagenum": 107,
+            "content": "इन्द्रा_युध¦ (धः) 1. <i>m.</i> The rainbow. <i>f.</i> (धा) A kind of leech."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "4185",
+            "pagenum": "1-212-b",
+            "content": "इन्द्रायुधं¦, क्ली, (इन्द्रस्यायुधमिव चापाकृतिंत्वात् ।) इन्द्रधनुः । इत्यमरः ॥ रामधनुक गण्डी इत्यादि भाषा । (“स नादं मेघनादस्य धनुश्चेन्द्रायुधप्रभम्” । इति रघुवंशे । १२ । ७९ । तथा, मनुः । ४ । ५९ । “न दिवीन्द्रायुधं दृष्ट्वा कस्यचिद्दर्शयेद्बुधः” ।)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "इन्द्रायुध",
+            "eid": "8306",
+            "pagenum": "0954,b",
+            "content": "इन्द्रायुध¦ न० ६ त० । १ शक्रस्यास्त्रेवज्रे “सनादं मेघनादस्य धनुश्चेन्द्रायुधप्रभम्” रघुः । इन्द्रे तदधिष्ठितमेघे आयुधमिव । सूर्य्यकिरणसंपर्कात् मेघे जायमाने २ धनुराकारेपदार्थभेदे तल्लक्षणाद्युक्तं वृ० स० “सूर्य्यस्य विविधवर्ण्णाः पवनेन विघट्टिताः कराः साभ्रे । वियति धनुःसंस्थाना ये दृश्यन्ते तदिन्द्रधनुः । केचिदनन्तकुलोरगनिःश्वासोद्भूतमाहुराचार्य्याः । तद्यायिनां नृपाणामभिमुखमजयावहं भवति । अच्छिन्नमवनिगादं द्युतिमत् स्निग्धं घनं विविधवर्णम् । द्विरुदितमनुलोमं च प्रशस्तमम्भः प्रयच्छति च । विदिगुद्भूतं दिक्स्वामिनाशनं व्यभ्रजं मरककारि । पाटलपीतकनीलैः शस्त्राग्निक्षुत्कृता दोषाः । जलभध्येऽनावृष्टिर्भुवि शस्यबधस्तरौ स्थिते व्याधिः । वल्मीके शस्त्रभयं निशि सचिवबधाय धनुरैन्द्रम् । वृष्टिं करोत्यवृष्ट्यां वृष्टिं वृष्ट्यां निवारयत्यैन्द्र्याम् । पश्चात् सदैव वृष्टि कुलिशभृतश्चापमाचष्टे । चापं मघोनः कुरुते निशायाम् आखण्डलायां दिशि भूपपीडाम् । या म्यापरोदक्प्रभवं निहन्यात् सेनापतिं नायकमन्त्रिणौ च । निशि सुरचापं सितवर्णाभं जनयति पीडां द्विजपूर्व्वाणाम् । भवति च यस्यां दिशि तद्देश्यं नरपतिमुख्यं न चिराद्धन्यात्” । “न दिवीन्द्रायुधं दृष्ट्वा कस्यचिद्दर्शयेद्बुधः” मनुः “इन्द्रायुधद्योतिततोरणाङ्कम्” रघुः । ततः तालादि० विकारे अञ् । ऐन्द्रायुधस्तद्विकारे त्रि० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "इन्द्रायुध",
+            "content": "इन्द्रायुधम् नपुं. इन्द्रः-आयुधम्  - 'इन्द्र का शस्त्र, इन्द्रधनुष'"
+        },
+        {
+            "word": "इन्द्रायुध",
+            "content": "इन्द्रायुधम् नपुं. इन्द्रः-आयुधम्  - इन्द्रधनुष"
+        },
+        {
+            "word": "इन्द्रायुध",
+            "content": "इन्द्रायुधम् नपुं. इन्द्रः-आयुधम्  - हीरा"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "इन्द्रायुध",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಕಾದಂಬರಿಯಲ್ಲಿ ವರ್ಣಿತವಾದ ಒಂದು ಕುದುರೆ",
+            "content": ""
+        },
+        {
+            "word": "इन्द्रायुध",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಇಂದ್ರನ ಧನಸ್ಸು \\/ಕಾಮನಬಿಲ್ಲು",
+            "content": ""
+        },
+        {
+            "word": "इन्द्रायुध",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಇಂದ್ರನ ಅಸ್ತ್ರ",
+            "प्रयोगाः": "'इन्द्रायुधद्योतिततोरणाङ्कम्'",
+            "उल्लेखाः": "रघु० ७-४",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "इन्द्रायुध",
+            "linga": "N",
+            "artha": "इन्द्रधनुस्",
+            "synonyms": [
+                "इन्द्रायुध",
+                "शक्रधनुस्"
+            ],
+            "num": "1.3.12",
+            "text": "स्फूर्जथुर्वज्रनिर्घोषो मेघज्योतिरिरम्मदः । इन्द्रायुधं शक्रधनुस्तदेव ऋजुरोहितम् ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "इन्द्रायुध",
+            "content": "<body><s>indrAyuDa na° 6 ta° . <lb/><b>1</b> SakrasyAstrevajre <q>sanAdaM meGanAdasya DanuScendrAyuDapraBam</q> raGuH . indre tadaDizWitameGe AyuDa­miva . sUryyakiraRasaMparkAt meGe jAyamAne <lb/><b>2</b> DanurAkAre­padArTaBede tallakzaRAdyuktaM vf° sa° <q>sUryyasya viviDavarRRAH pavanena viGawwitAH karAH sABre . viyati DanuHsaMsTAnA ye dfSyante tadindraDanuH . kecidanantakuloraganiHSvAso­dBUtamAhurAcAryyAH . tadyAyinAM nfpARAmaBimuKamaja­yAvahaM Bavati . acCinnamavanigAdaM dyutimat snigDaM GanaM viviDavarRam . dviruditamanulomaM ca praSastamamBaH praya­cCati ca . vidigudBUtaM diksvAminASanaM vyaBrajaM mara­kakAri . pAwalapItakanIlEH SastrAgnikzutkftA dozAH . jalaBaDye'nAvfzwirBuvi SasyabaDastarO sTite vyADiH . val­mIke SastraBayaM niSi sacivabaDAya DanurEndram . vfzwiM ka­rotyavfzwyAM vfzwiM vfzwyAM nivArayatyEndryAm . paScAt sadEva vfzwi kuliSaBftaScApamAcazwe . cApaM maGonaH kurute niSAyAm AKaRqalAyAM diSi BUpapIqAm . yA myAparodakpraBavaM nihanyAt senApatiM nAyakamantriRO ca . niSi suracApaM sitavarRABaM janayati pIqAM dvijapU­rvvARAm . Bavati ca yasyAM diSi taddeSyaM narapatimuKyaM na cirAdDanyAt</q> . <q>na divIndrAyuDaM dfzwvA kasyacid­darSayedbuDaH</q> manuH <q>indrAyuDadyotitatoraRANkam</q> raGuH . tataH tAlAdi° vikAre aY . EndrAyuDastadvikAre tri° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "इन्द्रायुध",
+            "content": "<H1><h><key1>indrAyuDa</key1><key2>indrAyuDa</key2></h><body><s>indrAyuDa</s>  <div n=\"1\">m. (<s>-DaH</s>) The rainbow. </div><div n=\"1\">f. (<s>-DA</s>) A kind of leech of various tints <lb />on the back.</div><div n=\"E\"> E. <s>indra</s> and <s>AyuDa</s> a weapon; INDRA'S weapon.</div></body><tail><L>6333</L><pc>108-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "इन्द्रायुध",
+            "content": "<span lang=\"sa\">इन्द्रायुध<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕಾದಂಬರಿಯಲ್ಲಿ ವರ್ಣಿತವಾದ ಒಂದು ಕುದುರೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>इन्द्रायुध<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಇಂದ್ರನ ಧನಸ್ಸು /ಕಾಮನಬಿಲ್ಲು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>इन्द्रायुध<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಇಂದ್ರನ ಅಸ್ತ್ರ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"इन्द्रायुधद्योतिततोरणाङ्कम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० ७-४<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

@@ -1,189 +1,117 @@
-/**
- * @fileoverview Enforce non-interactive elements have no interactive handlers.
- * @author Ethan Cohen
- */
-
-// -----------------------------------------------------------------------------
-// Requirements
-// -----------------------------------------------------------------------------
-
-import { RuleTester } from 'eslint';
-import { configs } from '../../../src/index';
-import parserOptionsMapper from '../../__util__/parserOptionsMapper';
-import parsers from '../../__util__/helpers/parsers';
-import rule from '../../../src/rules/no-noninteractive-element-interactions';
-import ruleOptionsMapperFactory from '../../__util__/ruleOptionsMapperFactory';
-
-// -----------------------------------------------------------------------------
-// Tests
-// -----------------------------------------------------------------------------
-
-const ruleTester = new RuleTester();
-
-const errorMessage = 'Non-interactive elements should not be assigned mouse or keyboard event listeners.';
-
-const expectedError = {
-  message: errorMessage,
-  type: 'JSXOpeningElement',
-};
-
-const ruleName = 'no-noninteractive-element-interactions';
-
-const alwaysValid = [
-  { code: '<TestComponent onClick={doFoo} />' },
-  { code: '<Button onClick={doFoo} />' },
-  { code: '<Image onClick={() => void 0} />;' },
-  {
-    code: '<Button onClick={() => void 0} />;',
-    settings: { 'jsx-a11y': { components: { Button: 'button' } } },
-  },
-  /* All flavors of input */
-  { code: '<input onClick={() => void 0} />' },
-  { code: '<input type="button" onClick={() => void 0} />' },
-  { code: '<input type="checkbox" onClick={() => void 0} />' },
-  { code: '<input type="color" onClick={() => void 0} />' },
-  { code: '<input type="date" onClick={() => void 0} />' },
-  { code: '<input type="datetime" onClick={() => void 0} />' },
-  { code: '<input type="datetime-local" onClick={() => void 0} />' },
-  { code: '<input type="email" onClick={() => void 0} />' },
-  { code: '<input type="file" onClick={() => void 0} />' },
-  { code: '<input type="image" onClick={() => void 0} />' },
-  { code: '<input type="month" onClick={() => void 0} />' },
-  { code: '<input type="number" onClick={() => void 0} />' },
-  { code: '<input type="password" onClick={() => void 0} />' },
-  { code: '<input type="radio" onClick={() => void 0} />' },
-  { code: '<input type="range" onClick={() => void 0} />' },
-  { code: '<input type="reset" onClick={() => void 0} />' },
-  { code: '<input type="search" onClick={() => void 0} />' },
-  { code: '<input type="submit" onClick={() => void 0} />' },
-  { code: '<input type="tel" onClick={() => void 0} />' },
-  { code: '<input type="text" onClick={() => void 0} />' },
-  { code: '<input type="time" onClick={() => void 0} />' },
-  { code: '<input type="url" onClick={() => void 0} />' },
-  { code: '<input type="week" onClick={() => void 0} />' },
-  { code: '<input type="hidden" onClick={() => void 0} />' },
-  /* End all flavors of input */
-  { code: '<a onClick={() => void 0} />' },
-  { code: '<a onClick={() => {}} />;' },
-  { code: '<a tabIndex="0" onClick={() => void 0} />' },
-  { code: '<a onClick={() => void 0} href="http://x.y.z" />' },
-  { code: '<a onClick={() => void 0} href="http://x.y.z" tabIndex="0" />' },
-  { code: '<area onClick={() => {}} />;' },
-  { code: '<button onClick={() => void 0} className="foo" />' },
-  { code: '<menuitem onClick={() => {}} />;' },
-  { code: '<option onClick={() => void 0} className="foo" />' },
-  { code: '<select onClick={() => void 0} className="foo" />' },
-  { code: '<textarea onClick={() => void 0} className="foo" />' },
-  { code: '<tr onClick={() => {}} />;' },
-  /* HTML elements with neither an interactive or non-interactive valence (static) */
-  { code: '<acronym onClick={() => {}} />;' },
-  { code: '<applet onClick={() => {}} />;' },
-  { code: '<audio onClick={() => {}} />;' },
-  { code: '<b onClick={() => {}} />;' },
-  { code: '<base onClick={() => {}} />;' },
-  { code: '<bdi onClick={() => {}} />;' },
-  { code: '<bdo onClick={() => {}} />;' },
-  { code: '<big onClick={() => {}} />;' },
-  { code: '<blink onClick={() => {}} />;' },
-  { code: '<body onLoad={() => {}} />;' },
-  { code: '<body onClick={() => {}} />;' },
-  { code: '<canvas onClick={() => {}} />;' },
-  { code: '<center onClick={() => {}} />;' },
-  { code: '<cite onClick={() => {}} />;' },
-  { code: '<col onClick={() => {}} />;' },
-  { code: '<colgroup onClick={() => {}} />;' },
-  { code: '<content onClick={() => {}} />;' },
-  { code: '<data onClick={() => {}} />;' },
-  { code: '<datalist onClick={() => {}} />;' },
-  { code: '<div />;' },
-  { code: '<div className="foo" />;' },
-  { code: '<div className="foo" {...props} />;' },
-  { code: '<div onClick={() => void 0} aria-hidden />;' },
-  { code: '<div onClick={() => void 0} aria-hidden={true} />;' },
-  { code: '<div onClick={() => void 0} />;' },
-  { code: '<div onClick={() => void 0} role={undefined} />;' },
-  { code: '<div onClick={() => void 0} {...props} />;' },
-  { code: '<div onClick={null} />;' },
-  { code: '<div onKeyUp={() => void 0} aria-hidden={false} />;' },
-  { code: '<embed onClick={() => {}} />;' },
-  { code: '<font onClick={() => {}} />;' },
-  { code: '<font onSubmit={() => {}} />;' },
-  { code: '<form onSubmit={() => {}} />;' },
-  {
-    code: `
-      <form onSubmit={this.handleSubmit.bind(this)} method="POST">
-        <button type="submit">
-            Save
-        </button>
-      </form>
-    `,
-  },
-  { code: '<frame onClick={() => {}} />;' },
-  { code: '<frameset onClick={() => {}} />;' },
-  { code: '<head onClick={() => {}} />;' },
-  { code: '<header onClick={() => {}} />;' },
-  { code: '<hgroup onClick={() => {}} />;' },
-  { code: '<i onClick={() => {}} />;' },
-  { code: '<iframe onLoad={() => {}} />;' },
-  {
-    code: `
-      <iframe
-        name="embeddedExternalPayment"
-        ref="embeddedExternalPayment"
-        style={iframeStyle}
-        onLoad={this.handleLoadIframe}
-      />
-    `,
-  },
-  { code: '<img {...props} onError={() => {}} />;' },
-  { code: '<img onLoad={() => {}} />;' },
-  { code: '<img src={currentPhoto.imageUrl} onLoad={this.handleImageLoad} alt="for review" />' },
-  {
-    code: `
-        <img
-        ref={this.ref}
-        className="c-responsive-image-placeholder__image"
-        src={src}
-        alt={alt}
-        data-test-id="test-id"
-        onLoad={this.fetchCompleteImage}
-      />
-    `,
-  },
-  { code: '<kbd onClick={() => {}} />;' },
-  { code: '<keygen onClick={() => {}} />;' },
-  { code: '<link onClick={() => {}} />;' },
-  { code: '<main onClick={null} />;' },
-  { code: '<map onClick={() => {}} />;' },
-  { code: '<meta onClick={() => {}} />;' },
-  { code: '<noembed onClick={() => {}} />;' },
-  { code: '<noscript onClick={() => {}} />;' },
-  { code: '<object onClick={() => {}} />;' },
-  { code: '<param onClick={() => {}} />;' },
-  { code: '<picture onClick={() => {}} />;' },
-  { code: '<q onClick={() => {}} />;' },
-  { code: '<rp onClick={() => {}} />;' },
-  { code: '<rt onClick={() => {}} />;' },
-  { code: '<rtc onClick={() => {}} />;' },
-  { code: '<s onClick={() => {}} />;' },
-  { code: '<samp onClick={() => {}} />;' },
-  { code: '<script onClick={() => {}} />;' },
-  { code: '<section onClick={() => {}} />;' },
-  { code: '<small onClick={() => {}} />;' },
-  { code: '<source onClick={() => {}} />;' },
-  { code: '<spacer onClick={() => {}} />;' },
-  { code: '<span onClick={() => {}} />;' },
-  { code: '<strike onClick={() => {}} />;' },
-  { code: '<style onClick={() => {}} />;' },
-  { code: '<summary onClick={() => {}} />;' },
-  { code: '<td onClick={() => {}} />;' },
-  { code: '<th onClick={() => {}} />;' },
-  { code: '<title onClick={() => {}} />;' },
-  { code: '<track onClick={() => {}} />;' },
-  { code: '<tt onClick={() => {}} />;' },
-  { code: '<u onClick={() => {}} />;' },
-  { code: '<var onClick={() => {}} />;' },
-  { code: '<video onClick={() => {}} />;' },
-  { code: '<wbr onClick={() => {}} />;' },
-  { code: '<xmp onClick={() => {}} />;' },
-  /* HTML elements attributed with an i
+{
+    "word": "क्रप्",
+    "AP90": [
+        {
+            "word": "क्रप्",
+            "eid": "11691",
+            "pagenum": 429,
+            "content": "क्रप्¦ {c1c} <ab>A.</ab> (क्रपते) <b>1</b> To pity. <b>--2</b> To mourn. <b>--3</b> To lament. <b>--4</b> To go. <b>--5</b> To long for, desire."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "क्रप्",
+            "eid": "3919",
+            "pagenum": 225,
+            "content": "क्रप्¦ <i>KRAP,</i> or † कृप् <i>KṚP,</i> † कप् <i>KAP,</i> i. 1, <ab>Ātm.</ab> <b>1.</b> To compassionate; <ab>ved.</ab> to desire, and base of the <ab>pres.</ab> <i>kṛp.</i> <b>2.</b> † To go."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "क्रप्",
+            "eid": "2476",
+            "pagenum": 87,
+            "content": "क्रप्¦ 1. <i>P.</i> (ex कर्प् transaposito <i>ar</i> in <i>ra</i> i. q. कृप्."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "क्रप्",
+            "eid": "5234",
+            "pagenum": 191,
+            "content": "*क्रप्¦ <i>krap.</i> <i>krape</i> 1; <ab>p.</ab> <i>cakrape;</i> <ab>etc.</ab>; <ab>3p.</ab> <ab>a2.</ab> <ab>ps.</ab> <i>akrapi</i> ou <i>akrāpi.</i> Avoir pitié; <ab>cf.</ab> <i>kṛp.</i> || Aller. || Célébrer par des hymnes, <ab>Vd.</ab>"
+        }
+    ],
+    "CCS": [
+        {
+            "word": "क्रप्",
+            "eid": "5524",
+            "pagenum": 94,
+            "content": "क्रप्¦ कृ/पते jammern."
+        },
+        {
+            "word": "क्रप्",
+            "eid": "29809",
+            "pagenum": 539,
+            "content": "क्रप्¦ <i>mit</i> अनु sich sehnen nach, trauern um <i>(Acc.).</i>"
+        }
+    ],
+    "GRA": [
+        {
+            "word": "क्रप्",
+            "eid": "2741",
+            "pagenum": 357,
+            "content": "<b>√krap,</b>¦ 1〉 <i>jammern, trauern;</i> 2〉 <i>flehen;</i> 3〉 <i>ersehnen</i> [<ab>A.</ab>], nur im Medium; 4〉 <i>trauern</i> um [<ab>A.</ab>]. — Mit ánu, <i>sich sehnen</i> nach [<ab>A.</ab>]. <dvsn n='H'>Stamm I. <b>kṛpa:</b> <dvsn n='TS'>-ate <b>ánu:</b> pū́rvās {113,10}. <dvsn n='TS'>-anta [<ab>Impf.</ab>] 2〉 dhītáyas {811,4}. <dvsn n='H'><ab>Imperf.</ab> <b>akṛpa:</b> <dvsn n='TS'>-etām [<pe>3.</pe> <ab>d.</ab>] <b>ánu:</b> tvā {685,11}. <dvsn n='TS'>-anta 1〉 devā́s {850,5}. — 2〉 víprās {949,4}. — 3〉 gíras suparṇám {797,11}. <dvsn n='H'>Stamm II. <b>kṛpáya</b> (<ab n='siehe'>s.</ab> <ab>Part.</ab>). <dvsn n='H'><ab>Imperf.</ab> <b>akṛpaya:</b> <dvsn n='TS'>-at 4〉 gā́s {894,10} (um die geraubten Kühe). <dvsn n='H'><ab>Aor.</ab> <b>akṛp:</b> <dvsn n='TS'>-pran [<pe>3.</pe> <ab>p.</ab>] 2〉 urváśīs {298,18}. <dvsn n='H'><ab>Aor.</ab> <b>cakṛpá:</b> <dvsn n='TS'>-ánta 2〉 paśváyantrāsas {297,14} (dhībhís). <dvsn n='H'><ab>Aor.</ab> <b>akrapiṣ:</b> <dvsn n='TS'>-ṣṭa [<pe>3.</pe> <ab>s.</ab>] 2〉 stāmús {536,9}. <dvsn n='H'><ab>Part.</ab> <b>kṛ́pamāṇa</b> (von Stamm I.): <dvsn n='TS'>-am 2〉 {119,8}; kavím {116,14}. <dvsn n='H'><b>kṛpáyat</b> (von Stamm II.): <dvsn n='TS'>-an 1〉 devā́pis 〰 ádīdhet {924,7}."
+        }
+    ],
+    "MD": [
+        {
+            "word": "क्रप्",
+            "eid": "6431",
+            "pagenum": 76,
+            "content": "क्रप्¦ KRAP, <ab>v.</ab> कृप् KṚP."
+        }
+    ],
+    "MW": [
+        {
+            "word": "क्रप्",
+            "eid": "57748",
+            "pagenum": "319,2",
+            "content": "क्रप् ¦ <ab>cl.</ab> 1. <ab>Ā.</ab> क्रपते, to compassionate, <ls>Dhātup. xix, 9</ls>; <dvsn n='to'/>to go, <ls>ib.</ls> (<ab>cf.</ab> √ कृप्.)<info westergaard='krapa,19.9,01.0506'/><info verb='root' cp='1Ā'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "क्रप्",
+            "eid": "16147",
+            "pagenum": 260,
+            "content": "क्रप्¦ <i>krap,</i> cl. 1. A. <i>krapate, cakrape,</i> <i>krapiṣyate, akrapiṣṭa, krapitum,</i> to long for; to mourn; to lament, implore; to compassionate, pity; to go; [cf. <i>kṛp,</i> &c.]"
+        }
+    ],
+    "PW": [
+        {
+            "word": "क्रप्",
+            "eid": "31700",
+            "pagenum": 2,
+            "content": "क्रप्¦ <dvsn n='1'>— 1〉 कृपते, कृ/पमाण <dvsn n='2'>— a〉 <i>jammern, trauern um</i> (<ab>Acc.</ab>). <dvsn n='2'>— b〉 <i>flehen, ersehnen;</i> mit <ab>Acc.</ab> <dvsn n='1'>— 2〉 *क्रपते (कृपायाम्, गतौ). <dvsn n='p'>— Mit अनु, °कृप्ते <i>sich sehnen nach, trauern um</i>. <ab>Vgl.</ab> कृपय्."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "क्रप्",
+            "eid": "19763",
+            "pagenum": 2,
+            "content": "क्रप्¦, कृ/पते; अकृपन्त; अक्रपिष्ट, अकृप्रन्, चकृप/न्त; कृ/पमाण; <i>ersehnen, trauern; jammern, flehen</i>: नाके^ सुप\\र्णमु^पपप्ति\\वांस\\ं गिरो^ वे\\नाना^मकृपन्त पू\\र्वीः <ls>ṚV. 9, 85, 11.</ls> उ\\तो कृ^पन्त धी\\तयो^ दे\\वाना\\ं नाम\\ बिभ्र^तीः <ls n='ṚV.'>9, 99, 4.</ls> वि\\न्दन्त\\ ज्योति^श्चकृ\\पन्त^ धी\\भिः <ls n='ṚV.'>4, 1, 14.</ls> <ls n='ṚV.'>10, 123, 4.</ls> ए\\ष स्तोमो^ अचिक्रदद्वृषा^ त उ\\त स्ता\\मुर्म^घवन्नक्रपिष्ट <ls n='ṚV.'>7, 20, 9.</ls> मर्ता^नां चिदु\\र्वशी^रकृप्रन् <ls n='ṚV.'>4, 2, 18.</ls> विश्वे^ दे\\वा अ^कृपन्त समी\\च्योर्नि\\ष्पत^न्त्योः <ls n='ṚV.'>10, 24, 5.</ls> क\\विं कृप^माणमकृणुतं वि\\चक्षे^ <ls n='ṚV.'>1, 116, 14.</ls> <ls n='ṚV. 1,'>119, 8.</ls> अश्रू^णि\\ कृप^माणस्य\\ यानि^ जी\\तस्य^ वावृ\\तुः <ls>AV. 5, 19, 13.</ls> — क्रप्, क्र/पते <i>Mitleid haben; gehen</i> <ls>DHĀTUP. 19, 9.</ls> <dvsn n='v'>— Vgl. कृपण, कृपय्, कृपा, कृपाय् .  <dvsn n='p'>— अनु <i>sich sehnen nach, trauern um</i>: अनु\\ पूर्वा^ः कृपते वावशा\\ना प्र\\दीध्या^ना\\ जोष^म\\न्याभि^रेति <i>verlangend sehnt sie sich nach den vorangegangenen</i> <ls>ṚV. 1, 113, 10.</ls>"
+        }
+    ],
+    "YAT": [
+        {
+            "word": "क्रप्",
+            "eid": "11404",
+            "pagenum": 219,
+            "content": "क्रप्¦ (ङ) क्रपते 1. <i>a.</i> To compassionate, or pity; to move."
+        }
+    ],
+    "APHI": [
+        {
+            "word": "क्रप्",
+            "content": "क्रप् चुरा . पर .  क्रापयति    - स्पष्ट रूप से बोलना"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "क्रप्",
+            "content": "<H1><h><key1>krap</key1><key2>krap</key2></h><body><s>krap</s>   <ab>cl.</ab> 1. <ab>Ā.</ab> <s>krapate</s>, to compassionate, <ls>Dhātup. xix, 9</ls>; <div n=\"to\" />to go, <ls>ib.</ls> (<ab>cf.</ab> √ <s>kfp</s>.)<info westergaard=\"krapa,19.9,01.0506\" /><info verb=\"root\" cp=\"1Ā\" /></body><tail><L>57748</L><pc>319,2</pc></tail></H1>\n"
+        }
+    ]
+}

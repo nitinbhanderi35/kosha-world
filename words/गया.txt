@@ -1,1380 +1,160 @@
-
-2.6.9 / 2017-09-22
-==================
-
-  * remove ReDoS regexp in %o formatter (#504)
-
-2.6.8 / 2017-05-18
-==================
-
-  * Fix: Check for undefined on browser globals (#462, @marbemac)
-
-2.6.7 / 2017-05-16
-==================
-
-  * Fix: Update ms to 2.0.0 to fix regular expression denial of service vulnerability (#458, @hubdotcom)
-  * Fix: Inline extend function in node implementation (#452, @dougwilson)
-  * Docs: Fix typo (#455, @msasad)
-
-2.6.5 / 2017-04-27
-==================
-  
-  * Fix: null reference check on window.documentElement.style.WebkitAppearance (#447, @thebigredgeek)
-  * Misc: clean up browser reference checks (#447, @thebigredgeek)
-  * Misc: add npm-debug.log to .gitignore (@thebigredgeek)
-
-
-2.6.4 / 2017-04-20
-==================
-
-  * Fix: bug that would occure if process.env.DEBUG is a non-string value. (#444, @LucianBuzzo)
-  * Chore: ignore bower.json in npm installations. (#437, @joaovieira)
-  * Misc: update "ms" to v0.7.3 (@tootallnate)
-
-2.6.3 / 2017-03-13
-==================
-
-  * Fix: Electron reference to `process.env.DEBUG` (#431, @paulcbetts)
-  * Docs: Changelog fix (@thebigredgeek)
-
-2.6.2 / 2017-03-10
-==================
-
-  * Fix: DEBUG_MAX_ARRAY_LENGTH (#420, @slavaGanzin)
-  * Docs: Add backers and sponsors from Open Collective (#422, @piamancini)
-  * Docs: Add Slackin invite badge (@tootallnate)
-
-2.6.1 / 2017-02-10
-==================
-
-  * Fix: Module's `export default` syntax fix for IE8 `Expected identifier` error
-  * Fix: Whitelist DEBUG_FD for values 1 and 2 only (#415, @pi0)
-  * Fix: IE8 "Expected identifier" error (#414, @vgoma)
-  * Fix: Namespaces would not disable once enabled (#409, @musikov)
-
-2.6.0 / 2016-12-28
-==================
-
-  * Fix: added better null pointer checks for browser useColors (@thebigredgeek)
-  * Improvement: removed explicit `window.debug` export (#404, @tootallnate)
-  * Improvement: deprecated `DEBUG_FD` environment variable (#405, @tootallnate)
-
-2.5.2 / 2016-12-25
-==================
-
-  * Fix: reference error on window within webworkers (#393, @KlausTrainer)
-  * Docs: fixed README typo (#391, @lurch)
-  * Docs: added notice about v3 api discussion (@thebigredgeek)
-
-2.5.1 / 2016-12-20
-==================
-
-  * Fix: babel-core compatibility
-
-2.5.0 / 2016-12-20
-==================
-
-  * Fix: wrong reference in bower file (@thebigredgeek)
-  * Fix: webworker compatibility (@thebigredgeek)
-  * Fix: output formatting issue (#388, @kribblo)
-  * Fix: babel-loader compatibility (#383, @escwald)
-  * Misc: removed built asset from repo and publications (@thebigredgeek)
-  * Misc: moved source files to /src (#378, @yamikuronue)
-  * Test: added karma integration and replaced babel with browserify for browser tests (#378, @yamikuronue)
-  * Test: coveralls integration (#378, @yamikuronue)
-  * Docs: simplified language in the opening paragraph (#373, @yamikuronue)
-
-2.4.5 / 2016-12-17
-==================
-
-  * Fix: `navigator` undefined in Rhino (#376, @jochenberger)
-  * Fix: custom log function (#379, @hsiliev)
-  * Improvement: bit of cleanup + linting fixes (@thebigredgeek)
-  * Improvement: rm non-maintainted `dist/` dir (#375, @freewil)
-  * Docs: simplified language in the opening paragraph. (#373, @yamikuronue)
-
-2.4.4 / 2016-12-14
-==================
-
-  * Fix: work around debug being loaded in preload scripts for electron (#368, @paulcbetts)
-
-2.4.3 / 2016-12-14
-==================
-
-  * Fix: navigation.userAgent error for react native (#364, @escwald)
-
-2.4.2 / 2016-12-14
-==================
-
-  * Fix: browser colors (#367, @tootallnate)
-  * Misc: travis ci integration (@thebigredgeek)
-  * Misc: added linting and testing boilerplate with sanity check (@thebigredgeek)
-
-2.4.1 / 2016-12-13
-==================
-
-  * Fix: typo that broke the package (#356)
-
-2.4.0 / 2016-12-13
-==================
-
-  * Fix: bower.json references unbuilt src entry point (#342, @justmatt)
-  * Fix: revert "handle regex special characters" (@tootallnate)
-  * Feature: configurable util.inspect()`options for NodeJS (#327, @tootallnate)
-  * Feature: %O`(big O) pretty-prints objects (#322, @tootallnate)
-  * Improvement: allow colors in workers (#335, @botverse)
-  * Improvement: use same color for same namespace. (#338, @lchenay)
-
-2.3.3 / 2016-11-09
-==================
-
-  * Fix: Catch `JSON.stringify()` errors (#195, Jovan Alleyne)
-  * Fix: Returning `localStorage` saved values (#331, Levi Thomason)
-  * Improvement: Don't create an empty object when no `process` (Nathan Rajlich)
-
-2.3.2 / 2016-11-09
-==================
-
-  * Fix: be super-safe in index.js as well (@TooTallNate)
-  * Fix: should check whether process exists (Tom Newby)
-
-2.3.1 / 2016-11-09
-==================
-
-  * Fix: Added electron compatibility (#324, @paulcbetts)
-  * Improvement: Added performance optimizations (@tootallnate)
-  * Readme: Corrected PowerShell environment variable example (#252, @gimre)
-  * Misc: Removed yarn lock file from source control (#321, @fengmk2)
-
-2.3.0 / 2016-11-07
-==================
-
-  * Fix: Consistent placement of ms diff at end of output (#215, @gorangajic)
-  * Fix: Escaping of regex special characters in namespace strings (#250, @zacronos)
-  * Fix: Fixed bug causing crash on react-native (#282, @vkarpov15)
-  * Feature: Enabled ES6+ compatible import via default export (#212 @bucaran)
-  * Feature: Added %O formatter to reflect Chrome's console.log capability (#279, @oncletom)
-  * Package: Update "ms" to 0.7.2 (#315, @DevSide)
-  * Package: removed superfluous version property from bower.json (#207 @kkirsche)
-  * Readme: fix USE_COLORS to DEBUG_COLORS
-  * Readme: Doc fixes for format string sugar (#269, @mlucool)
-  * Readme: Updated docs for DEBUG_FD and DEBUG_COLORS environment variables (#232, @mattlyons0)
-  * Readme: doc fixes for PowerShell (#271 #243, @exoticknight @unreadable)
-  * Readme: better docs for browser support (#224, @matthewmueller)
-  * Tooling: Added yarn integration for development (#317, @thebigredgeek)
-  * Misc: Renamed History.md to CHANGELOG.md (@thebigredgeek)
-  * Misc: Added license file (#226 #274, @CantemoInternal @sdaitzman)
-  * Misc: Updated contributors (@thebigredgeek)
-
-2.2.0 / 2015-05-09
-==================
-
-  * package: update "ms" to v0.7.1 (#202, @dougwilson)
-  * README: add logging to file example (#193, @DanielOchoa)
-  * README: fixed a typo (#191, @amir-s)
-  * browser: expose `storage` (#190, @stephenmathieson)
-  * Makefile: add a `distclean` target (#189, @stephenmathieson)
-
-2.1.3 / 2015-03-13
-==================
-
-  * Updated stdout/stderr example (#186)
-  * Updated example/stdout.js to match debug current behaviour
-  * Renamed example/stderr.js to stdout.js
-  * Update Readme.md (#184)
-  * replace high intensity foreground color for bold (#182, #183)
-
-2.1.2 / 2015-03-01
-==================
-
-  * dist: recompile
-  * update "ms" to v0.7.0
-  * package: update "browserify" to v9.0.3
-  * component: fix "ms.js" repo location
-  * changed bower package name
-  * updated documentation about using debug in a browser
-  * fix: security error on safari (#167, #168, @yields)
-
-2.1.1 / 2014-12-29
-==================
-
-  * browser: use `typeof` to check for `console` existence
-  * browser: check for `console.log` truthiness (fix IE 8/9)
-  * browser: add support for Chrome apps
-  * Readme: added Windows usage remarks
-  * Add `bower.json` to properly support bower install
-
-2.1.0 / 2014-10-15
-==================
-
-  * node: implement `DEBUG_FD` env variable support
-  * package: update "browserify" to v6.1.0
-  * package: add "license" field to package.json (#135, @panuhorsmalahti)
-
-2.0.0 / 2014-09-01
-==================
-
-  * package: update "browserify" to v5.11.0
-  * node: use stderr rather than stdout for logging (#29, @stephenmathieson)
-
-1.0.4 / 2014-07-15
-==================
-
-  * dist: recompile
-  * example: remove `console.info()` log usage
-  * example: add "Content-Type" UTF-8 header to browser example
-  * browser: place %c marker after the space character
-  * browser: reset the "content" color via `color: inherit`
-  * browser: add colors support for Firefox >= v31
-  * debug: prefer an instance `log()` function over the global one (#119)
-  * Readme: update documentation about styled console logs for FF v31 (#116, @wryk)
-
-1.0.3 / 2014-07-09
-==================
-
-  * Add support for multiple wildcards in namespaces (#122, @seegno)
-  * browser: fix lint
-
-1.0.2 / 2014-06-10
-==================
-
-  * browser: update color palette (#113, @gscottolson)
-  * common: make console logging function configurable (#108, @timoxley)
-  * node: fix %o colors on old node <= 0.8.x
-  * Makefile: find node path using shell/which (#109, @timoxley)
-
-1.0.1 / 2014-06-06
-==================
-
-  * browser: use `removeItem()` to clear localStorage
-  * browser, node: don't set DEBUG if namespaces is undefined (#107, @leedm777)
-  * package: add "contributors" section
-  * node: fix comment typo
-  * README: list authors
-
-1.0.0 / 2014-06-04
-==================
-
-  * make ms diff be global, not be scope
-  * debug: ignore empty strings in enable()
-  * node: make DEBUG_COLORS able to disable coloring
-  * *: export the `colors` array
-  * npmignore: don't publish the `dist` dir
-  * Makefile: refactor to use browserify
-  * package: add "browserify" as a dev dependency
-  * Readme: add Web Inspector Colors section
-  * node: reset terminal color for the debug content
-  * node: map "%o" to `util.inspect()`
-  * browser: map "%j" to `JSON.stringify()`
-  * debug: add custom "formatters"
-  * debug: use "ms" module for humanizing the diff
-  * Readme: add "bash" syntax highlighting
-  * browser: add Firebug color support
-  * browser: add colors for WebKit browsers
-  * node: apply log to `console`
-  * rewrite: abstract common logic for Node & browsers
-  * add .jshintrc file
-
-0.8.1 / 2014-04-14
-==================
-
-  * package: re-add the "component" section
-
-0.8.0 / 2014-03-30
-==================
-
-  * add `enable()` method for nodejs. Closes #27
-  * change from stderr to stdout
-  * remove unnecessary index.js file
-
-0.7.4 / 2013-11-13
-==================
-
-  * remove "browserify" key from package.json (fixes something in browserify)
-
-0.7.3 / 2013-10-30
-==================
-
-  * fix: catch localStorage security error when cookies are blocked (Chrome)
-  * add debug(err) support. Closes #46
-  * add .browser prop to package.json. Closes #42
-
-0.7.2 / 2013-02-06
-==================
-
-  * fix package.json
-  * fix: Mobile Safari (private mode) is broken with debug
-  * fix: Use unicode to send escape character to shell instead of octal to work with strict mode javascript
-
-0.7.1 / 2013-02-05
-==================
-
-  * add repository URL to package.json
-  * add DEBUG_COLORED to force colored output
-  * add browserify support
-  * fix component. Closes #24
-
-0.7.0 / 2012-05-04
-==================
-
-  * Added .component to package.json
-  * Added debug.component.js build
-
-0.6.0 / 2012-03-16
-==================
-
-  * Added support for "-" prefix in DEBUG [Vinay Pulim]
-  * Added `.enabled` flag to the node version [TooTallNate]
-
-0.5.0 / 2012-02-02
-==================
-
-  * Added: humanize diffs. Closes #8
-  * Added `debug.disable()` to the CS variant
-  * Removed padding. Closes #10
-  * Fixed: persist client-side variant again. Closes #9
-
-0.4.0 / 2012-02-01
-==================
-
-  * Added browser variant support for older browsers [TooTallNate]
-  * Added `debug.enable('project:*')` to browser variant [TooTallNate]
-  * Added padding to diff (moved it to the right)
-
-0.3.0 / 2012-01-26
-==================
-
-  * Added millisecond diff when isatty, otherwise UTC string
-
-0.2.0 / 2012-01-22
-==================
-
-  * Added wildcard support
-
-0.1.0 / 2011-12-02
-==================
-
-  * Added: remove colors unless stderr isatty [TooTallNate]
-
-0.0.1 / 2010-01-03
-==================
-
-  * Initial release
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     // # spell-checker:ignore rivy
-declare namespace XDGAppPaths {
-	function cache(dir_options?: boolean | {isolated: boolean}): string;
-	function config(dir_options?: boolean | {isolated: boolean}): string;
-	function data(dir_options?: boolean | {isolated: boolean}): string;
-	function runtime(dir_options?: boolean | {isolated: boolean}): string | undefined;
-	function state(dir_options?: boolean | {isolated: boolean}): string;
-
-	function configDirs(dir_options?: boolean | {isolated: boolean}): string[];
-	function dataDirs(dir_options?: boolean | {isolated: boolean}): string[];
-
-	function $name(): string;
-	function $isolated(): boolean;
-}
-declare function XDGAppPaths( options?: string | {name: string, suffix: string, isolated: boolean} ): typeof XDGAppPaths;
-export = XDGAppPaths;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-/*
- * Browser-compatible JavaScript MD5
- *
- * Modification of JavaScript MD5
- * https://github.com/blueimp/JavaScript-MD5
- *
- * Copyright 2011, Sebastian Tschan
- * https://blueimp.net
- *
- * Licensed under the MIT license:
- * https://opensource.org/licenses/MIT
- *
- * Based on
- * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
- * Digest Algorithm, as defined in RFC 1321.
- * Version 2.2 Copyright (C) Paul Johnston 1999 - 2009
- * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
- * Distributed under the BSD License
- * See http://pajhome.org.uk/crypt/md5 for more info.
- */
-function md5(bytes) {
-  if (typeof bytes === 'string') {
-    const msg = unescape(encodeURIComponent(bytes)); // UTF8 escape
-
-    bytes = new Uint8Array(msg.length);
-
-    for (let i = 0; i < msg.length; ++i) {
-      bytes[i] = msg.charCodeAt(i);
-    }
-  }
-
-  return md5ToHexEncodedArray(wordsToMd5(bytesToWords(bytes), bytes.length * 8));
-}
-/*
- * Convert an array of little-endian words to an array of bytes
- */
-
-
-function md5ToHexEncodedArray(input) {
-  const output = [];
-  const length32 = input.length * 32;
-  const hexTab = '0123456789abcdef';
-
-  for (let i = 0; i < length32; i += 8) {
-    const x = input[i >> 5] >>> i % 32 & 0xff;
-    const hex = parseInt(hexTab.charAt(x >>> 4 & 0x0f) + hexTab.charAt(x & 0x0f), 16);
-    output.push(hex);
-  }
-
-  return output;
-}
-/**
- * Calculate output length with padding and bit length
- */
-
-
-function getOutputLength(inputLength8) {
-  return (inputLength8 + 64 >>> 9 << 4) + 14 + 1;
-}
-/*
- * Calculate the MD5 of an array of little-endian words, and a bit length.
- */
-
-
-function wordsToMd5(x, len) {
-  /* append padding */
-  x[len >> 5] |= 0x80 << len % 32;
-  x[getOutputLength(len) - 1] = len;
-  let a = 1732584193;
-  let b = -271733879;
-  let c = -1732584194;
-  let d = 271733878;
-
-  for (let i = 0; i < x.length; i += 16) {
-    const olda = a;
-    const oldb = b;
-    const oldc = c;
-    const oldd = d;
-    a = md5ff(a, b, c, d, x[i], 7, -680876936);
-    d = md5ff(d, a, b, c, x[i + 1], 12, -389564586);
-    c = md5ff(c, d, a, b, x[i + 2], 17, 606105819);
-    b = md5ff(b, c, d, a, x[i + 3], 22, -1044525330);
-    a = md5ff(a, b, c, d, x[i + 4], 7, -176418897);
-    d = md5ff(d, a, b, c, x[i + 5], 12, 1200080426);
-    c = md5ff(c, d, a, b, x[i + 6], 17, -1473231341);
-    b = md5ff(b, c, d, a, x[i + 7], 22, -45705983);
-    a = md5ff(a, b, c, d, x[i + 8], 7, 1770035416);
-    d = md5ff(d, a, b, c, x[i + 9], 12, -1958414417);
-    c = md5ff(c, d, a, b, x[i + 10], 17, -42063);
-    b = md5ff(b, c, d, a, x[i + 11], 22, -1990404162);
-    a = md5ff(a, b, c, d, x[i + 12], 7, 1804603682);
-    d = md5ff(d, a, b, c, x[i + 13], 12, -40341101);
-    c = md5ff(c, d, a, b, x[i + 14], 17, -1502002290);
-    b = md5ff(b, c, d, a, x[i + 15], 22, 1236535329);
-    a = md5gg(a, b, c, d, x[i + 1], 5, -165796510);
-    d = md5gg(d, a, b, c, x[i + 6], 9, -1069501632);
-    c = md5gg(c, d, a, b, x[i + 11], 14, 643717713);
-    b = md5gg(b, c, d, a, x[i], 20, -373897302);
-    a = md5gg(a, b, c, d, x[i + 5], 5, -701558691);
-    d = md5gg(d, a, b, c, x[i + 10], 9, 38016083);
-    c = md5gg(c, d, a, b, x[i + 15], 14, -660478335);
-    b = md5gg(b, c, d, a, x[i + 4], 20, -405537848);
-    a = md5gg(a, b, c, d, x[i + 9], 5, 568446438);
-    d = md5gg(d, a, b, c, x[i + 14], 9, -1019803690);
-    c = md5gg(c, d, a, b, x[i + 3], 14, -187363961);
-    b = md5gg(b, c, d, a, x[i + 8], 20, 1163531501);
-    a = md5gg(a, b, c, d, x[i + 13], 5, -1444681467);
-    d = md5gg(d, a, b, c, x[i + 2], 9, -51403784);
-    c = md5gg(c, d, a, b, x[i + 7], 14, 1735328473);
-    b = md5gg(b, c, d, a, x[i + 12], 20, -1926607734);
-    a = md5hh(a, b, c, d, x[i + 5], 4, -378558);
-    d = md5hh(d, a, b, c, x[i + 8], 11, -2022574463);
-    c = md5hh(c, d, a, b, x[i + 11], 16, 1839030562);
-    b = md5hh(b, c, d, a, x[i + 14], 23, -35309556);
-    a = md5hh(a, b, c, d, x[i + 1], 4, -1530992060);
-    d = md5hh(d, a, b, c, x[i + 4], 11, 1272893353);
-    c = md5hh(c, d, a, b, x[i + 7], 16, -155497632);
-    b = md5hh(b, c, d, a, x[i + 10], 23, -1094730640);
-    a = md5hh(a, b, c, d, x[i + 13], 4, 681279174);
-    d = md5hh(d, a, b, c, x[i], 11, -358537222);
-    c = md5hh(c, d, a, b, x[i + 3], 16, -722521979);
-    b = md5hh(b, c, d, a, x[i + 6], 23, 76029189);
-    a = md5hh(a, b, c, d, x[i + 9], 4, -640364487);
-    d = md5hh(d, a, b, c, x[i + 12], 11, -421815835);
-    c = md5hh(c, d, a, b, x[i + 15], 16, 530742520);
-    b = md5hh(b, c, d, a, x[i + 2], 23, -995338651);
-    a = md5ii(a, b, c, d, x[i], 6, -198630844);
-    d = md5ii(d, a, b, c, x[i + 7], 10, 1126891415);
-    c = md5ii(c, d, a, b, x[i + 14], 15, -1416354905);
-    b = md5ii(b, c, d, a, x[i + 5], 21, -57434055);
-    a = md5ii(a, b, c, d, x[i + 12], 6, 1700485571);
-    d = md5ii(d, a, b, c, x[i + 3], 10, -1894986606);
-    c = md5ii(c, d, a, b, x[i + 10], 15, -1051523);
-    b = md5ii(b, c, d, a, x[i + 1], 21, -2054922799);
-    a = md5ii(a, b, c, d, x[i + 8], 6, 1873313359);
-    d = md5ii(d, a, b, c, x[i + 15], 10, -30611744);
-    c = md5ii(c, d, a, b, x[i + 6], 15, -1560198380);
-    b = md5ii(b, c, d, a, x[i + 13], 21, 1309151649);
-    a = md5ii(a, b, c, d, x[i + 4], 6, -145523070);
-    d = md5ii(d, a, b, c, x[i + 11], 10, -1120210379);
-    c = md5ii(c, d, a, b, x[i + 2], 15, 718787259);
-    b = md5ii(b, c, d, a, x[i + 9], 21, -343485551);
-    a = safeAdd(a, olda);
-    b = safeAdd(b, oldb);
-    c = safeAdd(c, oldc);
-    d = safeAdd(d, oldd);
-  }
-
-  return [a, b, c, d];
-}
-/*
- * Convert an array bytes to an array of little-endian words
- * Characters >255 have their high-byte silently ignored.
- */
-
-
-function bytesToWords(input) {
-  if (input.length === 0) {
-    return [];
-  }
-
-  const length8 = input.length * 8;
-  const output = new Uint32Array(getOutputLength(length8));
-
-  for (let i = 0; i < length8; i += 8) {
-    output[i >> 5] |= (input[i / 8] & 0xff) << i % 32;
-  }
-
-  return output;
-}
-/*
- * Add integers, wrapping at 2^32. This uses 16-bit operations internally
- * to work around bugs in some JS interpreters.
- */
-
-
-function safeAdd(x, y) {
-  const lsw = (x & 0xffff) + (y & 0xffff);
-  const msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  return msw << 16 | lsw & 0xffff;
-}
-/*
- * Bitwise rotate a 32-bit number to the left.
- */
-
-
-function bitRotateLeft(num, cnt) {
-  return num << cnt | num >>> 32 - cnt;
-}
-/*
- * These functions implement the four basic operations the algorithm uses.
- */
-
-
-function md5cmn(q, a, b, x, s, t) {
-  return safeAdd(bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b);
-}
-
-function md5ff(a, b, c, d, x, s, t) {
-  return md5cmn(b & c | ~b & d, a, b, x, s, t);
-}
-
-function md5gg(a, b, c, d, x, s, t) {
-  return md5cmn(b & d | c & ~d, a, b, x, s, t);
-}
-
-function md5hh(a, b, c, d, x, s, t) {
-  return md5cmn(b ^ c ^ d, a, b, x, s, t);
-}
-
-function md5ii(a, b, c, d, x, s, t) {
-  return md5cmn(c ^ (b | ~d), a, b, x, s, t);
-}
-
-var _default = md5;
-exports.default = _default;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         module.exports={C:{"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0.00691,"53":0,"54":0,"55":0,"56":0.0023,"57":0,"58":0,"59":0,"60":0,"61":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0.00691,"69":0,"70":0,"71":0,"72":0.0023,"73":0,"74":0,"75":0,"76":0,"77":0,"78":0,"79":0,"80":0,"81":0,"82":0.0023,"83":0,"84":0,"85":0.0023,"86":0,"87":0,"88":0.0023,"89":0.0023,"90":0.0023,"91":0.0023,"92":0.0023,"93":0.0023,"94":0.0046,"95":0.0023,"96":0.0023,"97":0.0023,"98":0.0023,"99":0.0023,"100":0.0023,"101":0.0023,"102":0.01611,"103":0.0023,"104":0.0046,"105":0.00691,"106":0.00691,"107":0.0046,"108":0.00921,"109":0.00691,"110":0.00691,"111":0.01151,"112":0.00921,"113":0.02762,"114":0.01611,"115":0.32228,"116":0.06906,"117":0.43738,"118":0.03223,"119":0,"120":0,"3.5":0,"3.6":0},D:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0.0023,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0.0023,"59":0,"60":0,"61":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0,"69":0.0023,"70":0.0023,"71":0.0023,"72":0,"73":0.0023,"74":0,"75":0,"76":0,"77":0.0023,"78":0.0023,"79":0.0046,"80":0.0023,"81":0.0046,"83":0.0023,"84":0.0023,"85":0.0023,"86":0.0046,"87":0.0046,"88":0.0023,"89":0.0046,"90":0.0023,"91":0.0046,"92":0.0023,"93":0,"94":0.0023,"95":0.0046,"96":0.0046,"97":0.0023,"98":0.0023,"99":0.0046,"100":0.0046,"101":0.0046,"102":0.00921,"103":0.01151,"104":0.00691,"105":0.00921,"106":0.01381,"107":0.01381,"108":0.01842,"109":0.85174,"110":0.00691,"111":0.01151,"112":0.01611,"113":0.01381,"114":0.03913,"115":0.04834,"116":1.86922,"117":0.39134,"118":0,"119":0,"120":0},F:{"9":0,"11":0,"12":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"60":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0,"69":0,"70":0,"71":0,"72":0.0023,"73":0.0023,"74":0.0023,"75":0,"76":0.0023,"77":0.00921,"78":0,"79":0.0023,"80":0,"81":0,"82":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0,"92":0,"93":0,"94":0,"95":0.01381,"96":0,"97":0,"98":0,"99":0.0023,"100":0.0046,"101":0.02993,"102":0.02993,"9.5-9.6":0,"10.0-10.1":0,"10.5":0,"10.6":0,"11.1":0,"11.5":0,"11.6":0,"12.1":0},B:{"12":0.0023,"13":0.0023,"14":0,"15":0,"16":0,"17":0,"18":0.0046,"79":0,"80":0,"81":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0.0023,"90":0.0023,"91":0,"92":0.01381,"93":0,"94":0,"95":0,"96":0,"97":0,"98":0,"99":0,"100":0.0023,"101":0,"102":0,"103":0,"104":0,"105":0.0023,"106":0,"107":0.0023,"108":0.0023,"109":0.01842,"110":0.0023,"111":0.0023,"112":0.0023,"113":0.0023,"114":0.00691,"115":0.01151,"116":0.1128,"117":0.06215},E:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,_:"0","3.1":0,"3.2":0,"5.1":0,"6.1":0,"7.1":0,"9.1":0,"10.1":0,"11.1":0,"12.1":0,"13.1":0,"14.1":0.0023,"15.1":0,"15.2-15.3":0,"15.4":0,"15.5":0,"15.6":0.0046,"16.0":0,"16.1":0,"16.2":0,"16.3":0.0023,"16.4":0.0023,"16.5":0.0023,"16.6":0.00921,"17.0":0.0023,"17.1":0},G:{"8":0,"3.2":0,"4.0-4.1":0,"4.2-4.3":0,"5.0-5.1":0,"6.0-6.1":0,"7.0-7.1":0.0022,"8.1-8.4":0.00073,"9.0-9.2":0.00073,"9.3":0.00294,"10.0-10.2":0,"10.3":0.01027,"11.0-11.2":0.00294,"11.3-11.4":0.00367,"12.0-12.1":0.01394,"12.2-12.5":0.35666,"13.0-13.1":0.00734,"13.2":0.00514,"13.3":0.05651,"13.4-13.7":0.04477,"14.0-14.4":0.13283,"14.5-14.8":0.13356,"15.0-15.1":0.10935,"15.2-15.3":0.11742,"15.4":0.11081,"15.5":0.15264,"15.6-15.7":1.21454,"16.0":0.29501,"16.1":0.33905,"16.2":0.24438,"16.3":0.39775,"16.4":0.39849,"16.5":0.7823,"16.6":2.02693,"17.0":0.33611,"17.1":0},P:{"4":0.16122,"20":0.60458,"21":0.80611,"22":2.97254,"5.0-5.4":0.03023,"6.2-6.4":0.03023,"7.2-7.4":0.26199,"8.2":0.03023,"9.2":0.11084,"10.1":0.03023,"11.1-11.2":0.16122,"12.0":0.06046,"13.0":0.2116,"14.0":0.19145,"15.0":0.10076,"16.0":0.32245,"17.0":0.39298,"18.0":0.3426,"19.0":0.47359},I:{"0":0,"3":0,"4":0,"2.1":0,"2.2":0,"2.3":0,"4.1":0,"4.2-4.3":0.00415,"4.4":0,"4.4.3-4.4.4":0.01815},K:{_:"0 10 11 12 11.1 11.5 12.1"},A:{"6":0,"7":0,"8":0,"9":0,"10":0,"11":0.37523,"5.5":0},S:{"2.5":0,_:"3.0-3.1"},J:{"7":0,"10":0},N:{"10":0,"11":0},L:{"0":76.68266},R:{_:"0"},M:{"0":1.02383},Q:{"13.1":0},O:{"0":0.06158},H:{"0":0.43728}};
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   /*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-
-"use strict";
-
-const path = require("path");
-
-const CHAR_HASH = "#".charCodeAt(0);
-const CHAR_SLASH = "/".charCodeAt(0);
-const CHAR_BACKSLASH = "\\".charCodeAt(0);
-const CHAR_A = "A".charCodeAt(0);
-const CHAR_Z = "Z".charCodeAt(0);
-const CHAR_LOWER_A = "a".charCodeAt(0);
-const CHAR_LOWER_Z = "z".charCodeAt(0);
-const CHAR_DOT = ".".charCodeAt(0);
-const CHAR_COLON = ":".charCodeAt(0);
-
-const posixNormalize = path.posix.normalize;
-const winNormalize = path.win32.normalize;
-
-/**
- * @enum {number}
- */
-const PathType = Object.freeze({
-	Empty: 0,
-	Normal: 1,
-	Relative: 2,
-	AbsoluteWin: 3,
-	AbsolutePosix: 4,
-	Internal: 5
-});
-exports.PathType = PathType;
-
-/**
- * @param {string} p a path
- * @returns {PathType} type of path
- */
-const getType = p => {
-	switch (p.length) {
-		case 0:
-			return PathType.Empty;
-		case 1: {
-			const c0 = p.charCodeAt(0);
-			switch (c0) {
-				case CHAR_DOT:
-					return PathType.Relative;
-				case CHAR_SLASH:
-					return PathType.AbsolutePosix;
-				case CHAR_HASH:
-					return PathType.Internal;
-			}
-			return PathType.Normal;
-		}
-		case 2: {
-			const c0 = p.charCodeAt(0);
-			switch (c0) {
-				case CHAR_DOT: {
-					const c1 = p.charCodeAt(1);
-					switch (c1) {
-						case CHAR_DOT:
-						case CHAR_SLASH:
-							return PathType.Relative;
-					}
-					return PathType.Normal;
-				}
-				case CHAR_SLASH:
-					return PathType.AbsolutePosix;
-				case CHAR_HASH:
-					return PathType.Internal;
-			}
-			const c1 = p.charCodeAt(1);
-			if (c1 === CHAR_COLON) {
-				if (
-					(c0 >= CHAR_A && c0 <= CHAR_Z) ||
-					(c0 >= CHAR_LOWER_A && c0 <= CHAR_LOWER_Z)
-				) {
-					return PathType.AbsoluteWin;
-				}
-			}
-			return PathType.Normal;
-		}
-	}
-	const c0 = p.charCodeAt(0);
-	switch (c0) {
-		case CHAR_DOT: {
-			const c1 = p.charCodeAt(1);
-			switch (c1) {
-				case CHAR_SLASH:
-					return PathType.Relative;
-				case CHAR_DOT: {
-					const c2 = p.charCodeAt(2);
-					if (c2 === CHAR_SLASH) return PathType.Relative;
-					return PathType.Normal;
-				}
-			}
-			return PathType.Normal;
-		}
-		case CHAR_SLASH:
-			return PathType.AbsolutePosix;
-		case CHAR_HASH:
-			return PathType.Internal;
-	}
-	const c1 = p.charCodeAt(1);
-	if (c1 === CHAR_COLON) {
-		const c2 = p.charCodeAt(2);
-		if (
-			(c2 === CHAR_BACKSLASH || c2 === CHAR_SLASH) &&
-			((c0 >= CHAR_A && c0 <= CHAR_Z) ||
-				(c0 >= CHAR_LOWER_A && c0 <= CHAR_LOWER_Z))
-		) {
-			return PathType.AbsoluteWin;
-		}
-	}
-	return PathType.Normal;
-};
-exports.getType = getType;
-
-/**
- * @param {string} p a path
- * @returns {string} the normalized path
- */
-const normalize = p => {
-	switch (getType(p)) {
-		case PathType.Empty:
-			return p;
-		case PathType.AbsoluteWin:
-			return winNormalize(p);
-		case PathType.Relative: {
-			const r = posixNormalize(p);
-			return getType(r) === PathType.Relative ? r : `./${r}`;
-		}
-	}
-	return posixNormalize(p);
-};
-exports.normalize = normalize;
-
-/**
- * @param {string} rootPath the root path
- * @param {string | undefined} request the request path
- * @returns {string} the joined path
- */
-const join = (rootPath, request) => {
-	if (!request) return normalize(rootPath);
-	const requestType = getType(request);
-	switch (requestType) {
-		case PathType.AbsolutePosix:
-			return posixNormalize(request);
-		case PathType.AbsoluteWin:
-			return winNormalize(request);
-	}
-	switch (getType(rootPath)) {
-		case PathType.Normal:
-		case PathType.Relative:
-		case PathType.AbsolutePosix:
-			return posixNormalize(`${rootPath}/${request}`);
-		case PathType.AbsoluteWin:
-			return winNormalize(`${rootPath}\\${request}`);
-	}
-	switch (requestType) {
-		case PathType.Empty:
-			return rootPath;
-		case PathType.Relative: {
-			const r = posixNormalize(rootPath);
-			return getType(r) === PathType.Relative ? r : `./${r}`;
-		}
-	}
-	return posixNormalize(rootPath);
-};
-exports.join = join;
-
-/** @type {Map<string, Map<string, string | undefined>>} */
-const joinCache = new Map();
-
-/**
- * @param {string} rootPath the root path
- * @param {string} request the request path
- * @returns {string} the joined path
- */
-const cachedJoin = (rootPath, request) => {
-	/** @type {string | undefined} */
-	let cacheEntry;
-	let cache = joinCache.get(rootPath);
-	if (cache === undefined) {
-		joinCache.set(rootPath, (cache = new Map()));
-	} else {
-		cacheEntry = cache.get(request);
-		if (cacheEntry !== undefined) return cacheEntry;
-	}
-	cacheEntry = join(rootPath, request);
-	cache.set(request, cacheEntry);
-	return cacheEntry;
-};
-exports.cachedJoin = cachedJoin;
-
-/**
- * @param {string} relativePath relative path
- * @returns {undefined|Error} nothing or an error
- */
-const checkImportsExportsFieldTarget = relativePath => {
-	let lastNonSlashIndex = 0;
-	let slashIndex = relativePath.indexOf("/", 1);
-	let cd = 0;
-
-	while (slashIndex !== -1) {
-		const folder = relativePath.slice(lastNonSlashIndex, slashIndex);
-
-		switch (folder) {
-			case "..": {
-				cd--;
-				if (cd < 0)
-					return new Error(
-						`Trying to access out of package scope. Requesting ${relativePath}`
-					);
-				break;
-			}
-			case ".":
-				break;
-			default:
-				cd++;
-				break;
-		}
-
-		lastNonSlashIndex = slashIndex + 1;
-		slashIndex = relativePath.indexOf("/", lastNonSlashIndex);
-	}
-};
-exports.checkImportsExportsFieldTarget = checkImportsExportsFieldTarget;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         /* eslint-env mocha */
-import assert from 'assert';
-import entries from 'object.entries';
-import fromEntries from 'object.fromentries';
-import { getOpeningElement, setParserName, fallbackToBabylon } from '../helper';
-import getProp from '../../src/getProp';
-
-const literal = {
-  source: '<div {...{ id: "foo" }} />',
-  target: '<div id="foo" />',
-  offset: { keyOffset: -6, valueOffset: -7 },
-};
-
-const expression1 = {
-  source: '<div {...{ id }} />',
-  target: '<div id={id} />',
-  offset: { keyOffset: -6, valueOffset: -2 },
-};
-
-const expression2 = {
-  source: '<div {...{ id: `foo${bar}baz` }} />', // eslint-disable-line no-template-curly-in-string
-  target: '<div id={`foo${bar}baz`} />', // eslint-disable-line no-template-curly-in-string
-  offset: { keyOffset: -6, valueOffset: -6 },
-};
-
-describe('getProp', () => {
-  it('should create the correct AST for literal with flow parser', () => {
-    actualTest('flow', literal);
-  });
-  it('should create the correct AST for literal with babel parser', () => {
-    actualTest('babel', literal);
-  });
-  it('should create the correct AST for expression with flow parser (1)', () => {
-    actualTest('flow', expression1);
-  });
-  it('should create the correct AST for expression with babel parser (1)', () => {
-    actualTest('babel', expression1);
-  });
-  it('should create the correct AST for expression with flow parser (2)', () => {
-    actualTest('flow', expression2);
-  });
-  it('should create the correct AST for expression with babel parser (2)', () => {
-    actualTest('babel', expression2);
-  });
-});
-
-function actualTest(parserName, test) {
-  setParserName(parserName);
-  const { source, target, offset } = test;
-  const sourceProps = stripConstructors(getOpeningElement(source).attributes);
-  const targetProps = stripConstructors(getOpeningElement(target).attributes);
-  const prop = 'id';
-  const sourceResult = getProp(sourceProps, prop);
-  const targetResult = getProp(targetProps, prop);
-
-  if (fallbackToBabylon && parserName === 'babel' && test === literal) {
-    // Babylon (node < 6) adds an `extra: null` prop to a literal if it is parsed from a
-    // JSXAttribute, other literals don't get this.
-    sourceResult.value.extra = null;
-  }
-
-  assert.deepStrictEqual(
-    adjustLocations(sourceResult, offset),
-    adjustRange(targetResult),
-  );
-}
-
-function adjustRange({ name, value: { expression, ...value }, ...node }) {
-  return {
-    ...adjustNodeRange(node),
-    name: adjustNodeRange(name),
-    value: {
-      ...adjustNodeRange(value),
-      ...(expression ? { expression: adjustNodeRangeRecursively(expression) } : {}),
-    },
-  };
-}
-
-function adjustNodeRange(node) {
-  if (!node.loc) {
-    return node;
-  }
-
-  const [start, end] = node.range || [node.start, node.end];
-  return {
-    ...node,
-    end: undefined,
-    range: [start, end],
-    start: undefined,
-  };
-}
-
-function adjustNodeRangeRecursively(node) {
-  if (Array.isArray(node)) {
-    return node.map(adjustNodeRangeRecursively);
-  }
-
-  if (node && typeof node === 'object') {
-    return adjustNodeRange(mapValues(node, adjustNodeRangeRecursively));
-  }
-
-  return node;
-}
-
-function stripConstructors(value) {
-  return JSON.parse(JSON.stringify(value));
-}
-
-function adjustLocations(node, { keyOffset, valueOffset }) {
-  const hasExpression = !!node.value.expression;
-  return {
-    ...adjustNodeLocations(node, {
-      startOffset: keyOffset,
-      endOffset: valueOffset + (hasExpression ? 1 : 0),
-    }),
-    name: adjustNodeLocations(node.name, { startOffset: keyOffset, endOffset: keyOffset }),
-    value: {
-      ...adjustNodeLocations(node.value, {
-        startOffset: valueOffset - (hasExpression ? 1 : 0),
-        endOffset: valueOffset + (hasExpression ? 1 : 0),
-      }),
-      ...(hasExpression
-        ? {
-          expression: adjustLocationsRecursively(
-            node.value.expression,
-            { startOffset: valueOffset, endOffset: valueOffset },
-          ),
+{
+    "word": "गया",
+    "ABCH": [
+        {
+            "word": "गया",
+            "linga": "स्त्री",
+            "pagenum": "38",
+            "kanda": "तिर्यक्काण्डः",
+            "varga": "पृथ्वीकायः",
+            "eid": "2975",
+            "group": "1178",
+            "synonyms": [],
+            "content": "गया पूर्गयराजर्षेः कान्यकुब्जं महोदयम् ॥ ९७३ ॥\nकन्याकुब्जं गाधिपुरं कौशं कुशस्थलं च तत् ।"
         }
-        : {}
-      ),
-    },
-  };
-}
-
-function adjustNodeLocations(node, { startOffset, endOffset }) {
-  if (!node.loc) {
-    return node;
-  }
-
-  const [start, end] = node.range || [];
-  return {
-    ...node,
-    end: undefined,
-    loc: {
-      ...node.loc,
-      start: {
-        ...node.loc.start,
-        column: node.loc.start.column + startOffset,
-      },
-      end: {
-        ...node.loc.end,
-        column: node.loc.end.column + endOffset,
-      },
-    },
-    range: [start + startOffset, end + endOffset],
-    start: undefined,
-  };
-}
-
-function adjustLocationsRecursively(node, { startOffset, endOffset }) {
-  if (Array.isArray(node)) {
-    return node.map((x) => adjustLocationsRecursively(x, { startOffset, endOffset }));
-  }
-  if (node && typeof node === 'object') {
-    return adjustNodeLocations(
-      mapValues(node, (x) => adjustLocationsRecursively(x, { startOffset, endOffset })),
-      { startOffset, endOffset },
-    );
-  }
-
-  return node;
-}
-
-function mapValues(o, f) {
-  return fromEntries(entries(o).map(([k, v]) => [k, f(v)]));
-}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    "use strict";
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-0 && (module.exports = {
-    preprocessors: null,
-    codecs: null
-});
-function _export(target, all) {
-    for(var name in all)Object.defineProperty(target, name, {
-        enumerable: true,
-        get: all[name]
-    });
-}
-_export(exports, {
-    preprocessors: function() {
-        return preprocessors;
-    },
-    codecs: function() {
-        return codecs;
-    }
-});
-const _fs = require("fs");
-const _path = /*#__PURE__*/ _interop_require_wildcard(require("path"));
-const _emscriptenutils = require("./emscripten-utils.js");
-const _mozjpeg_node_enc = /*#__PURE__*/ _interop_require_default(require("./mozjpeg/mozjpeg_node_enc.js"));
-const _mozjpeg_node_dec = /*#__PURE__*/ _interop_require_default(require("./mozjpeg/mozjpeg_node_dec.js"));
-const _webp_node_enc = /*#__PURE__*/ _interop_require_default(require("./webp/webp_node_enc.js"));
-const _webp_node_dec = /*#__PURE__*/ _interop_require_default(require("./webp/webp_node_dec.js"));
-const _avif_node_enc = /*#__PURE__*/ _interop_require_default(require("./avif/avif_node_enc.js"));
-const _avif_node_dec = /*#__PURE__*/ _interop_require_default(require("./avif/avif_node_dec.js"));
-const _squoosh_png = /*#__PURE__*/ _interop_require_wildcard(require("./png/squoosh_png.js"));
-const _squoosh_oxipng = /*#__PURE__*/ _interop_require_wildcard(require("./png/squoosh_oxipng.js"));
-const _squoosh_resize = /*#__PURE__*/ _interop_require_wildcard(require("./resize/squoosh_resize.js"));
-const _image_data = /*#__PURE__*/ _interop_require_default(require("./image_data"));
-function _interop_require_default(obj) {
-    return obj && obj.__esModule ? obj : {
-        default: obj
-    };
-}
-function _getRequireWildcardCache(nodeInterop) {
-    if (typeof WeakMap !== "function") return null;
-    var cacheBabelInterop = new WeakMap();
-    var cacheNodeInterop = new WeakMap();
-    return (_getRequireWildcardCache = function(nodeInterop) {
-        return nodeInterop ? cacheNodeInterop : cacheBabelInterop;
-    })(nodeInterop);
-}
-function _interop_require_wildcard(obj, nodeInterop) {
-    if (!nodeInterop && obj && obj.__esModule) {
-        return obj;
-    }
-    if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
-        return {
-            default: obj
-        };
-    }
-    var cache = _getRequireWildcardCache(nodeInterop);
-    if (cache && cache.has(obj)) {
-        return cache.get(obj);
-    }
-    var newObj = {};
-    var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
-    for(var key in obj){
-        if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
-            var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
-            if (desc && (desc.get || desc.set)) {
-                Object.defineProperty(newObj, key, desc);
-            } else {
-                newObj[key] = obj[key];
-            }
+    ],
+    "BUR": [
+        {
+            "word": "गया",
+            "eid": "5746",
+            "pagenum": 212,
+            "content": "गया¦ <i>gayā</i> <ab>f.</ab> ou <i>buddhagayā</i> <ab>np.</ab> d'une ville du Bihar, où <s1 slp1='SAkyamuni'>Śākya-muni</s1> atteignit l'état <lbinfo n='3'/> de <s1 slp1='budDa'>buddha</s1>; elle est célèbre par ses grottes et par ses inscriptions."
         }
-    }
-    newObj.default = obj;
-    if (cache) {
-        cache.set(obj, newObj);
-    }
-    return newObj;
+    ],
+    "INM": [
+        {
+            "word": "गया",
+            "eid": "4114",
+            "pagenum": 303,
+            "content": "<b>Gayā</b>,¦ a sacred place (the present Gayā). § 249 (Arjunavanavāsap.): I, <b>215</b>, 7818 (visited by Arjuna).—§ 370 (Tīrthayātrāp.): III, <b>84</b>, 8061 (<i>tatrākṣayavaṭo nāma triṣu</i> <i>lokeṣu viśrutaḥ</i>), 8074, 8075 (<i>eṣṭavyā bahavaḥ putrā yady apy</i> <i>eko Gayāṃ vrajet | yajeta vāśvamedhena nīlaṃ vā vṛṣam utsṛjet</i>). —§ 377 (Dhaumyatīrthak.): III, <b>87</b>, 8305 (do.).—§ 733<i>s</i> (Aśmapṛṣṭha): XIII, <b>25</b>, 1728.—§ 735 (Ānuśāsanik.): XIII, <b>29</b>, 1917.—§ 749 (do.): XIII, <b>88</b>, 4253 (<i>b: eṣṭavyā</i> <i>bahavaḥ putrā yady apy eko Gayāṃ vrajet|yatrāsau prathito</i> <i>lokeṣvakṣayyakaraṇo vaṭaḥ</i>).—§ 766 (do.): XIII, <b>125</b>β, 5967.—§ 775 (do.): XIII, <b>166</b>α, 7655."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "गया",
+            "eid": "11777",
+            "pagenum": 236,
+            "content": "gayA¦ <i>f.</i> Name of a city in Bīhār which is a place of pilgrimage."
+        }
+    ],
+    "MCI": [
+        {
+            "word": "गया",
+            "eid": "1202",
+            "pagenum": 346,
+            "content": "<b>Gayā</b>¦ f.: Name of a sacred place. <b>A.</b> Location: Arjuna, during the period of his exile, came across Gayā while going to the east 1. 207. 7, 5; the banyan tree Akṣayavaṭa stands near it 13. 88. 14. <b>B.</b> Holy, important for offering <i>śrāddha:</i> (1) By bathing (<i>upaspṛśya</i>) at Gayā one is freed of the sin of <i>brahmahatyā</i> 13. 26. 40; (2) Just by visiting Gayā a Brahmacārī who has controlled his sense organs gets the fruit of an Aśvamedha; by living there in the dark and bright fortnights one purifies, without doubt, his lineage upto seven generations (<i>punāty āsaptamaṃ rājan kulam</i> <i>nāsty atra saṃśayaḥ</i>) 3. 82. 71, 84; (3) Mentioned among the holy places by visiting which those that are high-souled and have observed vows go to the world of the cows (<i>gavāṃ vimāne</i>) 13. 105. 46 (for details see <b>Gayaśiras</b>); (4) One of the Gāthās, sung by the Pitṛs and recited in former times by Sanatkumāra to Bhīṣma, said that one should wish for many sons so that at least one of them would go to Gayā to offer <i>śrāddha</i> near the banyan tree Akṣayyakaraṇa (<i>gāthāś cāpy atra gāyanti pitṛgītā</i> <i>yudhiṣṭhira / sanatkumāro bhagavān purā</i> <i>mayy abhyabhāṣata // … eṣṭavyā bahavaḥ</i> <i>putrā yady eko 'pi gayāṃ vrajet</i>) 13. 88. 11. 14; 3. 82. 85; 3. 85. 7; whatever is offered for the manes there—water, roots, fruit, meat, food or whatever is mixed with honey— lasts for ever 13. 88. 15. <b>C.</b> Past event: Mataṅga practised austerities at Gayā by standing on one toe for a hundred years in order to get the status of a Brāhmaṇa (<i>brāh-</i> <i>maṇyaṃ kāmayāno 'ham</i>) 13. 28. 25; 13. 30. 1. <b>D.</b> Importance: Finds mention in the Daivata-Ṛṣi-Vaṃśa 13. 151. 23, 2."
+        }
+    ],
+    "MD": [
+        {
+            "word": "गया",
+            "eid": "6857",
+            "pagenum": 82,
+            "content": "गया¦ gayā, <lex>f.</lex> <ab>N.</ab> <i>of a place of pilgrimage</i>."
+        }
+    ],
+    "MW": [
+        {
+            "word": "गया",
+            "eid": "63694",
+            "pagenum": "348,2",
+            "content": "ग/या <hom>a</hom> ¦ <lex>f.</lex> (<ab>g.</ab> varaRA<srs/>di) the city <s1 slp1='gayA'>Gayā</s1> (famous place of pilgrimage in Behar and residence of the saint <s1 slp1='gaya'>Gaya</s1>; <ab>cf.</ab> <ls>RTL. p. 309</ls>; sanctified by <s1 slp1='vizRu'>Viṣṇu</s1> as a tribute to the piety of <s1 slp1='gaya'>Gaya</s1>, the <s1 slp1='rAjarzi'>Rājarṣi</s1>, or (according to another legend) to <s1 slp1='gaya'>Gaya</s1>, the <s1 slp1='asura'>Asura</s1>, who was overwhelmed here with rocks by the gods; the <s1 slp1='SrAdDa'>Śrāddha</s1> should be performed once at least in the life of every <ns>Hindū</ns> to his progenitors at <s1 slp1='gayA'>Gayā</s1>), <ls>Yājñ. i, 260</ls>; <ls>MBh.</ls> &c.<info lex='f'/>"
+        },
+        {
+            "word": "गया",
+            "eid": "63695",
+            "pagenum": "348,2",
+            "content": "¦ <ab>cf.</ab> बुद्ध-ग्°<info lex='inh'/>"
+        },
+        {
+            "word": "गया",
+            "eid": "63696",
+            "pagenum": "348,2",
+            "content": "¦ <ab>N.</ab> of a river, <ls n='MBh.'>i, 7818</ls>.<info lex='inh'/>"
+        },
+        {
+            "word": "गया",
+            "eid": "63706",
+            "pagenum": "348,2",
+            "content": "गया <hom>b</hom> ¦ <lex>f.</lex> of °य, <ab>q.v.</ab><info lex='f'/>"
+        }
+    ],
+    "PGN": [
+        {
+            "word": "गया",
+            "eid": "344",
+            "pagenum": 214,
+            "content": "1. <i>Gayā</i>¦ (No. 21, L. 7): <dvsn n='P'/>A village named Revatikā belonging to the Gayā viṣaya was granted as an agrahāra to a brāhmaṇa, ostensibly by Samudragupta.<sup>75</sup> Gayā is at present headquarters of the Gayā district, 60 miles due south of Patna. It comprises the modern town of Sahebganj on the northern side and the ancient town of Gayā on the southern side.<sup>76</sup> Much has been written on Gayā,<sup>77</sup> all of which is not possible to discuss here. We will confine ourselves to the origin of the name Gayā and the importance of Gayā. <dvsn n='P'/>In the Ṛgveda Gaya is a proper name applied to a composer of hymns.<sup>78</sup> In the Atharvaveda<sup>79</sup> Gaya appears to be a wonder-worder or sorcerer along with Asita and Kaśyapa who later on transformed himself into Gayāsura.<sup>80</sup> According to the Vāyu Purāṇa,<sup>81</sup> the city was named Gaya after an Asura, Gaya by name (Gayāsura). Viṣṇu killed this demon but granted him a boon that this city would be held highly sacred. According to R.L. Mitra,<sup>82</sup> this story is an allegorical representation of the expulsion of Buddhism from Gayā which was the headquarters of the Buddhist faith. Aurṇavābha in explaining ‘idam Viṣṇur-vī Cakrame tredhā nidadhe padam’<sup>83</sup> in the Nirukta<sup>84</sup> holds that the three steps of Viṣṇu were placed on Samārohaṇa, Viṣṇupada and Gayaśiras. The Māhabhārata (III. 95 and VII. 64) describes the performance of sacrifices by Gaya<sup>85</sup> references to which<sup>86</sup> are also found in the Rāmāyaṇa,<sup>87</sup> Bhāgavata Purāṇa<sup>88</sup> Brahmāṇḍa Purāṇa,<sup>89</sup> Agni Purāṇa,<sup>90</sup> Viṣṇu Purāṇa,<sup>91</sup> Vāmana Purāṇa,<sup>92</sup> etc. Aśvaghoṣa's Buddhacarita<sup>93</sup> (I or II cent. A.D.) speaks of the Buddha's visit to the hermitage called ‘the city of the royal sage Gaya’, who was later conceived as a great giant.<sup>94</sup> <dvsn n='P'/>We can find evidence of the importance of Gayā growing in the period subsequent to A.D. 750. At Gayā while we have only one inscription belonging to the Gupta period, we get numerous inscriptions belonging to the Pāla period.<sup>95</sup> But these records are of not much use for the history of the town, they simply show that till the end of the twelfth century A.D. it was under the Pālas.<sup>96</sup> <dvsn n='P'/>The city played no major role in polities at any period of history but it was certainly a centre of religious movements of Buddhist and the Brahmanical Hindus.<sup>97</sup> Gayā which was the headquarters of Buddhist faith passed to the Hindus between the second and fourth centuries of the Christian era and by A.D. 637 when Hiuen Tsang visited the city it had become a thriving centre of Hindu Brahmanical religion.<sup>98</sup> <dvsn n='P'/>The religious importance of Gayā is met with in the Māhābhārata,<sup>99</sup> Rāmāyaṇa<sup>100</sup> and Purāṇas.<sup>101</sup> The Gayā has a special religious importance with reference to the Śrāddha ceremony.<sup>102</sup>"
+        }
+    ],
+    "PUI": [
+        {
+            "word": "गया",
+            "eid": "4067",
+            "pagenum": 1,
+            "content": "<i>Gayā</i> (I)¦ — a R. visited by Balarāma. <dvsn n='P'/>Bhā. X. 79. 11."
+        },
+        {
+            "word": "गया",
+            "eid": "4068",
+            "pagenum": 1,
+            "content": "<i>Gayā</i> (II)¦ — <i>(c)</i> the kingdom of; sacred for śrāddha offering. Dharmapṛṣṭa, Brahmasaras, and Gṛdhravaṭa are chief places here; capital of Gaya; Paraśurāna performed <i>śrāddha</i> here.<sup>1</sup> <dvsn n='P'/>A <i>pitṛtīrtham</i> being the residence of Pitāmaha; a gāthā says that any one son may visit Gayā and satisfy all Pitṛs.<sup>2</sup> <dvsn n='P'/>Fit for śrāddha; a man devoted to Gayāśrāddha must dress himself in beggar's garments, circumambulate the grāma, and the next one with shaving and begging money; śrāddha in Brahmakuṇḍa and other places; going to Dharmaranya after worshipping Gadādhara; feed the Brahmans there without enquiring into their family, conduct or learning; offer <i>piṇḍas</i> in Gayārūpa, even for unknown cognates and names; <i>piṇḍa</i> for one's own self with <i>tila;</i> by this even heinous crimes are mitigated; a superior tīrtha; best in Makara, eclipses of the sun and moon, and Caitra and Pretapakṣa (Mahālaya); others are adhīmāsa, birthday, the evening of Guru and Śukra, the stay of Bṛhaspati in Simha which is once in twelve years.<sup>3</sup> <dvsn n='P'/>The face of the Veda;<sup>4</sup> Śambhu, Viṣṇu and Ravi; sacred to Gaya.<sup>5</sup> <F>1) M. 12. 17. Br. III. 13. 104: 19-11: 47. 17: 60. 19: Vā. 85. 19.</F> <F>2) M. 22. 4-6 and 26: 110. 2; 192. 11: 204. 8: 207. 40.</F> <F>3) Vā. 77. 97: 80. 45: 83. 12-44.</F> <F>4) Ib. 104. 77.</F> <F>5) Ib. 112. 20.</F>"
+        },
+        {
+            "word": "गया",
+            "eid": "4069",
+            "pagenum": 1,
+            "content": "<i>Gayā</i> (III)¦ — six in number, Gāyāgaya, Gayāditya, Gāyatrī, Gadādhara, Gayā, Gayāsura, all tending to salvation. <dvsn n='P'/>Vā. 112. 60."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "गया",
+            "eid": "10626",
+            "pagenum": "2-307-b",
+            "content": "गया¦, स्त्री, (गयेन गयनाम्ना लोकप्रिसिद्धेनासुरेण पुराणान्तरमतभेदेन तन्नाम्ना राजर्षिणा वा निर्म्मिता ।) गयराजर्षिपुरी । इति हेमचन्द्रः । ४ । ३९ ॥ सा तु तीर्थभेदः । तस्य नामकरणं यथा, “यज्ञं चक्रे गयो राजा बह्वन्नं बहुदक्षिणम् । यत्र द्रव्यसमूहानां संख्या कर्त्तु न शक्यते ॥ गयं विष्ण्वादयस्तृप्ता वरं ब्रूहीति चाब्रुवन् । गयस्तान् प्रार्थयामास अभिशस्तास्तु ये पुरा ॥ ब्रह्मणा ते द्विजाः पूता भवन्तु क्रतुपूजिताः । गयापुरी तु मन्नाम्ना ख्यातु ब्रह्मपुरी तथा ॥ एवमस्तु वरं दत्त्वा ततश्चान्तर्दधुः सुराः ॥” * ॥ तस्योत्पत्तिकारणं यथा, “गयासुरोऽसुराणाञ्च महाबलपराक्रमः । योजनानां सपादञ्च शतं तस्योच्चयः स्मृतः ॥ स्थूलः षष्टिर्योजनानां श्रेष्ठोऽसौ वैष्णवः स्मृतः । कोलाहले गिरिवरे तपस्तेपे सुदारुणम् ॥ बहुवर्षसहस्राणि निरुच्छ्वासः स्थिरोऽभवत् । तत्तपस्तापिता देवाः संक्षोभं परमं गताः ॥ ब्रह्मलोकं गता देवाः प्रोवुस्तेऽथ पितामहम् । गयासुराद्रक्ष देव ! ब्रह्मा देवांस्तथाब्रवीत् ॥ व्रजामः शङ्करं देवा ब्रह्माद्याश्च गताः शिवम् । कैलासे चाब्रुवन्नत्वा रक्ष रक्ष महाऽसुरात् ॥ ब्रह्माद्यांश्चाब्रवीच्छम्भुर्व्रजामः शरणं हरिम् । क्षीराब्धौ देवदेवेशः स नः श्रेयो विधास्यति ॥ ब्रह्मा महेश्वरो देवा विष्णुं नत्वा प्रतुष्टुवुः । किमर्थमागता देवा विष्णुनोक्तास्तमब्रुवन् ॥ गयासुरभयाद्देव ! रक्षास्मानब्रवीद्धरिः । ब्रह्माद्या यान्तु तं दैत्यञ्चागमिष्याम्यहं ततः ॥” * “ऊचुस्तं वासुदेवाद्याः किमर्थं तप्यते त्वया । सन्तुष्टाश्चागताः सर्व्वे वरं ब्रूहि गयासुर ! ॥” “यदि तुष्टाः स्थ मे देवा ब्रह्मविष्णुमहेश्वराः । सर्व्वदेवद्विजातिभ्यो यज्ञतीर्थशिलोच्चयात् ॥ मन्त्रेभ्यो देवदेवीभ्यो योगिभ्यश्चापि सर्व्वशः । ज्ञातिभ्योऽतिपवित्रोऽहं पवित्रः स्यां सदा सुराः ॥ परित्रो भव तं देवा दैत्यमुक्त्वा ययुर्दिवम् । दृष्ट्वा दैत्यं ततः स्पृष्ट्वा सर्व्वे हरिपुरं ययुः ॥ शून्ये लोकत्रये जाते शून्या यमपुरी ह्यभूत् । यम इन्द्रादिभिः सार्द्धं ब्रह्मलोकं ततोऽगमत् ॥ ब्रह्माणमूचिरे देवा गयासुरविलोपिताः । त्वया दत्तो योऽधिकारस्तं गृहाण पितामह ! ॥ ब्रह्माब्रवीत्ततो देवा व्रजामो विष्णुमव्ययम् । ब्रह्मादयोऽब्रुवन् विष्णुं त्वया दत्तवरेऽसुरे ॥ तद्दर्शनाद्ययुः स्वर्गं शून्यं लोकत्रयं ह्यभूत् । देवैरुक्तो वासुदेवो ब्रह्माणं स वचोऽब्रवीत् ॥ गत्वासुरं प्रार्थयस्व यज्ञार्थं देहि देहकम् । विष्णूक्तः ससुरो ब्रह्मा गत्वाऽपश्यन्महासुरम् ॥ ब्रह्मोवाच । पृथिव्यां यानि तीर्थानि दृष्टानि भ्रमता मया । यज्ञार्थं न तु ते तानि पवित्राणि शरीरतः ॥ अतः पवित्रं देहं स्वं यज्ञार्थं देहि मेऽसुर ! ॥ गयासुर उवाच । धन्योऽहं देवदेवेश ! यद्देहः प्रार्थ्यते त्वया । त्वयैवोत्पादितो देहः पवित्रश्च त्वया कृतः । सर्व्वेषामुपकाराय यागोऽवश्यं भवत्विति ॥ इत्युक्त्वा सोऽपतद्भूमौ श्वेतकल्पे गयासुरः । नैरॄ तीं दिशमाश्रित्य तदा कोलाहले गिरौ ॥ शिरः कृत्वोत्तरे दैत्यः पादौ कृत्वा तु दक्षिणे । ब्रह्मा सम्भृतसम्भारो मानसानृत्विजोऽसृजत् ॥ चलितश्चकितो ब्रह्मा धर्म्मराजमभाषत । यास्ते गृहे तव शिला तामानीयात्र धारय ॥ दैत्यस्य शीघ्रं शिरसि तां धारय ममाज्ञया । निश्चलार्थं यमः श्रुत्वा धारयन्मस्तके शिलाम् ॥ शिलायां धारितायान्तु सशिलश्चासुरोऽचलत् । देवानूचेऽथ रुद्रादीन् शिलायां निश्चलाः किल ॥ तिष्ठन्तु देवाः सकलास्तथेत्युक्त्वा च ते स्थिताः । देवाः पादैर्लक्षयित्वा तथापि चलितोऽसुरः ॥ ब्रह्माथ व्याकुलो विष्णुं गतः क्षीराब्धिशायिनम् । अजमूचे हरिः कस्मादागतोऽसि वदस्व तत् ॥ ब्रह्मोवाच । देवदेव ! कृते यागे प्रचचाल गयासुरः । इदानीं निश्चलार्थं हि प्रसादं कुरु माधव ॥ ब्रह्मणो वचनं श्रुत्वा ह्याकृष्य स्वशरीरतः । मूर्त्तिं ददौ निश्चलार्थं ब्रह्मणे भगवान् हरिः ॥ आनीय मूर्त्तिं ब्रह्मापि शिलायां समधारयत् । तथापि चलितं वीक्ष्य पुनर्देवमिहाह्वयत् ॥ आगत्य विष्णुः क्षीराब्धेः शिलायां संस्थितोऽभवत् । आद्यया गदया चासौ यस्माद्दैत्यः स्थिरीकृतः ॥ स्थित इत्येव हरिणा तस्मादादिगदाधरः ॥” * ॥ “ऊचे गयासुरो देवान् किमर्थं वञ्चितो ह्यहम् । यज्ञार्थं ब्रह्मणे दत्तं शरीरममलं मया । पीड्यश्च यद्यहं देवाः प्रसन्नाः सन्तु सर्व्वदा ॥” “वरं ब्रूहि प्रसन्नाः स्मो देवैरूचे गयासुरः ॥” “यावत् पृथ्वी पर्व्वताश्च यावच्चन्द्रार्कतारकाः । तावच्छिलायां तिष्ठन्तु ब्रह्मविष्णुमहेश्वराः ॥ गदाधरः स्वयं लोकान् पूयात् सर्व्वाधनाशनः । श्राद्धं सपिण्डकं येषां ब्रह्मलोकं प्रयान्तु ते ॥” “किं बहूक्त्या सुरेशानां युष्माकमपि देवताः । चेन्न, तिष्ठाम्यहं बापि समयः प्रतिपाल्यताम् ॥” “त्वया यत् प्रार्थितं वीर ! तद्भविष्यत्यसंशयम् । अस्मत्पादानर्च्चयित्वा यास्यन्ति परमां गतिम् । देवैर्दत्तवरो दैत्यो हर्षितो निश्चलोऽभवत् ॥” अथ गयाशिरआदिपरिमाणम् । “नागाज्जनार्द्दनाद्ब्रह्मयूपाच्चोत्तरमानसात् । एतद्गयाशिरः प्रोक्तं फल्गुतीर्थं तदुच्यते ॥ पितामहं समासाद्य यावदुत्तरमानसम् । फलगुतीर्थन्तु विज्ञेयं देवानामपि दुर्लभम् ॥ क्रौञ्चपादात् फल्गुतीर्थं यावत् साक्षाद्गयाशिरः । मुखं गयासुरस्यैतत्तस्मात् श्राद्धमथाक्षयम् ॥ मुण्डपृष्ठाच्च पूर्व्वस्मिन् पश्चिमे दक्षिणोत्तरे । श्राद्धे क्रोशद्वयं मानं गयायां ब्रह्मणेरितम् ॥ पञ्चक्रोशं गयाक्षेत्रं क्रोशमेकं गयाशिरः । तन्मध्ये सर्व्वतीर्थानि त्रैलोक्ये यानि सन्ति वै ॥” अथ गयामाहात्म्यादि । “गयायां न हि तत् स्थानं यत्र तीर्थं न विद्यते । सान्निध्यं सर्व्वतीर्थानां गयातीर्थं ततो वरम् ॥ ब्रह्मज्ञानेन किं साध्यं गोग्रहे मरणेन किम् । वासेन किं कुरुक्षेत्रे यदि पुत्त्रो गयां व्रजेत् ॥ श्राद्धकृद्यो गयाक्षेत्रे पितॄणामनृणोऽपि सः । शिरसि श्राद्धकृद्यस्तु कुलानां शतमुद्धरेत् ॥ गयाशिरसि यः पिण्डान् येषां नाम्ना तु निर्व्वपेत् । नरकस्था दिवं यान्ति स्वर्गस्था मोक्षमाप्नुयुः ॥ गत्वा बणिग्गयाशीर्षे प्रेतराजस्य पिण्डकम् । प्रददौ मनुजैः सार्द्धं स्वपितृभ्यस्ततो ददौ ॥ प्रेताः प्रेतत्वनिर्म्मुक्ता बणिक् च गृहमागतः । प्रेतराजः सह प्रेतैर्गयाश्राद्धाद्दिवं गतः ॥” * ॥ “गयायां सर्व्वकालेषु पिण्डं दद्याद्बिचक्षणः । अधिमासे जन्मदिने चास्तेऽपि गुरुशुक्रयोः ॥ न त्यक्तव्यं गयाश्राद्धं सिंहस्थेऽपि बृहस्पतौ । तथा दैवप्रमादेन प्रवहत्सु व्रणेषु च ॥ पूतः कर्म्माधिकारी च श्राद्धकृद्ब्रह्मलोकभाक् ॥ मीने मेषे स्थिते सूर्य्ये कन्यायां कार्म्मुके घटे । नारद ! त्रिषु लोकेषु गयाश्राद्धं सुदुर्लभम् ॥” * ॥ “मुण्डनञ्चोपवासश्च सर्व्वतीर्थेष्वयं विधिः । वर्ज्जयित्वा कुरुक्षेत्रं विशालां विरजां गयाम् ॥ दण्डं प्रदर्शयेद्भिक्षुर्गयां गत्वा न पिण्डदः । दण्डं न्यस्य विष्णुपदे पितृभिः सह मुच्यते ॥ गयागजो गयादित्यो गायत्त्री च गदाधरः । गया गयासुरश्चैव षड्गया मुक्तिदायिकाः ॥” अथ पिण्डदानद्रव्याणि । “पायसेनाथ चरुणा सक्तुना पिष्टकेन वा । तण्डुलैः फलमूलाद्यैर्गयायां पिण्डपातनम् ॥ तिलकल्केन खण्डेन गुडेन सघृतेन वा । केवलेनैव दध्ना वा अन्नेन मधुनाथवा ॥ पिन्याकं सघृतं खण्डं पितृभ्योऽक्षयमित्युत ॥” अथ गयास्थब्राह्मणपूजाविधिः । तत्रस्था ब्राह्मणा ब्रह्माणमूचुः । “त्वया यद्दत्तमखिलं तत् सर्व्वं शापतो गतम् । जीवनार्थं प्रसादं नो भगवन् ! कर्त्तुमर्हसि ॥ तन् श्रुत्वा ब्राह्मणान् ब्रह्मा प्रोवाचेदं दयान्वितः । तीर्थोपजीविका यूयमाचन्द्रार्कं भविष्यथ ॥ लोकाः पुण्यगयायां ये श्राद्धिनो ब्रह्मलोकगाः । युष्मान् ये पूजयिष्यन्ति तैरहं पूजितः सदा ॥” अथ गयायां श्राद्धादिकरणार्थं तीर्थानि । प्रथमदिने गयाप्रवेपो फल्गुतीर्थे स्नानतर्पणश्राद्धानि १ प्रेतशिलायां ब्रह्मकुण्डे स्नानं श्राद्धं षोडशपिण्डदानं प्रेतपर्व्वते तिलमिश्रितसक्तुनिक्षेपश्च २ पञ्चतीर्थमध्ये उत्तरमानसे स्नानं सपिण्डकं श्राद्धं सूर्य्यार्च्चनञ्च ३ दक्षिणमानसे उदीव्यां उदीचीतीर्थे स्नानम् ४ तस्य मध्ये कनखलतीर्थे स्नानम् ५ तस्य दक्षिणे दक्षिणमानसे तीर्थत्रये स्नानं श्राद्धं सूर्य्यार्च्चनञ्च ६ फल्गुतीर्थे स्नानं तर्पणं सपिण्डकं श्राद्धं ततो गदाधरस्य दर्शनं पूजनञ्च ७ ॥ द्वितीयदिने धर्म्मारण्ये गमनं धर्म्मेश्वरनमनं बोधितरुनमनञ्च ८ मतङ्गवाप्यां स्नानं तर्पणं श्राद्धं मतङ्गेशनमनं यूपकूपयोर्मध्ये श्राद्धञ्च ९ ॥ तृतीयदिने ब्रह्मसरसि स्नानं सपिण्डकं श्राद्धं यूपप्रदक्षिणं ब्रह्मनमनञ्च १० गोप्रचारसमीपे आम्रवृक्षसेचनम् ११ ततो यमकुक्कुरकाकबलिदानं पुनः स्नानञ्च १२ ॥ चतुर्थदिने फल्गुतीर्थे स्नानादिकं ततो गयाशिरसि विष्णुपदस्य दर्शनं स्पर्शनं पूजनं तत्र सपिण्डकं श्राद्धञ्च १३ रुद्रः १४ ब्रह्मा १५ दक्षिणाग्निः १६ गार्हपत्यः १७ आहवनीयः १८ सत्यः १९ आवसव्यः २० शक्रः २१ अगस्त्यः २२ क्रौञ्चः २३ मातङ्गः २४ कार्त्तिकेयः २५ गणेशः २६ कश्यपः एषां पदेषु श्राद्धम् २७ गजकर्णिकायां तर्पणम् २८ कनकेशकेदारनरसिंहवामनरथमार्गाणां पूजनम् २९ ॥ पञ्चमदिने गदालोले स्नानं सपिण्डकं श्राद्धञ्च ३३ अक्षयवटे श्राद्धं ब्रह्मकल्पितविप्राणां पूजनं पुरोधसे षोडशदानञ्च ३४ गायत्त्र्यग्रे प्रातःसन्ध्याचरणं सपिण्डकं श्राद्धञ्च ३५ समुद्यततीर्थे स्नात्वा सावित्र्यग्रे मध्याह्नसन्ध्याचरणं पिण्डदानञ्च ३६ प्राचीसरस्वत्यां स्नात्वा सायाह्नसन्ध्याचरणं ३७ विशाला ३८ लेलिहानम् ३९ भरताश्रमनामकरामतीर्थम् ४० पदाङ्कितम् ४१ मुण्डपृष्ठस्थगदाधरसमीपम् ४२ आकाशगङ्गा ४३ गिरिकर्णमुखं एषु स्नानं पिण्डदानञ्च ४४ वैतरण्यां स्नानं पिण्डदानं श्राद्धं गोदानञ्च ४५ घृतकुल्या ४६ मधुकुल्या ४७ देविकानदी ४८ शिलासङ्गम ४९ मधुस्रवासु स्नानं सपिण्डकं श्राद्धं पिण्डदानञ्च ५० दशाश्वमेधिकम् ५१ हंसतीर्थम् ५२ अमरकण्टकम् ५३ कोटितीर्थम् ५४ रुक्मिणीकुण्डं एषु पिण्डदानम् ५५ मार्कण्डेयेश्वर-५६ कोटीश्वरयोर्दर्शनं नमनञ्च ५७ दिवौकसां पुष्करिण्यां पितृभ्यो दानम् ५८ पङ्कजवने पाण्डुशिलायां श्राद्धम् ५९ मुख्यतीर्थे स्नानं तर्पणं पिण्डदानञ्च ६० गयाकूपे पिण्डदानं ६१ भस्मकूटे भस्मना स्नानम् ६२ सङ्गमतीर्थे स्नानम् ६३ धेनुकारण्ये पिण्ड दानम् ६४ कामधेनुपदे स्नात्वा कामदुघानमनम् ६५ ॥ * ॥ “कर्द्दमाले गयानाभौ मुण्डपृष्ठसमीपतः । स्नात्वा श्राद्धादिकं कृत्वा पितॄणामनृणो भवेत् ॥ फल्गुचण्डीश्मशानाक्षीमङ्गलाद्याः समर्च्चयेत् । गयायाञ्च वृषोत्सर्गस्त्रिसप्तकुलमुद्धरेत् ॥” इति वायुपुराणे गयामाहात्म्यम् ॥ * ॥ तत्र मरणे मुक्तिर्यथा, तत्रैव ३ अध्याये । “गदाधरोद्देश्यतीर्थं सर्व्वतीर्थोत्तमोत्तमम् । मुक्तिर्भवेत् पितॄणाञ्च कर्त्तॄणां श्राद्धतः सदा ॥ जरायुजा अण्डजा वा स्वेदजा वापि चोद्भिदः । त्यक्त्वादेहं शिलायां ते यान्ति विष्णस्वरूपताम् ॥” तत्रस्थजनार्द्दनहस्ते जीवितस्य पिण्डदानविधिर्यथा, “जनार्द्दनो भस्मकूटे तस्य हस्ते तु पिण्डदः । आत्मनोऽप्यथवान्येषां सव्येनैव तिलैर्व्विना ॥ जीवतां दधिसंमिश्रं सर्व्वे ते विष्णुलोकगाः । यस्तु पिण्डो मया दत्तस्तव हस्ते जनार्द्दन ! ॥ यमुद्दिश्य त्वया देयस्तस्मिन् पिण्डो मृते प्रंभो ! । एष पिण्डो मया दत्तस्तव हस्ते जनार्द्दन ! ॥ अन्तकाले गते मह्यं त्वया देयो गया शिरे ।” इति च वायुपुदाणे गयामाहात्म्ये ४ अध्यायः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "गया",
+            "eid": "17119",
+            "pagenum": "2537,b",
+            "content": "गया¦ स्त्री गयो गयासुरः गयनृपो वा कारणत्वेनास्त्यस्य अच् । तीर्थभेदे गयशब्दे तत्कथा उक्ता । वायुपु० गयामा० १ अ० तन्माहात्म्यं यथा <P>“वक्ष्ये तीर्थवरं पुण्यं श्राद्धादौ सर्व्वतारकम् । गयातीर्थं सर्व्वदेशे तीर्थेभ्योऽप्यधिकं शृणु । गयासुर स्तपस्तेपे ब्रह्मणा क्रतवेऽर्थितः । प्राप्तस्य तस्य शिरसि शिलां धर्म्मोह्यधारयत् । तत्र ब्रह्माकरोद्यागं स्थितश्चादिगदाधरः । फल्गुतीर्थादिरूपेण निश्चलार्थमहर्निशम् । गयासुरस्य विप्रेन्द्र! ब्रह्माद्यैर्दैवतैः सह । कृतयज्ञो ददौ ब्रह्मा ब्राह्मणेभ्यो गृहादिकम् । श्वेतकल्पे तु वाराहे गयोयागमकारयत् । गयनाम्ना गयाख्याता क्षेत्रं ब्रह्माभिकाङ्क्षितम् । काङ्क्षन्ति पितरः पुत्रान्नरकाद्भयभीरवः । गयां यास्यति यः पुत्रः स नस्त्राता भविष्यति । गयाप्राप्तं सुतं दृष्ट्वां पितॄणामुत्सवो भवेत् । पद्भ्यामपि जलं स्पृष्ट्वा सोऽस्मभ्यं किं न दास्यति? । गयां गत्वान्नदाता यः पितरस्तेन पुत्रिणः । पक्षत्रय निवासी च पुनात्यासप्तमं कुलम् । न चेत् षञ्चदशाहं वा सप्तरात्रं त्रिरात्रकम् । महाकल्पकृतं पापं गयां प्राप्य विनश्यति । पिण्डं दत्त्वा च पित्रादेरात्मनोऽपि तिलैर्विना । ब्रह्महत्या सुरापानं स्तेयं गुर्व्वङ्गनागमः । पापं तत्सङ्गजं सर्व्वं गयाश्राद्धाद्विनश्यति । आत्मजोऽप्यन्यजोवापि गयाभूमौ यदा तदा । यन्नाम्ना पातयेत् पिण्डं तन्नयेत् ब्रह्म शाश्वतम् । नामगोत्रे समुच्चार्य्य पिण्डपातनमीक्षते । येन केनापि कस्मैचित् स याति परमां गतिम् । ब्रह्मज्ञानं गयाश्राद्धं गोगृहेमरणं तथा । वासः पुंसां कुरुक्षेत्रे मुक्तिरेषा चतुर्व्विधा । ब्रह्मज्ञानेन किं साध्यं गोगृहे मरणेन किम् । वासेन किं कुरुक्षेत्रे यदि पुत्रोगयां व्रजेत् । गयायां पर्व्वकालेषु पिण्डं दद्याद्विचक्षणः । अधिमासे जन्मदिने चास्तेऽपि गुरुशुक्रयोः । न त्यक्तव्यं गयाश्राद्धं सिंहस्थेऽपि वृहस्पतौ । तथा दैवप्रमादेन प्रवहत्सु व्रणेषु च । पूबः कर्म्माधिकारी च श्राङ्गकृद्व्रह्मलोकभाक् । प्रीत्या श्राद्धन्तु कर्त्तव्यं सर्वेषां वर्णलिङ्गिनाम् । एवं कुर्व्वन् नरः सम्यक् महतीं श्रियमाप्नुयात् । सकृद् गयाभिगमनं सकृत्पिण्डस्य पातनम् । दुर्ल्लभं किं पुनर्नित्यमस्मिन्नेव व्यवस्थितः । प्रमादान्म्रियते क्षेत्रे ब्रह्माद्यैर्सुक्तिदायके । ब्रह्मज्ञानाद्यथा मुक्तिर्लम्यते नात्र संशयः । कीकटादिमृतानाञ्च पितॄणां तारणाय च । तस्मात् सर्वयत्नेन वस्तव्यं सुविचक्षणैः । ब्रह्मप्रकल्पितान् विप्रान् हव्यकव्यादिनार्च्चयेत् । तैस्तुष्टैस्तोषिताः सर्व्वाः पितृभिः सहदेवताः । मुण्डनञ्चोपवासश्च सर्व्वतीर्थेष्वयं विधिः । वर्ज्जयित्वा कुरुक्षेत्रं विशालां विरजां गयाम् । दण्डं प्रदर्शयेद्भिक्षुर्गयां गत्वा न पिण्डदः । दण्डं न्यस्य विष्णुपदे पितृभिः सह मुच्यते । न दण्डी किल्विषं धत्ते पुण्यं वा परमार्थतः । अतः सर्व्वक्रियां त्यक्त्वा विष्णुं ध्यायति भावुकः । संन्यसेत् सर्व्वकर्म्माणि वेदमेकं न संत्यजेत् । मुण्डपृष्ठाच्च पूर्व्वस्मित् पश्चिमे दक्षिणोत्तरे । सार्द्धं क्रोशद्वयं मानं गयेति ब्रह्मणेरितम् । पञ्चक्रोशं गयाक्षेत्रं क्रोशमेकं गयाशिरः । तन्मध्ये सर्व्वतीर्थानि त्रैलोक्ये यानि सन्ति वै । श्राद्धकृद् यो गयाक्षत्रे पितॄणामनृणोहि सः । शिरसि श्राद्धकृद् यस्तु कुलानां शतमुद्धरेत् । गृहाच्चलित मात्रेण गयाया गमनं प्रति । स्वर्गारोहणसोपानं पितृणाञ्च पदे पदे । पदेपदेऽश्वमेधस्य यत्फलं गच्छतो गयाम् । तत्फलञ्च भवेन्नॄणां समग्रं नात्र संशयः । पायसेनाथ चरुणा सक्तुना पिष्टकेन वा । तण्डुलैः फलमूलाद्यैर्गयायां पिण्डपातनम् । तिलाज्यदधिमध्वादिपिण्डद्रव्येषु योजयेत् । मुष्टिमात्रप्रमणेन आर्द्रामलकमात्रतः । शमीपत्र प्रमाणेन पिण्डं दद्याद्गयाशिरे । उद्धरेत् सप्त गोत्राणि कुलमेकोत्तरं शतम् । तिलकल्केन खण्डेन गुडेन सघृतेन वा । केवलेनैव दध्ना वा दुग्धेन मधुनाथ वा । पिन्याकं सवृतं खण्डं पितृभ्योऽक्षयमित्युत । इष्यते ऽवाप्तितो भोज्यं हविष्यं मनुरब्रवीत् । एकतः सर्व्ववस्तूनि रसवन्ति मधूनि हि । स्मृत्वा गदाधराङ्घ्राब्जंफल्गुतीयाम्बु चैकतः । पिण्डासनं । पण्डदानं पुनः प्रत्यवने जनम । दक्षिणा चान्नसंकल्पस्तीर्थश्राद्धेष्वयं विधिः । गावाहनं न दिग्बन्धो न दोषो दृष्टिसम्भवः । सकारुण्येन कर्त्तव्यं तीर्थश्राद्धं विचक्षणैः । अन्यत्रावाहिताः काले पितरोयान्त्यमुं प्रति । तीर्थे सदा वसन्त्येते तस्मादावाहनं न हि । तीर्थश्राद्धं प्रयच्छद्भिः पुरुषैः फलकाङ्क्षिभिः । कामं क्रोधं तथा लोभं त्यक्त्वा कार्य्याक्रिया ऽनिशम् । ब्रह्मचार्य्येकभोजी च भूशायी सत्यवाक् शुचिः । सर्वभूतहिते रक्तः स तीर्थफलमश्नुते । तीर्थान्थनुसरन् घीरः पाषण्डं दूरतस्त्यजेत् । पाषण्डं तच्च विज्ञेयं यद्भवेत् कामकारतः । तीर्थेषु ये नराधीराः कर्म कुर्वन्धि सद्गताः । यथा ब्रह्मचिदो वेद्यं वस्तुचानन्यचेतसः । प्रविशन्वि परेशाख्यं ब्रह्म ब्रह्मपरायणाः । याऽऽस्ते वैतरणी नाम नदी त्रैलोक्यविश्रुता । सावतीणां गयाक्षत्रे पितॄणां तारणाय वै । स्नातो गोदो वैतरण्यां त्रिःसप्तः कुलमुद्धरेत् । तथाक्षयवटं गत्वा विप्रान् सन्तोषयिष्यति । ब्रह्मप्रकल्पितान् विप्रान् हव्यकव्यादिनार्च्चयेत् । तैस्तुष्टैस्तोषिताः सर्वाः पितृभिः सहदेवताः । गयायां नहि तत्स्थानं यत्र बीर्थं न विद्यते । सान्निध्यं सर्वतीर्थानां गयातीर्थं ततो वरम् । मीनमेषे स्थिते सूर्य्ये कन्यायां कार्मुके घटं । दुर्ल्लभं त्रिषु लोकेषु गयायां पिण्डपातनम् । मकरे वर्त्तमानेऽर्के ग्रहणे चन्द्रसूर्य्ययोः । दुर्ल्लभं त्रिषु लोकेषु गयाश्राद्धं सुदुर्लभम् । गयायां पिण्डदानेन यत् फलं लभते बरः । न तच्छक्यं मया वक्तुं कल्पकोटिशतैरपि” । तद्यात्राविधिश्च तत्रैव ६ अ० । “सनत्कुमार उवाच । गयायात्रां प्रवक्ष्यामि शृणु नारद! मुक्तिदाम् । निष्कृतिः पिण्डकर्त्तृणां ब्रह्मणा गीयते पुरा । उद्यतश्चेद्गयां गन्तुं श्राद्धं कृत्वा विधानतः । विधाय कर्पटिवेशं कृत्वा ग्रामं प्रदक्षिणम् । ततो ग्रामान्तरं गत्वा श्राद्धशेषस्य भोजनम् । ततः प्रतिदिनं गच्छेत् प्रतिग्रह विवर्ज्जितः । प्रतिग्रहादपावृत्तः सन्तुष्टो नियतः शुचिः । अहङ्कारविमुक्तो यः स तीर्थफलमश्रुते । यस्य हस्तौ च पादौ च मनश्चापि सुसंयतः । विद्या तपश्च कीर्त्तिश्च स तीर्थकलमश्रुते । ततो गयाप्रवेशे च पूर्वतोऽस्ति महानदी । तत्र तोयं समुत्पाद्य स्नातव्यं निर्मले जले । देवादींस्तर्पयित्वाथ श्राद्धं कृत्वा यथाविधि । स्वस्ववेदशाखोदितमर्ध्यावाहनवर्जितम् । अपरेद्युः शुचिर्भूत्वा गच्छेद्वै प्रेतपर्वतै । ब्रह्रकुण्डे ततः स्नात्वा देवादींस्तर्पयेत् सुधीः । कुर्य्यात् श्राद्धं सपिण्डानां प्रयतः प्रेतपर्वते । प्राचीनावीतिनाभ्यर्च्च्य दक्षिणाभिमुखः स्मरन् । “कव्यवालोनलः सोमो यमश्चैवार्य्यमा तथा । अग्निष्माश्चा बर्हिषदः सोमपाः पिवृदेवताः । आगच्छन्तु महाभागा युष्माभी रक्षिताख्विह” । “मदीयाः पितरोये च कुलेजाताः कुलाह्वयाः । तेषां पिण्डप्रदानार्थमागतोऽस्मि गयामिमाम् । ते सर्वे तृप्तिमायान्तु श्राद्धेनानेन शाश्वतीम्” । आचम्योक्त्वा च पञ्चाङ्गं प्राणायामं प्रयत्नतः । पुनरावृत्तिरहितः ब्रह्मलोकाप्तिहेतवे । एवञ्च विधिवत् श्राद्धं कृत्वा पूर्वं यथाक्रमम् । पितॄनावाह्य चाभ्यर्च्च्य मन्त्रैः पिण्डप्रदोभवेत् । तीर्थ प्रेतशिलादौ च चरुणा सवृतेन वा । प्रक्षाल्य पूर्वं तत्स्थानं पञ्चगव्यैः पृथक् पृथक् । मन्त्रै स्तैरथ संपूज्य पञ्चगव्यैश्च देवताम् । यावत्तिला मनुष्यैश्च गृहीताः पितृकर्म्मसु । गच्छन्ति तावदन्नुराः सिंहत्रस्ता यथा मृगाः । श्रष्टकासु च वृद्धौ च गयायां चाक्षयेऽहनि । मातुः श्राद्धं पृथक् कुर्य्यादन्यत्र पतिना सह । वृद्धिश्राद्धे तु मात्रादि गयायां पितृपूर्वकम् । गृहीत्वाञ्जलिना तेभ्यः पितृतीर्थेन तत्त्वतः । सक्तुना मुष्टिमात्रेण दद्यादक्षय्यपिण्डकम् । आव्रह्मस्तम्भपर्य्यन्तं देवर्षिपितृमानवाः । तृप्यन्तु पितरः सर्वे मातृमातामहादयः । अतीतकुलकोटीनां सप्तद्वीपनिवासिनाम् । आ ब्रह्मभुवनात् लोकादिदमस्तु तिलोदकम् । पिता पितामहश्चैव तथैव प्रपितामहः । माता पितामही चैव तथैव प्रपितामही । मातामहस्तत्पिता च प्रमातामहकादयः । तेषां पिण्डो मया दत्तोह्यक्षय्यमुपतिष्ठताम् । मुष्टिमात्रप्रमाणञ्च आर्द्रामलकमात्रकम् । शमीपत्रप्रमाण वा पिण्डं दद्याद्गयाशिरे । उद्धरेत् सप्तगोत्राणां कुलानि शतमुद्धरेत् । पितुर्मातुश्च भार्य्याया भगिन्या दुहितुस्तथा । पितृष्वसुर्मातृष्वसुः सप्त गोत्राः प्रकीर्त्तिताः । विंशतिर्विंशतिरिन्द्राः १४ षोडश द्वादशैव हि । रुद्राश्च ११ वसव ८ श्चैव कुलान्येकोत्तरं शतम् । नावाहनं न दिग्बन्धो न दोषो दृष्टिसम्भवः । सकारुण्येन कर्त्तव्यं तीर्थश्राद्धं विचक्षणैः । पिण्डासनं पिण्डदानं पुनः प्रत्यवनेजनम् । दक्षिणा चान्नसंकल्पस्तीर्थश्राद्धेष्वयं विधिः” । अधिकं मदीयगयाश्राद्धादिपद्धतौ दृश्यम् । गयाश्राद्धस्य कलादेराधारादिकं गयाश्राद्धादिपद्धतौ अस्माभिर्न्यरूपि यथा “गयाश्राद्धफलं किंनिष्ठमिति, विविच्यते । “यन्नाम्ना पातयेत् पिण्डम्” इत्यादिवचनजातात् पुत्त्रादिकृतश्राद्धात् तदुद्देश्यपित्रादिगतं नरकनिवृत्तिब्रह्मलोकावाप्त्यादिफलमवगम्यते तच्च नोपपद्यते । तथा हि सर्व्वो हि लोकः स्वेष्टसाधने कर्मणि प्रवर्त्तते तत्प्रवृत्त्या च तत्तदिष्टसाधनं वस्तु साधयति इत्येवं नियमे स्थिते वैदिककर्म्मण्यपि तथैव स्वाभीष्टफलवत्येव प्रवृत्तिरुचिता नान्यगामिफले । एवं शास्त्रदेशितं फलमनुष्ठातर्य्येव कर्म्मभिर्ज्जन्यते “शास्त्रीयं फलं प्रयोक्तरि तल्लक्षणत्वादिति” जैमिनीयन्यायात् । अन्यकर्त्तृकक्रिययाऽन्यदीयफलस्य जननेऽतिप्रसङ्गः स्यात् । ततश्च पुत्त्रादिकृतश्राद्धात् कथं पित्रादेरुद्धारादिसम्भवः तस्य श्राद्धाद्यकर्त्तृत्वात् इत्येवं प्राप्ते उच्यते “यस्मिन् जाते एतामिष्टिं निर्वपति पूत एव सः” इत्यादिवेदवचनात् जैमिनीयन्यायस्य जातेष्ट्यादिभिन्नविषयत्वं कल्प्यते । तथा च पित्त्रादिकृतजातेष्ट्यादिद्वारा अन्नाशनादिसंस्कारद्वारा च यथा तत्राऽकर्त्तर्य्यपि पुत्त्रे फलमुत्पद्यते एवं गयादिश्राद्धकर्त्तुरुद्देश्यस्याकर्त्तुरपि उद्धारादिफलसम्बन्धः नानापुराणवचनबलादपि सम्भवति “फलसंयोगस्त्वनोदिते न स्यादशेषभूतत्वादिति” जैमिनीयन्यायान्तरेण विधिविशेषेणैव फलविशेषसम्बन्ध इत्युक्तत्वात् । तथा च प्रागुक्तातिप्रसङ्गस्य शास्त्रातिरिक्तविषयत्वमिति कल्प्यते “नास्ति वचनस्यातिभारः” इति न्यायात् “वाचनिकेऽर्थे न्यायानवतारात्” इति न्यायाच्च । तत्र वचनाच्चोभयगतफलसाधनताऽवगता जातेष्ट्यादिवत् । तच्च फलं पुण्यविशेषस्तज्जन्यनरकाद्युद्धारो वेत्यन्यदेतत् । मीमांसादावेवैतद्विवेचितमित्युपरम्यते । काश्यादिमृतपितृककृतगयाश्राद्धस्य तु कर्त्तर्य्येवाकरणनिबन्धनप्रत्यवायपरिह्रारमात्रं, सति कामे विशिष्टसन्तानश्च फलम् “गयायां पिण्डदानेन पितॄणामनृणो भवेत्” इत्यादिवचने पितॄणापाकरणस्यावश्यकतया तदकरणे प्रत्यवायबोधनात् “गयाभिगमनं कर्त्तुं यः शक्तो नाभिगच्छति । शोचन्ति पितरस्तस्य वृथा तस्य परिश्रमः” इति कूर्मपुराणीयेन समर्थस्य गयाश्राद्धाऽकरणे वृथाजन्मतोक्तेः “जीवतोर्वाक्यकरणात् प्रत्यव्दं भूरिभोजनात् । गयायां पिण्डदानाच्च त्रिभिः पुत्त्रस्य पुत्त्रता” इत्यादिवचने गयाश्राद्धादिकरणेनैव पुत्त्रकार्य्यकारितया पुत्त्रत्वसिद्ध्युक्तेश्च । तेन गयाश्राद्धं नित्यमत एव यथाशक्ति अनुष्ठेयं “नित्ये यथा शक्रुयादिति” न्यायात् । तथापि सकृत्करणमेव नित्यं तावतैव शास्त्रार्थसिद्धेः “सकृत्कृते कृतः शास्त्रार्थ इति” न्यायात् आवृत्तिबोधकवीप्साद्यभावाच्च जन्मतिथ्यादिकृत्यवन्न पुनःपुनः करणावश्यकता । पुनःकरणे तु फला धिक्यम् “यो भूय आरभते तस्य फले विशेषः” इति न्यायात् “सकृद्गयाभिगमनं सकृत्पिण्डप्रपातनम्” इत्यादिवाक्यमप्याद्यस्यैवाबश्यकत्वार्थं न तु द्वितीयादेर्निरासार्थमपि, परिसंख्यापत्तेः । तत्रापि प्रथमयात्रायां येषां प्रेतत्वनिवारणार्थं प्रेतशिलायां पिण्डदानभाण्डस्फोटने कृते तत्र द्वितीययात्रायां तेषां ते न कार्य्ये इत्येव विशेषैः । प्रथमयात्रानन्तरमृतानान्तु द्वितीययात्रायां ते अपि कार्य्ये । अन्यत् सर्व्वं सर्व्वास्वपि यात्रासु समानम् । तस्मादमुक्ते पित्रादौ नरकोद्धारादि यथायथं फलं मुक्ते तु तस्मिन् पुत्त्रादेः प्रत्यवायाभावः सत्याञ्च कामनायां विशिष्टसन्तानादि पुत्त्रादिगतं फलं भवतीति सिद्धम् । अत्रेदं विविच्यते प्रागुक्तपुराणादिबचनेषु गयाश्राद्धस्य पित्राद्युद्धारः प्रत्यवायपरिहारः पुत्त्रावाप्तिश्च फलत्वेन श्रूयते तत्र गयाश्राद्धप्रवृत्तौ किं प्रयोजकं किमेकैकमुभयं वा त्रितयं वेति सन्देहे त्रितयस्यैवप्रयोजकता तत्र कामनाभेदादेकस्य मुख्यफलताऽपरयोर्द्वारता प्रासङ्गिकता वा तथा च यदा पित्राद्युद्धरार्थिना गयाश्राद्धं क्रियते तदा तदेव मुख्यं फलं तत्प्रवृत्तौ प्रयोजकं, प्रत्यवायपरिहारः पुत्त्रोत्पत्तिश्च तत्र प्रासङ्गिकौ अन्थार्थदीपस्यानुद्देश्यप्रकाशनवत् । यदा तु पुत्रार्थिना तदनुष्टीयते तदा पुत्त्रोत्प्रत्तिरेव मुख्यं फलं पित्राद्युद्धारस्तु तत्र द्वारमित्येव सिद्धान्तः । एवं पित्राद्युद्धारस्य फलत्वे स्थितेऽधुना तत्रेदं विचार्य्यते । उद्धारो नाम स्वापेक्षयोत्कृष्टस्थानादिनयनं तच्च प्रकृते नारकीयदेहविगमानन्तरं देवाददेहप्रापिणरूपं तच्च न सम्भवति नारकीयादिदेहादेः स्वस्वकर्म्मणारब्धतया कारणसत्त्वे विगमासम्भवात् तत्कर्म्मणां च भोगेनैव नाश्यत्वात् “नाभुक्तं क्षीयते कर्म्म कल्पकोटिशतैरपीति” आगमात् । ततश्च तद्देहनाशः स्वारम्भककर्म्मनाश एव नान्यथा । तथा च गयाश्राद्धादिना कथमुद्धारसम्भवः । प्रारब्धकर्म्मणाञ्च भोगादेव क्षये सति गयाश्राद्धेनोद्धारो जननीय इति कल्पनापि न युक्ता भोगादेव कर्म्मक्षये कल्प्ये गयाश्राद्धवैफल्यापत्तेः । इत्येवं स्थिते उच्यते कर्म्मविपाकोक्तदानादिना प्रारब्धकर्म्मक्षयद्वारा यथा रोगनाशकल्पना तथा प्रकृतेऽपि गयाश्राद्धादिना प्रारब्धक्षयनाशद्वारैव उद्धारकल्पना “नाभुक्तं क्षीयते” इत्यादिवाक्यस्य तु बलवद्वाक्यस्यैव प्रतिबन्धकस्य सत्त्वेनाप्रवृत्तेः “न हि वचनस्यातिभारः इति” न्यायात् तथा च गयाश्राद्धस्यैव प्रारब्धक्षयजनकपुण्यविशेषजनकता कर्म्मविपाकोक्तदानादिवदेव कल्प्यते इति न कश्चिद्विरोधः । किञ्च भोगादेव प्रारब्धकर्म्म क्षयादनन्तरमुद्धारकल्पनेऽपि न गयाश्राद्धवैफल्यं पापविशेषैरेकैकयोनिष्वनेकावृत्तिश्रवणात् फलोन्मुखानामितरेषामनारब्धफलार्ना कर्म्मणाञ्च गयाश्राद्धनाश्यता भविष्यतोति । असति च नारकीयाङ्गाद्यारम्भके पापे उद्धारस्य ब्रह्मलाकावाप्तिरूपतैव । स्वकर्म्मानुसारेण तल्लोकप्राप्तेरपि पूर्व्वं वृत्तत्वे तु पुत्त्रनिष्ठः प्रत्यवायपरिहार एव फलं मुक्तपित्रादौ तथाकल्पनस्य पूर्व्वमुक्तत्वात् तथैवात्र कल्पनौचित्यात् । <P>अथ गयाश्राद्धाधिकारिणः । तत्र पुत्त्रपौत्त्रप्रपौत्त्रा एव प्रधानाधिकारिणः । तद्भिन्नाः सर्वेऽपि गौणाधिकारिणः । तथा “पुत्त्रेषु विद्यमानेषु नान्यो वै कारयेत् स्वधाम्” इत्यादिवचनेन पुत्रसत्त्वेऽन्यकर्त्तृकश्राद्धस्य निषेधेऽपि गयायां तस्य प्रतिप्रसवः, “आत्मजो वाऽन्यजो वापि गयाकूपे यदा तदा । यन्नाम्ना पातयेत् पिण्डं तं नयेद् ब्रह्म शाश्वतम्” इति वायवीयवचनात् “सवर्णा ज्ञातयो मित्रवान्धवाः सुहृदस्तथा । तेऽपि भूयो गयां गत्वा पिण्डं दद्युर्विधानतः” इति स्मृतिरत्नावलीधृतवाक्याच्च । तथा चात्र सम्बन्धिमात्राणामधिकारः । यो यदीयधनं यथा कथञ्चिद्गृह्लाति सोऽसवर्णोऽपि तदीयगयाश्राद्धेऽधिकारी, “प्रेतं किञ्चिद्विशुद्ध्यर्थम्” इत्यादि वायवीयवचनेऽसवर्णवणिग्दत्तपिण्डेन प्रेतोद्धारस्य कीर्त्तनात् पुत्रो वा बन्धुपुत्त्रो वा मित्रं वा स्वजनोऽपि वा । ऋणिको वाथवा दद्याद् द्वयोः स्वर्गस्तदा तयोरिति” वह्निपुराणीयाच्च । तथान्यत्र कर्त्तृविशेषविषयनिषेधोऽपि गयायां न प्रवर्त्तते “न पुत्त्रेभ्यः पिता दद्यान्नानुजेभ्यस्तदाग्रजः । न पत्न्यै तु वतिर्द्दद्द्यात् बुद्धिमान् सुसमाहितः” इति च सामान्यतो निषिध्य “तेऽपि यान्ति दिवं सर्वे पिण्डे दत्ते इति श्रुतिः । अतस्तेभ्योऽत्र यत्नेन पिण्डं दद्यात् समाहितः” इति स्मृतिरत्नाबल्यां गयायां प्रतिप्रसवात् बौधायनेनापि “पित्रा श्राद्धं न कर्त्तव्यं पुत्त्राणान्तु कदाचन । भ्रात्राग्रजेन वा कार्य्यं भ्रातॄणां न कनीयसाम् । अतिस्नेहेन कार्य्यऽवा सपिण्डीकरणं विना । गयायामविशेषेण ज्यायानपि समाचरेदिति सामान्यतो निषिध्य गयायां प्रतिप्रसवाच्च । पूर्व्ववचने अत्रेति गयायामित्यर्थः । <P>अथ गयाश्राद्धानधिकारिणः । जीवत्पितृको जीवन्मातृकश्च गयाश्राद्धे सर्वथानधिकारी । जीवत्पितृको मृतमातृकस्तु यदि प्रसङ्गेन गयां प्राप्नोति तदा अन्वष्टकाश्राद्धमिव मातृपार्वणमेव कुर्य्यात् “आन्वष्टक्यं गयाप्राप्तौ सत्यां यच्च क्षयाहनि । मातुः श्राद्धं सुतः कुर्य्यात् पितर्य्यपि च जीवति” इति मैत्रायणीयपरिशिष्टवाक्यात् । अत्र प्राप्तावित्युक्त्या प्रासङ्गिकगमनं सूचितम् “गयां प्रसङ्गतो गत्वा मातृश्राद्धं समाचरेदिति त्रिस्थलीसेतुधृतवचने प्रसङ्गत इति पदस्य स्पष्टोपादानस्वरसात् । तेन जीवत्पितृकस्य गयामुद्दिश्य गमने न मातृश्राद्धकरणम् । मातृश्राद्धञ्चान्वष्टकाश्राद्धसाहचर्य्यात् पार्वणमेव कार्यमिति त्रिस्थलीसेतुप्रभृतयः । अन्ये तु जीवन्मातृको मृतमातृको वा जीवत्पितृकोऽपि पार्व्वणविधिना पितामहादीनां गयाश्राद्धं कुर्य्यात् जीवे पितरि वै पुत्रः श्राद्धकार्य्यं विवर्ज्जयेत् । येषां वापि पिता दद्यात्तेषामेके प्रचक्षते” इति हारीतवनोत्तरार्द्धेन जीवत्पितृकपार्वणस्य विधानेन गयायामपि तत्प्रवृत्तेरित्याहुः । आचार एवात्रान्यतरपक्षग्रहणे शरणम् । <P>संन्यासिनस्तु सर्वकर्मपरित्यागितया गयाश्राद्धेऽनधिकारिणः । तथापि तत्र विष्णुपदादिश्राद्धस्थानेषु दण्डमात्रस्पर्शनं प्रणवोपासनादिवत् तैराचरणीयं न तु श्राद्धतर्पणादि “दण्डं प्रदर्शयेद्भिक्षुर्गयां गत्वा न पिण्डदः । दण्डं स्पृष्ट्वा विष्णुपदे पितृभिः सह मुच्यते” इति वायवीयात् स्पृष्ट्वा स्पर्शयित्वेत्यर्थः । पुत्त्रवत्याः स्त्रिया नाधिकार इति गौडैकदेशिनामाचारः स तु मूलाभावान्नादरणीयः । <P>अथ गयाश्राद्धकालः । न तत्र कालशुद्ध्यपेक्षा “गयायां सर्वकालेषु पिण्डं दद्यात् विचक्षणः । अधिमासे जन्मदिने अस्ते च गुरुशुक्रयोः । न त्यक्तव्यं गयाश्राद्धं सिंहस्थे च वृहस्पताविति” वायवीयात् । अत्र सर्वकालेष्वित्युपक्रमात् अस्ते इत्याद्युक्तिस्तु सर्वसमयाशुद्धिप्रयोजकनिमित्तमात्रोपलक्षणार्था न तु रात्र्याद्रिपर्य्युदस्तकालग्रहणार्थेति बोध्यं सर्वत्र तीर्थादौ रात्र्यादिकालस्य पर्य्युदस्ततया रघुनन्दनादिभिः स्वीकारात् । संक्रान्त्यादो तु फलातिशत्यः “गयाश्राद्धं प्रकुर्वीत संक्रान्त्यादौ विशेषतः । काले वाऽपरपक्षे वा चतुर्थ्यादितिथिष्वपीति” वह्निपुराणीयात् “मकरे वर्त्तमानेऽर्के ग्रहणे चन्द्रसूर्य्ययोः । दुर्ल्लभं त्रिषु लोकेषु गयायां पिण्डपातनमिति” वायुपुराणवाक्याच्च । तथान्येऽपि निषिद्धकाला गयायां प्रतिप्रसूताः । यथा “विवाहव्रतचूडासु वर्षमर्द्धं तदर्द्धकम् । पिण्डदानं मृदा स्नानं न कुर्य्यात्तिलतर्पणमिति” कार्ष्णाजिनिवचनेन, “वृद्धिमात्रे तथान्यत्र पिण्डदाननिराक्रिया । कृता गर्गादिभिर्मुख्यैर्म्मासमेकन्तु कर्मिणामिति” स्मृतिसंग्रहवाक्येन च विवाहादेरूर्द्धं वर्षादिकालपर्य्यन्तं पिण्डदानस्य निषेधेऽपि “महालये गयाश्राद्धे मातापित्रोर्मृताहनि । कृतोद्वाहोऽपि कुर्वीत पिण्डनिर्वपणं सुतः” इति, “पित्रोः क्षयाहे यज्ञे च पितृयज्ञे महालये । गयायां पिण्डदानस्य न कदाचिन्निराक्रियेति” च त्रिस्थलीसेतुधृतस्मृति संग्रहवाक्याच्च तत्प्रतिप्रसवः । तथा तत्र तिलतर्पणनिषेधाभावोऽपि “उपरागे व्यतीपाते गयायामथ पर्वणि । आदित्यादिनिषेधेऽपि कर्त्तव्यं तिलतर्पणमिति” स्मृतिदर्पणधृतसंग्रहवाक्यात् । <P>अथ गयाश्राद्धे निषिद्धकालः । “तीर्थश्राद्धं गयाश्राद्धं श्राद्धमन्यच्च पैतृकम् । अवदमध्ये न कुर्वीत महागुरुनिपातने” इति गारुडात् प्रमीतमहागुरुकस्य वर्षमात्रं गयाश्राद्धं निषिद्धम् । तत्रायं विशेषः वृद्ध्यादिनिमित्तकसपिण्डीकरणे तु कर्तुं शक्यत एव “अस्थिक्षेपं गयाश्राद्धं श्राद्धञ्चापरपक्षिकम् । अव्दमध्ये न कुर्व्वीत सपिण्डीकरणं विना” इति गारुडवाक्यान्तरात् । अत्राप्यपरोविशेषः यदि पितृभक्तिमान् तदाव्दमध्येऽपि गयाश्राद्धं कर्त्तुं शक्नोति “अस्थिक्षेपं गयाश्राद्धं श्राद्धं चापरपक्षिकम् । प्रथमाव्देऽपि कुर्वीत यदि स्याद्भक्तिमान् सुतः” । इति त्रिस्थलीसेतुधृतवचनात् । अत्र भक्तिः प्रीतिरिति बहवः । अन्ये तु अव्दमध्ये प्रेतस्य देवतात्वयोग्यतासिद्धये देवतासंस्कारकमेकं पार्वणं कर्त्तव्यं तदेव भक्तिपदाभिधेयं तच्च कृत्वा गयाश्राद्धं कुर्य्यादित्याहुः । भक्त्या वर्षमध्ये गयाश्राद्धकरणे तु वृद्धाबिव मासिकादीन्यपकृष्य कार्य्याणीति बोध्यम् । अत्रेयं सम्प्रदायानुसारिणी व्यवस्था अकृतसपिण्डनस्य प्रथमाव्दे गयाश्राद्धं नैव कार्य्यं कृतसपिण्डनस्यापि सति सम्भवे प्रथममाव्दे नैव कार्य्यमित्येव मुख्यः पक्षः प्रसङ्गतो गयाप्राप्तौ पुनरागमनाद्यसम्भावनायान्तु भक्त्या, मतान्तरोक्तं श्राद्धं कृत्वा वा । प्रथमाव्देऽपि तत् कार्य्यं नित्यत्वादिति । महापातकिनामपि वर्षमात्रं गयाश्राद्धं न कार्य्यम् “क्रियते पतितानां च गते संवत्सरे क्वचित् । देशधर्मप्रमाणत्वाद्गयाकूपे स्वबन्धुभिरिति” ब्राह्मात् कूपग्रहणं गयास्थतीर्थमात्रोपलक्षणम् । पतितानामिति यावद्दुर्मरणमृतानासुपलक्षणार्थं ते च विस्तरभया न्नात्र लिखिताः । पुक्तञ्चैतत् मिताक्षरायां यावद्दुर्निनित्तमृतानां संवत्सरादूर्द्धमेव नारायणबलिविधानपूर्व्वकं श्राद्धकरणस्योक्तत्रया गयाश्राद्धस्यापि तत्स्त्यानीयत्वेन तत्काले एव करणौचित्यम् । अतएव तद्धृतषट्त्रिंशन्मतीयवाक्यम् “गोब्राह्मणमृतानाञ्च पतितानां तथैव च । ऊर्द्ध्वं संवत्सरात् कार्य्यं सर्वमेबौर्द्धदेहिकमिति” । अत्र सर्वमिति सर्वशब्दस्वरसात् नारायणबलेरिव गयाश्राद्धादेरपि वर्षोत्तरमेव कर्त्तव्यता नार्वानिति प्रतीयते । अतएव तद्वचनव्याख्यायां मिताक्षराकृता नारायणबलिं कृत्वौर्द्धदेहिकं कार्य्यनित्युक्तम् । एबञ्चात्मघातिनाम् “नास्ति किञ्चिद्गयां विना” इत्युक्तिरपि वर्षोत्तरमेव तत्कर्त्तव्यतार्थैवेति बोध्यम् । अथ कर्त्तृविशेषे गयाश्राद्धविशेषः । तत्र “पितॄणां दत्तगक्षयमिति”, “पिण्डं दद्याच्च पित्रादेरिति” च वायबीयात् पित्रादित्रयाणामुद्देश्यता । “पितरो यत्र पूज्यन्ते तत्र मातामहादयः” इत्युक्तेः, गयासुपक्रम्यं “मातामहानामप्येवं श्रुतिरेषा सनातनीति” पाद्मसृष्टिखण्डवचनाच्च, मातामहादीनामप्युद्देश्यतेत्येवं षड्दैवतं पार्व्वणमिति गौडीयाः । “अत्वष्टकायां वृद्धौ च गयायाञ्च मृताहनि । अत्र मातुः पृथक्श्राद्धमन्यत्र पतिना सह” इति वाय्वग्निपुराणोक्तेः “नान्दीमुखेऽन्वष्टकायां गयायाञ्च मृताहनि । पितामह्यादिभिः सार्द्धं मातुः श्राद्धं समाचरेत्” इति शातातपोक्तेश्च मात्रादीनामप्युद्देश्यता तेन नवदैवत्यम् । तत्राप्ययं विशेषः । नान्दीमुखे असामवेदिनामेव नवदैवतपार्वणस्य विधानेन तत्साहचर्य्यात् तद्वेदिनामेव नवदैवत्यमिति । “पित्रादि नवदैवं वा तथा द्वादशदेवतम्” वह्निपुराणीयात् मातामह्यादित्रिकसहितं नवदैवतमिति द्वादशदैवतं वा । तत्र वाशब्दश्रवणात् विकल्प एव गम्यते स च देशभेदादिना व्यवस्थितः । पितृव्यादीनान्तु एकोद्दिष्टमेव तदशक्तौ पिण्डदानमात्रं कार्य्यम् । तत्पत्नीनामपि पृथगेकैकोद्दिष्टादि कार्य्यम् “न योषिद्भ्यः पृथग्दद्यात्” इत्यादिना पृथग्दाननिषेधेऽपि “स्वगोत्रे परगोत्रे वा दम्पत्योः पिण्डपातनम् । अपृथक् निष्फलं श्राद्धं पिण्डञ्चोदकतर्पणम्” इति वायवीये गयामुपक्रम्य सहदाननिषेधेन तत्प्रतिप्रसवात् ।” गयाकूप गयास्थकूपभेदे पुं० गयाक्षेत्र न० गयारूपे क्षेत्रभेदे गयातीर्थ तद्रूपे तीर्थे न० । गयादित्य पु० तत्रत्यादित्यभेदे गयाशिरस् न० गयास्थे गयशिरसि । “सर्वे सान्ता अदन्ताश्च” इत्युक्तेः गयाशिरमप्यत्र न० “पिण्डं दद्यात् गयाशिरे” वायुपु० । गयाशीर्षगयाशेखरादयोऽप्यत्र । ६ गन्तव्ये । “स्वरोऽसि गयोऽसि” ता० ब्रा० । “गयः फलाकाङ्क्षिमिर्गन्तव्यः” भा० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "गया",
+            "content": "गया स्त्री. - बिहार में एक नगर जो एक तीर्थस्थान है"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "गया",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಗಯಾಕ್ಷೇತ್ರ \\/ಹಿಂದುಗಳ ಒಂದು ಪವಿತ್ರ ಯಾತ್ರಾಸ್ಥಳ",
+            "निष्पत्तिः": "'अच्' (५-२-१२७)",
+            "व्युत्पत्तिः": "गयो गयासुरः कारणत्वेनास्त्यस्याः",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "गया",
+            "content": "<lexhead no=\"120\">\n<dentry>गया</dentry>\n<prAwipaxikam>गया</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<sense no=\"1\">बिहार में एक नगर जो एक तीर्थस्थान है</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "गया",
+            "content": "<body><s>gayA strI gayo gayAsuraH gayanfpo vA kAraRatvenAstyasya ac . tIrTaBede gayaSabde tatkaTA uktA . vAyupu° gayAmA° <lb/><b>1</b> a° tanmAhAtmyaM yaTA <q>vakzye tIrTavaraM puRyaM SrAdDAdO sarvvatArakam . gayAtIrTaM sarvvadeSe tIrTeByo'pyaDikaM SfRu . gayAsura stapastepe brahmaRA kratave'rTitaH . prAptasya tasya Sirasi SilAM DarmmohyaDArayat . tatra brahmAkarodyAgaM sTita­ScAdigadADaraH . PalgutIrTAdirUpeRa niScalArTamaha­rniSam . gayAsurasya viprendra! brahmAdyErdEvatEH saha . kftayajYo dadO brahmA brAhmaReByo gfhAdikam . Svetakalpe tu vArAhe gayoyAgamakArayat . gayanAmnA gayAKyAtA kzetraM brahmABikANkzitam . kANkzanti pitaraH putrAnnarakAdBa­yaBIravaH . gayAM yAsyati yaH putraH sa nastrAtA Bavizyati . gayAprAptaM sutaM dfzwvAM pitFRAmutsavo Bavet . padByA­mapi jalaM spfzwvA so'smaByaM kiM na dAsyati? . gayAM gatvAnnadAtA yaH pitarastena putriRaH . pakzatraya nivAsI ca punAtyAsaptamaM kulam . na cet zaYcadaSAhaM vA saptarAtraM trirAtrakam . mahAkalpakftaM pApaM gayAM prApya vinaSyati . piRqaM dattvA ca pitrAderAtmano'pi tilErvinA . brahmahatyA surApAnaM steyaM gurvvaNganAgamaH . pApaM tatsaNgajaM sarvvaM gayASrAdDAdvinaSyati . Atma­jo'pyanyajovApi gayABUmO yadA tadA . yannAmnA pAtayet piRqaM tannayet brahma SASvatam . nAmagotre samu­ccAryya piRqapAtanamIkzate . yena kenApi kasmEcit sa yAti paramAM gatim . brahmajYAnaM gayASrAdDaM gogfhe­maraRaM taTA . vAsaH puMsAM kurukzetre muktirezA catu­rvviDA . brahmajYAnena kiM sADyaM gogfhe maraRena kim . vAsena kiM kurukzetre yadi putrogayAM vrajet . gayAyAM parvvakAlezu piRqaM dadyAdvicakzaRaH . aDimAse janma­dine cAste'pi guruSukrayoH . na tyaktavyaM gayASrAdDaM siMhasTe'pi vfhaspatO . taTA dEvapramAdena pravahatsu vraRezu ca . pUbaH karmmADikArI ca SrANgakfdvrahmaloka­BAk . prItyA SrAdDantu karttavyaM sarvezAM varRaliNginAm . evaM kurvvan naraH samyak mahatIM SriyamApnuyAt . sakfd gayABigamanaM sakftpiRqasya pAtanam . durllaBaM kiM puna­rnityamasminneva vyavasTitaH . pramAdAnmriyate kzetre brahmAdyErsuktidAyake . brahmajYAnAdyaTA muktirlamyate nAtra saMSayaH . kIkawAdimftAnAYca pitFRAM tAraRA­ya ca . tasmAt sarvayatnena vastavyaM suvicakzaREH . brahma­prakalpitAn viprAn havyakavyAdinArccayet . tEstuzwE­stozitAH sarvvAH pitfBiH sahadevatAH . muRqanaYcopa­vAsaSca sarvvatIrTezvayaM viDiH . varjjayitvA kurukzetraM viSAlAM virajAM gayAm . daRqaM pradarSayedBikzurgayAM gatvA na piRqadaH . daRqaM nyasya vizRupade pitfBiH saha mucyate . na daRqI kilvizaM Datte puRyaM vA para­mArTataH . ataH sarvvakriyAM tyaktvA vizRuM DyAya­ti BAvukaH . saMnyaset sarvvakarmmARi vedamekaM na saMtyajet . muRqapfzWAcca pUrvvasmit paScime dakzi­Rottare . sArdDaM kroSadvayaM mAnaM gayeti brahmaRe­ritam . paYcakroSaM gayAkzetraM kroSamekaM gayASiraH . tanmaDye sarvvatIrTAni trElokye yAni santi vE . SrAdDa­kfd yo gayAkzatre pitFRAmanfRohi saH . Sirasi SrAdDakfd yastu kulAnAM SatamudDaret . gfhAccalita mAtreRa gayAyA gamanaM prati . svargArohaRasopAnaM pitfRAYca pade pade . padepade'SvameDasya yatPalaM gacCa­to gayAm . tatPalaYca BavennFRAM samagraM nAtra saMSayaH . pAyasenATa caruRA saktunA pizwa­kena vA . taRqulEH PalamUlAdyErgayAyAM piRqa­pAtanam . tilAjyadaDimaDvAdipiRqadravyezu yojayet . muzwimAtrapramaRena ArdrAmalakamAtrataH . SamIpatra pramARena piRqaM dadyAdgayASire . udDaret sapta gotrARi kulamekottaraM Satam . tilakalkena KaRqena guqena saGftena vA . kevalenEva daDnA vA dugDena maDunATa vA . pinyAkaM savftaM KaRqaM pitfByo'kzayamityuta . izyate 'vAptito BojyaM havizyaM manurabravIt . ekataH sarvvava­stUni rasavanti maDUni hi . smftvA gadADarANGrAbjaMPal­gutIyAmbu cEkataH . piRqAsanaM . paRqadAnaM punaH pratyavane janama . dakziRA cAnnasaMkalpastIrTaSrAdDezvayaM viDiH . gAvAhanaM na digbanDo na dozo dfzwisamBavaH . sakAru­Ryena karttavyaM tIrTaSrAdDaM vicakzaREH . anyatrAvAhitAH kAle pitaroyAntyamuM prati . tIrTe sadA vasantyete tasmAdAvAhanaM na hi . tIrTaSrAdDaM prayacCadBiH puruzEH PalakANkziBiH . kAmaM kroDaM taTA loBaM tyaktvA kAryyA­kriyA 'niSam . brahmacAryyekaBojI ca BUSAyI satyavAk SuciH . sarvaBUtahite raktaH sa tIrTaPalamaSnute . tIrTA­nTanusaran GIraH pAzaRqaM dUratastyajet . pAzaRqaM tacca vijYeyaM yadBavet kAmakArataH . tIrTezu ye narA­DIrAH karma kurvanDi sadgatAH . yaTA brahmacido vedyaM vastu­cAnanyacetasaH . praviSanvi pareSAKyaM brahma brahmaparAyaRAH . yA''ste vEtaraRI nAma nadI trElokyaviSrutA . sAvatIRAM gayAkzatre pitFRAM tAraRAya vE . snAto godo vEtaraRyAM triHsaptaH kulamudDaret . taTAkzayavawaM gatvA viprAn santozayizyati . brahmaprakalpitAn viprAn havyakavyA­dinArccayet . tEstuzwEstozitAH sarvAH pitfBiH saha­devatAH . gayAyAM nahi tatsTAnaM yatra bIrTaM na vidyate . sAnniDyaM sarvatIrTAnAM gayAtIrTaM tato varam . mInameze sTite sUryye kanyAyAM kArmuke GawaM . durllaBaM trizu lokezu gayAyAM piRqapAtanam . makare varttamAne'rke grahaRe candrasUryyayoH . durllaBaM trizu lokezu gayASrAdDaM sudurlaBam . gayAyAM piRqadAnena yat PalaM laBate baraH . na tacCakyaM mayA vaktuM kalpakowiSatErapi</q> . tadyAtrAviDiSca tatrEva 6 a° . <q>sanatkumAra uvAca . gayAyAtrAM pravakzyAmi SfRu nArada! muktidAm . ni­zkftiH piRqakarttfRAM brahmaRA gIyate purA . udyataSce­dgayAM gantuM SrAdDaM kftvA viDAnataH . viDAya karpawiveSaM kftvA grAmaM pradakziRam . tato grAmAntaraM gatvA SrAdDa­Sezasya Bojanam . tataH pratidinaM gacCet pratigraha vivarjjitaH . pratigrahAdapAvfttaH santuzwo niyataH SuciH . ahaNkAravimukto yaH sa tIrTaPalamaSrute . yasya hastO ca pAdO ca manaScApi susaMyataH . vidyA ta­paSca kIrttiSca sa tIrTakalamaSrute . tato gayApraveSe ca pUrvato'sti mahAnadI . tatra toyaM samutpAdya snAtavyaM nirmale jale . devAdIMstarpayitvATa SrAdDaM kftvA yaTA­viDi . svasvavedaSAKoditamarDyAvAhanavarjitam . apa­redyuH SucirBUtvA gacCedvE pretaparvatE . brahrakuRqe tataH snAtvA devAdIMstarpayet suDIH . kuryyAt SrAdDaM sapiRqAnAM prayataH pretaparvate . prAcInAvItinAByarccya dakziRABimuKaH smaran . “kavyavAlonalaH somo yama­ScEvAryyamA taTA . agnizmAScA barhizadaH somapAH pivf­devatAH . AgacCantu mahABAgA yuzmABI rakzitAKviha</q> . <q>madIyAH pitaroye ca kulejAtAH kulAhvayAH . tezAM piRqapradAnArTamAgato'smi gayAmimAm . te sarve tfptimAyAntu SrAdDenAnena SASvatIm</q> . AcamyoktvA ca paYcANgaM prARAyAmaM prayatnataH . punarAvfttirahitaH brahmalokAptihetave . evaYca viDivat SrAdDaM kftvA pUrvaM yaTAkramam . pitFnAvAhya cAByarccya mantrEH piRqa­pradoBavet . tIrTa pretaSilAdO ca caruRA savftena vA . prakzAlya pUrvaM tatsTAnaM paYcagavyEH pfTak pfTak . mantrE stEraTa saMpUjya paYcagavyESca devatAm . yAvattilA manu­zyESca gfhItAH pitfkarmmasu . gacCanti tAvadannurAH siMhatrastA yaTA mfgAH . SrazwakAsu ca vfdDO ca gayAyAM cAkzaye'hani . mAtuH SrAdDaM pfTak kuryyAdanyatra pati­nA saha . vfdDiSrAdDe tu mAtrAdi gayAyAM pitfpUrvakam . gfhItvAYjalinA teByaH pitftIrTena tattvataH . saktunA muzwimAtreRa dadyAdakzayyapiRqakam . AvrahmastamBa­paryyantaM devarzipitfmAnavAH . tfpyantu pitaraH sarve mAtf­mAtAmahAdayaH . atItakulakowInAM saptadvIpanivA­sinAm . A brahmaBuvanAt lokAdidamastu tilodakam . pitA pitAmahaScEva taTEva prapitAmahaH . mAtA pitA­mahI cEva taTEva prapitAmahI . mAtAmahastatpitA ca pramAtAmahakAdayaH . tezAM piRqo mayA dattohyakzayya­mupatizWatAm . muzwimAtrapramARaYca ArdrAmalakamAtra­kam . SamIpatrapramARa vA piRqaM dadyAdgayASire . udDa­ret saptagotrARAM kulAni SatamudDaret . piturmAtuSca BAryyAyA BaginyA duhitustaTA . pitfzvasurmAtfzvasuH sapta gotrAH prakIrttitAH . viMSatirviMSatirindrAH 14 zoqaSa dvAdaSEva hi . rudrASca 11 vasava 8 ScEva kulAnyekottaraM Satam . nAvAhanaM na digbanDo na dozo dfzwisamBavaH . sakA­ruRyena karttavyaM tIrTaSrAdDaM vicakzaREH . piRqAsanaM piRqadAnaM punaH pratyavanejanam . dakziRA cAnnasaMkalpa­stIrTaSrAdDezvayaM viDiH” . aDikaM madIyagayASrAdDAdipadDatO dfSyam . gayASrAdDasya kalAderADArAdikaM gayASrAdDAdipadDatO asmABirnyarUpi yaTA <q>gayASrAdDaPalaM kiMnizWamiti, vivicyate . “yannAmnA pAtayet piRqam</q> ityAdivacanajAtAt puttrAdikftaSrA­dDAt taduddeSyapitrAdigataM narakanivfttibrahmalokAvAptyA­diPalamavagamyate tacca nopapadyate . taTA hi sarvvo hi lokaH svezwasADane karmaRi pravarttate tatpravfttyA ca tattadizwasADanaM vastu sADayati ityevaM niyame sTite vEdikakarmmaRyapi taTEva svABIzwaPalavatyeva pravfttirucitA nAnyagAmiPale . evaM SAstradeSitaM PalamanuzWAtaryyeva karmmaBirjjanyate <q>SAstrIyaM PalaM prayoktari tallakzaRatvA­diti</q> jEminIyanyAyAt . anyakarttfkakriyayA'nyadIya­Palasya janane'tiprasaNgaH syAt . tataSca puttrAdikftaSrAdDAt kaTaM pitrAderudDArAdisamBavaH tasya SrAdDAdyakarttftvAt ityevaM prApte ucyate <q>yasmin jAte etAmizwiM nirva­pati pUta eva saH</q> ityAdivedavacanAt jEminIyanyA­yasya jAtezwyAdiBinnavizayatvaM kalpyate . taTA ca pittrAdikftajAtezwyAdidvArA annASanAdisaMskAradvArA ca yaTA tatrA'karttaryyapi puttre Palamutpadyate evaM gayA­diSrAdDakartturuddeSyasyAkartturapi udDArAdiPalasambanDaH nAnApurARavacanabalAdapi samBavati <q>PalasaMyogastvanodite na syAdaSezaBUtatvAditi</q> jEminIyanyAyAntareRa viDiviSe­zeREva PalaviSezasambanDa ityuktatvAt . taTA ca prAgu­ktAtiprasaNgasya SAstrAtiriktavizayatvamiti kalpyate <q>nAsti vacanasyAtiBAraH</q> iti nyAyAt <q>vAcanike'rTe nyAyAnavatArAt</q> iti nyAyAcca . tatra vacanAccoBaya­gataPalasADanatA'vagatA jAtezwyAdivat . tacca PalaM puRyaviSezastajjanyanarakAdyudDAro vetyanyadetat . mImAM­sAdAvevEtadvivecitamityuparamyate . kASyAdimftapitfka­kftagayASrAdDasya tu karttaryyevAkaraRanibanDanapratyavAyapa­rihrAramAtraM, sati kAme viSizwasantAnaSca Palam <q>gayAyAM piRqadAnena pitFRAmanfRo Bavet</q> ityAdivacane pitFRA­pAkaraRasyAvaSyakatayA tadakaraRe pratyavAyaboDanAt <q>gayA­BigamanaM karttuM yaH Sakto nABigacCati . Socanti pitarastasya vfTA tasya pariSramaH</q> iti kUrmapurARIyena samarTasya gayASrAdDA'karaRe vfTAjanmatokteH <q>jIvatorvAkya­karaRAt pratyavdaM BUriBojanAt . gayAyAM piRqadAnAcca triBiH puttrasya puttratA</q> ityAdivacane gayASrAdDAdikara­RenEva puttrakAryyakAritayA puttratvasidDyukteSca . tena gayASrAdDaM nityamata eva yaTASakti anuzWeyaM <q>nitye yaTA SakruyAditi</q> nyAyAt . taTApi sakftkaraRameva nityaM tAvatEva SAstrArTasidDeH <q>sakftkfte kftaH SAstrArTa iti</q> nyAyAt AvfttiboDakavIpsAdyaBAvAcca janmatiTyA­dikftyavanna punaHpunaH karaRAvaSyakatA . punaHkaraRe tu PalA Dikyam <q>yo BUya AraBate tasya Pale viSezaH</q> iti nyAyAt <q>sakfdgayABigamanaM sakftpiRqaprapAtanam</q> ityAdivAkya­mapyAdyasyEvAbaSyakatvArTaM na tu dvitIyAdernirAsArTamapi, parisaMKyApatteH . tatrApi praTamayAtrAyAM yezAM pretatvani­vAraRArTaM pretaSilAyAM piRqadAnaBARqasPowane kfte tatra dvitIyayAtrAyAM tezAM te na kAryye ityeva viSezEH . praTamayAtrAnantaramftAnAntu dvitIyayAtrAyAM te api kAryye . anyat sarvvaM sarvvAsvapi yAtrAsu samAnam . tasmAdamukte pitrAdO narakodDArAdi yaTAyaTaM PalaM mukte tu tasmin puttrAdeH pratyavAyABAvaH satyAYca kAma­nAyAM viSizwasantAnAdi puttrAdigataM PalaM BavatIti sidDam . atredaM vivicyate prAguktapurARAdibacanezu gayASrAdDasya pitrAdyudDAraH pratyavAyaparihAraH puttrAvA­ptiSca Palatvena SrUyate tatra gayASrAdDapravfttO kiM prayo­jakaM kimekEkamuBayaM vA tritayaM veti sandehe tritayasyEva­prayojakatA tatra kAmanABedAdekasya muKyaPalatA'parayo­rdvAratA prAsaNgikatA vA taTA ca yadA pitrAdyudDarArTinA gayASrAdDaM kriyate tadA tadeva muKyaM PalaM tatpravfttO prayojakaM, pratyavAyaparihAraH puttrotpattiSca tatra prAsaNgikO anTArTadIpasyAnuddeSyaprakASanavat . yadA tu putrArTinA tadanuzwIyate tadA puttrotprattireva muKyaM PalaM pitrAdyu­dDArastu tatra dvAramityeva sidDAntaH . evaM pitrAdyu­dDArasya Palatve sTite'DunA tatredaM vicAryyate . udDAro nAma svApekzayotkfzwasTAnAdinayanaM tacca prakfte nArakI­yadehavigamAnantaraM devAdadehaprApiRarUpaM tacca na samBavati nArakIyAdidehAdeH svasvakarmmaRArabDatayA kAraRasattve vigamAsamBavAt tatkarmmaRAM ca BogenEva nASyatvAt <q>nABuktaM kzIyate karmma kalpakowiSatErapIti</q> Aga­mAt . tataSca taddehanASaH svAramBakakarmmanASa eva nAnyaTA . taTA ca gayASrAdDAdinA kaTamudDArasamBavaH . prArabDakarmmaRAYca BogAdeva kzaye sati gayASrAdDenodDAro jananIya iti kalpanApi na yuktA BogAdeva karmmakzaye kalpye gayASrAdDavEPalyApatteH . ityevaM sTite ucyate karmmavipAkoktadAnAdinA prArabDakarmmakzayadvArA yaTA roganASakalpanA taTA prakfte'pi gayASrAdDAdinA prArabDa­kzayanASadvArEva udDArakalpanA <q>nABuktaM kzIyate</q> ityAdi­vAkyasya tu balavadvAkyasyEva pratibanDakasya sattvenApravftteH <q>na hi vacanasyAtiBAraH iti</q> nyAyAt taTA ca gayA­SrAdDasyEva prArabDakzayajanakapuRyaviSezajanakatA karmma­vipAkoktadAnAdivadeva kalpyate iti na kaScidviroDaH . kiYca BogAdeva prArabDakarmma kzayAdanantaramudDArakalpane'pi na gayASrAdDavEPalyaM pApaviSezErekEkayonizvanekAvfttiSrava­RAt PalonmuKAnAmitarezAmanArabDaPalArnA karmmaRAYca gayASrAdDanASyatA Bavizyatoti . asati ca nArakI­yANgAdyAramBake pApe udDArasya brahmalAkAvAptirUpatEva . svakarmmAnusAreRa tallokaprApterapi pUrvvaM vfttatve tu puttra­nizWaH pratyavAyaparihAra eva PalaM muktapitrAdO taTA­kalpanasya pUrvvamuktatvAt taTEvAtra kalpanOcityAt . aTa gayASrAdDADikAriRaH . tatra puttrapOttraprapOttrA eva praDAnADikAriRaH . tadBinnAH sarve'pi gORADi­kAriRaH . taTA <q>puttrezu vidyamAnezu nAnyo vE kArayet svaDAm</q> ityAdivacanena putrasattve'nyakarttfkaSrAdDasya nize­De'pi gayAyAM tasya pratiprasavaH, <q>Atmajo vA'nyajo vApi gayAkUpe yadA tadA . yannAmnA pAtayet piRqaM taM nayed brahma SASvatam</q> iti vAyavIyavacanAt <q>savarRA jYAtayo mitravAnDavAH suhfdastaTA . te'pi BUyo gayAM gatvA piRqaM dadyurviDAnataH</q> iti smftiratnAvalIDftavA­kyAcca . taTA cAtra sambanDimAtrARAmaDikAraH . yo yadIyaDanaM yaTA kaTaYcidgfhlAti so'savarRo'pi tadIya­gayASrAdDe'DikArI, <q>pretaM kiYcidviSudDyarTam</q> ityAdi vAyavIyavacane'savarRavaRigdattapiRqena pretodDArasya kI­rttanAt putro vA banDuputtro vA mitraM vA svajano'pi vA . fRiko vATavA dadyAd dvayoH svargastadA tayoriti” vahnipurARIyAcca . taTAnyatra karttfviSezavizayanizeDo'pi gayAyAM na pravarttate <q>na puttreByaH pitA dadyAnnAnujeBya­stadAgrajaH . na patnyE tu vatirddaddyAt budDimAn susamA­hitaH</q> iti ca sAmAnyato niziDya <q>te'pi yAnti divaM sarve piRqe datte iti SrutiH . atasteByo'tra yatnena piRqaM dadyAt samAhitaH</q> iti smftiratnAbalyAM gayAyAM pratiprasavAt bODAyanenApi <q>pitrA SrAdDaM na karttavyaM puttrARAntu kadAcana . BrAtrAgrajena vA kAryyaM BrA­tFRAM na kanIyasAm . atisnehena kAryya'vA sapi­RqIkaraRaM vinA . gayAyAmaviSezeRa jyAyAnapi samA­carediti sAmAnyato niziDya gayAyAM pratiprasavAcca . pUrvvavacane atreti gayAyAmityarTaH . aTa gayASrAdDAnaDikAriRaH . jIvatpitfko jIvanmAtfkaSca gayASrAdDe sarvaTAnaDikArI . jIvatpitfko mftamAtfkastu yadi prasaNgena gayAM prApnoti tadA anvazwakASrAdDamiva mAtfpArvaRameva kuryyAt “AnvazwakyaM gayAprAptO satyAM yacca kzayAhani . mAtuH SrAdDaM sutaH kuryyAt pitaryyapi ca jIvati</q> iti mEtrAyaRIyapariSizwavAkyAt . atra prAptA­vityuktyA prAsaNgikagamanaM sUcitam <q>gayAM prasaNgato gatvA mAtfSrAdDaM samAcarediti trisTalIsetuDftavacane pra­saNgata iti padasya spazwopAdAnasvarasAt . tena jIvatpi­tfkasya gayAmuddiSya gamane na mAtfSrAdDakaraRam . mAtf­SrAdDaYcAnvazwakASrAdDasAhacaryyAt pArvaRameva kAryamiti trisTalIsetupraBftayaH . anye tu jIvanmAtfko mftamA­tfko vA jIvatpitfko'pi pArvvaRaviDinA pitA­mahAdInAM gayASrAdDaM kuryyAt jIve pitari vE putraH SrAdDakAryyaM vivarjjayet . yezAM vApi pitA dadyAttezA­meke pracakzate</q> iti hArItavanottarArdDena jIvatpitfka­pArvaRasya viDAnena gayAyAmapi tatpravftterityAhuH . AcAra evAtrAnyatarapakzagrahaRe SaraRam . saMnyAsinastu sarvakarmaparityAgitayA gayASrAdDe'naDi­kAriRaH . taTApi tatra vizRupadAdiSrAdDasTAnezu daRqa­mAtrasparSanaM praRavopAsanAdivat tErAcaraRIyaM na tu SrAdDa­tarpaRAdi <q>daRqaM pradarSayedBikzurgayAM gatvA na piRqadaH . daRqaM spfzwvA vizRupade pitfBiH saha mucyate</q> iti vAyavIyAt spfzwvA sparSayitvetyarTaH . puttravatyAH striyA nADikAra iti gOqEkadeSinAmAcAraH sa tu mUlA­BAvAnnAdaraRIyaH . aTa gayASrAdDakAlaH . na tatra kAlaSudDyapekzA <q>gayAyAM sarvakAlezu piRqaM dadyAt vicakzaRaH . aDimAse janmadine aste ca guruSukrayoH . na tyaktavyaM gayASrAdDaM siMhasTe ca vfhaspatAviti</q> vAyavIyAt . atra sarvakAlezvityupakramAt aste ityA­dyuktistu sarvasamayASudDiprayojakanimittamAtropalakzaRArTA na tu rAtryAdriparyyudastakAlagrahaRArTeti boDyaM sarvatra tIrTAdO rAtryAdikAlasya paryyudastatayA raGunandanA­diBiH svIkArAt . saMkrAntyAdo tu PalAtiSatyaH <q>gayA­SrAdDaM prakurvIta saMkrAntyAdO viSezataH . kAle vA'parapakze vA caturTyAditiTizvapIti</q> vahnipurARIyAt <q>makare va­rttamAne'rke grahaRe candrasUryyayoH . durllaBaM trizu lokezu gayAyAM piRqapAtanamiti</q> vAyupurARavAkyAcca . taTAnye'pi nizidDakAlA gayAyAM pratiprasUtAH . yaTA <q>vivAhavratacUqAsu varzamardDaM tadardDakam . piRqadAnaM mfdA snAnaM na kuryyAttilatarpaRamiti</q> kArzRAjinivacanena, <q>vfdDimAtre taTAnyatra piRqadAnanirAkriyA . kftA gargA­diBirmuKyErmmAsamekantu karmiRAmiti</q> smftisaMgrahavA­kyena ca vivAhAderUrdDaM varzAdikAlaparyyantaM piRqadAnasya nizeDe'pi <q>mahAlaye gayASrAdDe mAtApitrormftAhani . kftodvAho'pi kurvIta piRqanirvapaRaM sutaH</q> iti, <q>pitroH kzayAhe yajYe ca pitfyajYe mahAlaye . gayAyAM piRqadA­nasya na kadAcinnirAkriyeti</q> ca trisTalIsetuDftasmfti saMgrahavAkyAcca tatpratiprasavaH . taTA tatra tilatarpaRani­zeDABAvo'pi <q>uparAge vyatIpAte gayAyAmaTa parvaRi . AdityAdinizeDe'pi karttavyaM tilatarpaRamiti</q> smftida­rpaRaDftasaMgrahavAkyAt . aTa gayASrAdDe nizidDakAlaH . <q>tIrTaSrAdDaM gayA­SrAdDaM SrAdDamanyacca pEtfkam . avadamaDye na kurvIta mahAgurunipAtane</q> iti gAruqAt pramItamahAguru­kasya varzamAtraM gayASrAdDaM nizidDam . tatrAyaM viSezaH vfdDyAdinimittakasapiRqIkaraRe tu kartuM Sakyata eva <q>asTikzepaM gayASrAdDaM SrAdDaYcAparapakzikam . avdamaDye na kurvvIta sapiRqIkaraRaM vinA</q> iti gAruqavAkyAnta­rAt . atrApyaparoviSezaH yadi pitfBaktimAn tadAvda­maDye'pi gayASrAdDaM karttuM Saknoti <q>asTikzepaM gayASrAdDaM SrAdDaM cAparapakzikam . praTamAvde'pi kurvIta yadi syA­dBaktimAn sutaH</q> . iti trisTalIsetuDftavacanAt . atra BaktiH prItiriti bahavaH . anye tu avdamaDye pretasya devatAtvayogyatAsidDaye devatAsaMskArakamekaM pArvaRaM karttavyaM tadeva BaktipadABiDeyaM tacca kftvA gayASrAdDaM kuryyAdi­tyAhuH . BaktyA varzamaDye gayASrAdDakaraRe tu vfdDAbiva mAsikAdInyapakfzya kAryyARIti boDyam . atreyaM sampra­dAyAnusAriRI vyavasTA akftasapiRqanasya praTamAvde gayASrAdDaM nEva kAryyaM kftasapiRqanasyApi sati samBave praTamamAvde nEva kAryyamityeva muKyaH pakzaH prasaNgato gayAprAptO punarAgamanAdyasamBAvanAyAntu BaktyA, matAnta­roktaM SrAdDaM kftvA vA . praTamAvde'pi tat kAryyaM nitya­tvAditi . mahApAtakinAmapi varzamAtraM gayASrAdDaM na kAryyam <q>kriyate patitAnAM ca gate saMvatsare kvacit . deSaDarmapramARatvAdgayAkUpe svabanDuBiriti</q> brAhmAt kUpagrahaRaM gayAsTatIrTamAtropalakzaRam . patitAnAmiti yAvaddurmaraRamftAnAsupalakzaRArTaM te ca vistaraBayA nnAtra liKitAH . puktaYcEtat mitAkzarAyAM yAvaddurni­nittamftAnAM saMvatsarAdUrdDameva nArAyaRabaliviDAnapUrvvakaM SrAdDakaraRasyoktatrayA gayASrAdDasyApi tatstyAnIyatvena tatkAle eva karaROcityam . ataeva tadDftazawtriMSa­nmatIyavAkyam <q>gobrAhmaRamftAnAYca patitAnAM taTEva ca . UrdDvaM saMvatsarAt kAryyaM sarvamebOrdDadehikamiti</q> . atra sarvamiti sarvaSabdasvarasAt nArAyaRabaleriva gayA­SrAdDAderapi varzottarameva karttavyatA nArvAniti pratI­yate . ataeva tadvacanavyAKyAyAM mitAkzarAkftA nArAya­RabaliM kftvOrdDadehikaM kAryyanityuktam . ebaYcAtmaGAti­nAm <q>nAsti kiYcidgayAM vinA</q> ityuktirapi varzottarameva tatkarttavyatArTEveti boDyam . aTa karttfviSeze gayASrAdDa­viSezaH . tatra <q>pitFRAM dattagakzayamiti</q>, <q>piRqaM dadyAcca pitrAderiti</q> ca vAyabIyAt pitrAditrayARAmuddeSyatA . <q>pitaro yatra pUjyante tatra mAtAmahAdayaH</q> ityukteH, gayA­supakramyaM <q>mAtAmahAnAmapyevaM SrutirezA sanAtanIti</q> pAdmasfzwiKaRqavacanAcca, mAtAmahAdInAmapyuddeSyatetyevaM zaqdEvataM pArvvaRamiti gOqIyAH . <q>atvazwakAyAM vfdDO ca gayAyAYca mftAhani . atra mAtuH pfTakSrAdDamanyatra patinA saha</q> iti vAyvagnipurARokteH <q>nAndImuKe'nvazwa­kAyAM gayAyAYca mftAhani . pitAmahyAdiBiH sArdDaM mAtuH SrAdDaM samAcaret</q> iti SAtAtapokteSca mAtrAdI­nAmapyuddeSyatA tena navadEvatyam . tatrApyayaM viSezaH . nAndImuKe asAmavedinAmeva navadEvatapArvaRasya viDAnena tatsAhacaryyAt tadvedinAmeva navadEvatyamiti . <q>pitrAdi navadEvaM vA taTA dvAdaSadevatam</q> vahnipurARIyAt mAtAmahyAditrikasahitaM navadEvatamiti dvAdaSadEvataM vA . tatra vASabdaSravaRAt vikalpa eva gamyate sa ca deSaBedA­dinA vyavasTitaH . pitfvyAdInAntu ekoddizwameva tada­SaktO piRqadAnamAtraM kAryyam . tatpatnInAmapi pfTage­kEkoddizwAdi kAryyam <q>na yozidByaH pfTagdadyAt</q> ityA­dinA pfTagdAnanizeDe'pi <q>svagotre paragotre vA dampatyoH piRqapAtanam . apfTak nizPalaM SrAdDaM piRqaYcodaka­tarpaRam</q> iti vAyavIye gayAmupakramya sahadAnanizeDena tatpratiprasavAt .” gayAkUpa gayAsTakUpaBede puM° gayAkzetra na° gayArUpe kzetraBede gayAtIrTa tadrUpe tIrTe na° . gayAditya pu° tatratyAditya­Bede gayASiras na° gayAsTe gayaSirasi . <q>sarve sAntA adantASca</q> ityukteH gayASiramapyatra na° <q>piRqaM dadyAt gayASire</q> vAyupu° . gayASIrzagayASeKarAdayo­'pyatra . 6 gantavye . <q>svaro'si gayo'si</q> tA° brA° . <q>gayaH PalAkANkzimirgantavyaH</q> BA° .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "गया",
+            "content": "<span lang=\"sa\">गया<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗಯಾಕ್ಷೇತ್ರ /ಹಿಂದುಗಳ ಒಂದು ಪವಿತ್ರ ಯಾತ್ರಾಸ್ಥಳ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"अच्\" (५-२-१२७)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>गयो गयासुरः कारणत्वेनास्त्यस्याः<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-const mozEncWasm = _path.resolve(__dirname, "./mozjpeg/mozjpeg_node_enc.wasm");
-const mozDecWasm = _path.resolve(__dirname, "./mozjpeg/mozjpeg_node_dec.wasm");
-const webpEncWasm = _path.resolve(__dirname, "./webp/webp_node_enc.wasm");
-const webpDecWasm = _path.resolve(__dirname, "./webp/webp_node_dec.wasm");
-const avifEncWasm = _path.resolve(__dirname, "./avif/avif_node_enc.wasm");
-const avifDecWasm = _path.resolve(__dirname, "./avif/avif_node_dec.wasm");
-const pngEncDecWasm = _path.resolve(__dirname, "./png/squoosh_png_bg.wasm");
-const pngEncDecInit = ()=>_squoosh_png.default(_fs.promises.readFile((0, _emscriptenutils.pathify)(pngEncDecWasm)));
-const oxipngWasm = _path.resolve(__dirname, "./png/squoosh_oxipng_bg.wasm");
-const oxipngInit = ()=>_squoosh_oxipng.default(_fs.promises.readFile((0, _emscriptenutils.pathify)(oxipngWasm)));
-const resizeWasm = _path.resolve(__dirname, "./resize/squoosh_resize_bg.wasm");
-const resizeInit = ()=>_squoosh_resize.default(_fs.promises.readFile((0, _emscriptenutils.pathify)(resizeWasm)));
-// rotate
-const rotateWasm = _path.resolve(__dirname, "./rotate/rotate.wasm");
-globalThis.ImageData = _image_data.default;
-function resizeNameToIndex(name) {
-    switch(name){
-        case "triangle":
-            return 0;
-        case "catrom":
-            return 1;
-        case "mitchell":
-            return 2;
-        case "lanczos3":
-            return 3;
-        default:
-            throw Error(`Unknown resize algorithm "${name}"`);
-    }
-}
-function resizeWithAspect({ input_width, input_height, target_width, target_height }) {
-    if (!target_width && !target_height) {
-        throw Error("Need to specify at least width or height when resizing");
-    }
-    if (target_width && target_height) {
-        return {
-            width: target_width,
-            height: target_height
-        };
-    }
-    if (!target_width) {
-        return {
-            width: Math.round(input_width / input_height * target_height),
-            height: target_height
-        };
-    }
-    return {
-        width: target_width,
-        height: Math.round(input_height / input_width * target_width)
-    };
-}
-const preprocessors = {
-    resize: {
-        name: "Resize",
-        description: "Resize the image before compressing",
-        instantiate: async ()=>{
-            await resizeInit();
-            return (buffer, input_width, input_height, { width, height, method, premultiply, linearRGB })=>{
-                ({ width, height } = resizeWithAspect({
-                    input_width,
-                    input_height,
-                    target_width: width,
-                    target_height: height
-                }));
-                const imageData = new _image_data.default(_squoosh_resize.resize(buffer, input_width, input_height, width, height, resizeNameToIndex(method), premultiply, linearRGB), width, height);
-                _squoosh_resize.cleanup();
-                return imageData;
-            };
-        },
-        defaultOptions: {
-            method: "lanczos3",
-            fitMethod: "stretch",
-            premultiply: true,
-            linearRGB: true
-        }
-    },
-    rotate: {
-        name: "Rotate",
-        description: "Rotate image",
-        instantiate: async ()=>{
-            return async (buffer, width, height, { numRotations })=>{
-                const degrees = numRotations * 90 % 360;
-                const sameDimensions = degrees === 0 || degrees === 180;
-                const size = width * height * 4;
-                const instance = (await WebAssembly.instantiate(await _fs.promises.readFile((0, _emscriptenutils.pathify)(rotateWasm)))).instance;
-                const { memory } = instance.exports;
-                const additionalPagesNeeded = Math.ceil((size * 2 - memory.buffer.byteLength + 8) / (64 * 1024));
-                if (additionalPagesNeeded > 0) {
-                    memory.grow(additionalPagesNeeded);
-                }
-                const view = new Uint8ClampedArray(memory.buffer);
-                view.set(buffer, 8);
-                instance.exports.rotate(width, height, degrees);
-                return new _image_data.default(view.slice(size + 8, size * 2 + 8), sameDimensions ? width : height, sameDimensions ? height : width);
-            };
-        },
-        defaultOptions: {
-            numRotations: 0
-        }
-    }
-};
-const codecs = {
-    mozjpeg: {
-        name: "MozJPEG",
-        extension: "jpg",
-        detectors: [
-            /^\xFF\xD8\xFF/
-        ],
-        dec: ()=>(0, _emscriptenutils.instantiateEmscriptenWasm)(_mozjpeg_node_dec.default, mozDecWasm),
-        enc: ()=>(0, _emscriptenutils.instantiateEmscriptenWasm)(_mozjpeg_node_enc.default, mozEncWasm),
-        defaultEncoderOptions: {
-            quality: 75,
-            baseline: false,
-            arithmetic: false,
-            progressive: true,
-            optimize_coding: true,
-            smoothing: 0,
-            color_space: 3 /*YCbCr*/ ,
-            quant_table: 3,
-            trellis_multipass: false,
-            trellis_opt_zero: false,
-            trellis_opt_table: false,
-            trellis_loops: 1,
-            auto_subsample: true,
-            chroma_subsample: 2,
-            separate_chroma_quality: false,
-            chroma_quality: 75
-        },
-        autoOptimize: {
-            option: "quality",
-            min: 0,
-            max: 100
-        }
-    },
-    webp: {
-        name: "WebP",
-        extension: "webp",
-        detectors: [
-            /^RIFF....WEBPVP8[LX ]/s
-        ],
-        dec: ()=>(0, _emscriptenutils.instantiateEmscriptenWasm)(_webp_node_dec.default, webpDecWasm),
-        enc: ()=>(0, _emscriptenutils.instantiateEmscriptenWasm)(_webp_node_enc.default, webpEncWasm),
-        defaultEncoderOptions: {
-            quality: 75,
-            target_size: 0,
-            target_PSNR: 0,
-            method: 4,
-            sns_strength: 50,
-            filter_strength: 60,
-            filter_sharpness: 0,
-            filter_type: 1,
-            partitions: 0,
-            segments: 4,
-            pass: 1,
-            show_compressed: 0,
-            preprocessing: 0,
-            autofilter: 0,
-            partition_limit: 0,
-            alpha_compression: 1,
-            alpha_filtering: 1,
-            alpha_quality: 100,
-            lossless: 0,
-            exact: 0,
-            image_hint: 0,
-            emulate_jpeg_size: 0,
-            thread_level: 0,
-            low_memory: 0,
-            near_lossless: 100,
-            use_delta_palette: 0,
-            use_sharp_yuv: 0
-        },
-        autoOptimize: {
-            option: "quality",
-            min: 0,
-            max: 100
-        }
-    },
-    avif: {
-        name: "AVIF",
-        extension: "avif",
-        // eslint-disable-next-line no-control-regex
-        detectors: [
-            /^\x00\x00\x00 ftypavif\x00\x00\x00\x00/
-        ],
-        dec: ()=>(0, _emscriptenutils.instantiateEmscriptenWasm)(_avif_node_dec.default, avifDecWasm),
-        enc: async ()=>{
-            return (0, _emscriptenutils.instantiateEmscriptenWasm)(_avif_node_enc.default, avifEncWasm);
-        },
-        defaultEncoderOptions: {
-            cqLevel: 33,
-            cqAlphaLevel: -1,
-            denoiseLevel: 0,
-            tileColsLog2: 0,
-            tileRowsLog2: 0,
-            speed: 6,
-            subsample: 1,
-            chromaDeltaQ: false,
-            sharpness: 0,
-            tune: 0 /* AVIFTune.auto */ 
-        },
-        autoOptimize: {
-            option: "cqLevel",
-            min: 62,
-            max: 0
-        }
-    },
-    oxipng: {
-        name: "OxiPNG",
-        extension: "png",
-        // eslint-disable-next-line no-control-regex
-        detectors: [
-            /^\x89PNG\x0D\x0A\x1A\x0A/
-        ],
-        dec: async ()=>{
-            await pngEncDecInit();
-            return {
-                decode: (buffer)=>{
-                    const imageData = _squoosh_png.decode(buffer);
-                    _squoosh_png.cleanup();
-                    return imageData;
-                }
-            };
-        },
-        enc: async ()=>{
-            await pngEncDecInit();
-            await oxipngInit();
-            return {
-                encode: (buffer, width, height, opts)=>{
-                    const simplePng = _squoosh_png.encode(new Uint8Array(buffer), width, height);
-                    const imageData = _squoosh_oxipng.optimise(simplePng, opts.level, false);
-                    _squoosh_oxipng.cleanup();
-                    return imageData;
-                }
-            };
-        },
-        defaultEncoderOptions: {
-            level: 2
-        },
-        autoOptimize: {
-            option: "level",
-            min: 6,
-            max: 1
-        }
-    }
-};
-
-//# sourceMappingURL=codecs.js.map                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           'use strict';
-
-
-
-
-var _docsUrl = require('../docsUrl');var _docsUrl2 = _interopRequireDefault(_docsUrl);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { 'default': obj };}
-
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
-
-module.exports = {
-  meta: {
-    type: 'suggestion',
-    docs: {
-      category: 'Module systems',
-      description: 'Forbid AMD `require` and `define` calls.',
-      url: (0, _docsUrl2['default'])('no-amd') },
-
-    schema: [] },
-
-
-  create: function () {function create(context) {
-      return {
-        CallExpression: function () {function CallExpression(node) {
-            if (context.getScope().type !== 'module') {return;}
-
-            if (node.callee.type !== 'Identifier') {return;}
-            if (node.callee.name !== 'require' && node.callee.name !== 'define') {return;}
-
-            // todo: capture define((require, module, exports) => {}) form?
-            if (node.arguments.length !== 2) {return;}
-
-            var modules = node.arguments[0];
-            if (modules.type !== 'ArrayExpression') {return;}
-
-            // todo: check second arg type? (identifier or callback)
-
-            context.report(node, 'Expected imports instead of AMD ' + String(node.callee.name) + '().');
-          }return CallExpression;}() };
-
-
-    }return create;}() }; /**
-                           * @fileoverview Rule to prefer imports to AMD
-                           * @author Jamund Ferguson
-                           */
-//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9ydWxlcy9uby1hbWQuanMiXSwibmFtZXMiOlsibW9kdWxlIiwiZXhwb3J0cyIsIm1ldGEiLCJ0eXBlIiwiZG9jcyIsImNhdGVnb3J5IiwiZGVzY3JpcHRpb24iLCJ1cmwiLCJzY2hlbWEiLCJjcmVhdGUiLCJjb250ZXh0IiwiQ2FsbEV4cHJlc3Npb24iLCJub2RlIiwiZ2V0U2NvcGUiLCJjYWxsZWUiLCJuYW1lIiwiYXJndW1lbnRzIiwibGVuZ3RoIiwibW9kdWxlcyIsInJlcG9ydCJdLCJtYXBwaW5ncyI6Ijs7Ozs7QUFLQSxxQzs7QUFFQTtBQUNBO0FBQ0E7O0FBRUFBLE9BQU9DLE9BQVAsR0FBaUI7QUFDZkMsUUFBTTtBQUNKQyxVQUFNLFlBREY7QUFFSkMsVUFBTTtBQUNKQyxnQkFBVSxnQkFETjtBQUVKQyxtQkFBYSwwQ0FGVDtBQUdKQyxXQUFLLDBCQUFRLFFBQVIsQ0FIRCxFQUZGOztBQU9KQyxZQUFRLEVBUEosRUFEUzs7O0FBV2ZDLFFBWGUsK0JBV1JDLE9BWFEsRUFXQztBQUNkLGFBQU87QUFDTEMsc0JBREssdUNBQ1VDLElBRFYsRUFDZ0I7QUFDbkIsZ0JBQUlGLFFBQVFHLFFBQVIsR0FBbUJWLElBQW5CLEtBQTRCLFFBQWhDLEVBQTBDLENBQUUsT0FBUzs7QUFFckQsZ0JBQUlTLEtBQUtFLE1BQUwsQ0FBWVgsSUFBWixLQUFxQixZQUF6QixFQUF1QyxDQUFFLE9BQVM7QUFDbEQsZ0JBQUlTLEtBQUtFLE1BQUwsQ0FBWUMsSUFBWixLQUFxQixTQUFyQixJQUFrQ0gsS0FBS0UsTUFBTCxDQUFZQyxJQUFaLEtBQXFCLFFBQTNELEVBQXFFLENBQUUsT0FBUzs7QUFFaEY7QUFDQSxnQkFBSUgsS0FBS0ksU0FBTCxDQUFlQyxNQUFmLEtBQTBCLENBQTlCLEVBQWlDLENBQUUsT0FBUzs7QUFFNUMsZ0JBQU1DLFVBQVVOLEtBQUtJLFNBQUwsQ0FBZSxDQUFmLENBQWhCO0FBQ0EsZ0JBQUlFLFFBQVFmLElBQVIsS0FBaUIsaUJBQXJCLEVBQXdDLENBQUUsT0FBUzs7QUFFbkQ7O0FBRUFPLG9CQUFRUyxNQUFSLENBQWVQLElBQWYsOENBQXdEQSxLQUFLRSxNQUFMLENBQVlDLElBQXBFO0FBQ0QsV0FoQkksMkJBQVA7OztBQW1CRCxLQS9CYyxtQkFBakIsQyxDQVhBIiwiZmlsZSI6Im5vLWFtZC5qcyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGZpbGVvdmVydmlldyBSdWxlIHRvIHByZWZlciBpbXBvcnRzIHRvIEFNRFxuICogQGF1dGhvciBKYW11bmQgRmVyZ3Vzb25cbiAqL1xuXG5pbXBvcnQgZG9jc1VybCBmcm9tICcuLi9kb2NzVXJsJztcblxuLy8tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbi8vIFJ1bGUgRGVmaW5pdGlvblxuLy8tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cblxubW9kdWxlLmV4cG9ydHMgPSB7XG4gIG1ldGE6IHtcbiAgICB0eXBlOiAnc3VnZ2VzdGlvbicsXG4gICAgZG9jczoge1xuICAgICAgY2F0ZWdvcnk6ICdNb2R1bGUgc3lzdGVtcycsXG4gICAgICBkZXNjcmlwdGlvbjogJ0ZvcmJpZCBBTUQgYHJlcXVpcmVgIGFuZCBgZGVmaW5lYCBjYWxscy4nLFxuICAgICAgdXJsOiBkb2NzVXJsKCduby1hbWQnKSxcbiAgICB9LFxuICAgIHNjaGVtYTogW10sXG4gIH0sXG5cbiAgY3JlYXRlKGNvbnRleHQpIHtcbiAgICByZXR1cm4ge1xuICAgICAgQ2FsbEV4cHJlc3Npb24obm9kZSkge1xuICAgICAgICBpZiAoY29udGV4dC5nZXRTY29wZSgpLnR5cGUgIT09ICdtb2R1bGUnKSB7IHJldHVybjsgfVxuXG4gICAgICAgIGlmIChub2RlLmNhbGxlZS50eXBlICE9PSAnSWRlbnRpZmllcicpIHsgcmV0dXJuOyB9XG4gICAgICAgIGlmIChub2RlLmNhbGxlZS5uYW1lICE9PSAncmVxdWlyZScgJiYgbm9kZS5jYWxsZWUubmFtZSAhPT0gJ2RlZmluZScpIHsgcmV0dXJuOyB9XG5cbiAgICAgICAgLy8gdG9kbzogY2FwdHVyZSBkZWZpbmUoKHJlcXVpcmUsIG1vZHVsZSwgZXhwb3J0cykgPT4ge30pIGZvcm0/XG4gICAgICAgIGlmIChub2RlLmFyZ3VtZW50cy5sZW5ndGggIT09IDIpIHsgcmV0dXJuOyB9XG5cbiAgICAgICAgY29uc3QgbW9kdWxlcyA9IG5vZGUuYXJndW1lbnRzWzBdO1xuICAgICAgICBpZiAobW9kdWxlcy50eXBlICE9PSAnQXJyYXlFeHByZXNzaW9uJykgeyByZXR1cm47IH1cblxuICAgICAgICAvLyB0b2RvOiBjaGVjayBzZWNvbmQgYXJnIHR5cGU/IChpZGVudGlmaWVyIG9yIGNhbGxiYWNrKVxuXG4gICAgICAgIGNvbnRleHQucmVwb3J0KG5vZGUsIGBFeHBlY3RlZCBpbXBvcnRzIGluc3RlYWQgb2YgQU1EICR7bm9kZS5jYWxsZWUubmFtZX0oKS5gKTtcbiAgICAgIH0sXG4gICAgfTtcblxuICB9LFxufTtcbiJdfQ==                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             module.exports={C:{"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"59":0,"60":0,"61":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0,"69":0,"70":0,"71":0,"72":0,"73":0,"74":0,"75":0,"76":0,"77":0,"78":0,"79":0,"80":0,"81":0,"82":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0,"92":0,"93":0,"94":0,"95":0,"96":0,"97":0.00307,"98":0,"99":0,"100":0,"101":0,"102":0,"103":0,"104":0,"105":0,"106":0.00307,"107":0,"108":0,"109":0,"110":0.01227,"111":0,"112":0,"113":0.00307,"114":0,"115":0.03988,"116":0.00614,"117":0.14726,"118":0.02148,"119":0,"120":0,"3.5":0,"3.6":0},D:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"59":0,"60":0,"61":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0.01227,"69":0.00307,"70":0.00614,"71":0,"72":0,"73":0,"74":0,"75":0,"76":0,"77":0,"78":0,"79":0.01534,"80":0,"81":0.00614,"83":0,"84":0,"85":0,"86":0,"87":0.00307,"88":0.02148,"89":0,"90":0,"91":0.00307,"92":0.00307,"93":0.12579,"94":0,"95":0.00614,"96":0.00614,"97":0,"98":0,"99":0.00307,"100":0,"101":0.00307,"102":0,"103":0.03068,"104":0,"105":0.00614,"106":0.00307,"107":0.00307,"108":0.0092,"109":0.52156,"110":0.01227,"111":0.00307,"112":0,"113":0.03375,"114":0.19942,"115":0.20556,"116":3.2122,"117":0.65655,"118":0.0092,"119":0.0092,"120":0},F:{"9":0,"11":0,"12":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0.02454,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"60":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0,"69":0.07056,"70":0.00614,"71":0,"72":0.01534,"73":0.02148,"74":0,"75":0,"76":0,"77":0.00307,"78":0,"79":0,"80":0,"81":0,"82":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0,"92":0,"93":0,"94":0,"95":0,"96":0,"97":0,"98":0,"99":0,"100":0.0092,"101":0.01534,"102":0.01534,"9.5-9.6":0,"10.0-10.1":0,"10.5":0,"10.6":0,"11.1":0,"11.5":0,"11.6":0,"12.1":0},B:{"12":0,"13":0.00307,"14":0,"15":0.00307,"16":0.0092,"17":0,"18":0.0092,"79":0,"80":0,"81":0,"83":0,"84":0.00307,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0,"92":0.0092,"93":0,"94":0.00614,"95":0,"96":0,"97":0,"98":0.00307,"99":0,"100":0,"101":0,"102":0,"103":0,"104":0,"105":0,"106":0,"107":0,"108":0.00307,"109":0.09511,"110":0,"111":0.00307,"112":0.00614,"113":0.01534,"114":0.01841,"115":0.09818,"116":0.65655,"117":0.47247},E:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0.00307,"15":0,_:"0","3.1":0,"3.2":0,"5.1":0,"6.1":0,"7.1":0,"9.1":0,"10.1":0,"11.1":0.00307,"12.1":0.00307,"13.1":0.0092,"14.1":0.00307,"15.1":0.00614,"15.2-15.3":0,"15.4":0.00614,"15.5":0.03682,"15.6":0.77927,"16.0":0,"16.1":0.00614,"16.2":0,"16.3":0.0092,"16.4":0.00307,"16.5":0.03375,"16.6":0.30373,"17.0":0,"17.1":0},G:{"8":0,"3.2":0,"4.0-4.1":0,"4.2-4.3":0,"5.0-5.1":0,"6.0-6.1":0,"7.0-7.1":0.00344,"8.1-8.4":0,"9.0-9.2":0,"9.3":0.031,"10.0-10.2":0,"10.3":0.11024,"11.0-11.2":0.17397,"11.3-11.4":0.00344,"12.0-12.1":0.01722,"12.2-12.5":0.48574,"13.0-13.1":0.00344,"13.2":0.01206,"13.3":0,"13.4-13.7":0.06029,"14.0-14.4":0.1378,"14.5-14.8":0.30144,"15.0-15.1":0.12402,"15.2-15.3":0.04823,"15.4":0.11541,"15.5":0.37895,"15.6-15.7":4.21323,"16.0":0.37206,"16.1":1.24881,"16.2":0.86642,"16.3":0.64766,"16.4":0.91292,"16.5":1.18163,"16.6":5.52233,"17.0":0.18258,"17.1":0},P:{"4":0.07131,"20":0.20373,"21":2.26144,"22":4.37008,"5.0-5.4":0,"6.2-6.4":0,"7.2-7.4":0.16299,"8.2":0.02037,"9.2":0.01019,"10.1":0,"11.1-11.2":0.04075,"12.0":0,"13.0":0.03056,"14.0":0.06112,"15.0":0.02037,"16.0":0.81493,"17.0":0.01019,"18.0":0.09168,"19.0":0.17317},I:{"0":0,"3":0,"4":0,"2.1":0,"2.2":0,"2.3":0,"4.1":0,"4.2-4.3":0.00988,"4.4":0,"4.4.3-4.4.4":0.11853},K:{_:"0 10 11 12 11.1 11.5 12.1"},A:{"6":0,"7":0,"8":0,"9":0,"10":0,"11":0.00307,"5.5":0},S:{"2.5":0.01386,_:"3.0-3.1"},J:{"7":0,"10":0},N:{"10":0,"11":0},L:{"0":60.84102},R:{_:"0"},M:{"0":0.0208},Q:{"13.1":0},O:{"0":0.15944},H:{"0":1.91633}};
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                module.exports={C:{"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"59":0,"60":0,"61":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0.00216,"69":0,"70":0,"71":0,"72":0,"73":0,"74":0,"75":0,"76":0,"77":0,"78":0,"79":0,"80":0,"81":0,"82":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0.00216,"92":0,"93":0,"94":0,"95":0,"96":0,"97":0,"98":0,"99":0,"100":0,"101":0,"102":0.00216,"103":0.00216,"104":0,"105":0,"106":0.00216,"107":0,"108":0,"109":0,"110":0.00433,"111":0.00216,"112":0,"113":0,"114":0.00216,"115":0.06922,"116":0.00433,"117":0.08003,"118":0.01298,"119":0,"120":0,"3.5":0,"3.6":0},D:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0.00216,"58":0.00649,"59":0,"60":0,"61":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0.01298,"68":0.00216,"69":0,"70":0,"71":0,"72":0,"73":0,"74":0,"75":0,"76":0,"77":0,"78":0,"79":0.00216,"80":0,"81":0,"83":0,"84":0,"85":0,"86":0.00216,"87":0.00649,"88":0,"89":0,"90":0,"91":0,"92":0,"93":0,"94":0,"95":0,"96":0,"97":0,"98":0.00216,"99":0.00216,"100":0.00216,"101":0,"102":0,"103":0.00433,"104":0,"105":0.00216,"106":0,"107":0.01298,"108":0.00216,"109":0.19467,"110":0,"111":0,"112":0.00649,"113":0.00649,"114":0.01298,"115":0.02812,"116":0.87602,"117":0.15357,"118":0,"119":0,"120":0},F:{"9":0,"11":0,"12":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0.00216,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"60":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0,"69":0,"70":0.00216,"71":0.00216,"72":0.00216,"73":0,"74":0,"75":0.00649,"76":0,"77":0.01947,"78":0,"79":0.00649,"80":0,"81":0,"82":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0,"92":0,"93":0,"94":0,"95":0,"96":0,"97":0,"98":0,"99":0,"100":0.00433,"101":0.00216,"102":0.00433,"9.5-9.6":0,"10.0-10.1":0,"10.5":0,"10.6":0,"11.1":0,"11.5":0,"11.6":0,"12.1":0.1168},B:{"12":0.00216,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"79":0,"80":0,"81":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0,"92":0.00433,"93":0,"94":0,"95":0,"96":0,"97":0,"98":0,"99":0,"100":0,"101":0,"102":0,"103":0,"104":0,"105":0.00433,"106":0,"107":0,"108":0,"109":0,"110":0,"111":0,"112":0.00216,"113":0,"114":0.00865,"115":0.03028,"116":0.20332,"117":0.16006},E:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,_:"0","3.1":0,"3.2":0,"5.1":0.01947,"6.1":0,"7.1":0,"9.1":0,"10.1":0,"11.1":0,"12.1":0,"13.1":0.00433,"14.1":0,"15.1":0,"15.2-15.3":0,"15.4":0,"15.5":0,"15.6":0.00433,"16.0":0,"16.1":0.00433,"16.2":0,"16.3":0.00216,"16.4":0,"16.5":0,"16.6":0.02596,"17.0":0,"17.1":0},G:{"8":0,"3.2":0,"4.0-4.1":0,"4.2-4.3":0.04563,"5.0-5.1":0,"6.0-6.1":0,"7.0-7.1":0.29661,"8.1-8.4":0,"9.0-9.2":0.00067,"9.3":0.00268,"10.0-10.2":0,"10.3":0.00201,"11.0-11.2":0.00067,"11.3-11.4":0.00738,"12.0-12.1":0.00336,"12.2-12.5":0.33621,"13.0-13.1":0,"13.2":0.00067,"13.3":0.02215,"13.4-13.7":0.04496,"14.0-14.4":0.13757,"14.5-14.8":0.11274,"15.0-15.1":0.12415,"15.2-15.3":0.04429,"15.4":0.12146,"15.5":0.05234,"15.6-15.7":0.63013,"16.0":0.29661,"16.1":0.23689,"16.2":0.25165,"16.3":0.23957,"16.4":0.22414,"16.5":0.61671,"16.6":2.66415,"17.0":0.15703,"17.1":0},P:{"4":0.09231,"20":0.06154,"21":0.2564,"22":2.07174,"5.0-5.4":0,"6.2-6.4":0,"7.2-7.4":0.01026,"8.2":0,"9.2":0.01026,"10.1":0,"11.1-11.2":0.11282,"12.0":0,"13.0":0.02051,"14.0":0.13333,"15.0":0.01026,"16.0":0.15384,"17.0":0.17435,"18.0":0.02051,"19.0":0.06154},I:{"0":0,"3":0,"4":0.00343,"2.1":0,"2.2":0,"2.3":0,"4.1":0.00343,"4.2-4.3":0.01116,"4.4":0,"4.4.3-4.4.4":0.05063},K:{_:"0 10 11 12 11.1 11.5 12.1"},A:{"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"5.5":0},S:{"2.5":0,_:"3.0-3.1"},J:{"7":0,"10":0},N:{"10":0,"11":0},L:{"0":62.74652},R:{_:"0"},M:{"0":0.18809},Q:{"13.1":0},O:{"0":16.31663},H:{"0":3.29429}};
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               module.exports={C:{"2":0,"3":0,"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0.00935,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"59":0,"60":0,"61":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0,"69":0,"70":0,"71":0,"72":0,"73":0,"74":0,"75":0,"76":0,"77":0,"78":0.0187,"79":0,"80":0,"81":0,"82":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0,"92":0,"93":0.00467,"94":0,"95":0,"96":0.00467,"97":0,"98":0,"99":0,"100":0,"101":0,"102":0.0187,"103":0,"104":0.00467,"105":0,"106":0,"107":0,"108":0.00467,"109":0,"110":0.00935,"111":0,"112":0.00467,"113":0.00467,"114":0,"115":0.1262,"116":0.07946,"117":2.63146,"118":0.19163,"119":0,"120":0,"3.5":0,"3.6":0},D:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0.00467,"54":0,"55":0,"56":0,"57":0,"58":0,"59":0,"60":0,"61":0.00935,"62":0,"63":0.00467,"64":0,"65":0,"66":0,"67":0,"68":0.00467,"69":0.00467,"70":0.00935,"71":0,"72":0,"73":0,"74":0,"75":0,"76":0,"77":0,"78":0,"79":0.00935,"80":0,"81":0.0187,"83":0.00467,"84":0,"85":0.00467,"86":0,"87":0.02337,"88":0.02804,"89":0,"90":0.00467,"91":0.00467,"92":0.00467,"93":0,"94":0.00935,"95":0,"96":0,"97":0.00467,"98":0,"99":0,"100":0.00467,"101":0,"102":0,"103":0.02804,"104":0,"105":0.00935,"106":0.02804,"107":0,"108":0.00467,"109":0.57023,"110":0.00467,"111":0,"112":0.01402,"113":0.02804,"114":0.13555,"115":0.14022,"116":6.95491,"117":1.83221,"118":0,"119":0,"120":0},F:{"9":0,"11":0,"12":0,"15":0,"16":0,"17":0,"18":0,"19":0,"20":0,"21":0,"22":0,"23":0,"24":0,"25":0,"26":0,"27":0,"28":0,"29":0,"30":0,"31":0,"32":0,"33":0,"34":0,"35":0,"36":0,"37":0,"38":0,"39":0,"40":0,"41":0,"42":0,"43":0,"44":0,"45":0,"46":0,"47":0,"48":0,"49":0,"50":0,"51":0,"52":0,"53":0,"54":0,"55":0,"56":0,"57":0,"58":0,"60":0,"62":0,"63":0,"64":0,"65":0,"66":0,"67":0,"68":0,"69":0.02804,"70":0.00467,"71":0.00935,"72":0.00467,"73":0,"74":0,"75":0,"76":0,"77":0.00467,"78":0,"79":0,"80":0,"81":0,"82":0,"83":0,"84":0,"85":0,"86":0,"87":0,"88":0,"89":0,"90":0,"91":0,"92":0,"93":0,"94":0,"95":0.00935,"96":0,"97":0,"98":0,"99":0.00467,"100":0.00935,"101":0.17294,"102":0.16826,"9.5-9.6":0,"10.0-10.1":0,"10.5":0,"10.6":0,"11.1":0,"11.5":0,"11.6":0,"12.1":0},B:{"12":0,"13":0,"14":0,"15":0,"16":0,"17":0,"18":0,"79":0,"80":0,"81":0,"83":0,"84":0,"85":0.00467,"86":0,"87":0,"88":0,"89":0.00467,"90":0,"91":0,"92":0.00467,"93":0,"94":0,"95":0,"96":0,"97":0,"98":0,"99":0,"100":0.02337,"101":0,"102":0,"103":0,"104":0,"105":0,"106":0,"107":0,"108":0,"109":0.00935,"110":0.00467,"111":0,"112":0.00935,"113":0.00935,"114":0.04674,"115":0.06076,"116":3.68779,"117":1.57046},E:{"4":0,"5":0,"6":0,"7":0,"8":0,"9":0,"10":0,"11":0,"12":0,"13":0,"14":0.00935,"15":0.01402,_:"0","3.1":0,"3.2":0,"5.1":0,"6.1":0,"7.1":0,"9.1":0,"10.1":0,"11.1":0,"12.1":0,"13.1":0.06076,"14.1":0.06544,"15.1":0.01402,"15.2-15.3":0,"15.4":0.00467,"15.5":0.02337,"15.6":0.45338,"16.0":0.00935,"16.1":0.04207,"16.2":0.02337,"16.3":0.07946,"16.4":0.00935,"16.5":0.16359,"16.6":0.73382,"17.0":0.22903,"17.1":0},G:{"8":0,"3.2":0,"4.0-4.1":0,"4.2-4.3":0,"5.0-5.1":0,"6.0-6.1":0,"7.0-7.1":0.00338,"8.1-8.4":0,"9.0-9.2":0,"9.3":0,"10.0-10.2":0,"10.3":0.0575,"11.0-11.2":0.0372,"11.3-11.4":0.00338,"12.0-12.1":0,"12.2-12.5":0.26719,"13.0-13.1":0.01184,"13.2":0,"13.3":0.02875,"13.4-13.7":0.04228,"14.0-14.4":0.02029,"14.5-14.8":0.33145,"15.0-15.1":0.04228,"15.2-15.3":0.10654,"15.4":0.06595,"15.5":0.14374,"15.6-15.7":1.08907,"16.0":0.39064,"16.1":0.52931,"16.2":0.48873,"16.3":1.05186,"16.4":0.23337,"16.5":2.52142,"16.6":8.28299,"17.0":0.969,"17.1":0.00338},P:{"4":0.01015,"20":0.12179,"21":0.22327,"22":2.6387,"5.0-5.4":0,"6.2-6.4":0,"7.2-7.4":0.28417,"8.2":0.0203,"9.2":0.0203,"10.1":0.10149,"11.1-11.2":0.27402,"12.0":0.06089,"13.0":0.10149,"14.0":0.03045,"15.0":0,"16.0":0.15223,"17.0":0.01015,"18.0":0.08119,"19.0":0.23342},I:{"0":0,"3":0,"4":0,"2.1":0,"2.2":0,"2.3":0,"4.1":0,"4.2-4.3":0.01324,"4.4":0,"4.4.3-4.4.4":0.07284},K:{_:"0 10 11 12 11.1 11.5 12.1"},A:{"6":0,"7":0,"8":0,"9":0,"10":0,"11":0.00935,"5.5":0},S:{"2.5":0,_:"3.0-3.1"},J:{"7":0,"10":0},N:{"10":0,"11":0},L:{"0":53.56256},R:{_:"0"},M:{"0":1.02259},Q:{"13.1":0.01065},O:{"0":0.01598},H:{"0":0.60508}};
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              

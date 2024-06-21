@@ -1,114 +1,85 @@
-            var unboundTypes = [];
-            var seen = {};
-            function visit(type) {
-                if (seen[type]) {
-                    return;
-                }
-                if (registeredTypes[type]) {
-                    return;
-                }
-                if (typeDependencies[type]) {
-                    typeDependencies[type].forEach(visit);
-                    return;
-                }
-                unboundTypes.push(type);
-                seen[type] = true;
-            }
-            types.forEach(visit);
-            throw new UnboundTypeError(message + ": " + unboundTypes.map(getTypeName).join([
-                ", "
-            ]));
+{
+    "word": "त्रिवृता",
+    "BEN": [
+        {
+            "word": "त्रिवृता",
+            "eid": "6159",
+            "pagenum": 379,
+            "content": "त्रिवृता¦ <i>trivṛtā,</i> <ab>i. e.</ab> <i>tri-vṛt + a,</i> <ab>f.</ab> <i>= trivṛt</i> <b>III.,</b> <ls>Suśr.</ls> 1, 132, 17."
         }
-        function __embind_register_function(name, argCount, rawArgTypesAddr, signature, rawInvoker, fn) {
-            var argTypes = heap32VectorToArray(argCount, rawArgTypesAddr);
-            name = readLatin1String(name);
-            rawInvoker = embind__requireFunction(signature, rawInvoker);
-            exposePublicSymbol(name, function() {
-                throwUnboundTypeError("Cannot call " + name + " due to unbound types", argTypes);
-            }, argCount - 1);
-            whenDependentTypesAreResolved([], argTypes, function(argTypes) {
-                var invokerArgsArray = [
-                    argTypes[0],
-                    null
-                ].concat(argTypes.slice(1));
-                replacePublicSymbol(name, craftInvokerFunction(name, invokerArgsArray, null, rawInvoker, fn), argCount - 1);
-                return [];
-            });
+    ],
+    "MW": [
+        {
+            "word": "त्रिवृता",
+            "eid": "88288",
+            "pagenum": "460,3",
+            "content": "त्रि—वृता ¦ <lex>f.</lex> <bot>Ipomoea Turpethum</bot>, <ls>Suśr.</ls>; <ls>VarBṛS.</ls><info lex='f'/>"
         }
-        function integerReadValueFromPointer(name, shift, signed) {
-            switch(shift){
-                case 0:
-                    return signed ? function readS8FromPointer(pointer) {
-                        return HEAP8[pointer];
-                    } : function readU8FromPointer(pointer) {
-                        return HEAPU8[pointer];
-                    };
-                case 1:
-                    return signed ? function readS16FromPointer(pointer) {
-                        return HEAP16[pointer >> 1];
-                    } : function readU16FromPointer(pointer) {
-                        return HEAPU16[pointer >> 1];
-                    };
-                case 2:
-                    return signed ? function readS32FromPointer(pointer) {
-                        return HEAP32[pointer >> 2];
-                    } : function readU32FromPointer(pointer) {
-                        return HEAPU32[pointer >> 2];
-                    };
-                default:
-                    throw new TypeError("Unknown integer type: " + name);
-            }
+    ],
+    "PGN": [
+        {
+            "word": "त्रिवृता",
+            "eid": "463",
+            "pagenum": 262,
+            "content": "6. <i>Trivṛtā</i>¦ (No. 44, L. 2, L. 8, L. 15): In L. 2, two localities named Trivṛtā and Śrīgohālī have been mentioned as connected with the village named Vāyigrāma.<sup>676</sup> Literally it means ‘surrounded or covered by three sides’. It seems that when the locality was founded the city was surrounded by some natural boundary on its three sides. This may have been in the form of rivulets or streams or hillocks."
         }
-        function __embind_register_integer(primitiveType, name, size, minRange, maxRange) {
-            name = readLatin1String(name);
-            if (maxRange === -1) {
-                maxRange = 4294967295;
-            }
-            var shift = getShiftFromSize(size);
-            var fromWireType = function(value) {
-                return value;
-            };
-            if (minRange === 0) {
-                var bitshift = 32 - 8 * size;
-                fromWireType = function(value) {
-                    return value << bitshift >>> bitshift;
-                };
-            }
-            var isUnsignedType = name.includes("unsigned");
-            registerType(primitiveType, {
-                name: name,
-                fromWireType: fromWireType,
-                toWireType: function(destructors, value) {
-                    if (typeof value !== "number" && typeof value !== "boolean") {
-                        throw new TypeError('Cannot convert "' + _embind_repr(value) + '" to ' + this.name);
-                    }
-                    if (value < minRange || value > maxRange) {
-                        throw new TypeError('Passing a number "' + _embind_repr(value) + '" from JS side to C/C++ side to an argument of type "' + name + '", which is outside the valid range [' + minRange + ", " + maxRange + "]!");
-                    }
-                    return isUnsignedType ? value >>> 0 : value | 0;
-                },
-                argPackAdvance: 8,
-                readValueFromPointer: integerReadValueFromPointer(name, shift, minRange !== 0),
-                destructorFunction: null
-            });
+    ],
+    "PW": [
+        {
+            "word": "त्रिवृता",
+            "eid": "47798",
+            "pagenum": 3,
+            "content": "त्रिवृता¦ <lex>f.</lex> <i><bot>Ipomoea Turpethum</bot></i>."
         }
-        function __embind_register_memory_view(rawType, dataTypeIndex, name) {
-            var typeMapping = [
-                Int8Array,
-                Uint8Array,
-                Int16Array,
-                Uint16Array,
-                Int32Array,
-                Uint32Array,
-                Float32Array,
-                Float64Array
-            ];
-            var TA = typeMapping[dataTypeIndex];
-            function decodeMemoryView(handle) {
-                handle = handle >> 2;
-                var heap = HEAPU32;
-                var size = heap[handle];
-                var data = heap[handle + 1];
-                return new TA(buffer, data, size);
-            }
-            name = readLatin1
+    ],
+    "PWG": [
+        {
+            "word": "त्रिवृता",
+            "eid": "31146",
+            "pagenum": 3,
+            "content": "त्रिवृता¦ <lex>f.</lex> = त्रिवृत् 3. <ls>AK. 2, 4, 3, 26.</ls> <ls>MED. ṇ. 34.</ls> <ls>RATNAM. 18.</ls> <ls>SUŚR. 1, 132, 17.</ls> <ls n='SUŚR.'>2, 161, 14.</ls> <ls>VARĀH. BṚH. S. 53, 48. 87.</ls> <dvsn n='v'>— Vgl. कृष्ण° ."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिवृता",
+            "eid": "15626",
+            "pagenum": "2-662-c",
+            "content": "त्रिवृता¦, स्त्री, (त्रिभिरवयवैर्वृता ।) त्रिवृत् । इत्यमरः । २ । ४ । १०८ ॥ (अस्याः पर्य्यायो यथा, “त्रिभण्डी त्रिवृता श्यामा सुरभा कोटरा तथा । सर्व्वानुभूतिः सुवहा शब्दैः पर्य्यायवाचकैः ॥” “त्र्यषणं त्रिफला हिङ्गु कार्षिकं त्रिवृतापलम् । सौवर्च्चलार्द्धकर्षञ्च पलार्द्धञ्चाम्लवेतसाम् ॥ तच्चूर्णं शर्करातुल्यं मद्येनाम्लेन वा पिबेत् । गुल्मपार्श्वार्त्तिनुत् सिद्धं जीर्णे चाद्याद्रसौदनम् ॥” “तुल्याम्लं त्रिवृताकल्कं सिद्धं गुल्महरं घृतम् । मूलं श्यामात्रिवृतयोः पचेदामलकैः सह । जले तेन कषायेण पक्त्वा सर्पिः पिबेन्नरः ॥” इति चरके कल्पस्थाने सप्तमेऽध्याये ॥)"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिवृता",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಕೆಂಪುತಿಗಡೆ ಮರ",
+            "व्युत्पत्तिः": "त्रिभिः अवयवैः वृता",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "त्रिवृता",
+            "linga": "S",
+            "artha": "शुक्लत्रिधारा",
+            "synonyms": [
+                "सर्वानुभूति",
+                "सरला",
+                "त्रिपुटा",
+                "त्रिवृता",
+                "त्रिवृत्",
+                "त्रिभण्डी",
+                "रोचनी"
+            ],
+            "num": "2.4.108",
+            "text": "सर्वानुभूतिः सरला त्रिपुटा त्रिवृता त्रिवृत् । त्रिभण्डी  रोचनी श्यामापालिन्द्यौ तु सुषेणिका ॥",
+            "content": ""
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिवृता",
+            "content": "<span lang=\"sa\">त्रिवृता<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೆಂಪುತಿಗಡೆ ಮರ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिभिः अवयवैः वृता<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

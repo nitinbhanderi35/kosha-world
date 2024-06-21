@@ -1,1600 +1,256 @@
-ropKey];
-
-          if (lastProps.hasOwnProperty(propKey) && lastProp != null && !nextProps.hasOwnProperty(propKey)) {
-            switch (propKey) {
-              case 'value':
-                {
-                  // This is handled by updateTextarea below.
-                  break;
-                }
-
-              case 'children':
-                {
-                  // TODO: This doesn't actually do anything if it updates.
-                  break;
-                }
-              // defaultValue is ignored by setProp
-
-              default:
-                {
-                  setProp(domElement, tag, propKey, null, nextProps, lastProp);
-                }
-            }
-          }
-        }
-
-        for (const propKey in nextProps) {
-          const nextProp = nextProps[propKey];
-          const lastProp = lastProps[propKey];
-
-          if (nextProps.hasOwnProperty(propKey) && (nextProp != null || lastProp != null)) {
-            switch (propKey) {
-              case 'value':
-                {
-                  value = nextProp; // This is handled by updateTextarea below.
-
-                  break;
-                }
-
-              case 'defaultValue':
-                {
-                  defaultValue = nextProp;
-                  break;
-                }
-
-              case 'children':
-                {
-                  // TODO: This doesn't actually do anything if it updates.
-                  break;
-                }
-
-              case 'dangerouslySetInnerHTML':
-                {
-                  if (nextProp != null) {
-                    // TODO: Do we really need a special error message for this. It's also pretty blunt.
-                    throw Error(formatProdErrorMessage(91));
-                  }
-
-                  break;
-                }
-
-              default:
-                {
-                  if (nextProp !== lastProp) setProp(domElement, tag, propKey, nextProp, nextProps, lastProp);
-                }
-            }
-          }
-        }
-
-        updateTextarea(domElement, value, defaultValue);
-        return;
-      }
-
-    case 'option':
-      {
-        for (const propKey in lastProps) {
-          const lastProp = lastProps[propKey];
-
-          if (lastProps.hasOwnProperty(propKey) && lastProp != null && !nextProps.hasOwnProperty(propKey)) {
-            switch (propKey) {
-              case 'selected':
-                {
-                  // TODO: Remove support for selected on option.
-                  domElement.selected = false;
-                  break;
-                }
-
-              default:
-                {
-                  setProp(domElement, tag, propKey, null, nextProps, lastProp);
-                }
-            }
-          }
-        }
-
-        for (const propKey in nextProps) {
-          const nextProp = nextProps[propKey];
-          const lastProp = lastProps[propKey];
-
-          if (nextProps.hasOwnProperty(propKey) && nextProp !== lastProp && (nextProp != null || lastProp != null)) {
-            switch (propKey) {
-              case 'selected':
-                {
-                  // TODO: Remove support for selected on option.
-                  domElement.selected = nextProp && typeof nextProp !== 'function' && typeof nextProp !== 'symbol';
-                  break;
-                }
-
-              default:
-                {
-                  setProp(domElement, tag, propKey, nextProp, nextProps, lastProp);
-                }
-            }
-          }
-        }
-
-        return;
-      }
-
-    case 'img':
-    case 'link':
-    case 'area':
-    case 'base':
-    case 'br':
-    case 'col':
-    case 'embed':
-    case 'hr':
-    case 'keygen':
-    case 'meta':
-    case 'param':
-    case 'source':
-    case 'track':
-    case 'wbr':
-    case 'menuitem':
-      {
-        // Void elements
-        for (const propKey in lastProps) {
-          const lastProp = lastProps[propKey];
-
-          if (lastProps.hasOwnProperty(propKey) && lastProp != null && !nextProps.hasOwnProperty(propKey)) {
-            setProp(domElement, tag, propKey, null, nextProps, lastProp);
-          }
-        }
-
-        for (const propKey in nextProps) {
-          const nextProp = nextProps[propKey];
-          const lastProp = lastProps[propKey];
-
-          if (nextProps.hasOwnProperty(propKey) && nextProp !== lastProp && (nextProp != null || lastProp != null)) {
-            switch (propKey) {
-              case 'children':
-              case 'dangerouslySetInnerHTML':
-                {
-                  if (nextProp != null) {
-                    // TODO: Can we make this a DEV warning to avoid this deny list?
-                    throw Error(formatProdErrorMessage(137, tag));
-                  }
-
-                  break;
-                }
-              // defaultChecked and defaultValue are ignored by setProp
-
-              default:
-                {
-                  setProp(domElement, tag, propKey, nextProp, nextProps, lastProp);
-                }
-            }
-          }
-        }
-
-        return;
-      }
-
-    default:
-      {
-        if (isCustomElement(tag)) {
-          for (const propKey in lastProps) {
-            const lastProp = lastProps[propKey];
-
-            if (lastProps.hasOwnProperty(propKey) && lastProp != null && !nextProps.hasOwnProperty(propKey)) {
-              setPropOnCustomElement(domElement, tag, propKey, null, nextProps, lastProp);
-            }
-          }
-
-          for (const propKey in nextProps) {
-            const nextProp = nextProps[propKey];
-            const lastProp = lastProps[propKey];
-
-            if (nextProps.hasOwnProperty(propKey) && nextProp !== lastProp && (nextProp != null || lastProp != null)) {
-              setPropOnCustomElement(domElement, tag, propKey, nextProp, nextProps, lastProp);
-            }
-          }
-
-          return;
-        }
-      }
-  }
-
-  for (const propKey in lastProps) {
-    const lastProp = lastProps[propKey];
-
-    if (lastProps.hasOwnProperty(propKey) && lastProp != null && !nextProps.hasOwnProperty(propKey)) {
-      setProp(domElement, tag, propKey, null, nextProps, lastProp);
-    }
-  }
-
-  for (const propKey in nextProps) {
-    const nextProp = nextProps[propKey];
-    const lastProp = lastProps[propKey];
-
-    if (nextProps.hasOwnProperty(propKey) && nextProp !== lastProp && (nextProp != null || lastProp != null)) {
-      setProp(domElement, tag, propKey, nextProp, nextProps, lastProp);
-    }
-  }
-}
-
-function diffHydratedProperties(domElement, tag, props, isConcurrentMode, shouldWarnDev, hostContext) {
-
-
-  switch (tag) {
-    case 'dialog':
-      listenToNonDelegatedEvent('cancel', domElement);
-      listenToNonDelegatedEvent('close', domElement);
-      break;
-
-    case 'iframe':
-    case 'object':
-    case 'embed':
-      // We listen to this event in case to ensure emulated bubble
-      // listeners still fire for the load event.
-      listenToNonDelegatedEvent('load', domElement);
-      break;
-
-    case 'video':
-    case 'audio':
-      // We listen to these events in case to ensure emulated bubble
-      // listeners still fire for all the media events.
-      for (let i = 0; i < mediaEventTypes.length; i++) {
-        listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
-      }
-
-      break;
-
-    case 'source':
-      // We listen to this event in case to ensure emulated bubble
-      // listeners still fire for the error event.
-      listenToNonDelegatedEvent('error', domElement);
-      break;
-
-    case 'img':
-    case 'image':
-    case 'link':
-      // We listen to these events in case to ensure emulated bubble
-      // listeners still fire for error and load events.
-      listenToNonDelegatedEvent('error', domElement);
-      listenToNonDelegatedEvent('load', domElement);
-      break;
-
-    case 'details':
-      // We listen to this event in case to ensure emulated bubble
-      // listeners still fire for the toggle event.
-      listenToNonDelegatedEvent('toggle', domElement);
-      break;
-
-    case 'input':
-      // listeners still fire for the invalid event.
-
-
-      listenToNonDelegatedEvent('invalid', domElement); // TODO: Make sure we check if this is still unmounted or do any clean
-      // post mount to force it to diverge from attributes. However, for
-      // option and select we don't quite do the same thing and select
-      // is not resilient to the DOM state changing so we don't do that here.
-      // TODO: Consider not doing this for input and textarea.
-
-      initInput(domElement, props.value, props.defaultValue, props.checked, props.defaultChecked, props.type, props.name, true);
-      track(domElement);
-      break;
-
-    case 'option':
-      break;
-
-    case 'select':
-      // listeners still fire for the invalid event.
-
-
-      listenToNonDelegatedEvent('invalid', domElement);
-      break;
-
-    case 'textarea':
-      // listeners still fire for the invalid event.
-
-
-      listenToNonDelegatedEvent('invalid', domElement); // TODO: Make sure we check if this is still unmounted or do any clean
-      initTextarea(domElement, props.value, props.defaultValue, props.children);
-      track(domElement);
-      break;
-  }
-
-  const children = props.children; // For text content children we compare against textContent. This
-  // might match additional HTML that is hidden when we read it using
-  // textContent. E.g. "foo" will match "f<span>oo</span>" but that still
-  // satisfies our requirement. Our requirement is not to produce perfect
-  // HTML and attributes. Ideally we should preserve structure but it's
-  // ok not to if the visible content is still enough to indicate what
-  // even listeners these nodes might be wired up to.
-  // TODO: Warn if there is more than a single textNode as a child.
-  // TODO: Should we use domElement.firstChild.nodeValue to compare?
-
-  if (typeof children === 'string' || typeof children === 'number') {
-    if (domElement.textContent !== '' + children) {
-      if (props.suppressHydrationWarning !== true) {
-        checkForUnmatchedText(domElement.textContent, children, isConcurrentMode);
-      }
-
-      if (!isConcurrentMode || !enableClientRenderFallbackOnTextMismatch) {
-        // We really should be patching this in the commit phase but since
-        // this only affects legacy mode hydration which is deprecated anyway
-        // we can get away with it.
-        // Host singletons get their children appended and don't use the text
-        // content mechanism.
-        if (tag !== 'body') {
-          domElement.textContent = children;
-        }
-      }
-    }
-  }
-
-  if (props.onScroll != null) {
-    listenToNonDelegatedEvent('scroll', domElement);
-  }
-
-  if (props.onScrollEnd != null) {
-    listenToNonDelegatedEvent('scrollend', domElement);
-  }
-
-  if (props.onClick != null) {
-    // TODO: This cast may not be sound for SVG, MathML or custom elements.
-    trapClickOnNonInteractiveElement(domElement);
-  }
-}
-function diffHydratedText(textNode, text, isConcurrentMode) {
-  const isDifferent = textNode.nodeValue !== text;
-  return isDifferent;
-}
-function restoreControlledState(domElement, tag, props) {
-  switch (tag) {
-    case 'input':
-      restoreControlledInputState(domElement, props);
-      return;
-
-    case 'textarea':
-      restoreControlledTextareaState(domElement, props);
-      return;
-
-    case 'select':
-      restoreControlledSelectState(domElement, props);
-      return;
-  }
-}
-
-const SUPPRESS_HYDRATION_WARNING = 'suppressHydrationWarning';
-const SUSPENSE_START_DATA = '$';
-const SUSPENSE_END_DATA = '/$';
-const SUSPENSE_PENDING_START_DATA = '$?';
-const SUSPENSE_FALLBACK_START_DATA = '$!';
-const FORM_STATE_IS_MATCHING = 'F!';
-const FORM_STATE_IS_NOT_MATCHING = 'F';
-const STYLE = 'style';
-const HostContextNamespaceNone = 0;
-const HostContextNamespaceSvg = 1;
-const HostContextNamespaceMath = 2;
-let eventsEnabled = null;
-let selectionInformation = null;
-
-function getOwnerDocumentFromRootContainer(rootContainerElement) {
-  return rootContainerElement.nodeType === DOCUMENT_NODE ? rootContainerElement : rootContainerElement.ownerDocument;
-}
-
-function getRootHostContext(rootContainerInstance) {
-  let type;
-  let context;
-  const nodeType = rootContainerInstance.nodeType;
-
-  switch (nodeType) {
-    case DOCUMENT_NODE:
-    case DOCUMENT_FRAGMENT_NODE:
-      {
-        type = nodeType === DOCUMENT_NODE ? '#document' : '#fragment';
-        const root = rootContainerInstance.documentElement;
-
-        if (root) {
-          const namespaceURI = root.namespaceURI;
-          context = namespaceURI ? getOwnHostContext(namespaceURI) : HostContextNamespaceNone;
-        } else {
-          context = HostContextNamespaceNone;
-        }
-
-        break;
-      }
-
-    default:
-      {
-        const container = nodeType === COMMENT_NODE ? rootContainerInstance.parentNode : rootContainerInstance;
-        type = container.tagName;
-        const namespaceURI = container.namespaceURI;
-
-        if (!namespaceURI) {
-          switch (type) {
-            case 'svg':
-              context = HostContextNamespaceSvg;
-              break;
-
-            case 'math':
-              context = HostContextNamespaceMath;
-              break;
-
-            default:
-              context = HostContextNamespaceNone;
-              break;
-          }
-        } else {
-          const ownContext = getOwnHostContext(namespaceURI);
-          context = getChildHostContextProd(ownContext, type);
-        }
-
-        break;
-      }
-  }
-
-  return context;
-}
-
-function getOwnHostContext(namespaceURI) {
-  switch (namespaceURI) {
-    case SVG_NAMESPACE:
-      return HostContextNamespaceSvg;
-
-    case MATH_NAMESPACE:
-      return HostContextNamespaceMath;
-
-    default:
-      return HostContextNamespaceNone;
-  }
-}
-
-function getChildHostContextProd(parentNamespace, type) {
-  if (parentNamespace === HostContextNamespaceNone) {
-    // No (or default) parent namespace: potential entry point.
-    switch (type) {
-      case 'svg':
-        return HostContextNamespaceSvg;
-
-      case 'math':
-        return HostContextNamespaceMath;
-
-      default:
-        return HostContextNamespaceNone;
-    }
-  }
-
-  if (parentNamespace === HostContextNamespaceSvg && type === 'foreignObject') {
-    // We're leaving SVG.
-    return HostContextNamespaceNone;
-  } // By default, pass namespace below.
-
-
-  return parentNamespace;
-}
-
-function getChildHostContext(parentHostContext, type) {
-
-  const parentNamespace = parentHostContext;
-  return getChildHostContextProd(parentNamespace, type);
-}
-function getPublicInstance(instance) {
-  return instance;
-}
-function prepareForCommit(containerInfo) {
-  eventsEnabled = isEnabled();
-  selectionInformation = getSelectionInformation();
-  let activeInstance = null;
-
-  setEnabled(false);
-  return activeInstance;
-}
-function resetAfterCommit(containerInfo) {
-  restoreSelection(selectionInformation);
-  setEnabled(eventsEnabled);
-  eventsEnabled = null;
-  selectionInformation = null;
-}
-function createHoistableInstance(type, props, rootContainerInstance, internalInstanceHandle) {
-  const ownerDocument = getOwnerDocumentFromRootContainer(rootContainerInstance);
-  const domElement = ownerDocument.createElement(type);
-  precacheFiberNode(internalInstanceHandle, domElement);
-  updateFiberProps(domElement, props);
-  setInitialProperties(domElement, type, props);
-  markNodeAsHoistable(domElement);
-  return domElement;
-}
-function createInstance(type, props, rootContainerInstance, hostContext, internalInstanceHandle) {
-  let hostContextProd;
-
-  {
-    hostContextProd = hostContext;
-  }
-
-  const ownerDocument = getOwnerDocumentFromRootContainer(rootContainerInstance);
-  let domElement;
-
-  switch (hostContextProd) {
-    case HostContextNamespaceSvg:
-      domElement = ownerDocument.createElementNS(SVG_NAMESPACE, type);
-      break;
-
-    case HostContextNamespaceMath:
-      domElement = ownerDocument.createElementNS(MATH_NAMESPACE, type);
-      break;
-
-    default:
-      switch (type) {
-        case 'svg':
-          {
-            domElement = ownerDocument.createElementNS(SVG_NAMESPACE, type);
-            break;
-          }
-
-        case 'math':
-          {
-            domElement = ownerDocument.createElementNS(MATH_NAMESPACE, type);
-            break;
-          }
-
-        case 'script':
-          {
-            // Create the script via .innerHTML so its "parser-inserted" flag is
-            // set to true and it does not execute
-            const div = ownerDocument.createElement('div');
-
-            div.innerHTML = '<script><' + '/script>'; // eslint-disable-line
-            // This is guaranteed to yield a script element.
-
-            const firstChild = div.firstChild;
-            domElement = div.removeChild(firstChild);
-            break;
-          }
-
-        case 'select':
-          {
-            if (typeof props.is === 'string') {
-              domElement = ownerDocument.createElement('select', {
-                is: props.is
-              });
-            } else {
-              // Separate else branch instead of using `props.is || undefined` above because of a Firefox bug.
-              // See discussion in https://github.com/facebook/react/pull/6896
-              // and discussion in https://bugzilla.mozilla.org/show_bug.cgi?id=1276240
-              domElement = ownerDocument.createElement('select');
-            }
-
-            if (props.multiple) {
-              domElement.multiple = true;
-            } else if (props.size) {
-              // Setting a size greater than 1 causes a select to behave like `multiple=true`, where
-              // it is possible that no option is selected.
-              //
-              // This is only necessary when a select in "single selection mode".
-              domElement.size = props.size;
-            }
-
-            break;
-          }
-
-        default:
-          {
-            if (typeof props.is === 'string') {
-              domElement = ownerDocument.createElement(type, {
-                is: props.is
-              });
-            } else {
-              // Separate else branch instead of using `props.is || undefined` above because of a Firefox bug.
-              // See discussion in https://github.com/facebook/react/pull/6896
-              // and discussion in https://bugzilla.mozilla.org/show_bug.cgi?id=1276240
-              domElement = ownerDocument.createElement(type);
-            }
-          }
-      }
-
-  }
-
-  precacheFiberNode(internalInstanceHandle, domElement);
-  updateFiberProps(domElement, props);
-  return domElement;
-}
-function appendInitialChild(parentInstance, child) {
-  parentInstance.appendChild(child);
-}
-function finalizeInitialChildren(domElement, type, props, hostContext) {
-  setInitialProperties(domElement, type, props);
-
-  switch (type) {
-    case 'button':
-    case 'input':
-    case 'select':
-    case 'textarea':
-      return !!props.autoFocus;
-
-    case 'img':
-      return true;
-
-    default:
-      return false;
-  }
-}
-function shouldSetTextContent(type, props) {
-  return type === 'textarea' || type === 'noscript' || typeof props.children === 'string' || typeof props.children === 'number' || typeof props.dangerouslySetInnerHTML === 'object' && props.dangerouslySetInnerHTML !== null && props.dangerouslySetInnerHTML.__html != null;
-}
-function createTextInstance(text, rootContainerInstance, hostContext, internalInstanceHandle) {
-
-  const textNode = getOwnerDocumentFromRootContainer(rootContainerInstance).createTextNode(text);
-  precacheFiberNode(internalInstanceHandle, textNode);
-  return textNode;
-}
-function getCurrentEventPriority() {
-  const currentEvent = window.event;
-
-  if (currentEvent === undefined) {
-    return DefaultEventPriority;
-  }
-
-  return getEventPriority(currentEvent.type);
-}
-let currentPopstateTransitionEvent = null;
-function shouldAttemptEagerTransition() {
-  const event = window.event;
-
-  if (event && event.type === 'popstate') {
-    // This is a popstate event. Attempt to render any transition during this
-    // event synchronously. Unless we already attempted during this event.
-    if (event === currentPopstateTransitionEvent) {
-      // We already attempted to render this popstate transition synchronously.
-      // Any subsequent attempts must have happened as the result of a derived
-      // update, like startTransition inside useEffect, or useDV. Switch back to
-      // the default behavior for all remaining transitions during the current
-      // popstate event.
-      return false;
-    } else {
-      // Cache the current event in case a derived transition is scheduled.
-      // (Refer to previous branch.)
-      currentPopstateTransitionEvent = event;
-      return true;
-    }
-  } // We're not inside a popstate event.
-
-
-  currentPopstateTransitionEvent = null;
-  return false;
-}
-// if a component just imports ReactDOM (e.g. for findDOMNode).
-// Some environments might not have setTimeout or clearTimeout.
-
-const scheduleTimeout = typeof setTimeout === 'function' ? setTimeout : undefined;
-const cancelTimeout = typeof clearTimeout === 'function' ? clearTimeout : undefined;
-const noTimeout = -1;
-const localPromise = typeof Promise === 'function' ? Promise : undefined;
-function getInstanceFromNode(node) {
-  return getClosestInstanceFromNode(node) || null;
-}
-function preparePortalMount(portalInstance) {
-  listenToAllSupportedEvents(portalInstance);
-}
-const scheduleMicrotask = typeof queueMicrotask === 'function' ? queueMicrotask : typeof localPromise !== 'undefined' ? callback => localPromise.resolve(null).then(callback).catch(handleErrorInNextTick) : scheduleTimeout; // TODO: Determine the best fallback here.
-
-function handleErrorInNextTick(error) {
-  setTimeout(() => {
-    throw error;
-  });
-} // -------------------
-function commitMount(domElement, type, newProps, internalInstanceHandle) {
-  // Despite the naming that might imply otherwise, this method only
-  // fires if there is an `Update` effect scheduled during mounting.
-  // This happens if `finalizeInitialChildren` returns `true` (which it
-  // does to implement the `autoFocus` attribute on the client). But
-  // there are also other cases when this might happen (such as patching
-  // up text content during hydration mismatch). So we'll check this again.
-  switch (type) {
-    case 'button':
-    case 'input':
-    case 'select':
-    case 'textarea':
-      if (newProps.autoFocus) {
-        domElement.focus();
-      }
-
-      return;
-
-    case 'img':
-      {
-        if (newProps.src) {
-          domElement.src = newProps.src;
-        }
-
-        return;
-      }
-  }
-}
-function commitUpdate(domElement, updatePayload, type, oldProps, newProps, internalInstanceHandle) {
-  // Diff and update the properties.
-  updateProperties(domElement, type, oldProps, newProps); // Update the props handle so that we know which props are the ones with
-  // with current event handlers.
-
-  updateFiberProps(domElement, newProps);
-}
-function resetTextContent(domElement) {
-  setTextContent(domElement, '');
-}
-function commitTextUpdate(textInstance, oldText, newText) {
-  textInstance.nodeValue = newText;
-}
-function appendChild(parentInstance, child) {
-  parentInstance.appendChild(child);
-}
-function appendChildToContainer(container, child) {
-  let parentNode;
-
-  if (container.nodeType === COMMENT_NODE) {
-    parentNode = container.parentNode;
-    parentNode.insertBefore(child, container);
-  } else {
-    parentNode = container;
-    parentNode.appendChild(child);
-  } // This container might be used for a portal.
-  // If something inside a portal is clicked, that click should bubble
-  // through the React tree. However, on Mobile Safari the click would
-  // never bubble through the *DOM* tree unless an ancestor with onclick
-  // event exists. So we wouldn't see it and dispatch it.
-  // This is why we ensure that non React root containers have inline onclick
-  // defined.
-  // https://github.com/facebook/react/issues/11918
-
-
-  const reactRootContainer = container._reactRootContainer;
-
-  if ((reactRootContainer === null || reactRootContainer === undefined) && parentNode.onclick === null) {
-    // TODO: This cast may not be sound for SVG, MathML or custom elements.
-    trapClickOnNonInteractiveElement(parentNode);
-  }
-}
-function insertBefore(parentInstance, child, beforeChild) {
-  parentInstance.insertBefore(child, beforeChild);
-}
-function insertInContainerBefore(container, child, beforeChild) {
-  if (container.nodeType === COMMENT_NODE) {
-    container.parentNode.insertBefore(child, beforeChild);
-  } else {
-    container.insertBefore(child, beforeChild);
-  }
-}
-
-function removeChild(parentInstance, child) {
-  parentInstance.removeChild(child);
-}
-function removeChildFromContainer(container, child) {
-  if (container.nodeType === COMMENT_NODE) {
-    container.parentNode.removeChild(child);
-  } else {
-    container.removeChild(child);
-  }
-}
-function clearSuspenseBoundary(parentInstance, suspenseInstance) {
-  let node = suspenseInstance; // Delete all nodes within this suspense boundary.
-  // There might be nested nodes so we need to keep track of how
-  // deep we are and only break out when we're back on top.
-
-  let depth = 0;
-
-  do {
-    const nextNode = node.nextSibling;
-    parentInstance.removeChild(node);
-
-    if (nextNode && nextNode.nodeType === COMMENT_NODE) {
-      const data = nextNode.data;
-
-      if (data === SUSPENSE_END_DATA) {
-        if (depth === 0) {
-          parentInstance.removeChild(nextNode); // Retry if any event replaying was blocked on this.
-
-          retryIfBlockedOn(suspenseInstance);
-          return;
-        } else {
-          depth--;
-        }
-      } else if (data === SUSPENSE_START_DATA || data === SUSPENSE_PENDING_START_DATA || data === SUSPENSE_FALLBACK_START_DATA) {
-        depth++;
-      }
-    } // $FlowFixMe[incompatible-type] we bail out when we get a null
-
-
-    node = nextNode;
-  } while (node); // TODO: Warn, we didn't find the end comment boundary.
-  // Retry if any event replaying was blocked on this.
-
-
-  retryIfBlockedOn(suspenseInstance);
-}
-function clearSuspenseBoundaryFromContainer(container, suspenseInstance) {
-  if (container.nodeType === COMMENT_NODE) {
-    clearSuspenseBoundary(container.parentNode, suspenseInstance);
-  } else if (container.nodeType === ELEMENT_NODE) {
-    clearSuspenseBoundary(container, suspenseInstance);
-  } else ; // Retry if any event replaying was blocked on this.
-
-
-  retryIfBlockedOn(container);
-}
-function hideInstance(instance) {
-  // TODO: Does this work for all element types? What about MathML? Should we
-  // pass host context to this method?
-  instance = instance;
-  const style = instance.style; // $FlowFixMe[method-unbinding]
-
-  if (typeof style.setProperty === 'function') {
-    style.setProperty('display', 'none', 'important');
-  } else {
-    style.display = 'none';
-  }
-}
-function hideTextInstance(textInstance) {
-  textInstance.nodeValue = '';
-}
-function unhideInstance(instance, props) {
-  instance = instance;
-  const styleProp = props[STYLE];
-  const display = styleProp !== undefined && styleProp !== null && styleProp.hasOwnProperty('display') ? styleProp.display : null;
-  instance.style.display = display == null || typeof display === 'boolean' ? '' : // The value would've errored already if it wasn't safe.
-  // eslint-disable-next-line react-internal/safe-string-coercion
-  ('' + display).trim();
-}
-function unhideTextInstance(textInstance, text) {
-  textInstance.nodeValue = text;
-}
-function clearContainer(container) {
-  const nodeType = container.nodeType;
-
-  if (nodeType === DOCUMENT_NODE) {
-    clearContainerSparingly(container);
-  } else if (nodeType === ELEMENT_NODE) {
-    switch (container.nodeName) {
-      case 'HEAD':
-      case 'HTML':
-      case 'BODY':
-        clearContainerSparingly(container);
-        return;
-
-      default:
+{
+    "word": "तडाग",
+    "ABCH": [
         {
-          container.textContent = '';
+            "word": "तडाग",
+            "linga": "पुंक्ली",
+            "pagenum": "43",
+            "kanda": "तिर्यक्काण्डः",
+            "varga": "जलकायः",
+            "eid": "3293",
+            "group": "1356",
+            "synonyms": [
+                "पद्माकर",
+                "कासार",
+                "सरसी",
+                "सरस्"
+            ],
+            "content": "पद्माकरस्तडागः स्यात्कासारः सरसी सरः ॥ १०९४ ॥"
         }
-    }
-  }
-}
-
-function clearContainerSparingly(container) {
-  let node;
-  let nextNode = container.firstChild;
-
-  if (nextNode && nextNode.nodeType === DOCUMENT_TYPE_NODE) {
-    nextNode = nextNode.nextSibling;
-  }
-
-  while (nextNode) {
-    node = nextNode;
-    nextNode = nextNode.nextSibling;
-
-    switch (node.nodeName) {
-      case 'HTML':
-      case 'HEAD':
-      case 'BODY':
+    ],
+    "AP90": [
         {
-          const element = node;
-          clearContainerSparingly(element); // If these singleton instances had previously been rendered with React they
-          // may still hold on to references to the previous fiber tree. We detatch them
-          // prospectively to reset them to a baseline starting state since we cannot create
-          // new instances.
-
-          detachDeletedInstance(element);
-          continue;
+            "word": "तडाग",
+            "eid": "14315",
+            "pagenum": 526,
+            "content": "तडागः --गं¦ <b>1</b> A pond, deep pool, tank;  <lbinfo n='sPuwakamalodaraKelitaKaMjanayugami#va'/> स्फुटकमलोदरखेलितखंजनयुगमिव शरदि तडागं <ls>Gīt. 11</ls>; <ls>Ms. 4. 203</ls>; <ls>Y. 3. 237.</ls> <b>--2</b> A tank. <b>--3</b> A trap for catching deer."
         }
-      // Script tags are retained to avoid an edge case bug. Normally scripts will execute if they
-      // are ever inserted into the DOM. However when streaming if a script tag is opened but not
-      // yet closed some browsers create and insert the script DOM Node but the script cannot execute
-      // yet until the closing tag is parsed. If something causes React to call clearContainer while
-      // this DOM node is in the document but not yet executable the DOM node will be removed from the
-      // document and when the script closing tag comes in the script will not end up running. This seems
-      // to happen in Chrome/Firefox but not Safari at the moment though this is not necessarily specified
-      // behavior so it could change in future versions of browsers. While leaving all scripts is broader
-      // than strictly necessary this is the least amount of additional code to avoid this breaking
-      // edge case.
-      //
-      // Style tags are retained because they may likely come from 3rd party scripts and extensions
-
-      case 'SCRIPT':
-      case 'STYLE':
+    ],
+    "BEN": [
         {
-          continue;
+            "word": "तडाग",
+            "eid": "5646",
+            "pagenum": 347,
+            "content": "तडाग¦ <i>taḍāga,</i> <ab>m.</ab> and <ab>n.</ab> A pond, <ls>Man.</ls> 4, 203. -- <ab>Cf.</ab> <i>taḍāka.</i>"
         }
-      // Stylesheet tags are retained because tehy may likely come from 3rd party scripts and extensions
-
-      case 'LINK':
+    ],
+    "BOP": [
         {
-          if (node.rel.toLowerCase() === 'stylesheet') {
-            continue;
-          }
+            "word": "तडाग",
+            "eid": "3610",
+            "pagenum": 147,
+            "content": "तडाग¦ <i>n.</i> piscina, lacus. N. 12. 8.; 13. 2."
         }
-    }
-
-    container.removeChild(node);
-  }
-
-  return;
-} // Making this so we can eventually move all of the instance caching to the commit phase.
-function isHydratableText(text) {
-  return text !== '';
-}
-function canHydrateInstance(instance, type, props, inRootOrSingleton) {
-  while (instance.nodeType === ELEMENT_NODE) {
-    const element = instance;
-    const anyProps = props;
-
-    if (element.nodeName.toLowerCase() !== type.toLowerCase()) {
-      if (!inRootOrSingleton) {
-        // Usually we error for mismatched tags.
-        if (element.nodeName === 'INPUT' && element.type === 'hidden') ; else {
-          return null;
+    ],
+    "BUR": [
+        {
+            "word": "तडाग",
+            "eid": "7638",
+            "pagenum": 282,
+            "content": "तडाग¦ <i>taḍāga</i> <ab>m.</ab> <ab>n.</ab> <ab>mms.</ab> || piège pour prendre les bêtes sauvages."
         }
-      } // In root or singleton parents we skip past mismatched instances.
-
-    } else if (!inRootOrSingleton) {
-      // Match
-      if (type === 'input' && element.type === 'hidden') {
-
-        const name = anyProps.name == null ? null : '' + anyProps.name;
-
-        if (anyProps.type !== 'hidden' || element.getAttribute('name') !== name) ; else {
-          return element;
+    ],
+    "CAE": [
+        {
+            "word": "तडाग",
+            "eid": "11759",
+            "pagenum": 193,
+            "content": "तडाग¦ <lex>n.</lex> pond, lake; °भेदक <lex>m.</lex> the piercer or drainer of a pond."
         }
-      } else {
-        return element;
-      }
-    } else if (isMarkedHoistable(element)) ; else {
-      // We have an Element with the right type.
-      // We are going to try to exclude it if we can definitely identify it as a hoisted Node or if
-      // we can guess that the node is likely hoisted or was inserted by a 3rd party script or browser extension
-      // using high entropy attributes for certain types. This technique will fail for strange insertions like
-      // extension prepending <div> in the <body> but that already breaks before and that is an edge case.
-      switch (type) {
-        // case 'title':
-        //We assume all titles are matchable. You should only have one in the Document, at least in a hoistable scope
-        // and if you are a HostComponent with type title we must either be in an <svg> context or this title must have an `itemProp` prop.
-        case 'meta':
-          {
-            // The only way to opt out of hoisting meta tags is to give it an itemprop attribute. We assume there will be
-            // not 3rd party meta tags that are prepended, accepting the cases where this isn't true because meta tags
-            // are usually only functional for SSR so even in a rare case where we did bind to an injected tag the runtime
-            // implications are minimal
-            if (!element.hasAttribute('itemprop')) {
-              // This is a Hoistable
-              break;
-            }
-
-            return element;
-          }
-
-        case 'link':
-          {
-            // Links come in many forms and we do expect 3rd parties to inject them into <head> / <body>. We exclude known resources
-            // and then use high-entroy attributes like href which are almost always used and almost always unique to filter out unlikely
-            // matches.
-            const rel = element.getAttribute('rel');
-
-            if (rel === 'stylesheet' && element.hasAttribute('data-precedence')) {
-              // This is a stylesheet resource
-              break;
-            } else if (rel !== anyProps.rel || element.getAttribute('href') !== (anyProps.href == null ? null : anyProps.href) || element.getAttribute('crossorigin') !== (anyProps.crossOrigin == null ? null : anyProps.crossOrigin) || element.getAttribute('title') !== (anyProps.title == null ? null : anyProps.title)) {
-              // rel + href should usually be enough to uniquely identify a link however crossOrigin can vary for rel preconnect
-              // and title could vary for rel alternate
-              break;
-            }
-
-            return element;
-          }
-
-        case 'style':
-          {
-            // Styles are hard to match correctly. We can exclude known resources but otherwise we accept the fact that a non-hoisted style tags
-            // in <head> or <body> are likely never going to be unmounted given their position in the document and the fact they likely hold global styles
-            if (element.hasAttribute('data-precedence')) {
-              // This is a style resource
-              break;
-            }
-
-            return element;
-          }
-
-        case 'script':
-          {
-            // Scripts are a little tricky, we exclude known resources and then similar to links try to use high-entropy attributes
-            // to reject poor matches. One challenge with scripts are inline scripts. We don't attempt to check text content which could
-            // in theory lead to a hydration error later if a 3rd party injected an inline script before the React rendered nodes.
-            // Falling back to client rendering if this happens should be seemless though so we will try this hueristic and revisit later
-            // if we learn it is problematic
-            const srcAttr = element.getAttribute('src');
-
-            if (srcAttr !== (anyProps.src == null ? null : anyProps.src) || element.getAttribute('type') !== (anyProps.type == null ? null : anyProps.type) || element.getAttribute('crossorigin') !== (anyProps.crossOrigin == null ? null : anyProps.crossOrigin)) {
-              // This script is for a different src/type/crossOrigin. It may be a script resource
-              // or it may just be a mistmatch
-              if (srcAttr && element.hasAttribute('async') && !element.hasAttribute('itemprop')) {
-                // This is an async script resource
-                break;
-              }
-            }
-
-            return element;
-          }
-
-        default:
-          {
-            // We have excluded the most likely cases of mismatch between hoistable tags, 3rd party script inserted tags,
-            // and browser extension inserted tags. While it is possible this is not the right match it is a decent hueristic
-            // that should work in the vast majority of cases.
-            return element;
-          }
-      }
-    }
-
-    const nextInstance = getNextHydratableSibling(element);
-
-    if (nextInstance === null) {
-      break;
-    }
-
-    instance = nextInstance;
-  } // This is a suspense boundary or Text node or we got the end.
-  // Suspense Boundaries are never expected to be injected by 3rd parties. If we see one it should be matched
-  // and this is a hydration error.
-  // Text Nodes are also not expected to be injected by 3rd parties. This is less of a guarantee for <body>
-  // but it seems reasonable and conservative to reject this as a hydration error as well
-
-
-  return null;
-}
-function canHydrateTextInstance(instance, text, inRootOrSingleton) {
-  // Empty strings are not parsed by HTML so there won't be a correct match here.
-  if (text === '') return null;
-
-  while (instance.nodeType !== TEXT_NODE) {
-    if (instance.nodeType === ELEMENT_NODE && instance.nodeName === 'INPUT' && instance.type === 'hidden') ; else if (!inRootOrSingleton) {
-      return null;
-    }
-
-    const nextInstance = getNextHydratableSibling(instance);
-
-    if (nextInstance === null) {
-      return null;
-    }
-
-    instance = nextInstance;
-  } // This has now been refined to a text node.
-
-
-  return instance;
-}
-function canHydrateSuspenseInstance(instance, inRootOrSingleton) {
-  while (instance.nodeType !== COMMENT_NODE) {
-    if (!inRootOrSingleton) {
-      return null;
-    }
-
-    const nextInstance = getNextHydratableSibling(instance);
-
-    if (nextInstance === null) {
-      return null;
-    }
-
-    instance = nextInstance;
-  } // This has now been refined to a suspense node.
-
-
-  return instance;
-}
-function isSuspenseInstancePending(instance) {
-  return instance.data === SUSPENSE_PENDING_START_DATA;
-}
-function isSuspenseInstanceFallback(instance) {
-  return instance.data === SUSPENSE_FALLBACK_START_DATA;
-}
-function getSuspenseInstanceFallbackErrorDetails(instance) {
-  const dataset = instance.nextSibling && instance.nextSibling.dataset;
-  let digest;
-
-  if (dataset) {
-    digest = dataset.dgst;
-  }
-
-  {
-    // Object gets DCE'd if constructed in tail position and matches callsite destructuring
-    return {
-      digest
-    };
-  }
-}
-function registerSuspenseInstanceRetry(instance, callback) {
-  instance._reactRetry = callback;
-}
-function canHydrateFormStateMarker(instance, inRootOrSingleton) {
-  while (instance.nodeType !== COMMENT_NODE) {
-    if (!inRootOrSingleton) {
-      return null;
-    }
-
-    const nextInstance = getNextHydratableSibling(instance);
-
-    if (nextInstance === null) {
-      return null;
-    }
-
-    instance = nextInstance;
-  }
-
-  const nodeData = instance.data;
-
-  if (nodeData === FORM_STATE_IS_MATCHING || nodeData === FORM_STATE_IS_NOT_MATCHING) {
-    const markerInstance = instance;
-    return markerInstance;
-  }
-
-  return null;
-}
-function isFormStateMarkerMatching(markerInstance) {
-  return markerInstance.data === FORM_STATE_IS_MATCHING;
-}
-
-function getNextHydratable(node) {
-  // Skip non-hydratable nodes.
-  for (; node != null; node = node.nextSibling) {
-    const nodeType = node.nodeType;
-
-    if (nodeType === ELEMENT_NODE || nodeType === TEXT_NODE) {
-      break;
-    }
-
-    if (nodeType === COMMENT_NODE) {
-      const nodeData = node.data;
-
-      if (nodeData === SUSPENSE_START_DATA || nodeData === SUSPENSE_FALLBACK_START_DATA || nodeData === SUSPENSE_PENDING_START_DATA || (nodeData === FORM_STATE_IS_MATCHING || nodeData === FORM_STATE_IS_NOT_MATCHING)) {
-        break;
-      }
-
-      if (nodeData === SUSPENSE_END_DATA) {
-        return null;
-      }
-    }
-  }
-
-  return node;
-}
-
-function getNextHydratableSibling(instance) {
-  return getNextHydratable(instance.nextSibling);
-}
-function getFirstHydratableChild(parentInstance) {
-  return getNextHydratable(parentInstance.firstChild);
-}
-function getFirstHydratableChildWithinContainer(parentContainer) {
-  return getNextHydratable(parentContainer.firstChild);
-}
-function getFirstHydratableChildWithinSuspenseInstance(parentInstance) {
-  return getNextHydratable(parentInstance.nextSibling);
-}
-function hydrateInstance(instance, type, props, hostContext, internalInstanceHandle, shouldWarnDev) {
-  precacheFiberNode(internalInstanceHandle, instance); // TODO: Possibly defer this until the commit phase where all the events
-  // get attached.
-
-  updateFiberProps(instance, props); // TODO: Temporary hack to check if we're in a concurrent root. We can delete
-  // when the legacy root API is removed.
-
-  const isConcurrentMode = (internalInstanceHandle.mode & ConcurrentMode) !== NoMode;
-  diffHydratedProperties(instance, type, props, isConcurrentMode);
-}
-function hydrateTextInstance(textInstance, text, internalInstanceHandle, shouldWarnDev) {
-  precacheFiberNode(internalInstanceHandle, textInstance); // TODO: Temporary hack to check if we're in a concurrent root. We can delete
-  return diffHydratedText(textInstance, text);
-}
-function hydrateSuspenseInstance(suspenseInstance, internalInstanceHandle) {
-  precacheFiberNode(internalInstanceHandle, suspenseInstance);
-}
-function getNextHydratableInstanceAfterSuspenseInstance(suspenseInstance) {
-  let node = suspenseInstance.nextSibling; // Skip past all nodes within this suspense boundary.
-  // There might be nested nodes so we need to keep track of how
-  // deep we are and only break out when we're back on top.
-
-  let depth = 0;
-
-  while (node) {
-    if (node.nodeType === COMMENT_NODE) {
-      const data = node.data;
-
-      if (data === SUSPENSE_END_DATA) {
-        if (depth === 0) {
-          return getNextHydratableSibling(node);
-        } else {
-          depth--;
+    ],
+    "CCS": [
+        {
+            "word": "तडाग",
+            "eid": "8065",
+            "pagenum": 144,
+            "content": "तडाग¦ <i>n.</i> Teich, See. °भेदक <i>m.</i> Entwässerer, <lbinfo n='9'/> Trockenleger eines Teiches."
         }
-      } else if (data === SUSPENSE_START_DATA || data === SUSPENSE_FALLBACK_START_DATA || data === SUSPENSE_PENDING_START_DATA) {
-        depth++;
-      }
-    }
-
-    node = node.nextSibling;
-  } // TODO: Warn, we didn't find the end comment boundary.
-
-
-  return null;
-} // Returns the SuspenseInstance if this node is a direct child of a
-// SuspenseInstance. I.e. if its previous sibling is a Comment with
-// SUSPENSE_x_START_DATA. Otherwise, null.
-
-function getParentSuspenseInstance(targetInstance) {
-  let node = targetInstance.previousSibling; // Skip past all nodes within this suspense boundary.
-  // There might be nested nodes so we need to keep track of how
-  // deep we are and only break out when we're back on top.
-
-  let depth = 0;
-
-  while (node) {
-    if (node.nodeType === COMMENT_NODE) {
-      const data = node.data;
-
-      if (data === SUSPENSE_START_DATA || data === SUSPENSE_FALLBACK_START_DATA || data === SUSPENSE_PENDING_START_DATA) {
-        if (depth === 0) {
-          return node;
-        } else {
-          depth--;
+    ],
+    "LRV": [
+        {
+            "word": "तडाग",
+            "eid": "15069",
+            "pagenum": 299,
+            "content": "taqAga(ka)¦ <i>m.</i> A pond, a deep pool, तडागारामविक्रयः <ls>R.</ls>iii.237."
         }
-      } else if (data === SUSPENSE_END_DATA) {
-        depth++;
-      }
-    }
-
-    node = node.previousSibling;
-  }
-
-  return null;
-}
-function commitHydratedContainer(container) {
-  // Retry if any event replaying was blocked on this.
-  retryIfBlockedOn(container);
-}
-function commitHydratedSuspenseInstance(suspenseInstance) {
-  // Retry if any event replaying was blocked on this.
-  retryIfBlockedOn(suspenseInstance);
-}
-function shouldDeleteUnhydratedTailInstances(parentType) {
-  return parentType !== 'form' && parentType !== 'button';
-}
-function didNotMatchHydratedContainerTextInstance(parentContainer, textInstance, text, isConcurrentMode, shouldWarnDev) {
-  checkForUnmatchedText(textInstance.nodeValue, text, isConcurrentMode);
-}
-function didNotMatchHydratedTextInstance(parentType, parentProps, parentInstance, textInstance, text, isConcurrentMode, shouldWarnDev) {
-  if (parentProps[SUPPRESS_HYDRATION_WARNING] !== true) {
-    checkForUnmatchedText(textInstance.nodeValue, text, isConcurrentMode);
-  }
-}
-function findFiberRoot(node) {
-  const stack = [node];
-  let index = 0;
-
-  while (index < stack.length) {
-    const current = stack[index++];
-
-    if (isContainerMarkedAsRoot(current)) {
-      return getInstanceFromNode$1(current);
-    }
-
-    stack.push.apply(stack, current.children);
-  }
-
-  return null;
-}
-function getBoundingRect(node) {
-  const rect = node.getBoundingClientRect();
-  return {
-    x: rect.left,
-    y: rect.top,
-    width: rect.width,
-    height: rect.height
-  };
-}
-function matchAccessibilityRole(node, role) {
-  if (hasRole(node, role)) {
-    return true;
-  }
-
-  return false;
-}
-function getTextContent(fiber) {
-  switch (fiber.tag) {
-    case HostHoistable:
-    case HostSingleton:
-    case HostComponent:
-      let textContent = '';
-      const childNodes = fiber.stateNode.childNodes;
-
-      for (let i = 0; i < childNodes.length; i++) {
-        const childNode = childNodes[i];
-
-        if (childNode.nodeType === Node.TEXT_NODE) {
-          textContent += childNode.textContent;
+    ],
+    "MD": [
+        {
+            "word": "तडाग",
+            "eid": "8306",
+            "pagenum": 105,
+            "content": "तडाग¦ taḍāga, <lex>n.</lex> pond, lake: <b>-bhedaka,</b> <lex>m.</lex> 🞄burster of tanks."
         }
-      }
-
-      return textContent;
-
-    case HostText:
-      return fiber.stateNode.textContent;
-  }
-
-  return null;
-}
-function isHiddenSubtree(fiber) {
-  return fiber.tag === HostComponent && fiber.memoizedProps.hidden === true;
-}
-function setFocusIfFocusable(node) {
-  // The logic for determining if an element is focusable is kind of complex,
-  // and since we want to actually change focus anyway- we can just skip it.
-  // Instead we'll just listen for a "focus" event to verify that focus was set.
-  //
-  // We could compare the node to document.activeElement after focus,
-  // but this would not handle the case where application code managed focus to automatically blur.
-  let didFocus = false;
-
-  const handleFocus = () => {
-    didFocus = true;
-  };
-
-  const element = node;
-
-  try {
-    element.addEventListener('focus', handleFocus); // $FlowFixMe[method-unbinding]
-
-    (element.focus || HTMLElement.prototype.focus).call(element);
-  } finally {
-    element.removeEventListener('focus', handleFocus);
-  }
-
-  return didFocus;
-}
-function setupIntersectionObserver(targets, callback, options) {
-  const rectRatioCache = new Map();
-  targets.forEach(target => {
-    rectRatioCache.set(target, {
-      rect: getBoundingRect(target),
-      ratio: 0
-    });
-  });
-
-  const handleIntersection = entries => {
-    entries.forEach(entry => {
-      const boundingClientRect = entry.boundingClientRect,
-            intersectionRatio = entry.intersectionRatio,
-            target = entry.target;
-      rectRatioCache.set(target, {
-        rect: {
-          x: boundingClientRect.left,
-          y: boundingClientRect.top,
-          width: boundingClientRect.width,
-          height: boundingClientRect.height
+    ],
+    "MW": [
+        {
+            "word": "तडाग",
+            "eid": "81712",
+            "pagenum": "432,2",
+            "content": "तडाग ¦ <lex>n.</lex> (<lex type='hwalt'>m.</lex> <ab>g.</ab> arDarcA<srs/>di) = °डाक, <ls>ŚāṅkhGṛ. v, 2</ls>; <ls>Mn. iv</ls>, <ls n='Mn.'>vii ff.</ls>; <ls>Yājñ.</ls>; <ls>MBh.</ls> &c.<info lex='m:n'/>"
         },
-        ratio: intersectionRatio
-      });
-    });
-    callback(Array.from(rectRatioCache.values()));
-  };
-
-  const observer = new IntersectionObserver(handleIntersection, options);
-  targets.forEach(target => {
-    observer.observe(target);
-  });
-  return {
-    disconnect: () => observer.disconnect(),
-    observe: target => {
-      rectRatioCache.set(target, {
-        rect: getBoundingRect(target),
-        ratio: 0
-      });
-      observer.observe(target);
-    },
-    unobserve: target => {
-      rectRatioCache.delete(target);
-      observer.unobserve(target);
-    }
-  };
-}
-function isHostSingletonType(type) {
-  return type === 'html' || type === 'head' || type === 'body';
-}
-function resolveSingletonInstance(type, props, rootContainerInstance, hostContext, validateDOMNestingDev) {
-
-  const ownerDocument = getOwnerDocumentFromRootContainer(rootContainerInstance);
-
-  switch (type) {
-    case 'html':
-      {
-        const documentElement = ownerDocument.documentElement;
-
-        if (!documentElement) {
-          throw Error(formatProdErrorMessage(452));
+        {
+            "word": "तडाग",
+            "eid": "81713",
+            "pagenum": "432,2",
+            "content": "¦ a trap, <ls>L.</ls><info lex='inh'/>"
         }
-
-        return documentElement;
-      }
-
-    case 'head':
-      {
-        const head = ownerDocument.head;
-
-        if (!head) {
-          throw Error(formatProdErrorMessage(453));
+    ],
+    "MW72": [
+        {
+            "word": "तडाग",
+            "eid": "20298",
+            "pagenum": 358,
+            "content": "<i>Taḍāga, as, am,</i>¦ m. n. a pond or pool deep enough for the growth of the lotus &c.; a tank; a trap for catching deer. <i>—Taḍāga-vat, ān, atī, at,</i> having pools or lakes; (<i>ān</i>), m., scil. <i>deśa,</i> a district."
         }
-
-        return head;
-      }
-
-    case 'body':
-      {
-        const body = ownerDocument.body;
-
-        if (!body) {
-          throw Error(formatProdErrorMessage(454));
+    ],
+    "PW": [
+        {
+            "word": "तडाग",
+            "eid": "44115",
+            "pagenum": 3,
+            "content": "तडाग¦ (*<lex>m.</lex>) <lex>n.</lex> <dvsn n='1'>— 1〉 <i>Teich, See</i>. <dvsn n='1'>— 2〉 *<i>Falle</i>."
         }
-
-        return body;
-      }
-
-    default:
-      {
-        throw Error(formatProdErrorMessage(451));
-      }
-  }
+    ],
+    "PWG": [
+        {
+            "word": "तडाग",
+            "eid": "28397",
+            "pagenum": 3,
+            "content": "तडाग¦ (= तटाक) <lex>m.</lex> <lex>n.</lex> <is>gaṇa</is> अर्धर्चादि zu <ls>P. 2, 4, 31.</ls> <ls>TRIK. 3, 5, 13.</ls> <dvsn n='1'> 1) <lex>m.</lex> <lex>n.</lex> <i>Teich, See</i> <ls>AK. 1, 2, 3, 27.</ls> <ls>H. 1094.</ls> <ls>MED. g. 34.</ls> पुष्करिणीकूपतडागानाम् <ls>ŚĀṄKH. GṚHY. 5, 2.</ls> <ls>M. 4, 203. 7, 196. 8, 248. 262. 264. 9, 279. 281. 11, 61.</ls> <ls>YĀJÑ. 3, 237.</ls> <ls>MBH. 1, 7591.</ls> <ls n='MBH.'>3, 2408.</ls> <ls n='MBH. 3,'>2533.</ls> <ls n='MBH.'>6, 3569.</ls> <ls n='MBH.'>12, 1492.</ls> <ls n='MBH.'>13, 2973. fgg.</ls> <ls>R. 6, 75, 16.</ls> <ls n='R. 6,'>88, 3.</ls> <ls>SUŚR. 1, 169, 12. 206, 15.</ls> <ls>PAÑCAT. II, 157.</ls> <ls>VET. 6, 19.</ls> <ls>GĪT. 11, 27.</ls> Nirgends <lex>m.</lex> <dvsn n='1'>— 2) <lex>m.</lex> <lex>n.</lex> <i>Falle</i> <ls>MED.</ls>"
+        },
+        {
+            "word": "तडाग",
+            "eid": "74726",
+            "pagenum": 5,
+            "content": "तडाग¦ <dvsn n='1'> 1) °भवनोत्सर्गतत्त्व <ls>Verz. d. Oxf. H. 289,b, No. 693.</ls> तडागोत्सर्ग <ls>HALL 178.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "तडाग",
+            "eid": "16856",
+            "pagenum": 301,
+            "content": "तडाग¦ m. (-गः) 1. A pond, a pool, deep enough for the growth of the lotus, &c. See the preceding. 2. A trap for catching deer. E. तड् to beat, affix आग, deriv. irr."
+        }
+    ],
+    "STC": [
+        {
+            "word": "तडाग",
+            "eid": "9807",
+            "pagenum": 273,
+            "content": "<b>taḍāga-</b>¦ <ab>nt.</ab> étang, réservoir ; <i>-vant-</i> <ab>a.</ab> qui forme étang ; <ab>m.</ab> pays aux nombreux étangs.  <P><i>°da-</i> <ab>a.</ab> qui forme étang.  <P><i>°bhedaka-</i> <ab>a.</ab> qui rompt un réservoir ou la digue d'un étang."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "तडाग",
+            "eid": "16873",
+            "pagenum": 362,
+            "content": "तडाग¦ m. (-गः) .²1 A pond, a pool, deep enough for the growth of the lotus, &c. see the preceding. .²2 A trap for catching deer, &c. .E. तड to beat, affix आग, deriv. irr."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "तडाग",
+            "eid": "16340",
+            "pagenum": 320,
+            "content": "तडाग¦ (गः) 1. <i>m.</i> A pond; a trap to catch deer."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "तडाग",
+            "eid": "14230",
+            "pagenum": "2-579-b",
+            "content": "तडागः¦, पुं क्ली, (तड + तडागादयश्च । इति आगप्रत्ययेन निपातनात् साधुः ।) यन्त्रकूटकः । इति मेदिनी । गे, ३६ ॥ (तण्ड्यते आहन्यते ऊर्म्मिमालाभिरिति । तडि आहतौ + कर्म्मणि आकः ।) पद्मादियुक्तं सरः । तत्पर्य्यायः । पद्माकरः २ । इत्यमरः । १ । १० । २८ ॥ तडाकः ३ तटाकः ४ । इति शब्दरत्नावली ॥ तडगः ५ । इति द्बिरूपकोषः ॥ शञ्चशतघनुःपरिमाणजलाशयः । चतुर्द्दिक्षु पञ्चचत्वारिंशद्धस्तान्यूनतायां सहस्रद्बितयहस्तान्यूनत्वेन तडागः । इति नव्यवर्द्धमानधृतो वशिष्ठः ॥ * ॥ तस्य जलगुणाः । वायुकारित्वत् । स्वादुत्वम् । कषायत्वम् । पाके कटुत्वम् । शिशिरहिमकाले प्रशस्तत्वञ्च । इति राजवल्लभः ॥ * ॥ तस्योत्सर्गविधिर्यथा, पुलस्त्य उवाच । “शृणु राजन्महाबाहो ! तडागादिषु यो विधिः । पुराणेष्वितिहासेषु मन्यते राजसत्तम ! ॥ प्राप्य पक्षं शुभं शुक्लमागते चोत्तरायणे । पुण्येऽह्नि विप्रैः क्रियते कृत्वा ब्राह्मणवाचनम् ॥ प्राक्प्रस्रवणादम्भस्तडागस्य समीपतः ॥ चतुर्हस्तसमा वेदी चतुरस्रा समन्ततः । तथा षोडशहस्तः स्यान्मण्डपश्च चतुर्मुखः ॥ वेद्या उत्तरतो गर्त्तारत्निमात्रा तु मेखला । नवसप्ताथवा पञ्च योनिवक्त्रा नृपात्मज ! ॥ वितस्तिमात्रा योनिः स्यात् षट्सप्ताङ्गुलविस्तृता । सर्व्वे स्वहस्तमात्राः स्युस्त्रिपर्व्वोच्छ्रितमेखलाः ॥ सर्व्वे च सर्व्ववर्णाः स्युः पताकाध्वजसंयुताः । अश्वत्थोडम्बरप्लक्षवटशाखाकृतानि च ॥ मण्डंपस्य प्रतिदिशं द्बाराण्येतानि कारयेत् ॥ शुभास्तत्राष्ट होतारो द्बारपालास्तथापरे । अष्टौ तु जापकाः कार्य्या ब्राह्मणा वेदपारगाः ॥ सर्व्वलक्षणसम्पूर्णा मन्त्रविद्बिजितेन्द्रियाः । कुलशीलसमायुक्ताः स्थापिता द्बिजसत्तमाः ॥ प्रतिस्तम्भेषु कलसा यज्ञोपस्करणानि च । व्यजनञ्चासनं शुभ्रं ताम्रपात्रं सुविस्तरम् ॥ आचार्य्यः प्रक्षिपेद्भूम्यामनुचन्द्रं विचक्षणः । त्र्यरत्निमात्रो यूपः स्यात् क्षीरिवृक्षविनिर्म्मितः ॥ यजमानप्रमाणो वा संस्थाप्यो भूतिमिच्छता ॥ हेमालङ्करिणः कार्य्याः पञ्चविंशतिऋत्विजः ॥ कुण्डलानि च हैमानि केयूरकटकानि च । तथाङ्गुलीपवित्राणि वासांसि विविधानि च ॥ दद्युः समानि सर्व्वेषामाचार्य्ये द्बिगुणं पुनः । दद्याच्छयनसंयुक्तमात्मनश्चापि यत् कृतम् ॥ सौवर्णौ कूर्म्ममकरौ राजतौ मत्स्यडुण्डुभौ । तथा कुलीरमण्डूका वायसः शिशुमारकः ॥ एवमासाद्य तत् सर्व्वं स्वर्णपात्रं विशाम्पते ! । शुक्लमाल्याम्बरधरः शुक्लगन्धानुलेपनः ॥ सर्व्वौषध्युदकस्नातः पाठितो वेदपुङ्गवैः । यजमानः सपत्नीकः पुत्त्रपौत्त्रसमन्वितः ॥ पश्चिमं द्बारमासाद्य प्रविशेद्यागमण्डपम् । ततो मङ्गलशब्देन भेरीणां निस्वनेन च ॥ रजसा मण्डलं कुर्य्यात् पञ्चवर्णेन चार्च्चितम् । षोडशारं ततश्चक्रं पद्मरागसुशोभनम् ॥ वेद्यामुपरि तत् कृत्वा ग्रहान् ग्रहपतींस्तथा । संन्यसेन्महतः सर्व्वान् प्रतिदिक्षु विचक्षणः ॥ तत् पात्रं स्थापयेन्मध्ये वारुणं मन्त्रमाश्रितम् । ब्रह्माणञ्च शिवं विष्णुं तत्त्वेन स्थापयेद्बुधः ॥ विनायकञ्च विन्यस्य कमलामम्बिकां ततः । शान्त्यर्थं सर्व्वलोकानां भूतग्राममशेषतः । पुष्पभक्ष्यफलैर्युक्तमेवं कृत्वाधिवासनम् । कुम्भांश्च रत्नगर्भांश्च वासोभिः परिवेष्टयेत् ॥ गन्धपुष्पैरलङ्कृत्य द्बारपालान् समन्ततः । पठध्वमिति तान् ब्रूयादाचार्य्यमपि पूजयेत् ॥ बह्वृचौ पूर्व्वतः स्थाप्यौ दक्षिणे च यजुर्व्विदौ । पश्चिमे सामगौ स्थाप्याबुत्तरेणाप्यथर्व्वगौ ॥ उदङ्मुखो दक्षिणतो यजमान उपाविशेत् । पठध्वमिति तान् ब्रूयात् यजध्वमिति याजकम् ॥ उत्कृष्टमन्त्रपाठेन तिष्ठध्वं मन्त्रजापकाः । एवमादिश्य तान् सर्व्वान् पर्युष्याग्निं स मन्त्रवित् ॥ जुहुयादाहूतीर्म्मन्त्रैराज्यञ्च समिधस्तथा । ऋत्विद्भिश्चैव होतव्यं वारुणैरेव सर्व्वतः ॥ वैराजं पौरुषं सूक्तं पौण्ड्रं चन्द्रं सुसंहितम् । शैशवं पञ्चनिधनं गायन्ति ज्येष्ठसामगाः ॥ वामदेवं बृहत्साम रौरवं सरथन्तरम् । गवां व्रतं विकर्णञ्च रक्षोघ्नं नरथन्तथा ॥ गायन्ति सामगा राजन् ! पश्चिमद्बारमाश्रिताः । अथर्व्वगाश्चोत्तरतः शान्तिकं पौष्टिकं तथा ॥ जपन्ते मनसा देवमाश्रिता वरुणं प्रभुम् । पूर्व्वेद्युरभितो मन्त्रैरेवं कृत्वाधिवासनम् ॥ गजाश्वरथ्यावल्मीकसंग्रामरथगोकुलात् । मृदमादाय दद्याच्च प्रक्षिपेच्च यथा तथा ॥ रोचनाञ्च ससिद्धार्थान् गन्धान् गुग्गुलमेव च । स्नपनं तस्य कर्त्तव्यं पञ्चगव्यसमन्वितम् ॥ मूर्द्ध्नि कर्त्तुर्म्महामन्त्रैरेवं कृत्वा विधानतः । एवं रक्षति राज्यार्थान् विधियुक्तेन कर्म्मणा ॥ * ॥ ततः प्रभाते विमले संजाते तु गवां शतम् । ब्राह्मणेभ्यः प्रदातव्यं होमान्ते वाथवा पुनः ॥ पञ्चाशद्बाथ षट्त्रिंशत् पञ्चविंशतिरेव च । ततः संवत्सरे प्राप्ते शुद्धे लग्ने सुशोभने ॥ वेदशब्दैश्च गान्धर्व्वैर्व्वाद्यैश्च विविधैः पुनः । कनकालङ्कृतां कृत्वा जले गामवतारयेत् ॥ सामगाय च सा देया ब्राह्मणाय विशाम्पते ! । पात्रीमादाय सौवर्णीं पञ्चरत्नसमन्विताम् ॥ तत्र निःक्षिप्य मकरं मत्स्यादींश्चैव सर्व्वशः । धृतांश्चतुर्भिर्व्विप्रैश्च वेदवेदाङ्गपारगैः ॥ महानदीजलोपेतान् दध्यक्षतविभूषितान् । उत्तराभिमुखो युक्तो जलमध्ये प्रकालयेत् ॥ आथर्व्वणेन सुस्नातः पुनर्म्मासांस्तथैव च । आपो हि ष्ठेतिमन्त्रेण क्षिपेदागत्य मण्डपम् ॥ पूजयित्वा सुरांस्तत्र वलिं दद्यात् समन्वितः । पुनर्द्दिनानि होतव्यं चत्वारि राजसत्तम ! ॥ चतुर्थीकर्म्म कर्त्तव्यं देयं तत्रापि शक्तितः । कृत्वा तु यज्ञपात्राणि यज्ञोपकरणानि च ॥ ऋत्विग्भ्यस्तु समं दद्यात् मण्डपं विभजेत् पुनः । होमपात्रञ्च शय्याञ्च आचार्य्याय निवेदयेत् ॥ ततः सहस्रं विप्राणामथवाष्टशतं तथा । भोजयेच्च यथाशक्त्या पञ्चाशद्बाथ विंशतिः ॥ एवमेव पुराणेषु तडागविधिरुच्यते । कूपवापीषु सर्व्वासु तथा पुष्करिणीषु च ॥ एष एव विधिर्दृष्टः प्रतिष्ठासु तथैव च । मन्त्रतस्तु विशेषः स्यात् प्रासादोद्यानभूमिषु ॥ अयन्तु ऋत्विगाचार्य्यविधिदृष्टेन कर्म्मणा । अल्पेष्वेकाग्निवत् कार्य्यं वित्तशाठ्यादृते नृणाम् ॥” तडागे कालविशेषे जलस्थितेः फलं यथा, “प्रावृट्काले स्थितं तोयमग्निष्टोमसमं स्मृतम् । शरत्काले स्थितं तोयं यदुक्तफलदायकम् ॥ वाजपेयफलसमं हेमन्तशिशिरस्थितम् । अश्वमेधसमं प्राहुर्व्वसन्तसमयस्थितम् ॥ ग्रीष्मेऽपि तु ख्यितं तोयं राजसूयफलाधिकम् ॥” तडागकरणे फलं यथा, “एतान्महाराज ! विशेषधर्म्मान् करोति योऽर्घ्यान्त्वथ शुद्धबुद्धिः । स याति ब्रह्मालयमेककल्पं दिवं पुनर्याति तथैव दिव्यम् ॥” इति पाद्मे सृष्टिखण्डम् ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "तडाग",
+            "eid": "21912",
+            "pagenum": "3204,b",
+            "content": "तडाग¦ पु० जलैराहन्यते तड--आघाते “तडागादयश्च” उणा० नि० आग १ यन्त्रकूटके शब्दार्थचि० २ जलाधारभेदे पद्माकरे अमरः । अर्द्धर्चा० “प्रशस्तभूमिभागस्तो बहुसंवत्सरोषितः । जलाशयस्तडागः स्यादित्याहुः शास्त्रकोविदाः” शब्दार्थचि० । ३ पञ्चशतधनुःपरिमिते जलाशये च यथा “चतुर्विंशाङ्गुलो हस्तो धनुस्तच्चतुरुत्तरभ् । शतधन्वन्तरञ्चैव तावत् पुष्करिणी शुभा । एतत् पञ्चगुणः प्रोक्तस्तडाग इति निर्णयः” नव्यवर्द्धमानधृतो वशिष्ठः । तदुत्सर्गविधिः मत्स्यपु० ५८ अ० उक्तो यथा “प्राप्य पक्षं शुभं शुक्लमतीते (प्राप्ते) चोत्तरायणे । पुण्येऽह्नि विप्रकथिते कृत्वा ब्राह्मणवाचनम् । प्रागुदक्प्रवणे देशे तडागस्य समीपतः । चतुर्हस्तां शुभां वेदिं चतुरस्रां चतुर्मुखाम् । तथा षाडशहस्तः स्यान्मण्डपश्च चतुर्मुखः । वेद्याश्च परितो गर्तारत्निमात्रास्तु मेखलाः । नव सप्ताथ वा पञ्च नातिरिक्ता नृपात्मज! । वितांस्तमात्रा योनिः स्यात् षट्सप्ताङ्गुलिविस्तृता । गर्ताश्चतस्रः शस्ताः स्युस्त्रिपर्वोच्छ्रितमेखलाः । सर्वतस्तु सवर्णाः (लोकपालवर्णाः) स्युः पताका ध्वजसंयुताः । अश्वत्थोदुम्बरप्लक्षवटशाखाकृतानि तु । मण्डपस्य प्रातदिशं द्वाराण्येतानि कारवेत् । शुभास्तत्राष्ट होतारो द्वारपाला स्तथाष्ट वै । अष्टौ तु जापकाः कार्य्याः ब्राह्मणा वेदपारगाः । सर्वलक्षणसम्पूर्णो मन्त्रविद्विजितेन्द्रियः । कुलशीलसमायुक्तः पुरोधाः स्याद्द्विजोत्तमः । प्रतिगर्त्तेषु कलशा यज्ञोपकरणानि च । व्यजनञ्चामरे शुभ्रे ताम्रपात्रे सुविस्तृते । ततस्त्वनेकवर्णाः स्युश्चरवः प्रतिदैवतम् । आचार्य्यः प्रक्षिपेद्भूमावनुमन्त्र्य विचक्षणः । त्र्यरत्निमात्रो यूपः स्यात् क्षीरवृक्षविनिर्मितः । यजमानप्रमाणो वा संस्थाप्यो भूतिमिच्छता । हेमालङ्कारिणः कार्य्याः पञ्चविंशती ऋत्विजः । कुण्डलानि च हैमानि केयूरकटकानि च । अङ्गुलीयं पवित्राणि वासांसि विविधानि च । पूजयेत्तु संमं सर्वान् आचार्यं द्विगुणैः पुनः । दद्याच्छयनसंयुक्तमात्मनश्चापि यत् प्रियम् । सौवर्णौ कूर्ममकरौ राजतौ मत्स्यडुण्डुभौ । ताम्रौ कुलीरमण्डूका वायसः शिशुमारकः । एवमासाद्य तत्सर्वमादावेव विशाम्पते! । शुक्लमाल्याम्बरधरः सर्वौषध्युदकैस्ततः । संपूर्णैः कलसैस्तत्र स्नपितो वेदपारगैः । यजमानः सपत्नीकः पुत्रपौत्रसमन्वितः । पश्चिमं द्वारमासाद्य प्रविशेद्यागमण्डपम् । ततो मङ्गलशब्देन भेरीणां निस्वनेन च । अञ्जसा मण्डलं कुर्य्यात् पञ्चवर्णेन तत्त्ववित् । षोडशारन्ततश्चक्रं पद्मगर्भं चतुर्मुखम् । चतुरस्रञ्च परितो वृत्तं मध्यें सुशोभनम् । वेद्याश्चोपरि तत् कृत्वा ग्रहान् लोकपतींस्ततः । संन्यसेन्मन्त्रतः सर्वान् प्रतिदिक्षु विचक्षणः । कूर्मादि स्थापयेन्मध्ये वारुणं मन्त्रमाश्रितः । ब्रह्माणञ्च शिवं विष्णुं तत्रैव स्थापयेद् बुधः । विनायकञ्च विन्यस्य कमलामम्बिकां तथा । शान्त्यर्थं सर्वलोकानां भूतग्रामं न्यसेत्ततः । पुष्पभक्ष्यफलैर्युक्तमेयं कृत्वाधिवासनम् । कुम्भान् सजलगर्भांस्तान् वासोभिः परिवेष्टयेत् । पुष्पगन्धैरलङ्कृत्य द्वारपालान् समन्ततः । पठध्वमिति तान् ब्रूयादाचार्यस्त्वभिपूजयेत् । वह्वृचौ पूर्वतः स्थाप्यौ दक्षिणेन यजुर्विदौ । सामगौ पश्चिमे तद्वदुत्तरेण त्वथर्वणौ । उदङ्मुखो दक्षिणतो यजमान उपाविशेत् । यजध्वमिति तात् ब्रूयाद् हौत्रिकान् पुनरेव तु । उत्कृष्टान् मन्त्रजापेन तिष्ठध्वमिति जापकान् । एवमादिश्य तान् सर्वान् पर्युक्ष्याग्निं स मन्त्रंवित् । जुहुयाद्वारुणैर्मन्त्रैराज्यं च समिधस्तथा । ऋत्विग्भिश्चाथ होतव्यं वारुणैरेव सर्वतः । ग्रहेभ्यो विधिवद् हुत्वा तथेन्द्रायेश्वराय च । मरुद्भ्यो लोकपालेभ्यो विधिवद्विश्वकर्मणे । रात्रिसूक्तञ्च रौद्रञ्च पावमानं सुमङ्गलम् । जपेयुः पौरुषं सूक्तं पूर्वतो बह्वृचाः पृथक् । शाक्रं रौद्रञ्च सौम्यं च कूष्माण्डं जातवेदसम् । सौरसूक्तं जपेन्मन्त्रं दक्षिणेन यजुर्विदः । वैराज्यं पौरुषं सूक्तं सौपर्णं रुद्रसंहिताम् । शैशवं पञ्च निधनं गायत्रं ज्येष्ठसाम च । वामदेव्यं वृहत्साम रौरवं सरथन्तरम् । गवां व्रतं च काण्वञ्च रक्षोघ्नं वयसस्तथा । गायेयुः सामगा राजन्! पश्चिमं द्वारमाश्रिताः । अथर्वणश्चोत्तरतः शान्तिकं पौष्टिकं तथा । जपेयुर्मनसा देवमाश्रित्य वरुणं प्रभुम् । पूर्वेद्युरभितो रात्रावेवं कृत्वाधिवासनम् । गजाश्वरथ्यावल्भीकात् सङ्गमाद्ध्रदगोकुलात् । मृदमादाय कुम्भेषु प्रक्षिपेच्चत्वरात्तथा । रोचनाञ्च ससिद्धार्थां गन्धं गुग्गुलुमेव च । स्नपनं तस्य कर्त्तव्यं पञ्चभङ्ग(पल्लव) समन्वितम् । प्रत्येकन्तु महामन्त्रैरेवं कृत्वा विधानतः । एवं क्षपामतिवाह्य विधियुक्तेन कर्मणा । ततः प्रभाते विमले सञ्जातेऽथ शतं गवाम् । ब्राह्मणेभ्यः प्रदातव्यमष्टषष्टिश्च वा पुनः । पञ्चाशद्वाथ षट्त्रिंशत् पञ्चविंशतिरप्यथ । ततः सांवत्सरप्रोक्ते शुभे लग्ने सुशोभने । वेदशब्दैश्च गान्धर्वैर्वाद्यैश्च विविधैः पुनः । कनकालङ्कृतां कृत्वा जले गामवतारयेत् । सामगाय च सा देया ब्राह्मणाय विशाम्पते! । पात्रीमादाय सौवर्णीं पञ्चरत्नसमन्विताम् । ततो निःक्षिप्य मकरमत्स्यादींश्चैव सर्वशः । धृतां चतुर्विधैर्विप्रैर्वेदवेदाङ्गपारगैः । महानदीजलोपेतां दध्यक्षतसमन्विताम् । उत्तराभिमुखीं धेनुं जलमध्ये तु तारयेत् । आथर्वणेन स्नातां पुनर्गामेत्वथेतिं च । आपोहिष्ठेति मन्त्रेण क्षित्वागत्य च मण्डपम् । पूजयित्वा सरस्तत्र बलिं दद्यात् समन्ततः । पुनर्दिनानि होतव्यं चत्वारि मुनिसत्तमाः! । चतुर्थीकर्म कर्तव्यं देया तत्रापि शक्तितः । दक्षिणा राजशार्दूल! वरुणक्षमापणं ततः । कृत्वा तु यज्ञपात्राणि यज्ञोपकरणानि च । ऋत्विग्भ्यस्तु समं दत्त्वा मण्डपं विभजेत् पुनः । हेमपात्रीञ्च शय्याञ्च स्थापकाय निवेदयेत् । ततः सहस्रं विप्राणामथ वाष्टशतं तथा । भोजनीयं यथाशक्ति पञ्चाशद्वाथ विंशतिः । एवमेष पुराणेषु तडागविधिरुच्यते । कूपवापीषु सर्वासु तथा पुष्करिणीषु च । एष एव विधिर्दृष्टः प्रतिष्ठासु तथैव । मन्त्रतस्तु विशेषः स्यात् प्रसादीद्यानभूमिषु । अयन्त्वशक्ताबर्द्धेन विधिर्दृष्टः स्वयम्भुवा । अल्पेष्वेकाग्निवत् कृत्वा वित्तशाठ्यादृते नृणाम् । पावृट्काले स्थिते तोये ह्यग्निष्टीमफलं स्मृतम् । शरत्काले स्थितं यत् स्यात् तदुक्तफलदायकम् । वाजपेयातिरात्राभ्यां हमन्ते शिशिरे स्थितम् । अश्वमेधसमं प्राह वसन्तसमये स्थितम् । ग्रीष्मेऽपि तत् स्थितं तोयं राजसूयाद्विशिष्यते । एतान् महाराज! विशेषधर्मान् करोति योऽप्यागमशुद्धबुद्धिः । स याति रुद्रालयामाशु पूतः कल्पाननेकान् दिवि मोदते च । अनेकलोकान् समहस्तपादीन् भुक्त्वा परार्द्धद्वयमङ्गनाभिः । सहैव विष्णोः परमम्पदं यत् प्राप्तोति तद्यागफलेन भूयः” । जलाशयखननारम्भनक्षत्रादि मु० चि० पी० उक्तं यथा “मित्रार्कध्रुववासवाम्बुपमघातोयान्त्यपुष्येन्दुभिः पापैर्हीनबलैस्तनौ सुरगुरौ ज्ञे वा भृगौ खे विधौ । आप्ये सर्वजलाशयस्य खननम्” मु० चि० । “मित्रोऽनुराधा अर्को हस्तः ध्रुवं रोहिण्युत्तरात्रयं वासवं धनिष्ठा अम्बुपः शततारका तोयं पूर्वाषाढा अन्त्यं रेवती पुष्यः इन्दुर्मृगः एतैर्नक्षत्रैस्त्रयोदशभिः सर्वेषां जलाशयानां वापीकूपतडागनाम्नां तोयाधाराणां खननं शुभमुक्तम् उक्तञ्च व्यवहारतत्त्वे “आप्याम्बुपान्त्य पितृमित्रवसूत्तरार्ककेन्द्वीज्यभेषु खननं सलिलाश्रयाणामिति” । कः ब्रह्मा तद्देवताकत्वेनाभेदात् रोहिणी । अथ जलाशयखनने लग्नविचारः पापैः पापखगैर्बलरहितैः सद्भिः, तनौ लग्ने सुरगुरौ वृहस्पतौ ज्ञे बुधे स्थिते सतीत्यर्थः लग्नात् खे दशमस्थाने भृगौ शुक्रे, आप्ये जलचरराशौ विधौ सति जलाशयखेननं हितं उक्तञ्च रत्नमालायाम् “लग्ने जीवे ज्ञेऽथ वा दुर्बलैश्च क्रूरैः शुक्रे चापि मेषुरणस्थे । आप्ये चन्द्रे सर्वतीयाश्रयाणामारम्भाः स्युः सिद्धये निर्विकल्पम्” । कश्यपेनाप्युक्तम् “गुरौ ज्ञे वा लग्नगते शुक्रे कर्मगते, विधौ । आप्यभे जलकार्य्याणामारम्भः सिद्धिदः स्मृतः” इति । दीपिकायान्तु विशेषः “पुष्ये मित्रकरोत्तरस्ववरुणब्रह्माम्बुपित्र्येन्दुभिःशस्तेऽर्के शुभवारयोगतिथिषु क्रूरेष्ववीर्य्येषु च । पुष्टेन्दौ जलराशिगे दशमगे शुक्रे शुभांशोदये प्रारम्भः सलिलाशयस्य शुभदोजीवेन्दुपुत्रोदये । स्वं धनिष्ठा । अन्ये तु वापीकूपतडागानामाकृतिभेदात्प्रत्येकं भिन्नानि नक्षत्राण्युक्तानि । तत्र वापीखननमाह ऋक्षोच्चयः “स्वात्यश्विपुष्यहस्तेषु सर्वदा च पुनर्वसौ । रेवत्यां वारुणे चैव वापीकर्म प्रशस्यते” । कूपारम्भमाह श्रीपतिः “हस्तः पुष्यो वासवं वारुणञ्च मैत्रं पित्र्यं त्रीणि चैवोत्तराणि । प्राजापत्यञ्चापि नक्षत्रमाहुः कूपारम्भे श्रेष्ठमाद्या मुनीन्द्राः” । तडागारम्भमाह वसिष्ठः “मैत्रेन्दुपौष्णोत्तररोहिणीषु देवेज्यवारीश्वरवारिभेषु । प्रारम्भणं सर्वजलाशयानां कार्यं सितेन्द्वंशकवारलग्ने” । अत्र वापीकूपनक्षत्राणां पार्थक्येनाभिधानात् तडागारम्भार्थमिदं वचनमवसीयते बहुवचनमाश्रयाभिप्रायेण सर्वशब्दोपादानं छन्दःपरिपूरणार्थं तत्र कूपतडागनक्षत्रेषु सदृशनक्षत्रत्यागावशिष्टानां मेलने त्रयोदश नक्षत्राणि भवन्ति तत्र संक्षेप्तुकामेन व्यवहारतत्वकर्त्रा सर्वजलाशयानामारम्भे सामान्यतो जलाशयत्वसाधर्म्यादेतानि त्रयोदश भान्युक्तानि तान्येव च ग्रन्थकर्त्रोक्तानि । तत्र वापीकूपतडागानां भेदो लोकप्रसिद्ध एव यत्तु पुनर्वसिष्ठेनोक्तं “शशाङ्कतोयेशकरार्यमित्रध्रुवाम्बुपित्र्ये वसु रेवतीषु । उद्यानवाप्यादितडागकूपकार्याणि सिद्ध्यन्ति जलं ध्रुवं स्यात्” । तज्जीर्णोद्धारविषयं प्रागुक्तवाक्ये प्रारम्भणपदोपादानान्न नूतनखननविषयमिति पुनरुक्ति परिहारः ।” पी० धा० । अधिकं जलाशयोत्सर्गशब्दे ३०७५ पृष्ठादावुक्तम् । अत्र राहुसाम्मुख्यनिषेधः मु० चि० पी० उक्तो यथा “देवालये गेहविधौ जलाशये राहोर्मुखं शम्भुदिशो विलोमतः । मीनार्कसिंहार्कमृगार्कतस्त्रिभे खाते मुखात् पृष्ठविदिक् शुभा भवेत्” । मु० चि० । <P>“देवालये इति । अत्र यथासङ्ख्यं सम्बन्धः । देवालयप्रारम्भे राहोर्मुखं मीनार्कतस्त्रिराश्यवस्थिते सूर्य्ये ऐशानीतो विलोमतो विपरीतं विदिक्षु वायव्यादिषु राहोर्मुखं स्यात् यथा मीनमेषवृषराश्यवस्थिते सूर्य्ये राहोर्मुखम् ऐशान्याम् । मिथुनकर्कटसिंहराश्यवस्थिते सूर्य्ये वायव्यां राहुमुखम् । कन्यातुलावृश्चिकस्थे सूर्य्ये नैरृत्यां राहुमुखम् । धनुर्मकरकुम्भराश्यवस्थे सूर्य्ये आग्नेय्यां राहोर्मुखम् इत्यर्थः । एवं गृहारम्भेऽपि सिंहार्कतस्त्रिराश्यवस्थितेऽर्के विलोमतः ऐशान्यां राहुमुखम् । वृश्चिकादित्रये वायव्यां कुम्भादित्रये नैरृत्याम् । वृषादित्रये आग्नेय्यां राहुमुखं स्यात् । जलाशयारम्भेऽपि मकरार्कतस्त्रिराश्यवस्थेऽर्के विलोमतः ऐशान्यां राहुमुखं स्यात् । मेषादितः त्रिभिर्वायव्याम् । कर्कादितस्त्रिभिर्नैऋत्याम् । तुलादितस्त्रिभिः आग्नेय्यां राहुमुखं स्यादित्यर्थः । फलमाह खात इति । देवालयादिविषयके खाते भूमिशोधने कर्तव्ये सति राहुमुखाक्रान्तदिशः सकाशात् पृष्ठवर्तिनी दिक् शुभा भवेत् यथा देवालयविषये मीनादित्रिराशिस्थितसूर्य्यत्वेन ऐशान्यां राहुमुखम् । तत्पृष्ठविदिक् आग्नेयी तस्यां प्रथमखातप्रारम्भः शुभद इत्यर्थः । मिथुनादिराशित्रयस्थे सूर्य्ये राहुमुखं वायव्यां तत्पृष्ठविदिगैशानी तस्यां खातारम्भः शुभः । एवं सर्वत्र । तथैव गृहविधौ अपि राहुमुखं कस्यां दिश्यस्ति इत्यवधार्य तत्पृष्ठविदिशि खातः शुभफल इत्यर्थः । यतः । सर्पेण विदिक् व्याप्ता । यथा । ऐशान्यां मुखम् । वायव्यामुदरम् । नैरृत्यां पुच्छम् आग्नेस्यां पृष्ठम् । अतः खाते आग्नेयी सम्यक् । एवमन्यत्राप्यूहनीयम् यदाह विश्वकर्मा “ईशानतः सर्पति कालसर्पो विहाय सृष्टिं गणयेद्विदिक्षु । शेषस्य वास्तोर्मुखमध्यपुच्छं त्रयं परित्यज्य खनेच्चतुर्थम्” इति । ज्योतिश्चिन्तामणौ “वृषार्कादित्रिकं वेद्यां सिंहादि गणयेद्गृहे । देवालये च मीनादि तडागे मकरादिषु” । तदारम्भतदुत्सर्गौ च समयाशुद्धौ न कार्य्यौ कालाशुद्धिशब्दे तत्प्रमाणं दृश्यम् “एतेनाखानि शाखानवनिवह हरित्पर्णपूर्णद्रुमाली व्यालीढोपान्तशान्तव्यथपथिकदृशां दत्तरागस्तडागः” नैष० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "तडाग",
+            "content": "तडागः पुं. -  तड्+आग 'तालाब, गहरा जोहड़, जलाशय'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "तडाग",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸರಸ್ಸು \\/ಕೊಳ \\/ಕಮಲಗಳು ಬೆಳೆಯುವ ಜಲಾಶಯ",
+            "निष्पत्तिः": "तड (आघाते)'आकः' (उ० ४-१५)",
+            "content": ""
+        },
+        {
+            "word": "तडाग",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸರಸ್ಸು \\/ಕೊಳ \\/ಕಮಲಗಳು ಬೆಳೆಯುವ ಜಲಾಶಯ",
+            "content": ""
+        },
+        {
+            "word": "तडाग",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಕೆರೆ",
+            "content": ""
+        },
+        {
+            "word": "तडाग",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮೃಗಗಳನ್ನು ಹಿಡಿಯುವ ಬಲೆ",
+            "content": ""
+        },
+        {
+            "word": "तडाग",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "೫೦೦ ಧನುಸ್ಸಿನ ಅಳತೆಯುಳ್ಳ ಜಲಾಶಯ",
+            "प्रयोगाः": "'चतुर्विंशाङ्गुलो हस्तो धनुस्तच्चतुरुत्तमम् । शतधन्वन्तरं चैव तावत् पुष्करिणीशुभा । एतत्पञ्चगुणः प्रोक्तः तडाग इति निर्णयः ॥'",
+            "विस्तारः": "'तडागोऽस्त्री जलाधारविशेषे यन्त्रकूटके'मेदि० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "तडाग",
+            "linga": "PN",
+            "artha": "सपद्मागाधजलाशयः",
+            "synonyms": [
+                "पद्माकर",
+                "तडाग"
+            ],
+            "num": "1.10.28",
+            "text": "पद्माकरस्तडागोऽस्त्री कासारः सरसी सरः । वेशन्तः पल्वलं चाल्पसरो वापी तु दीर्घिका ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "तडाग",
+            "content": "<body><s>taqAga pu° jalErAhanyate taqa—AGAte <q>taqAgAdayaSca</q> uRA° ni° Aga <lb/><b>1</b> yantrakUwake SabdArTaci° <lb/><b>2</b> jalADAraBede padmAkare amaraH . ardDarcA° <q>praSastaBUmiBAgasto bahusaMvat­sarozitaH . jalASayastaqAgaH syAdityAhuH SAstrako­vidAH</q> SabdArTaci° . <lb/><b>3</b> paYcaSataDanuHparimite jalASaye ca yaTA <q>caturviMSANgulo hasto DanustaccaturuttaraB . SataDanvantaraYcEva tAvat puzkariRI SuBA . etat paYcaguRaH proktastaqAga iti nirRayaH</q> navyavardDamAnaDfto vaSizWaH . tadutsargaviDiH matsyapu° 58 a° ukto yaTA <q>prApya pakzaM SuBaM SuklamatIte (prApte) cottarAyaRe . puRye­'hni viprakaTite kftvA brAhmaRavAcanam . prAgudakpravaRe deSe taqAgasya samIpataH . caturhastAM SuBAM vediM caturasrAM caturmuKAm . taTA zAqaSahastaH syAnmaRqapaSca catu­rmuKaH . vedyASca parito gartAratnimAtrAstu meKalAH . nava saptATa vA paYca nAtiriktA nfpAtmaja! . vitAMstamAtrA yoniH syAt zawsaptANgulivistftA . gartAScatasraH SastAH syustriparvocCritameKalAH . sarvatastu savarRAH (lokapAla­varRAH) syuH patAkA DvajasaMyutAH . aSvatTodumbaraplakza­vawaSAKAkftAni tu . maRqapasya prAtadiSaM dvArARyetAni kAravet . SuBAstatrAzwa hotAro dvArapAlA staTAzwa vE . azwO tu jApakAH kAryyAH brAhmaRA vedapAragAH . sarvalakzaRasampUrRo mantravidvijitendriyaH . kulaSIla­samAyuktaH puroDAH syAddvijottamaH . pratigarttezu kalaSA yajYopakaraRAni ca . vyajanaYcAmare SuBre tAmrapAtre suvistfte . tatastvanekavarRAH syuScaravaH pratidEvatam . AcAryyaH prakzipedBUmAvanumantrya vicakzaRaH . tryaratni­mAtro yUpaH syAt kzIravfkzavinirmitaH . yajamAnapramARo vA saMsTApyo BUtimicCatA . hemAlaNkAriRaH kAryyAH paYcaviMSatI ftvijaH . kuRqalAni ca hEmAni keyUra­kawakAni ca . aNgulIyaM pavitrARi vAsAMsi vivi­DAni ca . pUjayettu saMmaM sarvAn AcAryaM dviguREH punaH . dadyAcCayanasaMyuktamAtmanaScApi yat priyam . sOvarRO kUrma­makarO rAjatO matsyaquRquBO . tAmrO kulIramaRqUkA vAyasaH SiSumArakaH . evamAsAdya tatsarvamAdAveva viSA­mpate! . SuklamAlyAmbaraDaraH sarvOzaDyudakEstataH . saMpUrREH kalasEstatra snapito vedapAragEH . yajamAnaH sapatnIkaH putrapOtrasamanvitaH . paScimaM dvAramAsAdya praviSedyAga­maRqapam . tato maNgalaSabdena BerIRAM nisvanena ca . aYjasA maRqalaM kuryyAt paYcavarRena tattvavit . zoqaSA­rantataScakraM padmagarBaM caturmuKam . caturasraYca parito vfttaM maDyeM suSoBanam . vedyAScopari tat kftvA grahAn lokapatIMstataH . saMnyasenmantrataH sarvAn pratidikzu vica­kzaRaH . kUrmAdi sTApayenmaDye vAruRaM mantramASritaH . brahmARaYca SivaM vizRuM tatrEva sTApayed buDaH . vinA­yakaYca vinyasya kamalAmambikAM taTA . SAntyarTaM sarva­lokAnAM BUtagrAmaM nyasettataH . puzpaBakzyaPalEryuktameyaM kftvADivAsanam . kumBAn sajalagarBAMstAn vAsoBiH parivezwayet . puzpaganDEralaNkftya dvArapAlAn samantataH . paWaDvamiti tAn brUyAdAcAryastvaBipUjayet . vahvfcO pUrvataH sTApyO dakziRena yajurvidO . sAmagO paScime tadvaduttareRa tvaTarvaRO . udaNmuKo dakziRato yajamAna upAviSet . yajaDvamiti tAt brUyAd hOtrikAn punareva tu . utkfzwAn mantrajApena tizWaDvamiti jApa­kAn . evamAdiSya tAn sarvAn paryukzyAgniM sa mantraM­vit . juhuyAdvAruRErmantrErAjyaM ca samiDastaTA . ftvigBiScATa hotavyaM vAruREreva sarvataH . graheByo viDivad hutvA taTendrAyeSvarAya ca . marudByo loka­pAleByo viDivadviSvakarmaRe . rAtrisUktaYca rOdraYca pAva­mAnaM sumaNgalam . japeyuH pOruzaM sUktaM pUrvato bahvfcAH pfTak . SAkraM rOdraYca sOmyaM ca kUzmARqaM jAtavedasam . sOrasUktaM japenmantraM dakziRena yajurvidaH . vErAjyaM pOruzaM sUktaM sOparRaM rudrasaMhitAm . SESavaM paYca ni­DanaM gAyatraM jyezWasAma ca . vAmadevyaM vfhatsAma rOravaM saraTantaram . gavAM vrataM ca kARvaYca rakzoGnaM vayasastaTA . gAyeyuH sAmagA rAjan! paScimaM dvAra­mASritAH . aTarvaRaScottarataH SAntikaM pOzwikaM taTA . japeyurmanasA devamASritya varuRaM praBum . pUrvedyuraBito rAtrAvevaM kftvADivAsanam . gajASvaraTyAvalBIkAt saNgamAdDradagokulAt . mfdamAdAya kumBezu prakzipeccatva­rAttaTA . rocanAYca sasidDArTAM ganDaM guggulumeva ca . snapanaM tasya karttavyaM paYcaBaNga(pallava) samanvitam . pratyekantu mahAmantrErevaM kftvA viDAnataH . evaM kzapAmati­vAhya viDiyuktena karmaRA . tataH praBAte vimale saYjAte'Ta SataM gavAm . brAhmaReByaH pradAtavyamazwazazwiSca vA punaH . paYcASadvATa zawtriMSat paYcaviMSatirapyaTa . tataH sAMvatsaraprokte SuBe lagne suSoBane . vedaSabdESca gAnDarvErvAdyESca viviDEH punaH . kanakAlaNkftAM kftvA jale gAmavatArayet . sAmagAya ca sA deyA brAhmaRAya viSAmpate! . pAtrImAdAya sOvarRIM paYcaratnasamanvitAm . tato niHkzipya makaramatsyAdIMScEva sarvaSaH . DftAM catu­rviDErviprErvedavedANgapAragEH . mahAnadIjalopetAM daDya­kzatasamanvitAm . uttarABimuKIM DenuM jalamaDye tu tArayet . ATarvaRena snAtAM punargAmetvaTetiM ca . ApohizWeti mantreRa kzitvAgatya ca maRqapam . pUja­yitvA sarastatra baliM dadyAt samantataH . punardinAni hotavyaM catvAri munisattamAH! . caturTIkarma kartavyaM deyA tatrApi SaktitaH . dakziRA rAjaSArdUla! varuRa­kzamApaRaM tataH . kftvA tu yajYapAtrARi yajYopakaraRAni ca . ftvigByastu samaM dattvA maRqapaM viBajet punaH . hemapAtrIYca SayyAYca sTApakAya nivedayet . tataH sahasraM viprARAmaTa vAzwaSataM taTA . BojanIyaM yaTASakti paYcASadvATa viMSatiH . evameza purARezu taqAgaviDi­rucyate . kUpavApIzu sarvAsu taTA puzkariRIzu ca . eza eva viDirdfzwaH pratizWAsu taTEva . mantratastu viSezaH syAt prasAdIdyAnaBUmizu . ayantvaSaktAbardDena viDi­rdfzwaH svayamBuvA . alpezvekAgnivat kftvA vittaSAWyA­dfte nfRAm . pAvfwkAle sTite toye hyagnizwImaPalaM smftam . SaratkAle sTitaM yat syAt taduktaPaladAya­kam . vAjapeyAtirAtrAByAM hamante SiSire sTitam . aSvameDasamaM prAha vasantasamaye sTitam . grIzme'pi tat sTitaM toyaM rAjasUyAdviSizyate . etAn mahArAja! viSezaDarmAn karoti yo'pyAgamaSudDabudDiH . sa yAti rudrAlayAmASu pUtaH kalpAnanekAn divi modate ca . anekalokAn samahastapAdIn BuktvA parArdDadvayamaNganABiH . sahEva vizRoH paramampadaM yat prAptoti tadyAgaPalena BUyaH</q> . jalASayaKananAramBanakzatrAdi mu° ci° pI° uktaM yaTA <q>mitrArkaDruvavAsavAmbupamaGAtoyAntyapuzyenduBiH pApE­rhInabalEstanO suragurO jYe vA BfgO Ke viDO . Apye sarvajalASayasya Kananam</q> mu° ci° . <q>mitro'nurADA arko hastaH DruvaM rohiRyuttarAtrayaM vAsavaM DanizWA ambupaH SatatArakA toyaM pUrvAzAQA antyaM revatI puzyaH indurmfgaH etErnakzatrEstrayodaSaBiH sarvezAM jalASayAnAM vApIkUpataqAganAmnAM toyADArARAM KananaM SuBamuktam uktaYca vyavahAratattve “ApyAmbupAntya pitfmitravasUttarArkakendvIjyaBezu KananaM salilASrayARA­miti</q> . kaH brahmA taddevatAkatvenABedAt rohiRI . aTa jalASayaKanane lagnavicAraH pApEH pApaKagErbala­rahitEH sadBiH, tanO lagne suragurO vfhaspatO jYe buDe sTite satItyarTaH lagnAt Ke daSamasTAne BfgO Sukre, Apye jalacararASO viDO sati jalASayaKenanaM hitaM uktaYca ratnamAlAyAm <q>lagne jIve jYe'Ta vA durbalESca krUrEH Sukre cApi mezuraRasTe . Apye candre sarvatIyASrayARA­mAramBAH syuH sidDaye nirvikalpam</q> . kaSyapenApyuktam <q>gurO jYe vA lagnagate Sukre karmagate, viDO . ApyaBe jalakAryyARAmAramBaH sidDidaH smftaH</q> iti . dIpikA­yAntu viSezaH <q>puzye mitrakarottarasvavaruRabrahmAmbupi­tryenduBiHSaste'rke SuBavArayogatiTizu krUrezvavIryyezu ca . puzwendO jalarASige daSamage Sukre SuBAMSodaye prAramBaH salilASayasya SuBadojIvenduputrodaye . svaM Da­nizWA . anye tu vApIkUpataqAgAnAmAkftiBedAtpratyekaM BinnAni nakzatrARyuktAni . tatra vApIKananamAha fkzoccayaH “svAtyaSvipuzyahastezu sarvadA ca punarvasO . revatyAM vAruRe cEva vApIkarma praSasyate</q> . kUpAramBamAha SrIpatiH <q>hastaH puzyo vAsavaM vAruRaYca mEtraM pitryaM trIRi cEvottarARi . prAjApatyaYcApi nakzatramAhuH kUpA­ramBe SrezWamAdyA munIndrAH</q> . taqAgAramBamAha vasizWaH <q>mEtrendupOzRottararohiRIzu devejyavArISvaravAriBezu . prAramBaRaM sarvajalASayAnAM kAryaM sitendvaMSakavAralagne</q> . atra vApIkUpanakzatrARAM pArTakyenABiDAnAt taqAgA­ramBArTamidaM vacanamavasIyate bahuvacanamASrayABiprAyeRa sarvaSabdopAdAnaM CandaHparipUraRArTaM tatra kUpataqAganakzatrezu sadfSanakzatratyAgAvaSizwAnAM melane trayodaSa nakzatrARi Bavanti tatra saMkzeptukAmena vyavahAratatvakartrA sarvajalA­SayAnAmAramBe sAmAnyato jalASayatvasADarmyAdetAni trayodaSa BAnyuktAni tAnyeva ca granTakartroktAni . tatra vApIkUpataqAgAnAM Bedo lokaprasidDa eva yattu punarvasi­zWenoktaM <q>SaSANkatoyeSakarAryamitraDruvAmbupitrye vasu revatIzu . udyAnavApyAditaqAgakUpakAryARi sidDyanti jalaM DruvaM syAt</q> . tajjIrRodDAravizayaM prAguktavAkye prAramBaRapadopAdAnAnna nUtanaKananavizayamiti punarukti parihAraH .” pI° DA° . aDikaM jalASayotsargaSabde 3°75 pfzWAdAvuktam . atra rAhusAmmuKyanizeDaH mu° ci° pI° ukto yaTA <q>devAlaye gehaviDO jalASaye rAhormuKaM SamBudiSo vilomataH . mInArkasiMhArkamfgArkatastriBe KAte muKAt pfzWavidik SuBA Bavet</q> . mu° ci° . <q>devAlaye iti . atra yaTAsaNKyaM sambanDaH . devA­layaprAramBe rAhormuKaM mInArkatastrirASyavasTite sUryye ESAnIto vilomato viparItaM vidikzu vAyavyAdizu rAhormuKaM syAt yaTA mInamezavfzarASyavasTite sUryye rAhormuKam ESAnyAm . miTunakarkawasiMharASyavasTite sUryye vAyavyAM rAhumuKam . kanyAtulAvfScikasTe sUryye nErftyAM rAhumuKam . DanurmakarakumBarASyavasTe sUryye AgneyyAM rAhormuKam ityarTaH . evaM gfhAramBe'pi siM­hArkatastrirASyavasTite'rke vilomataH ESAnyAM rAhumu­Kam . vfScikAditraye vAyavyAM kumBAditraye nErftyAm . vfzAditraye AgneyyAM rAhumuKaM syAt . jalASayAramBe­'pi makarArkatastrirASyavasTe'rke vilomataH ESAnyAM rAhumuKaM syAt . mezAditaH triBirvAyavyAm . karkAdi­tastriBirnEftyAm . tulAditastriBiH AgneyyAM rAhu­muKaM syAdityarTaH . PalamAha KAta iti . devAlayA­divizayake KAte BUmiSoDane kartavye sati rAhumuKA­krAntadiSaH sakASAt pfzWavartinI dik SuBA Bavet yaTA devAlayavizaye mInAditrirASisTitasUryyatvena ESAnyAM rAhumuKam . tatpfzWavidik AgneyI tasyAM praTama­KAtaprAramBaH SuBada ityarTaH . miTunAdirASitrayasTe sUryye rAhumuKaM vAyavyAM tatpfzWavidigESAnI tasyAM KAtAramBaH SuBaH . evaM sarvatra . taTEva gfhaviDO api rAhumuKaM kasyAM diSyasti ityavaDArya tat­pfzWavidiSi KAtaH SuBaPala ityarTaH . yataH . sarpeRa vidik vyAptA . yaTA . ESAnyAM muKam . vAyavyAmudaram . nErftyAM pucCam AgnesyAM pfzWam . ataH KAte AgneyI samyak . evamanyatrApyUhanIyam yadAha viSvakarmA “ISAnataH sarpati kAlasarpo vihAya sfzwiM gaRayedvidikzu . Sezasya vAstormuKamaDyapucCaM trayaM parityajya KaneccaturTam</q> iti . jyotiScintAmaRO <q>vfzArkAditrikaM vedyAM siMhAdi gaRayedgfhe . devAlaye ca mInAdi taqAge makarAdizu</q> . tadAramBatadutsargO ca samayASudDO na kAryyO kAlASudDiSabde tatpramARaM df­Syam <q>etenAKAni SAKAnavanivaha haritparRapUrRadrumAlI vyAlIQopAntaSAntavyaTapaTikadfSAM dattarAgastaqAgaH</q> nEza° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "तडाग",
+            "content": "<H2><h><key1>taqAga</key1><key2>taqAga</key2></h><body><s>taqAga</s>   <lex>n.</lex> (<lex type=\"hwalt\">m.</lex> <ab>g.</ab> <s>arDarcA<srs />di</s>) = <s>°qAka</s>, <ls>ŚāṅkhGṛ. v, 2</ls>; <ls>Mn. iv</ls>, <ls n=\"Mn.\">vii ff.</ls>; <ls>Yājñ.</ls>; <ls>MBh.</ls> &amp;c.<info lex=\"m:n\" /></body><tail><L>81712</L><pc>432,2</pc></tail></H2>\n <H2A><h><key1>taqAga</key1><key2>taqAga</key2></h><body>  a trap, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>81713</L><pc>432,2</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "तडाग",
+            "content": "<H1><h><key1>taqAga</key1><key2>taqAga</key2></h><body><s>taqAga</s>  <div n=\"1\">m. (<s>-gaH</s>) </div><div n=\"2\"> 1. A pond, a pool, deep enough for the growth of the <lb />lotus, &amp;c. See the preceding. </div><div n=\"2\"> 2. A trap for catching deer.</div><div n=\"E\"> E. <lb /><s>taq</s> to beat, affix <s>Aga,</s> deriv. irr.</div></body><tail><L>16856</L><pc>301-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "तडाग",
+            "content": "<span lang=\"sa\">तडाग<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸರಸ್ಸು /ಕೊಳ /ಕಮಲಗಳು ಬೆಳೆಯುವ ಜಲಾಶಯ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>तड (आघाते) - \"आकः\" (उ० ४-१५)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तडाग<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸರಸ್ಸು /ಕೊಳ /ಕಮಲಗಳು ಬೆಳೆಯುವ ಜಲಾಶಯ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तडाग<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೆರೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तडाग<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೃಗಗಳನ್ನು ಹಿಡಿಯುವ ಬಲೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तडाग<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>೫೦೦ ಧನುಸ್ಸಿನ ಅಳತೆಯುಳ್ಳ ಜಲಾಶಯ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"चतुर्विंशाङ्गुलो हस्तो धनुस्तच्चतुरुत्तमम् । शतधन्वन्तरं चैव तावत् पुष्करिणीशुभा । एतत्पञ्चगुणः प्रोक्तः तडाग इति निर्णयः ॥\"<div class=\"h-2\"> </div><b>विस्तारः - </b>\"तडागोऽस्त्री जलाधारविशेषे यन्त्रकूटके\" - मेदि० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-function acquireSingletonInstance(type, props, instance, internalInstanceHandle) {
-
-  const attributes = instance.attributes;
-
-  while (attributes.length) {
-    instance.removeAttributeNode(attributes[0]);
-  }
-
-  setInitialProperties(instance, type, props);
-  precacheFiberNode(internalInstanceHandle, instance);
-  updateFiberProps(instance, props);
-}
-function releaseSingletonInstance(instance) {
-  const attributes = instance.attributes;
-
-  while (attributes.length) {
-    instance.removeAttributeNode(attributes[0]);
-  }
-
-  detachDeletedInstance(instance);
-}
-function clearSingleton(instance) {
-  const element = instance;
-  let node = element.firstChild;
-
-  while (node) {
-    const nextNode = node.nextSibling;
-    const nodeName = node.nodeName;
-
-    if (isMarkedHoistable(node) || nodeName === 'HEAD' || nodeName === 'BODY' || nodeName === 'SCRIPT' || nodeName === 'STYLE' || nodeName === 'LINK' && node.rel.toLowerCase() === 'stylesheet') ; else {
-      element.removeChild(node);
-    }
-
-    node = nextNode;
-  }
-
-  return;
-} // -------------------
-const NotLoaded =
-/*       */
-0b000;
-const Loaded =
-/*          */
-0b001;
-const Errored =
-/*         */
-0b010;
-const Settled =
-/*         */
-0b011;
-const Inserted =
-/*        */
-0b100;
-function prepareToCommitHoistables() {
-  tagCaches = null;
-} // global collections of Resources
-
-const preloadPropsMap = new Map();
-const preconnectsSet = new Set(); // getRootNode is missing from IE and old jsdom versions
-
-function getHoistableRoot(container) {
-  // $FlowFixMe[method-unbinding]
-  return typeof container.getRootNode === 'function' ?
-  /* $FlowFixMe[incompatible-return] Flow types this as returning a `Node`,
-   * but it's either a `Document` or `ShadowRoot`. */
-  container.getRootNode() : container.ownerDocument;
-}
-
-function getCurrentResourceRoot() {
-  const currentContainer = getCurrentRootHostContainer();
-  return currentContainer ? getHoistableRoot(currentContainer) : null;
-}
-
-function getDocumentFromRoot(root) {
-  return root.ownerDocument || root;
-} // We want this to be the default dispatcher on ReactDOMSharedInternals but we don't want to mutate
-// internals in Module scope. Instead we export it and Internals will import it. There is already a cycle
-// from Internals -> ReactDOM -> HostConfig -> Internals so this doesn't introduce a new one.
-
-
-const ReactDOMClientDispatcher = {
-  prefetchDNS: prefetchDNS$1,
-  preconnect: preconnect$1,
-  preload: preload$1,
-  preloadModule: preloadModule$1,
-  preinitStyle,
-  preinitScript,
-  preinitModuleScript
-}; // We expect this to get inlined. It is a function mostly to communicate the special nature of
-// how we resolve the HoistableRoot for ReactDOM.pre*() methods. Because we support calling
-// these methods outside of render there is no way to know which Document or ShadowRoot is 'scoped'
-// and so we have to fall back to something universal. Currently we just refer to the global document.
-// This is notable because nowhere else in ReactDOM do we actually reference the global document or window
-// because we may be rendering inside an iframe.
-
-function getDocumentForImperativeFloatMethods() {
-  return document;
-}
-
-function preconnectAs(rel, href, crossOrigin) {
-  const ownerDocument = getDocumentForImperativeFloatMethods();
-
-  if (typeof href === 'string' && href) {
-    const limitedEscapedHref = escapeSelectorAttributeValueInsideDoubleQuotes(href);
-    let key = "link[rel=\"" + rel + "\"][href=\"" + limitedEscapedHref + "\"]";
-
-    if (typeof crossOrigin === 'string') {
-      key += "[crossorigin=\"" + crossOrigin + "\"]";
-    }
-
-    if (!preconnectsSet.has(key)) {
-      preconnectsSet.add(key);
-      const preconnectProps = {
-        rel,
-        crossOrigin,
-        href
-      };
-
-      if (null === ownerDocument.querySelector(key)) {
-        const instance = ownerDocument.createElement('link');
-        setInitialProperties(instance, 'link', preconnectProps);
-        markNodeAsHoistable(instance);
-        ownerDocument.head.appendChild(instance);
-      }
-    }
-  }
-}
-
-function prefetchDNS$1(href) {
-
-  preconnectAs('dns-prefetch', href, null);
-}
-
-function preconnect$1(href, crossOrigin) {
-
-  preconnectAs('preconnect', href, crossOrigin);
-}
-
-function preload$1(href, as, options) {
-
-  const ownerDocument = getDocumentForImperativeFloatMethods();
-
-  if (href && as && ownerDocument) {
-    let preloadSelector = "link[rel=\"preload\"][as=\"" + escapeSelectorAttributeValueInsideDoubleQuotes(as) + "\"]";
-
-    if (as === 'image') {
-      if (options && options.imageSrcSet) {
-        preloadSelector += "[imagesrcset=\"" + escapeSelectorAttributeValueInsideDoubleQuotes(options.imageSrcSet) + "\"]";
-
-        if (typeof options.imageSizes === 'string') {
-          preloadSelector += "[imagesizes=\"" + escapeSelectorAttributeValueIns

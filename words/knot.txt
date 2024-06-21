@@ -1,130 +1,45 @@
-"41.3.1",
-      "resolved": "https://registry.npmjs.org/@ckeditor/ckeditor5-widget/-/ckeditor5-widget-41.3.1.tgz",
-      "integrity": "sha512-rdBxGS3bxWNhp+yxyBYkcbRV6/mdTDab+konDVhZ/ME1jVZ5cf8OBZcgHUqAxzuWt4XMEdzKINbo1OnSDwApUg==",
-      "dependencies": {
-        "@ckeditor/ckeditor5-core": "41.3.1",
-        "@ckeditor/ckeditor5-engine": "41.3.1",
-        "@ckeditor/ckeditor5-enter": "41.3.1",
-        "@ckeditor/ckeditor5-typing": "41.3.1",
-        "@ckeditor/ckeditor5-ui": "41.3.1",
-        "@ckeditor/ckeditor5-utils": "41.3.1",
-        "lodash-es": "4.17.21"
-      }
-    },
-    "node_modules/@eslint-community/eslint-utils": {
-      "version": "4.4.0",
-      "resolved": "https://registry.npmjs.org/@eslint-community/eslint-utils/-/eslint-utils-4.4.0.tgz",
-      "integrity": "sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==",
-      "dev": true,
-      "dependencies": {
-        "eslint-visitor-keys": "^3.3.0"
-      },
-      "engines": {
-        "node": "^12.22.0 || ^14.17.0 || >=16.0.0"
-      },
-      "peerDependencies": {
-        "eslint": "^6.0.0 || ^7.0.0 || >=8.0.0"
-      }
-    },
-    "node_modules/@eslint-community/regexpp": {
-      "version": "4.10.0",
-      "resolved": "https://registry.npmjs.org/@eslint-community/regexpp/-/regexpp-4.10.0.tgz",
-      "integrity": "sha512-Cu96Sd2By9mCNTx2iyKOmq10v22jUVQv0lQnlGNy16oE9589yE+QADPbrMGCkA51cKZSg3Pu/aTJVTGfL/qjUA==",
-      "dev": true,
-      "engines": {
-        "node": "^12.0.0 || ^14.0.0 || >=16.0.0"
-      }
-    },
-    "node_modules/@eslint/eslintrc": {
-      "version": "2.1.4",
-      "resolved": "https://registry.npmjs.org/@eslint/eslintrc/-/eslintrc-2.1.4.tgz",
-      "integrity": "sha512-269Z39MS6wVJtsoUl10L60WdkhJVdPG24Q4eZTH3nnF6lpvSShEK3wQjDX9JRWAUPvPh7COouPpU9IrqaZFvtQ==",
-      "dev": true,
-      "dependencies": {
-        "ajv": "^6.12.4",
-        "debug": "^4.3.2",
-        "espree": "^9.6.0",
-        "globals": "^13.19.0",
-        "ignore": "^5.2.0",
-        "import-fresh": "^3.2.1",
-        "js-yaml": "^4.1.0",
-        "minimatch": "^3.1.2",
-        "strip-json-comments": "^3.1.1"
-      },
-      "engines": {
-        "node": "^12.22.0 || ^14.17.0 || >=16.0.0"
-      },
-      "funding": {
-        "url": "https://opencollective.com/eslint"
-      }
-    },
-    "node_modules/@eslint/js": {
-      "version": "8.57.0",
-      "resolved": "https://registry.npmjs.org/@eslint/js/-/js-8.57.0.tgz",
-      "integrity": "sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==",
-      "dev": true,
-      "engines": {
-        "node": "^12.22.0 || ^14.17.0 || >=16.0.0"
-      }
-    },
-    "node_modules/@humanwhocodes/config-array": {
-      "version": "0.11.14",
-      "resolved": "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.11.14.tgz",
-      "integrity": "sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==",
-      "dev": true,
-      "dependencies": {
-        "@humanwhocodes/object-schema": "^2.0.2",
-        "debug": "^4.3.1",
-        "minimatch": "^3.0.5"
-      },
-      "engines": {
-        "node": ">=10.10.0"
-      }
-    },
-    "node_modules/@humanwhocodes/module-importer": {
-      "version": "1.0.1",
-      "resolved": "https://registry.npmjs.org/@humanwhocodes/module-importer/-/module-importer-1.0.1.tgz",
-      "integrity": "sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==",
-      "dev": true,
-      "engines": {
-        "node": ">=12.22"
-      },
-      "funding": {
-        "type": "github",
-        "url": "https://github.com/sponsors/nzakas"
-      }
-    },
-    "node_modules/@humanwhocodes/object-schema": {
-      "version": "2.0.3",
-      "resolved": "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-2.0.3.tgz",
-      "integrity": "sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==",
-      "dev": true
-    },
-    "node_modules/@isaacs/cliui": {
-      "version": "8.0.2",
-      "resolved": "https://registry.npmjs.org/@isaacs/cliui/-/cliui-8.0.2.tgz",
-      "integrity": "sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==",
-      "dev": true,
-      "dependencies": {
-        "string-width": "^5.1.2",
-        "string-width-cjs": "npm:string-width@^4.2.0",
-        "strip-ansi": "^7.0.1",
-        "strip-ansi-cjs": "npm:strip-ansi@^6.0.1",
-        "wrap-ansi": "^8.1.0",
-        "wrap-ansi-cjs": "npm:wrap-ansi@^7.0.0"
-      },
-      "engines": {
-        "node": ">=12"
-      }
-    },
-    "node_modules/@isaacs/cliui/node_modules/ansi-regex": {
-      "version": "6.0.1",
-      "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-6.0.1.tgz",
-      "integrity": "sha512-n5M855fKb2SsfMIiFFoVrABHJC8QtHwVx+mHWP3QcEqBHYienj5dHSgjbxtC0WEZXYt4wcD6zrQElDPhFuZgfA==",
-      "dev": true,
-      "engines": {
-        "node": ">=12"
-      },
-      "funding": {
-        "url": "https://github.com/chalk/ansi-regex?sponsor=1"
-      }
+{
+    "word": "knot",
+    "AE": [
+        {
+            "word": "knot",
+            "eid": "5976",
+            "pagenum": 248,
+            "content": "<b>Knot,</b>¦ <i>s.</i> ग्रंथिः, बंधनं, ग्रंथिका, बंधः, गंडः; (of garments) नीवि-वी <i>f.;</i> (in wood) पर्वन् <i>n.,</i> संधिः. <b>2</b> संधिः, संयोगः, संश्लेषः, संबंधः. <b>3</b> मंडलं, समूहः, गणः, वर्गः, संघः, चक्रं, निवहः. <b>4</b> (Of trees) षंडः, गुच्छः, स्तबकः, गुल्मः-ल्मं, स्तंबः, कांडः. <i>-v. t.</i> ग्रंथिं बंध् 9 P, ग्रंथ् 9 P, संश्लिष् c., ‘k. ed hair’ वेणी; ‘k. ed wound’ रूढग्रंथिः व्रणः (U. 2). <b>-ted, -ty,</b> <i>a.</i> ग्रंथिल, ग्रंथिमत्, पर्व-संधि-मय(यी <i>f.</i>), पर्ववत्. <b>2</b> विषम, गूढ, दुर्ज्ञेय, दुर्बोध, गहन, गूढार्थ; ‘k. point’ ग्रंथिः, विषमपदं."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "knot",
+            "eid": "13074",
+            "pagenum": 403,
+            "content": "<b>KNOT</b>¦ (subs.): <dvsn n='I'>I A tie: </dvsn><dvsn n='1'>(1) ग्रन्थिः, Ku. iii. 46.; </dvsn><dvsn n='1'>(2) बन्धः, -नम्, M. n. <dvsn n='xe'><i>To tie up the hair in</i> <i>a k.:</i></dvsn> <dvsn n='xs'>वेणीं बध्नाति,</dvsn> Mu.; <dvsn n='xe'><i>having k. ted hair:</i></dvsn> <dvsn n='xs'>जटिलः</dvsn> (ला, लं), S. p. </dvsn><dvsn n='I'>II Of plants: ग्रन्थिः: v. Joint. </dvsn><dvsn n='I'>III Fig., bond: q.v.: बन्धः। </dvsn><dvsn n='I'>IV A cluster, circle: मण्डलम्। </dvsn><dvsn n='I'>V A knotty point: ग्रन्थिः, <dvsn n='xe'><i>in this work I have carefully inserted k.s</i> <i>here and there:</i></dvsn> <dvsn n='xs'>ग्रन्थग्रन्थिरिह क्वचित् क्वचिदपि न्यासि   प्रयत्नान्मया,</dvsn> N. xxii. 154.; <dvsn n='xe'><i>to loosen a k.:</i></dvsn> <dvsn n='xs'>ग्रन्थिं   श्लथीकरोति,</dvsn> <ls>N.</ls> </dvsn><dvsn n='I'>VI. A bird: पक्षिविशेषः। </dvsn><dvsn n='I'>VII In ships: <dvsn n='xe'><i>it goes ten k. s an hour:</i></dvsn> <dvsn n='xs'>*होरायां पञ्च- क्रोशं गच्छति।</dvsn></dvsn>"
+        },
+        {
+            "word": "knot",
+            "eid": "13075",
+            "pagenum": 403,
+            "content": "<b>KNOT</b>¦ (v.): ग्रन्थिं बघ्नाति (बन्ध्, c. 9.)."
+        }
+    ],
+    "MWE": [
+        {
+            "word": "knot",
+            "eid": "17208",
+            "pagenum": 429,
+            "content": "KNOT¦, <i>s.</i> ग्रन्थिः <i>m.,</i> ग्रन्थिका, बन्धः -न्धनं, गण्डः; ‘tying a knot,’ ग्रन्थिबन्धनं. — (Joint in a plant) पर्व्व <i>n.</i> (न्), ग्रन्थिः <i>m.,</i> परुः <i>m.,</i> गण्डूः <i>f.,</i> आकल्पकः. — (In wood) काष्ठग्रन्थिः <i>m.,</i> काष्ठसन्धिः <i>m.,</i> काण्डसन्धिः <i>m.</i> — (Articulation) सन्धिः <i>m.</i> — (Bond of union) सन्धिः <i>m.,</i> सम्बन्धः, संहतिः <i>f.,</i> संयोगः. — (Gang, crew) गणः, सङ्घः, समूहः, संसर्गः, निवहः, मण्डलं. — (Bunch, clump) पिण्डः -ण्डं, गुल्मः, गुच्छः -च्छकः, स्तवकः, काण्डः, स्तम्बः. — (Knotty point) ग्रन्थिः <i>m.,</i> गूढार्थः; ‘one who removes knots,’ ग्रन्थिहरः."
+        },
+        {
+            "word": "knot",
+            "eid": "17209",
+            "pagenum": 429,
+            "content": "<i>To</i> KNOT¦, <i>v. a.</i> ग्रन्थिं कृ, ग्रन्थ् (c. 1. ग्रन्थति -न्थितुं), ग्रन्थिरूपेण संश्लिष् (c. 10. -श्लेषयति -यितुं)."
+        },
+        {
+            "word": "knot",
+            "eid": "17210",
+            "pagenum": 429,
+            "content": "<i>To</i> KNOT¦, <i>v. n.</i> ग्रन्थिरूपेण संश्लिष्टीभू, ग्रन्थिं बन्ध् (c. 9. बध्नाति, बन्द्धुं)."
+        }
+    ]
+}

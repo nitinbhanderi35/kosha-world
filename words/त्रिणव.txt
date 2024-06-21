@@ -1,1 +1,79 @@
-y]":case"[object Uint16Array]":case"[object Uint32Array]":return so(t,n);case"[object Map]":case"[object Set]":return new o;case"[object Number]":case"[object String]":return new o(t);case"[object RegExp]":return no(t);case"[object Symbol]":return ro(t)}};var co=Object.create;const lo=function(){function t(){}return function(e){if(!z(e))return{};if(co)return co(e);t.prototype=e;var n=new t;return t.prototype=void 0,n}}();const ho=function(t){return"function"!=typeof t.constructor||on(t)?{}:lo(_t(t))};const uo=function(t){return kt(t)&&"[object Map]"==Zn(t)};var po=Ye&&Ye.isMap;const go=po?Ue(po):uo;const mo=function(t){return kt(t)&&"[object Set]"==Zn(t)};var ko=Ye&&Ye.isSet;const fo=ko?Ue(ko):mo;var bo="[object Arguments]",wo="[object Function]",_o="[object Object]",Ao={};Ao[bo]=Ao["[object Array]"]=Ao["[object ArrayBuffer]"]=Ao["[object DataView]"]=Ao["[object Boolean]"]=Ao["[object Date]"]=Ao["[object Float32Array]"]=Ao["[object Float64Array]"]=Ao["[object Int8Array]"]=Ao["[object Int16Array]"]=Ao["[object Int32Array]"]=Ao["[object Map]"]=Ao["[object Number]"]=Ao[_o]=Ao["[object RegExp]"]=Ao["[object Set]"]=Ao["[object String]"]=Ao["[object Symbol]"]=Ao["[object Uint8Array]"]=Ao["[object Uint8ClampedArray]"]=Ao["[object Uint16Array]"]=Ao["[object Uint32Array]"]=!0,Ao["[object Error]"]=Ao[wo]=Ao["[object WeakMap]"]=!1;const Co=function t(e,n,o,i,r,s){var a,c=1&n,l=2&n,d=4&n;if(o&&(a=r?o(e,i,r,s):o(e)),void 0!==a)return a;if(!z(e))return e;var h=mt(e);if(h){if(a=Yn(e),!c)return An(e,a)}else{var u=Zn(e),p=u==wo||"[object GeneratorFunction]"==u;if(He(e))return _n(e,c);if(u==_o||u==bo||p&&!r){if(a=l||p?{}:ho(e),!c)return l?Tn(e,mn(a,e)):Bn(e,dn(a,e))}else{if(!Ao[u])return r?e:{};a=ao(e,u,c)}}s||(s=new ye);var g=s.get(e);if(g)return g;s.set(e,a),fo(e)?e.forEach((function(i){a.add(t(i,n,o,i,e,s))})):go(e)&&e.forEach((function(i,r){a.set(r,t(i,n,o,r,e,s))}));var m=h?void 0:(d?l?Mn:In:l?gn:ln)(e);return xe(m||e,(function(i,r){m&&(i=e[r=i]),Se(a,r,t(i,n,o,r,e,s))})),a};const vo=function(t,e){return Co(t,5,e="function"==typeof e?e:void 0)};const yo=function(t){return kt(t)&&1===t.nodeType&&!Et(t)};class xo{constructor(t,e){this._config={},e&&this.define(Eo(e)),t&&this._setObjectToTarget(this._config,t)}set(t,e){this._setToTarget(this._config,t,e)}define(t,e){this._setToTarget(this._config,t,e,!0)}get(t){return this._getFromSource(this._config,t)}*names(){for(const t of Object.keys(this._config))yield t}_setToTarget(t,e,n,o=!1){if(Et(e))return void this._setObjectToTarget(t,e,o);const i=e.split(".");e=i.pop();for(const e of i)Et(t[e])||(t[e]={}),t=t[e];if(Et(n))return Et(t[e])||(t[e]={}),t=t[e],void this._setObjectToTarget(t,n,o);o&&void 0!==t[e]||(t[e]=n)}_getFromSource(t,e){const n=e.split(".");e=n.pop();for(const e of n){if(!Et(t[e])){t=null;break}t=t[e]}return t?Eo(t[e]):void 0}_setObjectToTarget(t,e,n){Object.keys(e).forEach((o=>{this._setToTarget(t,o,e[o],n)}))}}function Eo(t){return vo(t,Bo)}function Bo(t){return yo(t)||"function"==typeof t?t:void 0}function Do(t){if(t){if(t.defaultView)return t instanceof t.defaultView.Document;if(t.ownerDocument&&t.ownerDocument.defaultView)return t instanceof t.ownerDocument.defaultView.Node}return!1}function So(t){const e=Object.prototype.toString.apply(t);return"[object Window]"==e||"[object global]"==e}const To=Po(P());function Po(t){if(!t)return To;return class extends t{listenTo(t,e,n,o={}){if(Do(t)||So(t)){const i={capture:!!o.useCapture,passive:!!o.usePassive},r=this._getProxyEmitter(t,i)||new Io(t,i);this.listenTo(r,e,n,o)}else super.listenTo(t,e,n,o)}stopListening(t,e,n){if(Do(t)||So(t)){const o=this._getAllProxyEmitters(t);for(const t of o)this.stopListening(t,e,n)}else super.stopListening(t,e,n)}_getProxyEmitter(t,e){return function(t,e){const n=t[B];return n&&n[e]?n[e].emitter:null}(this,Mo(t,e))}_getAllProxyEmitters(t){return[{capture:!1,passive:!1},{capture:!1,passive:!0},{capture:!0,passive:!1},{capture:!0,passive:!0}].map((e=>this._getProxyEmitter(t,e))).filter((t=>!!t))}}}["_getProxyEmitter","_getAllProxyEmitters","on","once","off","listenTo","stopListening","fire","delegate","stopDelegating","_addEventListener","_removeEventListener"].forEach((t=>{Po[t]=To.prototype[t]}));class Io extends(P()){constructor(t,e){super(),I(this,Mo(t,e)),this._domNode=t,this._options=e}attach(t){if(this._domListeners&&this._domListeners[t])return;const e=this._createDomListener(t);this._domNode.addEventListener(t,e,this._options),this._domListeners||(this._domListeners={}),this._domListeners[t]=e}detach(t){let e;!this._domListeners[t]||(e=this._events[t])&&e.callbacks.length||this._domListeners[t].removeListener()}_addEventListener(t,e,n){this.attach(t),P().prototype._addEventListener.call(this,t,e,n)}_removeEventListener(t,e){P().prototype._removeEventListener.call(this,t,e),this.detach(t)}_createDomListener(t){const e=e=>{this.fire(t,e)};return e.removeListener=()=>{this._domNode.removeEventListener(t,e,this._options),delete this._domListeners[t]},e}}function Mo(t,e){let n=function(t){return t["data-ck-expando"]||(t["data-ck-expando"]=f())}(t);for(const t of Object.keys(e).sort())e[t]&&(n+="-"+t);return n}let Ro;try{Ro={window,document}}catch(t){Ro={window:{},document:{}}}const Fo=Ro;function Lo(t){const e=t.ownerDocument
+{
+    "word": "त्रिणव",
+    "LRV": [
+        {
+            "word": "त्रिणव",
+            "eid": "16094",
+            "pagenum": 318,
+            "content": "tri-Rava¦ <i>a. pl.</i> three times nine, i.e. ‘27’."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिणव",
+            "eid": "87713",
+            "pagenum": "458,2",
+            "content": "त्रि—णव/ ¦ <lex>mfn.</lex> consisting of 3 × 9 parts (स्तो/म), <ls>VS.</ls>; <ls>TS.</ls>; <ls>TBr.</ls>; <ls>ŚBr.</ls>; <ls>TāṇḍyaBr.</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिणव",
+            "eid": "87714",
+            "pagenum": "458,2",
+            "content": "¦ connected with the <ab n='Triṇava' slp1='triRava'>T°</ab> स्तो/म, <ls>VS.</ls>; <ls>ŚBr.</ls>; <ls>ŚāṅkhŚr.</ls>; <ls>Nidānas.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिणव",
+            "eid": "87715",
+            "pagenum": "458,2",
+            "content": "¦ in <ab>comp.</ab> 27, <ls>BhP. ix</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिणव",
+            "eid": "47435",
+            "pagenum": 3,
+            "content": "त्रिणव/¦ <lex>Adj.</lex> <dvsn n='1'>— 1〉 <i>aus dreimal neun (Gliedern) bestehend</i>. <dvsn n='1'>— 2〉 <i>mit einem 27theiligen</i> <is>Stoma</is> <i>verbunden</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिणव",
+            "eid": "30927",
+            "pagenum": 3,
+            "content": "त्रिणव/¦ (von त्रिणवन्) <lex>adj.</lex> <dvsn n='1'> 1) <i>aus drei Mal neun</i> (Gliedern) <i>bestehend</i> (so v. a. सप्तविंश)ः स्तोम <ls>VS. 10, 14.</ls> <ls n='VS.'>13, 58.</ls> <ls>TS. 5, 2, 6, 3.</ls> <ls>TBR. 2, 2, 4, 6.</ls> <ls>PAÑCAV. BR. 3, 1.</ls> <ls>ŚAT. BR. 12, 2, 4, 13. 3, 1, 6. 13, 4, 4, 1.</ls> <dvsn n='1'>— 2) <i>mit dem</i> <is>Triṇava</is> - <is>Stoma</is> <i>verbunden</i>: बृहस्पति <ls>VS. 29, 60.</ls> उक्थ <ls>ŚAT. BR. 13, 5, 4, 20.</ls> अहन् <ls n='ŚAT. BR.'>7, 1, 10.</ls> सवन <ls>ŚĀṄKH. ŚR. 16, 23, 11. 12.</ls>"
+        },
+        {
+            "word": "त्रिणव",
+            "eid": "75277",
+            "pagenum": 5,
+            "content": "त्रिणव¦ <dvsn n='1'> 1) यस्य त्रिणवमन्तर्यन्ति <ls>TS. 7, 1, 3, 2.</ls> <ls>NIDĀNA 5, 12, 5.</ls> युद्धं त्रिणवरात्रम् <i>27tägig</i> <ls>BHĀG. P. 10, 77, 5.</ls> त्रिणवात्मक <ls>WEBER, Nakṣ. 2, 281.</ls> <dvsn n='v'>— Vgl. त्रिनवह ."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिणव",
+            "eid": "23621",
+            "pagenum": "3365,b",
+            "content": "त्रिणव¦ पु० त्रिरावृत्तानव डच्समा० संज्ञात्वात् णत्वम् । सप्तविंशावृत्ते सामस्तोमभेदे । “त्रिणवत्रयस्त्रिंशौ स्तोमौ हेमन्तशिशिरावृतूः” यजु० १० । १४ । “त्रिणवस्तोम एव माम्नातः “नवभ्यो हिंकरोति स तिसृभिः स पञ्चभिः स एकया” नवभ्यो हिङ्करोति स एकया स तिसृभिः स पञ्चभि, नवभ्यो हिङ्करोति स पञ्चभिः स एकया स तिसृभिर्वजो वै त्रिणव इति” श्रुतिः । “प्रथमपर्य्याये प्रथमां त्रिर्गायेत् मध्यमां पञ्चकृत्वः उत्तमां सकृत्, द्वितीयपर्य्याये प्रथमां सकृद्गायेन्मध्यमां त्रि, रुत्तमां पञ्चकृत्वः, तृतीयपर्य्याये प्रथमां पञ्चकृत्वो, मध्यसां सकृ, दुत्तमां त्रिर्गायेत् सोऽयं त्रिरावृत्तनवसंख्योपेतत्वात् त्रिणवको वज्रसमानः स्तोमः” वेददी० । “त्रिणवान्युक्थानेकविंशानि पृष्ठानि षट्त्रिंशाः” शतपथब्राह्मणे १३ । ५ । ४ । २० । अध्यायादि ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिणव",
+            "content": "त्रिणव 'वि . , ब.व . '  त्रि-णव  - '३x९, नौ का तिगुणा अर्थात् सत्ताइस'"
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रिणव",
+            "content": "<segmenthd>\n<dentry>त्रिणव</dentry>\n<prAwipaxikam>त्रिणव</prAwipaxikam>\n<seg>त्रि-णव</seg>\n<grammar>वि*</grammar><num>ब* व*</num>\n<prAwipaxikam gen=\"स्त्री\">त्रिणव</prAwipaxikam>\n<sense no=\"1\">३x९, नौ का तिगुणा अर्थात् सत्ताइस</sense></segmenthd>\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिणव",
+            "content": "<body><s>triRava pu° trirAvfttAnava qacsamA° saMjYAtvAt Ratvam . saptaviMSAvftte sAmastomaBede . <q>triRavatrayastriMSO stomO hemantaSiSirAvftUH</q> yaju° 1° . 14 . <q>triRavastoma eva mAmnAtaH “navaByo hiMkaroti sa tisfBiH sa paYcaBiH sa ekayA</q> navaByo hiNkaroti sa ekayA sa tisfBiH sa paYcaBi, navaByo hiNkaroti sa paYcaBiH sa ekayA sa tisf­Birvajo vE triRava iti” SrutiH . <q>praTamaparyyAye praTamAM trirgAyet maDyamAM paYcakftvaH uttamAM sakft, dvitIyaparyyAye praTamAM sakfdgAyenmaDyamAM tri, ruttamAM paYcakftvaH, tftIyaparyyAye praTamAM paYcakftvo, maDyasAM sakf, duttamAM trirgAyet so'yaM trirAvfttanavasaMKyopetatvAt triRavako vajrasamAnaH stomaH</q> vedadI° . <q>triRavAnyukTAnekaviMSAni pfzWAni zaw­triMSAH</q> SatapaTabrAhmaRe 13 . 5 . 4 . 2° . aDyAyAdi .</s></body>"
+        }
+    ]
+}

@@ -1,1 +1,210 @@
-()(i());s.push([t.id,".ck .ck-balloon-rotator__navigation{align-items:center;display:flex;justify-content:center}.ck .ck-balloon-rotator__content .ck-toolbar{justify-content:center}.ck .ck-balloon-rotator__navigation{background:var(--ck-color-toolbar-background);border-bottom:1px solid var(--ck-color-toolbar-border);padding:0 var(--ck-spacing-small)}.ck .ck-balloon-rotator__navigation>*{margin-bottom:var(--ck-spacing-small);margin-right:var(--ck-spacing-small);margin-top:var(--ck-spacing-small)}.ck .ck-balloon-rotator__navigation .ck-balloon-rotator__counter{margin-left:var(--ck-spacing-small);margin-right:var(--ck-spacing-standard)}.ck .ck-balloon-rotator__content .ck.ck-annotation-wrapper{box-shadow:none}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/panel/balloonrotator.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/panel/balloonrotator.css"],names:[],mappings:"AAKA,oCAEC,kBAAmB,CADnB,YAAa,CAEb,sBACD,CAKA,6CACC,sBACD,CCXA,oCACC,6CAA8C,CAC9C,sDAAuD,CACvD,iCAgBD,CAbC,sCAGC,qCAAsC,CAFtC,oCAAqC,CACrC,kCAED,CAGA,iEAIC,mCAAoC,CAHpC,uCAID,CAMA,2DACC,eACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck .ck-balloon-rotator__navigation {\n\tdisplay: flex;\n\talign-items: center;\n\tjustify-content: center;\n}\n\n/* Buttons inside a toolbar should be centered when rotator bar is wider.\n * See: https://github.com/ckeditor/ckeditor5-ui/issues/495\n */\n.ck .ck-balloon-rotator__content .ck-toolbar {\n\tjustify-content: center;\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck .ck-balloon-rotator__navigation {\n\tbackground: var(--ck-color-toolbar-background);\n\tborder-bottom: 1px solid var(--ck-color-toolbar-border);\n\tpadding: 0 var(--ck-spacing-small);\n\n\t/* Let's keep similar appearance to `ck-toolbar`. */\n\t& > * {\n\t\tmargin-right: var(--ck-spacing-small);\n\t\tmargin-top: var(--ck-spacing-small);\n\t\tmargin-bottom: var(--ck-spacing-small);\n\t}\n\n\t/* Gives counter more breath than buttons. */\n\t& .ck-balloon-rotator__counter {\n\t\tmargin-right: var(--ck-spacing-standard);\n\n\t\t/* We need to use smaller margin because of previous button's right margin. */\n\t\tmargin-left: var(--ck-spacing-small);\n\t}\n}\n\n.ck .ck-balloon-rotator__content {\n\n\t/* Disable default annotation shadow inside rotator with fake panels. */\n\t& .ck.ck-annotation-wrapper {\n\t\tbox-shadow: none;\n\t}\n}\n"],sourceRoot:""}]);const a=s},726:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck .ck-fake-panel{position:absolute;z-index:calc(var(--ck-z-panel) - 1)}.ck .ck-fake-panel div{position:absolute}.ck .ck-fake-panel div:first-child{z-index:2}.ck .ck-fake-panel div:nth-child(2){z-index:1}:root{--ck-balloon-fake-panel-offset-horizontal:6px;--ck-balloon-fake-panel-offset-vertical:6px}.ck .ck-fake-panel div{background:var(--ck-color-panel-background);border:1px solid var(--ck-color-panel-border);border-radius:var(--ck-border-radius);box-shadow:var(--ck-drop-shadow),0 0;height:100%;min-height:15px;width:100%}.ck .ck-fake-panel div:first-child{margin-left:var(--ck-balloon-fake-panel-offset-horizontal);margin-top:var(--ck-balloon-fake-panel-offset-vertical)}.ck .ck-fake-panel div:nth-child(2){margin-left:calc(var(--ck-balloon-fake-panel-offset-horizontal)*2);margin-top:calc(var(--ck-balloon-fake-panel-offset-vertical)*2)}.ck .ck-fake-panel div:nth-child(3){margin-left:calc(var(--ck-balloon-fake-panel-offset-horizontal)*3);margin-top:calc(var(--ck-balloon-fake-panel-offset-vertical)*3)}.ck .ck-balloon-panel_arrow_s+.ck-fake-panel,.ck .ck-balloon-panel_arrow_se+.ck-fake-panel,.ck .ck-balloon-panel_arrow_sw+.ck-fake-panel{--ck-balloon-fake-panel-offset-vertical:-6px}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/panel/fakepanel.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/panel/fakepanel.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css"],names:[],mappings:"AAKA,mBACC,iBAAkB,CAGlB,mCACD,CAEA,uBACC,iBACD,CAEA,mCACC,SACD,CAEA,oCACC,SACD,CCfA,MACC,6CAA8C,CAC9C,2CACD,CAGA,uBAKC,2CAA4C,CAC5C,6CAA8C,CAC9C,qCAAsC,CCXtC,oCAA8B,CDc9B,WAAY,CAPZ,eAAgB,CAMhB,UAED,CAEA,mCACC,0DAA2D,CAC3D,uDACD,CAEA,oCACC,kEAAqE,CACrE,+DACD,CACA,oCACC,kEAAqE,CACrE,+DACD,CAGA,yIAGC,4CACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck .ck-fake-panel {\n\tposition: absolute;\n\n\t/* Fake panels should be placed under main balloon content. */\n\tz-index: calc(var(--ck-z-panel) - 1);\n}\n\n.ck .ck-fake-panel div {\n\tposition: absolute;\n}\n\n.ck .ck-fake-panel div:nth-child( 1 ) {\n\tz-index: 2;\n}\n\n.ck .ck-fake-panel div:nth-child( 2 ) {\n\tz-index: 1;\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_shadow.css";\n\n:root {\n\t--ck-balloon-fake-panel-offset-horizontal: 6px;\n\t--ck-balloon-fake-panel-offset-vertical: 6px;\n}\n\n/* Let\'s use `.ck-balloon-panel` appearance. See: balloonpanel.css. */\n.ck .ck-fake-panel div {\n\t@mixin ck-drop-shadow;\n\n\tmin-height: 15px;\n\n\tbackground: var(--ck-color-panel-background);\n\tborder: 1px solid var(--ck-color-panel-border);\n\tborder-radius: var(--ck-border-radius);\n\n\twidth: 100%;\n\theight: 100%;\n}\n\n.ck .ck-fake-panel div:nth-child( 1 ) {\n\tmargin-left: var(--ck-balloon-fake-panel-offset-horizontal);\n\tmargin-top: var(--ck-balloon-fake-panel-offset-vertical);\n}\n\n.ck .ck-fake-panel div:nth-child( 2 ) {\n\tmargin-left: calc(var(--ck-balloon-fake-panel-offset-horizontal) * 2);\n\tmargin-top: calc(var(--ck-balloon-fake-panel-offset-vertical) * 2);\n}\n.ck .ck-fake-panel div:nth-child( 3 ) {\n\tmargin-left: calc(var(--ck-balloon-fake-panel-offset-horizontal) * 3);\n\tmargin-top: calc(var(--ck-balloon-fake-panel-offset-vertical) * 3);\n}\n\n/* If balloon is positioned above element, we need to move fake panel to the top. */\n.ck .ck-balloon-panel_arrow_s + .ck-fake-panel,\n.ck .ck-balloon-panel_arrow_se + .ck-fake-panel,\n.ck .ck-balloon-panel_arrow_sw + .ck-fake-panel {\n\t--ck-balloon-fake-panel-offset-vertical: -6px;\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A helper to combine multiple shadows.\n */\n@define-mixin ck-box-shadow $shadowA, $shadowB: 0 0 {\n\tbox-shadow: $shadowA, $shadowB;\n}\n\n/**\n * Gives an element a drop shadow so it looks like a floating panel.\n */\n@define-mixin ck-drop-shadow {\n\t@mixin ck-box-shadow var(--ck-drop-shadow);\n}\n"],sourceRoot:""}]);const a=s},8016:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-sticky-panel .ck-sticky-panel__content_sticky{position:fixed;top:0;z-index:var(--ck-z-panel)}.ck.ck-sticky-panel .ck-sticky-panel__content_sticky_bottom-limit{position:absolute;top:auto}.ck.ck-sticky-panel .ck-sticky-panel__content_sticky{border-top-left-radius:0;border-top-right-radius:0;border-width:0 1px 1px;box-shadow:var(--ck-drop-shadow),0 0}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/panel/stickypanel.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/panel/stickypanel.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css"],names:[],mappings:"AAMC,qDAEC,cAAe,CACf,KAAM,CAFN,yBAGD,CAEA,kEAEC,iBAAkB,CADlB,QAED,CCPA,qDAIC,wBAAyB,CACzB,yBAA0B,CAF1B,sBAAuB,CCFxB,oCDKA",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-sticky-panel {\n\t& .ck-sticky-panel__content_sticky {\n\t\tz-index: var(--ck-z-panel); /* #315 */\n\t\tposition: fixed;\n\t\ttop: 0;\n\t}\n\n\t& .ck-sticky-panel__content_sticky_bottom-limit {\n\t\ttop: auto;\n\t\tposition: absolute;\n\t}\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_shadow.css";\n\n.ck.ck-sticky-panel {\n\t& .ck-sticky-panel__content_sticky {\n\t\t@mixin ck-drop-shadow;\n\n\t\tborder-width: 0 1px 1px;\n\t\tborder-top-left-radius: 0;\n\t\tborder-top-right-radius: 0;\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A helper to combine multiple shadows.\n */\n@define-mixin ck-box-shadow $shadowA, $shadowB: 0 0 {\n\tbox-shadow: $shadowA, $shadowB;\n}\n\n/**\n * Gives an element a drop shadow so it looks like a floating panel.\n */\n@define-mixin ck-drop-shadow {\n\t@mixin ck-box-shadow var(--ck-drop-shadow);\n}\n"],sourceRoot:""}]);const a=s},7072:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,'.ck-vertical-form .ck-button:after{bottom:-1px;content:"";position:absolute;right:-1px;top:-1px;width:0;z-index:1}.ck-vertical-form .ck-button:focus:after{display:none}@media screen and (max-width:600px){.ck.ck-responsive-form .ck-button:after{bottom:-1px;content:"";position:absolute;right:-1px;top:-1px;width:0;z-index:1}.ck.ck-responsive-form .ck-button:focus:after{display:none}}.
+{
+    "word": "त्रिधा",
+    "ACPH": [
+        {
+            "word": "त्रिधा",
+            "linga": "अ",
+            "pagenum": "8",
+            "kanda": "सामान्यकाण्डः",
+            "varga": "द्वित्रिचतुष्पञ्चेन्द्रियाः",
+            "eid": "5133",
+            "group": "162",
+            "synonyms": [
+                "त्रेधा"
+            ],
+            "content": "द्विधा द्वेधा त्रिधा त्रेधा चतुर्धा द्वैधमादि च ॥ २०३ ॥\nद्विस्त्रिश्चतुःपञ्चकृत्व इत्याद्यावर्तने कृते ।"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "त्रिधा",
+            "eid": "15031",
+            "pagenum": 551,
+            "content": "त्रिधा¦ <i><ab>ind.</ab></i> In three ways, or in three parts; <ls>Ku. 7. 44</ls>; <ls>Bg. 18. 19.</ls>"
+        }
+    ],
+    "BEN": [
+        {
+            "word": "त्रिधा",
+            "eid": "6154",
+            "pagenum": 378,
+            "content": "त्रिधा¦ <i>tri + dhā,</i> <ab>adv.</ab> Threefold, <ls>MBh.</ls> 13, 6467; in three places, 1, 8013;  in three parts, <ls>MBh.</ls> 5, 7206. -- <ab>Cf.</ab> <lang n='greek'>τρίχα, τρίχθα</lang>."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "त्रिधा",
+            "eid": "3896",
+            "pagenum": 160,
+            "content": "त्रिधा¦ (e त्रि s. धा) trifariam. BH. 18. 19. (Gr. <lang n='greek'>τϱίχα</lang>, dor. <lang n='greek'>τϱίχϑα</lang>; v. gr. comp. 325.)"
+        }
+    ],
+    "BUR": [
+        {
+            "word": "त्रिधा",
+            "eid": "8245",
+            "pagenum": 303,
+            "content": "त्रिधा¦ <i>tridhā</i> <ab>adv.</ab> (<ab>sfx.</ab> <i>dhā)</i> en trois parties, <lbinfo n='5'/> de trois manières, sous trois faces. || <ab>Gr.</ab> <lang n='greek'>τρίχα</lang>."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिधा",
+            "eid": "12860",
+            "pagenum": 212,
+            "content": "त्रि/धा¦ <ab>adv.</ab> in three ways, in (into) three parts; at three times."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिधा",
+            "eid": "9019",
+            "pagenum": 160,
+            "content": "त्रि/धा¦ <i>Adv.</i> in drei Teile(n), dreifach."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "त्रिधा",
+            "eid": "3936",
+            "pagenum": 558,
+            "content": "<b>trídhā,</b>¦ <i>dreifach</i> [von trí], sámaktam {194,10}; baddhás {354,3}; 〰 hitám paṇíbhis guhyámānam {354,4}; <i>dreifach,</i> <ab>d. h.</ab> <i>in drei Theile:</i> víkastam {117,24}."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिधा",
+            "eid": "16122",
+            "pagenum": 318,
+            "content": "tri-DA¦ <i>ind.</i> in three ways, in three parts, <ls>K.S.</ls>vii.44."
+        }
+    ],
+    "MD": [
+        {
+            "word": "त्रिधा",
+            "eid": "8865",
+            "pagenum": 113,
+            "content": "त्रिधा¦ trí-dhā, <lex>ad.</lex> threefold; thrice; in three 🞄places, in (to) three parts; <b>-kṛ,</b> triple."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिधा",
+            "eid": "87815",
+            "pagenum": "458,3",
+            "content": "त्रि/—धा ¦ (त्रि/-), <lex>ind.</lex> (<ls>VPrāt. ii, 44</ls>) in 3 ways, in 3 parts, in 3 places, triply, <ls>RV. i f.</ls>, <ls n='RV.'>iv</ls>; <ls>ChUp.</ls>; <ls>MBh.</ls> &c.<info lex='ind'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिधा",
+            "eid": "47506",
+            "pagenum": 3,
+            "content": "त्रि/धा¦ <lex>Adv.</lex> <i>in dreifacher Weise, in drei Theilen, — Theile, an drei Orten, zu drei Malen, trifariam</i>. Mit कर् <i>verdreifachen</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिधा",
+            "eid": "30975",
+            "pagenum": 3,
+            "content": "त्रि/धा¦ (von त्रि) adv. <ls>VS. PRĀT. 2, 44.</ls> <i>in dreifacher Weise, in drei Theilen, - Theile, an drei Orten, zu drei Malen, trifariam</i> <ls>VOP. 7, 45.</ls> त्रिघा\\   विक^स्तम् <ls>ṚV. 1, 117, 24.</ls> सम^क्तम् <ls n='ṚV.'>2, 3, 10.</ls> त्रिधा^ हि\\तं प\\णिभि^र्गु\\ह्यमा^न\\ं गवि^ दे\\वासो^ घृ\\तमन्व^विन्दन् <ls n='ṚV.'>4, 58, 4.</ls> गजानां प्रभिन्नानाम् - त्रिधा प्रस्रवताम् (vgl. त्रिप्रस्रुत) <ls>MBH. 1, 8013.</ls> <ls n='MBH.'>6, 2867.</ls> वरं ग्रामशतं चाहमेकैकस्य त्रिधाददम् <ls n='MBH.'>13, 4931.</ls> छिद् <ls n='MBH.'>5, 7206.</ls> बिभिदे <ls>KUMĀRAS. 7, 44.</ls> भवति <ls>CHĀND. UP. 7, 26, 2.</ls> समभूत् <ls>BHĀG. P. 2, 5, 24.</ls> कर् <i>verdreifachen</i> <ls>MBH. 13, 6467.</ls> वाष्पो नामाश्रुणः पूर्वावस्था च जायते त्रिधा । निमित्तत्रयसंसर्गादानन्देर्ष्यार्तिसंभवा ॥ Cit. beim Schol. zu <ls>ŚĀK. 81.</ls> ज्ञानं कर्म च कर्ता च त्रिधैव गुणभेदतः <ls>BHAG. 18, 19.</ls> <ls>MBH. 14, 1075. fg.</ls> <ls>R. 3, 43, 38.</ls> <ls>SĀH. D. 9, 18.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिधा",
+            "eid": "18073",
+            "pagenum": 324,
+            "content": "त्रिधा¦ ind. In three ways. E. त्रि, and धाच् aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "त्रिधा",
+            "eid": "10226",
+            "pagenum": 294,
+            "content": "<b>tridhā</b>¦ <ab>adv.</ab> triplement, de 3 manières, en 3 parties ; <i>°kṛ-</i> tripler ; <i>-tva-</i> <ab>nt.</ab> tripartition."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिधा",
+            "eid": "18090",
+            "pagenum": 389,
+            "content": "त्रिधा¦ <i>ind.</i> In three ways. .E. त्रि, and धाच् aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिधा",
+            "eid": "17566",
+            "pagenum": 345,
+            "content": "त्रिधा¦ <i>adv.</i> In three ways."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिधा",
+            "eid": "15543",
+            "pagenum": "2-657-b",
+            "content": "त्रिधा¦, व्य, (त्रि + “संख्याया विधार्थे धा ।” ५ । ३ । ४२ । इति धा ।) त्रिप्रकारः । इति मुग्धबोधम् ॥ यथा, वराहपुराणे । “नारायणः परो देवः सत्त्वरूपो जनार्द्दनः । त्रिधात्मानं स भगवान् ससर्ज परमेश्वरः ॥” (यथा, महाभारते । १३ । १४१ । ७८ । “धर्म्मेणार्थः समाहार्य्यो धर्म्मलब्धं त्रिधा धनम् । कर्त्तव्यं धर्म्मपरमं मानवेन प्रयत्नतः ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिधा",
+            "eid": "23661",
+            "pagenum": "3367,b",
+            "content": "त्रिधा¦ अव्य० त्रि + प्रकारे धाच् । त्रिप्रकारे । “एकैकमूर्त्तिर्बिभिदे त्रिधा सा” कुमा० । “ज्ञानं कर्म च कर्त्ता च त्रिधैव गुणभेदतः” गीता ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिधा",
+            "content": "त्रिधा अव्य. -  त्रि + धाच् तीन प्रकार से या तीन भागों में"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिधा",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಮೂರು ವಿಧವಾಗಿ \\/ಮುರು ಪ್ರಕಾರವಾಗಿ",
+            "निष्पत्तिः": "त्रिप्रकारे 'धा' (५-३-४२)",
+            "प्रयोगाः": "'ज्ञानं कर्म च कर्ता च त्रिधैव गुणभेदतः'",
+            "उल्लेखाः": "गीता० १८-१९",
+            "content": ""
+        },
+        {
+            "word": "त्रिधा",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಮೂರು ವಿಧವಾಗಿ \\/ಮೂರು ಪ್ರಕಾರವಾಗಿ",
+            "निष्पत्तिः": "पक्षे 'धा'",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रिधा",
+            "content": "<lexhead no=\"578\">\n<dentry>त्रिधा</dentry>\n<prAwipaxikam>त्रिधा</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<etymology>त्रि+धाच्</etymology>\n<sense no=\"1\">तीन प्रकार से या तीन भागों में<citation>कु* ७।४४</citation><citation>भग* १८।१९</citation></sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिधा",
+            "content": "<body><s>triDA avya° tri + prakAre DAc . triprakAre . <q>ekEkamUrtti­rbiBide triDA sA</q> kumA° . <q>jYAnaM karma ca karttA ca triDEva guRaBedataH</q> gItA .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिधा",
+            "content": "<H1><h><key1>triDA</key1><key2>triDA</key2></h><body><s>triDA</s>  ind. In three ways.<div n=\"E\"> E. <s>tri,</s> and <s>DAc</s> aff.</div></body><tail><L>18073</L><pc>324-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिधा",
+            "content": "<span lang=\"sa\">त्रिधा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ವಿಧವಾಗಿ /ಮುರು ಪ್ರಕಾರವಾಗಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>त्रि - प्रकारे \"धा\" (५-३-४२)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"ज्ञानं कर्म च कर्ता च त्रिधैव गुणभेदतः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>गीता० १८-१९<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>                  <span lang=\"sa\">त्रिधा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ವಿಧವಾಗಿ /ಮೂರು ಪ್ರಕಾರವಾಗಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>पक्षे \"धा\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span> <span lang=\"sa\">त्रिधा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ವಿಧವಾಗಿ /ಮುರು ಪ್ರಕಾರವಾಗಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>त्रि - प्रकारे \"धा\" (५-३-४२)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"ज्ञानं कर्म च कर्ता च त्रिधैव गुणभेदतः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>गीता० १८-१९<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>                  <span lang=\"sa\">त्रिधा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ವಿಧವಾಗಿ /ಮೂರು ಪ್ರಕಾರವಾಗಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>पक्षे \"धा\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

@@ -1,1 +1,216 @@
-FAAuF,CAEvF,kBAAmB,CADnB,qKAA0K,CAX1K,UAAW,CAIX,aAAc,CAFd,QAAS,CAIT,QAAS,CADT,iBAAkB,CAElB,wDAA2D,CAE3D,0BAA2B,CAR3B,OAYD,CAOF,kEACC,gGACD,CAKA,gDACC,OAAS,CACT,sBACD,CAGD,kCAGC,gDAAiD,CADjD,sDAAuD,CADvD,QAAS,CAGT,eAwBD,CAtBC,yCAMC,kBAAmB,CALnB,UAAW,CAIX,QAAS,CAHT,iBAAkB,CAClB,uDAA0D,CAC1D,OAiBD,CArBA,mDAYE,sFAAuF,CADvF,+JAAoK,CAFpK,SAYF,CArBA,mDAmBE,sFAAuF,CADvF,+JAAmK,CAFnK,UAKF",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-editor__editable {\n\t/*\n\t * Vertical drop target (in text).\n\t */\n\t& .ck.ck-clipboard-drop-target-position {\n\t\tdisplay: inline;\n\t\tposition: relative;\n\t\tpointer-events: none;\n\n\t\t& span {\n\t\t\tposition: absolute;\n\t\t\twidth: 0;\n\t\t}\n\t}\n\n\t/*\n\t * Styles of the widget being dragged (its preview).\n\t */\n\t& .ck-widget:-webkit-drag {\n\t\t& > .ck-widget__selection-handle {\n\t\t\tdisplay: none;\n\t\t}\n\n\t\t& > .ck-widget__type-around {\n\t\t\tdisplay: none;\n\t\t}\n\t}\n}\n\n.ck.ck-clipboard-drop-target-line {\n\tposition: absolute;\n\tpointer-events: none;\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import \"@ckeditor/ckeditor5-ui/theme/mixins/_dir.css\";\n\n:root {\n\t--ck-clipboard-drop-target-dot-width: 12px;\n\t--ck-clipboard-drop-target-dot-height: 8px;\n\t--ck-clipboard-drop-target-color: var(--ck-color-focus-border);\n}\n\n.ck.ck-editor__editable {\n\t/*\n\t * Vertical drop target (in text).\n\t */\n\t& .ck.ck-clipboard-drop-target-position {\n\t\t& span {\n\t\t\tbottom: calc(-.5 * var(--ck-clipboard-drop-target-dot-height));\n\t\t\ttop: calc(-.5 * var(--ck-clipboard-drop-target-dot-height));\n\t\t\tborder: 1px solid var(--ck-clipboard-drop-target-color);\n\t\t\tbackground: var(--ck-clipboard-drop-target-color);\n\t\t\tmargin-left: -1px;\n\n\t\t\t/* The triangle above the marker */\n\t\t\t&::after {\n\t\t\t\tcontent: '';\n\t\t\t\twidth: 0;\n\t\t\t\theight: 0;\n\n\t\t\t\tdisplay: block;\n\t\t\t\tposition: absolute;\n\t\t\t\tleft: 50%;\n\t\t\t\ttop: calc(-.5 * var(--ck-clipboard-drop-target-dot-height));\n\n\t\t\t\ttransform: translateX(-50%);\n\t\t\t\tborder-color: var(--ck-clipboard-drop-target-color) transparent transparent transparent;\n\t\t\t\tborder-width: calc(var(--ck-clipboard-drop-target-dot-height)) calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0 calc(.5 * var(--ck-clipboard-drop-target-dot-width));\n\t\t\t\tborder-style: solid;\n\t\t\t}\n\t\t}\n\t}\n\n\t/*\n\t * Styles of the widget that it a drop target.\n\t */\n\t& .ck-widget.ck-clipboard-drop-target-range {\n\t\toutline: var(--ck-widget-outline-thickness) solid var(--ck-clipboard-drop-target-color) !important;\n\t}\n\n\t/*\n\t * Styles of the widget being dragged (its preview).\n\t */\n\t& .ck-widget:-webkit-drag {\n\t\tzoom: 0.6;\n\t\toutline: none !important;\n\t}\n}\n\n.ck.ck-clipboard-drop-target-line {\n\theight: 0;\n\tborder: 1px solid var(--ck-clipboard-drop-target-color);\n\tbackground: var(--ck-clipboard-drop-target-color);\n\tmargin-top: -1px;\n\n\t&::before {\n\t\tcontent: '';\n\t\tposition: absolute;\n\t\ttop: calc(-.5 * var(--ck-clipboard-drop-target-dot-width));\n\t\twidth: 0;\n\t\theight: 0;\n\t\tborder-style: solid;\n\n\t\t@mixin ck-dir ltr {\n\t\t\tleft: -1px;\n\n\t\t\tborder-width: calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0 calc(.5 * var(--ck-clipboard-drop-target-dot-width)) var(--ck-clipboard-drop-target-dot-height);\n\t\t\tborder-color: transparent transparent transparent var(--ck-clipboard-drop-target-color);\n\t\t}\n\n\t\t@mixin ck-dir rtl {\n\t\t\tright: -1px;\n\n\t\t\tborder-width:calc(.5 * var(--ck-clipboard-drop-target-dot-width)) var(--ck-clipboard-drop-target-dot-height) calc(.5 * var(--ck-clipboard-drop-target-dot-width)) 0;\n\t\t\tborder-color: transparent var(--ck-clipboard-drop-target-color) transparent transparent;\n\t\t}\n\t}\n}\n"],sourceRoot:""}]);const a=s},3394:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-editor{position:relative}.ck.ck-editor .ck-editor__top .ck-sticky-panel .ck-toolbar{z-index:var(--ck-z-panel)}.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content{border-radius:0}.ck-rounded-corners .ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content,.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content.ck-rounded-corners{border-radius:var(--ck-border-radius);border-bottom-left-radius:0;border-bottom-right-radius:0}.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content{border:solid var(--ck-color-base-border);border-width:1px 1px 0}.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content.ck-sticky-panel__content_sticky{border-bottom-width:1px}.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content .ck-menu-bar,.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content .ck-toolbar{border:0}.ck.ck-editor__main>.ck-editor__editable{background:var(--ck-color-base-background);border-radius:0}.ck-rounded-corners .ck.ck-editor__main>.ck-editor__editable,.ck.ck-editor__main>.ck-editor__editable.ck-rounded-corners{border-radius:var(--ck-border-radius);border-top-left-radius:0;border-top-right-radius:0}.ck.ck-editor__main>.ck-editor__editable:not(.ck-focused){border-color:var(--ck-color-base-border)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-editor-classic/theme/classiceditor.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-editor-classic/classiceditor.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css"],names:[],mappings:"AAKA,cAIC,iBAMD,CAJC,2DAEC,yBACD,CCLC,8DCED,eDeC,CAjBA,mKCMA,qCAAsC,CDJpC,2BAA4B,CAC5B,4BAcF,CAjBA,8DAOC,wCAAsB,CAAtB,sBAUD,CARC,8FACC,uBACD,CAEA,qJAEC,QACD,CAMH,yCAEC,0CAA2C,CCtB3C,eDgCD,CAZA,yHChBE,qCAAsC,CDqBtC,wBAAyB,CACzB,yBAMF,CAHC,0DACC,wCACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-editor {\n\t/* All the elements within `.ck-editor` are positioned relatively to it.\n\t If any element needs to be positioned with respect to the <body>, etc.,\n\t it must land outside of the `.ck-editor` in DOM. */\n\tposition: relative;\n\n\t& .ck-editor__top .ck-sticky-panel .ck-toolbar {\n\t\t/* https://github.com/ckeditor/ckeditor5-editor-classic/issues/62 */\n\t\tz-index: var(--ck-z-panel);\n\t}\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../mixins/_rounded.css";\n\n.ck.ck-editor__top {\n\t& .ck-sticky-panel {\n\t\t& .ck-sticky-panel__content {\n\t\t\t@mixin ck-rounded-corners {\n\t\t\t\tborder-bottom-left-radius: 0;\n\t\t\t\tborder-bottom-right-radius: 0;\n\t\t\t}\n\n\t\t\tborder: 1px solid var(--ck-color-base-border);\n\t\t\tborder-bottom-width: 0;\n\n\t\t\t&.ck-sticky-panel__content_sticky {\n\t\t\t\tborder-bottom-width: 1px;\n\t\t\t}\n\n\t\t\t& .ck-menu-bar,\n\t\t\t& .ck-toolbar {\n\t\t\t\tborder: 0;\n\t\t\t}\n\t\t}\n\t}\n}\n\n/* Note: Use ck-editor__main to make sure these styles don\'t apply to other editor types */\n.ck.ck-editor__main > .ck-editor__editable {\n\t/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/113 */\n\tbackground: var(--ck-color-base-background);\n\n\t@mixin ck-rounded-corners {\n\t\tborder-top-left-radius: 0;\n\t\tborder-top-right-radius: 0;\n\t}\n\n\t&:not(.ck-focused) {\n\t\tborder-color: var(--ck-color-base-border);\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * Implements rounded corner interface for .ck-rounded-corners class.\n *\n * @see $ck-border-radius\n */\n@define-mixin ck-rounded-corners {\n\tborder-radius: 0;\n\n\t@nest .ck-rounded-corners &,\n\t&.ck-rounded-corners {\n\t\tborder-radius: var(--ck-border-radius);\n\t\t@mixin-content;\n\t}\n}\n"],sourceRoot:""}]);const a=s},1920:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck .ck-placeholder,.ck.ck-placeholder{position:relative}.ck .ck-placeholder:before,.ck.ck-placeholder:before{content:attr(data-placeholder);left:0;pointer-events:none;position:absolute;right:0}.ck.ck-read-only .ck-placeholder:before{display:none}.ck.ck-reset_all .ck-placeholder{position:relative}.ck .ck-placeholder:before,.ck.ck-placeholder:before{color:var(--ck-color-engine-placeholder-text);cursor:text}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-engine/theme/placeholder.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-engine/placeholder.css"],names:[],mappings:"AAMA,uCAEC,iBAWD,CATC,qDAIC,8BAA+B,CAF/B,MAAO,CAKP,mBAAoB,CANpB,iBAAkB,CAElB,OAKD,CAKA,wCACC,YACD,CAQD,iCACC,iBACD,CC5BC,qDAEC,6CAA8C,CAD9C,WAED",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/* See ckeditor/ckeditor5#936. */\n.ck.ck-placeholder,\n.ck .ck-placeholder {\n\tposition: relative;\n\n\t&::before {\n\t\tposition: absolute;\n\t\tleft: 0;\n\t\tright: 0;\n\t\tcontent: attr(data-placeholder);\n\n\t\t/* See ckeditor/ckeditor5#469. */\n\t\tpointer-events: none;\n\t}\n}\n\n/* See ckeditor/ckeditor5#1987. */\n.ck.ck-read-only .ck-placeholder {\n\t&::before {\n\t\tdisplay: none;\n\t}\n}\n\n/*\n * Rules for the `ck-placeholder` are loaded before the rules for `ck-reset_all` in the base CKEditor 5 DLL build.\n * This fix overwrites the incorrectly set `position: static` from `ck-reset_all`.\n * See https://github.com/ckeditor/ckeditor5/issues/11418.\n */\n.ck.ck-reset_all .ck-placeholder {\n\tposition: relative;\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/* See ckeditor/ckeditor5#936. */\n.ck.ck-placeholder, .ck .ck-placeholder {\n\t&::before {\n\t\tcursor: text;\n\t\tcolor: var(--ck-color-engine-placeholder-text);\n\t}
+{
+    "word": "त्रियामा",
+    "ABCH": [
+        {
+            "word": "त्रियामा",
+            "linga": "स्त्री",
+            "pagenum": "9",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "496",
+            "group": "92",
+            "synonyms": [
+                "निशा",
+                "निशीथिनी",
+                "रात्रि",
+                "शर्वरी",
+                "क्षणदा",
+                "क्षपा",
+                "यामिनी",
+                "भौती",
+                "तमी",
+                "तमा",
+                "विभावरी",
+                "रजनी",
+                "वसति",
+                "श्यामा",
+                "वासतेयी",
+                "तमस्विनी",
+                "उषा",
+                "दोषा",
+                "इन्दुकान्ता"
+            ],
+            "content": "निशा निशीथिनी रात्रिः शर्वरी क्षणदा क्षपा ॥ १४१ ॥\nत्रियामा यामिनी भौती तमी तमा विभावरी ।\nरजनी वसतिः श्यामा वासतेयी तमस्विनी ॥ १४२ ॥\nउषा दोषेन्दुकान्ताथ तमिस्रा दर्शयामिनी ।"
+        }
+    ],
+    "BOP": [
+        {
+            "word": "त्रियामा",
+            "eid": "3906",
+            "pagenum": 160,
+            "content": "त्रियामा¦ <i>f.</i> (<i>BAH.</i> e त्रि et याम vigilia) nox. UP. 57."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "त्रियामा",
+            "eid": "8274",
+            "pagenum": 304,
+            "content": "त्रियामा¦ <i>triyāmā</i> <ab>f.</ab> la nuit (de trois veilles). || Indigo; || <ab>esp.</ab> de plante. || La <s1 slp1='yamunA'>Yamunā</s1>."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रियामा",
+            "eid": "16164",
+            "pagenum": 318,
+            "content": "tri-yAmA¦ <i>f.</i> night (excluding the first and last half <i>prahara</i>), <ls>R.</ls>ix.70, <ls>K.S.</ls>vii.21, 26."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रियामा",
+            "eid": "88135",
+            "pagenum": "460,1",
+            "content": "त्रि—यामा ¦ <lex>f.</lex> night, <ls>Hariv. 5768</ls>; <ls>R.</ls> &c.<info lex='f'/>"
+        },
+        {
+            "word": "त्रियामा",
+            "eid": "88136",
+            "pagenum": "460,1",
+            "content": "¦ turmeric, <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रियामा",
+            "eid": "88137",
+            "pagenum": "460,1",
+            "content": "¦ = -पुषा, <ls>Uṇk.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रियामा",
+            "eid": "88138",
+            "pagenum": "460,1",
+            "content": "¦ the Indigo plant, <ls>ib.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रियामा",
+            "eid": "88139",
+            "pagenum": "460,1",
+            "content": "¦ the river <s1 slp1='yamunA'>Yamunā</s1>, <ls>ib.</ls><info lex='inh'/>"
+        }
+    ],
+    "SCH": [
+        {
+            "word": "त्रियामा",
+            "eid": "14938",
+            "pagenum": 206,
+            "content": "<i>triyāmā</i>¦ ° = <i>avidyā</i>, <ls>H</ls> 5, 148 [<i>rātrir avidyā vā</i>]. {part=,seq=15172,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रियामा",
+            "eid": "18121",
+            "pagenum": 325,
+            "content": "त्रियामा¦ f. (-मा) 1. Night. 2. The YAMUNA or Jumna river. 3. Indigo. 4. Black Teori, a plant so called. 5. Turmeric. E. त्रि three (times, or past, present and future,) या to go, affix मन्."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रियामा",
+            "eid": "18138",
+            "pagenum": 391,
+            "content": "त्रियामा¦ f. (-मा) .²1 Night. .²2 The YAMUNĀ or <i>Jumna</i> river. .²3 Indigo. .²4 Black <i>Tëori,</i> a plant so called. .E. त्रि three (times, or past, present, and future,) या to go, affix मन्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रियामा",
+            "eid": "17614",
+            "pagenum": 346,
+            "content": "त्रि-यामा¦ (मा) 1. <i>f.</i> Night; <i>Yamunā;</i> indigo; black Teori."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रियामा",
+            "eid": "15601",
+            "pagenum": "2-661-a",
+            "content": "त्रियामा¦, स्त्री, (त्रयो यामाः प्रहरा यस्याः । “त्रियामां रजनीं प्राहुस्त्यक्त्वाद्यन्तचतुष्टयम् ॥” इति वचनात् आद्यन्तयोरर्द्धयामयोश्चेष्टाकालत्वेन दिनप्रायत्वात् तथात्वम् ।) रात्रिः । (यथा, हरिवंशे । १०२ । २९ । “स मत्तो बलिनां श्रेष्ठो रराजाघूर्णिताननः । शैशिरीषु त्रियामासु यथा खेदालसः शशी ॥” त्रिप्रहरान्विते, त्रि । यथा, गोः रामायणे । २ । १० । १७ । “त्रियामापि भृशार्त्तस्य सा रात्रिरभवत्तदा । तथा विलपतस्तस्य राज्ञो वर्षशतोपमा ॥”) हरिद्रा । इत्यमरः । २ । ९ । ४१ ॥ यमुना । नीली । कृष्णत्रिवृत् । इत्युणादिकोषः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रियामा",
+            "eid": "23759",
+            "pagenum": "3377,b",
+            "content": "त्रियामा¦ स्त्री त्रयो यामा अस्याः आद्यान्त्ययोरर्द्धयामयोश्चेष्टाकालत्वेन दिनप्रायत्वात् । १ निशायाम् अमरः “त्रियामां रजनीं प्राहुस्त्यक्त्वाद्यन्तचतुष्टयम् । नाडीनां, तदुभे सन्ध्ये दिवसाद्यन्तसंज्ञिते” ति० त० । “संक्षिप्येत क्षणमिव कथं दीर्घयामा त्रियामा” मेघ० । “क्वचिदसमेतपरिच्छदस्त्रियामाम्” रघुः । “ज्योतिर्भिरुद्यद्भिरिव त्रियामा” कुमा० २ हरिद्रायाम् अमरः । कृष्णत्वात् ३ यमुनायां ४ नील्यां ५ कृष्णत्रिवृति च उणादिको० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रियामा",
+            "content": "त्रियामा स्त्री. त्रि-यामा  - रात्रि"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रियामा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ರಾತ್ರಿ",
+            "प्रयोगाः": "'त्रियामां रजनीं प्राहुः त्यक्त्वाद्यन्तचतुष्टयम् । नाडीनां तदुभे सन्ध्ये इवसाद्यन्तसञ्ज्ञिते ॥'",
+            "content": ""
+        },
+        {
+            "word": "त्रियामा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಹರಿದ್ರೆ \\/ಅರಿಶಿನ",
+            "प्रयोगाः": "'त्रियामा शशिना भाति शशी भाति त्रियामया'",
+            "उल्लेखाः": "चन्द्रा०",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "त्रियामा",
+            "linga": "S",
+            "artha": "रात्रिः",
+            "synonyms": [
+                "शर्वरी",
+                "निशा",
+                "निशीथिनी",
+                "रात्रि",
+                "त्रियामा",
+                "क्षणदा",
+                "क्षपा",
+                "विभावरी",
+                "तमस्विनी",
+                "रजनी",
+                "यामिनी",
+                "तमी",
+                "वसति",
+                "श्यामा",
+                "दोषा",
+                "दोषा",
+                "नक्तम्"
+            ],
+            "num": "1.4.4",
+            "text": "प्राह्णापराह्णमध्याह्नास्त्रिसन्ध्यमथ शर्वरी । निशा निशीथिनी रात्रिस्त्रियामा क्षणदा क्षपा ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रियामा",
+            "content": "<segmenthd>\n<dentry>त्रियामा</dentry>\n<prAwipaxikam>त्रियामा</prAwipaxikam>\n<seg>त्रि-यामा</seg>\n<grammar>स्त्री*</grammar>\n<is_a_part>दिवसः</is_a_part>\n<kind_of>समयः</kind_of>\n<jAwi>कालः</jAwi>\n<sense no=\"1\">रात्रिसंक्षिप्येत क्षण इव कथं दीर्धयामा त्रियामा<citation>मेघ* १०८</citation><citation>कु* ७।२१</citation>२६<citation>रघु* ९।७०</citation><citation>विक्रम* ३।२२ तीन पहर वाली-आरम्भ और अन्त का आधा-आधा पहर इससे पृथक हैं</citation></sense></segmenthd>\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रियामा",
+            "content": "<body><s>triyAmA strI trayo yAmA asyAH AdyAntyayorardDayAmayo­ScezwAkAlatvena dinaprAyatvAt . <lb/><b>1</b> niSAyAm amaraH <q>triyAmAM rajanIM prAhustyaktvAdyantacatuzwayam . nAqInAM, taduBe sanDye divasAdyantasaMjYite</q> ti° ta° . <q>saMkzipyeta kzaRamiva kaTaM dIrGayAmA triyAmA</q> meGa° . <q>kvacidasameta­paricCadastriyAmAm</q> raGuH . <q>jyotirBirudyadBiriva tri­yAmA</q> kumA° <lb/><b>2</b> haridrAyAm amaraH . kfzRatvAt <lb/><b>3</b> yamu­nAyAM <lb/><b>4</b> nIlyAM <lb/><b>5</b> kfzRatrivfti ca uRAdiko° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रियामा",
+            "content": "<H1><h><key1>triyAmA</key1><key2>triyAmA</key2></h><body><s>triyAmA</s>  <div n=\"1\">f. (<s>-mA</s>) </div><div n=\"2\"> 1. Night. </div><div n=\"2\"> 2. The YAMUNA or Jumna river. </div><div n=\"2\"> 3. Indigo. <lb />4. Black Teori, a plant so called. </div><div n=\"2\"> 5. Turmeric.</div><div n=\"E\"> E. <s>tri</s> three (times, or <lb />past, present and future,) <s>yA</s> to go, affix <s>man</s>.</div></body><tail><L>18121</L><pc>325-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रियामा",
+            "content": "<span lang=\"sa\">त्रियामा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ರಾತ್ರಿ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"त्रियामां रजनीं प्राहुः त्यक्त्वाद्यन्तचतुष्टयम् । नाडीनां तदुभे सन्ध्ये इवसाद्यन्तसञ्ज्ञिते ॥\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रियामा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹರಿದ್ರೆ /ಅರಿಶಿನ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"त्रियामा शशिना भाति शशी भाति त्रियामया\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>चन्द्रा०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

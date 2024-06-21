@@ -1,693 +1,370 @@
- been applied
-	 * @param {boolean|undefined} collapseWhitespace The user-specified value for
-	 * `collapseWhitespace`, without any defaulting having been applied
-	 * @param {Function|undefined} normalizer The user-specified normalizer
-	 * @returns {Function} A normalizer
-	 */
-
-	function makeNormalizer(_ref) {
-	  let {
-	    trim,
-	    collapseWhitespace,
-	    normalizer
-	  } = _ref;
-	  if (!normalizer) {
-	    // No custom normalizer specified. Just use default.
-	    return getDefaultNormalizer({
-	      trim,
-	      collapseWhitespace
-	    });
-	  }
-	  if (typeof trim !== 'undefined' || typeof collapseWhitespace !== 'undefined') {
-	    // They've also specified a value for trim or collapseWhitespace
-	    throw new Error('trim and collapseWhitespace are not supported with a normalizer. ' + 'If you want to use the default trim and collapseWhitespace logic in your normalizer, ' + 'use "getDefaultNormalizer({trim, collapseWhitespace})" and compose that into your normalizer');
-	  }
-	  return normalizer;
-	}
-	function matchRegExp(matcher, text) {
-	  const match = matcher.test(text);
-	  if (matcher.global && matcher.lastIndex !== 0) {
-	    console.warn("To match all elements we had to reset the lastIndex of the RegExp because the global flag is enabled. We encourage to remove the global flag from the RegExp.");
-	    matcher.lastIndex = 0;
-	  }
-	  return match;
-	}
-
-	function getNodeText(node) {
-	  if (node.matches('input[type=submit], input[type=button], input[type=reset]')) {
-	    return node.value;
-	  }
-	  return Array.from(node.childNodes).filter(child => child.nodeType === TEXT_NODE && Boolean(child.textContent)).map(c => c.textContent).join('');
-	}
-
-	/**
-	 * @source {https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#Polyfill}
-	 * but without thisArg (too hard to type, no need to `this`)
-	 */
-	var toStr$a = Object.prototype.toString;
-	function isCallable$2(fn) {
-	  return typeof fn === "function" || toStr$a.call(fn) === "[object Function]";
-	}
-	function toInteger(value) {
-	  var number = Number(value);
-	  if (isNaN(number)) {
-	    return 0;
-	  }
-	  if (number === 0 || !isFinite(number)) {
-	    return number;
-	  }
-	  return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
-	}
-	var maxSafeInteger = Math.pow(2, 53) - 1;
-	function toLength(value) {
-	  var len = toInteger(value);
-	  return Math.min(Math.max(len, 0), maxSafeInteger);
-	}
-	/**
-	 * Creates an array from an iterable object.
-	 * @param iterable An iterable object to convert to an array.
-	 */
-
-	/**
-	 * Creates an array from an iterable object.
-	 * @param iterable An iterable object to convert to an array.
-	 * @param mapfn A mapping function to call on every element of the array.
-	 * @param thisArg Value of 'this' used to invoke the mapfn.
-	 */
-	function arrayFrom(arrayLike, mapFn) {
-	  // 1. Let C be the this value.
-	  // edit(@eps1lon): we're not calling it as Array.from
-	  var C = Array;
-
-	  // 2. Let items be ToObject(arrayLike).
-	  var items = Object(arrayLike);
-
-	  // 3. ReturnIfAbrupt(items).
-	  if (arrayLike == null) {
-	    throw new TypeError("Array.from requires an array-like object - not null or undefined");
-	  }
-
-	  // 4. If mapfn is undefined, then let mapping be false.
-	  // const mapFn = arguments.length > 1 ? arguments[1] : void undefined;
-
-	  if (typeof mapFn !== "undefined") {
-	    // 5. else
-	    // 5. a If IsCallable(mapfn) is false, throw a TypeError exception.
-	    if (!isCallable$2(mapFn)) {
-	      throw new TypeError("Array.from: when provided, the second argument must be a function");
-	    }
-	  }
-
-	  // 10. Let lenValue be Get(items, "length").
-	  // 11. Let len be ToLength(lenValue).
-	  var len = toLength(items.length);
-
-	  // 13. If IsConstructor(C) is true, then
-	  // 13. a. Let A be the result of calling the [[Construct]] internal method
-	  // of C with an argument list containing the single item len.
-	  // 14. a. Else, Let A be ArrayCreate(len).
-	  var A = isCallable$2(C) ? Object(new C(len)) : new Array(len);
-
-	  // 16. Let k be 0.
-	  var k = 0;
-	  // 17. Repeat, while k < len… (also steps a - h)
-	  var kValue;
-	  while (k < len) {
-	    kValue = items[k];
-	    if (mapFn) {
-	      A[k] = mapFn(kValue, k);
-	    } else {
-	      A[k] = kValue;
-	    }
-	    k += 1;
-	  }
-	  // 18. Let putStatus be Put(A, "length", len, true).
-	  A.length = len;
-	  // 20. Return A.
-	  return A;
-	}
-
-	function _typeof$2(obj) {
-	  "@babel/helpers - typeof";
-
-	  return _typeof$2 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
-	    return typeof obj;
-	  } : function (obj) {
-	    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-	  }, _typeof$2(obj);
-	}
-	function _classCallCheck(instance, Constructor) {
-	  if (!(instance instanceof Constructor)) {
-	    throw new TypeError("Cannot call a class as a function");
-	  }
-	}
-	function _defineProperties(target, props) {
-	  for (var i = 0; i < props.length; i++) {
-	    var descriptor = props[i];
-	    descriptor.enumerable = descriptor.enumerable || false;
-	    descriptor.configurable = true;
-	    if ("value" in descriptor) descriptor.writable = true;
-	    Object.defineProperty(target, _toPropertyKey$1(descriptor.key), descriptor);
-	  }
-	}
-	function _createClass(Constructor, protoProps, staticProps) {
-	  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-	  if (staticProps) _defineProperties(Constructor, staticProps);
-	  Object.defineProperty(Constructor, "prototype", {
-	    writable: false
-	  });
-	  return Constructor;
-	}
-	function _defineProperty$2(obj, key, value) {
-	  key = _toPropertyKey$1(key);
-	  if (key in obj) {
-	    Object.defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-	  return obj;
-	}
-	function _toPropertyKey$1(arg) {
-	  var key = _toPrimitive$1(arg, "string");
-	  return _typeof$2(key) === "symbol" ? key : String(key);
-	}
-	function _toPrimitive$1(input, hint) {
-	  if (_typeof$2(input) !== "object" || input === null) return input;
-	  var prim = input[Symbol.toPrimitive];
-	  if (prim !== undefined) {
-	    var res = prim.call(input, hint || "default");
-	    if (_typeof$2(res) !== "object") return res;
-	    throw new TypeError("@@toPrimitive must return a primitive value.");
-	  }
-	  return (hint === "string" ? String : Number)(input);
-	}
-	// for environments without Set we fallback to arrays with unique members
-	var SetLike = /*#__PURE__*/function () {
-	  function SetLike() {
-	    var items = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-	    _classCallCheck(this, SetLike);
-	    _defineProperty$2(this, "items", void 0);
-	    this.items = items;
-	  }
-	  _createClass(SetLike, [{
-	    key: "add",
-	    value: function add(value) {
-	      if (this.has(value) === false) {
-	        this.items.push(value);
-	      }
-	      return this;
-	    }
-	  }, {
-	    key: "clear",
-	    value: function clear() {
-	      this.items = [];
-	    }
-	  }, {
-	    key: "delete",
-	    value: function _delete(value) {
-	      var previousLength = this.items.length;
-	      this.items = this.items.filter(function (item) {
-	        return item !== value;
-	      });
-	      return previousLength !== this.items.length;
-	    }
-	  }, {
-	    key: "forEach",
-	    value: function forEach(callbackfn) {
-	      var _this = this;
-	      this.items.forEach(function (item) {
-	        callbackfn(item, item, _this);
-	      });
-	    }
-	  }, {
-	    key: "has",
-	    value: function has(value) {
-	      return this.items.indexOf(value) !== -1;
-	    }
-	  }, {
-	    key: "size",
-	    get: function get() {
-	      return this.items.length;
-	    }
-	  }]);
-	  return SetLike;
-	}();
-	var SetLike$1 = typeof Set === "undefined" ? Set : SetLike;
-
-	// https://w3c.github.io/html-aria/#document-conformance-requirements-for-use-of-aria-attributes-in-html
-
-	/**
-	 * Safe Element.localName for all supported environments
-	 * @param element
-	 */
-	function getLocalName(element) {
-	  var _element$localName;
-	  return (
-	    // eslint-disable-next-line no-restricted-properties -- actual guard for environments without localName
-	    (_element$localName = element.localName) !== null && _element$localName !== void 0 ? _element$localName :
-	    // eslint-disable-next-line no-restricted-properties -- required for the fallback
-	    element.tagName.toLowerCase()
-	  );
-	}
-	var localNameToRoleMappings = {
-	  article: "article",
-	  aside: "complementary",
-	  button: "button",
-	  datalist: "listbox",
-	  dd: "definition",
-	  details: "group",
-	  dialog: "dialog",
-	  dt: "term",
-	  fieldset: "group",
-	  figure: "figure",
-	  // WARNING: Only with an accessible name
-	  form: "form",
-	  footer: "contentinfo",
-	  h1: "heading",
-	  h2: "heading",
-	  h3: "heading",
-	  h4: "heading",
-	  h5: "heading",
-	  h6: "heading",
-	  header: "banner",
-	  hr: "separator",
-	  html: "document",
-	  legend: "legend",
-	  li: "listitem",
-	  math: "math",
-	  main: "main",
-	  menu: "list",
-	  nav: "navigation",
-	  ol: "list",
-	  optgroup: "group",
-	  // WARNING: Only in certain context
-	  option: "option",
-	  output: "status",
-	  progress: "progressbar",
-	  // WARNING: Only with an accessible name
-	  section: "region",
-	  summary: "button",
-	  table: "table",
-	  tbody: "rowgroup",
-	  textarea: "textbox",
-	  tfoot: "rowgroup",
-	  // WARNING: Only in certain context
-	  td: "cell",
-	  th: "columnheader",
-	  thead: "rowgroup",
-	  tr: "row",
-	  ul: "list"
-	};
-	var prohibitedAttributes = {
-	  caption: new Set(["aria-label", "aria-labelledby"]),
-	  code: new Set(["aria-label", "aria-labelledby"]),
-	  deletion: new Set(["aria-label", "aria-labelledby"]),
-	  emphasis: new Set(["aria-label", "aria-labelledby"]),
-	  generic: new Set(["aria-label", "aria-labelledby", "aria-roledescription"]),
-	  insertion: new Set(["aria-label", "aria-labelledby"]),
-	  paragraph: new Set(["aria-label", "aria-labelledby"]),
-	  presentation: new Set(["aria-label", "aria-labelledby"]),
-	  strong: new Set(["aria-label", "aria-labelledby"]),
-	  subscript: new Set(["aria-label", "aria-labelledby"]),
-	  superscript: new Set(["aria-label", "aria-labelledby"])
-	};
-
-	/**
-	 *
-	 * @param element
-	 * @param role The role used for this element. This is specified to control whether you want to use the implicit or explicit role.
-	 */
-	function hasGlobalAriaAttributes(element, role) {
-	  // https://rawgit.com/w3c/aria/stable/#global_states
-	  // commented attributes are deprecated
-	  return ["aria-atomic", "aria-busy", "aria-controls", "aria-current", "aria-describedby", "aria-details",
-	  // "disabled",
-	  "aria-dropeffect",
-	  // "errormessage",
-	  "aria-flowto", "aria-grabbed",
-	  // "haspopup",
-	  "aria-hidden",
-	  // "invalid",
-	  "aria-keyshortcuts", "aria-label", "aria-labelledby", "aria-live", "aria-owns", "aria-relevant", "aria-roledescription"].some(function (attributeName) {
-	    var _prohibitedAttributes;
-	    return element.hasAttribute(attributeName) && !((_prohibitedAttributes = prohibitedAttributes[role]) !== null && _prohibitedAttributes !== void 0 && _prohibitedAttributes.has(attributeName));
-	  });
-	}
-	function ignorePresentationalRole(element, implicitRole) {
-	  // https://rawgit.com/w3c/aria/stable/#conflict_resolution_presentation_none
-	  return hasGlobalAriaAttributes(element, implicitRole);
-	}
-	function getRole(element) {
-	  var explicitRole = getExplicitRole(element);
-	  if (explicitRole === null || explicitRole === "presentation") {
-	    var implicitRole = getImplicitRole(element);
-	    if (explicitRole !== "presentation" || ignorePresentationalRole(element, implicitRole || "")) {
-	      return implicitRole;
-	    }
-	  }
-	  return explicitRole;
-	}
-	function getImplicitRole(element) {
-	  var mappedByTag = localNameToRoleMappings[getLocalName(element)];
-	  if (mappedByTag !== undefined) {
-	    return mappedByTag;
-	  }
-	  switch (getLocalName(element)) {
-	    case "a":
-	    case "area":
-	    case "link":
-	      if (element.hasAttribute("href")) {
-	        return "link";
-	      }
-	      break;
-	    case "img":
-	      if (element.getAttribute("alt") === "" && !ignorePresentationalRole(element, "img")) {
-	        return "presentation";
-	      }
-	      return "img";
-	    case "input":
-	      {
-	        var _ref = element,
-	          type = _ref.type;
-	        switch (type) {
-	          case "button":
-	          case "image":
-	          case "reset":
-	          case "submit":
-	            return "button";
-	          case "checkbox":
-	          case "radio":
-	            return type;
-	          case "range":
-	            return "slider";
-	          case "email":
-	          case "tel":
-	          case "text":
-	          case "url":
-	            if (element.hasAttribute("list")) {
-	              return "combobox";
-	            }
-	            return "textbox";
-	          case "search":
-	            if (element.hasAttribute("list")) {
-	              return "combobox";
-	            }
-	            return "searchbox";
-	          case "number":
-	            return "spinbutton";
-	          default:
-	            return null;
-	        }
-	      }
-	    case "select":
-	      if (element.hasAttribute("multiple") || element.size > 1) {
-	        return "listbox";
-	      }
-	      return "combobox";
-	  }
-	  return null;
-	}
-	function getExplicitRole(element) {
-	  var role = element.getAttribute("role");
-	  if (role !== null) {
-	    var explicitRole = role.trim().split(" ")[0];
-	    // String.prototype.split(sep, limit) will always return an array with at least one member
-	    // as long as limit is either undefined or > 0
-	    if (explicitRole.length > 0) {
-	      return explicitRole;
-	    }
-	  }
-	  return null;
-	}
-
-	function isElement$1(node) {
-	  return node !== null && node.nodeType === node.ELEMENT_NODE;
-	}
-	function isHTMLTableCaptionElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "caption";
-	}
-	function isHTMLInputElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "input";
-	}
-	function isHTMLOptGroupElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "optgroup";
-	}
-	function isHTMLSelectElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "select";
-	}
-	function isHTMLTableElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "table";
-	}
-	function isHTMLTextAreaElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "textarea";
-	}
-	function safeWindow(node) {
-	  var _ref = node.ownerDocument === null ? node : node.ownerDocument,
-	    defaultView = _ref.defaultView;
-	  if (defaultView === null) {
-	    throw new TypeError("no window available");
-	  }
-	  return defaultView;
-	}
-	function isHTMLFieldSetElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "fieldset";
-	}
-	function isHTMLLegendElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "legend";
-	}
-	function isHTMLSlotElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "slot";
-	}
-	function isSVGElement(node) {
-	  return isElement$1(node) && node.ownerSVGElement !== undefined;
-	}
-	function isSVGSVGElement(node) {
-	  return isElement$1(node) && getLocalName(node) === "svg";
-	}
-	function isSVGTitleElement(node) {
-	  return isSVGElement(node) && getLocalName(node) === "title";
-	}
-
-	/**
-	 *
-	 * @param {Node} node -
-	 * @param {string} attributeName -
-	 * @returns {Element[]} -
-	 */
-	function queryIdRefs(node, attributeName) {
-	  if (isElement$1(node) && node.hasAttribute(attributeName)) {
-	    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- safe due to hasAttribute check
-	    var ids = node.getAttribute(attributeName).split(" ");
-
-	    // Browsers that don't support shadow DOM won't have getRootNode
-	    var root = node.getRootNode ? node.getRootNode() : node.ownerDocument;
-	    return ids.map(function (id) {
-	      return root.getElementById(id);
-	    }).filter(function (element) {
-	      return element !== null;
-	    }
-	    // TODO: why does this not narrow?
-	    );
-	  }
-	  return [];
-	}
-	function hasAnyConcreteRoles(node, roles) {
-	  if (isElement$1(node)) {
-	    return roles.indexOf(getRole(node)) !== -1;
-	  }
-	  return false;
-	}
-
-	/**
-	 * implements https://w3c.github.io/accname/
-	 */
-
-	/**
-	 *  A string of characters where all carriage returns, newlines, tabs, and form-feeds are replaced with a single space, and multiple spaces are reduced to a single space. The string contains only character data; it does not contain any markup.
-	 */
-
-	/**
-	 *
-	 * @param {string} string -
-	 * @returns {FlatString} -
-	 */
-	function asFlatString(s) {
-	  return s.trim().replace(/\s\s+/g, " ");
-	}
-
-	/**
-	 *
-	 * @param node -
-	 * @param options - These are not optional to prevent accidentally calling it without options in `computeAccessibleName`
-	 * @returns {boolean} -
-	 */
-	function isHidden(node, getComputedStyleImplementation) {
-	  if (!isElement$1(node)) {
-	    return false;
-	  }
-	  if (node.hasAttribute("hidden") || node.getAttribute("aria-hidden") === "true") {
-	    return true;
-	  }
-	  var style = getComputedStyleImplementation(node);
-	  return style.getPropertyValue("display") === "none" || style.getPropertyValue("visibility") === "hidden";
-	}
-
-	/**
-	 * @param {Node} node -
-	 * @returns {boolean} - As defined in step 2E of https://w3c.github.io/accname/#mapping_additional_nd_te
-	 */
-	function isControl(node) {
-	  return hasAnyConcreteRoles(node, ["button", "combobox", "listbox", "textbox"]) || hasAbstractRole(node, "range");
-	}
-	function hasAbstractRole(node, role) {
-	  if (!isElement$1(node)) {
-	    return false;
-	  }
-	  switch (role) {
-	    case "range":
-	      return hasAnyConcreteRoles(node, ["meter", "progressbar", "scrollbar", "slider", "spinbutton"]);
-	    default:
-	      throw new TypeError("No knowledge about abstract role '".concat(role, "'. This is likely a bug :("));
-	  }
-	}
-
-	/**
-	 * element.querySelectorAll but also considers owned tree
-	 * @param element
-	 * @param selectors
-	 */
-	function querySelectorAllSubtree(element, selectors) {
-	  var elements = arrayFrom(element.querySelectorAll(selectors));
-	  queryIdRefs(element, "aria-owns").forEach(function (root) {
-	    // babel transpiles this assuming an iterator
-	    elements.push.apply(elements, arrayFrom(root.querySelectorAll(selectors)));
-	  });
-	  return elements;
-	}
-	function querySelectedOptions(listbox) {
-	  if (isHTMLSelectElement(listbox)) {
-	    // IE11 polyfill
-	    return listbox.selectedOptions || querySelectorAllSubtree(listbox, "[selected]");
-	  }
-	  return querySelectorAllSubtree(listbox, '[aria-selected="true"]');
-	}
-	function isMarkedPresentational(node) {
-	  return hasAnyConcreteRoles(node, ["none", "presentation"]);
-	}
-
-	/**
-	 * Elements specifically listed in html-aam
-	 *
-	 * We don't need this for `label` or `legend` elements.
-	 * Their implicit roles already allow "naming from content".
-	 *
-	 * sources:
-	 *
-	 * - https://w3c.github.io/html-aam/#table-element
-	 */
-	function isNativeHostLanguageTextAlternativeElement(node) {
-	  return isHTMLTableCaptionElement(node);
-	}
-
-	/**
-	 * https://w3c.github.io/aria/#namefromcontent
-	 */
-	function allowsNameFromContent(node) {
-	  return hasAnyConcreteRoles(node, ["button", "cell", "checkbox", "columnheader", "gridcell", "heading", "label", "legend", "link", "menuitem", "menuitemcheckbox", "menuitemradio", "option", "radio", "row", "rowheader", "switch", "tab", "tooltip", "treeitem"]);
-	}
-
-	/**
-	 * TODO https://github.com/eps1lon/dom-accessibility-api/issues/100
-	 */
-	function isDescendantOfNativeHostLanguageTextAlternativeElement(
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars -- not implemented yet
-	node) {
-	  return false;
-	}
-	function getValueOfTextbox(element) {
-	  if (isHTMLInputElement(element) || isHTMLTextAreaElement(element)) {
-	    return element.value;
-	  }
-	  // https://github.com/eps1lon/dom-accessibility-api/issues/4
-	  return element.textContent || "";
-	}
-	function getTextualContent(declaration) {
-	  var content = declaration.getPropertyValue("content");
-	  if (/^["'].*["']$/.test(content)) {
-	    return content.slice(1, -1);
-	  }
-	  return "";
-	}
-
-	/**
-	 * https://html.spec.whatwg.org/multipage/forms.html#category-label
-	 * TODO: form-associated custom elements
-	 * @param element
-	 */
-	function isLabelableElement(element) {
-	  var localName = getLocalName(element);
-	  return localName === "button" || localName === "input" && element.getAttribute("type") !== "hidden" || localName === "meter" || localName === "output" || localName === "progress" || localName === "select" || localName === "textarea";
-	}
-
-	/**
-	 * > [...], then the first such descendant in tree order is the label element's labeled control.
-	 * -- https://html.spec.whatwg.org/multipage/forms.html#labeled-control
-	 * @param element
-	 */
-	function findLabelableElement(element) {
-	  if (isLabelableElement(element)) {
-	    return element;
-	  }
-	  var labelableElement = null;
-	  element.childNodes.forEach(function (childNode) {
-	    if (labelableElement === null && isElement$1(childNode)) {
-	      var descendantLabelableElement = findLabelableElement(childNode);
-	      if (descendantLabelableElement !== null) {
-	        labelableElement = descendantLabelableElement;
-	      }
-	    }
-	  });
-	  return labelableElement;
-	}
-
-	/**
-	 * Polyfill of HTMLLabelElement.control
-	 * https://html.spec.whatwg.org/multipage/forms.html#labeled-control
-	 * @param label
-	 */
-	function getControlOfLabel(label) {
-	  if (label.control !== undefined) {
-	    return label.control;
-	  }
-	  var htmlFor = label.getAttribute("for");
-	  if (htmlFor !== null) {
-	    return label.ownerDocument.getElementById(htmlFor);
-	  }
-	  return findLabelableElement(label);
-	}
-
-	/**
-	 * Polyfill of HTMLInputElement.labels
-	 * https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/labels
-	 * @param element
-	 */
-	function getLabels(element) {
-	  var labelsProperty = element.labels;
-	  if (labelsProperty === null) {
-	    return labelsProperty;
-	  }
-	  if (labelsProperty !== undefined) {
-	    return arrayFrom(labelsProperty);
-	  }
-
-	  // polyfill
-	  if (!isLabelableElement(element)) {
-	    return null;
-	  }
-	  var document = element.ownerDocument;
-	  return arrayFrom(documen
+{
+    "word": "व्रात",
+    "ABCH": [
+        {
+            "word": "व्रात",
+            "linga": "पुं",
+            "pagenum": "53",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4214",
+            "group": "1790",
+            "synonyms": [
+                "सङ्घात",
+                "प्रकर",
+                "ओघ",
+                "वार",
+                "निकर",
+                "व्यूह",
+                "समूह",
+                "चय",
+                "सन्दोह",
+                "समुदाय",
+                "राशि",
+                "विसर",
+                "कलाप",
+                "व्रज",
+                "कूट",
+                "मण्डल",
+                "चक्रवाल",
+                "पटल",
+                "स्तोम",
+                "गण",
+                "पेटक",
+                "वृन्द",
+                "चक्र",
+                "कदम्बक",
+                "समुदय",
+                "पुञ्ज",
+                "उत्कर",
+                "संहति",
+                "समवाय",
+                "निकुरुम्ब",
+                "जाल",
+                "निवह",
+                "सञ्चय",
+                "जात"
+            ],
+            "content": "संघाते प्रकरौघवारनिकरव्यूहाः समूहश्चयः\nसंदोहः समुदायराशिविसरव्राताः कलापो व्रजः ।\nकूटं मण्डलचक्रवालपटलस्तोमा गणः पेटकं\nवृन्दं चक्रकदम्बके समुदयः पुञ्जोत्करौ संहतिः ॥ १४११ ॥\nसमवायो निकुरम्बं जालं निवहसंचयौ ।\nजातं तिरश्चां तद्यूथं संघसार्थौ तु देहिनाम् ॥ १४१२ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "व्रात",
+            "eid": "27482",
+            "pagenum": 1026,
+            "content": "व्रातः¦ A multitude, group, flock, an assemblage; श्वपाकानां व्रातैः <ls>G. L. 29</ls>; <ls>R. 12. 94</ls>; <ls>Śi. 4. 35.</ls> --तं <b>1</b> Bodily or manual labour. <b>--2</b> <lbinfo n='Day+labour'/> Daylabour. <b>--3</b> Casual employment. <b>--4</b> The company or attendants at a marriage feast."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "व्रात",
+            "eid": "14327",
+            "pagenum": 923,
+            "content": "व्रात¦ <i>vrāta,</i> probably <i>vrata + a,</i> <b>I.</b> <ab>m.</ab> <b>1.</b> The company and attendants at a marriage feast. <b>2.</b> An assemblage, a multitude, <ls>Bhāg. P.</ls> 4, 25, 19; <ls>Chr.</ls> 4, 19. <b>3.</b> The son of an outcaste. <b>II.</b> <ab>n.</ab> <b>1.</b> Bodily labour. <b>2.</b> Day labour. <b> --</b> <b><ab>Comp.</ab></b> <i>Vṛṣavrāta,</i> <ab>i. e.</ab> <i>vṛṣan-,</i> <ab>adj.</ab> abounding in drops of rain, <ls>Chr.</ls> 291, 4 = <ls>Rigv.</ls> i. 85, 4."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "व्रात",
+            "eid": "16460",
+            "pagenum": 630,
+            "content": "व्रात¦ <i>vrāta</i> <ab>m.</ab> réunion, multitude; || réunion de personnes célébrant un mariage. || Travail manuel; || homme voué à un travail <lbinfo n='4'/> manuel.  <P><i>vrātīna</i> <ab>m.</ab> ouvrier à gages, un <i>coulie.</i>"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "व्रात",
+            "eid": "31531",
+            "pagenum": 532,
+            "content": "व्रा/त¦ <lex>m.</lex> heap, troop, multitude, community, corporation."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "व्रात",
+            "eid": "23891",
+            "pagenum": 432,
+            "content": "व्रा/त¦ Schar, Haufen, Trupp, Menge, Genossenschaft."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "व्रात",
+            "eid": "8550",
+            "pagenum": 1364,
+            "content": "<b>vrā́ta,</b>¦ <ab>m.</ab> [von *vrā, siehe vrā́], <i>Schar;</i> daher 2〉 páñca vrā́tās die <i>fünf Menschengeschlechter</i>. <dvsn n='TS'>-as eṣām (akṣā́ṇām) {860,8}. <dvsn n='TS'>-am jīvám 〰 sacemahi {883,5}. <dvsn n='TS'>-am-vrātam neben gaṇám -gaṇam {260,6}, und zugleich neben śárdham-śardham eṣaam (marútām) {407,11}. <dvsn n='TS'>-asya rā́jā {860,12}. <dvsn n='TS'>-ās 2〉 {726,2}. <dvsn n='TS'>-āsas {163,8}."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "व्रात",
+            "eid": "36811",
+            "pagenum": 703,
+            "content": "vrAta¦ <i>(I) m.</i> A multitude, a flock, an assemblage."
+        },
+        {
+            "word": "व्रात",
+            "eid": "36812",
+            "pagenum": 703,
+            "content": "vrAta¦ <i>(II) n.</i> 1. Bodily labour; 2. casual employment."
+        }
+    ],
+    "MD": [
+        {
+            "word": "व्रात",
+            "eid": "17387",
+            "pagenum": 305,
+            "content": "व्रात¦ vrā́ta, <lex>m.</lex> assemblage, troop; association, 🞄guild; swarm (<i>of bees</i>); host, multitude."
+        }
+    ],
+    "MW": [
+        {
+            "word": "व्रात",
+            "eid": "210703",
+            "pagenum": "1043,1",
+            "content": "व्रात <hom>a</hom> ¦ &c. See below."
+        },
+        {
+            "word": "व्रात",
+            "eid": "210730",
+            "pagenum": "1043,1",
+            "content": "व्रा/त <hom>b</hom> ¦ <lex>m.</lex> (connected with √ <hom>1.</hom> वृ, or with व्रत/ and √ <hom>2.</hom> वृ) a multitude, flock, assemblage, troop, swarm, group, host (व्रा/तं व्रातम्, in companies or troops; प/ञ्च व्रा/तास्, the five races of men), association, guild, <ls>RV.</ls> &c. &c.<info lex='m'/>"
+        },
+        {
+            "word": "व्रात",
+            "eid": "210731",
+            "pagenum": "1043,1",
+            "content": "¦ the company or attendants at a marriage feast, <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "व्रात",
+            "eid": "210732",
+            "pagenum": "1043,1",
+            "content": "¦ = मनुष्य, <ls>Naigh. ii, 3</ls><info lex='inh'/>"
+        },
+        {
+            "word": "व्रात",
+            "eid": "210733",
+            "pagenum": "1043,1",
+            "content": "¦ the descendant of an out-caste <ns>Brāhman</ns> &c. (= व्रात्य), <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "व्रात",
+            "eid": "210734",
+            "pagenum": "1043,1",
+            "content": "व्रा/त ¦ <lex>n.</lex> manual or bodily labour, day-labour, <ls>ib.</ls><info lex='n'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "व्रात",
+            "eid": "45905",
+            "pagenum": 984,
+            "content": "व्रात¦ <i>vrāta, as,</i> m. (fr. <i>vrata</i> or connected with rt. <i>vṛ</i>), a multitude, flock, assemblage, troop, (<i>vrātaṃ-vrātam,</i> in companies, in troops, Ṛg-veda V. 53, 11); <i>= manuṣya</i> (according to Naigh. II. 3); the descendant of an outcast Brāhman, &c., (see <i>vrātya</i>); the company or attendants at a marriage feast; (<i>am</i>), n. manual or bodily labour; day labour, casual employment. <i>—Vrāta-jīvana, am,</i> n. living by manual or bodily labour."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "व्रात",
+            "eid": "13873",
+            "pagenum": 3,
+            "content": "<i>Vrāta</i>¦ — a son of Kṛtamjaya. <dvsn n='P'/>Vā. 99. 287."
+        }
+    ],
+    "PW": [
+        {
+            "word": "व्रात",
+            "eid": "109123",
+            "pagenum": 6,
+            "content": "व्रा/त¦ <lex>m.</lex> <i>Schaar, Haufen, Trupp, Abtheilung</i> (von Kriegern <ab>u. s. w.</ab>), <i>Gilde, Genossenschaft; Schwarm</i> (von Bienen <ls>ŚIŚ. 4,35</ls>. <ls>VĀSAV. 140,8</ls>), <i>Menge</i> <ab>überh.</ab> (auch von Unbelebtem) <ls>VĀSAV. 261,1</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "व्रात",
+            "eid": "96940",
+            "pagenum": 6,
+            "content": "व्रा/त¦ (von 1. वर्; vgl. व्र) <lex>m.</lex> <ls>SIDDH. K. 249,b,2</ls> v. u. <ls>Verz. d. Oxf. H. 167,a,29.</ls> <i>Schaar, Haufen, Trupp</i> ( <ls>AK. 2, 5, 39.</ls> <ls>H. 1411.</ls> <ls>HALĀY. 4, 1</ls>); <i>Abtheilung</i> (von Kriegern u. s. w.), <i>Gilde, Genossenschaft</i>; = अपत्य <ls>NAIGH. 2, 2.</ls> = मनुष्य 3. नानाजातीया अनियतवृत्तय उत्सेधजीविनः संघा व्राताः <ls>PAT.</ls> zu <ls>P. 5, 2, 21.</ls> व्रात^ं व्रातं ग\\णं ग^णं म\\रुता\\मोज^ ईमहे <ls>ṚV. 3, 26, 2.</ls> <ls n='ṚV.'>5, 53, 11.</ls> <ls n='ṚV.'>1, 163, 8.</ls> der Würfel <ls n='ṚV.'>10, 34, 8.</ls> <ls n='ṚV. 10, 34,'>12.</ls> fünf <ls n='ṚV.'>9, 14, 2.</ls> जी\\वं व्रात^ं सचेमहि <ls n='ṚV.'>10, 57, 5.</ls> <ls>AV. 2, 9, 2.</ls> <ls>PAÑCAV. BR. 6, 9, 24.</ls> छन्दांसीव खलु वै व्रातः <i>bilden gleichsam eine Gilde</i> <ls n='PAÑCAV. BR.'>25. 17, 1, 5. 12.</ls> <ls>VS. 16, 25.</ls> सर्वे\\ व्राता\\ वरु^णस्याभूवन् <ls>TS. 1, 8, 10, 2.</ls> व्रातेन (= शरीरायासेन <ls>Schol.</ls> gegen <is>PAT</is>., der die gewöhnliche Bed. annimmt; vgl. noch <ls>Schol.</ls> zu <ls>BHAṬṬ. 4, 12</ls>) <ls>P. 5, 2, 21.</ls> <ls n='P. 5,'>3, 113.</ls> विद्याधर° <ls>KATHĀS. 35, 20.</ls> तुरुष्कतुरग° <ls n='KATHĀS.'>19, 109.</ls> नानारण्यमृग° <ls>BHĀG. P. 4, 25, 19.</ls> नानारण्यपशु° <ls n='BHĀG. P.'>8, 2, 7.</ls> हंसपारावत° <ls n='BHĀG. P.'>3, 23, 20.</ls> मधुकर° <i>Bienenschwarm</i> <ls n='BHĀG. P.'>5, 25, 7.</ls> <i>Menge</i> überh. von Unbelebtem: रथानाम् <ls>MBH. 4, 1667.</ls> रथ° <ls n='MBH. 4,'>1070.</ls> <ls n='MBH.'>5, 5960.</ls> शर° <ls n='MBH.'>4, 1714.</ls> <ls n='MBH. 4,'>1851.</ls> <ls n='MBH.'>5, 2131.</ls> <ls n='MBH.'>14, 2227.</ls> <ls>HARIV. 9322.</ls> <ls>R. 6, 79, 51.</ls> <ls>RAGH. 12, 94.</ls> मलयमरुताम् <ls>Spr. 2130.</ls> घोरनिबिडध्वान्त° <ls>KATHĀS. 75, 42.</ls> मणि° <ls>VARĀH. BṚH. S. 44, 23.</ls> अलक° <ls>BHĀG. P. 3, 21, 9.</ls> महामणिव्रातमय <ls n='BHĀG. P.'>4, 9, 60.</ls> <dvsn n='v'>— Vgl. भद्र°, महा°, वृष° ."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "व्रात",
+            "eid": "24672",
+            "pagenum": 340,
+            "content": "<i>vrāta</i>¦ °n. Schaar, <ls>Yudh.</ls> 6, 22. {part=,seq=25009,type=,n=1}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "व्रात",
+            "eid": "39158",
+            "pagenum": 701,
+            "content": "व्रात¦ m. (-तः) 1. A multitude, an assemblage. 2. The descendant of an outcaste Brāhman, &c. 3. The company and attendants at a marriage feast. n. (-तं) 1. Manual or bodily labour. 2. Day-labour, employment of a precarious kind. 3. Casual employment. E. वृ to choose, aff. अतच् and the vowel made long; or व्रत a religious observance, or व्रात्य an outcaste, aff. अण् ।"
+        }
+    ],
+    "STC": [
+        {
+            "word": "व्रात",
+            "eid": "19963",
+            "pagenum": 711,
+            "content": "<b>vrāta-</b>¦ <ab>m.</ab> multitude, foule, essaim ; compagnie <lbinfo n='6'/> (de guerriers), communauté, association <lbinfo n='4'/> ; amas ; <i>-maya- -ī-</i> <ab>a.</ab> qui consiste en une multitude."
+        }
+    ],
+    "VEI": [
+        {
+            "word": "व्रात",
+            "eid": "3117",
+            "pagenum": 2,
+            "content": "<b>Vrāta</b>¦ is found in several passages of the Rigveda<sup>1</sup> and later<sup>2</sup> in the sense of ‘troop.’ In one passage of the Rigveda<sup>3</sup> the troops of the Maruts are referred to by three different terms — <i>śardha, vrāta,</i> and <i>gaṇa.</i> From this fact Zimmer<sup>4</sup> has deduced that a Vedic host fought according to clan (<b>Viś</b>), village (<b>Grāma</b>), and family, but this conclusion is hardly warranted, there being nothing to show that there is any intention to present a distinct series of divisions. It is not probable that the word ever has the technical sense of ‘guild,’ as Roth<sup>5</sup> thinks. <i>Cf.</i> <b>Vrātapati.</b> <F>1) i. 163, 8; iii. 26, 2; v. 53, 11; ix. 14, 2 (perhaps an allusion to the five tribes); x. 34, 8. 12 (of dice). In x. 57, 5, the host of the living (<i>jīva</i> <i>vrāta</i>) is referred to.</F> <F>2) Av. ii. 9, 2 (‘host of the living’); Taittirīya Saṃhitā, i. 8, 10, 2; Vājasaneyi Saṃhitā, xvi. 25; Pañcaviṃśa Brāhmaṇa, vi. 9. 24; xvii. 1, 5. 12, etc.</F> <F>3) v. 53, 11. <i>Cf.</i> iii. 26, 2, where <i>śardha</i> is not mentioned.</F> <F>4) <i>Altindisches Leben,</i> 162.</F> <F>5) In the St. Petersburg Dictionary, where this is taken to be the sense; Pañcaviṃśa Brāhmaṇa, vi. 9, 25; xvii. 1, 5, 12; Vājasaneyi Saṃhitā, xvi. 25; Taittirīya Saṃhitā, i. 8, 10, 2.</F>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "व्रात",
+            "eid": "37379",
+            "pagenum": 822,
+            "content": "व्रात¦ m. (-तः) .²1 A multitude, an assemblage. .²2 The descendant of an outcaste <i>Brahman,</i> &c. .²3 The company and attendants at a marriage feast. n. (-तं) .²1 Manual or bodily labour. .²2 Day labour, employment of a precarious kind. .E. वृ to choose, aff. अतच्, and the vowel made long; or व्रत a religious observance, or व्रात्य an outcaste, aff. अण्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "व्रात",
+            "eid": "37013",
+            "pagenum": 740,
+            "content": "व्रात¦ (तः) 1. <i>m.</i> A multitude; descendant of an outcast <i>brāhman;</i> attendants at a wedding. <i>n.</i> Bodily labour; a job."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "व्रात",
+            "eid": "34594",
+            "pagenum": "4-564-a",
+            "content": "व्रातः¦, पुं, समूहः । इत्यमरः ॥ (यथा, भागवते । ४ । २५ । १९ । “बानारण्यमृगव्रातैरनावाधे मुनिव्रतैः । आहूतं मन्यते पान्थो यत्र कोकिलकूजितैः ॥”) व्याधादिः । इति व्रात्यशब्दटीकायां भरतः ॥ (मनुष्यः । इति निघण्टुः । २ । ३ । “वृञ् वरणे ‘तातव्रातलातसुपित्त’ इत्यादिसूत्रेण भोजराजेन कृत्प्रत्यये आडागमो निपात्यते । वृण्वन्ति स्वमभिमतं देवताभ्यः तपसाराधितेभ्यः प्रव्रियन्ते वा यज्ञादौ । यद्वा, व्रातो धान्यादिसञ्चयः । तद्बन्तो व्राता मत्वर्थीयोऽकारः । यद्बा, व्रतमिति कर्म्मनाम अन्नं वा । अन्नमपि व्रतायैतस्मादेवेत्युक्तेः तदीयाः ‘तस्येदम्’ इत्यण् । ‘कर्म्मणा जायते जन्तुः कर्म्मणैव प्रमुच्यते’ इत्युक्तेः कर्म्मणामधिकारित्वाच्च मनुष्याणां कर्म्मसम्बन्धित्वम् । ‘अथो अन्नाद् भूतानि जायन्ते जातान्यन्नेन वर्द्धन्ते’ इति । अन्नात् रेतो रेतसः पुरुषः इति च श्रुतेः मनुष्याणामन्नसम्बन्धित्वम् ।” इति तट्टीकायां देवराजयज्वा ॥ अस्मिन्नर्थे प्रायशो बहुवचनप्रयोगो दृश्यते ॥ * ॥ क्ली, शरीरायासजीविकर्म्म । इति काशिका । ५ । २ । २१ ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "व्रात",
+            "eid": "42789",
+            "pagenum": "5071,a",
+            "content": "व्रात¦ पु० वृ--अतच् पृषो० । समूहे अमरः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "व्रात",
+            "content": "व्रातः पुं. -  'वृ + अतच्, पृषो.साधुः' 'समुदाय, रेवड़, समुच्चय '"
+        },
+        {
+            "word": "व्रात",
+            "content": "व्रातम् नपुं. - 'शारीरिक श्रम, मजदूरी'"
+        },
+        {
+            "word": "व्रात",
+            "content": "व्रातम् नपुं. - दैनिक मजदूरी"
+        },
+        {
+            "word": "व्रात",
+            "content": "व्रातम् नपुं. - यदा-यदा कार्य में नियुक्ति"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "व्रात",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸಮೂಹ \\/ಗುಂಪು",
+            "निष्पत्तिः": "व्रत + णिच् (३-२-२१) । 'घञ्' (३-३-१९)",
+            "व्युत्पत्तिः": "व्रतयति",
+            "प्रयोगाः": "'पुष्पेक्षणैर्लम्भितलोचकैर्वा मधुव्रतव्रातवृतैर्व्रतत्यः'",
+            "उल्लेखाः": "माघ० ४-३५",
+            "content": ""
+        },
+        {
+            "word": "व्रात",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಆಯಾಸದಿಂದ ಮಾಡುವ ಕಾರ್ಯ",
+            "content": ""
+        },
+        {
+            "word": "व्रात",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವಿವಾಹಾದಿ ಶುಭಕಾರ್ಯಗಳಲ್ಲಿ ಸೇರುವ ಮಿತ್ರರ ಗುಂಪು",
+            "content": ""
+        },
+        {
+            "word": "व्रात",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಶರೀರಾಯಾಸದಿಂದ ಜೀವಿಸುವ",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "व्रात",
+            "linga": "P",
+            "artha": "समूहः",
+            "synonyms": [
+                "समूह",
+                "निवह",
+                "व्यूह",
+                "सन्दोह",
+                "विसर",
+                "व्रज",
+                "स्तोम",
+                "ओघ",
+                "निकर",
+                "व्रात",
+                "वार",
+                "सङ्घात",
+                "सञ्चय",
+                "समुदाय",
+                "समुदय",
+                "समवाय",
+                "चय",
+                "गण",
+                "संहति",
+                "वृन्द",
+                "निकुरम्ब",
+                "कदम्बक",
+                "पेटक",
+                "वार्धक",
+                "पूग",
+                "ग्राम",
+                "सन्नय",
+                "संस्त्याय",
+                "जाल",
+                "पटल",
+                "राशि"
+            ],
+            "num": "2.5.42",
+            "text": "स्तोमौघनिकरव्रातवारसङ्घातसञ्चयाः । समुदायः समुदयः समवायश्चयो गणः ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "व्रात",
+            "content": "<body><s>vrAta pu° vf—atac pfzo° . samUhe amaraH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "व्रात",
+            "content": "<H2><h><key1>vrAta</key1><key2>vrAta</key2><hom>a</hom></h><body><s>vrAta</s> <hom>a</hom>   &amp;c. See below.</body><tail><L>210703</L><pc>1043,1</pc></tail></H2>\n <H1><h><key1>vrAta</key1><key2>vrA/ta</key2><hom>b</hom></h><body><s>vrA/ta</s> <hom>b</hom>   <lex>m.</lex> (connected with √ <hom>1.</hom> <s>vf</s>, or with <s>vrata/</s> and √ <hom>2.</hom> <s>vf</s>) a multitude, flock, assemblage, troop, swarm, group, host (<s>vrA/taM vrAtam</s>, in companies or troops; <s>pa/Yca vrA/tAs</s>, the five races of men), association, guild, <ls>RV.</ls> &amp;c. &amp;c.<info lex=\"m\" /></body><tail><L>210730</L><pc>1043,1</pc></tail></H1>\n <H1A><h><key1>vrAta</key1><key2>vrA/ta</key2></h><body>  the company or attendants at a marriage feast, <ls>W.</ls><info lex=\"inh\" /></body><tail><L>210731</L><pc>1043,1</pc></tail></H1A>\n <H1A><h><key1>vrAta</key1><key2>vrA/ta</key2></h><body>  = <s>manuzya</s>, <ls>Naigh. ii, 3</ls><info lex=\"inh\" /></body><tail><L>210732</L><pc>1043,1</pc></tail></H1A>\n <H1A><h><key1>vrAta</key1><key2>vrA/ta</key2></h><body>  the descendant of an out-caste <ns>Brāhman</ns> &amp;c. (= <s>vrAtya</s>), <ls>L.</ls><info lex=\"inh\" /></body><tail><L>210733</L><pc>1043,1</pc></tail></H1A>\n <H1B><h><key1>vrAta</key1><key2>vrA/ta</key2></h><body><s>vrA/ta</s>   <lex>n.</lex> manual or bodily labour, day-labour, <ls>ib.</ls><info lex=\"n\" /></body><tail><L>210734</L><pc>1043,1</pc></tail></H1B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "व्रात",
+            "content": "<H1><h><key1>vrAta</key1><key2>vrAta</key2></h><body><s>vrAta</s>  <div n=\"1\">m. (<s>-taH</s>) </div><div n=\"2\"> 1. A multitude, an assemblage. </div><div n=\"2\"> 2. The descendant of an <lb />outcaste Brāhman, &amp;c. </div><div n=\"2\"> 3. The company and attendants at a <lb />marriage feast. </div><div n=\"1\">n. (<s>-taM</s>) </div><div n=\"2\"> 1. Manual or bodily labour. </div><div n=\"2\"> 2. Day-labour, <lb />employment of a precarious kind. </div><div n=\"2\"> 3. Casual employment.</div><div n=\"E\"> E. <s>vf</s> to <lb />choose, aff. <s>atac</s> and the vowel made long; or <s>vrata</s> a religious <lb />observance, or <s>vrAtya</s> an outcaste, aff. <s>aR .</s></div></body><tail><L>39158</L><pc>701-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "व्रात",
+            "content": "<span lang=\"sa\">व्रात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಮೂಹ /ಗುಂಪು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>व्रत + णिच् (३-२-२१) । \"घञ्\" (३-३-१९)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>व्रतयति<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"पुष्पेक्षणैर्लम्भितलोचकैर्वा मधुव्रतव्रातवृतैर्व्रतत्यः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० ४-३५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>व्रात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಆಯಾಸದಿಂದ ಮಾಡುವ ಕಾರ್ಯ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>व्रात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿವಾಹಾದಿ ಶುಭಕಾರ್ಯಗಳಲ್ಲಿ ಸೇರುವ ಮಿತ್ರರ ಗುಂಪು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>व्रात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶರೀರಾಯಾಸದಿಂದ ಜೀವಿಸುವ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

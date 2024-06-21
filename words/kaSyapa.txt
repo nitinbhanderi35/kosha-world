@@ -1,150 +1,41 @@
-bBPenWqR9exH+E26Sv8e0/eTe1tltDGZL+GtBkDAnnyBtmekfK6/Dq3MkcGtzXFEd1LQrtg==",
-      "dev": true,
-      "dependencies": {
-        "call-bind": "^1.0.7",
-        "define-properties": "^1.2.1",
-        "es-abstract": "^1.23.2",
-        "es-errors": "^1.3.0",
-        "es-object-atoms": "^1.0.0",
-        "get-intrinsic": "^1.2.4",
-        "gopd": "^1.0.1",
-        "has-symbols": "^1.0.3",
-        "internal-slot": "^1.0.7",
-        "regexp.prototype.flags": "^1.5.2",
-        "set-function-name": "^2.0.2",
-        "side-channel": "^1.0.6"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/ljharb"
-      }
-    },
-    "node_modules/string.prototype.trim": {
-      "version": "1.2.9",
-      "resolved": "https://registry.npmjs.org/string.prototype.trim/-/string.prototype.trim-1.2.9.tgz",
-      "integrity": "sha512-klHuCNxiMZ8MlsOihJhJEBJAiMVqU3Z2nEXWfWnIqjN0gEFS9J9+IxKozWWtQGcgoa1WUZzLjKPTr4ZHNFTFxw==",
-      "dev": true,
-      "dependencies": {
-        "call-bind": "^1.0.7",
-        "define-properties": "^1.2.1",
-        "es-abstract": "^1.23.0",
-        "es-object-atoms": "^1.0.0"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/ljharb"
-      }
-    },
-    "node_modules/string.prototype.trimend": {
-      "version": "1.0.8",
-      "resolved": "https://registry.npmjs.org/string.prototype.trimend/-/string.prototype.trimend-1.0.8.tgz",
-      "integrity": "sha512-p73uL5VCHCO2BZZ6krwwQE3kCzM7NKmis8S//xEC6fQonchbum4eP6kR4DLEjQFO3Wnj3Fuo8NM0kOSjVdHjZQ==",
-      "dev": true,
-      "dependencies": {
-        "call-bind": "^1.0.7",
-        "define-properties": "^1.2.1",
-        "es-object-atoms": "^1.0.0"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/ljharb"
-      }
-    },
-    "node_modules/string.prototype.trimstart": {
-      "version": "1.0.8",
-      "resolved": "https://registry.npmjs.org/string.prototype.trimstart/-/string.prototype.trimstart-1.0.8.tgz",
-      "integrity": "sha512-UXSH262CSZY1tfu3G3Secr6uGLCFVPMhIqHjlgCUtCCcgihYc/xKs9djMTMUOb2j1mVSeU8EU6NWc/iQKU6Gfg==",
-      "dev": true,
-      "dependencies": {
-        "call-bind": "^1.0.7",
-        "define-properties": "^1.2.1",
-        "es-object-atoms": "^1.0.0"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/ljharb"
-      }
-    },
-    "node_modules/strip-ansi": {
-      "version": "6.0.1",
-      "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz",
-      "integrity": "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==",
-      "dev": true,
-      "dependencies": {
-        "ansi-regex": "^5.0.1"
-      },
-      "engines": {
-        "node": ">=8"
-      }
-    },
-    "node_modules/strip-ansi-cjs": {
-      "name": "strip-ansi",
-      "version": "6.0.1",
-      "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz",
-      "integrity": "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==",
-      "dev": true,
-      "dependencies": {
-        "ansi-regex": "^5.0.1"
-      },
-      "engines": {
-        "node": ">=8"
-      }
-    },
-    "node_modules/strip-bom": {
-      "version": "3.0.0",
-      "resolved": "https://registry.npmjs.org/strip-bom/-/strip-bom-3.0.0.tgz",
-      "integrity": "sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==",
-      "dev": true,
-      "engines": {
-        "node": ">=4"
-      }
-    },
-    "node_modules/strip-json-comments": {
-      "version": "3.1.1",
-      "resolved": "https://registry.npmjs.org/strip-json-comments/-/strip-json-comments-3.1.1.tgz",
-      "integrity": "sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==",
-      "dev": true,
-      "engines": {
-        "node": ">=8"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/sindresorhus"
-      }
-    },
-    "node_modules/styled-jsx": {
-      "version": "5.1.1",
-      "resolved": "https://registry.npmjs.org/styled-jsx/-/styled-jsx-5.1.1.tgz",
-      "integrity": "sha512-pW7uC1l4mBZ8ugbiZrcIsiIvVx1UmTfw7UkC3Um2tmfUq9Bhk8IiyEIPl6F8agHgjzku6j0xQEZbfA5uSgSaCw==",
-      "dependencies": {
-        "client-only": "0.0.1"
-      },
-      "engines": {
-        "node": ">= 12.0.0"
-      },
-      "peerDependencies": {
-        "react": ">= 16.8.0 || 17.x.x || ^18.0.0-0"
-      },
-      "peerDependenciesMeta": {
-        "@babel/core": {
-          "optional": true
+{
+    "word": "kaSyapa",
+    "PE": [
+        {
+            "word": "kASyapa",
+            "eid": "3393",
+            "pagenum": 398,
+            "content": "KĀŚYAPA I¦. (KAṆVA). <dvsn n='NI'/>1) <i>General.</i> Two sages Kaśyapa and Kāśyapa are mentioned in the Purāṇas, and due to the close similarity in the names in some Purāṇas the two names are used one for the other. There is, therefore, considerable difficulty in distinguishing the one from the other and unerringly hitting upon the right person in certain contexts. <dvsn n='P'/>There is a very ancient sage the first cause or the original father of all living beings in the universe. He is described, in most of the Purāṇas, as the grandson of Brahmā and the son of Marīci. He was the husband of the original or first mothers of living beings, called Diti and Aditi. The interpretation that he was called Kaśyapa as he used to drink Kaśyam (liquor) is not founded on facts. No Purāṇa refers to him as a drunkard. <dvsn n='P'/>The sage called Kāśyapa was the foster father of Śakuntalā. The statement that he was called Kāśyapa as he was born in the dynasty of Kaśyapa is also not correct. Kaṇva was not born in the dynasty of Kaśyapa. The genealogy of Kāśyapa is as follows: <dvsn n='NI'/>2). <i>Genealogy.</i> Descended from Viṣṇu thus: Brahmā— Atri—Candra—Budha—Purūravas—Āyus—Nahuṣa— Yayāti—Puru—Janamejaya—Prācinvān—Pravīra— Namasyu—Vītabhaya—Śuṇḍu—Bahuvidha—Saṃyāti -Rahovādī—Raudrāśva—Matināra—Prītiratha— Medhātithi—Kaṇva (Kāśyapa). <dvsn n='NI'/>Medhātithi was Kaṇva's father. (Śānti Parva, Chapter 208, Verse 27). According to the Agni Purāṇa a son called Kaṇva was born (Kāśyapa) to Medhātithi, son of King Prītiratha of the Puru dynasty. But, nothing about the family matters of Kaṇva is mentioned therein. In the Mahābhārata itself the name Kāśyapa is often used instead of Kaṇva. From the above facts it may be understood that Kaṇva was born as a prince, and that later on, he became a sage. Moreover, the Agni Purāṇa says that Santurodha, the brother of Kaṇva's father, was the father of Duṣyanta. According to that Kāśyapa and Duṣyanta were the sons of brothers, Kāśyapa being that of the elder one. For the time being the above are the only reasonable inferences, and the truth has to be found out by further researches. But, one thing is certain according to the genealogy, that Kāśyapa was born twenty generations after Kaśyapa. <dvsn n='NI'/>3). <i>Kāśyapa and Takṣaka.</i> The story is told in the 2nd Skandha of Devī Bhāgavata and in the Ādi Parva of Bhārata that Takṣaka set out to bite King Parīkṣit and Kāśyapa to cure him of Takṣaka's poison, but that Takṣaka bribed Kāśyapa off his mission to save the King. But, the story as such is unfounded. It was Kaśyapa and not Kāśyapa whom Brahmā had taught the science of the treatment and cure of poison (see under Kaśyapa) and, therefore, it should be Kaśyapa whom Takṣaka bribed. <dvsn n='NI'/>4). <i>Kaśyapa and Śakuntalā.</i> See under KA. VA. <dvsn n='NI'/>5). <i>Kāśyapa and Ṛṣyaśṛṅga.</i> Father of Ṛṣyaśṛṅga was one Kāśyapa; may be Kaśyapa or Kāśyapa. The greater possibility is for Kāśyapa to be the father. (See under ṚṢYAŚṚṄGA). <dvsn n='NI'/>6). After a Yajña Viśvakarman made a land-gift to Kāśyapa once. (See under KAṆVA)."
         },
-        "babel-plugin-macros": {
-          "optional": true
+        {
+            "word": "kASyapa",
+            "eid": "3394",
+            "pagenum": 398,
+            "content": "KĀŚYAPA II¦. Priest of Vasudeva; this Kāśyapa lived for years as a good friend of the Pāṇḍavas. He is considered to be a very distinguished ascetic. (Aśvamedha Parva, Chapter 16)."
+        },
+        {
+            "word": "kASyapa",
+            "eid": "3395",
+            "pagenum": 398,
+            "content": "KĀŚYAPA III¦. Son of Sage Kaśyapa. This Kāśyapa was member of Indra's assembly. (Sabhā Parva, Chapter 7). He was present at the Yajña conducted by emperor Pṛthu."
+        },
+        {
+            "word": "kASyapa",
+            "eid": "3396",
+            "pagenum": 398,
+            "content": "KĀŚYAPA IV¦. An Agni, the son of Kaśyapa. Pāñcajaṇya was born from the five Agnis, Kāśyapa, Vasiṣṭha, Prāṇa, Aṅgiras and Cyavana, all of whom were sons of Kaśyapa. (Vana Parva, Chapter 220)."
+        },
+        {
+            "word": "kASyapa",
+            "eid": "3397",
+            "pagenum": 398,
+            "content": "KĀŚYAPA V¦. A haughty Vaiśya once felled to the ground a brahmin youth called Kāśyapa by hitting him with his chariot. (See under Indra, Para 38)."
+        },
+        {
+            "word": "kASyapa",
+            "eid": "3398",
+            "pagenum": 398,
+            "content": "KĀŚYAPA VI¦. Sons of Kaśyapa like Vibhāṇḍaka. Rājadharman, Viśvāvasu, Indra, Āditya and Vasu, other Devas and other living beings born in Kaśyapa's dynasty—all these are also called Kāśyapas."
         }
-      }
-    },
-    "node_modules/sucrase": {
-      "version": "3.35.0",
-      "resolved": "https://registry.npmjs.org/sucrase/-/sucrase-3.35.0.tgz",
-      "integrity": "sha512-8EbVDiu9iN/nESwxeSxDKe0dunta1GOlHufmSSXxMD2z2/tMZpDMpvXQGsc+ajGo8y2uYUmixaSRUc/QPoQ0GA==",
-      "dev": true,
-      "dependencies": {
-        "@jridgewell/gen-mapping": "^0.3.2",
-        "commander": "^4.0.0",
-        "glob": "^10.3.10",
-        "lines-and-columns": "^1.1.6",
+    ]
+}

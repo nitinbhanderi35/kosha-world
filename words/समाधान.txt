@@ -1,1036 +1,336 @@
-, 'composite'], ['roletype', 'structure', 'section', 'table']]
-	};
-	var _default$1E = gridRole;
-	gridRole$1.default = _default$1E;
-
-	var gridcellRole$1 = {};
-
-	Object.defineProperty(gridcellRole$1, "__esModule", {
-	  value: true
-	});
-	gridcellRole$1.default = void 0;
-	var gridcellRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null,
-	    'aria-readonly': null,
-	    'aria-required': null,
-	    'aria-selected': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'role',
-	        value: 'gridcell'
-	      }],
-	      name: 'td'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: ['row'],
-	  requiredContextRole: ['row'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'widget']]
-	};
-	var _default$1D = gridcellRole;
-	gridcellRole$1.default = _default$1D;
-
-	var groupRole$1 = {};
-
-	Object.defineProperty(groupRole$1, "__esModule", {
-	  value: true
-	});
-	groupRole$1.default = void 0;
-	var groupRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-activedescendant': null,
-	    'aria-disabled': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'details'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'fieldset'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'optgroup'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1C = groupRole;
-	groupRole$1.default = _default$1C;
-
-	var headingRole$1 = {};
-
-	Object.defineProperty(headingRole$1, "__esModule", {
-	  value: true
-	});
-	headingRole$1.default = void 0;
-	var headingRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-level': '2'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'h1'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h2'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h3'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h4'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h5'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'h6'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-level': '2'
-	  },
-	  superClass: [['roletype', 'structure', 'sectionhead']]
-	};
-	var _default$1B = headingRole;
-	headingRole$1.default = _default$1B;
-
-	var imgRole$1 = {};
-
-	Object.defineProperty(imgRole$1, "__esModule", {
-	  value: true
-	});
-	imgRole$1.default = void 0;
-	var imgRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['set'],
-	        name: 'alt'
-	      }],
-	      name: 'img'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'alt'
-	      }],
-	      name: 'img'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'imggroup'
-	    },
-	    module: 'DTB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1A = imgRole;
-	imgRole$1.default = _default$1A;
-
-	var insertionRole$1 = {};
-
-	Object.defineProperty(insertionRole$1, "__esModule", {
-	  value: true
-	});
-	insertionRole$1.default = void 0;
-	var insertionRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1z = insertionRole;
-	insertionRole$1.default = _default$1z;
-
-	var linkRole$1 = {};
-
-	Object.defineProperty(linkRole$1, "__esModule", {
-	  value: true
-	});
-	linkRole$1.default = void 0;
-	var linkRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'href'
-	      }],
-	      name: 'a'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'href'
-	      }],
-	      name: 'area'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'href'
-	      }],
-	      name: 'link'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command']]
-	};
-	var _default$1y = linkRole;
-	linkRole$1.default = _default$1y;
-
-	var listRole$1 = {};
-
-	Object.defineProperty(listRole$1, "__esModule", {
-	  value: true
-	});
-	listRole$1.default = void 0;
-	var listRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'menu'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'ol'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'ul'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['listitem']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1x = listRole;
-	listRole$1.default = _default$1x;
-
-	var listboxRole$1 = {};
-
-	Object.defineProperty(listboxRole$1, "__esModule", {
-	  value: true
-	});
-	listboxRole$1.default = void 0;
-	var listboxRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-invalid': null,
-	    'aria-multiselectable': null,
-	    'aria-readonly': null,
-	    'aria-required': null,
-	    'aria-orientation': 'vertical'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['>1'],
-	        name: 'size'
-	      }, {
-	        name: 'multiple'
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['>1'],
-	        name: 'size'
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'multiple'
-	      }],
-	      name: 'select'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'datalist'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'list'
-	    },
-	    module: 'ARIA'
-	  }, {
-	    concept: {
-	      name: 'select'
-	    },
-	    module: 'XForms'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['option', 'group'], ['option']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
-	};
-	var _default$1w = listboxRole;
-	listboxRole$1.default = _default$1w;
-
-	var listitemRole$1 = {};
-
-	Object.defineProperty(listitemRole$1, "__esModule", {
-	  value: true
-	});
-	listitemRole$1.default = void 0;
-	var listitemRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-level': null,
-	    'aria-posinset': null,
-	    'aria-setsize': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      constraints: ['direct descendant of ol, ul or menu'],
-	      name: 'li'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'item'
-	    },
-	    module: 'XForms'
-	  }],
-	  requireContextRole: ['directory', 'list'],
-	  requiredContextRole: ['directory', 'list'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1v = listitemRole;
-	listitemRole$1.default = _default$1v;
-
-	var logRole$1 = {};
-
-	Object.defineProperty(logRole$1, "__esModule", {
-	  value: true
-	});
-	logRole$1.default = void 0;
-	var logRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-live': 'polite'
-	  },
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1u = logRole;
-	logRole$1.default = _default$1u;
-
-	var mainRole$1 = {};
-
-	Object.defineProperty(mainRole$1, "__esModule", {
-	  value: true
-	});
-	mainRole$1.default = void 0;
-	var mainRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'main'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1t = mainRole;
-	mainRole$1.default = _default$1t;
-
-	var marqueeRole$1 = {};
-
-	Object.defineProperty(marqueeRole$1, "__esModule", {
-	  value: true
-	});
-	marqueeRole$1.default = void 0;
-	var marqueeRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1s = marqueeRole;
-	marqueeRole$1.default = _default$1s;
-
-	var mathRole$1 = {};
-
-	Object.defineProperty(mathRole$1, "__esModule", {
-	  value: true
-	});
-	mathRole$1.default = void 0;
-	var mathRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'math'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1r = mathRole;
-	mathRole$1.default = _default$1r;
-
-	var menuRole$1 = {};
-
-	Object.defineProperty(menuRole$1, "__esModule", {
-	  value: true
-	});
-	menuRole$1.default = void 0;
-	var menuRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-orientation': 'vertical'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'MENU'
-	    },
-	    module: 'JAPI'
-	  }, {
-	    concept: {
-	      name: 'list'
-	    },
-	    module: 'ARIA'
-	  }, {
-	    concept: {
-	      name: 'select'
-	    },
-	    module: 'XForms'
-	  }, {
-	    concept: {
-	      name: 'sidebar'
-	    },
-	    module: 'DTB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['menuitem', 'group'], ['menuitemradio', 'group'], ['menuitemcheckbox', 'group'], ['menuitem'], ['menuitemcheckbox'], ['menuitemradio']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
-	};
-	var _default$1q = menuRole;
-	menuRole$1.default = _default$1q;
-
-	var menubarRole$1 = {};
-
-	Object.defineProperty(menubarRole$1, "__esModule", {
-	  value: true
-	});
-	menubarRole$1.default = void 0;
-	var menubarRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-orientation': 'horizontal'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'toolbar'
-	    },
-	    module: 'ARIA'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['menuitem', 'group'], ['menuitemradio', 'group'], ['menuitemcheckbox', 'group'], ['menuitem'], ['menuitemcheckbox'], ['menuitemradio']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'composite', 'select', 'menu'], ['roletype', 'structure', 'section', 'group', 'select', 'menu']]
-	};
-	var _default$1p = menubarRole;
-	menubarRole$1.default = _default$1p;
-
-	var menuitemRole$1 = {};
-
-	Object.defineProperty(menuitemRole$1, "__esModule", {
-	  value: true
-	});
-	menuitemRole$1.default = void 0;
-	var menuitemRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-posinset': null,
-	    'aria-setsize': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'MENU_ITEM'
-	    },
-	    module: 'JAPI'
-	  }, {
-	    concept: {
-	      name: 'listitem'
-	    },
-	    module: 'ARIA'
-	  }, {
-	    concept: {
-	      name: 'menuitem'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'option'
-	    },
-	    module: 'ARIA'
-	  }],
-	  requireContextRole: ['group', 'menu', 'menubar'],
-	  requiredContextRole: ['group', 'menu', 'menubar'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command']]
-	};
-	var _default$1o = menuitemRole;
-	menuitemRole$1.default = _default$1o;
-
-	var menuitemcheckboxRole$1 = {};
-
-	Object.defineProperty(menuitemcheckboxRole$1, "__esModule", {
-	  value: true
-	});
-	menuitemcheckboxRole$1.default = void 0;
-	var menuitemcheckboxRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'menuitem'
-	    },
-	    module: 'ARIA'
-	  }],
-	  requireContextRole: ['group', 'menu', 'menubar'],
-	  requiredContextRole: ['group', 'menu', 'menubar'],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-checked': null
-	  },
-	  superClass: [['roletype', 'widget', 'input', 'checkbox'], ['roletype', 'widget', 'command', 'menuitem']]
-	};
-	var _default$1n = menuitemcheckboxRole;
-	menuitemcheckboxRole$1.default = _default$1n;
-
-	var menuitemradioRole$1 = {};
-
-	Object.defineProperty(menuitemradioRole$1, "__esModule", {
-	  value: true
-	});
-	menuitemradioRole$1.default = void 0;
-	var menuitemradioRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'menuitem'
-	    },
-	    module: 'ARIA'
-	  }],
-	  requireContextRole: ['group', 'menu', 'menubar'],
-	  requiredContextRole: ['group', 'menu', 'menubar'],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-checked': null
-	  },
-	  superClass: [['roletype', 'widget', 'input', 'checkbox', 'menuitemcheckbox'], ['roletype', 'widget', 'command', 'menuitem', 'menuitemcheckbox'], ['roletype', 'widget', 'input', 'radio']]
-	};
-	var _default$1m = menuitemradioRole;
-	menuitemradioRole$1.default = _default$1m;
-
-	var meterRole$1 = {};
-
-	Object.defineProperty(meterRole$1, "__esModule", {
-	  value: true
-	});
-	meterRole$1.default = void 0;
-	var meterRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-valuetext': null,
-	    'aria-valuemax': '100',
-	    'aria-valuemin': '0'
-	  },
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-valuenow': null
-	  },
-	  superClass: [['roletype', 'structure', 'range']]
-	};
-	var _default$1l = meterRole;
-	meterRole$1.default = _default$1l;
-
-	var navigationRole$1 = {};
-
-	Object.defineProperty(navigationRole$1, "__esModule", {
-	  value: true
-	});
-	navigationRole$1.default = void 0;
-	var navigationRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'nav'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1k = navigationRole;
-	navigationRole$1.default = _default$1k;
-
-	var noneRole$1 = {};
-
-	Object.defineProperty(noneRole$1, "__esModule", {
-	  value: true
-	});
-	noneRole$1.default = void 0;
-	var noneRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: [],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: []
-	};
-	var _default$1j = noneRole;
-	noneRole$1.default = _default$1j;
-
-	var noteRole$1 = {};
-
-	Object.defineProperty(noteRole$1, "__esModule", {
-	  value: true
-	});
-	noteRole$1.default = void 0;
-	var noteRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1i = noteRole;
-	noteRole$1.default = _default$1i;
-
-	var optionRole$1 = {};
-
-	Object.defineProperty(optionRole$1, "__esModule", {
-	  value: true
-	});
-	optionRole$1.default = void 0;
-	var optionRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-checked': null,
-	    'aria-posinset': null,
-	    'aria-setsize': null,
-	    'aria-selected': 'false'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'item'
-	    },
-	    module: 'XForms'
-	  }, {
-	    concept: {
-	      name: 'listitem'
-	    },
-	    module: 'ARIA'
-	  }, {
-	    concept: {
-	      name: 'option'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-selected': 'false'
-	  },
-	  superClass: [['roletype', 'widget', 'input']]
-	};
-	var _default$1h = optionRole;
-	optionRole$1.default = _default$1h;
-
-	var paragraphRole$1 = {};
-
-	Object.defineProperty(paragraphRole$1, "__esModule", {
-	  value: true
-	});
-	paragraphRole$1.default = void 0;
-	var paragraphRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$1g = paragraphRole;
-	paragraphRole$1.default = _default$1g;
-
-	var presentationRole$1 = {};
-
-	Object.defineProperty(presentationRole$1, "__esModule", {
-	  value: true
-	});
-	presentationRole$1.default = void 0;
-	var presentationRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure']]
-	};
-	var _default$1f = presentationRole;
-	presentationRole$1.default = _default$1f;
-
-	var progressbarRole$1 = {};
-
-	Object.defineProperty(progressbarRole$1, "__esModule", {
-	  value: true
-	});
-	progressbarRole$1.default = void 0;
-	var progressbarRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-valuetext': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'progress'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'status'
-	    },
-	    module: 'ARIA'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'range'], ['roletype', 'widget']]
-	};
-	var _default$1e = progressbarRole;
-	progressbarRole$1.default = _default$1e;
-
-	var radioRole$1 = {};
-
-	Object.defineProperty(radioRole$1, "__esModule", {
-	  value: true
-	});
-	radioRole$1.default = void 0;
-	var radioRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-checked': null,
-	    'aria-posinset': null,
-	    'aria-setsize': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'radio'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-checked': null
-	  },
-	  superClass: [['roletype', 'widget', 'input']]
-	};
-	var _default$1d = radioRole;
-	radioRole$1.default = _default$1d;
-
-	var radiogroupRole$1 = {};
-
-	Object.defineProperty(radiogroupRole$1, "__esModule", {
-	  value: true
-	});
-	radiogroupRole$1.default = void 0;
-	var radiogroupRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-invalid': null,
-	    'aria-readonly': null,
-	    'aria-required': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'list'
-	    },
-	    module: 'ARIA'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['radio']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'composite', 'select'], ['roletype', 'structure', 'section', 'group', 'select']]
-	};
-	var _default$1c = radiogroupRole;
-	radiogroupRole$1.default = _default$1c;
-
-	var regionRole$1 = {};
-
-	Object.defineProperty(regionRole$1, "__esModule", {
-	  value: true
-	});
-	regionRole$1.de
+{
+    "word": "समाधान",
+    "ABCH": [
+        {
+            "word": "समाधान",
+            "linga": "क्ली",
+            "pagenum": "52",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4119",
+            "group": "1751",
+            "synonyms": [
+                "अवधान",
+                "प्रणिधान",
+                "समाधि"
+            ],
+            "content": "अवधानसमाधानप्रणिधानानि तु समाधौ स्युः ॥ १३७८ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "समाधान",
+            "eid": "29388",
+            "pagenum": 1096,
+            "content": "समाधानं¦ <b>1</b> Putting together, <lbinfo n='unit+ing'/> uniting. <b>--2</b> Fixing the mind in <lbinfo n='ab+stract'/> abstract contemplation on the true nature of spirit. <b>--3</b> Profound or abstract meditation, deep <lbinfo n='contem+plation'/> contemplation. <b>--4</b> Intentness. <b>--5</b> <lbinfo n='Steadi+ness'/> Steadiness, composure, peace (as of mind), satisfaction; चित्तस्य समाधानं, बुद्धेः समाधानं <ls>G. L. 18.</ls> <b>--6</b> Clearing up a doubt, replying to the <lbinfo n='Pūrvapa+ksha'/> Pūrvapaksha; answering an objection. <b>--7</b> Agreeing, promising. <b>--8</b> (In dramas) A leading incident which unexpectedly gives rise to the whole plot."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "समाधान",
+            "eid": "15614",
+            "pagenum": 1011,
+            "content": "समाधान¦ <i>samādhāna,</i> <ab>i. e.</ab> <i>sam-ā</i> <i>-dhā + ana,</i> <ab>n.</ab> <b>1.</b> Restraining the senses and confining the mind to contemplation on the true nature of spirit, <ls>Vedāntas.</ls> in <ls>Chr.</ls> 203, 13, <ab>cf.</ab> 18; contemplation, <ls>Daśak.</ls> in <ls>Chr.</ls> 182, 5. <b>2.</b> Promising, declaring."
+        }
+    ],
+    "BHS": [
+        {
+            "word": "समाधान",
+            "eid": "16035",
+            "pagenum": 568,
+            "content": "<b>samādhāna</b>¦, <lex>nt.</lex>, (<b>1</b>) <ab>acc.</ab> to <lang>Tib.</lang> <tib>lan gdab pa</tib>, <i>making answer, reply</i>: <ls>Mvy</ls> 〔4448〕; <ab>prob.</ab> in sense of refutation of an opponentʼs argument by way of <i>establishing</i> oneʼs own view (<ab>cf.</ab> <ls>BR</ls> <ab>s.v.</ab> 5); in a section dealing with terms of logic and disputation, after parihāra = <lang>Tib.</lang> <tib>lan</tib>; (<b>2</b>) as in <lang>Skt.</lang> (misunderstood by <ls>Burnouf</ls> and <ls>Kern</ls>), <i>composing</i> or <i>concentrating the mind</i> or <i>attention</i>: sarvadharma-(here one <ab>ms.</ab>, supported by <lang>Tib.</lang>, inserts sarva <ab>sec.</ab> <lex>m.</lex> marginally, <ls>Kern SBE</ls> 〔21.250 n. 4〕)-sattva-°na-samādhi-sahasraikakṣaṇapratilābhinī <ls>SP</ls> 〔263.5〕, <i>in one moment she attained a thousand samādhis of concentration on all dharmas and (all) creatures</i>; so <lang>Tib.</lang> <tib>chos thams cad daṅ sems can thams cad la mñam par bzhag paḥi</tib> (<ab>cf.</ab> <tib>mñam par ḥjog go</tib> = samādhīyate <ls>Mvy</ls> 〔1589〕) <tib>tiṅ ṅe ḥdzin</tib> <ab>etc.</ab>"
+        }
+    ],
+    "BUR": [
+        {
+            "word": "समाधान",
+            "eid": "17725",
+            "pagenum": 683,
+            "content": "समाधान¦ <i>samādhāna</i> <ab>n.</ab> (<i>ā; dhā</i>) méditation <lbinfo n='4'/> pieuse."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "समाधान",
+            "eid": "35259",
+            "pagenum": 592,
+            "content": "समाधान¦ <lex>n.</lex> placing, setting up (<ab>esp.</ab> the sacred fire), arranging, settling, composing, making up, propitiating, reconciling; attention, meditation, devotion."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "समाधान",
+            "eid": "26418",
+            "pagenum": 477,
+            "content": "समाधान¦ <i>n.</i> das Anlegen <i>(des Feuers)</i>, das Zurechtbringen, Gutmachen; Aufmerksamkeit, <lbinfo n='8'/> Andacht."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "समाधान",
+            "eid": "39765.1",
+            "pagenum": 759,
+            "content": "samADAna¦ <i>n.</i> 1. The act of collecting or composing; 2. restraining the senses and fixing the mind in abstract contemplation on the true nature of spirit; 3. contemplation, profound absorption; 4. contentment, satisfaction, peace of mind, समाधान बुद्धेरथ खलु तिरोधानमधियाम् <ls>G.L.</ls>18; 5. clearing up a doubt, answering an objection, replying to the <i>Pūrva paksha</i> (in logic); 6. agreeing, promising; 7. a leading incident which unexpectedly gives rise to the whole plot (in the drama)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "समाधान",
+            "eid": "234142",
+            "pagenum": "1159,3",
+            "content": "सम्-आधान ¦ <lex>n.</lex> putting together, laying, adding (<ab>esp.</ab> fuel to fire), <ls>Gobh.</ls><info lex='n'/>"
+        },
+        {
+            "word": "समाधान",
+            "eid": "234143",
+            "pagenum": "1159,3",
+            "content": "¦ composing, adjusting, settling, and<info lex='inh'/>"
+        },
+        {
+            "word": "समाधान",
+            "eid": "234144",
+            "pagenum": "1159,3",
+            "content": "¦ reconciliation, <ls>MBh.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समाधान",
+            "eid": "234145",
+            "pagenum": "1159,3",
+            "content": "¦ intentness, attention (<ab>acc.</ab> with √ कृ, ‘to attend’), eagerness, <ls>Śaṃk.</ls>; <ls>Pañcar.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समाधान",
+            "eid": "234146",
+            "pagenum": "1159,3",
+            "content": "¦ fixing the mind in abstract contemplation (as on the true nature of spirit), religious meditation, profound absorption or contemplation, <ls>MBh.</ls>; <ls>Kāv.</ls>; <ls>Vedāntas.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समाधान",
+            "eid": "234147",
+            "pagenum": "1159,3",
+            "content": "¦ justification of a statement, proof (<ab>cf.</ab> -रूपक), <ls>Sarvad.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समाधान",
+            "eid": "234148",
+            "pagenum": "1159,3",
+            "content": "¦ (in logic) replying to the <s1 slp1='pUrva-pakza'>Pūrva-pakṣa</s1>, <ls>MW.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समाधान",
+            "eid": "234149",
+            "pagenum": "1159,3",
+            "content": "¦ (in <ab>dram.</ab>) fixing the germ or leading incident (which gives rise to the whole plot, <ab>e.g.</ab> <ls>Śak. i, 27</ls>)<info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "समाधान",
+            "eid": "49967",
+            "pagenum": 1072,
+            "content": "<i>Sam-ādhāna, am,</i>¦ n. the act of putting together or collecting or composing; fixing the mind in abstract contemplation (as on the true nature of spirit), religious meditation, profound absorption or contemplation (in general); intentness, attention, eagerness; clearing up a doubt, answering an objection, replying to the Pūrva-pakṣa (in logic); agreeing, promising; declaring, declaration (in the drama), a leading incident (described as one which unexpectedly gives rise to the whole plot). <i>—Samādhāna-</i> <i>mātra, am,</i> n. mere contemplation, only religious meditation."
+        }
+    ],
+    "PW": [
+        {
+            "word": "समाधान",
+            "eid": "120224",
+            "pagenum": 7,
+            "content": "समाधान¦ <lex>n.</lex> <dvsn n='1'>— 1〉 <i>das Anlegen</i>. अग्नि° <i>des Feuers</i> <ls>GOBH. 1,1,14</ls>. <dvsn n='1'>— 2〉 in der Dramatik <i>das Stecken des Keims</i> बीज <dvsn n='1'>— 3〉 das Beilegen, in Ordnung Bringen, Gutmachen. <dvsn n='1'>— 4〉 das Versöhnen, Aussöhnen. <dvsn n='1'>— 5〉 Rechtfertigung einer Behauptung, Beweisführung. <dvsn n='1'>— 6〉 <i>das Aufmerken, Aufmerksamkeit</i>. <ab>Acc.</ab> mit कर् <i>aufmerken</i>. <dvsn n='1'>— 7〉 <i>die auf das Höchste gerichtete Aufmerksamkeit, Andacht</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समाधान",
+            "eid": "105538",
+            "pagenum": 7,
+            "content": "समाधान¦ (wie eben) <lex>n.</lex> <dvsn n='1'> 1) <i>das Anlegen des Feuers</i> (= आधान) <ls>GOBH. 1, 1, 13.</ls> <dvsn n='1'>— 2) in der Dramatik <i>das Stecken des Keimes</i> (बीज) <ls>BHAR. NĀṬYAŚ. 19,58. 72.</ls> <ls>DAŚAR. 1,26.</ls> <ls>SĀH. D. 345. 164,15.</ls> <ls>PRATĀPAR. 21,a,5.</ls> <dvsn n='1'>— 3) <i>das Beilegen, in - Ordnung - Bringen, Gutmachen</i>: कार्य° <ls>R. 4, 42, 8.</ls> <ls n='R.'>5, 53, 11.</ls> <ls n='R. 5,'>69, 9.</ls> <ls n='R.'>6, 93, 31.</ls> अर्थदूषणं तु प्रचुरतरार्थदानाच्छक्यसमाधानम् <ls>KULL.</ls> zu <ls>M. 7, 52.</ls> <dvsn n='1'>— 4) <i>das Versöhnen, Aussöhnen</i>: भार्यायाः <ls>MBH. 12, 9829.</ls> स्त्रीणां पतिसमाधानं काङ्क्षितम् <ls n='MBH.'>14, 2739.</ls> <dvsn n='1'>— 5) <i>Rechtfertigung einer Behauptung, Beweisführung</i> <ls>Schol.</ls> zu <ls>KAP. 1, 91. 151. 159.</ls> <ls>SARVADARŚANAS. 129, 3.</ls> <ls>SĀH. D. 324, 5.</ls> <ls>KUSUM. 7, 6.</ls> als Redefigur: मुखेन्दुरपि ते चण्डि मां निर्दहति निर्दयम् । भाग्यदोषान्ममैवेति (dieses soll die kühne Behauptung rechtfertigen) तत्समाधानरूपकम् ॥ <ls>KĀVYĀD. 2, 92.</ls> <dvsn n='1'>— 6) <i>das Aufmerken, Aufmerksamkeit</i>: बुद्धि° <ls>ŚAṂK.</ls> zu <ls>CHĀND. UP. S. 39.</ls> <ls>Verz. d. Oxf. H. 266,a,37.</ls> समाधानं कर् <i>aufmerken</i> <ls>Spr. (II) 4560.</ls> <ls>PAÑCAR. 1, 7, 70.</ls> <i>die auf das Höchste gerichtete Aufmerksamkeit, tiefe Andacht</i> <ls>H. 1378.</ls> <ls>HALĀY. 1, 128.</ls> चित्तैकाग्र्यं तु सल्लक्ष्ये (so lesen wir) समाधानमिति स्मृतम् <ls>Verz. d. Oxf. H. 223,b,No. 544, Z. 18.</ls> <ls>VEDĀNTAS. (Allah.) No. 12.</ls> <ls>MBH. 12, 356.</ls> <ls>AṢṬĀV. 17, 18.</ls> <ls>Spr. (II) 2810.</ls> <ls>PRAB. 115, 10.</ls> <ls>DAŚAK. 64, 6.</ls> <ls>BHĀG. P. 3, 28, 6. 11, 29, 2.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समाधान",
+            "eid": "42637",
+            "pagenum": 763,
+            "content": "समाधान¦ n. (-नं) 1. Religious meditation, restraining the mind from external objects, and fixing it in profound absorption. 2. Promising, declaring. 3. (In the drama,) The leading incident, that which gives rise sometimes unexpectedly to the whole plot. E. सम् intensitive, आङ् before धा to have or hold, aff. ल्युट्ः see the last."
+        }
+    ],
+    "STC": [
+        {
+            "word": "समाधान",
+            "eid": "21796",
+            "pagenum": 793,
+            "content": "<b>sam-ādhāna-</b>¦ <ab>nt.</ab> fait d'arranger, de régler, réconciliation ; attention, concentration <lbinfo n='4'/> mentale, absorption de l'esprit ; <ab>not.</ab> méditation religieuse ; (<ab>rhét.</ab>) fait de poser le germe de l'intrigue."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "समाधान",
+            "eid": "40606",
+            "pagenum": 896,
+            "content": "समाधान¦ n. (-नं) .²1 Religious meditation, restraining the mind from external objects, and fixing it in profound absorption. .²2 Promising, declaring. .²3 (In the drama,) The leading incident, that which gives rise sometimes unexpectedly to the whole plot. .E. सम् intensitive, and आङ् before धा to have or hold, aff. ल्युट्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "समाधान",
+            "eid": "40325",
+            "pagenum": 817,
+            "content": "समा_धान¦ (नं) 1. <i>n.</i> Religious meditation; abstraction of mind; promising; leading incident in a drama."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समाधान",
+            "eid": "37939",
+            "pagenum": "5-271-b",
+            "content": "समाधानं¦, क्ली, (सम् + आ + धा + ल्युट् ।) ब्रह्मणि मनःस्थिरीकरणम् । चित्तैकाग्रम् । तत्पर्य्यायः । अवधानम् २ प्रणिधानम् ३ समाधिः ४ । इति हेमचन्द्रः ॥ निगृहीतस्य मनसः श्रवणादौ तदनुगुणविषये च समाधिः समाधानम् । इति वेदान्तसारः ॥ इदानीं समाधानं लक्षयति । निगृहीतस्येति । शब्दादिविषयेभ्यो निगृहीतस्यान्तःकरणस्य श्रवणादौ तदनुगुणेषु तदुपकारकेषु अमानित्वादिसाधनविषयेषु समाधिनैरन्तर्य्येण तच्चिन्तनं समाधानमित्यर्थः । इति तट्टीकासुबोधनी ॥ (यथा, भागवते । ३ । २८ । ६ । “स्वधिष्ण्यानामेकदेशे मनसा प्राणधारणा । वैकुण्ठलीलाभिध्यानं समाधानं तथात्मनः ॥”) पूर्व्वपक्षस्योत्तरम् । इति लोकप्रसिद्धम् ॥ (नाटकाङ्गविशेषः । यथा, साहित्यदर्पणे । ६ । ३३८ । “उपक्षेपः परिकरः परिन्यासो विजोभनम् । युक्तिः प्राप्तिः समाधानं विधानं परिभावना । उद्भेदः करणं मेद एतान्यङ्गानि वै मुखे ॥” तल्लक्षणादिकं यथा, तत्रैव । ६ । ३४५ । “बीजस्यागमनं यत्त तत् समाधानमुच्यते । यथा, वेणीसंहारे । नेपथ्ये भो भो विराटद्रुपदप्रभृतयः ! श्रूयताम् । ‘यत् सत्यव्रतभङ्गभीरुमनसा यत्नेन मन्दीकृतं यद्विस्मर्त्तुमपीहितं शमवता शान्तिं कुलस्येच्छता । तद्द्यूतारणिसम्भृतं नृपसुताकेशाम्बराकर्षणैः क्रोधज्योतिरिदं महत् कुरुबले यौधिष्ठिरं जृम्भते ॥’ अत्र ‘सुस्था भवन्ति मयि जीवतीति’ आदिबीजस्य प्रधाननायकाभिमतत्वेन सम्यगाहितत्वात् समाधानम् ॥” * ॥)"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम् + आ + धा + ल्युट् 'साथ साथ रहना, मिलाना'"
+        },
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम् + आ + धा + ल्युट् ब्रह्म के गुणों का मन से चिन्तन करना"
+        },
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम् + आ + धा + ल्युट् 'भावचिन्तन, गहन मनन'"
+        },
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम् + आ + धा + ल्युट् एकनिष्ठता"
+        },
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम् + आ + धा + ल्युट् 'स्थैर्य, स्वस्थता (मन की) शान्ति, सन्तोष'"
+        },
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम् + आ + धा + ल्युट् 'संदेहृनिवारण करना, पूर्वपक्ष का उत्तर देना, आक्षेप का उत्तर देना'"
+        },
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम् + आ + धा + ल्युट् 'सहमत होना, प्रतिज्ञा करना'"
+        },
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम् + आ + धा + ल्युट् मुख्य घटना जिस पर नाटक की पूर्ण वस्तुकथा अवलंबित है"
+        },
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम्+धा+ल्युट् प्रमाण"
+        },
+        {
+            "word": "समाधान",
+            "content": "समाधानम् नपुं. -  सम्+धा+ल्युट् 'समझौता कर लेना,समस्या का हल कर लेना'"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "समाधान",
+            "content": "समाधान, समाधि, reply to remove the objection; conclusion."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸರಿಯಾಗಿ ಸ್ವೀಕರಿಸುವುದು \\/ಸಂಪೂರ್ಣವಾಗಿ ತೆಗೆದುಕೊಳ್ಳುವುದು",
+            "निष्पत्तिः": "सम् + आ + डुदाञ् (दाने)'ल्युट्' (३-३-११५)",
+            "content": ""
+        },
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಯೋಗ್ಯವಾದ ದಾನವನ್ನು ಸ್ವೀಕರಿಸುವುದು",
+            "content": ""
+        },
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಬೌದ್ಧರ ನಿತ್ಯಕರ್ಮಾಚರಣೆ",
+            "विस्तारः": "'समादानं समीचीनग्रहणे सौगताह्निके'मेदि०",
+            "content": ""
+        },
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸರಿಯಾಗಿ ಇಡುವುದು \\/ಸರಿಯಾದ ರೀತಿಯಲ್ಲಿ ಇರಿಸುವುದು",
+            "निष्पत्तिः": "सम् + आ + डुधाञ् (धारणपोषणयोः)'ल्युट्' (३-३-११५)",
+            "content": ""
+        },
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಚಿತ್ತೈಕಾಗ್ರತೆ \\/ಪರಮಾತ್ಮನಲ್ಲಿ ಒಂದೇ ಮನಸ್ಸನ್ನು ಇಟ್ಟಿರುವುದು",
+            "content": ""
+        },
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ನಿಶ್ಚಲವಾದ ಚಿತ್ತದಿಂದ ತಪಸ್ಸನ್ನಾಚರಿಸುವುದು",
+            "content": ""
+        },
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಚಿತ್ತಸ್ವಾಸ್ಥ್ಯ \\/ಮನಸ್ಸಿನ ನೆಮ್ಮದಿ",
+            "content": ""
+        },
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸಂದೇಹವನ್ನು ಪರಿಹರಿಸುವುದು \\/ಮಾಡಿದ ಪೂರ್ವಪಕ್ಷಕ್ಕೆ ಸಮಂಜಸವಾಗಿ ಉತ್ತರ ಹೇಳುವುದು",
+            "content": ""
+        },
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸಮ್ಮತಿ \\/ಒಪ್ಪಿಗೆ",
+            "content": ""
+        },
+        {
+            "word": "समाधान",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವಿವಾದವನ್ನು ನಿಲ್ಲಿಸುವುದು",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "समाधान",
+            "linga": "N",
+            "artha": "सावधानता",
+            "synonyms": [
+                "अवधान",
+                "समाधान",
+                "प्रणिधान"
+            ],
+            "num": "1.5.2",
+            "text": "धीर्धारणावती मेधा सङ्कल्पः कर्म मानसम् । अवधानं समाधानं प्रणिधानं तथैव च ॥",
+            "content": ""
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "समाधान",
+            "content": "<H2><h><key1>samADAna</key1><key2>sam-ADAna</key2></h><body><s>sam-ADAna</s>   <lex>n.</lex> putting together, laying, adding (<ab>esp.</ab> fuel to fire), <ls>Gobh.</ls><info lex=\"n\" /></body><tail><L>234142</L><pc>1159,3</pc></tail></H2>\n <H2A><h><key1>samADAna</key1><key2>sam-ADAna</key2></h><body>  composing, adjusting, settling, and<info lex=\"inh\" /></body><tail><L>234143</L><pc>1159,3</pc></tail></H2A>\n <H2A><h><key1>samADAna</key1><key2>sam-ADAna</key2></h><body>  reconciliation, <ls>MBh.</ls><info lex=\"inh\" /></body><tail><L>234144</L><pc>1159,3</pc></tail></H2A>\n <H2A><h><key1>samADAna</key1><key2>sam-ADAna</key2></h><body>  intentness, attention (<ab>acc.</ab> with √ <s>kf</s>, ‘to attend’), eagerness, <ls>Śaṃk.</ls>; <ls>Pañcar.</ls><info lex=\"inh\" /></body><tail><L>234145</L><pc>1159,3</pc></tail></H2A>\n <H2A><h><key1>samADAna</key1><key2>sam-ADAna</key2></h><body>  fixing the mind in abstract contemplation (as on the true nature of spirit), religious meditation, profound absorption or contemplation, <ls>MBh.</ls>; <ls>Kāv.</ls>; <ls>Vedāntas.</ls><info lex=\"inh\" /></body><tail><L>234146</L><pc>1159,3</pc></tail></H2A>\n <H2A><h><key1>samADAna</key1><key2>sam-ADAna</key2></h><body>  justification of a statement, proof (<ab>cf.</ab> <s>-rUpaka</s>), <ls>Sarvad.</ls><info lex=\"inh\" /></body><tail><L>234147</L><pc>1159,3</pc></tail></H2A>\n <H2A><h><key1>samADAna</key1><key2>sam-ADAna</key2></h><body>  (in logic) replying to the <s1 slp1=\"pUrva-pakza\">Pūrva-pakṣa</s1>, <ls>MW.</ls><info lex=\"inh\" /></body><tail><L>234148</L><pc>1159,3</pc></tail></H2A>\n <H2A><h><key1>samADAna</key1><key2>sam-ADAna</key2></h><body>  (in <ab>dram.</ab>) fixing the germ or leading incident (which gives rise to the whole plot, <ab>e.g.</ab> <ls>Śak. i, 27</ls>)<info lex=\"inh\" /></body><tail><L>234149</L><pc>1159,3</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समाधान",
+            "content": "<H1><h><key1>samADAna</key1><key2>samADAna</key2></h><body><s>samADAna</s>  <div n=\"1\">n. (<s>-naM</s>) </div><div n=\"2\"> 1. Religious meditation, restraining the mind from <lb />external objects, and fixing it in profound absorption. </div><div n=\"2\"> 2. Promising, <lb />declaring. </div><div n=\"2\"> 3. (In the drama,) The leading incident, that which <lb />gives rise sometimes unexpectedly to the whole plot.</div><div n=\"E\"> E. <s>sam</s> in- <lb />tensitive, <s>AN</s> before <s>DA</s> to have or hold, aff. <s>lyuwH</s> see the last.</div></body><tail><L>42637</L><pc>763-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "समाधान",
+            "content": "<span lang=\"sa\">समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸರಿಯಾಗಿ ಸ್ವೀಕರಿಸುವುದು /ಸಂಪೂರ್ಣವಾಗಿ ತೆಗೆದುಕೊಳ್ಳುವುದು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>सम् + आ + डुदाञ् (दाने) - \"ल्युट्\" (३-३-११५)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಯೋಗ್ಯವಾದ ದಾನವನ್ನು ಸ್ವೀಕರಿಸುವುದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬೌದ್ಧರ ನಿತ್ಯಕರ್ಮಾಚರಣೆ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"समादानं समीचीनग्रहणे सौगताह्निके\" - मेदि०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸರಿಯಾಗಿ ಇಡುವುದು /ಸರಿಯಾದ ರೀತಿಯಲ್ಲಿ ಇರಿಸುವುದು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>सम् + आ + डुधाञ् (धारणपोषणयोः) - \"ल्युट्\" (३-३-११५)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚಿತ್ತೈಕಾಗ್ರತೆ /ಪರಮಾತ್ಮನಲ್ಲಿ ಒಂದೇ ಮನಸ್ಸನ್ನು ಇಟ್ಟಿರುವುದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನಿಶ್ಚಲವಾದ ಚಿತ್ತದಿಂದ ತಪಸ್ಸನ್ನಾಚರಿಸುವುದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚಿತ್ತಸ್ವಾಸ್ಥ್ಯ /ಮನಸ್ಸಿನ ನೆಮ್ಮದಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಂದೇಹವನ್ನು ಪರಿಹರಿಸುವುದು /ಮಾಡಿದ ಪೂರ್ವಪಕ್ಷಕ್ಕೆ ಸಮಂಜಸವಾಗಿ ಉತ್ತರ ಹೇಳುವುದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಮ್ಮತಿ /ಒಪ್ಪಿಗೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समाधान<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿವಾದವನ್ನು ನಿಲ್ಲಿಸುವುದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

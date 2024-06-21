@@ -1,163 +1,41 @@
-sion) {
-					logger.log(
-						`Restored pack from ${cacheLocation}${this._extension}, but version doesn't match.`
-					);
-					return undefined;
-				}
-				logger.time("check build dependencies");
-				return Promise.all([
-					new Promise((resolve, reject) => {
-						this.fileSystemInfo.checkSnapshotValid(
-							packContainer.buildSnapshot,
-							(err, valid) => {
-								if (err) {
-									logger.log(
-										`Restored pack from ${cacheLocation}${this._extension}, but checking snapshot of build dependencies errored: ${err}.`
-									);
-									logger.debug(err.stack);
-									return resolve(false);
-								}
-								if (!valid) {
-									logger.log(
-										`Restored pack from ${cacheLocation}${this._extension}, but build dependencies have changed.`
-									);
-									return resolve(false);
-								}
-								buildSnapshot = packContainer.buildSnapshot;
-								return resolve(true);
-							}
-						);
-					}),
-					new Promise((resolve, reject) => {
-						this.fileSystemInfo.checkSnapshotValid(
-							packContainer.resolveBuildDependenciesSnapshot,
-							(err, valid) => {
-								if (err) {
-									logger.log(
-										`Restored pack from ${cacheLocation}${this._extension}, but checking snapshot of resolving of build dependencies errored: ${err}.`
-									);
-									logger.debug(err.stack);
-									return resolve(false);
-								}
-								if (valid) {
-									resolveBuildDependenciesSnapshot =
-										packContainer.resolveBuildDependenciesSnapshot;
-									buildDependencies = packContainer.buildDependencies;
-									resolveResults = packContainer.resolveResults;
-									return resolve(true);
-								}
-								logger.log(
-									"resolving of build dependencies is invalid, will re-resolve build dependencies"
-								);
-								this.fileSystemInfo.checkResolveResultsValid(
-									packContainer.resolveResults,
-									(err, valid) => {
-										if (err) {
-											logger.log(
-												`Restored pack from ${cacheLocation}${this._extension}, but resolving of build dependencies errored: ${err}.`
-											);
-											logger.debug(err.stack);
-											return resolve(false);
-										}
-										if (valid) {
-											newBuildDependencies = packContainer.buildDependencies;
-											resolveResults = packContainer.resolveResults;
-											return resolve(true);
-										}
-										logger.log(
-											`Restored pack from ${cacheLocation}${this._extension}, but build dependencies resolve to different locations.`
-										);
-										return resolve(false);
-									}
-								);
-							}
-						);
-					})
-				])
-					.catch(err => {
-						logger.timeEnd("check build dependencies");
-						throw err;
-					})
-					.then(([buildSnapshotValid, resolveValid]) => {
-						logger.timeEnd("check build dependencies");
-						if (buildSnapshotValid && resolveValid) {
-							logger.time("restore cache content metadata");
-							const d = packContainer.data();
-							logger.timeEnd("restore cache content metadata");
-							return d;
-						}
-						return undefined;
-					});
-			})
-			.then(pack => {
-				if (pack) {
-					pack.maxAge = this.maxAge;
-					this.buildSnapshot = buildSnapshot;
-					if (buildDependencies) this.buildDependencies = buildDependencies;
-					if (newBuildDependencies)
-						this.newBuildDependencies.addAll(newBuildDependencies);
-					this.resolveResults = resolveResults;
-					this.resolveBuildDependenciesSnapshot =
-						resolveBuildDependenciesSnapshot;
-					return pack;
-				}
-				return new Pack(logger, this.maxAge);
-			})
-			.catch(err => {
-				this.logger.warn(
-					`Restoring pack from ${cacheLocation}${this._extension} failed: ${err}`
-				);
-				this.logger.debug(err.stack);
-				return new Pack(logger, this.maxAge);
-			});
-	}
-
-	/**
-	 * @param {string} identifier unique name for the resource
-	 * @param {Etag | null} etag etag of the resource
-	 * @param {any} data cached content
-	 * @returns {Promise<void>} promise
-	 */
-	store(identifier, etag, data) {
-		if (this.readonly) return Promise.resolve();
-
-		return this._getPack().then(pack => {
-			pack.set(identifier, etag === null ? null : etag.toString(), data);
-		});
-	}
-
-	/**
-	 * @param {string} identifier unique name for the resource
-	 * @param {Etag | null} etag etag of the resource
-	 * @returns {Promise<any>} promise to the cached content
-	 */
-	restore(identifier, etag) {
-		return this._getPack()
-			.then(pack =>
-				pack.get(identifier, etag === null ? null : etag.toString())
-			)
-			.catch(err => {
-				if (err && err.code !== "ENOENT") {
-					this.logger.warn(
-						`Restoring failed for ${identifier} from pack: ${err}`
-					);
-					this.logger.debug(err.stack);
-				}
-			});
-	}
-
-	/**
-	 * @param {LazySet<string> | Iterable<string>} dependencies dependencies to store
-	 */
-	storeBuildDependencies(dependencies) {
-		if (this.readonly) return;
-		this.newBuildDependencies.addAll(dependencies);
-	}
-
-	afterAllStored() {
-		const packPromise = this.packPromise;
-		if (packPromise === undefined) return Promise.resolve();
-		const reportProgress = ProgressPlugin.getReporter(this.compiler);
-		return (this.storePromise = packPromise
-			.then(pack => {
-				pack.stopCapturingRequests
+{
+    "word": "kuru",
+    "PE": [
+        {
+            "word": "kuru",
+            "eid": "3882",
+            "pagenum": 444,
+            "content": "KURU I¦. A King called Kuru was born in Dhruva's dynasty. <dvsn n='NI'/><i>Genealogy.</i> Descended from Viṣṇu thus: Brahmā— Svāyambhuva Manu—Uttānapāda—Dhruva—Śiṣṭi— Ripu—Cākṣuṣa (Cākṣuṣa Manu)—Kuru. <dvsn n='NI'/>King Kuru was the grandfather of the reputed Vena and the great grandfather of emperor Pṛthu. Aṅga was the father of Vena. Not much is said about this Kuru in the Purāṇas. Kuru had ten brothers called Puru, Ūru, Śatadyumna, Tapasvī, Satyavāk, Śuci, Agniṣṭhu, Adhiratha, Sudyumna and Abhimanyu. Kuru had by his wife Ātreyī seven sons called Aṅga, Sumanas Svāti, Kratu, Aṅgiras, Gaya and Śibi, and to Aṅga was born by his wife Sunīthā the son, who became reputed as Vena. Pṛthu was Vena's son. Pṛthu had five sons called Antardhāna, Vādī, Sūta, Māgadha, Pālita. To Antardhāna was born of his wife Śikhaṇḍinī a son called Havirdhāna, to whom were born by his wife Dhiṣaṇā six sons called Prācīnabarhis, Śukra, Gaya, Kṛṣṇa, Vṛaja and Ajina. The above is the only information available about this Kuru dynasty in the Purāṇas. (Viṣṇu Purāṇa, Part 1, Chapter 13),"
+        },
+        {
+            "word": "kuru",
+            "eid": "3883",
+            "pagenum": 444,
+            "content": "KURU II¦. Two sons, i.e. Uttānapāda and Priyavrata were born to Svāyambhuva Manu of his wife Śatarūpā. One King Kuru born in the dynasty of Uttānapāda has been referred to above, i.e. Kuru I. Another King Kuru is noticed in Priyavrata's dynasty. To Priyavrata were born of his wife Barhiṣmatī fourteen sons called Agnīdhra, Idhmajihva, Yajñabāhu, Mahāvīra, Ghṛtapṛṣṭha, Sava, Hiraṇyaretā, Medhātithi, Vītihotra, Kavi, Ūrjaspati, Uttama, Tāmasa and Raivata. To Agnīdhra by his wife Pūrvacitti were born nine sons called Nābhi, Kimpuruṣa, Hari, Ilāvṛta, Ramyaka, Hiraṇmaya, Kuru, Bhadrāsva and Ketumāla. One King Kuru appears among them; but nothing more than the fact that he married a woman called Nārī is known about him. (Viṣṇu Purāṇa)."
+        },
+        {
+            "word": "kuru",
+            "eid": "3884",
+            "pagenum": 444,
+            "content": "KURU III¦. A King, the brother of Rantideva. (See under Rantideva)."
+        },
+        {
+            "word": "kuru",
+            "eid": "3885",
+            "pagenum": 444,
+            "content": "KURU IV¦. <dvsn n='NI'/>1) <i>Genealogy and birth.</i> The very famous King Kuru was born in the Puru dynasty. His genealogy is given hereunder. Descended from Viṣṇu thus: BrahmāAtri-Candra-Budha-Purūravas-Āyus-NahuṣaYayāti-Puru-Janamejaya-Prācinvān-PravīraNamasyu-Vītabhaya-Śuṇḍu-Bahuvidha-SaṃyātiRahovādī-Raudrāśva-Matināra-SanturodhaDuṣyanta-Bharata-Suhotra-Suhotā-Gala-GardaSuketu-Bṛhatkṣatra-Hasti-Ajamīḍha-ṚkṣaSaṃvaraṇa-Kuru. <dvsn n='NI'/>To Kuru were born four sons called Parīkṣit, Sudhanus, Jahnu and Niṣadhāśva. The genealogy of the Kuru Kings is as follows: Sudhanus-Cyavana-KṛtiUparicaravasu-Bṛhadratha-Kuśāgraja-ṚṣabhaPuṣpavān-Juhu. <dvsn n='NI'/>Jarāsandha was another son of Bṛhadratha. Jarāsandha had four sons called Soma, Sahadeva, Turya and Śrutaśru. From Jahnu, the following sons were born:—Suratha-Viḍūratha-Sārvabhauma-Jayatsena,-Ravīya-Bhāvuka-Cakroddhata-DevātithiṚkṣa-Bhīma and Pratīca. Pratīca had three sons called Devāpi, Śantanu and Bālhīka. Śantanu is known as Mahābhiṣak also. Dhṛtarāṣṭra and Pāṇḍu were the successors of Śantanu, and they came to be known as Kauravas also as they belonged to the dynasty of Kuru. But, since the sons of Pāṇḍu were born of Devas they may not be called Kauravas. 2) <i>Other Information.</i> (1) Kurukṣetra became holy and sanctified on account of Kuru's tapas. (Ādi Parva, Chapter 94, Verse 80). <dvsn n='NI'/>(ii) While Kuru was once ploughing a land in Kurukṣetra Indra appeared there, and they had a talk. (Śalya Parva, Chapter 53 Verse 6). <dvsn n='NI'/>(iii) While Kuru was once performing a yajña at Kurukṣetra, the river Sarasvatī went there under the name Sureṇu (Oghavatī) and watered the land. (Śalya Parva, Chapter 38, Verses 26 and 27)."
+        },
+        {
+            "word": "kuru",
+            "eid": "3886",
+            "pagenum": 445,
+            "content": "KURU V¦. One of the sages who visited Bhīṣma on his bed of arrows. (Śānti Parva, Chapter 47, Verse 8)."
+        },
+        {
+            "word": "kuru",
+            "eid": "3887",
+            "pagenum": 445,
+            "content": "KURU VI¦. A son born to Saṃvaraṇa of Tapatī. The boy, following his naming and other consecratory rites, grew up like fire in which was offered havis (ghee). At the age of ten he became omniscient. At the age of sixteen he married Saudāminī, daughter of Sudāman. (Vāmana Purāṇa, Chapter 21)."
+        }
+    ]
+}

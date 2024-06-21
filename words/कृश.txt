@@ -1,1392 +1,549 @@
-er Manifest. ' + 'This is probably a bug in the React Server Components bundler.');
-    }
-  } // TODO: This needs to return async: true if it's an async module.
-
-
-  return [resolvedModuleData.id, resolvedModuleData.chunks, name];
-} // The chunk cache contains all the chunks we've preloaded so far.
-// If they're still pending they're a thenable. This map also exists
-// in Turbopack but unfortunately it's not exposed so we have to
-// replicate it in user space. null means that it has already loaded.
-
-var chunkCache = new Map();
-
-function requireAsyncModule(id) {
-  // We've already loaded all the chunks. We can require the module.
-  var promise = globalThis.__next_require__(id);
-
-  if (typeof promise.then !== 'function') {
-    // This wasn't a promise after all.
-    return null;
-  } else if (promise.status === 'fulfilled') {
-    // This module was already resolved earlier.
-    return null;
-  } else {
-    // Instrument the Promise to stash the result.
-    promise.then(function (value) {
-      var fulfilledThenable = promise;
-      fulfilledThenable.status = 'fulfilled';
-      fulfilledThenable.value = value;
-    }, function (reason) {
-      var rejectedThenable = promise;
-      rejectedThenable.status = 'rejected';
-      rejectedThenable.reason = reason;
-    });
-    return promise;
-  }
-}
-
-function ignoreReject() {// We rely on rejected promises to be handled by another listener.
-} // Start preloading the modules since we might need them soon.
-// This function doesn't suspend.
-
-
-function preloadModule(metadata) {
-  var chunks = metadata[CHUNKS];
-  var promises = [];
-
-  for (var i = 0; i < chunks.length; i++) {
-    var chunkFilename = chunks[i];
-    var entry = chunkCache.get(chunkFilename);
-
-    if (entry === undefined) {
-      var thenable = loadChunk(chunkFilename);
-      promises.push(thenable); // $FlowFixMe[method-unbinding]
-
-      var resolve = chunkCache.set.bind(chunkCache, chunkFilename, null);
-      thenable.then(resolve, ignoreReject);
-      chunkCache.set(chunkFilename, thenable);
-    } else if (entry !== null) {
-      promises.push(entry);
-    }
-  }
-
-  if (isAsyncImport(metadata)) {
-    if (promises.length === 0) {
-      return requireAsyncModule(metadata[ID]);
-    } else {
-      return Promise.all(promises).then(function () {
-        return requireAsyncModule(metadata[ID]);
-      });
-    }
-  } else if (promises.length > 0) {
-    return Promise.all(promises);
-  } else {
-    return null;
-  }
-} // Actually require the module or suspend if it's not yet ready.
-// Increase priority if necessary.
-
-function requireModule(metadata) {
-  var moduleExports = globalThis.__next_require__(metadata[ID]);
-
-  if (isAsyncImport(metadata)) {
-    if (typeof moduleExports.then !== 'function') ; else if (moduleExports.status === 'fulfilled') {
-      // This Promise should've been instrumented by preloadModule.
-      moduleExports = moduleExports.value;
-    } else {
-      throw moduleExports.reason;
-    }
-  }
-
-  if (metadata[NAME] === '*') {
-    // This is a placeholder value that represents that the caller imported this
-    // as a CommonJS module as is.
-    return moduleExports;
-  }
-
-  if (metadata[NAME] === '') {
-    // This is a placeholder value that represents that the caller accessed the
-    // default property of this if it was an ESM interop module.
-    return moduleExports.__esModule ? moduleExports.default : moduleExports;
-  }
-
-  return moduleExports[metadata[NAME]];
-}
-
-function loadChunk(filename) {
-  return globalThis.__next_chunk_load__(filename);
-}
-
-// The server acts as a Client of itself when resolving Server References.
-var PENDING = 'pending';
-var BLOCKED = 'blocked';
-var RESOLVED_MODEL = 'resolved_model';
-var INITIALIZED = 'fulfilled';
-var ERRORED = 'rejected'; // $FlowFixMe[missing-this-annot]
-
-function Chunk(status, value, reason, response) {
-  this.status = status;
-  this.value = value;
-  this.reason = reason;
-  this._response = response;
-} // We subclass Promise.prototype so that we get other methods like .catch
-
-
-Chunk.prototype = Object.create(Promise.prototype); // TODO: This doesn't return a new Promise chain unlike the real .then
-
-Chunk.prototype.then = function (resolve, reject) {
-  var chunk = this; // If we have resolved content, we try to initialize it first which
-  // might put us back into one of the other states.
-
-  switch (chunk.status) {
-    case RESOLVED_MODEL:
-      initializeModelChunk(chunk);
-      break;
-  } // The status might have changed after initialization.
-
-
-  switch (chunk.status) {
-    case INITIALIZED:
-      resolve(chunk.value);
-      break;
-
-    case PENDING:
-    case BLOCKED:
-      if (resolve) {
-        if (chunk.value === null) {
-          chunk.value = [];
-        }
-
-        chunk.value.push(resolve);
-      }
-
-      if (reject) {
-        if (chunk.reason === null) {
-          chunk.reason = [];
-        }
-
-        chunk.reason.push(reject);
-      }
-
-      break;
-
-    default:
-      reject(chunk.reason);
-      break;
-  }
-};
-
-function getRoot(response) {
-  var chunk = getChunk(response, 0);
-  return chunk;
-}
-
-function createPendingChunk(response) {
-  // $FlowFixMe[invalid-constructor] Flow doesn't support functions as constructors
-  return new Chunk(PENDING, null, null, response);
-}
-
-function wakeChunk(listeners, value) {
-  for (var i = 0; i < listeners.length; i++) {
-    var listener = listeners[i];
-    listener(value);
-  }
-}
-
-function wakeChunkIfInitialized(chunk, resolveListeners, rejectListeners) {
-  switch (chunk.status) {
-    case INITIALIZED:
-      wakeChunk(resolveListeners, chunk.value);
-      break;
-
-    case PENDING:
-    case BLOCKED:
-      chunk.value = resolveListeners;
-      chunk.reason = rejectListeners;
-      break;
-
-    case ERRORED:
-      if (rejectListeners) {
-        wakeChunk(rejectListeners, chunk.reason);
-      }
-
-      break;
-  }
-}
-
-function triggerErrorOnChunk(chunk, error) {
-  if (chunk.status !== PENDING && chunk.status !== BLOCKED) {
-    // We already resolved. We didn't expect to see this.
-    return;
-  }
-
-  var listeners = chunk.reason;
-  var erroredChunk = chunk;
-  erroredChunk.status = ERRORED;
-  erroredChunk.reason = error;
-
-  if (listeners !== null) {
-    wakeChunk(listeners, error);
-  }
-}
-
-function createResolvedModelChunk(response, value) {
-  // $FlowFixMe[invalid-constructor] Flow doesn't support functions as constructors
-  return new Chunk(RESOLVED_MODEL, value, null, response);
-}
-
-function resolveModelChunk(chunk, value) {
-  if (chunk.status !== PENDING) {
-    // We already resolved. We didn't expect to see this.
-    return;
-  }
-
-  var resolveListeners = chunk.value;
-  var rejectListeners = chunk.reason;
-  var resolvedChunk = chunk;
-  resolvedChunk.status = RESOLVED_MODEL;
-  resolvedChunk.value = value;
-
-  if (resolveListeners !== null) {
-    // This is unfortunate that we're reading this eagerly if
-    // we already have listeners attached since they might no
-    // longer be rendered or might not be the highest pri.
-    initializeModelChunk(resolvedChunk); // The status might have changed after initialization.
-
-    wakeChunkIfInitialized(chunk, resolveListeners, rejectListeners);
-  }
-}
-
-function bindArgs$1(fn, args) {
-  return fn.bind.apply(fn, [null].concat(args));
-}
-
-function loadServerReference$1(response, id, bound, parentChunk, parentObject, key) {
-  var serverReference = resolveServerReference(response._bundlerConfig, id); // We expect most servers to not really need this because you'd just have all
-  // the relevant modules already loaded but it allows for lazy loading of code
-  // if needed.
-
-  var preloadPromise = preloadModule(serverReference);
-  var promise;
-
-  if (bound) {
-    promise = Promise.all([bound, preloadPromise]).then(function (_ref) {
-      var args = _ref[0];
-      return bindArgs$1(requireModule(serverReference), args);
-    });
-  } else {
-    if (preloadPromise) {
-      promise = Promise.resolve(preloadPromise).then(function () {
-        return requireModule(serverReference);
-      });
-    } else {
-      // Synchronously available
-      return requireModule(serverReference);
-    }
-  }
-
-  promise.then(createModelResolver(parentChunk, parentObject, key), createModelReject(parentChunk)); // We need a placeholder value that will be replaced later.
-
-  return null;
-}
-
-var initializingChunk = null;
-var initializingChunkBlockedModel = null;
-
-function initializeModelChunk(chunk) {
-  var prevChunk = initializingChunk;
-  var prevBlocked = initializingChunkBlockedModel;
-  initializingChunk = chunk;
-  initializingChunkBlockedModel = null;
-
-  try {
-    var value = JSON.parse(chunk.value, chunk._response._fromJSON);
-
-    if (initializingChunkBlockedModel !== null && initializingChunkBlockedModel.deps > 0) {
-      initializingChunkBlockedModel.value = value; // We discovered new dependencies on modules that are not yet resolved.
-      // We have to go the BLOCKED state until they're resolved.
-
-      var blockedChunk = chunk;
-      blockedChunk.status = BLOCKED;
-      blockedChunk.value = null;
-      blockedChunk.reason = null;
-    } else {
-      var initializedChunk = chunk;
-      initializedChunk.status = INITIALIZED;
-      initializedChunk.value = value;
-    }
-  } catch (error) {
-    var erroredChunk = chunk;
-    erroredChunk.status = ERRORED;
-    erroredChunk.reason = error;
-  } finally {
-    initializingChunk = prevChunk;
-    initializingChunkBlockedModel = prevBlocked;
-  }
-} // Report that any missing chunks in the model is now going to throw this
-// error upon read. Also notify any pending promises.
-
-
-function reportGlobalError(response, error) {
-  response._chunks.forEach(function (chunk) {
-    // If this chunk was already resolved or errored, it won't
-    // trigger an error but if it wasn't then we need to
-    // because we won't be getting any new data to resolve it.
-    if (chunk.status === PENDING) {
-      triggerErrorOnChunk(chunk, error);
-    }
-  });
-}
-
-function getChunk(response, id) {
-  var chunks = response._chunks;
-  var chunk = chunks.get(id);
-
-  if (!chunk) {
-    var prefix = response._prefix;
-    var key = prefix + id; // Check if we have this field in the backing store already.
-
-    var backingEntry = response._formData.get(key);
-
-    if (backingEntry != null) {
-      // We assume that this is a string entry for now.
-      chunk = createResolvedModelChunk(response, backingEntry);
-    } else {
-      // We're still waiting on this entry to stream in.
-      chunk = createPendingChunk(response);
-    }
-
-    chunks.set(id, chunk);
-  }
-
-  return chunk;
-}
-
-function createModelResolver(chunk, parentObject, key) {
-  var blocked;
-
-  if (initializingChunkBlockedModel) {
-    blocked = initializingChunkBlockedModel;
-    blocked.deps++;
-  } else {
-    blocked = initializingChunkBlockedModel = {
-      deps: 1,
-      value: null
-    };
-  }
-
-  return function (value) {
-    parentObject[key] = value;
-    blocked.deps--;
-
-    if (blocked.deps === 0) {
-      if (chunk.status !== BLOCKED) {
-        return;
-      }
-
-      var resolveListeners = chunk.value;
-      var initializedChunk = chunk;
-      initializedChunk.status = INITIALIZED;
-      initializedChunk.value = blocked.value;
-
-      if (resolveListeners !== null) {
-        wakeChunk(resolveListeners, blocked.value);
-      }
-    }
-  };
-}
-
-function createModelReject(chunk) {
-  return function (error) {
-    return triggerErrorOnChunk(chunk, error);
-  };
-}
-
-function getOutlinedModel(response, id) {
-  var chunk = getChunk(response, id);
-
-  if (chunk.status === RESOLVED_MODEL) {
-    initializeModelChunk(chunk);
-  }
-
-  if (chunk.status !== INITIALIZED) {
-    // We know that this is emitted earlier so otherwise it's an error.
-    throw chunk.reason;
-  }
-
-  return chunk.value;
-}
-
-function parseModelString(response, parentObject, key, value) {
-  if (value[0] === '$') {
-    switch (value[1]) {
-      case '$':
+{
+    "word": "कृश",
+    "KRM": [
         {
-          // This was an escaped string value.
-          return value.slice(1);
+            "word": "कृश",
+            "eid": "254",
+            "pagenum": 253,
+            "content": "(254) <b>“कृश तनूकरणे”</b>¦ (IV-दिवादिः-1227. अक. सेट्. पर.) <dvsn n='NI'>कर्शकः-र्शिका, कर्शकः-र्शिका, चिकर्शिषकः-षिका, <sup>1</sup> चरीकृशकः-शिका; <sup>2</sup> कर्शिता-त्री, कर्शयिता-त्री, चिकर्शिषिता-त्री, चरीकृशिता-त्री; <sup>3</sup> कृश्यन्-न्ती, कर्शयन्-न्ती, चिकर्शिषन्-न्ती; -कर्शिष्यन्-न्ती-ती, कर्शयिष्यन्-न्ती-ती, चिकर्शिषिष्यन्-न्ती-ती; -<sup>4</sup> व्यतिकृश्यमानः, कर्शयमानः, — चरीकृश्यमानः; व्यतिकर्शिष्यमाणः, कर्शयिष्यमाणः, — चरीकृशिष्यमाणः; चरीकृशितः-तवान्; <sup>5</sup> कृट्-कृड्-कृशौ-कृशः; -<sup>6</sup> कृशः, <sup>A</sup> प्रकृशितः, <sup>7</sup> कृशितवान्, <sup>8</sup> परिकृशः, कर्शितः, चिकर्शिषितः, कृशः, कर्शः, चिकर्शिषुः, चरीकृशः; कर्शितव्यम्, कर्शयितव्यम्, चिकर्शिषितव्यम्, चरीकृशितव्यम्; कर्शनीयम्, कर्शनीयम्, चिकर्शिषणीयम्, चरीकृशनीयम्; <sup>9</sup> कृश्यम्, कर्श्यम्, चिकर्शिष्यम्, चरीकृश्यम्; ईषत्कर्शः-दुष्कर्शः-सुकर्शः; — -कृश्यमानः, कर्श्यमानः, चिकर्शिष्यमाणः, चरीकृश्यमानः; कर्शः, कर्शः, चिकर्शिषः, चरीकृशः; कर्शितुम्, कर्शयितुम्, चिकर्शिषितुम्, चरीकृशितुम्; कृष्टिः, कर्शना, चिकर्शिषा, चरीकृशा; कर्शनम्, कर्शनम्, चिकर्शिषणम्, चरीकृशनम्; <sup>1</sup> कृशित्वा-कर्शित्वा, कर्शयित्वा, चिकर्शिषित्वा, चरीकृशित्वा; परिकृश्य, प्रकर्श्य, प्रचिकर्शिष्य, सञ्चरीकृश्य; <note n='1'/>कर्शम् 2, कृशित्वा 2, कर्शित्वा 2, कर्शम् 2, कर्शयित्वा 2, चिकर्शिषम् 2, चिकर्शिषित्वा 2, चरीकृशम् 2; चरीकृशित्वा 2. <F>1. ‘रीगृदुपधस्य च’ (7-4-90) इत्यभ्यासस्य रीक् । अल्लोपस्य स्थानिवद्भावात् लघूपधगुणो न । एवं यङन्ते सर्वत्र ज्ञेयम् ।</F> <F>2. ‘पुगन्तलघूपधस्य च’ (7-3-86) इति गुणः ।</F> <F>3. ‘दिवादिभ्यः श्यन्’ (3-1-69) इति श्यन् । श्यनः ‘सार्वधातुकमपित्’ (1-2-4) इति ङिद्वद्भावात् अङ्गस्य गुणो न ।</F> <F>4. ‘कर्तरि कर्मव्यतीहारे’ (1-3-14) इति शानच् ।</F> <F>5. ‘व्रश्चभ्रस्ज—’ (8-2-36) इत्यादिना षत्वम् । जश्त्वम् । चर्त्वविकल्पः ।</F> <F>6. ‘अनुपसर्गात् फुल्लक्षीबकृशोल्लाघाः’ (8-2-55) इति अनुपसृष्टाद्धातोः निष्ठातकारस्य लोपः, इडभावश्च निपातितः । सोपसर्गात् तु प्रकृशित इत्येव ।</F> <F>A. ‘मुस्तामोष्यमसः किटिस्त्वमसमो लुठ्यन् खलानोकसः मृश्यद्भ्रंशनवर्शकाकृशदयस्तृष्णाहरो हृष्य मे ॥’ धा. का. 2-66.</F> <F>7. ‘अनुपसर्गात्—’ (8-2-55) इत्येतत् क्तवतौ नेष्यते । तेन एवं रूपम् ।</F> <F>8. कृशधात्वर्थक्रियानिरूपितोपसर्गत्वाभावात् परेः, परिगतः कृशं—परिकृशः इति प्रादिसमासः । तेन, ‘अनुपसर्गात्—’ (8-2-55) इति निषेधो न शङ्क्यः । परेः कृशधात्वर्थक्रियानिरूपितोपसर्गत्वं नास्तीत्यर्थः ।</F> <F>9. ‘ऋदुपधात्—’ (3-1-110) इति क्यप् ।</F> <F>1. ‘तृषिमृषिकृशेः काश्यपस्य’ (1-2-25) इति क्त्वायाः कित्त्वं वा । ‘न क्त्वा सेट्’ (1-2-18) इत्यस्यापवादः ।</F>"
         }
-
-      case '@':
+    ],
+    "ABCH": [
         {
-          // Promise
-          var id = parseInt(value.slice(2), 16);
-          var chunk = getChunk(response, id);
-          return chunk;
-        }
-
-      case 'S':
+            "word": "कृश",
+            "linga": "पुं",
+            "pagenum": "21",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1383",
+            "group": "446",
+            "synonyms": [
+                "दुर्बल",
+                "क्षाम",
+                "क्षीण",
+                "तनु",
+                "शात",
+                "तलिन",
+                "अमांस",
+                "पेलव"
+            ],
+            "content": "चक्षुष्यः सुभगो द्वेष्योऽक्षिगतोऽथांसलो बली ॥ ४४८ ॥\nनिर्दिग्धो मांसलश्चोपचितोऽथ दुर्बलः कृशः ।\nक्षामः क्षीणस्तनुश्छातस्तलिनामांसपेलवाः ॥ ४४९ ॥"
+        },
         {
-          // Symbol
-          return Symbol.for(value.slice(2));
+            "word": "कृश",
+            "linga": "क्ली",
+            "pagenum": "54",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4281",
+            "group": "1812",
+            "synonyms": [
+                "स्तोक",
+                "क्षुल्ल",
+                "तुच्छ",
+                "अल्प",
+                "दभ्र",
+                "अणु",
+                "तलिन",
+                "तनु",
+                "क्षुद्र"
+            ],
+            "content": "स्तोकं क्षुल्लं तुच्छमल्पं दभ्राणुतलिनानि च ॥ १४२६ ॥\nतनु क्षुद्रं कृशं सूक्ष्मं पुनः श्लक्ष्णं च पेलवम् ।"
         }
-
-      case 'F':
+    ],
+    "AP90": [
         {
-          // Server Reference
-          var _id = parseInt(value.slice(2), 16); // TODO: Just encode this in the reference inline instead of as a model.
-
-
-          var metaData = getOutlinedModel(response, _id);
-          return loadServerReference$1(response, metaData.id, metaData.bound, initializingChunk, parentObject, key);
+            "word": "कृश",
+            "eid": "11429",
+            "pagenum": 421,
+            "content": "कृश¦ <i><ab>a.</ab></i> [कृश् --क्त नि°] (<ab>Compar.</ab> क्रशीयस्; <ab>superl.</ab> क्रशिष्ठ) <b>1</b> Lean, weak, feeble, emaciated; कृशतनुः, कृशोदरि &c. <b>--2</b> Small, little, minute (in size or quantity); सुहृदपि न याच्यः कृशधनः <ls>Bh. 2. 28.</ls> <b>--3</b> Poor, insignificant; <ls>Ms. 7. 208.</ls> <b>--Comp.</b> --अक्षः a spider. --अंग <i><ab>a.</ab></i> lean, thin. (--गः) an epithet of Śiva. (--गी) {1} a woman with a slender frame. {2} the Priyaṅgu creeper. --उदर <i><ab>a.</ab></i> {1} thin-waisted; <ls>V. 5. 16</ls>; <ls>Ku. 5. 42.</ls> {2} having the belly reduced in bulk; <ls>Ś. 2. 5.</ls>"
         }
-
-      case 'Q':
+    ],
+    "BEN": [
         {
-          // Map
-          var _id2 = parseInt(value.slice(2), 16);
-
-          var data = getOutlinedModel(response, _id2);
-          return new Map(data);
+            "word": "कृश",
+            "eid": "3738",
+            "pagenum": 213,
+            "content": "कृश¦ <i>kṛś + a,</i> <ab>adj.</ab>, <ab>f.</ab> <i>śā.</i> <b>1.</b> Thin, emaciated, <ls>Suśr.</ls> 1, 53, 17. <b>2.</b> Weak, <ls>Hit.</ls> i. <ab>d.</ab> 196; <ls>Man.</ls> 7, 208. <b>3.</b> Poor, <ls>Man.</ls> 4, 184. <b> -- <ab>Comp.</ab></b> <i>A-,</i> <ab>adj.</ab> great, <ls>Kir.</ls> 5, 52. <i>Ati-,</i> <ab>adj.</ab> very thin, <ls>Rām.</ls> 5, 10, 17."
         }
-
-      case 'W':
+    ],
+    "BOP": [
         {
-          // Set
-          var _id3 = parseInt(value.slice(2), 16);
-
-          var _data = getOutlinedModel(response, _id3);
-
-          return new Set(_data);
+            "word": "कृश",
+            "eid": "2383",
+            "pagenum": 82,
+            "content": "कृश¦ (r. कृश् s. अ) macer, tenuis. N. 16. 9. (Hib. <i>creas</i> «narrow, straight», <i>cuile</i> «narrow ness, small» = कार्श्य q. v., mutato <i>r</i> in <i>l</i>; lat. <i>parcus, parvus</i>; v. r. कृश्.)"
         }
-
-      case 'K':
+    ],
+    "BUR": [
         {
-          // FormData
-          var stringId = value.slice(2);
-          var formPrefix = response._prefix + stringId + '_';
-
-          var _data2 = new FormData();
-
-          var backingFormData = response._formData; // We assume that the reference to FormData always comes after each
-          // entry that it references so we can assume they all exist in the
-          // backing store already.
-          // $FlowFixMe[prop-missing] FormData has forEach on it.
-
-          backingFormData.forEach(function (entry, entryKey) {
-            if (entryKey.startsWith(formPrefix)) {
-              _data2.append(entryKey.slice(formPrefix.length), entry);
-            }
-          });
-          return _data2;
+            "word": "कृश",
+            "eid": "5024",
+            "pagenum": 182,
+            "content": "कृश¦ <i>kṛśa</i> <ab>a.</ab> mince, grèle, petit; || maigre."
         }
-
-      case 'I':
+    ],
+    "CAE": [
         {
-          // $Infinity
-          return Infinity;
+            "word": "कृश",
+            "eid": "8362",
+            "pagenum": 131,
+            "content": "कृश/¦ <lex>a.</lex> lean, thin, slender; weak, feeble; insignificant, poor."
         }
-
-      case '-':
+    ],
+    "CCS": [
         {
-          // $-0 or $-Infinity
-          if (value === '$-0') {
-            return -0;
-          } else {
-            return -Infinity;
-          }
+            "word": "कृश",
+            "eid": "5331",
+            "pagenum": 91,
+            "content": "कृश/¦ mager, kränklich, schlank, dünn, schwächlich, unbedeutend; <i>m. Mannsname.</i> <lbinfo n='7'/>"
         }
-
-      case 'N':
+    ],
+    "GRA": [
         {
-          // $NaN
-          return NaN;
+            "word": "कृश",
+            "eid": "2680",
+            "pagenum": 348,
+            "content": "<b>kṛśá,</b>¦ <ab>a.</ab>, <i>abgemagert, mager, schwächlich, kränklich</i> [von karś]; 2〉 <ab>m.</ab>, Eigenname eines Mannes. <dvsn n='TS'>-ám {469,6}; {684,8}. — 2〉 {866,8}. <dvsn n='TS'>-ā́ya ánnakāmāya {943,3}. <dvsn n='TS'>-ásya {203,6}; {865,3}. — 2〉 tád {1028,3}. <dvsn n='TS'>-é 2〉 {1023,2}."
         }
-
-      case 'u':
+    ],
+    "INM": [
         {
-          // matches "$undefined"
-          // Special encoding for `undefined` which can't be serialized as JSON otherwise.
-          return undefined;
-        }
-
-      case 'D':
+            "word": "कृश",
+            "eid": "5892",
+            "pagenum": 412,
+            "content": "<b>Kṛśa</b><sup>1</sup>,¦ a son of a ṛṣi. § 51 (Parikṣit): I, <b>40</b>, 1682 (<i>ṛṣiputreṇa</i>), (1683); <b>41</b>, 1691, (1692), (1696)."
+        },
         {
-          // Date
-          return new Date(Date.parse(value.slice(2)));
-        }
-
-      case 'n':
+            "word": "कृश",
+            "eid": "5893",
+            "pagenum": 412,
+            "content": "<b>Kṛśa</b><sup>2</sup>,¦ a serpent. § 63 (Sarpasattra): I, <b>57</b>, 2152 (of Airāvata's race)."
+        },
         {
-          // BigInt
-          return BigInt(value.slice(2));
-        }
-
-      default:
+            "word": "कृश",
+            "eid": "5894",
+            "pagenum": 412,
+            "content": "<b>Kṛśa</b><sup>3</sup>,¦ a ṛṣi. § 734 (Ānuśāsanik.): XIII, <b>26</b>α, 1764 (among the ṛṣis who came to see Bhīṣma)."
+        },
         {
-          // We assume that anything else is a reference ID.
-          var _id4 = parseInt(value.slice(1), 16);
-
-          var _chunk = getChunk(response, _id4);
-
-          switch (_chunk.status) {
-            case RESOLVED_MODEL:
-              initializeModelChunk(_chunk);
-              break;
-          } // The status might have changed after initialization.
-
-
-          switch (_chunk.status) {
-            case INITIALIZED:
-              return _chunk.value;
-
-            case PENDING:
-            case BLOCKED:
-              var parentChunk = initializingChunk;
-
-              _chunk.then(createModelResolver(parentChunk, parentObject, key), createModelReject(parentChunk));
-
-              return null;
-
-            default:
-              throw _chunk.reason;
-          }
+            "word": "कृश",
+            "eid": "5895",
+            "pagenum": 412,
+            "content": "<b>Kṛśa</b><sup>4</sup>¦ = Śiva: XII, 10365 (1000 names<sup>1</sup>), 10387 (do.): XIV, 194.—Do.<sup>5</sup> = Viṣṇu (1000 names)."
         }
-    }
-  }
-
-  return value;
-}
-
-function createResponse(bundlerConfig, formFieldPrefix) {
-  var backingFormData = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new FormData();
-  var chunks = new Map();
-  var response = {
-    _bundlerConfig: bundlerConfig,
-    _prefix: formFieldPrefix,
-    _formData: backingFormData,
-    _chunks: chunks,
-    _fromJSON: function (key, value) {
-      if (typeof value === 'string') {
-        // We can't use .bind here because we need the "this" value.
-        return parseModelString(response, this, key, value);
-      }
-
-      return value;
-    }
-  };
-  return response;
-}
-function resolveField(response, key, value) {
-  // Add this field to the backing store.
-  response._formData.append(key, value);
-
-  var prefix = response._prefix;
-
-  if (key.startsWith(prefix)) {
-    var chunks = response._chunks;
-    var id = +key.slice(prefix.length);
-    var chunk = chunks.get(id);
-
-    if (chunk) {
-      // We were waiting on this key so now we can resolve it.
-      resolveModelChunk(chunk, value);
-    }
-  }
-}
-function resolveFileInfo(response, key, filename, mime) {
-  return {
-    chunks: [],
-    filename: filename,
-    mime: mime
-  };
-}
-function resolveFileChunk(response, handle, chunk) {
-  handle.chunks.push(chunk);
-}
-function resolveFileComplete(response, key, handle) {
-  // Add this file to the backing store.
-  // Node.js doesn't expose a global File constructor so we need to use
-  // the append() form that takes the file name as the third argument,
-  // to create a File object.
-  var blob = new Blob(handle.chunks, {
-    type: handle.mime
-  });
-
-  response._formData.append(key, blob, handle.filename);
-}
-function close(response) {
-  // In case there are any remaining unresolved chunks, they won't
-  // be resolved now. So we need to issue an error to those.
-  // Ideally we should be able to early bail out if we kept a
-  // ref count of pending chunks.
-  reportGlobalError(response, new Error('Connection closed.'));
-}
-
-function bindArgs(fn, args) {
-  return fn.bind.apply(fn, [null].concat(args));
-}
-
-function loadServerReference(bundlerConfig, id, bound) {
-  var serverReference = resolveServerReference(bundlerConfig, id); // We expect most servers to not really need this because you'd just have all
-  // the relevant modules already loaded but it allows for lazy loading of code
-  // if needed.
-
-  var preloadPromise = preloadModule(serverReference);
-
-  if (bound) {
-    return Promise.all([bound, preloadPromise]).then(function (_ref) {
-      var args = _ref[0];
-      return bindArgs(requireModule(serverReference), args);
-    });
-  } else if (preloadPromise) {
-    return Promise.resolve(preloadPromise).then(function () {
-      return requireModule(serverReference);
-    });
-  } else {
-    // Synchronously available
-    return Promise.resolve(requireModule(serverReference));
-  }
-}
-
-function decodeBoundActionMetaData(body, serverManifest, formFieldPrefix) {
-  // The data for this reference is encoded in multiple fields under this prefix.
-  var actionResponse = createResponse(serverManifest, formFieldPrefix, body);
-  close(actionResponse);
-  var refPromise = getRoot(actionResponse); // Force it to initialize
-  // $FlowFixMe
-
-  refPromise.then(function () {});
-
-  if (refPromise.status !== 'fulfilled') {
-    // $FlowFixMe
-    throw refPromise.reason;
-  }
-
-  return refPromise.value;
-}
-
-function decodeAction(body, serverManifest) {
-  // We're going to create a new formData object that holds all the fields except
-  // the implementation details of the action data.
-  var formData = new FormData();
-  var action = null; // $FlowFixMe[prop-missing]
-
-  body.forEach(function (value, key) {
-    if (!key.startsWith('$ACTION_')) {
-      formData.append(key, value);
-      return;
-    } // Later actions may override earlier actions if a button is used to override the default
-    // form action.
-
-
-    if (key.startsWith('$ACTION_REF_')) {
-      var formFieldPrefix = '$ACTION_' + key.slice(12) + ':';
-      var metaData = decodeBoundActionMetaData(body, serverManifest, formFieldPrefix);
-      action = loadServerReference(serverManifest, metaData.id, metaData.bound);
-      return;
-    }
-
-    if (key.startsWith('$ACTION_ID_')) {
-      var id = key.slice(11);
-      action = loadServerReference(serverManifest, id, null);
-      return;
-    }
-  });
-
-  if (action === null) {
-    return null;
-  } // Return the action with the remaining FormData bound to the first argument.
-
-
-  return action.then(function (fn) {
-    return fn.bind(null, formData);
-  });
-}
-
-function createDrainHandler(destination, request) {
-  return function () {
-    return startFlowing(request, destination);
-  };
-}
-
-function renderToPipeableStream(model, turbopackMap, options) {
-  var request = createRequest(model, turbopackMap, options ? options.onError : undefined, options ? options.context : undefined, options ? options.identifierPrefix : undefined, options ? options.onPostpone : undefined);
-  var hasStartedFlowing = false;
-  startWork(request);
-  return {
-    pipe: function (destination) {
-      if (hasStartedFlowing) {
-        throw new Error('React currently only supports piping to one writable stream.');
-      }
-
-      hasStartedFlowing = true;
-      startFlowing(request, destination);
-      destination.on('drain', createDrainHandler(destination, request));
-      return destination;
-    },
-    abort: function (reason) {
-      abort(request, reason);
-    }
-  };
-}
-
-function decodeReplyFromBusboy(busboyStream, turbopackMap) {
-  var response = createResponse(turbopackMap, '');
-  var pendingFiles = 0;
-  var queuedFields = [];
-  busboyStream.on('field', function (name, value) {
-    if (pendingFiles > 0) {
-      // Because the 'end' event fires two microtasks after the next 'field'
-      // we would resolve files and fields out of order. To handle this properly
-      // we queue any fields we receive until the previous file is done.
-      queuedFields.push(name, value);
-    } else {
-      resolveField(response, name, value);
-    }
-  });
-  busboyStream.on('file', function (name, value, _ref) {
-    var filename = _ref.filename,
-        encoding = _ref.encoding,
-        mimeType = _ref.mimeType;
-
-    if (encoding.toLowerCase() === 'base64') {
-      throw new Error("React doesn't accept base64 encoded file uploads because we don't expect " + "form data passed from a browser to ever encode data that way. If that's " + 'the wrong assumption, we can easily fix it.');
-    }
-
-    pendingFiles++;
-    var file = resolveFileInfo(response, name, filename, mimeType);
-    value.on('data', function (chunk) {
-      resolveFileChunk(response, file, chunk);
-    });
-    value.on('end', function () {
-      resolveFileComplete(response, name, file);
-      pendingFiles--;
-
-      if (pendingFiles === 0) {
-        // Release any queued fields
-        for (var i = 0; i < queuedFields.length; i += 2) {
-          resolveField(response, queuedFields[i], queuedFields[i + 1]);
+    ],
+    "LAN": [
+        {
+            "word": "कृश",
+            "eid": "1198",
+            "pagenum": 144,
+            "content": "<b>kṛśá,</b>¦ <i><ab>a.</ab></i> lean, haggard. [<b>√kṛś,</b> <ls n='wg,958'>958.</ls>]"
         }
-
-        queuedFields.length = 0;
-      }
-    });
-  });
-  busboyStream.on('finish', function () {
-    close(response);
-  });
-  busboyStream.on('error', function (err) {
-    reportGlobalError(response, // $FlowFixMe[incompatible-call] types Error and mixed are incompatible
-    err);
-  });
-  return getRoot(response);
-}
-
-function decodeReply(body, turbopackMap) {
-  if (typeof body === 'string') {
-    var form = new FormData();
-    form.append('0', body);
-    body = form;
-  }
-
-  var response = createResponse(turbopackMap, '', body);
-  var root = getRoot(response);
-  close(response);
-  return root;
-}
-
-exports.createClientModuleProxy = createClientModuleProxy;
-exports.decodeAction = decodeAction;
-exports.decodeReply = decodeReply;
-exports.decodeReplyFromBusboy = decodeReplyFromBusboy;
-exports.registerClientReference = registerClientReference;
-exports.registerServerReference = registerServerReference;
-exports.renderToPipeableStream = renderToPipeableStream;
-  })();
-}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             /**
- * @license React
- * react-server-dom-turbopack-server.node.development.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-'use strict';
-
-if (process.env.NODE_ENV !== "production") {
-  (function() {
-'use strict';
-
-var React = require('react');
-var util = require('util');
-require('crypto');
-var async_hooks = require('async_hooks');
-var ReactDOM = require('react-dom');
-
-var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-
-function error(format) {
-  {
-    {
-      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        args[_key2 - 1] = arguments[_key2];
-      }
-
-      printWarning('error', format, args);
-    }
-  }
-}
-
-function printWarning(level, format, args) {
-  // When changing this logic, you might want to also
-  // update consoleWithStackDev.www.js as well.
-  {
-    var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
-    var stack = ReactDebugCurrentFrame.getStackAddendum();
-
-    if (stack !== '') {
-      format += '%s';
-      args = args.concat([stack]);
-    } // eslint-disable-next-line react-internal/safe-string-coercion
-
-
-    var argsWithFormat = args.map(function (item) {
-      return String(item);
-    }); // Careful: RN currently depends on this prefix
-
-    argsWithFormat.unshift('Warning: ' + format); // We intentionally don't use spread (or .apply) directly because it
-    // breaks IE9: https://github.com/facebook/react/issues/13610
-    // eslint-disable-next-line react-internal/no-production-logging
-
-    Function.prototype.apply.call(console[level], console, argsWithFormat);
-  }
-}
-
-// -----------------------------------------------------------------------------
-var enablePostpone = false;
-
-function scheduleWork(callback) {
-  setImmediate(callback);
-}
-function flushBuffered(destination) {
-  // If we don't have any more data to send right now.
-  // Flush whatever is in the buffer to the wire.
-  if (typeof destination.flush === 'function') {
-    // By convention the Zlib streams provide a flush function for this purpose.
-    // For Express, compression middleware adds this method.
-    destination.flush();
-  }
-}
-var VIEW_SIZE = 2048;
-var currentView = null;
-var writtenBytes = 0;
-var destinationHasCapacity = true;
-function beginWriting(destination) {
-  currentView = new Uint8Array(VIEW_SIZE);
-  writtenBytes = 0;
-  destinationHasCapacity = true;
-}
-
-function writeStringChunk(destination, stringChunk) {
-  if (stringChunk.length === 0) {
-    return;
-  } // maximum possible view needed to encode entire string
-
-
-  if (stringChunk.length * 3 > VIEW_SIZE) {
-    if (writtenBytes > 0) {
-      writeToDestination(destination, currentView.subarray(0, writtenBytes));
-      currentView = new Uint8Array(VIEW_SIZE);
-      writtenBytes = 0;
-    }
-
-    writeToDestination(destination, textEncoder.encode(stringChunk));
-    return;
-  }
-
-  var target = currentView;
-
-  if (writtenBytes > 0) {
-    target = currentView.subarray(writtenBytes);
-  }
-
-  var _textEncoder$encodeIn = textEncoder.encodeInto(stringChunk, target),
-      read = _textEncoder$encodeIn.read,
-      written = _textEncoder$encodeIn.written;
-
-  writtenBytes += written;
-
-  if (read < stringChunk.length) {
-    writeToDestination(destination, currentView.subarray(0, writtenBytes));
-    currentView = new Uint8Array(VIEW_SIZE);
-    writtenBytes = textEncoder.encodeInto(stringChunk.slice(read), currentView).written;
-  }
-
-  if (writtenBytes === VIEW_SIZE) {
-    writeToDestination(destination, currentView);
-    currentView = new Uint8Array(VIEW_SIZE);
-    writtenBytes = 0;
-  }
-}
-
-function writeViewChunk(destination, chunk) {
-  if (chunk.byteLength === 0) {
-    return;
-  }
-
-  if (chunk.byteLength > VIEW_SIZE) {
-    {
-      if (precomputedChunkSet && precomputedChunkSet.has(chunk)) {
-        error('A large precomputed chunk was passed to writeChunk without being copied.' + ' Large chunks get enqueued directly and are not copied. This is incompatible with precomputed chunks because you cannot enqueue the same precomputed chunk twice.' + ' Use "cloneChunk" to make a copy of this large precomputed chunk before writing it. This is a bug in React.');
-      }
-    } // this chunk may overflow a single view which implies it was not
-    // one that is cached by the streaming renderer. We will enqueu
-    // it directly and expect it is not re-used
-
-
-    if (writtenBytes > 0) {
-      writeToDestination(destination, currentView.subarray(0, writtenBytes));
-      currentView = new Uint8Array(VIEW_SIZE);
-      writtenBytes = 0;
-    }
-
-    writeToDestination(destination, chunk);
-    return;
-  }
-
-  var bytesToWrite = chunk;
-  var allowableBytes = currentView.length - writtenBytes;
-
-  if (allowableBytes < bytesToWrite.byteLength) {
-    // this chunk would overflow the current view. We enqueue a full view
-    // and start a new view with the remaining chunk
-    if (allowableBytes === 0) {
-      // the current view is already full, send it
-      writeToDestination(destination, currentView);
-    } else {
-      // fill up the current view and apply the remaining chunk bytes
-      // to a new view.
-      currentView.set(bytesToWrite.subarray(0, allowableBytes), writtenBytes);
-      writtenBytes += allowableBytes;
-      writeToDestination(destination, currentView);
-      bytesToWrite = bytesToWrite.subarray(allowableBytes);
-    }
-
-    currentView = new Uint8Array(VIEW_SIZE);
-    writtenBytes = 0;
-  }
-
-  currentView.set(bytesToWrite, writtenBytes);
-  writtenBytes += bytesToWrite.byteLength;
-
-  if (writtenBytes === VIEW_SIZE) {
-    writeToDestination(destination, currentView);
-    currentView = new Uint8Array(VIEW_SIZE);
-    writtenBytes = 0;
-  }
-}
-
-function writeChunk(destination, chunk) {
-  if (typeof chunk === 'string') {
-    writeStringChunk(destination, chunk);
-  } else {
-    writeViewChunk(destination, chunk);
-  }
-}
-
-function writeToDestination(destination, view) {
-  var currentHasCapacity = destination.write(view);
-  destinationHasCapacity = destinationHasCapacity && currentHasCapacity;
-}
-
-function writeChunkAndReturn(destination, chunk) {
-  writeChunk(destination, chunk);
-  return destinationHasCapacity;
-}
-function completeWriting(destination) {
-  if (currentView && writtenBytes > 0) {
-    destination.write(currentView.subarray(0, writtenBytes));
-  }
-
-  currentView = null;
-  writtenBytes = 0;
-  destinationHasCapacity = true;
-}
-function close$1(destination) {
-  destination.end();
-}
-var textEncoder = new util.TextEncoder();
-function stringToChunk(content) {
-  return content;
-}
-var precomputedChunkSet = new Set() ;
-function byteLengthOfChunk(chunk) {
-  return typeof chunk === 'string' ? Buffer.byteLength(chunk, 'utf8') : chunk.byteLength;
-}
-function closeWithError(destination, error) {
-  // $FlowFixMe[incompatible-call]: This is an Error object or the destination accepts other types.
-  destination.destroy(error);
-}
-
-// eslint-disable-next-line no-unused-vars
-var CLIENT_REFERENCE_TAG = Symbol.for('react.client.reference');
-var SERVER_REFERENCE_TAG = Symbol.for('react.server.reference');
-function isClientReference(reference) {
-  return reference.$$typeof === CLIENT_REFERENCE_TAG;
-}
-function isServerReference(reference) {
-  return reference.$$typeof === SERVER_REFERENCE_TAG;
-}
-function registerClientReference(proxyImplementation, id, exportName) {
-  return registerClientReferenceImpl(proxyImplementation, id + '#' + exportName, false);
-}
-
-function registerClientReferenceImpl(proxyImplementation, id, async) {
-  return Object.defineProperties(proxyImplementation, {
-    $$typeof: {
-      value: CLIENT_REFERENCE_TAG
-    },
-    $$id: {
-      value: id
-    },
-    $$async: {
-      value: async
-    }
-  });
-} // $FlowFixMe[method-unbinding]
-
-
-var FunctionBind = Function.prototype.bind; // $FlowFixMe[method-unbinding]
-
-var ArraySlice = Array.prototype.slice;
-
-function bind() {
-  // $FlowFixMe[unsupported-syntax]
-  var newFn = FunctionBind.apply(this, arguments);
-
-  if (this.$$typeof === SERVER_REFERENCE_TAG) {
-    var args = ArraySlice.call(arguments, 1);
-    return Object.defineProperties(newFn, {
-      $$typeof: {
-        value: SERVER_REFERENCE_TAG
-      },
-      $$id: {
-        value: this.$$id
-      },
-      $$bound: {
-        value: this.$$bound ? this.$$bound.concat(args) : args
-      },
-      bind: {
-        value: bind
-      }
-    });
-  }
-
-  return newFn;
-}
-
-function registerServerReference(reference, id, exportName) {
-  return Object.defineProperties(reference, {
-    $$typeof: {
-      value: SERVER_REFERENCE_TAG
-    },
-    $$id: {
-      value: exportName === null ? id : id + '#' + exportName
-    },
-    $$bound: {
-      value: null
-    },
-    bind: {
-      value: bind
-    }
-  });
-}
-var PROMISE_PROTOTYPE = Promise.prototype;
-var deepProxyHandlers = {
-  get: function (target, name, receiver) {
-    switch (name) {
-      // These names are read by the Flight runtime if you end up using the exports object.
-      case '$$typeof':
-        // These names are a little too common. We should probably have a way to
-        // have the Flight runtime extract the inner target instead.
-        return target.$$typeof;
-
-      case '$$id':
-        return target.$$id;
-
-      case '$$async':
-        return target.$$async;
-
-      case 'name':
-        return target.name;
-
-      case 'displayName':
-        return undefined;
-      // We need to special case this because createElement reads it if we pass this
-      // reference.
-
-      case 'defaultProps':
-        return undefined;
-      // Avoid this attempting to be serialized.
-
-      case 'toJSON':
-        return undefined;
-
-      case Symbol.toPrimitive:
-        // $FlowFixMe[prop-missing]
-        return Object.prototype[Symbol.toPrimitive];
-
-      case 'Provider':
-        throw new Error("Cannot render a Client Context Provider on the Server. " + "Instead, you can export a Client Component wrapper " + "that itself renders a Client Context Provider.");
-    } // eslint-disable-next-line react-internal/safe-string-coercion
-
-
-    var expression = String(target.name) + '.' + String(name);
-    throw new Error("Cannot access " + expression + " on the server. " + 'You cannot dot into a client module from a server component. ' + 'You can only pass the imported name through.');
-  },
-  set: function () {
-    throw new Error('Cannot assign to a client module from a server module.');
-  }
-};
-var proxyHandlers = {
-  get: function (target, name, receiver) {
-    switch (name) {
-      // These names are read by the Flight runtime if you end up using the exports object.
-      case '$$typeof':
-        return target.$$typeof;
-
-      case '$$id':
-        return target.$$id;
-
-      case '$$async':
-        return target.$$async;
-
-      case 'name':
-        return target.name;
-      // We need to special case this because createElement reads it if we pass this
-      // reference.
-
-      case 'defaultProps':
-        return undefined;
-      // Avoid this attempting to be serialized.
-
-      case 'toJSON':
-        return undefined;
-
-      case Symbol.toPrimitive:
-        // $FlowFixMe[prop-missing]
-        return Object.prototype[Symbol.toPrimitive];
-
-      case '__esModule':
-        // Something is conditionally checking which export to use. We'll pretend to be
-        // an ESM compat module but then we'll check again on the client.
-        var moduleId = target.$$id;
-        target.default = registerClientReferenceImpl(function () {
-          throw new Error("Attempted to call the default export of " + moduleId + " from the server " + "but it's on the client. It's not possible to invoke a client function from " + "the server, it can only be rendered as a Component or passed to props of a " + "Client Component.");
-        }, target.$$id + '#', target.$$async);
-        return true;
-
-      case 'then':
-        if (target.then) {
-          // Use a cached value
-          return target.then;
+    ],
+    "LRV": [
+        {
+            "word": "कृश",
+            "eid": "10239",
+            "pagenum": 205,
+            "content": "kfSa¦ <i>a. (f. शा; compar. क्रशीयस्; super. क्रशिष्ठ)</i> 1. Lean, emaciated, weak, <ls>M.</ls>iv.184; 2. small, little, minute (in size or quantity), e.g. सुहृदपि न याच्यः कृशधनः <ls>Bhartr.</ls>ii.28; 3. poor, <ls>M.</ls>vii.208."
         }
-
-        if (!target.$$async) {
-          // If this module is expected to return a Promise (such as an AsyncModule) then
-          // we should resolve that with a client reference that unwraps the Promise on
-          // the client.
-          var clientReference = registerClientReferenceImpl({}, target.$$id, true);
-          var proxy = new Proxy(clientReference, proxyHandlers); // Treat this as a resolved Promise for React's use()
-
-          target.status = 'fulfilled';
-          target.value = proxy;
-          var then = target.then = registerClientReferenceImpl(function then(resolve, reject) {
-            // Expose to React.
-            return Promise.resolve(resolve(proxy));
-          }, // If this is not used as a Promise but is treated as a reference to a `.then`
-          // export then we should treat it as a reference to that name.
-          target.$$id + '#then', false);
-          return then;
-        } else {
-          // Since typeof .then === 'function' is a feature test we'd continue recursing
-          // indefinitely if we return a function. Instead, we return an object reference
-          // if we check further.
-          return undefined;
+    ],
+    "MCI": [
+        {
+            "word": "कृश",
+            "eid": "91",
+            "pagenum": 13,
+            "content": "<b>Kṛśa</b>¦ m.: A mythical serpent. <dvsn n='P'>Born in the <i>kula</i> of Airāvata, one of those offered in the snake sacrifice of Janamejaya 1. 52. 10, 11, 1."
         }
-
-    }
-
-    var cachedReference = target[name];
-
-    if (!cachedReference) {
-      var reference = registerClientReferenceImpl(function () {
-        throw new Error( // eslint-disable-next-line react-internal/safe-string-coercion
-        "Attempted to call " + String(name) + "() from the server but " + String(name) + " is on the client. " + "It's not possible to invoke a client function from the server, it can " + "only be rendered as a Component or passed to props of a Client Component.");
-      }, target.$$id + '#' + name, target.$$async);
-      Object.defineProperty(reference, 'name', {
-        value: name
-      });
-      cachedReference = target[name] = new Proxy(reference, deepProxyHandlers);
-    }
-
-    return cachedReference;
-  },
-  getPrototypeOf: function (target) {
-    // Pretend to be a Promise in case anyone asks.
-    return PROMISE_PROTOTYPE;
-  },
-  set: function () {
-    throw new Error('Cannot assign to a client module from a server module.');
-  }
-};
-function createClientModuleProxy(moduleId) {
-  var clientReference = registerClientReferenceImpl({}, // Represents the whole Module object instead of a particular import.
-  moduleId, false);
-  return new Proxy(clientReference, proxyHandlers);
-}
-
-function getClientReferenceKey(reference) {
-  return reference.$$async ? reference.$$id + '#async' : reference.$$id;
-}
-function resolveClientReferenceMetadata(config, clientReference) {
-  var modulePath = clientReference.$$id;
-  var name = '';
-  var resolvedModuleData = config[modulePath];
-
-  if (resolvedModuleData) {
-    // The potentially aliased name.
-    name = resolvedModuleData.name;
-  } else {
-    // We didn't find this specific export name but we might have the * export
-    // which contains this name as well.
-    // TODO: It's unfortunate that we now have to parse this string. We should
-    // probably go back to encoding path and name separately on the client reference.
-    var idx = modulePath.lastIndexOf('#');
-
-    if (idx !== -1) {
-      name = modulePath.slice(idx + 1);
-      resolvedModuleData = config[modulePath.slice(0, idx)];
-    }
-
-    if (!resolvedModuleData) {
-      throw new Error('Could not find the module "' + modulePath + '" in the React Client Manifest. ' + 'This is probably a bug in the React Server Components bundler.');
-    }
-  }
-
-  if (clientReference.$$async === true) {
-    return [resolvedModuleData.id, resolvedModuleData.chunks, name, 1];
-  } else {
-    return [resolvedModuleData.id, resolvedModuleData.chunks, name];
-  }
-}
-function getServerReferenceId(config, serverReference) {
-  return serverReference.$$id;
-}
-function getServerReferenceBoundArguments(config, serverReference) {
-  return serverReference.$$bound;
-}
-
-var ReactDOMSharedInternals = ReactDOM.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-
-var ReactDOMFlightServerDispatcher = {
-  prefetchDNS: prefetchDNS,
-  preconnect: preconnect,
-  preload: preload,
-  preloadModule: preloadModule$1,
-  preinitStyle: preinitStyle,
-  preinitScript: preinitScript,
-  preinitModuleScript: preinitModuleScript
-};
-
-function prefetchDNS(href) {
-  {
-    if (typeof href === 'string' && href) {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = 'D|' + href;
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
+    ],
+    "MD": [
+        {
+            "word": "कृश",
+            "eid": "6248",
+            "pagenum": 73,
+            "content": "कृश¦ kṛś-á, <lex>a.</lex> thin, slender; feeble, sickly; 🞄not full (<i>moon</i>); slender, weak, insignificant; 🞄poor; <lex>m.</lex> <ab>N.</ab>; <b>(a) -ka,</b> <lex>a.</lex> slender; <b>-gava,</b> <lex>a.</lex> <ab>hvg.</ab> 🞄thin cows; <b>-tā,</b> <lex>f.</lex>, <b>-tva,</b> <lex>n.</lex> thinness; <b>-dhana,</b> 🞄<lex>a.</lex> of slender means, poor; <b>-buddhi,</b> <lex>a.</lex> of weak 🞄intellect; <b>-bhṛtya,</b> <lex>a.</lex> having thin servants."
         }
-
-        hints.add(key);
-        emitHint(request, 'D', href);
-      }
-    }
-  }
+    ],
+    "MW": [
+        {
+            "word": "कृश",
+            "eid": "55011",
+            "pagenum": "305,3",
+            "content": "कृश/ ¦ <lex>mf(आ)n.</lex> (<ls>Pāṇ. viii, 2, 55</ls>) lean, emaciated, thin, spare, weak, feeble, <ls>RV.</ls>; <ls>AV.</ls> &c.<info lex='m:f#A:n'/>"
+        },
+        {
+            "word": "कृश",
+            "eid": "55012",
+            "pagenum": "305,3",
+            "content": "¦ small, little, minute, insignificant, <ls>Mn.</ls>; <ls>MBh.</ls>; <ls>R.</ls>; <ls>Mṛcch.</ls> &c.<info lex='inh'/>"
+        },
+        {
+            "word": "कृश",
+            "eid": "55013",
+            "pagenum": "305,3",
+            "content": "¦ ‘poor’, see कृशी-कृत<info lex='inh'/>"
+        },
+        {
+            "word": "कृश",
+            "eid": "55014",
+            "pagenum": "305,3",
+            "content": "कृश/ ¦ (अस्), <lex>m.</lex> a kind of fish, <ls>Gal.</ls><info lex='m'/>"
+        },
+        {
+            "word": "कृश",
+            "eid": "55015",
+            "pagenum": "305,3",
+            "content": "¦ a kind of bird, <ls>Inscr.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृश",
+            "eid": "55016",
+            "pagenum": "305,3",
+            "content": "¦ <ab>N.</ab> of a <s1 slp1='fzi'>Ṛṣi</s1> (author of <ls>RV. viii, 55</ls>), <ls n='RV.'>viii, 54, 2</ls> and <ls n='RV. viii,'>59, 3</ls>; <ls n='RV.'>x, 40, 8</ls>; <ls>MBh. i</ls>, <ls n='MBh.'>xiii</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृश",
+            "eid": "55017",
+            "pagenum": "305,3",
+            "content": "¦ <ab>N.</ab> of <s1 slp1='sAMkftyAyana'>Sāṃkṛtyāyana</s1>, <ls>Car. i, 12</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृश",
+            "eid": "55018",
+            "pagenum": "305,3",
+            "content": "¦ of <s1 slp1='nAga'>Nāga</s1>, <ls>MBh. i, 2152</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृश",
+            "eid": "55019",
+            "pagenum": "305,3",
+            "content": "¦ (<ab>pl.</ab>) the descendants of <s1 slp1='kfSa'>Kṛśa</s1> <ab>g.</ab> yaskA<srs/>di (<ls>Gaṇar. 27</ls>)<info lex='inh'/>"
+        },
+        {
+            "word": "कृश",
+            "eid": "55021",
+            "pagenum": "305,3",
+            "content": "कृश ¦ [<ab>cf.</ab> <lang n='greek'>κολοσσός</lang>. <ab>fr.</ab> <lang n='greek'>κολοκϳός</lang>]"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "कृश",
+            "eid": "15676",
+            "pagenum": 249,
+            "content": "<i>Kṛśa, as, ā, am,</i>¦ lean, emaciated, thin, spare, weak, feeble; small, little, minute, insignificant, poor; (<i>as</i>), m., N. of a man, also of a Nāga; N. of a Ṛṣi, author of a Ṛg-veda hymn; [cf. Hib. <nsi>creas,</nsi> ‘narrow, straight;’ <nsi>caile,</nsi> ‘narrowness.’] <i>—Kṛśa-gu, us, us, u,</i> Ved. one who has lean cattle. <i>—Kṛśa-tā,</i> f. or <i>kṛśa-tva, am,</i> n. leanness, thinness. <i>—Kṛśa-śākha, as,</i> m., N. of a plant, <i>=</i> <i>parpaṭa</i>. <i>—Kṛśākṣa (°śa-ak°), as,</i> m., a spider. <i>—Kṛśāṅga (°śa-aṅ°), as, ī, am,</i> emaciate, spare, thin; (<i>as</i>), m. an epithet of Śiva; (<i>ī</i>), f. a woman with a slender shape; a particular plant, commonly called Priyaṅgu. <i>—Kṛśāśva (°śa-aś°), as,</i> m., N. of several persons; N. of an author of directions to players and dancers. <i>—Kṛśāśvin, ī,</i> m. a pupil of Kṛśāśva, a dancer, an actor, a tumbler. <i>—Kṛśo-</i> <i>dara (°śa-ud°), as, ā, am,</i> thin-waisted."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "कृश",
+            "eid": "3490",
+            "pagenum": 1,
+            "content": "<i>Kṛśa</i> (I)¦ — a Vaikuṇṭha god. <dvsn n='P'/>Br. II. 36. 57."
+        },
+        {
+            "word": "कृश",
+            "eid": "3491",
+            "pagenum": 1,
+            "content": "<i>Kṛśa</i> (II)¦ — a son of Kṛśā and Uśīnara; capital was Vṛṣalā. <dvsn n='P'/>M. 48. 18 and 21."
+        },
+        {
+            "word": "कृश",
+            "eid": "3492",
+            "pagenum": 1,
+            "content": "<i>Kṛśa sarman</i>¦ — the son of Iḍviḍa, and father of Dilīpa Khatvāṅga. <dvsn n='P'/>Br. III. 63. 181."
+        }
+    ],
+    "PW": [
+        {
+            "word": "कृश",
+            "eid": "30244",
+            "pagenum": 2,
+            "content": "कृश/¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> (<lex>f.</lex> आ) <dvsn n='2'>— a〉 <i>abgemagert, hager, schlank, schmächtig, schwächlich, kränklich</i>. Vom Monde so <ab>v. a.</ab> <i>nicht voll</i> <ls>Spr. 7860</ls>. <dvsn n='2'>— b〉 <i>dünn, schwach, unbedeutend</i>. <dvsn n='2'>— c〉 <i>arm</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <dvsn n='2'>— a〉 *<i>ein <ab>best.</ab> Fisch</i> <ls>GAL.</ls> <dvsn n='2'>— b〉 <ab>N. pr.</ab> <dvsn n='3'>— α〉 verschiedener Männer. <dvsn n='3'>— β〉 eines Schlangendämons."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "कृश",
+            "eid": "18796",
+            "pagenum": 2,
+            "content": "कृश/¦ (von कर्श्) <ls>P. 8, 2, 55.</ls> <ls>VOP. 26, 101.</ls> <dvsn n='1'> 1) <lex>adj.</lex> <lex>f.</lex> आ; compar. क्रशीयंस्, superl. क्रशिष्ठ <ls>PAT.</ls> zu <ls>P. 6, 4, 161.</ls> <ls>VOP. 7, 59.</ls> <dvsn n='2'> a) <i>abgemagert, hager, schlank, schwächlich, kränklich</i> <ls>H. 449.</ls> यो र\\ध्रस्य^ चोदि\\ता यः कृ\\शस्य^ <ls>ṚV. 2, 12, 6.</ls> अन्न^कामाय\\ चर^ते कृ\\शाय^ <ls n='ṚV.'>10, 117, 3.</ls> अ\\न्धस्य^ चिन्नासत्या कृ\\शस्य^ चिद्यु\\वामिदा^हुर्भि\\षजा^ रु\\तस्य^ चित् <ls n='ṚV. 10,'>39, 3.</ls> <ls n='ṚV. 10,'>40, 8.</ls> <ls n='ṚV.'>8, 64, 8.</ls> येन^ कृ\\शं वा^ज\\यन्ति\\ येन^ हि\\न्वन्त्यातु^रम् <ls>AV. 6, 101, 2.</ls> <ls>ŚAT. BR. 1, 6, 4, 4.</ls> पशु <ls n='ŚAT. BR.'>3, 8, 4, 5.</ls> <ls>KAUŚ. 10.</ls> <ls>CHĀND. UP. 4, 4, 5.</ls> <ls>N. 19, 12.</ls> बालवृद्धकृशातुराः <ls>M. 4, 184.</ls> उपवासकृश <ls n='M.'>11, 195.</ls> कृशदुर्बलान् <ls>MBH. 13, 3179.</ls> <ls>HIT. I, 196.</ls> स्थूलकृशौ नरौ <ls>SUŚR. 1, 53, 17. 129, 16. 207, 16. 2, 444, 1.</ls> अतिकृश <ls n='SUŚR.'>1, 53, 6.</ls> कृशा <ls>MBH. 4, 519.</ls> <ls n='MBH.'>13, 3361.</ls> <ls>N. 2, 2. 12, 85. 13, 22. 16, 8.</ls> कृशोदर <ls>ŚĀK. 38.</ls> कृशोदरी <ls>ŚRUT. 31.</ls> अल्पतराहारकृशीकृततनु <ls>KATHĀS. 24, 135.</ls> कृश als Beiw. von <is>Śiva</is> <ls>MBH. 12, 10365.</ls> <ls n='MBH.'>14, 194.</ls> ebenso कृशनाश <i>die Schwächlichen vernichtend</i> <ls n='MBH.'>12, 10365.</ls> <dvsn n='2'>— b) <i>dünn, schwach, unbedeutend, dürftig</i> <ls>AK. 3, 2, 11.</ls> <ls>H. 1427.</ls> क्षारक्षीणतया च लोष्टककृशं जीर्णं क्व हर्म्यं भवेत् <ls>MṚCCH. 47, 3.</ls> मित्रम् <ls>M. 7, 208.</ls> क्षत्रियं चैव सर्पं च ब्राह्मणं च बहुश्रुतम् । नावमन्येत वै भूष्णुः कृशानपि कदा च न ॥ <ls n='M.'>4, 135.</ls> <ls>MBH. 13, 5031.</ls> न याच्यः कृशधनः <ls>BHARTṚ. 2, 61.</ls> तव सुचरितं नूनं प्रतनु कृशेन विभाव्यते फलेन <ls>ŚĀK. 138, v. l.</ls> कृशवृत्ति <ls>MBH. 13, 3180.</ls> <ls>R. 4, 21, 19.</ls> <ls>MĀRK. P. 7, 20.</ls> सो ऽस्मद्विधानां प्रणयैः कृशीकृतः <i>arm gemacht</i> <ls>MṚCCH. 19, 13.</ls> <dvsn n='1'>— 2) <lex>m.</lex> N. pr. eines Mannes <ls>VĀLAKH. 5, 10. 10, 3.</ls> eines <is>Nāga</is> <ls>MBH. 1, 2152.</ls> eines <is>Ṛṣi</is> <ls n='MBH. 1,'>1682. fgg.</ls> <ls n='MBH.'>13, 1764.</ls> Verfassers von <ls>VĀLAKH. 6.</ls> <ls>ṚV. ANUKR.</ls> <ls>Ind. St. 1, 293, N. 2.</ls>"
+        },
+        {
+            "word": "कृश",
+            "eid": "71408",
+            "pagenum": 5,
+            "content": "कृश¦ <dvsn n='1'> 1) <dvsn n='2'> a) इन्दु im Gegens. zu पूर्णेन्दु <ls>VṚDDHA-CĀṆ. 16, 7.</ls> कृशीकृत्य तनुम् <ls>KATHĀS. 58, 29.</ls> <ls n='KATHĀS.'>62, 180.</ls> कृशीकृत <ls n='KATHĀS.'>52, 79. 54, 79.</ls> <dvsn n='2'>— a) <dvsn n='2'> b) यः कृशाश्वः (v. l. कृशार्थः) कृशगवः कृशभृत्यः कृशातिथिः । स वै राजन्कृशो नाम न शरीरकृशः कृशः ॥ <ls>Spr. 4757.</ls> <dvsn n='2'>— b) अकृशलक्ष्मी <ls>KIR. 5, 52.</ls> <dvsn n='1'>— 2) Z. 2 lies <ls>VĀLAKH. 6, 2. 11, 3.</ls> Verfasser von <ls>VĀLAKH. 7.</ls>"
+        },
+        {
+            "word": "कृश",
+            "eid": "119577",
+            "pagenum": 7,
+            "content": "कृश¦ <dvsn n='1'> 2) <is>Sāṃkṛtyāyana</is>, Unterredner bei <ls>CARAKA 1, 12.</ls>"
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "कृश",
+            "eid": "7091",
+            "pagenum": 5,
+            "content": "कृश¦ <lex>m.</lex> auch <i>ein <ab>best.</ab> Vogel</i> <ls>J. A. O. S. Procc. 1883, Oct. VIII.</ls>"
+        },
+        {
+            "word": "कृश",
+            "eid": "16344",
+            "pagenum": 7,
+            "content": "कृश¦ II. 5."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "कृश",
+            "eid": "11196",
+            "pagenum": 154,
+            "content": "<i>kṛśa</i>¦ m. auch ein best. Vogel, <ls>JAOS, Proc.</ls> 1883, Oct. VIII. {part=,seq=11366,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "कृश",
+            "eid": "11440",
+            "pagenum": 201,
+            "content": "कृश¦ r. 4th cl. (इर) कृशिर (कृश्यति) To make thin or small."
+        },
+        {
+            "word": "कृश",
+            "eid": "11441",
+            "pagenum": 201,
+            "content": "कृश¦ mfn. (-शः-शा-शं) 1. Small, thin, tittle, minute. 2. Thin, spare, emaciated. 3. Weak, feeble. E. कृश् to pare or make thin, क्त affix, deriv. irr."
+        }
+    ],
+    "STC": [
+        {
+            "word": "कृश",
+            "eid": "8238",
+            "pagenum": 206,
+            "content": "<b>kṛśa-</b>¦ <ab>a.</ab> maigre, émacié, faible, chétif ; petit, menu, insignifiant ; <ab>m.</ab> <ab>n.</ab> d'un Nāga ; d'un Ṛṣi ; <i>-tā-</i> <ab>f.</ab> <i>-tva-</i> <ab>nt.</ab> maigreur ; <i>-ī-kṛ-</i> faire maigrir (<i>-ī-kṛta-</i> <ab>a. v.</ab> maigri, appauvri).  <P><i>°gava-</i> <ab>a.</ab> qui a du bétail maigre.  <P><i>°dhana-</i> <ab>a.</ab> qui a une petite fortune, pauvre.  <P><i>°nāśa-°nāsa-</i> <ab>m.</ab> <ab>ép.</ab> de Śiva.  <P><i>°bhṛtya-</i> <ab>a.</ab> qui nourrit chichement ses serviteurs. <lbinfo n='7'/>  <P><i>°vṛtti-</i> <ab>a.</ab> qui a une pénurie de subsistance.  <P><i>kṛśāṅga-</i> <i>-ī-</i> <ab>a.</ab> qui a un corps maigre, maigre, <lbinfo n='3'/> émacié.  <P><i>kṛśātithi-</i> <ab>a.</ab> qui nourrit chichement ses hôtes.  <P><i>kṛśāśva-</i> <ab>m.</ab> <ab>n.</ab> de divers personnages.  <P><i>kṛśodara-</i> <ab>a.</ab> qui n'a pas de ventre, qui a la taille fine."
+        }
+    ],
+    "VEI": [
+        {
+            "word": "कृश",
+            "eid": "694",
+            "pagenum": 1,
+            "content": "<b>Kṛśa</b>¦ is mentioned with <b>Saṃvarta</b> as a pious sacrificer to Indra in one of the Vālakhilya hymns of the Rigveda<sup>1</sup> and in another<sup>2</sup> as a speaker of truth, while a third is traditionally<sup>3</sup> ascribed to his authorship. He seems also to be mentioned with <b>Śayu</b> as a protégé of the Aśvins in another hymn of the Rigveda,<sup>4</sup> but here the word may merely denote the ‘feeble man.’<sup>5</sup> <F>1) viii. 54, 2.</F> <F>2) viii. 59, 3.</F> <F>3) <i>Indische Studien,</i> 1, 293, n.</F> <F>4) x. 40, 8.</F> <F>5) Roth, St. Petersburg Dictionary, <i>s.v.</i> <dvsn n='P'/><i>Cf.</i> Ludwig, Translation of the Rigveda, 3, 132, 164.</F>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "कृश",
+            "eid": "11446",
+            "pagenum": 244,
+            "content": "कृश¦ r. 4th cl. (इर) कृशिर (कृश्यति) To make thin or small."
+        },
+        {
+            "word": "कृश",
+            "eid": "11447",
+            "pagenum": 244,
+            "content": "कृश¦ mfn. (-शः-शा-शं) .²1 Small, thin, little, minute. .²2 Thin, spare, emaciated. .²3 Weak, feeble. .E. कृश to pare or make thin, क्त affix, deriv. irr."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "कृश",
+            "eid": "10896",
+            "pagenum": 209,
+            "content": "कृश¦ (शः-शा-शं) <i>a.</i> Small, thin."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कृश",
+            "eid": "8642",
+            "pagenum": "2-179-c",
+            "content": "कृश¦, इर् य कार्श्ये । इति कविकल्पद्रुमः ॥ (दिवांपरं-सकं-सेट् । इरित् ।) कार्श्यं कृशकरणम् । इर्, अकृशत् अकर्शीत् । अस्मात् पुषादित्वान्नित्ये ङ इत्यन्ये । य, कृश्यति चन्द्रं कष्णपक्षः । इति दुर्गादासः ॥"
+        },
+        {
+            "word": "कृश",
+            "eid": "8643",
+            "pagenum": "2-179-c",
+            "content": "कृशः¦, त्रि, (कृशधातोः क्तप्रत्यये “अनुपसर्गात् फुल्लक्षीवेति” । ८ । २ । ५५ । निपातनात् साधुः ।) अल्पः । (यथा, मनौ । ४ । १८४ । “आकाशेशाश्च विज्ञेया बालवृद्धकृशातुराः” ॥) सूक्ष्मः । इत्यमरः । ३ । १ । ६१ ॥ (यथा, आर्य्यासप्तशती । ४९५ । “राजसि कृशाङ्गि ! मङ्गलकलसी सहकारपल्लवेनेव । तेनैव चूम्बितमुखी प्रथमाविर्भूतरागेण” ॥ “व्यायाममतिसौहित्यं क्षुत्पिपासामथौषधम् । कृशो न सहते तद्वदतिशीतोष्णमैथुनम् ॥ प्लीहा कासः क्षयः श्वासो गुल्मार्शांस्युदराणि च । कृशं प्रायोऽभिधावन्ति, रोगाश्च ग्रहणीमताः” ॥ “सततं व्याधितावेतावतिस्थूलकृशौ नरौ । सततञ्चोपचय्यौ हि कर्षणैर्वृंहणैरपि” ॥ “स्थौल्यकार्श्ये वरं कार्श्यं समोपकरणौ हितौ । यद्युभौ व्याधिरागच्छेत् स्थूलमेवाति पीडयेत्” ॥ इति चरके सूत्रस्थाने २१ अध्याये ॥ “कश्चिदन्यः कृशोऽतीव बलवान् दृश्यते तदा” ॥ तत्र हेतुमाह । “आधानसमये यस्य शुकभागोऽधिको भवेत् । मेदोभागस्तु हीनः स्यात् स कृशोऽपि महाबलः” ॥ यस्याधानसमये जनयितुः शुक्रस्याधिक्यं भवति । मेदसोऽल्पता तस्य कृशस्यापि बहु बलमित्यर्थः ॥ अथ कार्श्यस्य चिकित्सा । “रूक्षान्नादि निमित्ते तु कृशे युञ्जीत भेषजम् । वृंहणं बलकृद्वृष्यं तथा वाजीकरञ्च यत् ॥ पीताश्वगन्धा पयसार्द्धमासं घृतेन तैलेन सुखाम्बुना वा । कृशस्य पुष्टिं वपुषो विधत्ते बालस्य शस्यस्य यथाम्बुवृष्टी ॥ अश्वगन्धस्य कल्केन क्वाथे तस्मिन् पयस्यपि । सिद्धं तैलं कृशाङ्गानामभ्यङ्गादङ्गपुष्टिदम्” ॥ इति अश्वगन्धातैलम् ॥ * ॥ इति भावप्रकाशस्य मध्यखण्डे तृतीयभागे कार्श्याधिकारे ॥) (अक्षमः । यथा, मनौ । ४ । १३५ । “क्षत्त्रियञ्चैव सर्पञ्च ब्राह्मणं वा बहुश्रुतम् । नावमन्येत वै भूष्णुः कृशानपि कदाचन” ॥ पुं, सर्व्वाकारवत्त्वात् विष्णुः । यथा, महाभारते । १३ । १४९ । १०३ । “अणुर्वृहत्कृशः स्थूलो गुणभृन्निर्गुणो महान्” ॥ स्वनामख्यातो मुनिपुत्त्रः । स तु परीक्षिच्छापप्रदातुः शृङ्गिणः सखा । यथा, महाभारते । १ । ४१ । २ । “स तं कृशमभिप्रेक्ष्य सूनृतां वाचमुत्सृजन् । अपृच्छत्तं कथं तातः स मेऽद्य मृतधारकः” ॥ ऐरावतकुलोत्पन्नो नागविशेषः । यथा, तत्रैव । १ । आस्तीकपर्व्वणि । ५७ । ११ । “पारावतः पारिजातः पाण्डरो हरिणः कृशः । ऐरावतकुलादेते प्रविष्टा हव्यवाहनम्” ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "कृश",
+            "eid": "14779",
+            "pagenum": "2195,b",
+            "content": "कृश¦ तनूकरणे दिवा० पर० सक० सेट् । कृश्यति इरित् अकृशत् अकर्शीत् । णिचि कर्शयति ते अचीकृशत्--त अचकर्शत्त । कर्शयाम् बभूव आस चकार चक्रे । कृशः ।"
+        },
+        {
+            "word": "कृश",
+            "eid": "14780",
+            "pagenum": "2195,b",
+            "content": "कृश¦ त्रि० कृश--क्त नि० । १ अल्पे, २ सूक्ष्मे च । “आकाशेशास्तु विज्ञेया बालवृद्धकृशातुराः” ष्ठपवासकृशं तन्तु” “क्षत्रियञ्चैव सर्पञ्चब्राह्मणं वा बहुश्रुतम् । नावमन्येत वै भूयः कृशानपि कदाचन” मनुः “ब्राह्मणस्य सुरश्रेष्ठ! कृश वृत्तेः कदाचन” भा० आनु० ६२ अ० । सूक्ष्मे कृशोदरी । कृशस्य भावः इमनिच् क्रशिमत् तद्भावे पु० । ष्यञ् । कार्श्य न० । तल् । कृशता स्त्री, त्व “कृशत्व न० तद्भावे “त्वय्येवं कृशता कुतः” सा० द० । अतिशयेन कृशः इष्ठन् क्रशिष्ठ ईयसुन् क्रशीयस् । अतिशयकृशे त्रि० ईयसौ स्त्रियां ङीप् ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कृश",
+            "content": "कृश वि. -    'दुबला पतला, दुर्बल, शक्तिहीन, क्षीण'"
+        },
+        {
+            "word": "कृश",
+            "content": "कृश वि. - 'छोटा, थोड़ा, सूक्ष्म'"
+        },
+        {
+            "word": "कृश",
+            "content": "कृश वि. - 'दरिद्र, नगण्य'"
+        },
+        {
+            "word": "कृश",
+            "content": "कृश वि. -  'कृश्+क्त, नि . ' 'दुर्बल, बलहीन'"
+        },
+        {
+            "word": "कृश",
+            "content": "कृश वि. -  'कृश्+क्त, नि . ' नगण्य"
+        },
+        {
+            "word": "कृश",
+            "content": "कृश वि. -  'कृश्+क्त, नि . ' निर्धन"
+        },
+        {
+            "word": "कृश",
+            "content": "कृश वि. -  'कृश्+क्त, नि . ' तुच्छ"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कृश",
+            "पदविभागः": "धातुः",
+            "कन्नडार्थः": "ಕೃಶವಾಗು \\/ತೆಳ್ಳನಾಗು \\/ಸಣ್ಣದಾಗು",
+            "content": ""
+        },
+        {
+            "word": "कृश",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ವಿಷ್ಣು \\/ಪರಮಾತ್ಮ",
+            "निष्पत्तिः": "कृश (तनूकरणे)'क्तः' (८-२-५५) । तलोपः इडभावश्च निपात्यते ।",
+            "प्रयोगाः": "'अणुर्बुहत् कृशः स्थूलः गुणभृन्निर्गुणो महान्'",
+            "उल्लेखाः": "वि० स०",
+            "विस्तारः": "'सर्वत्राव्याहतगतिः लघिम्ना कृश ईरितः'निरुक्तिः ।",
+            "content": ""
+        },
+        {
+            "word": "कृश",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಉಷ್ಣ \\/ಬಿಸಿ \\/ಕಾವು",
+            "विस्तारः": "बहुवचनान्तं रूपम् ।",
+            "content": ""
+        },
+        {
+            "word": "कृश",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಕೇತುಗ್ರಹ",
+            "विस्तारः": "'केतवो विकचाः कृशाः'वैज० ।",
+            "content": ""
+        },
+        {
+            "word": "कृश",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ತೆಳ್ಳಗಿರುವಿಕೆ \\/ಸಣ್ಣಗಿರುವಿಕೆ",
+            "निष्पत्तिः": "कृश भावे'क्तः' (३-३-११४)",
+            "content": ""
+        },
+        {
+            "word": "कृश",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಸಣ್ಣದಾದ \\/ತೆಳುವಾದ",
+            "प्रयोगाः": "'कृशमपि कृशतां पुनर्नयन्ती विपुलतरोन्मुखलोचनावलग्नम्'",
+            "उल्लेखाः": "माघ० ७-३३",
+            "content": ""
+        },
+        {
+            "word": "कृश",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಚಿಕ್ಕದಾದ \\/ಪುಟ್ಟ",
+            "content": ""
+        },
+        {
+            "word": "कृश",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಅಲ್ಪ",
+            "प्रयोगाः": "'वनानि दहतो वह्नेः नखा भवति मारुतः । त एव दीपनाशाय कृशे कस्यास्ति गौरवम् ॥'",
+            "content": ""
+        },
+        {
+            "word": "कृश",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ದುರ್ಬಲ \\/ಬಲಹೀನ",
+            "प्रयोगाः": "'क्षत्रियं चैव सर्पं च ब्राह्मणं वा बहुश्रुतम् । नावमन्येत वै भूष्णुः कृशानपि कदाचन ॥'",
+            "उल्लेखाः": "मनु० ४-१३५",
+            "content": ""
+        },
+        {
+            "word": "कृश",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಉಷ್ಣವಾದ \\/ಬಿಸಿಯಾದ",
+            "विस्तारः": "'उष्णं ज्वलः करः क्रूरो बालस्तिग्मः कृशश्चुपः'वैज० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "कृश",
+            "linga": "V",
+            "artha": "सूक्ष्मम्",
+            "synonyms": [
+                "स्तोक",
+                "अल्प",
+                "क्षुल्लक",
+                "सूक्ष्म",
+                "श्लक्ष्ण",
+                "दभ्र",
+                "कृश",
+                "तनु",
+                "मात्रा",
+                "त्रुटि",
+                "लव",
+                "लेश",
+                "कण",
+                "अणु"
+            ],
+            "num": "3.1.60",
+            "text": "वड्रोरुविपुलं पीनपीव्नी तु स्थूलपीवरे । स्तोकाल्पक्षुल्लकाः सूक्ष्मं श्लक्ष्णं दभ्रं कृशं तनु ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "कृश",
+            "content": "<lexhead no=\"1478\">\n<dentry>कृश</dentry>\n<prAwipaxikam>कृश</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">कृश</prAwipaxikam>\n<etymology>[ ]</etymology>\n<jAwi>परिमाणः</jAwi>\n<sense no=\"1\">दुबला पतला, दुर्बल, शक्तिहीन, क्षीण, कृशतनुः कृशोदरी आदि, मध्य* क्रशीयस्, उत्तर* क्रशिष्ठ</sense>\n<sense n=\"2\">छोटा, थोड़ा, सूक्ष्म AVसुहृदपि न याच्यः कृशधनः<citation>भर्तृ* २।२८ आकार या परिणाम में</citation></sense>\n<sense n=\"3\">दरिद्र, नगण्य AV<citation>मनु* ७।२०८</citation></sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "कृश",
+            "content": "<body><s>kfSa tanUkaraRe divA° para° saka° sew . kfSyati irit akfSat akarSIt . Rici karSayati te acIkfSat—ta acakarSa­tta . karSayAm baBUva Asa cakAra cakre . kfSaH .</s></body> <body><s>kfSa tri° kfSa—kta ni° . <lb/><b>1</b> alpe, <lb/><b>2</b> sUkzme ca . <q>AkASe­SAstu vijYeyA bAlavfdDakfSAturAH</q> zWapavAsakfSaM tantu” <q>kzatriyaYcEva sarpaYcabrAhmaRaM vA bahuSrutam . nAvamanyeta vE BUyaH kfSAnapi kadAcana</q> manuH <q>brAhmaRasya suraSrezWa! kfSa vftteH kadAcana</q> BA° Anu° 62 a° . sUkzme kfSo­darI . kfSasya BAvaH imanic kraSimat tadBAve pu° . zyaY . kArSya na° . tal . kfSatA strI, tva <q>kfSatva na° tadBAve “tvayyevaM kfSatA kutaH</q> sA° da° . atiSayena kfSaH izWan kraSizWa Iyasun kraSIyas . atiSayakfSe tri° IyasO striyAM NIp .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "कृश",
+            "content": "<H2><h><key1>kfSa</key1><key2>kfSa/</key2></h><body><s>kfSa/</s>   <lex>mf(<s>A</s>)n.</lex> (<ls>Pāṇ. viii, 2, 55</ls>) lean, emaciated, thin, spare, weak, feeble, <ls>RV.</ls>; <ls>AV.</ls> &amp;c.<info lex=\"m:f#A:n\" /></body><tail><L>55011</L><pc>305,3</pc></tail></H2>\n <H2A><h><key1>kfSa</key1><key2>kfSa/</key2></h><body>  small, little, minute, insignificant, <ls>Mn.</ls>; <ls>MBh.</ls>; <ls>R.</ls>; <ls>Mṛcch.</ls> &amp;c.<info lex=\"inh\" /></body><tail><L>55012</L><pc>305,3</pc></tail></H2A>\n <H2A><h><key1>kfSa</key1><key2>kfSa/</key2></h><body>  ‘poor’, see <s>kfSI-kfta</s><info lex=\"inh\" /></body><tail><L>55013</L><pc>305,3</pc></tail></H2A>\n <H2B><h><key1>kfSa</key1><key2>kfSa/</key2></h><body><s>kfSa/</s>   (<s>as</s>), <lex>m.</lex> a kind of fish, <ls>Gal.</ls><info lex=\"m\" /></body><tail><L>55014</L><pc>305,3</pc></tail></H2B>\n <H2B><h><key1>kfSa</key1><key2>kfSa/</key2></h><body>  a kind of bird, <ls>Inscr.</ls><info lex=\"inh\" /></body><tail><L>55015</L><pc>305,3</pc></tail></H2B>\n <H2B><h><key1>kfSa</key1><key2>kfSa/</key2></h><body>  <ab>N.</ab> of a <s1 slp1=\"fzi\">Ṛṣi</s1> (author of <ls>RV. viii, 55</ls>), <ls n=\"RV.\">viii, 54, 2</ls> and <ls n=\"RV. viii,\">59, 3</ls>; <ls n=\"RV.\">x, 40, 8</ls>; <ls>MBh. i</ls>, <ls n=\"MBh.\">xiii</ls><info lex=\"inh\" /></body><tail><L>55016</L><pc>305,3</pc></tail></H2B>\n <H2B><h><key1>kfSa</key1><key2>kfSa/</key2></h><body>  <ab>N.</ab> of <s1 slp1=\"sAMkftyAyana\">Sāṃkṛtyāyana</s1>, <ls>Car. i, 12</ls><info lex=\"inh\" /></body><tail><L>55017</L><pc>305,3</pc></tail></H2B>\n <H2B><h><key1>kfSa</key1><key2>kfSa/</key2></h><body>  of <s1 slp1=\"nAga\">Nāga</s1>, <ls>MBh. i, 2152</ls><info lex=\"inh\" /></body><tail><L>55018</L><pc>305,3</pc></tail></H2B>\n <H2B><h><key1>kfSa</key1><key2>kfSa/</key2></h><body>  (<ab>pl.</ab>) the descendants of <s1 slp1=\"kfSa\">Kṛśa</s1> <ab>g.</ab> <s>yaskA<srs />di</s> (<ls>Gaṇar. 27</ls>)<info lex=\"inh\" /></body><tail><L>55019</L><pc>305,3</pc></tail></H2B>\n <H2E><h><key1>kfSa</key1><key2>kfSa</key2></h><body><s>kfSa</s>   [<ab>cf.</ab> <gk>κολοσσός</gk>. <ab>fr.</ab> <gk>κολοκϳός</gk>]</body><tail><L>55021</L><pc>305,3</pc></tail></H2E>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "कृश",
+            "content": "<H1><h><key1>kfSa</key1><key2>kfSa</key2></h><body><s>kfSa</s> <div n=\"1\">r. 4th cl. <s>(ira) kfSira (kfSyati)</s> To make thin or small.</div></body><tail><L>11440</L><pc>201-a</pc></tail></H1>\n <H1><h><key1>kfSa</key1><key2>kfSa</key2></h><body><s>kfSa</s>  <div n=\"1\">mfn. (<s>-SaH-SA-SaM</s>) </div><div n=\"2\"> 1. Small, thin, tittle, minute. </div><div n=\"2\"> 2. Thin, spare, <lb />emaciated. </div><div n=\"2\"> 3. Weak, feeble.</div><div n=\"E\"> E. <s>kfS</s> to pare or make thin, <s>kta</s> affix, <lb />deriv. irr.</div></body><tail><L>11441</L><pc>201-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कृश",
+            "content": "<span lang=\"sa\">कृश - तनूकरणे (दिवा० अपर० अक० से०) कृश्यति ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>धातुः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೃಶವಾಗು /ತೆಳ್ಳನಾಗು /ಸಣ್ಣದಾಗು<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>                  <span lang=\"sa\">कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿಷ್ಣು /ಪರಮಾತ್ಮ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>कृश (तनूकरणे) - \"क्तः\" (८-२-५५) । तलोपः इडभावश्च निपात्यते ।<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"अणुर्बुहत् कृशः स्थूलः गुणभृन्निर्गुणो महान्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>वि० स०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"सर्वत्राव्याहतगतिः लघिम्ना कृश ईरितः\" - निरुक्तिः ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಉಷ್ಣ /ಬಿಸಿ /ಕಾವು<div class=\"h-2\"> </div><b>विस्तारः - </b>बहुवचनान्तं रूपम् ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೇತುಗ್ರಹ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"केतवो विकचाः कृशाः\" - वैज० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತೆಳ್ಳಗಿರುವಿಕೆ /ಸಣ್ಣಗಿರುವಿಕೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>कृश भावे - \"क्तः\" (३-३-११४)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಣ್ಣದಾದ /ತೆಳುವಾದ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"कृशमपि कृशतां पुनर्नयन्ती विपुलतरोन्मुखलोचनावलग्नम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० ७-३३<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚಿಕ್ಕದಾದ /ಪುಟ್ಟ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಲ್ಪ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"वनानि दहतो वह्नेः नखा भवति मारुतः । त एव दीपनाशाय कृशे कस्यास्ति गौरवम् ॥\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದುರ್ಬಲ /ಬಲಹೀನ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"क्षत्रियं चैव सर्पं च ब्राह्मणं वा बहुश्रुतम् । नावमन्येत वै भूष्णुः कृशानपि कदाचन ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० ४-१३५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಉಷ್ಣವಾದ /ಬಿಸಿಯಾದ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"उष्णं ज्वलः करः क्रूरो बालस्तिग्मः कृशश्चुपः\" - वैज० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span> <span lang=\"sa\">कृश - तनूकरणे (दिवा० अपर० अक० से०) कृश्यति ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>धातुः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೃಶವಾಗು /ತೆಳ್ಳನಾಗು /ಸಣ್ಣದಾಗು<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>                  <span lang=\"sa\">कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿಷ್ಣು /ಪರಮಾತ್ಮ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>कृश (तनूकरणे) - \"क्तः\" (८-२-५५) । तलोपः इडभावश्च निपात्यते ।<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"अणुर्बुहत् कृशः स्थूलः गुणभृन्निर्गुणो महान्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>वि० स०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"सर्वत्राव्याहतगतिः लघिम्ना कृश ईरितः\" - निरुक्तिः ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಉಷ್ಣ /ಬಿಸಿ /ಕಾವು<div class=\"h-2\"> </div><b>विस्तारः - </b>बहुवचनान्तं रूपम् ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೇತುಗ್ರಹ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"केतवो विकचाः कृशाः\" - वैज० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತೆಳ್ಳಗಿರುವಿಕೆ /ಸಣ್ಣಗಿರುವಿಕೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>कृश भावे - \"क्तः\" (३-३-११४)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಣ್ಣದಾದ /ತೆಳುವಾದ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"कृशमपि कृशतां पुनर्नयन्ती विपुलतरोन्मुखलोचनावलग्नम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० ७-३३<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚಿಕ್ಕದಾದ /ಪುಟ್ಟ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಲ್ಪ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"वनानि दहतो वह्नेः नखा भवति मारुतः । त एव दीपनाशाय कृशे कस्यास्ति गौरवम् ॥\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದುರ್ಬಲ /ಬಲಹೀನ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"क्षत्रियं चैव सर्पं च ब्राह्मणं वा बहुश्रुतम् । नावमन्येत वै भूष्णुः कृशानपि कदाचन ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० ४-१३५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಉಷ್ಣವಾದ /ಬಿಸಿಯಾದ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"उष्णं ज्वलः करः क्रूरो बालस्तिग्मः कृशश्चुपः\" - वैज० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-
-function preconnect(href, crossOrigin) {
-  {
-    if (typeof href === 'string') {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = "C|" + (crossOrigin == null ? 'null' : crossOrigin) + "|" + href;
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
-        }
-
-        hints.add(key);
-
-        if (typeof crossOrigin === 'string') {
-          emitHint(request, 'C', [href, crossOrigin]);
-        } else {
-          emitHint(request, 'C', href);
-        }
-      }
-    }
-  }
-}
-
-function preload(href, as, options) {
-  {
-    if (typeof href === 'string') {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = 'L';
-
-        if (as === 'image' && options) {
-          key += getImagePreloadKey(href, options.imageSrcSet, options.imageSizes);
-        } else {
-          key += "[" + as + "]" + href;
-        }
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
-        }
-
-        hints.add(key);
-        var trimmed = trimOptions(options);
-
-        if (trimmed) {
-          emitHint(request, 'L', [href, as, trimmed]);
-        } else {
-          emitHint(request, 'L', [href, as]);
-        }
-      }
-    }
-  }
-}
-
-function preloadModule$1(href, options) {
-  {
-    if (typeof href === 'string') {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHin

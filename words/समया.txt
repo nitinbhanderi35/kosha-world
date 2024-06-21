@@ -1,509 +1,311 @@
-harCodeAt = callBound$9('String.prototype.charCodeAt');
-	  var $stringSlice = callBound$9('String.prototype.slice');
-	  var advanceStringIndex = function advanceStringIndex(S, index) {
-	    var length = S.length;
-	    if (index + 1 >= length) {
-	      return index + 1;
-	    }
-	    var first = $charCodeAt(S, index);
-	    if (first < 0xD800 || first > 0xDBFF) {
-	      return index + 1;
-	    }
-	    var second = $charCodeAt(S, index + 1);
-	    if (second < 0xDC00 || second > 0xDFFF) {
-	      return index + 1;
-	    }
-	    return index + 2;
-	  };
-	  var getArrayIterator = function getArrayIterator(arraylike) {
-	    var i = 0;
-	    return {
-	      next: function next() {
-	        var done = i >= arraylike.length;
-	        var value;
-	        if (!done) {
-	          value = arraylike[i];
-	          i += 1;
-	        }
-	        return {
-	          done: done,
-	          value: value
-	        };
-	      }
-	    };
-	  };
-	  var getNonCollectionIterator = function getNonCollectionIterator(iterable, noPrimordialCollections) {
-	    if (isArray$1(iterable) || isArguments$1(iterable)) {
-	      return getArrayIterator(iterable);
-	    }
-	    if (isString$1(iterable)) {
-	      var i = 0;
-	      return {
-	        next: function next() {
-	          var nextIndex = advanceStringIndex(iterable, i);
-	          var value = $stringSlice(iterable, i, nextIndex);
-	          i = nextIndex;
-	          return {
-	            done: nextIndex > iterable.length,
-	            value: value
-	          };
-	        }
-	      };
-	    }
-
-	    // es6-shim and es-shims' es-map use a string "_es6-shim iterator_" property on different iterables, such as MapIterator.
-	    if (noPrimordialCollections && typeof iterable['_es6-shim iterator_'] !== 'undefined') {
-	      return iterable['_es6-shim iterator_']();
-	    }
-	  };
-	  if (!$Map && !$Set$1) {
-	    // the only language iterables are Array, String, arguments
-	    // - Safari <= 6.0
-	    // - Chrome < 38
-	    // - node < 0.12
-	    // - FF < 13
-	    // - IE < 11
-	    // - Edge < 11
-
-	    esGetIterator.exports = function getIterator(iterable) {
-	      if (iterable != null) {
-	        return getNonCollectionIterator(iterable, true);
-	      }
-	    };
-	  } else {
-	    // either Map or Set are available, but Symbol is not
-	    // - es6-shim on an ES5 browser
-	    // - Safari 6.2 (maybe 6.1?)
-	    // - FF v[13, 36)
-	    // - IE 11
-	    // - Edge 11
-	    // - Safari v[6, 9)
-
-	    var isMap$1 = isMap$2;
-	    var isSet$1 = isSet$2;
-
-	    // Firefox >= 27, IE 11, Safari 6.2 - 9, Edge 11, es6-shim in older envs, all have forEach
-	    var $mapForEach = callBound$9('Map.prototype.forEach', true);
-	    var $setForEach = callBound$9('Set.prototype.forEach', true);
-	    if (typeof process === 'undefined' || !process.versions || !process.versions.node) {
-	      // "if is not node"
-
-	      // Firefox 17 - 26 has `.iterator()`, whose iterator `.next()` either
-	      // returns a value, or throws a StopIteration object. These browsers
-	      // do not have any other mechanism for iteration.
-	      var $mapIterator = callBound$9('Map.prototype.iterator', true);
-	      var $setIterator = callBound$9('Set.prototype.iterator', true);
-	    }
-	    // Firefox 27-35, and some older es6-shim versions, use a string "@@iterator" property
-	    // this returns a proper iterator object, so we should use it instead of forEach.
-	    // newer es6-shim versions use a string "_es6-shim iterator_" property.
-	    var $mapAtAtIterator = callBound$9('Map.prototype.@@iterator', true) || callBound$9('Map.prototype._es6-shim iterator_', true);
-	    var $setAtAtIterator = callBound$9('Set.prototype.@@iterator', true) || callBound$9('Set.prototype._es6-shim iterator_', true);
-	    var getCollectionIterator = function getCollectionIterator(iterable) {
-	      if (isMap$1(iterable)) {
-	        if ($mapIterator) {
-	          return getStopIterationIterator($mapIterator(iterable));
-	        }
-	        if ($mapAtAtIterator) {
-	          return $mapAtAtIterator(iterable);
-	        }
-	        if ($mapForEach) {
-	          var entries = [];
-	          $mapForEach(iterable, function (v, k) {
-	            $arrayPush(entries, [k, v]);
-	          });
-	          return getArrayIterator(entries);
-	        }
-	      }
-	      if (isSet$1(iterable)) {
-	        if ($setIterator) {
-	          return getStopIterationIterator($setIterator(iterable));
-	        }
-	        if ($setAtAtIterator) {
-	          return $setAtAtIterator(iterable);
-	        }
-	        if ($setForEach) {
-	          var values = [];
-	          $setForEach(iterable, function (v) {
-	            $arrayPush(values, v);
-	          });
-	          return getArrayIterator(values);
-	        }
-	      }
-	    };
-	    esGetIterator.exports = function getIterator(iterable) {
-	      return getCollectionIterator(iterable) || getNonCollectionIterator(iterable);
-	    };
-	  }
-	}
-
-	var numberIsNaN = function (value) {
-	  return value !== value;
-	};
-	var implementation$2 = function is(a, b) {
-	  if (a === 0 && b === 0) {
-	    return 1 / a === 1 / b;
-	  }
-	  if (a === b) {
-	    return true;
-	  }
-	  if (numberIsNaN(a) && numberIsNaN(b)) {
-	    return true;
-	  }
-	  return false;
-	};
-
-	var implementation$1 = implementation$2;
-	var polyfill$1 = function getPolyfill() {
-	  return typeof Object.is === 'function' ? Object.is : implementation$1;
-	};
-
-	var getPolyfill$1 = polyfill$1;
-	var define$1 = defineProperties_1;
-	var shim$1 = function shimObjectIs() {
-	  var polyfill = getPolyfill$1();
-	  define$1(Object, {
-	    is: polyfill
-	  }, {
-	    is: function testObjectIs() {
-	      return Object.is !== polyfill;
-	    }
-	  });
-	  return polyfill;
-	};
-
-	var define = defineProperties_1;
-	var callBind$1 = callBind$5.exports;
-	var implementation = implementation$2;
-	var getPolyfill = polyfill$1;
-	var shim = shim$1;
-	var polyfill = callBind$1(getPolyfill(), Object);
-	define(polyfill, {
-	  getPolyfill: getPolyfill,
-	  implementation: implementation,
-	  shim: shim
-	});
-	var objectIs = polyfill;
-
-	var fnToStr = Function.prototype.toString;
-	var reflectApply = typeof Reflect === 'object' && Reflect !== null && Reflect.apply;
-	var badArrayLike;
-	var isCallableMarker;
-	if (typeof reflectApply === 'function' && typeof Object.defineProperty === 'function') {
-	  try {
-	    badArrayLike = Object.defineProperty({}, 'length', {
-	      get: function () {
-	        throw isCallableMarker;
-	      }
-	    });
-	    isCallableMarker = {};
-	    // eslint-disable-next-line no-throw-literal
-	    reflectApply(function () {
-	      throw 42;
-	    }, null, badArrayLike);
-	  } catch (_) {
-	    if (_ !== isCallableMarker) {
-	      reflectApply = null;
-	    }
-	  }
-	} else {
-	  reflectApply = null;
-	}
-	var constructorRegex = /^\s*class\b/;
-	var isES6ClassFn = function isES6ClassFunction(value) {
-	  try {
-	    var fnStr = fnToStr.call(value);
-	    return constructorRegex.test(fnStr);
-	  } catch (e) {
-	    return false; // not a function
-	  }
-	};
-
-	var tryFunctionObject = function tryFunctionToStr(value) {
-	  try {
-	    if (isES6ClassFn(value)) {
-	      return false;
-	    }
-	    fnToStr.call(value);
-	    return true;
-	  } catch (e) {
-	    return false;
-	  }
-	};
-	var toStr$4 = Object.prototype.toString;
-	var objectClass = '[object Object]';
-	var fnClass = '[object Function]';
-	var genClass = '[object GeneratorFunction]';
-	var ddaClass = '[object HTMLAllCollection]'; // IE 11
-	var ddaClass2 = '[object HTML document.all class]';
-	var ddaClass3 = '[object HTMLCollection]'; // IE 9-10
-	var hasToStringTag$6 = typeof Symbol === 'function' && !!Symbol.toStringTag; // better: use `has-tostringtag`
-
-	var isIE68 = !(0 in [,]); // eslint-disable-line no-sparse-arrays, comma-spacing
-
-	var isDDA = function isDocumentDotAll() {
-	  return false;
-	};
-	if (typeof document === 'object') {
-	  // Firefox 3 canonicalizes DDA to undefined when it's not accessed directly
-	  var all = document.all;
-	  if (toStr$4.call(all) === toStr$4.call(document.all)) {
-	    isDDA = function isDocumentDotAll(value) {
-	      /* globals document: false */
-	      // in IE 6-8, typeof document.all is "object" and it's truthy
-	      if ((isIE68 || !value) && (typeof value === 'undefined' || typeof value === 'object')) {
-	        try {
-	          var str = toStr$4.call(value);
-	          return (str === ddaClass || str === ddaClass2 || str === ddaClass3 // opera 12.16
-	          || str === objectClass // IE 6-8
-	          ) && value('') == null; // eslint-disable-line eqeqeq
-	        } catch (e) {/**/}
-	      }
-	      return false;
-	    };
-	  }
-	}
-	var isCallable$1 = reflectApply ? function isCallable(value) {
-	  if (isDDA(value)) {
-	    return true;
-	  }
-	  if (!value) {
-	    return false;
-	  }
-	  if (typeof value !== 'function' && typeof value !== 'object') {
-	    return false;
-	  }
-	  try {
-	    reflectApply(value, null, badArrayLike);
-	  } catch (e) {
-	    if (e !== isCallableMarker) {
-	      return false;
-	    }
-	  }
-	  return !isES6ClassFn(value) && tryFunctionObject(value);
-	} : function isCallable(value) {
-	  if (isDDA(value)) {
-	    return true;
-	  }
-	  if (!value) {
-	    return false;
-	  }
-	  if (typeof value !== 'function' && typeof value !== 'object') {
-	    return false;
-	  }
-	  if (hasToStringTag$6) {
-	    return tryFunctionObject(value);
-	  }
-	  if (isES6ClassFn(value)) {
-	    return false;
-	  }
-	  var strClass = toStr$4.call(value);
-	  if (strClass !== fnClass && strClass !== genClass && !/^\[object HTML/.test(strClass)) {
-	    return false;
-	  }
-	  return tryFunctionObject(value);
-	};
-
-	var isCallable = isCallable$1;
-	var toStr$3 = Object.prototype.toString;
-	var hasOwnProperty = Object.prototype.hasOwnProperty;
-	var forEachArray = function forEachArray(array, iterator, receiver) {
-	  for (var i = 0, len = array.length; i < len; i++) {
-	    if (hasOwnProperty.call(array, i)) {
-	      if (receiver == null) {
-	        iterator(array[i], i, array);
-	      } else {
-	        iterator.call(receiver, array[i], i, array);
-	      }
-	    }
-	  }
-	};
-	var forEachString = function forEachString(string, iterator, receiver) {
-	  for (var i = 0, len = string.length; i < len; i++) {
-	    // no such thing as a sparse string.
-	    if (receiver == null) {
-	      iterator(string.charAt(i), i, string);
-	    } else {
-	      iterator.call(receiver, string.charAt(i), i, string);
-	    }
-	  }
-	};
-	var forEachObject = function forEachObject(object, iterator, receiver) {
-	  for (var k in object) {
-	    if (hasOwnProperty.call(object, k)) {
-	      if (receiver == null) {
-	        iterator(object[k], k, object);
-	      } else {
-	        iterator.call(receiver, object[k], k, object);
-	      }
-	    }
-	  }
-	};
-	var forEach$2 = function forEach(list, iterator, thisArg) {
-	  if (!isCallable(iterator)) {
-	    throw new TypeError('iterator must be a function');
-	  }
-	  var receiver;
-	  if (arguments.length >= 3) {
-	    receiver = thisArg;
-	  }
-	  if (toStr$3.call(list) === '[object Array]') {
-	    forEachArray(list, iterator, receiver);
-	  } else if (typeof list === 'string') {
-	    forEachString(list, iterator, receiver);
-	  } else {
-	    forEachObject(list, iterator, receiver);
-	  }
-	};
-	var forEach_1 = forEach$2;
-
-	var possibleNames = ['BigInt64Array', 'BigUint64Array', 'Float32Array', 'Float64Array', 'Int16Array', 'Int32Array', 'Int8Array', 'Uint16Array', 'Uint32Array', 'Uint8Array', 'Uint8ClampedArray'];
-	var g$2 = typeof globalThis === 'undefined' ? commonjsGlobal : globalThis;
-	var availableTypedArrays$2 = function availableTypedArrays() {
-	  var out = [];
-	  for (var i = 0; i < possibleNames.length; i++) {
-	    if (typeof g$2[possibleNames[i]] === 'function') {
-	      out[out.length] = possibleNames[i];
-	    }
-	  }
-	  return out;
-	};
-
-	var GetIntrinsic$3 = getIntrinsic;
-	var $gOPD = GetIntrinsic$3('%Object.getOwnPropertyDescriptor%', true);
-	if ($gOPD) {
-	  try {
-	    $gOPD([], 'length');
-	  } catch (e) {
-	    // IE 8 has a broken gOPD
-	    $gOPD = null;
-	  }
-	}
-	var gopd = $gOPD;
-
-	var forEach$1 = forEach_1;
-	var availableTypedArrays$1 = availableTypedArrays$2;
-	var callBound$8 = callBound$d;
-	var $toString$3 = callBound$8('Object.prototype.toString');
-	var hasToStringTag$5 = shams();
-	var gOPD$2 = gopd;
-	var g$1 = typeof globalThis === 'undefined' ? commonjsGlobal : globalThis;
-	var typedArrays$1 = availableTypedArrays$1();
-	var $indexOf = callBound$8('Array.prototype.indexOf', true) || function indexOf(array, value) {
-	  for (var i = 0; i < array.length; i += 1) {
-	    if (array[i] === value) {
-	      return i;
-	    }
-	  }
-	  return -1;
-	};
-	var $slice$1 = callBound$8('String.prototype.slice');
-	var toStrTags$1 = {};
-	var getPrototypeOf$1 = Object.getPrototypeOf; // require('getprototypeof');
-	if (hasToStringTag$5 && gOPD$2 && getPrototypeOf$1) {
-	  forEach$1(typedArrays$1, function (typedArray) {
-	    var arr = new g$1[typedArray]();
-	    if (Symbol.toStringTag in arr) {
-	      var proto = getPrototypeOf$1(arr);
-	      var descriptor = gOPD$2(proto, Symbol.toStringTag);
-	      if (!descriptor) {
-	        var superProto = getPrototypeOf$1(proto);
-	        descriptor = gOPD$2(superProto, Symbol.toStringTag);
-	      }
-	      toStrTags$1[typedArray] = descriptor.get;
-	    }
-	  });
-	}
-	var tryTypedArrays$1 = function tryAllTypedArrays(value) {
-	  var anyTrue = false;
-	  forEach$1(toStrTags$1, function (getter, typedArray) {
-	    if (!anyTrue) {
-	      try {
-	        anyTrue = getter.call(value) === typedArray;
-	      } catch (e) {/**/}
-	    }
-	  });
-	  return anyTrue;
-	};
-	var isTypedArray$2 = function isTypedArray(value) {
-	  if (!value || typeof value !== 'object') {
-	    return false;
-	  }
-	  if (!hasToStringTag$5 || !(Symbol.toStringTag in value)) {
-	    var tag = $slice$1($toString$3(value), 8, -1);
-	    return $indexOf(typedArrays$1, tag) > -1;
-	  }
-	  if (!gOPD$2) {
-	    return false;
-	  }
-	  return tryTypedArrays$1(value);
-	};
-
-	var callBind = callBind$5.exports;
-	var callBound$7 = callBound$d;
-	var GetIntrinsic$2 = getIntrinsic;
-	var isTypedArray$1 = isTypedArray$2;
-	var $ArrayBuffer = GetIntrinsic$2('ArrayBuffer', true);
-	var $Float32Array = GetIntrinsic$2('Float32Array', true);
-	var $byteLength$2 = callBound$7('ArrayBuffer.prototype.byteLength', true);
-
-	// in node 0.10, ArrayBuffers have no prototype methods, but have an own slot-checking `slice` method
-	var abSlice = $ArrayBuffer && !$byteLength$2 && new $ArrayBuffer().slice;
-	var $abSlice = abSlice && callBind(abSlice);
-	var isArrayBuffer$2 = $byteLength$2 || $abSlice ? function isArrayBuffer(obj) {
-	  if (!obj || typeof obj !== 'object') {
-	    return false;
-	  }
-	  try {
-	    if ($byteLength$2) {
-	      $byteLength$2(obj);
-	    } else {
-	      $abSlice(obj, 0);
-	    }
-	    return true;
-	  } catch (e) {
-	    return false;
-	  }
-	} : $Float32Array
-	// in node 0.8, ArrayBuffers have no prototype or own methods
-	? function IsArrayBuffer(obj) {
-	  try {
-	    return new $Float32Array(obj).buffer === obj && !isTypedArray$1(obj);
-	  } catch (e) {
-	    return typeof obj === 'object' && e.name === 'RangeError';
-	  }
-	} : function isArrayBuffer(obj) {
-	  // eslint-disable-line no-unused-vars
-	  return false;
-	};
-
-	var getDay = Date.prototype.getDay;
-	var tryDateObject = function tryDateGetDayCall(value) {
-	  try {
-	    getDay.call(value);
-	    return true;
-	  } catch (e) {
-	    return false;
-	  }
-	};
-	var toStr$2 = Object.prototype.toString;
-	var dateClass = '[object Date]';
-	var hasToStringTag$4 = shams();
-	var isDateObject = function isDateObject(value) {
-	  if (typeof value !== 'object' || value === null) {
-	    return false;
-	  }
-	  return hasToStringTag$4 ? tryDateObject(value) : toStr$2.call(value) === dateClass;
-	};
-
-	var callBound$6 = callBound$d;
-	var hasToStringTag$3 = shams();
-	var has;
-	var $exec;
-	var isRegexMarker;
-	var badStringifier;
-	if (hasToStringTag$3) {
-	  has = callBound$6('Object.prototype.hasOwnProperty');
-	  $exec = callBound$6('RegExp.prototype.exec');
-	  isRegexMarker = {};
-	  var throwRegexMa
+{
+    "word": "समया",
+    "ABCH": [
+        {
+            "word": "समया",
+            "linga": "अ",
+            "pagenum": "57",
+            "kanda": "अव्ययवर्गः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4562",
+            "group": "1949",
+            "synonyms": [
+                "अभ्यर्ण",
+                "निकषा",
+                "हिरुक्"
+            ],
+            "content": "मृषा मिथ्यानृतेऽभ्यर्णे समया निकषा हिरुक् ॥ १५३४ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "समया",
+            "eid": "29327",
+            "pagenum": 1094,
+            "content": "समया¦ <i><ab>ind.</ab></i> <b>1</b> Duly, seasonably, in due time. <b>--2</b> At a fixed or <lbinfo n='ap+pointed'/> appointed time. <b>--3</b> In the midst, within, between. <b>--4</b> Near (with <ab>acc.</ab>); समया सौधभित्तिं <ls>Dk.</ls>;  <lbinfo n='ls:Śi. 6.+ 73'/> <ls>Śi. 6. 73</ls>, <ls n='Śi.'>15. 9</ls>, <ls>Nalod. 4. 8.</ls>"
+        }
+    ],
+    "BEN": [
+        {
+            "word": "समया",
+            "eid": "15583",
+            "pagenum": 1009,
+            "content": "समया¦ <i>samayā,</i> <ab>adv.</ab> and <ab>prep.</ab> with  <ab>acc.</ab>, <b>I.</b> (old <ab>instr.</ab> of <i>sama</i>). <b>1.</b> Within, midst. <b>2.</b> Near, <ls>Vārt.</ls> ad <ls>Pāṇ.</ls> ii. 3, 2; <ls>Nalod.</ls> 4, 8. <b>II.</b> (old <ab>instr.</ab> of <i>samaya</i>). <b>1.</b> At a fixed time. <b>2.</b> Seasonably, in due time. -- <ab>Cf.</ab> <lang n='greek'>ἁμᾷ, ἅμα</lang>."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "समया",
+            "eid": "35164",
+            "pagenum": 591,
+            "content": "सम/या¦ (<ab>instr.</ab> <ab>adv.</ab>) in the middle of, betwixt (<ab>acc.</ab>, <ab>r.</ab> <ab>instr.</ab>); near, close to (<ab>acc.</ab>, <ab>instr.</ab>, or *gen.); half (°—); throughout, <ab>w.</ab> भू lie between."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "समया",
+            "eid": "26365",
+            "pagenum": 476,
+            "content": "सम/या¦ <i>(Instr. adv.)</i> mitten durch, mitten in <i>(Acc., selten Instr.)</i>; halb, zur Hälfte (°—); <i>mit</i> भू dazwischen liegen."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "समया",
+            "eid": "39720",
+            "pagenum": 758,
+            "content": "samayA¦ <i>ind.</i> 1. At a fixed or appointed time, in due time or season; 2. in the midst, between, within; 3. near, (with an acc.), समया सौधभित्तिम् <ls>D.K.</ls>, <ls>Nal.</ls>iv.8."
+        }
+    ],
+    "MD": [
+        {
+            "word": "समया",
+            "eid": "18841",
+            "pagenum": 336,
+            "content": "समया¦ samáyā, <ab>in.</ab> <ab>id.</ab> through <i>or</i> into the 🞄midst of (<ab>ac.</ab>, <i>rarely</i> <ab>in.</ab>; <ab>V.</ab>); altogether, 🞄thoroughly (<ab>V.</ab>); near (<ab>ac.</ab>, <ab>in.</ab>; <ab>C.</ab>): <ab>w.</ab> <b>bhū,</b> 🞄be interposed (<i>of time</i>; <ab>RV.</ab>)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "समया",
+            "eid": "233272",
+            "pagenum": "1153,2",
+            "content": "<hom>1.</hom> सम/या ¦ <lex>ind.</lex> through, into the middle of or midst of anything (<ab>acc.</ab> or <ab>instr.</ab>), <ls>RV.</ls><info lex='ind'/>"
+        },
+        {
+            "word": "समया",
+            "eid": "233272.1",
+            "pagenum": "1153,2",
+            "content": "¦ entirely, thoroughly, <ls>ib.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समया",
+            "eid": "233272.2",
+            "pagenum": "1153,2",
+            "content": "¦ in the neighbourhood of (<ab>acc.</ab> or <ab>instr.</ab> or <ab>gen.</ab>), <ls>Śiś.</ls>; <ls>Daś.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समया",
+            "eid": "233273",
+            "pagenum": "1153,2",
+            "content": "समया <hom>2a</hom> ¦ <lex>ind.</lex> See under सम्-अय, <pcol>p. 1164, col. 2</pcol>.<info lex='ind'/>"
+        },
+        {
+            "word": "समया",
+            "eid": "234860",
+            "pagenum": "1164,2",
+            "content": "<hom>2.</hom> समया ¦ (for <hom>1.</hom> समया See <pcol>p. 1153, col. 2</pcol>), in <ab>comp.</ab> for समय."
+        }
+    ],
+    "MW72": [
+        {
+            "word": "समया",
+            "eid": "49543",
+            "pagenum": 1067,
+            "content": "<i>Samayā,</i>¦ ind. See under <i>sam-i.</i>"
+        },
+        {
+            "word": "समया",
+            "eid": "50203",
+            "pagenum": 1076,
+            "content": "<i>Samayā,</i>¦ ind. at a fixed or appointed time; duly, seasonably, in due time or season; (in the following senses probably an old inst. of <i>sama</i>), within, in the middle, in the midst, betwixt, between, within; near (with acc.); [cf. Gr. <lang n='greek'>ὁμῇ, ὁμοῦ, ὁμῶς;</lang> Lat. <nsi>simul.</nsi>]"
+        }
+    ],
+    "PW": [
+        {
+            "word": "समया",
+            "eid": "119980",
+            "pagenum": 7,
+            "content": "<hom>1.</hom> सम/या¦ <lex>Adv.</lex> <dvsn n='1'>— 1〉 <i>mitten durch, mitten hinein zwischen</i> (<ab>Acc.</ab>, vereinzelt auch <ab>Instr.</ab>). <dvsn n='1'>— 2〉 mit भू <i>zeitlich dazwischen liegen</i>. <dvsn n='1'>— 3〉 <i>in die (der) Nähe, — von</i> (<ab>Acc.</ab> <ab>Instr.</ab>) oder <ab>Gen.</ab> <dvsn n='1'>— 4〉 <i>durchaus</i>."
+        },
+        {
+            "word": "समया",
+            "eid": "119981",
+            "pagenum": 7,
+            "content": "<hom>2.</hom> *समया¦ <lex>Adv.</lex> mit कर् <i>die Zeit vertreiben</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समया",
+            "eid": "105358",
+            "pagenum": 7,
+            "content": "सम/या¦ (von 2. सम) und समया/ (in der klassischen Sprache) adv. <ls>UṆĀDIS. 4, 174.</ls> <is>gaṇa</is> स्वरादि zu <ls>P. 1, 1, 37.</ls> <dvsn n='1'> 1) <i>mitten durch, mitten hinein zwischen</i> (acc.) <ls>AK. 3, 4, 32 (28), 14.</ls> <ls n='AK.'>3, 5, 7.</ls> <ls>H. an. 7, 57.</ls> <ls>MED. ady. 65.</ls> वि वृ\\त्रस्य^ स\\मया^ पा\\ष्या^रुजः <ls>ṚV. 1, 56, 6.</ls> <ls n='ṚV. 1,'>73, 6.</ls> अक्षो^ वश्च\\क्रा स\\मया\\ वि वा^वृते <i>geht mitten durch die Räder</i> <ls n='ṚV. 1,'>166, 9.</ls> रज^ः <ls n='ṚV.'>7, 66, 15.</ls> <ls n='ṚV.'>9, 75, 4.</ls> <ls n='ṚV. 9,'>85, 5.</ls> <ls n='ṚV. 9,'>97, 56.</ls> असि\\ सोमे^न स\\मया\\ विपृ^क्तः <i>du bist vom</i> <is>Soma</is> (<i>Monde) mitten</i> d. h. <i>durchaus geschieden</i> <ls n='ṚV.'>1, 163, 3.</ls> किय\\त्या यत्स\\मया\\ भवा^ति <i>wie lange ist es, was dazwischen liegt?</i> d. h. <i>wie gross ist der Zeitabstand?</i> <ls n='ṚV. 1,'>113, 10.</ls> समया धिष्ण्यान्नातीयात् <ls>ŚAT. BR. 3, 6, 2, 20. 8, 2, 20. 3, 10.</ls> कुरुक्षेत्रं समया चचार <ls n='ŚAT. BR.'>11,5, 1, 4.</ls> यत्समया देवयजनं पन्था विधावेत् <ls>KĀTH. 25, 2.</ls> तर्द्म <ls>KAUŚ. 76.</ls> auch mit instr.: रथचक्रस्य खेन समया जुहोति <i>durch ein Nabenloch hindurch</i> <ls n='KAUŚ.'>15. 72.</ls> <dvsn n='1'>— 2) <i>in die (der) Nähe</i> <ls>AK.</ls> <ls>H. 1534.</ls> <ls>H. an.</ls> <ls>MED.</ls> <ls>HALĀY. 5, 93.</ls> <ls>ŚIŚ. 15, 9.</ls> mit acc. <ls>SIDDH. K.</ls> zu <ls>P. 2, 3, 2.</ls> <ls>VOP. 5, 7.</ls> <ls>ŚIŚ. 6, 73.</ls> <ls>DAŚAK. 130, 6.</ls> <ls>NALOD. 4, 8.</ls> mit gen. <ls>P. 6, 2, 23</ls>, Schol. mit instr. <ls>ŚIŚ. 12, 52.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समया",
+            "eid": "42556",
+            "pagenum": 761,
+            "content": "समया¦ Ind. 1. Near, (with an accusative.) 2. Within, between, midst. 3. At such a time, at a fixed or appointed time. 4. Duly, seasonably, in due time or season. E. सम् alike, इण् to go, आ Unādi aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "समया",
+            "eid": "21706",
+            "pagenum": 790,
+            "content": "<b>samayā</b>¦ <ab>adv.</ab> à proximité, auprès de (<ab>acc.</ab> <ab>gén.</ab> <ab>instr.</ab>) ; par le milieu (<ab>véd.</ab>).  <P><i>samayādhyuṣita-</i> <ab>a. v.</ab> à moitié levé (soleil)."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "समया",
+            "eid": "40534",
+            "pagenum": 894,
+            "content": "समया¦ <i>ind.</i> .²1 Near. .²2 Within, midst. .²3 At such a time, at a fixed or appointed time. .²4 Duly, seasonably, in due time or season. .E. सम alike, इण् to go, आ Uṇādi aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "समया",
+            "eid": "40247",
+            "pagenum": 815,
+            "content": "समया¦ <i>prep.</i> Near, within; at such a time, seasonably, duly."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समया",
+            "eid": "37893",
+            "pagenum": "5-269-c",
+            "content": "समया¦, व्य, (समयनमिति । सम् + इण् गतौ + “आः समिण्निकषिभ्याम् ।” उणा० ४ । १७४ । इति आप्रत्ययः ।) निकटः । अस्य पर्य्यायः । बिकषा २ हिरुक् ३ । इत्यमरः ॥ (यथा, शिशुपालवधे । ६ । ७३ । “कुटजानि वीक्ष्य शिखिभिः शिखरीन्द्रं समयावनौ घनमदभ्रमराणि । गगनञ्च गीतनिनदस्य गिरोच्चैः समया वनौघनमदभ्रमराणि ॥”) मध्यः । इति चामरः । ३ । ३ । २५१ ॥ “समया निकठे मध्ये मध्ये च निकषान्तिके । हिरुङ्मध्ये विनार्थे च -- ॥” इति रुद्रः ॥ हिरुगुक्तञ्च सामीप्ये । इत्यमरमाला ॥ काखविज्ञापनम् । इति शब्दरत्नावली ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "समया",
+            "eid": "45256",
+            "pagenum": "5229,b",
+            "content": "समया¦ अव्य० सम + इण्--आ । नैकट्ये २ मध्ये च अमरः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समया",
+            "content": "समया अव्य. -  सम् + इ + आ 'ठीक, ऋतु के अनुकूल, ठीक समय पर'"
+        },
+        {
+            "word": "समया",
+            "content": "समया अव्य. -  सम् + इ + आ निश्चित समय पर"
+        },
+        {
+            "word": "समया",
+            "content": "समया अव्य. -  सम् + इ + आ 'बीच में, के अन्दर (दो के) बीच में '"
+        },
+        {
+            "word": "समया",
+            "content": "समया अव्य. -  सम् + इ + आ निकट"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "समया",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಹತ್ತಿರದಲ್ಲಿ \\/ಸಮೀಪದಲ್ಲಿ",
+            "निष्पत्तिः": "सम् + इण् (गतौ)'आ' (उ० ४-१७४)",
+            "प्रयोगाः": "'सैन्यान्न यातः समयापि विव्यथे कथं सुराजम्भवमन्यथाऽथ वा'",
+            "उल्लेखाः": "माघ० १२-५२",
+            "content": ""
+        },
+        {
+            "word": "समया",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಮಧ್ಯದಲ್ಲಿ \\/ನಡುವೆ",
+            "विस्तारः": "'समयान्तिकमध्ययोः'मेदि० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "समया",
+            "linga": "A",
+            "artha": "मध्यम्",
+            "synonyms": [
+                "अन्तर",
+                "समया",
+                "अन्तरे",
+                "अन्तरा",
+                "अन्तरेण"
+            ],
+            "num": "3.3.267",
+            "text": "अलं भूषणपर्याप्तिशक्तिवारणवाचकम् । हुं वितर्के परिप्रश्ने समयान्तिकमध्ययोः ॥",
+            "content": ""
+        },
+        {
+            "word": "समया",
+            "linga": "A",
+            "artha": "समीपः",
+            "synonyms": [
+                "समीप",
+                "निकट",
+                "आसन्न",
+                "सन्निकृष्ट",
+                "सनीड",
+                "सदेश",
+                "अभ्याश",
+                "सविध",
+                "समर्याद",
+                "सवेश",
+                "उपकण्ठ",
+                "अन्तिक",
+                "अभ्यर्ण",
+                "अभ्यग्र",
+                "अभितस्",
+                "अव्यय",
+                "उपह्वर",
+                "आरात्",
+                "अमा",
+                "समया",
+                "निकषा"
+            ],
+            "num": "3.3.267",
+            "text": "अलं भूषणपर्याप्तिशक्तिवारणवाचकम् । हुं वितर्के परिप्रश्ने समयान्तिकमध्ययोः ॥",
+            "content": ""
+        },
+        {
+            "word": "समया",
+            "linga": "A",
+            "artha": "सामीप्यम्",
+            "synonyms": [
+                "समया",
+                "निकषा",
+                "हिरुक्"
+            ],
+            "num": "3.4.7",
+            "text": "स्युः प्याट्पाडङ्ग हे है भोः समया निकषा हिरुक् । अतर्किते तु सहसा स्यात्पुरः पुरतोऽग्रतः ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "समया",
+            "content": "<lexhead no=\"664\">\n<dentry>समया</dentry>\n<prAwipaxikam>समया</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<etymology>[सम्+इ+आ]</etymology>\n<jAwi>मानसिकभावः</jAwi>\n<jAwi>दिक्</jAwi>\n<jAwi>दिक्</jAwi>\n<sense no=\"1\">ठीक, ऋतु के अनुकूल, ठीक समय पर</sense>\n<sense n=\"2\">निश्चित समय पर</sense>\n<sense n=\"3\">बीच में, के अन्दर (दो के) बीच में</sense>\n<sense n=\"4\">निकट समया सौधभित्तिम्<citation>दश*</citation><citation>शि* ६।७३</citation>१५।९<citation>नल* ४।८कर्म* के साथ</citation></sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "समया",
+            "content": "<body><s>samayA avya° sama + iR—A . nEkawye 2 maDye ca amaraH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "समया",
+            "content": "<H2><h><key1>samayA</key1><key2>sama/yA</key2><hom>1</hom></h><body><hom>1.</hom> <s>sama/yA</s>   <lex>ind.</lex> through, into the middle of or midst of anything (<ab>acc.</ab> or <ab>instr.</ab>), <ls>RV.</ls><info lex=\"ind\" /></body><tail><L>233272</L><pc>1153,2</pc></tail></H2>\n <H2A><h><key1>samayA</key1><key2>sama/yA</key2></h><body>  entirely, thoroughly, <ls>ib.</ls><info lex=\"inh\" /></body><tail><L>233272.1</L><pc>1153,2</pc></tail></H2A>\n <H2A><h><key1>samayA</key1><key2>sama/yA</key2></h><body>  in the neighbourhood of (<ab>acc.</ab> or <ab>instr.</ab> or <ab>gen.</ab>), <ls>Śiś.</ls>; <ls>Daś.</ls><info lex=\"inh\" /></body><tail><L>233272.2</L><pc>1153,2</pc></tail></H2A>\n <H2><h><key1>samayA</key1><key2>samayA</key2><hom>2a</hom></h><body><s>samayA</s> <hom>2a</hom>   <lex>ind.</lex> See under <s>sam-aya</s>, <pcol>p. 1164, col. 2</pcol>.<info lex=\"ind\" /></body><tail><L>233273</L><pc>1153,2</pc></tail></H2>\n <H2><h><key1>samayA</key1><key2>samayA</key2><hom>2</hom></h><body><hom>2.</hom> <s>samayA</s>   (for <hom>1.</hom> <s>samayA</s> See <pcol>p. 1153, col. 2</pcol>), in <ab>comp.</ab> for <s>samaya</s>.</body><tail><L>234860</L><pc>1164,2</pc></tail></H2>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समया",
+            "content": "<H1><h><key1>samayA</key1><key2>samayA</key2></h><body><s>samayA</s>  Ind. <div n=\"2\"> 1. Near, (with an accusative.) </div><div n=\"2\"> 2. Within, between, midst. <lb />3. At such a time, at a fixed or appointed time. </div><div n=\"2\"> 4. Duly, season- <lb />ably, in due time or season.</div><div n=\"E\"> E. <s>sam</s> alike, <s>iR</s> to go, <s>A</s> Unādi aff.</div></body><tail><L>42556</L><pc>761-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "समया",
+            "content": "<span lang=\"sa\">समया<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹತ್ತಿರದಲ್ಲಿ /ಸಮೀಪದಲ್ಲಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>सम् + इण् (गतौ) - \"आ\" (उ० ४-१७४)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"सैन्यान्न यातः समयापि विव्यथे कथं सुराजम्भवमन्यथाऽथ वा\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० १२-५२<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समया<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮಧ್ಯದಲ್ಲಿ /ನಡುವೆ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"समयान्तिकमध्ययोः\" - मेदि० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

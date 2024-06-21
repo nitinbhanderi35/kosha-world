@@ -1,1 +1,125 @@
-\n\t\t\t * Smaller images should have the icon closer to the border.\n\t\t\t * Match the icon position with the upload indicator brought by the image upload feature.\n\t\t\t */\n\t\t\ttop: min(var(--ck-spacing-medium), 6%);\n\t\t\tright: min(var(--ck-spacing-medium), 6%);\n\n\t\t\tbackground-color: hsla(0, 0%, 0%, .4);\n\t\t\tbackground-image: url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAgMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iI2ZmZiIgZD0ibTExLjA3NyAxNSAuOTkxLTEuNDE2YS43NS43NSAwIDEgMSAxLjIyOS44NmwtMS4xNDggMS42NGEuNzQ4Ljc0OCAwIDAgMS0uMjE3LjIwNiA1LjI1MSA1LjI1MSAwIDAgMS04LjUwMy01Ljk1NS43NDEuNzQxIDAgMCAxIC4xMi0uMjc0bDEuMTQ3LTEuNjM5YS43NS43NSAwIDEgMSAxLjIyOC44Nkw0LjkzMyAxMC43bC4wMDYuMDAzYTMuNzUgMy43NSAwIDAgMCA2LjEzMiA0LjI5NGwuMDA2LjAwNHptNS40OTQtNS4zMzVhLjc0OC43NDggMCAwIDEtLjEyLjI3NGwtMS4xNDcgMS42MzlhLjc1Ljc1IDAgMSAxLTEuMjI4LS44NmwuODYtMS4yM2EzLjc1IDMuNzUgMCAwIDAtNi4xNDQtNC4zMDFsLS44NiAxLjIyOWEuNzUuNzUgMCAwIDEtMS4yMjktLjg2bDEuMTQ4LTEuNjRhLjc0OC43NDggMCAwIDEgLjIxNy0uMjA2IDUuMjUxIDUuMjUxIDAgMCAxIDguNTAzIDUuOTU1em0tNC41NjMtMi41MzJhLjc1Ljc1IDAgMCAxIC4xODQgMS4wNDVsLTMuMTU1IDQuNTA1YS43NS43NSAwIDEgMS0xLjIyOS0uODZsMy4xNTUtNC41MDZhLjc1Ljc1IDAgMCAxIDEuMDQ1LS4xODR6Ii8+PC9zdmc+");\n\t\t\tbackground-size: 14px;\n\t\t\tbackground-repeat: no-repeat;\n\t\t\tbackground-position: center;\n\t\t\tborder-radius: 100%;\n\n\t\t\t/*\n\t\t\t* Use CSS math to simulate container queries.\n\t\t\t* https://css-tricks.com/the-raven-technique-one-step-closer-to-container-queries/#what-about-showing-and-hiding-things\n\t\t\t*/\n\t\t\toverflow: hidden;\n\t\t\twidth: calc(var(--ck-link-image-indicator-icon-is-visible) * var(--ck-link-image-indicator-icon-size));\n\t\t\theight: calc(var(--ck-link-image-indicator-icon-is-visible) * var(--ck-link-image-indicator-icon-size));\n\t\t}\n\t}\n}\n\n'],sourceRoot:""}]);const a=s},1374:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck-editor__editable .ck-list-bogus-paragraph{display:block}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-list/theme/documentlist.css"],names:[],mappings:"AAKA,8CACC,aACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck-editor__editable .ck-list-bogus-paragraph {\n\tdisplay: block;\n}\n"],sourceRoot:""}]);const a=s},8921:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck-content ol{list-style-type:decimal}.ck-content ol ol{list-style-type:lower-latin}.ck-content ol ol ol{list-style-type:lower-roman}.ck-content ol ol ol ol{list-style-type:upper-latin}.ck-content ol ol ol ol ol{list-style-type:upper-roman}.ck-content ul{list-style-type:disc}.ck-content ul ul{list-style-type:circle}.ck-content ul ul ul,.ck-content ul ul ul ul{list-style-type:square}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-list/theme/list.css"],names:[],mappings:"AAKA,eACC,uBAiBD,CAfC,kBACC,2BAaD,CAXC,qBACC,2BASD,CAPC,wBACC,2BAKD,CAHC,2BACC,2BACD,CAMJ,eACC,oBAaD,CAXC,kBACC,sBASD,CAJE,6CACC,sBACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck-content ol {\n\tlist-style-type: decimal;\n\n\t& ol {\n\t\tlist-style-type: lower-latin;\n\n\t\t& ol {\n\t\t\tlist-style-type: lower-roman;\n\n\t\t\t& ol {\n\t\t\t\tlist-style-type: upper-latin;\n\n\t\t\t\t& ol {\n\t\t\t\t\tlist-style-type: upper-roman;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}\n\n.ck-content ul {\n\tlist-style-type: disc;\n\n\t& ul {\n\t\tlist-style-type: circle;\n\n\t\t& ul {\n\t\t\tlist-style-type: square;\n\n\t\t\t& ul {\n\t\t\t\tlist-style-type: square;\n\t\t\t}\n\t\t}\n\t}\n}\n"],sourceRoot:""}]);const a=s},6634:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-list-properties.ck-list-properties_without-styles{padding:var(--ck-spacing-large)}.ck.ck-list-properties.ck-list-properties_without-styles>*{min-width:14em}.ck.ck-list-prop
+{
+    "word": "त्रिमुकुट",
+    "ABCH": [
+        {
+            "word": "त्रिमुकुट",
+            "linga": "पुं",
+            "pagenum": "40",
+            "kanda": "तिर्यक्काण्डः",
+            "varga": "पृथ्वीकायः",
+            "eid": "3147",
+            "group": "1269",
+            "synonyms": [
+                "सुवेल",
+                "त्रिकूट",
+                "त्रिककुद्"
+            ],
+            "content": "सुवेलः स्यात्त्रिमुकुटस्त्रिकूटस्त्रिककुच्च सः ॥ १०३० ॥"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिमुकुट",
+            "eid": "16160",
+            "pagenum": 318,
+            "content": "tri-mukuwa¦ <i>m.</i> the <i>Trikūṭa</i> mountain."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिमुकुट",
+            "eid": "88114",
+            "pagenum": "460,1",
+            "content": "त्रि—मुकुट ¦ <lex>m.</lex> ‘three-peaked’, the <s1 slp1='tri-kUwa'>Tri-kūṭa</s1> mountain, <ls>L.</ls><info lex='m'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिमुकुट",
+            "eid": "47680",
+            "pagenum": 3,
+            "content": "*त्रिमुकुट¦ <lex>m.</lex> <ab>N. pr.</ab> eines Berges."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिमुकुट",
+            "eid": "31078",
+            "pagenum": 3,
+            "content": "त्रिमुकुट¦ (त्रि + मु°) <lex>m.</lex> N. pr. eines Berges, = त्रिकूट <ls>H. 1030.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिमुकुट",
+            "eid": "18114",
+            "pagenum": 325,
+            "content": "त्रिमुकुट¦ m. (-टः) A mountain with three peaks. E. त्रि three, and मुकुट a crest."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिमुकुट",
+            "eid": "18131",
+            "pagenum": 390,
+            "content": "त्रिमुकुट¦ m. (-टः) A mountain with three peaks. .E. त्रि three, and मुकुट a crest."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिमुकुट",
+            "eid": "17607",
+            "pagenum": 346,
+            "content": "त्रि-मुकुट¦ (टः) 1. <i>m.</i> A mountain with three peaks."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिमुकुट",
+            "eid": "15595",
+            "pagenum": "2-661-a",
+            "content": "त्रिमुकुटः¦, पुं, (त्रीणि मुकुटानीव शृङ्गान्यस्य ।) त्रिकूटपर्व्वतः । इति हेमचन्द्रः । ४ । ९६ ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिमुकुट",
+            "eid": "23750",
+            "pagenum": "3377,a",
+            "content": "त्रिमुकुट¦ पु० त्रीणि मुकुटानीव शृङ्गाणि यस्य । त्रिकूटपर्वते हेमच० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिमुकुट",
+            "content": "त्रिमुकुटः पुं. त्रि-मुकुटः  - त्रिकूट पहाड़"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिमुकुट",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ತ್ರಿಕೂಟಪರ್ವತ",
+            "व्युत्पत्तिः": "त्रीणि मुकुटानीव शृङ्गाण्यस्य",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिमुकुट",
+            "content": "<body><s>trimukuwa pu° trIRi mukuwAnIva SfNgARi yasya . trikUwaparvate hemaca° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिमुकुट",
+            "content": "<H1><h><key1>trimukuwa</key1><key2>trimukuwa</key2></h><body><s>trimukuwa</s>  <div n=\"1\">m. (<s>-waH</s>) A mountain with three peaks.</div><div n=\"E\"> E. <s>tri</s> three, and <s>mukuwa</s> a <lb />crest.</div></body><tail><L>18114</L><pc>325-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिमुकुट",
+            "content": "<span lang=\"sa\">त्रिमुकुट<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತ್ರಿಕೂಟಪರ್ವತ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीणि मुकुटानीव शृङ्गाण्यस्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

@@ -1,711 +1,221 @@
-superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$1b = regionRole;
-	regionRole$1.default = _default$1b;
-
-	var rowRole$1 = {};
-
-	Object.defineProperty(rowRole$1, "__esModule", {
-	  value: true
-	});
-	rowRole$1.default = void 0;
-	var rowRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-colindex': null,
-	    'aria-expanded': null,
-	    'aria-level': null,
-	    'aria-posinset': null,
-	    'aria-rowindex': null,
-	    'aria-selected': null,
-	    'aria-setsize': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'tr'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: ['grid', 'rowgroup', 'table', 'treegrid'],
-	  requiredContextRole: ['grid', 'rowgroup', 'table', 'treegrid'],
-	  requiredOwnedElements: [['cell'], ['columnheader'], ['gridcell'], ['rowheader']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'group'], ['roletype', 'widget']]
-	};
-	var _default$1a = rowRole;
-	rowRole$1.default = _default$1a;
-
-	var rowgroupRole$1 = {};
-
-	Object.defineProperty(rowgroupRole$1, "__esModule", {
-	  value: true
-	});
-	rowgroupRole$1.default = void 0;
-	var rowgroupRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'tbody'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'tfoot'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'thead'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: ['grid', 'table', 'treegrid'],
-	  requiredContextRole: ['grid', 'table', 'treegrid'],
-	  requiredOwnedElements: [['row']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure']]
-	};
-	var _default$19 = rowgroupRole;
-	rowgroupRole$1.default = _default$19;
-
-	var rowheaderRole$1 = {};
-
-	Object.defineProperty(rowheaderRole$1, "__esModule", {
-	  value: true
-	});
-	rowheaderRole$1.default = void 0;
-	var rowheaderRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-sort': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'scope',
-	        value: 'row'
-	      }],
-	      name: 'th'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        name: 'scope',
-	        value: 'rowgroup'
-	      }],
-	      name: 'th'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: ['row', 'rowgroup'],
-	  requiredContextRole: ['row', 'rowgroup'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'cell'], ['roletype', 'structure', 'section', 'cell', 'gridcell'], ['roletype', 'widget', 'gridcell'], ['roletype', 'structure', 'sectionhead']]
-	};
-	var _default$18 = rowheaderRole;
-	rowheaderRole$1.default = _default$18;
-
-	var scrollbarRole$1 = {};
-
-	Object.defineProperty(scrollbarRole$1, "__esModule", {
-	  value: true
-	});
-	scrollbarRole$1.default = void 0;
-	var scrollbarRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-valuetext': null,
-	    'aria-orientation': 'vertical',
-	    'aria-valuemax': '100',
-	    'aria-valuemin': '0'
-	  },
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-controls': null,
-	    'aria-valuenow': null
-	  },
-	  superClass: [['roletype', 'structure', 'range'], ['roletype', 'widget']]
-	};
-	var _default$17 = scrollbarRole;
-	scrollbarRole$1.default = _default$17;
-
-	var searchRole$1 = {};
-
-	Object.defineProperty(searchRole$1, "__esModule", {
-	  value: true
-	});
-	searchRole$1.default = void 0;
-	var searchRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$16 = searchRole;
-	searchRole$1.default = _default$16;
-
-	var searchboxRole$1 = {};
-
-	Object.defineProperty(searchboxRole$1, "__esModule", {
-	  value: true
-	});
-	searchboxRole$1.default = void 0;
-	var searchboxRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'search'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'input', 'textbox']]
-	};
-	var _default$15 = searchboxRole;
-	searchboxRole$1.default = _default$15;
-
-	var separatorRole$1 = {};
-
-	Object.defineProperty(separatorRole$1, "__esModule", {
-	  value: true
-	});
-	separatorRole$1.default = void 0;
-	var separatorRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-orientation': 'horizontal',
-	    'aria-valuemax': '100',
-	    'aria-valuemin': '0',
-	    'aria-valuenow': null,
-	    'aria-valuetext': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'hr'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure']]
-	};
-	var _default$14 = separatorRole;
-	separatorRole$1.default = _default$14;
-
-	var sliderRole$1 = {};
-
-	Object.defineProperty(sliderRole$1, "__esModule", {
-	  value: true
-	});
-	sliderRole$1.default = void 0;
-	var sliderRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null,
-	    'aria-readonly': null,
-	    'aria-valuetext': null,
-	    'aria-orientation': 'horizontal',
-	    'aria-valuemax': '100',
-	    'aria-valuemin': '0'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'range'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-valuenow': null
-	  },
-	  superClass: [['roletype', 'widget', 'input'], ['roletype', 'structure', 'range']]
-	};
-	var _default$13 = sliderRole;
-	sliderRole$1.default = _default$13;
-
-	var spinbuttonRole$1 = {};
-
-	Object.defineProperty(spinbuttonRole$1, "__esModule", {
-	  value: true
-	});
-	spinbuttonRole$1.default = void 0;
-	var spinbuttonRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-invalid': null,
-	    'aria-readonly': null,
-	    'aria-required': null,
-	    'aria-valuetext': null,
-	    'aria-valuenow': '0'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        name: 'type',
-	        value: 'number'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'composite'], ['roletype', 'widget', 'input'], ['roletype', 'structure', 'range']]
-	};
-	var _default$12 = spinbuttonRole;
-	spinbuttonRole$1.default = _default$12;
-
-	var statusRole$1 = {};
-
-	Object.defineProperty(statusRole$1, "__esModule", {
-	  value: true
-	});
-	statusRole$1.default = void 0;
-	var statusRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-atomic': 'true',
-	    'aria-live': 'polite'
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'output'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$11 = statusRole;
-	statusRole$1.default = _default$11;
-
-	var strongRole$1 = {};
-
-	Object.defineProperty(strongRole$1, "__esModule", {
-	  value: true
-	});
-	strongRole$1.default = void 0;
-	var strongRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$10 = strongRole;
-	strongRole$1.default = _default$10;
-
-	var subscriptRole$1 = {};
-
-	Object.defineProperty(subscriptRole$1, "__esModule", {
-	  value: true
-	});
-	subscriptRole$1.default = void 0;
-	var subscriptRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$$ = subscriptRole;
-	subscriptRole$1.default = _default$$;
-
-	var superscriptRole$1 = {};
-
-	Object.defineProperty(superscriptRole$1, "__esModule", {
-	  value: true
-	});
-	superscriptRole$1.default = void 0;
-	var superscriptRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['prohibited'],
-	  prohibitedProps: ['aria-label', 'aria-labelledby'],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$_ = superscriptRole;
-	superscriptRole$1.default = _default$_;
-
-	var switchRole$1 = {};
-
-	Object.defineProperty(switchRole$1, "__esModule", {
-	  value: true
-	});
-	switchRole$1.default = void 0;
-	var switchRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'button'
-	    },
-	    module: 'ARIA'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {
-	    'aria-checked': null
-	  },
-	  superClass: [['roletype', 'widget', 'input', 'checkbox']]
-	};
-	var _default$Z = switchRole;
-	switchRole$1.default = _default$Z;
-
-	var tabRole$1 = {};
-
-	Object.defineProperty(tabRole$1, "__esModule", {
-	  value: true
-	});
-	tabRole$1.default = void 0;
-	var tabRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-posinset': null,
-	    'aria-setsize': null,
-	    'aria-selected': 'false'
-	  },
-	  relatedConcepts: [],
-	  requireContextRole: ['tablist'],
-	  requiredContextRole: ['tablist'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'sectionhead'], ['roletype', 'widget']]
-	};
-	var _default$Y = tabRole;
-	tabRole$1.default = _default$Y;
-
-	var tableRole$1 = {};
-
-	Object.defineProperty(tableRole$1, "__esModule", {
-	  value: true
-	});
-	tableRole$1.default = void 0;
-	var tableRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-colcount': null,
-	    'aria-rowcount': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'table'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['row'], ['row', 'rowgroup']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$X = tableRole;
-	tableRole$1.default = _default$X;
-
-	var tablistRole$1 = {};
-
-	Object.defineProperty(tablistRole$1, "__esModule", {
-	  value: true
-	});
-	tablistRole$1.default = void 0;
-	var tablistRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-level': null,
-	    'aria-multiselectable': null,
-	    'aria-orientation': 'horizontal'
-	  },
-	  relatedConcepts: [{
-	    module: 'DAISY',
-	    concept: {
-	      name: 'guide'
-	    }
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['tab']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'composite']]
-	};
-	var _default$W = tablistRole;
-	tablistRole$1.default = _default$W;
-
-	var tabpanelRole$1 = {};
-
-	Object.defineProperty(tabpanelRole$1, "__esModule", {
-	  value: true
-	});
-	tabpanelRole$1.default = void 0;
-	var tabpanelRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$V = tabpanelRole;
-	tabpanelRole$1.default = _default$V;
-
-	var termRole$1 = {};
-
-	Object.defineProperty(termRole$1, "__esModule", {
-	  value: true
-	});
-	termRole$1.default = void 0;
-	var termRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {},
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'dfn'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      name: 'dt'
-	    },
-	    module: 'HTML'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$U = termRole;
-	termRole$1.default = _default$U;
-
-	var textboxRole$1 = {};
-
-	Object.defineProperty(textboxRole$1, "__esModule", {
-	  value: true
-	});
-	textboxRole$1.default = void 0;
-	var textboxRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-activedescendant': null,
-	    'aria-autocomplete': null,
-	    'aria-errormessage': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null,
-	    'aria-multiline': null,
-	    'aria-placeholder': null,
-	    'aria-readonly': null,
-	    'aria-required': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'type'
-	      }, {
-	        constraints: ['undefined'],
-	        name: 'list'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'email'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'tel'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'text'
-	      }],
-	      name: 'input'
-	    },
-	    module: 'HTML'
-	  }, {
-	    concept: {
-	      attributes: [{
-	        constraints: ['undefined'],
-	        name: 'list'
-	      }, {
-	        name: 'type',
-	        value: 'url'
-	      }],
-	      name: 'input'
-	    },
-	    mod
+{
+    "word": "समाधा",
+    "AP90": [
+        {
+            "word": "समाधा",
+            "eid": "29386",
+            "pagenum": 1096,
+            "content": "समाधा¦ {c3c} <ab>U.</ab> <b>1</b> To place or put together, join, unite. <b>--2</b> To place, put, put or place upon, apply to; पदं मूर्ध्नि समाधत्ते केसरी मत्तदंतिनः  <lbinfo n='ls:Pt.+ 1. 327.'/> <ls>Pt. 1. 327.</ls> <b>--3</b> To install, place on the throne; <ls>R. 17. 8.</ls> <b>--4</b> To compose, collect (as the mind); मनः <lbinfo n='samADA#ya'/> समाधाय निवृत्तशोकः <ls>Rām.</ls>; न शशाक <lbinfo n='samA#DAtuM'/> समाधातुं मनो मदनवेपितं <ls>Bhāg.</ls> <b>--5</b> To <lbinfo n='con+centrate'/> concentrate, fix or apply intently upon (as the eye, mind &c.);  <lbinfo n='ls:Bg.+ 12. 9'/> <ls>Bg. 12. 9</ls>; <ls>Bh. 3. 48.</ls> <b>--6</b> To satisfy, clear or solve (a doubt), answer an objection; इति समाधत्ते (in <lbinfo n='com+mentaries'/> commentaries). <b>--7</b> To repair, redress, set right, remove; न ते शक्याः <lbinfo n='samA#DAtuM'/> समाधातुं <ls>H. 3. 37</ls>; उत्पन्नामापदं यस्तु <lbinfo n='sa#mADatte'/> समाधत्ते स बुद्धिमान् <ls n='H.'>4. 7.</ls> <b>--8</b> To think over; <ls>Bk. 12. 6.</ls> <b>--9</b> To entrust, commit to, deliver over. <b>--10</b> To produce, effect, accomplish. <b>--11</b> To place a burden, load. <b>--12</b> To <lbinfo n='as+sume'/> assume, take upon oneself. <b>--13</b> To conceive (in the womb). <b>--14</b> To establish."
+        },
+        {
+            "word": "समाधा",
+            "eid": "29387",
+            "pagenum": 1096,
+            "content": "समाधा¦ See समाधान below."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "समाधा",
+            "eid": "39765",
+            "pagenum": 759,
+            "content": "samADA¦ <i>f.</i> 1. The act of collecting or composing; 2. restraining the senses and fixing the mind in abstract contemplation on the true nature of spirit; 3. contemplation, profound absorption; 4. contentment, satisfaction, peace of mind, समाधान बुद्धेरथ खलु तिरोधानमधियाम् <ls>G.L.</ls>18; 5. clearing up a doubt, answering an objection, replying to the <i>Pūrva paksha</i> (in logic); 6. agreeing, promising; 7. a leading incident which unexpectedly gives rise to the whole plot (in the drama)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "समाधा",
+            "eid": "234138",
+            "pagenum": "1159,3",
+            "content": "सम्-आ-√ धा <hom>a</hom> ¦ <ab>P.</ab> <ab>Ā.</ab> -दधाति, -धत्ते, to place or put or hold or fix together, <ls>ŚBr.</ls>; <ls>MBh.</ls> &c.; <dvsn n='to'/>to compose, set right, repair, put in order, arrange, redress, restore, <ls>MBh.</ls>; <ls>Hit.</ls>; <dvsn n='to'/>to put to, add, put on (<ab>esp.</ab> fuel on the fire), <ls>AV.</ls>; <ls>ŚBr.</ls>; <ls>R.</ls>; <dvsn n='to'/>to kindle, stir (fire), <ls>ŚBr.</ls>; <dvsn n='to'/>to place, set, lay, fix, direct, settle, adjust (with अस्त्रम्, ‘to adjust an arrow’; with गर्भम्, ‘to impregnate’; with सवितुः, ‘to lay in the sun’; with दृष्टिम्, चित्तम्, चेतस्, मतिम्, मनस्, ‘to direct or fix the eyes or mind upon [<ab>loc.</ab>]’; with मतिम्, ‘to settle in one's mind, resolve’, ‘make up one's mind’ [followed by इति]; with आत्मानम्, or मनस्, ‘to collect the thoughts or concentrate the mind in meditation &c.’; without an <ab>acc.</ab> - ‘to be absorbed in meditation or prayer’), <ls>RV.</ls> &c. &c.; <dvsn n='to'/>to impose upon (<ab>loc.</ab>), <ls>MBh.</ls>; <dvsn n='to'/>to entrust or commit to (<ab>loc.</ab>), <ls>ib.</ls>; <dvsn n='to'/>to establish in (<ab>loc.</ab>), <ls>Ragh.</ls>; <dvsn n='to'/>to effect, cause, produce, <ls>Hariv.</ls>; <dvsn n='to'/> (in the following meanings only <ab>Ā.</ab>) to take to or upon one's self. conceive (in the womb), put on (a garment or dress), assume (a shape), undergo (effort), show, exhibit, display, <ls>MBh.</ls>; <ls>Kāv.</ls> &c.; <dvsn n='to'/>to devote one's self entirely to, give one's self up to (<ab>acc.</ab>), <ls>R.</ls>; <ls>Hariv.</ls> &c. (once in <ls>Bhaṭṭ.</ls> <ab>P.</ab>); <dvsn n='to'/>to lay down as settled, settle, establish, prove, declare, <ls>Kap.</ls>, <ab>Sch.</ab>; <dvsn n='to'/>to admit, grant, <ls>Kull.</ls> on <ls>Mn. viii, 54</ls> : <dvsn n='vp'/><ab>Desid.</ab> -धित्सति, to wish to put together, desire to collect the thoughts, <ls>MBh. xii, 9586.</ls><info verb='pre' cp='PĀ' parse='sam+A+DA'/>"
+        },
+        {
+            "word": "समाधा",
+            "eid": "234139",
+            "pagenum": "1159,3",
+            "content": "सम्-आधा <hom>b</hom> ¦ <lex>m.</lex> (only <ls>L.</ls>) putting together, adjusting, settling, reconciling, clearing up difficulties &c.<info lex='m'/>"
+        },
+        {
+            "word": "समाधा",
+            "eid": "234140",
+            "pagenum": "1159,3",
+            "content": "¦ completion, accomplishment.<info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "समाधा",
+            "eid": "49965",
+            "pagenum": 1072,
+            "content": "समाधा 1¦. <i>sam-ā-dhā,</i> cl. 3. P. A. <i>-dadhāti,</i> <i>-dhatte, -dhātum,</i> to place or put or hold together, fix together, compose, collect, unite, join, reconcile, compose differences; to adjust, set right, make right, settle, solve a difficulty, reply to an objection (e. g. <i>samādhatte,</i> he settles a question, he answers an objection, he clears up a doubt or difficulty); to dispose, put in order, arrange, repair, redress; to put or place to, put or place on (e. g. <i>idhmaṃ samā-</i> <i>dhatte,</i> he puts on fuel; <i>vāsaḥ samādhatte,</i> he puts on a garment); to lay or place upon, apply, impose; to deliver over, intrust, commit to, appoint to; to impose a burden, load; to compose or collect the thoughts, pay great attention, apply or fix intently (e. g. <i>dṛṣṭiṃ samādhā,</i> to fix the sight; <i>cittam</i> or <i>cetaḥ</i> or <i>manaḥ</i> or <i>matiṃ samādhā,</i> to fix the mind upon, with loc.); to devote one's self to, give one's self up to (generally A.); to assume, take to one's self, take upon one's self; to conceive (in the womb); to produce, effect, cause, make, accomplish, complete; to put down as settled (A.), establish, declare: Pass. <i>-dhīyate,</i> to be placed together or adjusted or arranged; to be reconciled, &c.: Desid. <i>-dhitsati,</i> to wish to put together, desire to collect or compose."
+        },
+        {
+            "word": "समाधा",
+            "eid": "49966",
+            "pagenum": 1072,
+            "content": "2. <i>sam-ādhā, ās,</i>¦ m. putting together, adjusting, settling, reconciling, clearing up difficulties, &c.; completion, accomplishment."
+        }
+    ],
+    "PW": [
+        {
+            "word": "समाधा",
+            "eid": "120222",
+            "pagenum": 7,
+            "content": "*समाधा¦ <lex>m.</lex> (!) = निष्पत्ति विरोधभञ्जन und समाधान."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समाधा",
+            "eid": "105536",
+            "pagenum": 7,
+            "content": "समाधा¦ (1. धा mit समा) <lex>m.</lex> (sic) = निष्पत्ति, विरोधभञ्जन und समाधान <ls>ŚKDR.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समाधा",
+            "eid": "42636",
+            "pagenum": 763,
+            "content": "समाधा¦ f. (-धा) 1. The act of collecting or composing. 2. Restraining the senses and fixing the mind in abstract contemplation on the true nature of spirit. 3. Profound absorption. 4. Contentment. 5. Answering an objection, replying to the Purva Paksha, (in logic.) 6. Agreeing, promising. 7. A leading incident which unexpectedly gives rise to the whole plot; also समाधान. E. सम + आ + धा-अङ् ।"
+        }
+    ],
+    "STC": [
+        {
+            "word": "समाधा",
+            "eid": "21795",
+            "pagenum": 793,
+            "content": "<b>sam-ā-DHĀ-</b>¦ 1 placer ou fixer ou maintenir <lbinfo n='5'/> ensemble, établir ; ajouter, combiner, arranger, mettre en ordre, rétablir, réparer, ajuster ; imposer, confier <ab>qqch.</ab> (<ab>acc.</ab>) à <ab>qq'un</ab> (<ab>loc.</ab>) ; effectuer, produire, causer ; <ab>moy.</ab> assumer (obligation, forme) ; concevoir (enfant) ; mettre (vêtement) ; s'efforcer ; montrer, étaler, manifester ; se dévouer entièrement <lbinfo n='6'/> à (<ab>acc.</ab>) ; admettre ; <ab>dés.</ab> vouloir mettre ensemble, vouloir concentrer (l'esprit) ; <i>-ātmānaṃ</i> ou <i>cittaṃ</i> ou <i>manaḥ s.</i> fixer l'esprit (sur, <ab>loc.</ab>), se concentrer, s'absorber dans la méditation ; <i>-kopaṃ s.</i> (<ab>moy.</ab>) se fâcher ; <i>-dṛṣṭiṃ s.</i> fixer le regard (sur, <ab>loc.</ab>) ; <i>matiṃ s.</i> décider ; <i>-°dhita-</i> réconcilié, apaisé ; <i>°hita-</i> placé ou maintenu ensemble, réuni, combiné ; muni de (<ab>instr.</ab> <ab>ifc.</ab>) ; placé dans ou sur, appliqué à, fixé, imposé, déposé, transmis, confié ; qui concentre l'esprit, absorbé dans la méditation, complètement adonné ou dévoué à, attentif, ferme ; ajusté, arrangé, complété, terminé ; admis, approuvé ; conforme, <lbinfo n='5'/> égal, pareil à (<ab>ifc.</ab>) ; <i>-°dhātavya-</i> <ab>a. v.</ab> qu'il faut arranger, mettre en ordre.  <P><i>samāhita-dhī-</i> <ab>a.</ab> absorbé dans de pieuses méditations.  <P><i>°mano-buddhi-</i> <ab>a.</ab> dont l'esprit est concentré <lbinfo n='6'/> ou discipliné."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समाधा",
+            "eid": "37938",
+            "pagenum": "5-271-b",
+            "content": "समाधाः¦, पुं, निष्पत्तिः । विरोधभञ्जनम् । इति लोकप्रसिद्धम् । समाधानम् । समाङ्पूर्व्वधाधातोर्विच्प्रत्ययेन निष्पन्नः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "समाधा",
+            "eid": "45293",
+            "pagenum": "5231,a",
+            "content": "समाधा¦ स्त्री सम् + आ + धा--अङ् । १ निष्पत्तौ २ विवादभञ्जने २ पूर्वपक्षस्य सम्यगुत्तरानुगुणसिद्धान्तानुकूलतर्कादिना सम्यगर्थावधारणे च । ल्युट् । समाधानमप्यत्र न० । तच्च ध्येयवस्तुनि चित्तस्य निरन्तरस्थापनरूपे समाधौ च ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - 'एकत्र रखना या धरना,  मिलाना, संयुक्त करना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - 'रखना, धरना, स्थापित करना, लागू करना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - 'जमाना, अभिषेक करना, राजगद्दी पर बिठाना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - 'समाश्वस्त होना, शान्त करना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - 'सकेन्द्रित करना, एकाग्र करना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - 'संतुष्ट करना, समाधान करना, आक्षेप का उत्तर देना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - 'मरम्मत करना, सुधारना, ठीक करना, हटा देना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - विचार करना"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - 'सौंपना, अर्पण करना, हस्तान्तरित करना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो.उभ. समा- धा  - 'पैदा करना, कार्यान्वित करना, सम्पन्न करना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा स्त्री. -  सम् + आ + धा + अङ् + टाप् 'साथ साथ रहना, मिलाना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा स्त्री. -  सम् + आ + धा + अङ् + टाप् ब्रह्म के गुणों का मन से चिन्तन करना"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा स्त्री. -  सम् + आ + धा + अङ् + टाप् 'भावचिन्तन, गहन मनन'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा स्त्री. -  सम् + आ + धा + अङ् + टाप् एकनिष्ठता"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा स्त्री. -  सम् + आ + धा + अङ् + टाप् 'स्थैर्य, स्वस्थता (मन की) शान्ति, सन्तोष'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा स्त्री. -  सम् + आ + धा + अङ् + टाप् 'संदेहृनिवारण करना, पूर्वपक्ष का उत्तर देना, आक्षेप का उत्तर देना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा स्त्री. -  सम् + आ + धा + अङ् + टाप् 'सहमत होना, प्रतिज्ञा करना'"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा स्त्री. -  सम् + आ + धा + अङ् + टाप् मुख्य घटना जिस पर नाटक की पूर्ण वस्तुकथा अवलंबित है"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो . पर. - पहनना"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो . पर. - रुप भरना"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो . पर. - प्रदर्शित करना"
+        },
+        {
+            "word": "समाधा",
+            "content": "समाधा जुहो . पर. - स्वीकार करना"
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "समाधा",
+            "content": "<segmenthd>\n<dentry>समाधा</dentry>\n<prAwipaxikam>समाधा</prAwipaxikam>\n<seg>समा-धा</seg>\n<grammar><gaNa>जुहो*</gaNa><paxI>उभ*</paxI></grammar>\n<sense no=\"1\">एकत्र रखना या धरना, मिलाना, संयुक्त करना</sense>\n<sense no=\"2\">रखना, धरना, स्थापित करना, लागू करनापदं मूर्ध्नि समाधत्ते केसरी मत्तदन्तिनः-<citation>पंच* १/३२७</citation></sense>\n<sense no=\"3\">जमाना, अभिषेक करना, राजगद्दी पर बिठाना<citation>रघु* १७/८</citation></sense>\n<sense no=\"4\">समाश्वस्त होना, शान्त करनामनः समाधाय निवृत्तशोकः-<citation>रामा*</citation>न शशाक समाधात्तुं मनो मदनवेपितम्-<citation>भाग*</citation></sense>\n<sense no=\"5\">सकेन्द्रित करना, एकाग्र करना<citation>भग* १२/९</citation><citation>भर्तृ* ३/४८ आँख या मन आदि को</citation></sense>\n<sense no=\"6\">संतुष्ट करना, समाधान करना, आक्षेप का उत्तर देनाइति समाधत्ते शंका का  टीकाओं में</sense>\n<sense no=\"7\">मरम्मत करना, सुधारना, ठीक करना, हटा देनान ते शक्याः समाधातुम्-<citation>हि* ३/२७</citation>उत्पन्नामापदं यस्तु समाधत्ते न बुद्धिमान्-४/७</sense>\n<sense no=\"8\">विचार करना<citation>भट्टि* १२/६</citation></sense>\n<sense no=\"9\">सौंपना, अर्पण करना, हस्तान्तरित करना</sense>\n<sense no=\"10\">पैदा करना, कार्यान्वित करना, सम्पन्न करना निम्नांकित श्लोक में सोपसर्ग धा धातु के प्रयोगों का चित्रण किया गया है- अधित कापि मुखे सलिलं सखी प्यधित कापि सरोजदलैः स्तनी, व्यधित कापि हृदि व्यजनानिलं न्यधितं कापि सुतनोः स्तनौ-<citation>नै* ४/१११</citation>इससे भी अच्छा निम्नांकित जगन्नाथ का श्लोक- निधानं धर्माणां किमपि च विधानं नवमुदां प्रधानं तीर्थानाममलपरिधानं त्रिजगतः, समाधानं बुद्धेरथ खलु तिरोधानमधियां श्रियामाधानं नः परिहरतु तापं तव वपुः-<citation>गंगा* १८</citation></sense>\n</segmenthd>\n <lexhead no=\"708\">\n<dentry>समाधा</dentry>\n<prAwipaxikam>समाधा</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[सम्+आ+धा+अङ्+टाप्]</etymology>\n<sense no=\"1\">साथ साथ रहना, मिलाना</sense>\n<sense n=\"2\">ब्रह्म के गुणों का मन से चिन्तन करना</sense>\n<sense n=\"3\">भावचिन्तन, गहन मनन</sense>\n<sense n=\"4\">एकनिष्ठता</sense>\n<sense n=\"5\">स्थैर्य, स्वस्थता (मन की) शान्ति, सन्तोषचित्तस्य समाधानम्, बुद्धेः समाधानम्<citation>गंगा* १८</citation></sense>\n<sense n=\"6\">संदेहृनिवारण करना, पूर्वपक्ष का उत्तर देना, आक्षेप का उत्तर देना</sense>\n<sense n=\"7\">सहमत होना, प्रतिज्ञा करना</sense>\n<sense n=\"8\">मुख्य घटना जिस पर नाटक की पूर्ण वस्तुकथा अवलंबित हैनाट* में</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "समाधा",
+            "content": "<body><s>samADA strI sam + A + DA—aN . <lb/><b>1</b> nizpattO <lb/><b>2</b> vivAdaBaYjane 2 pUrvapakzasya samyaguttarAnuguRasidDAntAnukUlatarkAdinA sa­myagarTAvaDAraRe ca . lyuw . samADAnamapyatra na° . tacca Dyeyavastuni cittasya nirantarasTApanarUpe samADO ca .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "समाधा",
+            "content": "<H1><h><key1>samADA</key1><key2>sam-A-DA</key2><hom>a</hom></h><body><s>sam-A-√ DA</s> <hom>a</hom>   <ab>P.</ab> <ab>Ā.</ab> <s>-daDAti</s>, <s>-Datte</s>, to place or put or hold or fix together, <ls>ŚBr.</ls>; <ls>MBh.</ls> &amp;c.; <div n=\"to\" />to compose, set right, repair, put in order, arrange, redress, restore, <ls>MBh.</ls>; <ls>Hit.</ls>; <div n=\"to\" />to put to, add, put on (<ab>esp.</ab> fuel on the fire), <ls>AV.</ls>; <ls>ŚBr.</ls>; <ls>R.</ls>; <div n=\"to\" />to kindle, stir (fire), <ls>ŚBr.</ls>; <div n=\"to\" />to place, set, lay, fix, direct, settle, adjust (with <s>astram</s>, ‘to adjust an arrow’; with <s>garBam</s>, ‘to impregnate’; with <s>savituH</s>, ‘to lay in the sun’; with <s>dfzwim</s>, <s>cittam</s>, <s>cetas</s>, <s>matim</s>, <s>manas</s>, ‘to direct or fix the eyes or mind upon [<ab>loc.</ab>]’; with <s>matim</s>, ‘to settle in one's mind, resolve’, ‘make up one's mind’ [followed by <s>iti</s>]; with <s>AtmAnam</s>, or <s>manas</s>, ‘to collect the thoughts or concentrate the mind in meditation &amp;c.’; without an <ab>acc.</ab> - ‘to be absorbed in meditation or prayer’), <ls>RV.</ls> &amp;c. &amp;c.; <div n=\"to\" />to impose upon (<ab>loc.</ab>), <ls>MBh.</ls>; <div n=\"to\" />to entrust or commit to (<ab>loc.</ab>), <ls>ib.</ls>; <div n=\"to\" />to establish in (<ab>loc.</ab>), <ls>Ragh.</ls>; <div n=\"to\" />to effect, cause, produce, <ls>Hariv.</ls>; <div n=\"to\" /> (in the following meanings only <ab>Ā.</ab>) to take to or upon one's self. conceive (in the womb), put on (a garment or dress), assume (a shape), undergo (effort), show, exhibit, display, <ls>MBh.</ls>; <ls>Kāv.</ls> &amp;c.; <div n=\"to\" />to devote one's self entirely to, give one's self up to (<ab>acc.</ab>), <ls>R.</ls>; <ls>Hariv.</ls> &amp;c. (once in <ls>Bhaṭṭ.</ls> <ab>P.</ab>); <div n=\"to\" />to lay down as settled, settle, establish, prove, declare, <ls>Kap.</ls>, <ab>Sch.</ab>; <div n=\"to\" />to admit, grant, <ls>Kull.</ls> on <ls>Mn. viii, 54</ls> : <div n=\"vp\" /><ab>Desid.</ab> <s>-Ditsati</s>, to wish to put together, desire to collect the thoughts, <ls>MBh. xii, 9586.</ls><info verb=\"pre\" cp=\"PĀ\" parse=\"sam+A+DA\" /></body><tail><L>234138</L><pc>1159,3</pc></tail></H1>\n <H2><h><key1>samADA</key1><key2>sam-ADA</key2><hom>b</hom></h><body><s>sam-ADA</s> <hom>b</hom>   <lex>m.</lex> (only <ls>L.</ls>) putting together, adjusting, settling, reconciling, clearing up difficulties &amp;c.<info lex=\"m\" /></body><tail><L>234139</L><pc>1159,3</pc></tail></H2>\n <H2A><h><key1>samADA</key1><key2>sam-ADA</key2></h><body>  completion, accomplishment.<info lex=\"inh\" /></body><tail><L>234140</L><pc>1159,3</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समाधा",
+            "content": "<H1><h><key1>samADA</key1><key2>samADA</key2></h><body><s>samADA</s>  <div n=\"1\">f. (<s>-DA</s>) </div><div n=\"2\"> 1. The act of collecting or composing. </div><div n=\"2\"> 2. Restraining <lb />the senses and fixing the mind in abstract contemplation on the <lb />true nature of spirit. </div><div n=\"2\"> 3. Profound absorption. </div><div n=\"2\"> 4. Contentment. </div><div n=\"2\"> 5. <lb />Answering an objection, replying to the Purva Paksha, (in logic.) <lb />6. Agreeing, promising. </div><div n=\"2\"> 7. A leading incident which unexpectedly <lb />gives rise to the whole plot; also <s>samADAna</s>.</div><div n=\"E\"> E. <s>sama + A + DA-aN .</s></div></body><tail><L>42636</L><pc>763-a</pc></tail></H1>\n"
+        }
+    ]
+}

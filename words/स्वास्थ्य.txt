@@ -1,1 +1,257 @@
-turn false}return t==null||(0,n.default)(e,t)}function isLoop(e,t){if(!e)return false;switch(e.type){case"DoWhileStatement":case"ForInStatement":case"ForStatement":case"WhileStatement":case"ForOfStatement":break;default:return false}return t==null||(0,n.default)(e,t)}function isWhile(e,t){if(!e)return false;switch(e.type){case"DoWhileStatement":case"WhileStatement":break;default:return false}return t==null||(0,n.default)(e,t)}function isExpressionWrapper(e,t){if(!e)return false;switch(e.type){case"ExpressionStatement":case"ParenthesizedExpression":case"TypeCastExpression":break;default:return false}return t==null||(0,n.default)(e,t)}function isFor(e,t){if(!e)return false;switch(e.type){case"ForInStatement":case"ForStatement":case"ForOfStatement":break;default:return false}return t==null||(0,n.default)(e,t)}function isForXStatement(e,t){if(!e)return false;switch(e.type){case"ForInStatement":case"ForOfStatement":break;default:return false}return t==null||(0,n.default)(e,t)}function isFunction(e,t){if(!e)return false;switch(e.type){case"FunctionDeclaration":case"FunctionExpression":case"ObjectMethod":case"ArrowFunctionExpression":case"ClassMethod":case"ClassPrivateMethod":break;default:return false}return t==null||(0,n.default)(e,t)}function isFunctionParent(e,t){if(!e)return false;switch(e.type){case"FunctionDeclaration":case"FunctionExpression":case"ObjectMethod":case"ArrowFunctionExpression":case"ClassMethod":case"ClassPrivateMethod":case"StaticBlock":case"TSModuleBlock":break;default:return false}return t==null||(0,n.default)(e,t)}function isPureish(e,t){if(!e)return false;switch(e.type){case"FunctionDeclaration":case"FunctionExpression":case"StringLiteral":case"NumericLiteral":case"NullLiteral":case"BooleanLiteral":case"RegExpLiteral":case"ArrowFunctionExpression":case"BigIntLiteral":case"DecimalLiteral":break;case"Placeholder":if(e.expectedNode==="StringLiteral")break;default:return false}return t==null||(0,n.default)(e,t)}function isDeclaration(e,t){if(!e)return false;switch(e.type){case"FunctionDeclaration":case"VariableDeclaration":case"ClassDeclaration":case"ExportAllDeclaration":case"ExportDefaultDeclaration":case"ExportNamedDeclaration":case"ImportDeclaration":case"DeclareClass":case"DeclareFunction":case"DeclareInterface":case"DeclareModule":case"DeclareModuleExports":case"DeclareTypeAlias":case"DeclareOpaqueType":case"DeclareVariable":case"DeclareExportDeclaration":case"DeclareExportAllDeclaration":case"InterfaceDeclaration":case"OpaqueType":case"TypeAlias":case"EnumDeclaration":case"TSDeclareFunction":case"TSInterfaceDeclaration":case"TSTypeAliasDeclaration":case"TSEnumDeclaration":case"TSModuleDeclaration":break;case"Placeholder":if(e.expectedNode==="Declaration")break;default:return false}return t==null||(0,n.default)(e,t)}function isPatternLike(e,t){if(!e)return false;switch(e.type){case"Identifier":case"RestElement":case"AssignmentPattern":case"ArrayPattern":case"ObjectPattern":case"TSAsExpression":case"TSSatisfiesExpression":case"TSTypeAssertion":case"TSNonNullExpression":break;case"Placeholder":switch(e.expectedNode){case"Pattern":case"Identifier":break;default:return false}break;default:return false}return t==null||(0,n.default)(e,t)}function isLVal(e,t){if(!e)return false;switch(e.type){case"Identifier":case"MemberExpression":case"RestElement":case"AssignmentPattern":case"ArrayPattern":case"ObjectPattern":case"TSParameterProperty":case"TSAsExpression":case"TSSatisfiesExpression":case"TSTypeAssertion":case"TSNonNullExpression":break;case"Placeholder":switch(e.expectedNode){case"Pattern":case"Identifier":break;default:return false}break;default:return false}return t==null||(0,n.default)(e,t)}function isTSEntityName(e,t){if(!e)return false;switch(e.type){case"Identifier":case"TSQualifiedName":break;case"Placeholder":if(e.expectedNode==="Identifier")break;default:return false}return t==null||(0,n.default)(e,t)}function isLiteral(e,t){if(!e)return false;switch(e.type){case"StringLiteral":case"NumericLiteral":case"NullLiteral":case"BooleanLiteral":case"RegExpLiteral":case"TemplateLiteral":case"BigIntLiteral":case"DecimalLiteral":break;case"Placeholder":if(e.expectedNode==="StringLiteral")break;default:return false}return t==null||(0,n.default)(e,t)}function isImmutable(e,t){if(!e)return false;switch(e.type){case"StringLiteral":case"NumericLiteral":case"NullLiteral":case"BooleanLiteral":case"BigIntLiteral":case"JSXAttribute":case"JSXClosingElement":case"JSXElement":case"JSXExpressionContainer":case"JSXSpreadChild":case"JSXOpeningElement":case"JSXText":case"JSXFragment":case"JSXOpeningFragment":case"JSXClosingFragment":case"DecimalLiteral":break;case"Placeholder":if(e.expectedNode==="StringLiteral")break;default:return false}return t==null||(0,n.default)(e,t)}function isUserWhitespacable(e,t){if(!e)return false;switch(e.type){case"ObjectMethod":case"ObjectProperty":case"ObjectTypeInternalSlot":case"ObjectTypeCallProperty":case"ObjectTypeIndexer":case"ObjectTypeProperty":case"ObjectTypeSpreadProperty":break;default:return false}return t==null||(0,n.default)(e,t)}function isMethod(e,t){if(!e)return false;switch(e.type){case"ObjectMethod":case"ClassMethod":case"ClassPrivateMethod":break;default:return false}return t==null||(0,n.default)(e,t)}function isObjectMember(e,t){if(!e)return false;switch(e.type){case"ObjectMethod":case"ObjectProperty":break;default:return false}return t==null||(0,n.default)(e,t)}function isProperty(e,t){if(!e)return false;switch(e.type){case"ObjectProperty":case"ClassProperty":case"ClassAccessorProperty":case"ClassPrivateProperty":break;default:return false}return t==null||(0,n.default)(e,t)}function isUnaryLike(e,t){if(!e)return false;switch(e.type){case"UnaryExpression":case"SpreadElement":break;default:return false}return t==null||(0,n.default)(e,t)}function isPattern(e,t){if(!e)return false;switch(e.type){case"AssignmentPattern":case"ArrayPattern":case"ObjectPattern":break;case"Placeholder":if(e.expectedNode==="Pattern")break;default:return false}return t==null||(0,n.default)(e,t)}function isClass(e,t){if(!e)return false;switch(e.type){case"ClassExpression":case"ClassDeclaration":break;default:return false}return t==null||(0,n.default)(e,t)}function isImportOrExportDeclaration(e,t){if(!e)return false;switch(e.type){case"ExportAllDeclaration":case"ExportDefaultDeclaration":case"ExportNamedDeclaration":case"ImportDeclaration":break;default:return false}return t==null||(0,n.default)(e,t)}function isExportDeclaration(e,t){if(!e)return false;switch(e.type){case"ExportAllDeclaration":case"ExportDefaultDeclaration":case"ExportNamedDeclaration":break;default:return false}return t==null||(0,n.default)(e,t)}function isModuleSpecifier(e,t){if(!e)return false;switch(e.type){case"ExportSpecifier":case"ImportDefaultSpecifier":case"ImportNamespaceSpecifier":case"ImportSpecifier":case"ExportNamespaceSpecifier":case"ExportDefaultSpecifier":break;default:return false}return t==null||(0,n.default)(e,t)}function isAccessor(e,t){if(!e)return false;switch(e.type){case"ClassAccessorProperty":break;default:return false}return t==null||(0,n.default)(e,t)}function isPrivate(e,t){if(!e)return false;switch(e.type){case"ClassPrivateProperty":case"ClassPrivateMethod":case"PrivateName":break;default:return false}return t==null||(0,n.default)(e,t)}function isFlow(e,t){if(!e)return false;switch(e.type){case"AnyTypeAnnotation":case"ArrayTypeAnnotation":case"BooleanTypeAnnotation":case"BooleanLiteralTypeAnnotation":case"NullLiteralTypeAnnotation":case"ClassImplements":case"DeclareClass":case"DeclareFunction":case"DeclareInterface":case"DeclareModule":case"DeclareModuleExports":case"DeclareTypeAlias":case"DeclareOpaqueType":case"DeclareVariable":case"DeclareExportDeclaration":case"DeclareExportAllDeclaration":case"DeclaredPredicate":case"ExistsTypeAnnotation":case"FunctionTypeAnnotation":case"FunctionTypeParam":case"GenericTypeAnnotation":case"InferredPredicate":case"InterfaceExtends":case"InterfaceDeclaration":case"InterfaceTypeAnnotation":case"IntersectionTypeAnnotation":case"MixedTypeAnnotation":case"EmptyTypeAnnotation":case"NullableTypeAnnotation":case"NumberLiteralTypeAnnotation":case"NumberTypeAnnotation":case"ObjectTypeAnnotation":case"ObjectTypeInternalSlot":case"ObjectTypeCallProperty":case"ObjectTypeIndexer":case"ObjectTypeProperty":case"ObjectTypeSpreadProperty":case"OpaqueType":case"QualifiedTypeIdentifier":case"StringLiteralTypeAnnotation":case"StringTypeAnnotation":case"SymbolTypeAnnotation":case"ThisTypeAnnotation":case"TupleTypeAnnotation":case"TypeofTypeAnnotation":case"TypeAlias":case"TypeAnnotation":case"TypeCastExpression":case"TypeParameter":case"TypeParameterDeclaration":case"TypeParameterInstantiation":case"UnionTypeAnnotation":case"Variance":case"VoidTypeAnnotation":case"EnumDeclaration":case"EnumBooleanBody":case"EnumNumberBody":case"EnumStringBody":case"EnumSymbolBody":case"EnumBooleanMember":case"EnumNumberMember":case"EnumStringMember":case"EnumDefaultedMember":case"IndexedAccessType":case"OptionalIndexedAccessType":break;default:return false}return t==null||(0,n.default)(e,t)}function isFlowType(e,t){if(!e)return false;switch(e.type){case"AnyTypeAnnotation":case"ArrayTypeAnnotation":case"BooleanTypeAnnotation":case"BooleanLiteralTypeAnnotation":case"NullLiteralTypeAnnotation":case"ExistsTypeAnnotation":case"FunctionTypeAnnotation":case"GenericTypeAnnotation":case"InterfaceTypeAnnotation":case"IntersectionTypeAnnotation":case"MixedTypeAnnotation":case"EmptyTypeAnnotation":case"NullableTypeAnnotation":case"NumberLiteralTypeAnnotation":case"NumberTypeAnnotation":case"ObjectTypeAnnotation":case"StringLiteralTypeAnnotation":case"StringTypeAnnotation":case"SymbolTypeAnnotation":case"ThisTypeAnnotation":case"TupleTypeAnnotation":case"TypeofTypeAnnotation":case"UnionTypeAnnotation":case"VoidTypeAnnotation":case"IndexedAccessType":case"OptionalIndexedAccessType":break;default:return false}return t==null||(0,n.default)(e,t)}function isFlowBaseAnnotation(e,t){if(!e)return false;switch(e.type){case"AnyTypeAnnotation":case"BooleanTypeAnnotation":case"NullLiteralTypeAnnotation":case"MixedTypeAnnotation":case"EmptyTypeAnnotation":case"NumberTypeAnnotation":case"StringTypeAnnotation":case"SymbolTypeAnnotation":case"ThisTypeAnnotation":case"VoidTypeAnnotation":break;default:return false}return t==null||(0,n.default)(e,t)}function isFlowDeclaration(e,t){if(!e)return false;switch(e.type){case"DeclareClass":case"DeclareFunction":case"DeclareInterface":case"DeclareModule":case"DeclareModuleExports":case"DeclareTypeAlias":case"DeclareOpaqueType":case"DeclareVariable":case"DeclareExportDeclaration":case"DeclareExportAllDeclaration":case"InterfaceDeclaration":case"OpaqueType":case"TypeAlias":break;default:return false}return t==null||(0,n.default)(e,t)}function isFlowPredicate(e,t){if(!e)return false;switch(e.type){case"DeclaredPredicate":case"InferredPredicate":break;default:return false}return t==null||(0,n.default)(e,t)}function isEnumBody(e,t){if(!e)return false;switch(e.type){case"EnumBooleanBody":case"EnumNumberBody":case"EnumStringBody":case"EnumSymbolBody":break;default:return false}return t==null||(0,n.default)(e,t)}function isEnumMember(e,t){if(!e)return false;switch(e.type){case"EnumBooleanMember":case"EnumNumberMember":case"EnumStringMember":case"EnumDefaultedMember":break;default:return false}return t==null||(0,n.default)(e,t)}function isJSX(e,t){if(!e)return false;switch(e.type){case"JSXAttribute":case"JSXClosingElement":case"JSXElement":case"JSXEmptyExpression":case"JSXExpressionContainer":case"JSXSpreadChild":case"JSXIdentifier":case"JSXMemberExpression":case"JSXNamespacedName":case"JSXOpeningElement":case"JSXSpreadAttribute":case"JSXText":case"JSXFragment":case"JSXOpeningFragment":case"JSXClosingFragment":break;default:return false}return t==null||(0,n.default)(e,t)}function isMiscellaneous(e,t){if(!e)return false;switch(e.type){case"Noop":case"Placeholder":case"V8IntrinsicIdentifier":break;default:return false}return t==null||(0,n.default)(e,t)}function isTypeScript(e,t){if(!e)return false;switch(e.type){case"TSParameterProperty":case"TSDeclareFunction":case"TSDeclareMethod":case"TSQualifiedName":case"TSCallSignatureDeclaration":case"TSConstructSignatureDeclaration":case"TSPropertySignature":case"TSMethodSignature":case"TSIndexSignature":case"TSAnyKeyword":case"TSBooleanKeyword":case"TSBigIntKeyword":case"TSIntrinsicKeyword":case"TSNeverKeyword":case"TSNullKeyword":case"TSNumberKeyword":case"TSObjectKeyword":case"TSStringKeyword":case"TSSymbolKeyword":case"TSUndefinedKeyword":case"TSUnknownKeyword":case"TSVoidKeyword":case"TSThisType":case"TSFunctionType":case"TSConstructorType":case"TSTypeReference":case"TSTypePredicate":case"TSTypeQuery":case
+{
+    "word": "स्वास्थ्य",
+    "ABCH": [
+        {
+            "word": "स्वास्थ्य",
+            "linga": "क्ली",
+            "pagenum": "16",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "1022",
+            "group": "277",
+            "synonyms": [
+                "धृति",
+                "सन्तोष"
+            ],
+            "content": "धृतिः संतोषः स्वास्थ्यं स्यादाध्यानं स्मरणं स्मृतिः ।"
+        },
+        {
+            "word": "स्वास्थ्य",
+            "linga": "क्ली",
+            "pagenum": "22",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1467",
+            "group": "484",
+            "synonyms": [
+                "वार्त",
+                "अनामय",
+                "सह्य",
+                "आरोग्य"
+            ],
+            "content": "जाङ्गुलिको विषभिषक्स्वास्थ्यं वार्तमनामयम् ।\nसह्यारोग्ये पटूल्लाघवार्तकल्यास्तु नीरुजि ॥ ४७४ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "31207",
+            "pagenum": 1162,
+            "content": "स्वास्थ्यं¦ <b>1</b> Self-reliance, <lbinfo n='self+dependence'/> selfdependence. <b>--2</b> Fortitude, <lbinfo n='resolute+ness'/> resoluteness, firmness. <b>--3</b> Sound state, health. <b>--4</b> Prosperity, well-being, comfortableness. <b>--5</b> Ease, <lbinfo n='satisfac+tion'/> satisfaction, spirits; लब्धं मया स्वास्थ्यं <ls>Ś. 4.</ls>"
+        }
+    ],
+    "BEN": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "16925",
+            "pagenum": 1100,
+            "content": "स्वास्थ्य¦ <i>svāsthya,</i> <ab>i. e.</ab> <i>svastha + ya,</i> <ab>n.</ab> <b>1.</b> Health, <ls>Pañc.</ls> 183, 22. <b>2.</b> Content. <b>3.</b> Happiness, <ls>Pañc.</ls> ii. <ab>d.</ab> 165. <b>4.</b> Self-reliance, firmness, <ls>Pañc.</ls> ii. <ab>d.</ab> 170 (with <i>vraj,</i> To recover)."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "19466",
+            "pagenum": 746,
+            "content": "स्वास्थ्य¦ <i>svāsthya</i> <ab>n.</ab> <i>(svastha)</i> fermeté, possession de soi-même, calme des sens. || Indépendance. || Richesse."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "39217",
+            "pagenum": 655,
+            "content": "स्वास्थ्य¦ <lex>n.</lex> comfort, ease."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "29115",
+            "pagenum": 525,
+            "content": "स्वास्थ्य¦ <i>n.</i> Wohlsein, Behagen."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "42836",
+            "pagenum": 823,
+            "content": "svAsTya¦ <i>n.</i> 1. Self-reliance, self-dependence, fortitude, courage, firmness; 2. sound state, health; 3. prosperity, comfortableness, competence; 4. complacency, satisfaction."
+        }
+    ],
+    "MD": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "20337",
+            "pagenum": 373,
+            "content": "स्वास्थ्य¦ svāsth-ya, <lex>n.</lex> [sva-stha] sound state, 🞄health, ease."
+        }
+    ],
+    "MW": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "259775",
+            "pagenum": "1284,3",
+            "content": "स्वास्थ्य ¦ <lex>n.</lex> (<ab>fr.</ab> स्व-स्थ) self-dependence, sound state (of body or soul), health, ease, comfort, contentment, satisfaction, <ls>MBh.</ls>; <ls>Kāv.</ls> &c.<info lex='n'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "53799",
+            "pagenum": 1162,
+            "content": "स्वास्थ्य¦ <i>svāsthya, am,</i> n. (fr. <i>sva-stha</i>), selfreliance, self-dependence, self-possession, fortitude, resoluteness, firmness; sound state, health, prosperity, happiness, comfortableness, competence; complacency, contentment, satisfaction."
+        }
+    ],
+    "PW": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "133157",
+            "pagenum": 7,
+            "content": "स्वास्थ्य¦ <lex>n.</lex> <i>Wohlbefinden, Wohlbehagen</i> (des Körpers oder der Seele) <ls>JĀTAKAM. 27,25</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "115751",
+            "pagenum": 7,
+            "content": "स्वास्थ्य¦ (von स्वस्थ) <lex>n.</lex> <i>Wohlbefinden, Wohlbehagen</i> (des Körpers oder der Seele) <ls>H. 308. 474.</ls> <ls>ŚABDAR.</ls> im <ls>ŚKDR.</ls> <ls>MBH. 13, 4077.</ls> <ls>R. GORR. 2, 16, 19.</ls> <ls>KĀM. NĪTIS. 13, 44.</ls> <ls>RAGH. ed. Calc. 4, 14.</ls> <ls>ŚĀK. 58, 5.</ls> <ls>Spr. (II) 884</ls> (Conj.). <ls n='Spr. (II)'>3800.</ls> <ls n='Spr. (II)'>4532.</ls> <ls n='Spr. (II)'>6030.</ls> <ls>KATHĀS. 73, 388.</ls> <ls>MĀRK. P. 9, 22. 120, 18.</ls> <ls>SĀH. D. 99, 12.</ls> <ls>RĀJA-TAR. 3, 411.</ls> °वार्त्तोपलम्भाय <ls n='RĀJA-TAR.'>7,544.</ls> <ls>PRAB. 97,17.</ls> <ls>Verz. d. Oxf. H. 93,b, N.</ls> <ls>PAÑCAR. 4,3,34.</ls> <ls>PAÑCAT. 183,22. ed. orn. 64,16.</ls> नैति स्वास्थ्यम् <ls>HEM.</ls> <ls>YOGAŚ. 2, 70.</ls> अ° <i>Unwohlsein</i> <ls>KATHĀS. 17, 74.</ls> <ls n='KATHĀS.'>37, 214.</ls> <ls n='KATHĀS.'>63, 103.</ls> <ls>RĀJA-TAR. 4, 31</ls> (wir lesen प्रथितास्वास्थ्यम्)."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "27373",
+            "pagenum": 375,
+            "content": "<i>svāsthya</i>¦ n. °natürlicher Zustand, <ls>Sam.</ls> VIII, 92. {part=,seq=27737,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "46404",
+            "pagenum": 825,
+            "content": "स्वास्थ्य¦ n. (-स्थ्यं) 1. Health. 2. Content, happiness, complacency. satisfaction. 3. Fortitude, firmness, self-dependence. 4. Prosperity, comfortableness, competence. E. स्व self, स्थ who is or stays, ष्यञ् aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "24305",
+            "pagenum": 882,
+            "content": "<b>svā-sthya-</b>¦ <ab>nt.</ab> bonne santé, bon état, aise, satisfaction."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "43810",
+            "pagenum": 966,
+            "content": "स्वास्थ्य¦ n. (-स्थ्यं) .²1 Health. .²2 Content, happiness, complacency, satisfaction. .²3 Fortitude, firmness, self-dependance. .E. स्व self, स्थ who is, or stays, ष्यञ् aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "43619",
+            "pagenum": 890,
+            "content": "स्वास्थ्य¦ (स्थ्यं) 1. <i>n.</i> Health; contentment; fortitude."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "41267",
+            "pagenum": "5-493-a",
+            "content": "स्वास्थ्यं¦, क्ली, (स्वस्थस्य भावः । स्वस्थ + ष्यञ् ।) आरोग्यम् । इति शब्दरत्नावली ॥ (यथा, “गतवेगे भवेत् स्वास्थ्यं सर्व्वेष्वाक्षेपकादिषु ।” इति माधवकरकृतरुग्विनिश्चयसंग्रहे वातष्याध्यधिकारे ॥) सन्तोषः । इति हेमचन्द्रः ॥ (यथा, साहित्यदर्पणे । ३ । २४९ । “किं वक्ष्यन्त्यपकल्मषाः कृतधियः स्वप्नेऽपि सा दुर्ल्लभा चेतः स्वास्थ्यमुपैहि कः खलु युवा धन्योऽधरं धास्यति ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "स्वास्थ्य",
+            "eid": "47694",
+            "pagenum": "5391,b",
+            "content": "स्वास्थ्य¦ न० स्वस्थस्य भावः ष्यञ् । १ आरोग्ये २ सन्तोषे अमरः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "स्वास्थ्य",
+            "content": "स्वास्थ्यम् नपुं. -  स्वस्थ + ष्यञ् 'आत्मनिर्भरता, स्वाश्रयता'"
+        },
+        {
+            "word": "स्वास्थ्य",
+            "content": "स्वास्थ्यम् नपुं. -  स्वस्थ + ष्यञ् 'साहस, कृतसंकल्पता, दिलेरी, दृढ़ता'"
+        },
+        {
+            "word": "स्वास्थ्य",
+            "content": "स्वास्थ्यम् नपुं. -  स्वस्थ + ष्यञ् 'तन्दुरूस्ती, नीरोगता'"
+        },
+        {
+            "word": "स्वास्थ्य",
+            "content": "स्वास्थ्यम् नपुं. -  स्वस्थ + ष्यञ् 'समृद्धि, कुशलक्षेम, सुखचैन'"
+        },
+        {
+            "word": "स्वास्थ्य",
+            "content": "स्वास्थ्यम् नपुं. -  स्वस्थ + ष्यञ् 'आराम, संतोष, हिम्मत'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "स्वास्थ्य",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮನಸ್ಸಿಗೆ ಉಂಟಾಗುವ ಹರ್ಷ \\/ಸಂತೋಷ \\/ನೆಮ್ಮದಿ",
+            "निष्पत्तिः": "'ष्यञ्' (५-१-१२४)",
+            "व्युत्पत्तिः": "स्वस्थस्य भावः",
+            "प्रयोगाः": "'शकुन्तलां पतिकुलं विसृज्य लब्धमिदानीं स्वास्थ्यम्'",
+            "उल्लेखाः": "शाकु० ४",
+            "content": ""
+        },
+        {
+            "word": "स्वास्थ्य",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಆರೋಗ್ಯ",
+            "content": ""
+        },
+        {
+            "word": "स्वास्थ्य",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಧೈರ್ಯ \\/ಸ್ಥೈರ್ಯ",
+            "content": ""
+        },
+        {
+            "word": "स्वास्थ्य",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸುಖವಾಗಿರುವಿಕೆ",
+            "प्रयोगाः": "'वाञ्छाविच्छेदनं प्राहुः स्वास्थ्यं शान्ता महर्षयः'",
+            "उल्लेखाः": "पञ्चतं० २-१६३",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "स्वास्थ्य",
+            "content": "<body><s>svAsTya na° svasTasya BAvaH zyaY . <lb/><b>1</b> Arogye <lb/><b>2</b> santoze amaraH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "स्वास्थ्य",
+            "content": "<H1><h><key1>svAsTya</key1><key2>svAsTya</key2></h><body><s>svAsTya</s>   <lex>n.</lex> (<ab>fr.</ab> <s>sva-sTa</s>) self-dependence, sound state (of body or soul), health, ease, comfort, contentment, satisfaction, <ls>MBh.</ls>; <ls>Kāv.</ls> &amp;c.<info lex=\"n\" /></body><tail><L>259775</L><pc>1284,3</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "स्वास्थ्य",
+            "content": "<H1><h><key1>svAsTya</key1><key2>svAsTya</key2></h><body><s>svAsTya</s>  <div n=\"1\">n. (<s>-sTyaM</s>) </div><div n=\"2\"> 1. Health. </div><div n=\"2\"> 2. Content, happiness, complacency. satisfac- <lb />tion. </div><div n=\"2\"> 3. Fortitude, firmness, self-dependence. </div><div n=\"2\"> 4. Prosperity, com- <lb />fortableness, competence.</div><div n=\"E\"> E. <s>sva</s> self, <s>sTa</s> who is or stays, <s>zyaY</s> aff.</div></body><tail><L>46404</L><pc>825-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "स्वास्थ्य",
+            "content": "<span lang=\"sa\">स्वास्थ्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮನಸ್ಸಿಗೆ ಉಂಟಾಗುವ ಹರ್ಷ /ಸಂತೋಷ /ನೆಮ್ಮದಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"ष्यञ्\" (५-१-१२४)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>स्वस्थस्य भावः<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"शकुन्तलां पतिकुलं विसृज्य लब्धमिदानीं स्वास्थ्यम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>शाकु० ४<div class=\"h-2\"> </div><div class=\"h-2\"> </div>स्वास्थ्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಆರೋಗ್ಯ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>स्वास्थ्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಧೈರ್ಯ /ಸ್ಥೈರ್ಯ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>स्वास्थ्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸುಖವಾಗಿರುವಿಕೆ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"वाञ्छाविच्छेदनं प्राहुः स्वास्थ्यं शान्ता महर्षयः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>पञ्चतं० २-१६३<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

@@ -1,888 +1,79 @@
-se, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 222,
-                                    columnNumber: 13
-                                }, this),
-                                currentSkanda && " > ",
-                                currentSkanda && /*#__PURE__*/ _jsxDEV(Link, {
-                                    className: "hover:underline text-[#C00000] font-bold",
-                                    style: {
-                                        textShadow: "3px 2px 3px silver",
-                                        fontFamily: "".concat(devanagari.style.fontFamily)
-                                    },
-                                    href: "/harililakalpataru/".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id),
-                                    children: currentSkanda && (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.title)
-                                }, void 0, false, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 235,
-                                    columnNumber: 15
-                                }, this),
-                                currentAdhyay && " > ",
-                                currentAdhyay && /*#__PURE__*/ _jsxDEV(Link, {
-                                    className: "hover:underline text-[#C00000] font-bold",
-                                    style: {
-                                        textShadow: "3px 2px 3px silver",
-                                        fontFamily: "".concat(devanagari.style.fontFamily)
-                                    },
-                                    href: "/harililakalpataru/".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id, "/").concat(currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.id),
-                                    children: currentAdhyay && (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.title)
-                                }, void 0, false, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 249,
-                                    columnNumber: 15
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 221,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ _jsxDEV(Link, {
-                            href: "/harililakalpataru/".concat(handlePage("NEXT")).concat(router.query.tab ? "?tab=" + router.query.tab : "", " "),
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: " cursor-pointer rounded bg-secondary",
-                                children: /*#__PURE__*/ _jsxDEV(FaAngleRight, {
-                                    className: "w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9",
-                                    color: "#f8ecc2"
-                                }, void 0, false, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 268,
-                                    columnNumber: 15
-                                }, this)
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 267,
-                                columnNumber: 13
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 262,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                    lineNumber: 208,
-                    columnNumber: 9
-                }, this)
-            }, void 0, false, {
-                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                lineNumber: 207,
-                columnNumber: 7
-            }, this),
-            /*#__PURE__*/ _jsxDEV("div", {
-                className: "mb-10",
-                children: harililakalpataru_name.length === 1 && currentAdhyayList.length > 0 ? /*#__PURE__*/ _jsxDEV("div", {
-                    className: "bg-card border-b",
-                    children: [
-                        (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.header) && /*#__PURE__*/ _jsxDEV("div", {
-                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: "break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
-                                dangerouslySetInnerHTML: {
-                                    __html: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.header
-                                }
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 282,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 281,
-                            columnNumber: 15
-                        }, this),
-                        currentAdhyayList && (currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.map((e, k)=>{
-                            return /*#__PURE__*/ _jsxDEV(Link, {
-                                href: "/harililakalpataru/".concat(harililakalpataru_name.join("/"), "/").concat(e === null || e === void 0 ? void 0 : e.id),
-                                children: /*#__PURE__*/ _jsxDEV("div", {
-                                    className: "border-b border-x border-b_color p-2 text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full",
-                                    children: [
-                                        /*#__PURE__*/ _jsxDEV("div", {
-                                            className: "mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
-                                            children: convertToHindi(k + 1)
-                                        }, void 0, false, {
-                                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                            lineNumber: 300,
-                                            columnNumber: 23
-                                        }, this),
-                                        /*#__PURE__*/ _jsxDEV("div", {
-                                            className: "inline-block break-words align-baseline font-bold text-red",
-                                            children: e === null || e === void 0 ? void 0 : e.title
-                                        }, void 0, false, {
-                                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                            lineNumber: 303,
-                                            columnNumber: 23
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 299,
-                                    columnNumber: 21
-                                }, this)
-                            }, k, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 293,
-                                columnNumber: 19
-                            }, this);
-                        })),
-                        (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.footer) && /*#__PURE__*/ _jsxDEV("div", {
-                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: "break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
-                                dangerouslySetInnerHTML: {
-                                    __html: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.footer
-                                }
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 312,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 311,
-                            columnNumber: 15
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                    lineNumber: 279,
-                    columnNumber: 11
-                }, this) : harililakalpataru_name.length === 2 && currentVersesList.length > 0 ? /*#__PURE__*/ _jsxDEV("div", {
-                    className: "bg-card border-b",
-                    children: [
-                        (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.header) && /*#__PURE__*/ _jsxDEV("div", {
-                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: "break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
-                                dangerouslySetInnerHTML: {
-                                    __html: currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.header
-                                }
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 326,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 325,
-                            columnNumber: 15
-                        }, this),
-                        currentVersesList && (currentVersesList === null || currentVersesList === void 0 ? void 0 : currentVersesList.map((e, k)=>{
-                            return /*#__PURE__*/ _jsxDEV("div", {
-                                className: "flex items-center border-b border-x border-b_color p-2 sm:p-2 text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full",
-                                children: [
-                                    /*#__PURE__*/ _jsxDEV("div", {
-                                        className: "mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
-                                        children: convertToHindi(k + 1)
-                                    }, void 0, false, {
-                                        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                        lineNumber: 341,
-                                        columnNumber: 21
-                                    }, this),
-                                    (e === null || e === void 0 ? void 0 : e.shabda_chheda) && /*#__PURE__*/ _jsxDEV(ShabdaChhedaCardInLine, {
-                                        shabda_chheda: e === null || e === void 0 ? void 0 : e.shabda_chheda,
-                                        original: e === null || e === void 0 ? void 0 : e.title
-                                    }, void 0, false, {
-                                        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                        lineNumber: 352,
-                                        columnNumber: 23
-                                    }, this)
-                                ]
-                            }, k, true, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 337,
-                                columnNumber: 19
-                            }, this);
-                        })),
-                        (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.footer) && /*#__PURE__*/ _jsxDEV("div", {
-                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: "break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
-                                dangerouslySetInnerHTML: {
-                                    __html: currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.footer
-                                }
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 362,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 361,
-                            columnNumber: 15
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                    lineNumber: 323,
-                    columnNumber: 11
-                }, this) : /*#__PURE__*/ _jsxDEV(LottieAnimation, {}, void 0, false, {
-                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                    lineNumber: 372,
-                    columnNumber: 11
-                }, this)
-            }, void 0, false, {
-                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                lineNumber: 277,
-                columnNumber: 7
-            }, this)
-        ]
-    }, void 0, true, {
-        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-        lineNumber: 206,
-        columnNumber: 5
-    }, this);
-};
-_s(HarililakalpataruName, "brqQf9wQHdlnaqt5+T9HUccgEcU=", false, function() {
-    return [
-        useRouter
-    ];
-});
-_c = HarililakalpataruName;
-HarililakalpataruName.getInitialProps = async (param)=>{
-    let { query  } = param;
-    const { harililakalpataru_name  } = query;
-    return {
-        harililakalpataru_name
-    };
-};
-export default HarililakalpataruName;
-var _c;
-$RefreshReg$(_c, "HarililakalpataruName");
-
-
-;
-    // Wrapped in an IIFE to avoid polluting the global scope
-    ;
-    (function () {
-        var _a, _b;
-        // Legacy CSS implementations will `eval` browser code in a Node.js context
-        // to extract CSS. For backwards compatibility, we need to check we're in a
-        // browser context before continuing.
-        if (typeof self !== 'undefined' &&
-            // AMP / No-JS mode does not inject these helpers:
-            '$RefreshHelpers$' in self) {
-            // @ts-ignore __webpack_module__ is global
-            var currentExports = __webpack_module__.exports;
-            // @ts-ignore __webpack_module__ is global
-            var prevExports = (_b = (_a = __webpack_module__.hot.data) === null || _a === void 0 ? void 0 : _a.prevExports) !== null && _b !== void 0 ? _b : null;
-            // This cannot happen in MainTemplate because the exports mismatch between
-            // templating and execution.
-            self.$RefreshHelpers$.registerExportsForReactRefresh(currentExports, __webpack_module__.id);
-            // A module can be accepted automatically based on its exports, e.g. when
-            // it is a Refresh Boundary.
-            if (self.$RefreshHelpers$.isReactRefreshBoundary(currentExports)) {
-                // Save the previous exports on update so we can compare the boundary
-                // signatures.
-                __webpack_module__.hot.dispose(function (data) {
-                    data.prevExports = currentExports;
-                });
-                // Unconditionally accept an update to this module, we'll check if it's
-                // still a Refresh Boundary later.
-                // @ts-ignore importMeta is replaced in the loader
-                import.meta.webpackHot.accept();
-                // This field is set when the previous version of this module was a
-                // Refresh Boundary, letting us know we need to check for invalidation or
-                // enqueue an update.
-                if (prevExports !== null) {
-                    // A boundary can become ineligible if its exports are incompatible
-                    // with the previous exports.
-                    //
-                    // For example, if you add/remove/change exports, we'll want to
-                    // re-execute the importing modules, and force those components to
-                    // re-render. Similarly, if you convert a class component to a
-                    // function, we want to invalidate the boundary.
-                    if (self.$RefreshHelpers$.shouldInvalidateReactRefreshBoundary(prevExports, currentExports)) {
-                        __webpack_module__.hot.invalidate();
-                    }
-                    else {
-                        self.$RefreshHelpers$.scheduleUpdate();
-                    }
-                }
-            }
-            else {
-                // Since we just executed the code for the module, it's possible that the
-                // new exports made it ineligible for being a boundary.
-                // We only care about the case when we were _previously_ a boundary,
-                // because we already accepted this update (accidental side effect).
-                var isNoLongerABoundary = prevExports !== null;
-                if (isNoLongerABoundary) {
-                    __webpack_module__.hot.invalidate();
-                }
-            }
+{
+    "word": "क्षेत्रम्",
+    "AP90": [
+        {
+            "word": "क्षेत्रम्",
+            "eid": "11970",
+            "pagenum": 439,
+            "content": "क्षेत्रं¦ [क्षि-ष्ट्रन्] <b>1</b> A field, ground, soil; चीयते बालिशस्यापि सत्क्षेत्रपतिता कृषिः <ls>Mu. 1. 3.</ls> <b>--2</b> Landed property, land. <b>--3</b> Place, abode, region, <lbinfo n='re+pository'/> repository; कपटशतमयं क्षेत्रमप्रत्ययानां <ls>Pt. 1. 191</ls>; <ls>Bh. 1. 77</ls>; <ls>Me. 16.</ls> <b>--4</b> A sacred spot, a place of pilgrimage; क्षेत्रं क्षत्रप्रधनपिशुनं कौरवं तद्भजेथाः  <lbinfo n='ls:Me.+ 48'/> <ls>Me. 48</ls>; <ls>Bg. 1. 1.</ls> <b>--5</b> An enclosed spot of ground, portion of space, <lbinfo n='superfi+cies'/> superficies, circuit. <b>--6</b> Fertile soil. <b>--7</b> Place of origin. <b>--8</b> A wife; अपि नाम <lbinfo n='kula#pateriyamasavarRakzetrasaMBavA'/> कुलपतेरियमसवर्णक्षेत्रसंभवा स्यात् <ls>Ś. 1</ls>;  <lbinfo n='ls:Ms.+ 3. 175.'/> <ls>Ms. 3. 175.</ls> <b>--9</b> The sphere of action, the body (regarded as the field of the working of the soul); योगिनो यं <lbinfo n='vi#cinvaMti'/> विचिन्वंति क्षेत्राभ्यंतरवर्तिनं <ls>Ku. 6. 77</ls>; <ls>Bg. 13. 1</ls>, <ls n='Bg. 13.'>2</ls>, <ls n='Bg. 13.'>3.</ls> <b>--10</b> The mind. <b>--11</b> A house; a town. <b>--12</b> A plane figure, as a triangle. <b>--13</b> A diagram. <b>--14</b> A sign of the zodiac. <b>--Comp.</b>  <lbinfo n='--aDi#devatA'/> --अधिदेवता the tutelary deity of any sacred piece of ground. --आजीवः, --करः, <lbinfo n='kf#t'/> --कृत् <i><ab>m.</ab></i> a cultivator, peasant. --गणितं geometry. --गत <i><ab>a.</ab></i> geometrical. °उपपत्तिः <i><ab>f.</ab></i> geometrical proof. --ज <i><ab>a.</ab></i> {1} produced in a field. {2} born from the body. (--जः) one of the 12 kinds of sons allowed by the old Hindu Law, the offspring of a wife by a kinsman duly appointed to raise up issue to the husband; <ls>Ms. 9. 167</ls>, <ls n='Ms. 9.'>180</ls>; <ls>Y. 1. 69</ls>, <ls n='Y.'>2. 128.</ls> --जात <i><ab>a.</ab></i> begotten on the wife of another. --ज्ञ <i><ab>a.</ab></i> {1} knowing places. {2} clever, dexterous. (--ज्ञः) {1} the soul; <ab>cf.</ab> <ls>Bg. 13. 1</ls>, <ls n='Bg. 13.'>3</ls>; <ls>Ms. 12. 12.</ls> {2} the supreme soul. {3} a libertine. {4} a husbandman. {5} a form of Śiva. {6} a witness. (--ज्ञा) a girl fifteen years old personating Durgā at a festival. --पतिः a land-owner, a landlord. --पदं a place sacred to a deity. --पालः {1} a man employed to guard a field. {2} a deity protecting fields. {3} an epithet of Śiva. --फलं the area or superficial contents of a figure (in math.). --भक्तिः <i><ab>f.</ab></i> the division of a field. --भूमिः <i><ab>f.</ab></i> cultivated land. --राशिः quantity represented by geometrical figures. --विद् <i><ab>a.</ab></i> = क्षेत्रज्ञ <ab>q. v.</ab> (<i>--<ab>m.</ab></i>) {1} a husbandman. {2} a sage, one who has spiritual knowledge; <ls>Ku. 3. 50.</ls> {3} the soul. --व्यवहारः {1} drawing a figure in geometry. {2} geometrical <lbinfo n='demonstra+tion'/> demonstration. --स्थ <i><ab>a.</ab></i> residing at a sacred place."
         }
-    })();
-�   webpack://./node_modules/next/dist/compiled/@next/react-refresh-utils/dist/loader.js!./node_modules/next/dist/build/webpack/loaders/next-swc-loader.js??ruleSet[1].rules[1].oneOf[2].use[1]!./src/pages/harililakalpataru/[...harililakalpataru_name].js�]  {"version":3,"sources":["webpack://./src/pages/harililakalpataru/[...harililakalpataru_name].js"],"sourcesContent":["import React, { useEffect, useState } from \"react\";\r\nimport { useDebounce } from \"use-debounce\";\r\nimport { FaAngleLeft, FaAngleRight } from \"react-icons/fa\";\r\nimport { useRouter } from \"next/router\";\r\nimport Link from \"next/link\";\r\nimport axios from \"axios\";\r\nimport { convertToHindi } from \"@/utils/ashtadhyayi/Function\";\r\nimport LottieAnimation from \"@/components/LottieAnimation \";\r\nimport TitleCard from \"@/components/Card/TitleCard\";\r\nimport ShabdaChhedaCardInLine from \"@/components/Card/ShabdaChhedaCardInLine\";\r\nimport { Noto_Serif_Devanagari, Noto_Serif_Gujarati } from \"next/font/google\";\r\n\r\nconst gujarati = Noto_Serif_Gujarati({\r\n  subsets: [\"gujarati\"],\r\n});\r\n\r\nconst devanagari = Noto_Serif_Devanagari({\r\n  subsets: [\"devanagari\"],\r\n});\r\n\r\nconst HarililakalpataruName = ({ harililakalpataru_name }) => {\r\n  const router = useRouter();\r\n  const [currentSkanda, setCurrentSkanda] = useState({});\r\n  const [currentAdhyayList, setCurrentAdhyayList] = useState([]);\r\n  const [currentVersesList, setCurrentVersesList] = useState([]);\r\n  const [currentAdhyay, setCurrentAdhyay] = useState([]);\r\n  const [harililakalpataruSkanda, setHarililakalpataruSkanda] = useState([]);\r\n\r\n  const getAllSkanda = async () => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/skanda\");\r\n      setHarililakalpataruSkanda(response?.data?.data);\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentSkanda = async (id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/skanda\", {\r\n        params: {\r\n          id: id,\r\n        },\r\n      });\r\n      setCurrentSkanda(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentAdhyayList = async (id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/adhyay\", {\r\n        params: {\r\n          skandaId: id,\r\n        },\r\n      });\r\n      setCurrentAdhyayList(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentAdhyay = async (skandaId, id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/adhyay\", {\r\n        params: {\r\n          skandaId: skandaId,\r\n          id: id,\r\n        },\r\n      });\r\n      setCurrentAdhyay(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentVersesList = async (skandaId, adhyayId) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/verses\", {\r\n        params: {\r\n          skandaId: skandaId,\r\n          adhyayId: adhyayId,\r\n        },\r\n      });\r\n      setCurrentVersesList(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error getCurrentVersesList data:\", error);\r\n    }\r\n  };\r\n\r\n  useEffect(() => {\r\n    getAllSkanda();\r\n    if (harililakalpataru_name.length >= 1) {\r\n      getCurrentSkanda(harililakalpataru_name[0]);\r\n      getCurrentAdhyayList(harililakalpataru_name[0]);\r\n    } else {\r\n      setCurrentSkanda({});\r\n      setCurrentAdhyayList([]);\r\n    }\r\n    if (harililakalpataru_name.length >= 2) {\r\n      getCurrentAdhyay(harililakalpataru_name[0], harililakalpataru_name[1]);\r\n      getCurrentVersesList(\r\n        harililakalpataru_name[0],\r\n        harililakalpataru_name[1]\r\n      );\r\n    } else {\r\n      setCurrentAdhyay({});\r\n      setCurrentVersesList([]);\r\n    }\r\n  }, [router.query, harililakalpataru_name]);\r\n\r\n  // console.log(\"harililakalpataruSkanda----------\", harililakalpataruSkanda);\r\n  // console.log(\"currentSkanda----------\", currentSkanda);\r\n  // console.log(\"currentAdhyayList----------\", currentAdhyayList);\r\n  // console.log(\"currentAdhyay----------\", currentAdhyay);\r\n  // console.log(\"currentVersesList----------\", currentVersesList);\r\n\r\n  const handlePage = (page) => {\r\n    if (harililakalpataru_name.length == 1 && harililakalpataruSkanda) {\r\n      const currentObject = harililakalpataruSkanda?.find(\r\n        (obj) => obj.id == harililakalpataru_name[0]\r\n      );\r\n      const currentIndexInArray =\r\n        harililakalpataruSkanda?.indexOf(currentObject);\r\n      if (page == \"NEXT\") {\r\n        const nextObject = harililakalpataruSkanda[currentIndexInArray + 1];\r\n        return nextObject\r\n          ? nextObject.id\r\n          : harililakalpataru_name[harililakalpataru_name.length - 1];\r\n      }\r\n      if (page == \"PREVIOUS\") {\r\n        const nextObject = harililakalpataruSkanda[currentIndexInArray - 1];\r\n        return nextObject\r\n          ? nextObject.id\r\n          : harililakalpataru_name[harililakalpataru_name.length - 1];\r\n      }\r\n    } else if (harililakalpataru_name.length == 2 && currentAdhyayList) {\r\n      const currentObject = currentAdhyayList?.find(\r\n        (obj) => obj.id == harililakalpataru_name[1]\r\n      );\r\n      const currentIndexInArray = currentAdhyayList?.indexOf(currentObject);\r\n      if (page == \"NEXT\") {\r\n        const nextObject = currentAdhyayList[currentIndexInArray + 1];\r\n        return nextObject\r\n          ? `${harililakalpataru_name[0]}/${nextObject.id}`\r\n          : `${harililakalpataru_name[0]}/${\r\n              harililakalpataru_name[harililakalpataru_name.length - 1]\r\n            }`;\r\n      }\r\n      if (page == \"PREVIOUS\") {\r\n        const nextObject = currentAdhyayList[currentIndexInArray - 1];\r\n        return nextObject\r\n          ? `${harililakalpataru_name[0]}/${nextObject.id}`\r\n          : `${harililakalpataru_name[0]}/${\r\n              harililakalpataru_name[harililakalpataru_name.length - 1]\r\n            }`;\r\n      }\r\n    }\r\n    // else if (\r\n    //   harililakalpataru_name.length == 3 &&\r\n    //   currentSangiJeevansDiscription\r\n    // ) {\r\n    //   const currentData =\r\n    //     currentSangiJeevansText &&\r\n    //     currentSangiJeevansText?.items?.filter((a) => a.id !== -1);\r\n    //   const currentObject = currentData?.find(\r\n    //     (obj) => obj.id == harililakalpataru_name[2]\r\n    //   );\r\n    //   const currentIndexInArray = currentData?.indexOf(currentObject);\r\n    //   if (page == \"NEXT\") {\r\n    //     const nextObject = currentData[currentIndexInArray + 1];\r\n    //     return nextObject\r\n    //       ? `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${nextObject.id}`\r\n    //       : `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${\r\n    //           harililakalpataru_name[harililakalpataru_name.length - 1]\r\n    //         }`;\r\n    //   }\r\n    //   if (page == \"PREVIOUS\") {\r\n    //     const nextObject = currentData[currentIndexInArray - 1];\r\n    //     return nextObject\r\n    //       ? `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${nextObject.id}`\r\n    //       : `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${\r\n    //           harililakalpataru_name[harililakalpataru_name.length - 1]\r\n    //         }`;\r\n    //   }\r\n    // } else {\r\n    //   if (page == \"NEXT\") {\r\n    //     return `${harililakalpataru_name[0]}/${\r\n    //       parseInt(harililakalpataru_name[1]) + 1\r\n    //     }`;\r\n    //   }\r\n    //   if (page == \"PREVIOUS\") {\r\n    //     return `${harililakalpataru_name[0]}/${\r\n    //       parseInt(harililakalpataru_name[1]) - 1\r\n    //     }`;\r\n    //   }\r\n    // }\r\n  };\r\n\r\n  return (\r\n    <div>\r\n      <TitleCard backGroundImage>\r\n        <span className=\"flex items-center justify-between\">\r\n          <Link\r\n            href={`/harililakalpataru/${handlePage(\"PREVIOUS\")}${\r\n              router.query.tab ? \"?tab=\" + router.query.tab : \"\"\r\n            } `}\r\n          >\r\n            <div className=\"cursor-pointer rounded bg-secondary\">\r\n              <FaAngleLeft\r\n                className=\"w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9\"\r\n                color=\"#f8ecc2\"\r\n              />\r\n            </div>\r\n          </Link>\r\n          <span className=\"capitalize\">\r\n            <Link\r\n              className=\"hover:underline text-[#C00000] font-bold\"\r\n              style={{\r\n                textShadow: \"3px 2px 3px silver\",\r\n                fontFamily: `${devanagari.style.fontFamily}`,\r\n              }}\r\n              href={`/harililakalpataru`}\r\n            >\r\n              ॥ हरिलीलाकल्पतरु ॥\r\n            </Link>\r\n\r\n            {currentSkanda && \" > \"}\r\n            {currentSkanda && (\r\n              <Link\r\n               className=\"hover:underline text-[#C00000] font-bold\"\r\n              style={{\r\n                textShadow: \"3px 2px 3px silver\",\r\n                fontFamily: `${devanagari.style.fontFamily}`,\r\n              }}\r\n                href={`/harililakalpataru/${currentSkanda?.id}`}\r\n              >\r\n                {currentSkanda && currentSkanda?.title}\r\n              </Link>\r\n            )}\r\n\r\n            {currentAdhyay && \" > \"}\r\n            {currentAdhyay && (\r\n              <Link\r\n               className=\"hover:underline text-[#C00000] font-bold\"\r\n              style={{\r\n                textShadow: \"3px 2px 3px silver\",\r\n                fontFamily: `${devanagari.style.fontFamily}`,\r\n              }}\r\n                href={`/harililakalpataru/${currentSkanda?.id}/${currentAdhyay?.id}`}\r\n              >\r\n                {currentAdhyay && currentAdhyay?.title}\r\n              </Link>\r\n            )}\r\n          </span>\r\n\r\n          <Link\r\n            href={`/harililakalpataru/${handlePage(\"NEXT\")}${\r\n              router.query.tab ? \"?tab=\" + router.query.tab : \"\"\r\n            } `}\r\n          >\r\n            <div className=\" cursor-pointer rounded bg-secondary\">\r\n              <FaAngleRight\r\n                className=\"w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9\"\r\n                color=\"#f8ecc2\"\r\n              />\r\n            </div>\r\n          </Link>\r\n        </span>\r\n      </TitleCard>\r\n\r\n      <div className=\"mb-10\">\r\n        {harililakalpataru_name.length === 1 && currentAdhyayList.length > 0 ? (\r\n          <div className=\"bg-card border-b\">\r\n            {currentSkanda?.header && (\r\n              <div className=\"bg-card border-b p-2 flex justify-center border-x border-b_color\">\r\n                <div\r\n                  className=\"break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1\"\r\n                  dangerouslySetInnerHTML={{\r\n                    __html: currentSkanda?.header,\r\n                  }}\r\n                />\r\n              </div>\r\n            )}\r\n            {currentAdhyayList &&\r\n              currentAdhyayList?.map((e, k) => {\r\n                return (\r\n                  <Link\r\n                    key={k}\r\n                    href={`/harililakalpataru/${harililakalpataru_name.join(\r\n                      \"/\"\r\n                    )}/${e?.id}`}\r\n                  >\r\n                    <div className=\"border-b border-x border-b_color p-2 text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full\">\r\n                      <div className=\"mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle\">\r\n                        {convertToHindi(k + 1)}\r\n                      </div>\r\n                      <div className=\"inline-block break-words align-baseline font-bold text-red\">\r\n                        {e?.title}\r\n                      </div>\r\n                    </div>\r\n                  </Link>\r\n                );\r\n              })}\r\n            {currentSkanda?.footer && (\r\n              <div className=\"bg-card border-b p-2 flex justify-center border-x border-b_color\">\r\n                <div\r\n                  className=\"break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1\"\r\n                  dangerouslySetInnerHTML={{\r\n                    __html: currentSkanda?.footer,\r\n                  }}\r\n                />\r\n              </div>\r\n            )}\r\n          </div>\r\n        ) : harililakalpataru_name.length === 2 &&\r\n          currentVersesList.length > 0 ? (\r\n          <div className=\"bg-card border-b\">\r\n            {currentAdhyay?.header && (\r\n              <div className=\"bg-card border-b p-2 flex justify-center border-x border-b_color\">\r\n                <div\r\n                  className=\"break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1\"\r\n                  dangerouslySetInnerHTML={{\r\n                    __html: currentAdhyay?.header,\r\n                  }}\r\n                />\r\n              </div>\r\n            )}\r\n            {currentVersesList &&\r\n              currentVersesList?.map((e, k) => {\r\n                return (\r\n                  <div\r\n                    key={k}\r\n                    className=\"flex items-center border-b border-x border-b_color p-2 sm:p-2 text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full\"\r\n                  >\r\n                    <div className=\"mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle\">\r\n                      {convertToHindi(k + 1)}\r\n                    </div>\r\n                    {/* <div\r\n                      className=\"break-words text-justify align-baseline text-red font-bold\"\r\n                      dangerouslySetInnerHTML={{\r\n                        __html: e?.title?.replaceAll(\"।\", \"। <br>\"),\r\n                      }}\r\n                    /> */}\r\n\r\n                    {e?.shabda_chheda && (\r\n                      <ShabdaChhedaCardInLine\r\n                        shabda_chheda={e?.shabda_chheda}\r\n                        original={e?.title}\r\n                      />\r\n                    )}\r\n                  </div>\r\n                );\r\n              })}\r\n            {currentAdhyay?.footer && (\r\n              <div className=\"bg-card border-b p-2 flex justify-center border-x border-b_color\">\r\n                <div\r\n                  className=\"break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1\"\r\n                  dangerouslySetInnerHTML={{\r\n                    __html: currentAdhyay?.footer,\r\n                  }}\r\n                />\r\n              </div>\r\n            )}\r\n          </div>\r\n        ) : (\r\n          <LottieAnimation />\r\n        )}\r\n      </div>\r\n    </div>\r\n  );\r\n};\r\n\r\nHarililakalpataruName.getInitialProps = async ({ query }) => {\r\n  const { harililakalpataru_name } = query;\r\n  return { harililakalpataru_name };\r\n};\r\n\r\nexport default HarililakalpataruName;\r\n"],"names":["gujarati","devanagari","React","useEffect","useState","useDebounce","FaAngleLeft","FaAngleRight","useRouter","Link","axios","convertToHindi","LottieAnimation","TitleCard","ShabdaChhedaCardInLine","HarililakalpataruName","harililakalpataru_name","router","currentSkanda","setCurrentSkanda","currentAdhyayList","setCurrentAdhyayList","currentVersesList","setCurrentVersesList","currentAdhyay","setCurrentAdhyay","harililakalpataruSkanda","setHarililakalpataruSkanda","getAllSkanda","response","get","data","error","console","getCurrentSkanda","id","params","getCurrentAdhyayList","skandaId","getCurrentAdhyay","getCurrentVersesList","adhyayId","length","query","handlePage","page","currentObject","find","obj","currentIndexInArray","indexOf","nextObject","div","backGroundImage","span","className","href","tab","color","style","textShadow","fontFamily","title","header","dangerouslySetInnerHTML","__html","map","e","k","join","footer","shabda_chheda","original","getInitialProps"],"mappings":"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","file":"x"}`����H:\DHRUVIK\sardhar-ashtadhyayi\src\pages\harililakalpataru�fullySpecified�����H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\compiled\@next\react-refresh-utils\dist\loader.js�H:\DHRUVIK\sardhar-ashtadhyayi\node_modules\next\dist\build\webpack\loaders\next-swc-loader.js���942017b654277d6cǒ__webpack_module__
-�_s�_c�HarililakalpataruName	  �7��xB�H:\DHRUVIK\sardhar-ashtadhyayi\src\pages\harililakalpataru\[...harililakalpataru_name].js�  p6��xB   06��xB`6d� � �� `: `:�`T@6   @�   �A7  !   @�   �A"  U   `3�AV  �   `+�A�  �   `;�A�  �   `(�A�    	 	`�A    
- 
-`�A   ^  c >�A_  �  c <�A�  �  c 4�A�    c N�undefinedA�%  �%  @�   `#@�   `'�A�&  �&  @�   `@�   `#�A(  (  @�   `@�   `�A,  ,  @�   `#@�   `'�Az0  ~0  @�   `#@�   `'�A55  95  @�   `#@�   `'�A�6  �6  @�   `@�   `�A:  :  @
-  `#@
-  `'�A^;  b;  @  `@  `#�A�<  �<  @  `@  `�A�=  �=  @  `@  `�A�>  �>  @  `@  `�A�C  �C  @0  `@0  `#�A�D  �D  @5  `@5  `�AiJ  mJ  @C  `+@C  `/�A
-M  M  @K  `+@K  `/�A�N  �N  @Q  `#@Q  `'�A�O  �O  @V  `@V  `#�A�S  �S  @c  `@c  `#�AU  U  @h  `@h  `�A)V  -V  @n  `@n  `�A�Z  �Z  @|  `@|  `#�A\  \  @�  `@�  `�A�`  �`  @�  `'@�  `+�Abc  fc  @�  `'@�  `+�A�d  �d  @�  `@�  `#�A�h  �h  @�  `@�  `#�Aj  j  @�  `@�  `�A%k  )k  @�  `@�  `�AGl  Kl  @�  `@�  `�A:m  >m  @�  `@�  `�An  n  @�  @�  `Auo  �o  Afo  �o  @�   @�  `%�moduleA�q  r  
-�@�  `!@�  `3�Amr  r  
-�@�  `*@�  `<X���A�s  �s  
-W���@�  `Q@�  `f�A#u  5u  
-�@�  `@�  `"�module.hot.acceptA}v  �v  
-�@�  `@�  `/�Az  z  
-�@   `@   `*�A�|  �|  
-�@  `@  `&`K�react/jsx-dev-runtime� `:�   next/font/google/target.css?{"path":"src\\pages\\harililakalpataru\\[...harililakalpataru_name].js","import":"Noto_Serif_Gujarati","arguments":[{"subsets":["gujarati"]}],"variableName":"gujarati"}� @�   �   next/font/google/target.css?{"path":"src\\pages\\harililakalpataru\\[...harililakalpataru_name].js","import":"Noto_Serif_Devanagari","arguments":[{"subsets":["devanagari"]}],"variableName":"devanagari"}� @�   �react� `3�use-debounce� `+�react-icons/fa� `;�next/router� `(�next/link�	 	`	�axios�
- 
-`
-�@/utils/ashtadhyayi/Function�c >`�@/components/LottieAnimation �c <`�@/components/Card/TitleCard�c 4`�@/components/Card/ShabdaChhedaCardInLine�c N�useRouter�A�  �  ���c�useState�A�  �  ���c.6��A    ���c6>��AV  ^  ���c6>��A�  �  ���c.6��A�  �  ���cBJ9����get�Af  o  
-	���c#,5�����A    
-	���c###,2�����A�	  �	  
-	���c0#0,/�����A>  G  
-	���c=#=,,�����A    
-	���cK#K,�useEffect�Az  �  ���cWW�jsxDEV�_jsxDEVA�   �   ���@�   `@�   ` ��A7!  >!  ���@�   `@�   `!����TitleCardA?!  H!  `���@�   `"@�   `+��A�!  �!  ���@�   `(@�   `/��A7"  >"  ���@�   `&@�   `-����LinkA?"  C"  ���@�   `.@�   `2��A#  #  ���@�   `4@�   `;��A�#  �#  ���@�   `8@�   `?�FaAngleLeft�A�#  �#  ���@�   `@@�   `K��AE(  L(  ���@�   `&@�   `-��A�(  �(  ���@�   `.@�   `5��A�(  �(  ���@�   `6@�   `:�����style�fontFamily�devanagariA*  *  ���@�   `>@�   `Y��A�,  �,  ���@�   `?@�   `F��A�,  �,  ���@�   `G@�   `K�������A�-  �-  ���@�   `>@�   `Y��A�0  �0  ���@�   `?@�   `F��A 1  1  ���@�   `G@�   `K�������A2  32  ���@�   `>@�   `Y��A�6  �6  ~���~����@�   `&@�   `-��A�6  �6  ���@�   `.@�   `2��A�7  �7  y���y����@  `4@  `;��A#8  *8  v���v����@  `8@  `?�FaAngleRight�A+8  78  |���|����@  `@@  `L��A�>  �>  o���o����@   `@   `!��Aa?  h?  l���l����@"  `n@"  `u��AC@  J@  i���i����@%  `~A%  �   ��A�@  �@  f���f����@'  `4@'  `;��A�E  �E  c���c����@7  `1@7  `8��A�E  �E  o���o����@7  `9@7  `=��A�F  �F  ^���^����@9  `8@9  `?��A�G  �G  [���[����@<  `6@<  `=�convertToHindi�A�H  �H  
-i���i����@>  `6@>  `D��A�J  �J  T���T����@D  `6@D  `=��AhP  oP  Q���Q����@X  `~AX  �   ��AQ  Q  N���N����@Z  `4@Z  `;��A�V  �V  K���K����@n  `o@n  `v��AgW  nW  H���H����@q  `~Aq  �   ��AX  X  E���E����@s  `4@s  `;��A�\  �\  B���B����@�  `1@�  `8��A
-^  ^  ?���?����@�  `2@�  `9��A_  *_  
-N���N����@�  `2@�  `@}���~���Aa  a  9���9����@�  `m@�  `t�����ShabdaChhedaCardInLineAa  *a  `M���M����@�  `uA�  �   v���w���Ade  ke  2���2����@�  `~A�  �   s���t���Af  f  /���/����@�  `4@�  `;p���q���A;k  Bk  ,���,����@�  `)@�  `0�����LottieAnimationACk  Rk  `<���<����@�  `1@�  `@A���@���A{n  �n  1���1����@�  @�  `	���
-����@�   @�  `% �sources�runtimeRequirements�dataS����javascript�webpack/lib/util/registerExternalSerializer�webpack-sources/CachedSource   �  �webpack/lib/util/registerExternalSerializer�webpack-sources/ConcatSource��webpack/lib/util/registerExternalSerializer�webpack-sources/RawSource�  __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ "./node_modules/react/jsx-dev-runtime.js");
-/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var next_font_google_target_css_path_src_pages_harililakalpataru_harililakalpataru_name_js_import_Noto_Serif_Devanagari_arguments_subsets_devanagari_variableName_devanagari___WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! next/font/google/target.css?{"path":"src\\pages\\harililakalpataru\\[...harililakalpataru_name].js","import":"Noto_Serif_Devanagari","arguments":[{"subsets":["devanagari"]}],"variableName":"devanagari"} */ "./node_modules/next/font/google/target.css?{\"path\":\"src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_name].js\",\"import\":\"Noto_Serif_Devanagari\",\"arguments\":[{\"subsets\":[\"devanagari\"]}],\"variableName\":\"devanagari\"}");
-/* harmony import */ var next_font_google_target_css_path_src_pages_harililakalpataru_harililakalpataru_name_js_import_Noto_Serif_Devanagari_arguments_subsets_devanagari_variableName_devanagari___WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(next_font_google_target_css_path_src_pages_harililakalpataru_harililakalpataru_name_js_import_Noto_Serif_Devanagari_arguments_subsets_devanagari_variableName_devanagari___WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.esm.js");
-/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/router */ "./node_modules/next/router.js");
-/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! next/link */ "./node_modules/next/link.js");
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var _utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/utils/ashtadhyayi/Function */ "./src/utils/ashtadhyayi/Function.js");
-/* harmony import */ var _components_LottieAnimation___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/LottieAnimation  */ "./src/components/LottieAnimation .js");
-/* harmony import */ var _components_Card_TitleCard__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/Card/TitleCard */ "./src/components/Card/TitleCard.js");
-/* harmony import */ var _components_Card_ShabdaChhedaCardInLine__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/Card/ShabdaChhedaCardInLine */ "./src/components/Card/ShabdaChhedaCardInLine.js");
-�webpack/lib/util/registerExternalSerializer�webpack-sources/ReplaceSource�webpack/lib/util/registerExternalSerializer�webpack-sources/SourceMapSource0}  import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
-var _s = $RefreshSig$();
-import gujarati from 'next/font/google/target.css?{"path":"src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_name].js","import":"Noto_Serif_Gujarati","arguments":[{"subsets":["gujarati"]}],"variableName":"gujarati"}';
-import devanagari from 'next/font/google/target.css?{"path":"src\\\\pages\\\\harililakalpataru\\\\[...harililakalpataru_name].js","import":"Noto_Serif_Devanagari","arguments":[{"subsets":["devanagari"]}],"variableName":"devanagari"}';
-import React, { useEffect, useState } from "react";
-import { useDebounce } from "use-debounce";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import axios from "axios";
-import { convertToHindi } from "@/utils/ashtadhyayi/Function";
-import LottieAnimation from "@/components/LottieAnimation ";
-import TitleCard from "@/components/Card/TitleCard";
-import ShabdaChhedaCardInLine from "@/components/Card/ShabdaChhedaCardInLine";
-const HarililakalpataruName = (param)=>{
-    let { harililakalpataru_name  } = param;
-    _s();
-    const router = useRouter();
-    const [currentSkanda, setCurrentSkanda] = useState({});
-    const [currentAdhyayList, setCurrentAdhyayList] = useState([]);
-    const [currentVersesList, setCurrentVersesList] = useState([]);
-    const [currentAdhyay, setCurrentAdhyay] = useState([]);
-    const [harililakalpataruSkanda, setHarililakalpataruSkanda] = useState([]);
-    const getAllSkanda = async ()=>{
-        try {
-            var _response_data;
-            const response = await axios.get("/api/harililakalpataru/skanda");
-            setHarililakalpataruSkanda(response === null || response === void 0 ? void 0 : (_response_data = response.data) === null || _response_data === void 0 ? void 0 : _response_data.data);
-        } catch (error) {
-            console.error("Error geting data:", error);
+    ],
+    "SKD": [
+        {
+            "word": "क्षेत्रम्",
+            "eid": "9758",
+            "pagenum": "2-250-a",
+            "content": "क्षेत्रं¦, क्ली, (क्षि + ष्ट्रन् ।) भूमिः । क्षेत इति भाषा ॥ तत्पर्य्यायः । वप्रम् । २ केदारः ३ । इत्यमरः । २ । ९ । ११ ॥ वलजम् ४ निष्कुटः ५ राजिका ६ पाटीरः ७ । इति जटाधरः ॥ * ॥ तत्समूहवाचकानि यथा, “कैदारकन्तु कैदार्य्यं क्षेत्रं कैदारकं तथा । वारटञ्चेति पर्य्यायः क्षेत्रबृन्दे निगद्यते” ॥ इति शब्दरत्नावली ॥ * ॥ तद्भेदा यथा, “व्रीहिभवोचितं क्षेत्रं व्रैहेयं तत् समीरितम् । शाल्यद्भवोचितं यत्तु शालेयमभिधीयते ॥ यव्यं यवोचितं क्षेत्रं यवक्यं यवकोचितम् । षष्टिकोद्भवनं यत्तु षष्टिक्यं तत् प्रकीर्त्तितम् ॥ तिलोद्भवोचितं यत्तु तिल्यं तैलीनमित्यपि । एवं माष्यन्तु माषीणं कौद्रव्यं कौद्रवीणवत् ॥ तथा भङ्ग्यञ्च भाङ्गीनमुम्यमौमीनमित्यपि । अथ मौद्ग्यञ्च मौद्गीनमणव्यमाणवीनवत् ॥ माषकोद्रवभङ्गोमामुद्गाणुप्रभवोचितम् । बीजाकृतमुप्तकृष्टमुत नीतिसमाह्वये ॥ सीत्यं कृष्टञ्च हल्यञ्च तृतीयाकृतमित्यपि । त्रिगुणाकृतमित्येवं त्रिवारकृष्णभूमिषु ॥ शम्वाकृतं द्विहल्यञ्च द्विसीत्यं द्विगुणाकृतम् । द्वितीयाकृतमप्यत्र द्विवारकृष्टभूमिषु ॥ द्रोणाढकखार्य्यादेर्व्वापादौ द्रौणिकस्तथा । स्यादाढकिकखारोकौ उत्तमर्णादयस्त्रिषु । आदिभ्यां प्रास्थिकादिश्च पाकादौ द्रौणिकोऽपि च” ॥ इति च शब्दरत्नाषली ॥ परक्षेत्रे गोचारणकथननिषेधो यथा, “न कुर्य्यात् सख्यवैराणि विवादं न च पैशुनम् । परक्षेत्रे गां चरन्तीं न चाचक्षीत कस्यचित्” ॥ इति कूर्म्मपुराणे उपविभागे १५ अध्यायः ॥ * ॥ अपि च । मनुः । “आत्मनो यदि वान्येषां गृहे क्षेत्रऽथवा खले । भक्षयन्तीं न कथयेत् पिबन्तञ्चैव वत्सकम्” ॥ इति प्रायश्चित्ततत्त्वम् ॥ * ॥ तत्रस्थजलगुणाः । “कैदारं मघुरं प्रोक्तं विपाके गुरु दोषलम्” ॥ इति राजवल्लभः ॥ * ॥ अथ सिद्धक्षेत्राणि । तत्र वाराणसीक्षेत्रं यथा, “आसन्नं युवयोः क्षेत्रमिदं वाराणसी तु यत् । कथितं नातिदूरे च वर्त्तते नरसत्तमौ” ॥ * ॥ कामरूपक्षेत्रं यथा, “नाचिरात् कामदं पुण्यं क्षेत्रं पीठं निगद्यते । चिरात्तु कामदो देवो न चिराद्यत्र ज्ञानदः ॥ तत् क्षेत्रमिति लोके यद्गद्यते पूर्व्वसूरिभिः । कामरूपं भहापीठं गुह्याद्गुह्यतमं परम्” ॥ इति च कालिकापुराण ५० अध्यायः ॥ * ॥ गङ्गाक्षेत्रं यथा, स्कान्दे । “तीराद्गव्यूतिमात्रन्तु परितः क्षेत्रमुच्यते” ॥ नारायणक्षेत्रं यथा, “प्रवाहमवधिं कृत्वा यावद्धस्तचतुष्टयम् । तत्र नारायणः स्वामी गङ्गागर्भान्तरे वरे ॥ तत्र नारायणक्षेत्रे कुरुक्षेत्रे हरेः पदे । एतेष्वन्येषु यो दानं प्रतिगृह्णाति कामतः । स च तीर्थप्रतिग्राही कुम्भीपाकं प्रयाति च” ॥ इति ब्रह्मवैवर्त्ते प्रकृतिखण्डे २७ अध्यायः ॥ * ॥ भास्करक्षेत्रं यथा, स्मृतिसमुच्चयलिखितवचने । “गङ्गायां भास्करक्षेत्रे मातापित्रोर्म्मते गुरौ । आधाने सोमपाने च वपनं सप्तसु स्मृतम्” ॥ भास्करक्षेत्रं प्रयागः । इति प्रायश्चित्ततत्त्वम् ॥ * ॥ गयाक्षेत्रं यथा, “पञ्चक्रोशं गयाक्षेत्रं क्रोशमेकं गयाशिरः” ॥ इति वायुपुराणम् ॥ * ॥ पुरुषोत्तमक्षेत्रं यथा, मुनय ऊचुः । “पुरुषोत्तमाख्यं सुमहत् क्षेत्रं परमपावनम्” ॥ इत्यादि । जैमिनिरुवाच । “एतत् क्षेत्रवरञ्चास्य वपुर्भूतं महात्मनः । स्वयं वपुष्मान् यत्रास्ते स्वनाम्ना ख्यापितं हि तत् इत्युत्कलखण्डम् ॥ * ॥ विष्णुक्षेत्राणि यथा, श्रीभगवानुवाच । “शृणुष्वावहितो ब्रह्मन् ! गुह्यनामानि मेऽधुना क्षेत्राणि चैव गुह्यानि तव वक्ष्यामि यत्नतः ॥ कोकामुखे वराहञ्च मन्दरे मधुसूदनम् । अनन्तं कपिलद्वीपे प्रभासे रविनन्दनम् ॥ माल्योदये तु वैकुण्ठं महेन्द्रे तु नृपान्तकम् । ऋषभे तु महाविष्णुं द्वारकायान्तु भूपतिम् ॥ पाण्डिसह्ये तु देवेशं वसुकुण्डे जगत्पतिम् । वन्दीवने महायोगं चित्रकूटे नराधिपम् ॥ नैमिशे पीतवासञ्च गवां निष्क्रमणे हरिम् । शालग्रामे तपोवासमचिन्त्यं गन्धमादने ॥ कुव्जाम्रके हृषीकेशं गङ्गाद्वारे गदाधरम् । गरुडध्वजं तोषके च गोविन्दं नागसाह्वये ॥ बृन्दावने तु गोपालं मथुरायां स्वयम्भुवम् । केदारे माधवं विद्यात् वाराणस्यान्तु केशवम् ॥ पुष्करे पुष्कराक्षन्तु दृषद्वत्यां जयध्वजम् । तृणबिन्दुवने वीरमशोकं सिन्धुसागरे ॥ केशे वटे महाबाहुममृतं तेजसो वने । विशाखसूर्य्ये विश्वेशं नारसिंहं वने वने ॥ लोहाकुले रिपुहरं देवशाले त्रिविक्रमम् । पुरुषोत्तमं दशपुरे कुब्जके वामनं विदुः ॥ विद्याधरं तिस्तायां वारणे धरणीधरम् । देवदारुवने गुह्यं कावेर्य्यां नागशायिनम् ॥ प्रयागे योगमूर्त्तिञ्च पयोष्ण्यां सुन्दरं विदुः । कुमारतीर्थे कौमारं लौहित्ये हयशीरषम् । उज्जयन्यां त्रिविक्रमं लिङ्गस्फोटे चतुर्भुजम् । हरिहरं तुङ्गभद्रायां दृष्ट्वा पापात् प्रमुच्यते ॥ विश्वरूपं कुरुक्षेत्रे मणिकुण्डे हलायुधम् । लोकतीरमयोध्यायां कुण्डिने रुक्मिणीपतिम् ॥ भञ्जीरे वासुदेवञ्च चक्रतीर्थे सुदर्शनम् । आद्यं विष्णुपदे विद्यात् शूकरे शूकरं विदुः ॥ कुशेशं मानसे तीर्थे दण्डके श्यामलं विदुः । त्रिकूटे नागमोक्षञ्च मेरुपृष्ठे च भास्करम् ॥ विरजं पुष्पमत्यायां बालञ्चामीकरे विदुः । यशस्करं विपाशायां माहिष्मत्यां हुताशनम् ॥ क्षीराब्धौ पद्मनाभञ्च विमले तु सनातनम् । शिवनद्यां शिवकरं गयायाञ्च गदाधरम् ॥ सर्व्वत्र परमात्मानं यः पश्यति स मुच्यते ॥ अष्टषष्टिस्तु नामानि कीर्त्तितानि मया तव । क्षेत्राणि चैव गुह्यानि कथितानि विशेषतः ॥ द्रष्टव्यानि यथाशक्त्या क्षेत्राण्येतानि मानवैः । वैष्णवैस्तु विशेषेण तेषां मुक्तिं ददाम्यहम्” ॥ इति नारसिंहे ६२ अध्यांयः ॥ * ॥ मेषादिद्वादशराशिः । यथा, “राशिनामानि च क्षेत्रं भमृक्षं गृहनाम च । मेषादीनाञ्च पर्य्यायं लोकादेव विचिन्तयेत्” ॥ * ॥ ग्रहाणां क्षेत्राणि यथा, “कुजशुक्रबुधेन्द्वर्कसौम्यशुक्रावनीभुवाम् । जीवार्किभानुजेज्यानां क्षेत्राणि स्युरजादयः” ॥ इति ज्योतिस्तत्त्वम् ॥ * ॥ अपि च । “मेषमङ्गारकक्षत्रं वृषं शुक्रस्य कीर्त्तितम् । मिथुनस्य बुधो ज्ञेयः सोमः कर्क्कटकस्य तु ॥ सूर्य्यक्षेत्रं भवेत् सिंहः कन्या क्षत्रं बुधस्य च । धनुः सुरगुरोश्चैव शनेर्मकरकुम्भकौ ॥ मीनः सुरगुरोश्चैव ग्रहक्षेत्रं प्रकीर्त्तितम्” ॥ इति गारुडे ६० अध्यायः ॥ * ॥ शरीरम् । (यथा, भगवद्गीतायाम् । १३ । १ । “इदं शरीरं कौन्तेय ! क्षेत्रमित्यभिधीयते” ॥ कुतः शरीरस्य क्षेत्रत्वमित्यत्र शाङ्करभाष्यम् । यथा, -- “इदमिति सर्व्वनाम्नोक्तं विशिनष्ठि शरीरमिति । हे कौन्तेय ! क्षतत्राणात् क्षयात् क्षरणात् क्षेत्रवद्वास्मिन् कर्म्मफलनिर्वृतेः क्षेत्रमितीतिशब्दः एवं शब्दपदार्थकः क्षेत्रमित्येवमभिधीयते कथ्यते” ॥ इच्छा । द्वेषः । सुखम् । दुःखम् । चेतना । धृतिः । यथा, भगवद्गीतायाम् । १३ । ६ । “इच्छा द्वेषः सुखं दुःखं सङ्घातश्चेतना धृतिः । एतत् क्षेत्रं समासेन सविकारमुदाहृतम्” ॥ इत्यत्र शाङ्करभाष्यं यथा, -- “अथेदानीं आत्मगुणा इति यानाचक्षते वैशेषिकास्तेऽपि क्षेत्रधर्म्मा एव न तु क्षेत्रज्ञस्येत्याह भगवान् इच्छा द्वेष इति । इच्छा यज्जातीयं सुखहेतुमर्थमुपलब्धवान् पूब्ब पुनस्तज्जातीयमुपलभ्यमानस्तमादातुमिच्छति सुखहेतुरिति सेयमिच्छान्तःकरणधर्म्मो ज्ञेयत्वात् क्षेत्रं तथा द्वेषो यज्जातीयमर्थं दुःखहेतुत्वेनानुभूतवान्ं पूर्व्वं पुनस्तज्जातीयमुपलभ्यमानस्तं द्वेष्टि सोऽयं द्वेषो ज्ञेयत्वात् क्षेत्रमेव तथा सुखमनुकूलं प्रसन्नं सत्त्वात्मकं ज्ञेयत्वात् क्षेत्रमेव दुःखं प्रतिकूलात्मकं ज्ञेयत्वात् तदपि क्षेत्रं संघातो देहेन्द्रियाणां संहतिस्तस्यामभिव्यक्तान्तःकरणवृतिः तप्त इव लौहपिण्डेऽग्निरात्मचैतन्याभासरसविद्धा चेतना सा च क्षेत्रं ज्ञेयत्वात् धृतिर्ययावसादं प्राप्तानि देहेन्द्रियाणि ध्रियन्ते सा च ज्ञेयत्वात् क्षेत्रं सर्व्वान्तःकरणधर्म्मोपलक्षणार्थमिच्छादिग्रहणं यत उक्तं तदुपसंहरति एतत् क्षेत्रं समासेन सविकारं सह विकारेण महदादिनोदाहृतमुक्तं यस्य क्षेत्रभेदजातस्य संहतिरिदं शरीरं क्षेत्रं इत्युक्तं तत् क्षेत्रं व्याख्यातं महाभूतादिभेदादभिन्नं धृत्यन्तम्” ॥ इत्यत्र श्रीधरस्वामिनापि यदुक्तं तदुच्यते । “एते चेच्छादयो दृश्यत्वान्नात्मधर्म्मा अपि तु मनोधर्म्मा अतः क्षेत्रान्तःपातिन एवोपलक्षणञ्चैतत् सङ्कल्पादीनाम् । तथा च श्रुतिः । कामः सङ्कल्पो विचिकित्सा श्रद्धा अश्रद्धा धृतिरधृतिर्ह्रीर्धीर्भीरित्येतत् सर्व्वं मन एवेति” ॥ * ॥ सप्तद्वीपा पृथिवी । यथा, भागवते ९ । ६ । ३७ । “यावत् सूर्य्य उदेति स्म यावच्च प्रतितिष्ठति । सर्व्वं तद्यौवनाश्वस्य मान्धातुः क्षेत्रसुच्यते” ॥) सिद्धस्थानम् । (यथा, कथासरित्सागरे । ३ । ७८ । “पाटलिपुत्त्रं क्षेत्रं लक्ष्मीस्वरस्वत्यौ” ।) कलत्रम् । इति मेदिनी ॥ (यथा मनुः । ९ । ३३ । “क्षेत्रभूता स्मृता नारी बीजभूतः स्मृतः पुमान् । क्षेत्रबीजसमायोगात् सम्भवः सर्व्वदेहिनाम्” ॥) गृहम् । नगरम् । इति वैजयन्तीकोषः ॥ * ॥ अथ क्षेत्रव्यवहारो लिख्यते । तत्र भुजकोटिकर्णानामन्यतमे ज्ञातेऽन्यतमयोर्ज्ञानाय करणसूत्रं वृत्तद्वयम् । इष्टाद्वाहोर्यः स्यात्तत्स्पर्द्धिन्यां दिशीतरो बाहुः । त्र्यस्रे चतुरस्रे वा सा कोटिः कीर्त्तिता तज्ज्ञैः ॥ तत्कृत्योर्योगपदं कर्णो दोःकर्णवर्गयोर्व्विवरात् । मूलं कोटिः कोटिश्रुतिकृत्योरन्तरात् पदं बाहुः ॥ उदाहरणम् । कोटिश्चतुष्टयं यत्र दोस्त्रयं तत्र का श्रुतिः । कोटिं दोःकर्णतः कोटिश्रुतिभ्याञ्च भुजं वद ॥ कोटिः ४ । भुजः ३ । भुजवर्गः ९ । कोटिवर्गः १६ । एतयोर्योगात् २५ । मूलं ५ कर्णो जातः ॥ अथ कर्णभुजाभ्यां कोट्यानयनम् । कर्णः ५ । भुजः ३ । अनयोर्वर्गान्तरम् १६ । एतन्मूलं कोटिः ४ ॥ अथ कोटिकर्णाभ्यां भुजानयनम् । कोटिः ४ । कर्णः ५ । अनयोर्वर्गान्तरम् ९ । एतन्मूलं भुजः ३ ॥ प्रकारान्तरेण तज्ज्ञानाय करणसूत्रं सार्द्धवृत्तम् । राश्योरन्तरवर्गेण द्विघ्रे घाते युते तयोः । वर्गयोगो भवेदेवं तयोर्योगान्तराहतिः । वर्गान्तरं भवेदेवं ज्ञेयं सर्व्वत्र धीमता ॥ कोटिश्चतुष्टयमिति पूर्व्वोक्तोदाहरणे । कोटिः ४ । भुजः । ३ अनयोर्घाते १२ । द्विघ्ने २४ । अन्तरवर्गेण १ । युते वर्गयोगः २५ । अस्य मूलं कर्णः ५ ॥ अथ कर्णभुजाभ्यां कोट्यानयनम् । कर्णः ५ । भुजः ३ । अनयोर्योगः ८ । पुनरेतयोरन्त रेणा-(२) हतो वा १६ । वर्गान्तरमस्य मूलं कोटिः ४ ॥ अथ भुजज्ञानम् । कोटिः ४ । कर्णः ५ । एवं जातो भुजः ३ ॥ उदाहरणम् । साङ्घ्रित्रयमितो बाहुर्यत्र कोटिश्च तादृशी । तत्र कर्णप्रमाणं किं गणक ! ब्रूहि मे द्रुतम् ॥ भुजः (१३/४) । कोटिः (१/४) । अनयोर्वर्गयोर्योमः (१६९/८) । अस्य मूलाभावात् करणीगत एवायं कर्णः ॥ अस्यासन्नमूलज्ञानार्थमुपायः । वर्गेण महतेष्टेन हताच्छेदांशयोर्वधात् । पदं गुणपदक्षुण्णच्छिद्भक्तं निकटं भवेत् ॥ इयं कर्णकरणी (१६९/८) । अस्याः छेदांशघातः १३५२ । अयुतघ्नः १३,५२०,००० । अस्यासन्नमूलं ३६७७ । इदं गुणमूलं १०० । गुणितच्छेदेन ८०० । भक्तं लब्धमासन्नपदम् ४ । भागाः (४७७/८००) । अयं कर्णः । एवं सर्व्वत्र ॥ त्र्यस्रजात्ये करणसूत्रं वृत्तद्वयम् । इष्टो भुजोऽस्माद्द्विगुणेष्टनिघ्नादिष्टस्य कृत्यैकवियुक्तयाप्तम् । कोटिः पृथक् सेष्टगुणा भुजोना कर्णो भवेत्त्य्रस्रमिदन्तु जात्यम् ॥ इष्टो भुजस्तत्कृतिरिष्टभक्ता द्विःस्थापितेष्टोनयुतार्द्धिता वा । तौ कोटिकर्णाविति कोटितो वा बाहुश्रुती वाकरणीगते स्तः ॥ उदाहरणम् । भुजे द्वादशके यौ या कोटिकर्णावनेकधा । प्रकाराभ्यां वद क्षिप्र तौ तावकरणीगतौ ॥ इष्टो भुजः १२ । इष्टं २ । अनेन द्विगुणेन ४ । गुणितो भुजः ४८ । इष्टः २ । कृत्या ४ । एकोनया ३ । भक्तो लब्धा कोटिः १६ । इयमिष्टगुणा ३२ । मुजोना १२ । जातः कर्णः २० ॥ त्रिकेणेष्टेन वा । कोटिः ९ । कर्णः १५ । पञ्चकेन वा । कोटिः ५ । कर्णः १३ । इत्यादि ॥ अथ द्वितीयप्रकारेण । इष्टो भुजः १२ । अस्य कृतिः १४४ । इष्टेन २ । भक्तालब्धं ७२ । इष्टेन २ । ऊन ७० । युता ७४ । वर्द्धितौ जातौ कोटिकर्णौ ३५ । ३७ । चतुष्टयेन वा । कोटिः १६ । कर्णः २० । षट्केन वा । कोटिः ९ । कर्णः १५ । अथेष्टकर्णात् कोटिभुजानयने करणसूत्रं वृत्तम् । इष्टेन निघ्नात् द्विगुणाच्च कर्णादिष्टस्य कृत्यैकयुजा यदाप्तः । कोटिर्भवेत् सा पृथगिष्टनिघ्नी तत्कर्णयोरन्तरमत्र बाहुः ॥ उदाहरणम् । पञ्चाशीतिमिते कर्णे या यावकरणीगतौ । स्यातां कोटिमुजौ तौ तौ वद कोविद ! सत्वरम् ॥ कर्णः ८५ । अयं द्विगुणः १७० । द्विकेनेष्टेन हतः ३४० । इष्ट २ । कृत्या ४ । सैकया ५ । भक्ते जाता कोटिः ६८ । इयमिष्टगुणा १३६ । कर्णो ८५ । निता जातो भुजः ८५ । चतुष्केणेष्टेन वा । कोटिः ४० । भुजः ७५ । पुनः प्रकारान्तरेण तत्करणसूत्रं वृत्तम् । इष्टवर्गेण सैकेन द्विघ्नः कर्णोऽथवा हतः । फलोनः श्रवणः कोटिः फलमिष्टगुणं भुजः ॥ पूर्व्वोदाहरणे । कर्णः ८५ । अत्र द्विकेन इष्टेन जातौ कोटिभुजौ ५१ । ६८ । चतुष्केण वा । कोटिः ७५ । भुजः ४० । अत्र दोःकोट्योर्नामभेद एव केवलं न स्वरूपभेदः ॥ अथेष्टाभ्यां भुजकोटिकर्णानयने करणसूत्रं वृत्तम् । इष्टयोराहतिर्द्विघ्नी कोटिर्वर्गान्तरं भुजः । कृतियोगस्तयोरेवं कर्णश्चाकरणीगतः ॥ उदाहरणम् । यैर्यैस्त्र्यस्रं भवेत् जात्यं कोटिदोःश्रवणैः सखे ! । त्रीनप्यविदितानेतान् क्षिप्रं ब्रूहि विचक्षण ! ॥ अत्रेष्टे २ । १ । आभ्यां कोटिभुजकर्णाः ४ । ३ । ५ । अथवेष्टे २ । ३ । आभ्यां कोटिभुजकर्णाः १२ । ५ । १३ । अथवा २ । ४ । आभ्यां कोटिभुजकर्णाः १६ । १२ । २० । एवमन्यत्रानेकधा । कर्णकोटियुतौ भुजे च ज्ञाते पृथक्करणसूत्रं वृत्तम् । वंशाग्रमूलान्तरभूमिवर्गोवंशोर्द्ध्वतस्तेन पृथक्युतोनौ । वंशौ तदर्द्धे भवतः क्रमेण वंशस्य खण्डे श्रुतिकोटिरूपे ॥ उदाहरणम् । यदि समभुवि वेणुर्द्वित्रिपाणिप्रमाणो गणक ! पवनवेगादेकदेशे सभग्नः । भुवि नृपमितहस्तेष्वङ्गलग्नं तदग्रं कथय कतिषु मूलादेष भग्नः करेषु ॥ वंशाग्रमूलान्तरभूमिः १६ । वंशः ३२ । कोटिकर्णयुतिः ३२ । भुजः १६ । जाते उर्द्ध्वाधःखण्डे २० । १२ । बाहुकर्णयोगे दृष्टे कोट्याञ्च ज्ञातायां पृथक्करणसूत्रं वृत्तम् । स्तम्भस्य वर्गोऽहिविलान्तरेण भक्तः फलं व्यालविलान्तरालात् । शोध्यं तदद्धप्रमितैः करैः स्यात् विलाग्रतो व्यालकलापियोगः ॥ उदाहरणम् । अस्ति स्तम्भतले विलं तदुपरि क्रीडाशिखण्डी स्थितः स्तम्भे हस्तनवोच्छ्रिते त्रिगुणिते स्तम्भप्रमाणान्तरे । दृष्ट्वाहिं विलमाव्रजन्तमपतत् तिर्य्यक् स तस्योपरि क्षिप्रं ब्रूहि तयोर्विलात् कतिमितौ साम्येन गत्योर्युतिः ॥ स्तम्भः ९ अहिविलान्तरम् २७ । जाता विलयुत्योर्मध्यहस्ताः १२ ॥ कोटिकर्णान्तरे भुजे च दृष्टे पृथक्करणसूत्रं वृत्तम् । भुजाद्वर्गितात् कोटिकर्णान्तराप्तं द्विधा कोटिकर्णान्तरेणोनयुक्तम् । तदर्द्धे क्रमात् कोटिकर्णौ भवेतामिदं धीमता वेद्य सर्व्वत्र योज्यम् ॥ सखे ! पद्म तन्मज्जनस्थानमध्यं भुजः कोटिकर्णान्तरं पद्मदृश्यम् । नलः कोटिरेतन्मितं स्याद्यदम्भो वदैवं समानीय पानीयमानम् ॥ उदाहरणम् । चक्रक्रौञ्चाकुलितसलिले क्वापि दृष्टं तडागे तोयादूर्द्ध्वं कमलकलिकाग्रं वितस्तिप्रमाणम् । मन्दं मन्दं चलितमनिलेनाहतं हस्तयुग्मे तस्मिन्मग्नं गणक ! कथय क्षिप्रमम्भःप्रमाणम् ॥ कोटिकर्णान्तरं (१/२) । भुजः २ । लब्धं जलगाम्भीर्य्यं (१५/४) । इयं कोटिः (१५/४) । इयमेव कोटिः कलिकामानयुता जातः कर्णः (१७/४) ॥ कोट्येकदेशेन युते कर्णे भुजे च दृष्टे कोटिकर्णज्ञानाय करणसूत्रं वृत्तम् । द्विनिघ्नतालोच्छ्रितिसंयुतं यत् सरोऽन्तरं तेन विभाजितायाः । तालोच्छ्रितेस्तालसरोऽन्तरघ्न्या उड्डीयमानं खलु लभ्यते तत् ॥ उदाहरणम् । बृक्षाद्धस्तशतोच्छ्रयाच्छतयुगे वापीं कपिः कोऽप्यगादुत्तीर्य्याथ परो द्रुतं श्रुतिपथेनोड्डीय किञ्चिद्द्रुमात् । जातैवं समता तयोर्यदि गतावुड्डीयमानं कियद्विद्वन् ! चेत्सुपरिश्रमोऽस्ति गणिते क्षिप्रं तदाचक्ष्व मे । वृक्षवाप्यन्तरं २०० । वृक्षोच्छ्रायः १०० लब्धमुड्डीयमानं ५० । कोटिः १५० । कर्णः २५० । भुजः २०० ॥ भुजकोट्योर्योगे कर्णे च ज्ञाते पृथक् करणसूत्रं वृत्तम् । कर्णस्य वर्गाद्विगुणाद्विशोध्यो दोःकोटियोगः स्वगुणोऽस्य मूलम् । योगो द्विधा मूलविहीनयुक्तः स्यातां तदर्द्धे भुजकोटिमाने ॥ उदाहरणम् । दशसप्ताधिकः कर्णस्त्त्यधिका विंशतिः सखे ! भुजकोटियुतिर्यत्र तत्र ते मे पृथग्वद ॥ कर्णः १७ । दोः कोटियोगः २३ । जाते भुजकोटी ८ । १५ । उदाहरणम् । दोःकोट्योरन्तरं शैलाः कर्णो यत्र त्रयोदश । भुजकोटी पृथक् तत्र वदाशु गणकोत्तम ! ॥ कर्णः १३ । भुजकोट्यन्तरम् ७ । लब्धे भुजकोटी ५ । १२ ॥ लम्बाववाधाज्ञानाय करणसूत्रं वृत्तम् । अन्योन्यमूलाग्रगसूत्रयोगात् वेण्वोर्वधे योगहृते च लम्बः । वंशौ स्वयोगेन हृतावभीष्टभूघ्नौ च लम्बोभयतः कुखण्डे ॥ उदाहरणम् । पञ्चदशदशकरोच्छ्रायवेण्वोरज्ञातमध्यभूमिकयोः । इतरेतरमूलाग्रगसूत्रयुतेर्लम्बमानमाचक्ष्व ॥ वंशौ १५ । १० । जातो लम्बः ६ । वंशान्तरभूः ५ । अत्र जाते भूखण्डे ३ । २ । अथवा भूः १० । १५ १० खण्डे ६ । ४ । वा भूः १५ । खण्डे ९ । ६ । वा भूः २० । खण्डे १२ । ८ । एवं सर्व्वत्र लम्बः । स एव यद्यत्र भूमितुल्ये भुजे वंशः कोटिस्तदा भूखण्डेन किमिति त्रैराशिकेन सर्व्वत्र प्रतीतिः अथ अक्षेत्रलक्षणे सूत्रम् । धृष्टोद्दिष्टमृजुभुजं क्षेत्रं यत्रैकबाहुतः स्वल्पा । तदितरभुजयुतिरथवा तुल्या ज्ञेयं तदक्षेत्रम् ॥ उदाहरणम् । चतुरस्रे त्रिषड्द्व्यर्का भुजास्त्र्यस्रे त्रिषण्णवाः । उद्दिष्टा यत्र धृष्टेन तदक्षेत्रं विनिर्दिशेत् ॥ एते अनुपपन्ने क्षेत्रे । <P>भुजप्रमाणा ऋजुशलाकाः भुजस्थानेषु विन्यस्यानुपपत्तिर्द्दर्शनीया ॥ <P>आबाधादिज्ञानाय करणसूत्रमार्य्याद्वयम् । त्रिभुजे भुजयोर्योगस्तदन्तरगुणो भुवा हतो लब्ध्या । द्विःस्था भूरूनयुता दलिताबाधे तयोः स्याताम् ॥ स्वाबाधा भुजकृत्योरन्तरमूलं प्रजायते लम्बः । लम्बगुणं भूम्यर्द्धं स्पष्टं त्रिभुजे फलं भवति ॥ उदाहरणम् । क्षेत्रे महीमनुमिता त्रिभुजे भुजौ तु यत्र त्रयोदशतिथिप्रमितौ च यस्य । तत्रावलम्बकमथो कथयावबाधे क्षिप्रं तथा च समकोष्ठमितिं फलाख्याम् ॥ भूः १४ । भुजौ १३ । १५ । लब्धे आबाधे ५ । ९ । लम्बश्च १२ । क्षेत्रफलञ्च ८४ ॥ ऋणाबाधोदाहरणम् । दशसप्तदशप्रमौ भुजौ त्रिभुजे यत्र नवप्रमा मही । अवधे वद लम्बकं तथा गणितं गाणितिकाशु तत्र मे ॥ भुजौ १० । १७ । भूमिः ९ । अत्रत्रिमुजेभुजयोर्योग इत्यादिना लब्धम् २१ । अनेन भूरूना न स्यात् । अस्मादेव भूरपनीता । शेषार्द्धमृणगता बाधा दिग्वैपरीत्येनेत्यर्थः । तथा जाते आबाधे ६ । १५ । अत उभयत्रापि जातो लम्बः ८ । फलम् ३६ ॥ चतुर्भुजत्रिभुजयोरस्पष्टस्पष्टफलानयने करणसूत्रं वृत्तम् । सर्व्वदोर्युतिदलं चतुःस्थितं बाहुभिर्विरहितञ्च तद्वधात् । मूलमस्फुटफलं चतुर्भुजे स्पष्टमेव मुदितं त्रिबाहुके ॥ उदाहरणम् । भूमिश्चतुर्दशमिता मुखमङ्कसङ्ख्यं बाहू त्रयोदशदिवाकरसम्मितौ च । लम्बोऽपि यत्र रविसंज्ञक एव तत्र क्षेत्रे फलं कथय तत् कथितं यदाद्यैः ॥ भूमिः १४ । मुखम् ९ । बाहू १३ । १२ । लम्बः १२ । १३ १२ उक्तवत् करणेन जातं क्षेत्रफलं करणी २९८० । अस्याः पदं किञ्चिन्नूनमेकचत्वारिंशच्छतम् १४१ । इदमत्र क्षेत्रे न वास्तवं फलं किन्तु लम्बेन निघ्नं कुमुखैक्यखण्डमिति वक्ष्यमाणकरणेन वास्तवं फलं १३८ । अत्र त्रिभुजस्य पूर्व्वोदाहृतस्य । भूमिः १४ । भुजौ १३ । १५ । अनेनापि प्रकारेण त्रिबाहुके तदेव वास्तवं फलं ८४ । अत्र चतुर्भुजस्यास्पष्टमुदितम् ॥ अथ स्थूलत्वनिरूपणार्थं सूत्रं सार्द्धवृत्तम् । चतुर्भुजस्यानियतौ हि कर्णौ कथं ततोऽस्मिन्नियतं फलं स्यात् । प्रसाधितौ तच्छ्रवणौ यदाद्यैः स्वकल्पितौ तावितरत्र न स्तः ॥ तेष्वेव बाहुष्वपरौ च कर्णावनेकधा क्षेत्रफलं ततश्च ॥ <P>चतुर्भुजे हि एकान्तरकोणावाक्रम्यान्तः प्रवेश्यमानौ तत्संसक्तं स्वकर्णं सङ्कोचयतः । इतरौ तु वहिः प्रसरन्तौ स्वकर्णं वर्द्धयतः अत उक्तं तेष्वेव बाहुष्वपरौ च कर्णाविति । लम्बयोः कर्णयोर्व्वैकमनिर्द्दिश्यापरः कथम् । पृच्छत्यनियतत्वेऽपि नियतञ्चापि तत्फलम् ॥ स पृच्छकः पिशाचो वा वक्ता वा नितरां ततः । यो न वेत्ति चतुर्ब्बाहुक्षेत्रस्यानियतां स्थितिम् ॥ समचतुर्भुजायतयोः फलानयने करणसूत्रं सार्द्धश्लोकद्वयम् । इष्टा श्रुतिस्तुल्यचतुर्भुजस्य कल्प्या च तद्वर्गविवर्जिता या । चतुर्गुणा बाहुकृतिस्तदीयं मूलं द्वितीयश्रवणप्रमाणम् ॥ अतुल्यकर्णाभिहतिर्द्विभक्ता फलं स्फुटं तुल्यचतुर्भुजे स्यात् । समश्रुतौ तुल्यचतुर्भुजे च तथायते तद्भुजकोटिघातः ॥ चतुर्भुजेऽन्यत्र समानलम्बे लम्बेन निघ्नं कुमुखैक्यखण्डम् ॥ अत्रोद्देशकः । क्षेत्रस्य पञ्चकृतितुल्यचतुर्भुजस्य कर्णौ ततश्च गणितं गणक ! प्रचक्ष्व । तुल्यश्रुतेश्च खलु तस्य तथायतस्य यद्विस्तृती रसमिताष्टमितञ्च दैर्घ्यम् ॥ प्रथमोदाहरणे । <P>भुजाः २५ । २५ । २५ । २५ । अत्र त्रिंश न्मितामेकां ३० श्रुतिं प्रकल्प्य यथोक्तकरणेन जातान्या श्रुतिः ४० फलञ्च ६०० ॥ चतुर्द्दशमितामेकां १४ । श्रुतिं प्र ल्प्योक्तवत् करणेन जाता अन्या श्रुतिः ८४ । फलञ्च ३३६ ॥ <P>तत्कृत्योर्योगपदं कण इति जाता करणीगता श्रुतिरुभयत्र तुल्यैव १, २५० । गणितञ्च ६२५ । अथायतस्य । विस्तृतिः ६ । दैर्घ्यम् ८ । अस्य गणितम् ४८ । उदाहरणम् । क्षेत्रस्य यस्य वदनं मदनारितुल्यं विश्वम्भरा द्विगुणितेन मुखेन तुल्या । बाहू त्रयोदशनखप्रमितौ च लम्बः सूर्य्योन्मितश्च गणितं वद तत्र किं स्यात् ॥ <P>ददनम् ११ । विश्वम्भरा २२ । बाहू १३ । २० लम्बः १२ । <P>अत्र सर्व्वदोर्युतिदलमित्यादिना स्थूलफलं २५० । वास्तवन्तु लम्बेन निघ्नं कुमुखैक्यखण्डमिति जातं फलम् १९८ । क्षेत्रस्य खण्डत्रयं कृत्वा फलानि पृथगानीय ऐक्यं कृत्वास्य फलोपपत्तिर्दर्शनीया खण्डत्रयदर्शनम् । <P>प्रथमस्य भुजकोटिकर्णाः ५ । १२ । १३ । द्वितीयस्यायतस्य विस्तृतिः ६ । दैर्घ्यम् १२ । तृतीयस्य भुजकोटिकर्णाः १६ । १२ । २० । <P>अत्र त्रिभुजयोः क्षेत्रयोर्भुजकोटिघातार्द्धं फलं आयते चतुरस्रे क्षे त्रे तद्भुजकोटिघातः फलं यथा । प्रथमक्षेत्रे फलम् ३० । द्वितीये ७२ । तृतीये ९६ । एषामैक्यं सर्व्वक्षे त्रफलम् १९८ । अथान्यदुदाहरणम् । पञ्चाशदेकसहिता वदनं यदीयं भूः पञ्चसप्ततिमिता प्रमितोऽष्टषष्ट्या । सव्यो भुजो द्विगुणविंशतिसन्मितोऽन्यस्तस्मिन् फलं श्रवणलम्बमिती प्रचक्ष्व ॥ वदनम् ५१ । भूमिः ७५ । भुजौ ६८ । ४० । अत्र फलावलम्बश्रुतीनां सूत्रं वृत्तार्द्धम् । ज्ञातेऽवलम्बे श्रवणः श्रुतौ तु लम्बः फलं स्यान्नियतन्तु तत्र । कर्णस्यानियतत्वात् लम्बोऽप्यनियत इत्यर्थः ॥ लम्बज्ञानाय करणसूत्रं वृत्तार्द्धम् । चतुर्भुजान्तस्त्रिभुजेऽवलम्बः प्राग्वत् भुजौ कर्णभुजौ मही भूः ॥ <P>अत्र लम्बज्ञानार्थं सव्यभुजाग्राद्दक्षिणभुजमूलगामी इष्टः कर्णः सप्तसप्ततिमितः ७७ कल्पितस्तेन चतुर्भुजान्तस्त्रिभुजं कल्पितं तत्रासौ कर्ण एको भुजः ७७ । द्वितीयस्तु सव्यभुजः ६८ । भूः सैव ७५ । अत्र प्राग्वल्लब्धो लम्बः (३०८/५) । लम्बे ज्ञाते कर्णज्ञानार्थं सूत्रं वृत्तम् । यल्लम्बलम्बाश्रितबाहुवर्गविश्लेषमूलं कथिताबधा सा । तदूनभूवर्गसमन्वितस्य यल्लम्बवर्गस्य पदं स कर्णः ॥ <P>अत्र सव्यभुजाग्राल्लम्बः किल कल्पितः (३०८/५) । अतो जाताबाधा (१४४/५) । तदूनभूवर्गसमन्वितेत्यादिना जातः कर्णः ७७ ॥ द्वितीयकरणज्ञानार्थं सूत्रं वृत्तद्वयम् । इष्टोऽत्र कर्णः प्रथमं प्रकल्प्य स्त्र्यस्रे तु कर्णोभयतः स्थिते ये । कर्णं तयोः क्ष्मामितरौ च बाहू प्रकल्प्य लम्बाववधे च साध्ये ॥ आबाधयोरेकककुप्स्थयोर्यत् स्यादन्तरं तत् कृतिसंयुतस्य । लम्बैक्यवर्गस्य पदं द्वितीयः कर्णो भवेत् सर्व्वचतुर्भुजेषु ॥ <P>तत्र चतुर्भुजे सव्यभुजाग्रात् दक्षिणभुजमूलगामिनः कर्णस्य मानं कल्पितम् ७७ । तत्कर्णरेखावच्छिन्नस्य क्षेत्रस्य मध्ये कर्णरेखोभयतो ये त्र्यस्रे उत्पन्ने तयोः कर्णः भूमी तदितरौ च भुजौ प्रकल्प्य प्राग्वल्लम्बः आबाधा च साधिता तद्दर्शनं लम्बः ६० । द्वितीयलम्बः २४ । आबाधयो ४५ । ३२ । रेकककुप्स्थयोरन्तरस्य १३ । कृते १६९ लम्बैक्य ८४ । कृतेश्च ७०५६ । योगः ७२२५ । तस्य पदं द्वितीयकर्णप्रमाणम् ७५ । अत्रेष्टकर्णकल्पने विशेषोक्तिसूत्रं सार्द्धवृत्तम् । कर्णाश्रितं स्वल्पभुजैक्यमुर्व्वीं प्रकल्प्य तच्छेषमितौ च बाहू । साध्योऽवलम्बोऽथ तथान्यकर्णः सोर्व्याः कथञ्चिच्छ्रवणो न दीर्घः ॥ तदन्यलम्बान्न लघुस्तथेदं ज्ञात्वेष्टकर्णः सुधिया प्रकल्प्यः ॥ <P>चतुर्भुजं हि एकान्तरकोणावाक्रम्य सङ्कोच्यमानं त्रिभुजत्वं याति तत्रैककोणे लग्नलघुभुजयोरैक्यं भूमिरितरौ भुजौ प्रकल्प्य साधितं स च लम्बादूनः सङ्कोच्यमानः कर्णः कथञ्चिदपि न म्यात् तदितरौ भुजौ भूमेरधिकौ न स्यातामेवमुभयथापि एतदनुक्तमपि बुद्धिमता ज्ञायते ॥ विषमचतुर्भुजफलानयनाय करणसूत्रं वृत्तार्द्धम् । त्र्यस्रे तु कर्णोभयतः स्थिते ये तयोः फलैक्यं फलमत्र नूनम् ॥ अनन्तरोक्तक्षेत्रान्तस्त्र्यस्रयोः फले । ९२४ । २३१० । अनयोरैक्यम् ३२३४ । तस्य फलम् ॥ समानलम्बस्यावधादिज्ञानाय करणसूत्रं वृत्तद्वयम् । सभानलम्बस्य चतुर्भुजस्य मुखोनभूमिं परिकल्प्य भूमिम् । भुजौ भुजौ त्र्यस्रवदेव साध्ये तस्यावधे लम्बमितिस्ततश्च ॥ अबाधयोना चतुरस्रभूमिस्तल्लम्बवर्गैक्यपदं श्रुतिः स्यात् । समानलम्बे लघुदोः कुयोगान्मुखान्यदोःसंयुतिरल्पिका स्यात् ॥ उदाहरणम् । द्विपञ्चाशन्मितव्येकचत्वारिंशन्मितो भुजौ । मुखन्तु पञ्चविंशत्या तुल्यं षष्ट्या मही किल ॥ अतुल्यलम्बकं क्षेत्रमिदं पूर्व्वैरुदाहृतम् । षट्पञ्चाशत् त्रिषष्टिश्च नियते कर्णयोर्मिती ॥ कर्णौ तत्रापरौ ब्रूहि समलम्बञ्च तच्छ्रुती ॥ अत्र बृहत् कर्णं त्रिषष्टिमितं प्रकल्प्यात्रं ज्ञातः प्राग्वदन्यः कर्णः ५६ ॥ <P>अथ षट्पञ्चाशत्स्थाने द्वात्रिंशन्मितं कर्णं ३२ प्रकल्प्य प्राग्वत् साध्यमाने कर्णे । <P>जातं करणीखण्डद्वयम् ६२१ । २७०० अनयोर्मूलयोः २४(२३/२५) । ५१(२४/२५) । ऐक्यं द्वितीयः कर्णः ७६(२२/२५) । अथ तदेव क्षेत्रञ्चेत् समलम्बम् । <P>तदा मुखोनभूमिं परिकल्प्य भूमिमितिज्ञानार्थं त्र्यस्रङ्कल्पितम् । अत्र क्षेत्रे लम्बांशहारयोः षट्शते पतिते । अत्राबाधे जाते (३/५) (१७२/५) लम्बश्च करणीगतो जातः (३८०१६/२५) आसन्नमूलकरणेन जातः ३८(६२२/६२५) । अयं तत्र चतुर्भुजे समलम्बः लब्धाबाधोनितभूमेः समलम्बस्य च वर्गयोगः ५०४९ । अयं कर्णवर्गः । एवं बृहदावाधातो द्वितीयकर्णवर्गः २१७६ । अनयोरासन्नमूलकरणेन जातौ कर्णौ ७१(१/२०) ४६(१३/२०) एवं चतुरस्रे तेष्वेव बाहुष्वन्यौ कर्णौ बहुधा भवतः एवगनियतत्वेऽपि नियतावेव कर्णावानीतौ ब्रह्मगुप्ताद्यैस्तदानयनं यथा । कर्णाश्रितभुजघातैक्यमभयथान्योन्यभाजितं गणयेत । योगेन भुजप्रतिभुजहत्योः कर्णो पदे विषमे ॥ <P>कर्णाश्रितभुजघातेति एकवारमनयोः २५ । ३९ । घातः ९७५ । तथा ५२ । ६० । अनयोर्घातः ३१२० । घातयोर्द्धयोरैक्यम् ४०९५ । तथा द्वितीयवारम् २५ । ५२ । अनयोर्घाते जातम् १३०० । तथा द्वितीयवारम् ३९ । ६० अनयोर्घाते २३४० । घातयोर्द्वयोरैक्यम् ३६४० । एतदैक्यं भुजप्रतिभुजयोः ५२ । ३९ । घातः २०२८ । पश्चात् २५ । ६० । अनयोर्वधः १५०० । तयोरैक्यम् ३५२८ । अनेनै क्येन ३६४० गुणितं जातं पूर्व्वैक्यं १२,८४१,९२० । प्रथमकर्णाश्रितभुजघातैक्येन ४०९५ । भक्तं लब्धं ३१ ३६ । अस्य मूलं ५६ । एककर्णस्तथा द्वितीयकर्णार्थं प्रथमकर्णाश्रितभुजघातैक्यम् ४० ९५ । भुजप्रतिभुज-३५२८ । वधयोगगुणितं जातं १४,४४७,१६० । अन्यकर्णाश्रितघातैक्येन ३६४० भक्तं लब्धं ३९६९ । अस्य भूलम् ६३ । द्वितीयः कर्णः । अस्मिन् विषमे क्षेत्रे कर्णौ साधनं अस्य कर्णानयनस्य प्रक्रिया गौरवम् ॥ लघुप्रक्रियादर्शनद्वारेणाह । अभीष्टजात्यद्वयबाहुकोटयः परस्परं कर्णहता भुजा इति ॥ चतुर्भुजं यद्विषमं प्रकल्पितं श्रुती तु तत्र त्रिभुजद्वयात्ततः ॥ बाह्वोर्वधः कोटिवधेन युक् स्यादेका श्रुतिः कोटिमुजा वधैक्यम् । अन्या लघौ सत्यपि साधनेऽस्मिन् पूर्व्वैः कृतं यद्बहु तन्न विद्मः ॥ जात्यक्षेत्रद्वयम् । <P>एतयोः इतरेतरकर्णहता भुजाः कोटय इतरेतरकर्णहताः कोटयो भुजा इति कृते जातम् २५ । ६० । ५२ । ३९ । तेषां महती भूर्लघुमुखमितरौ बाहू इति प्रकल्प्य क्षेत्रदर्शनं इमौ कर्णौ महतायासेनानीतौ ६३ । ५६ । अस्यैव जात्यद्वयस्योत्तरोत्तरभुजकोट्योर्घातौ जातौ ३६ । २० । अनयोरैक्यमेकः कर्णः ५६ । बाह्वोः ३ । ५ । कोट्योश्च ४ । १२ । घातौ १५ । ४८ । अनयोरैक्यमन्यः कर्णः ६३ । एवं श्रुती स्यातां एवं सुखेन जाते ॥ <P>अथ यदि पार्श्वभुजयोर्व्यत्ययं कृत्वा न्यस्तं क्षेत्रम् । सूच्यावाधा (१५३६/१७) सूच्यावाधा (३५६४/१७) । <P>भूमानम् ३०० । मुखम् १२५ । बाहू २६० । १९५ । कर्णौ २८० । ३१५ । लम्बौ १८९ । २२४ ॥ अथ सन्ध्याद्यानयनाय करणसूत्रं वृत्तद्वयम् । लम्बतदाश्रितबाह्वोर्म्मध्यं सन्ध्याख्यमस्य लम्बस्य । सन्ध्योना भूः पीठं साध्यं यस्याधरं खण्डम् ॥ सन्धिर्द्विस्थः परलम्बश्रवणहतः परस्य पीठेन । भक्तो लम्बश्रुत्योर्योगात् स्यातामधःखण्डे ॥ <P>लम्बः १८९ । तदाश्रितभुजः १९५ । अनयो र्मध्ये यल्लम्बलम्बाश्रितबाहुवर्गेत्यादिना गता वाधा सन्धिसंज्ञा ४८ । तदूनितभूरिति द्वितीया वाधा सा पीठसंज्ञा २५२ । <P>एवं द्वितीयलम्बः २२४ । तदाश्रितभुजः २६० । पूर्व्ववत् सन्धिः १३२ । पीठम् १६८ । अथाद्यलम्बस्याधः १८९ । खण्डं साध्यम् । <P>अस्य सन्धिः ४८ । द्विस्थः ४८ । परलम्बेन २२४ । श्रवणेन च २८० । पृथग्गुणितः १०७५२ । १३४४० । परस्य पीठेन १६८ । भक्तो लब्धं लम्बाधःखण्डम् ६४ । श्रवणाधःखण्डञ्च ८० । <P>एवं द्वितीयलम्बस्य २२४ । सन्धिः १३२ । परलम्बेन १८९ । कर्णेन च ३१५ । पृथग्गुणितः तदा जात्यद्वयकर्णयोर्व्वधः ६५ । द्वितीयकर्णः ॥ अथ सूचीक्षेत्रोदाहरणम् । <P>क्षेत्रे यत्र शतत्रयं ३०० क्षितिमितिस्तत्वेन्दु १२५ तुल्यं मुखं बाहू खोत्कृतिभिः २६० शरातिधृतिभिः १९५ तुल्यौ च तत्र श्रुती । एका खाष्टयमैः २८० समा तिथिगुणैः ३१५ अन्याथ तल्लम्बकौ तुल्यौ गोधृतिभिः १८९ तथा जिनयमै २२४ र्योगाच्छ्रवो लम्बयोः ॥ तत् खण्डे कथयाधरे श्रवणयोर्योगाच्च लम्बावधे तत्सूची निजमार्गवृद्धभुजयोर्योगाद्यथा स्यात्ततः । सावाधं वद लम्बकञ्च भुजयोः सूच्याः प्रमाणे च के सर्व्वं गाणितिक । प्रचक्ष्व नितरां क्षेत्रेऽत्र दक्षोऽसि चेत् ॥ परस्य पीठेन २५२ । भक्तो लब्धं लम्बाधःखण्डम् । ९९ । श्रवणाधःखण्डञ्च १६५ । अथ कर्णयोर्योगादधोलम्बज्ञानार्थं सूत्रं वृत्तम् । लम्बौ भूघ्नौ निजनिजपीठविभक्तौ च वंशौ स्तः । ताभ्यां प्राग्वत् श्रुत्योर्योगालम्बः कुखण्डे च ॥ <P>लम्बौ १८९ । २२४ । भू ३०० । घ्नौ जातौ ५६७०० । ६७२०० । स्वस्वपीठाभ्यां २५२ । १६८ । भक्तौ एवमत्र लब्धौ वंशौ २२५ । ४०० । आभ्यामन्योन्यमूलाग्रगसूत्रयोगादित्यादिकरणेन लब्धः कर्णयोगादधोलम्बः । १४४ । भूखण्डे च १०८ । १९२ ॥ अथ सूच्यावाधालम्बभुजज्ञानार्थं सूत्रं वृत्तत्रयम् । लम्बहृतो निजसन्धिः परलम्बगुणः समाह्वयो ज्ञेयः । समपरसन्ध्योरैक्यं हारस्तेनोद्धृतौ तौ च ॥ समपरसन्धी भूघ्नौ सूच्यावाधे पृथक् स्याताम् । हारहृतः परलम्बः सूचीलम्बो भवेद्भूघ्नः ॥ सूचीलम्बघ्नभुजौ निजनिजलम्बोद्धृतौ सूच्याः । एवं क्षेत्रक्षोदः प्राज्ञैस्त्रैराशिकात् ज्ञेयः ॥ <P>अत्र किलायं लम्बः २२४ । अस्य सन्धिः १३२ । अयं परलम्बेन १८९ । गुणितो २२४ । अनेन भक्तो जातः समाह्वयः (८९१/८) । अस्य परसन्धेश्च ४८ । योगो हारः (१२७५/८) । अनेन भूघ्नः ३०० । समः (२६७३००/८) । परसन्धिश्च । (१४४००/१) भक्तो जाते सूच्याबाधे (३५६४/१७) । (१५३६/१७) । एवं द्वितीयः समाह्वयः (५१२/९) । द्वितीयो हारः (१७००/९) । अनेन भूघ्नः स्वीयः समः (१५३६००/९) । परसन्धिश्च (३९६००/१) । भक्तो जाते सूच्याबाधे (१५३६/१७) (३५६४/१७) । परलम्बः २२४ । भूमि ३०० । गुणो हारेण (१७००/९) । भक्तो जातः सूचीलम्बः (६०४८/१७) । सूचीलम्बेन भुजौ १९५ । २६० । गुणितौ स्वस्वलम्बाभ्याम् १८९ । २२४ । यथाक्रमं भक्तौ जातौ स्वमार्गवृद्धौ सूचीभुजौ (६२४०/१७) (७०२०/१७) । <P>एवमत्र सर्व्वत्र भागहारराशिं प्रमाणं गुण्यगुणकौ तु यथायोग्यं फलेच्छे प्रकल्प्य सुधिया त्रिराशिकमूह्यम् ॥ <P>अथ वृत्तक्षेत्रे करणसूत्रं वृत्तम् । व्यासे भनन्दाग्नि ३९२७ हते विभक्ते खवाणसूर्य्यैः १२५० परिधिः स सूक्ष्मः । द्वाविंशतिघ्ने विहृतेऽथ शैलैः ७ स्थूलोऽथवा स्याद्व्यवहारयोग्यः ॥ उदाहरणम् । विष्कम्भमानं किल सप्त यत्र तत्र प्रमाणं परिधेः प्रचक्ष्व । द्वाविंशतिर्यत् परिधिप्रमाणं तद्व्याससंख्याञ्च सखे विचिन्त्य ॥ आसमानम् ७ । लब्धं परिधिमानम् २१ (१२३९/१२५०) । स्थूलो वा परिधिर्लब्धः २२ । अथवा परिघितो व्यासानयनाय । गुणहारविपर्य्ययेण व्यासमानं सूक्ष्मम् ७ (११/३९२७) । स्थूलं वा ७ । वृत्तगोलयोः फलानयने करणसूत्रं वृत्तम् । वृत्तक्षेत्रे परिधिगुणितव्यासपादः फलं यत् क्षुण्णं वेदैरुपरि परितः कन्दुकस्येव जालम् । गोलस्यैवं तदपि च फलं पृष्ठजं व्यासनिघ्नं षड् भिर्भक्तं भवति नियतं गोलगर्भे घनाख्यम् ॥ उदाहरणम् । यद्व्यासस्तुरगैर्मितः किल फलं क्षेत्रे समे तत्र किं व्यासः सप्तमितश्च यस्य सुमते गोलस्य तस्यापि किम् । पृष्ठे कन्दुकजालसन्निभफलं गोलस्य तस्यापि किं मध्ये ब्रूहि घनं फलञ्च विमलां चेद्वेत्सि लीलावतीम् ॥ वृत्रक्षेत्रफलदर्शनाय । व्यासः ७ । परिधिः २१ (१२३९/१२५०) । क्षेत्रफलम् ३८ (२४२३/५०००) । गोलपृष्ठफलदर्शनाय । व्यासः ७ । गोलपृष्ठफलम् १५३ (११७३/१२५०) । गोलान्तर्गतधनफलदर्शनाय । व्यासः ७ । गोलस्यान्तर्गतं घनफलम् १७९ (२४८७/२५००) । अथ प्रकारान्तरेण तत्फलानयने करणसूत्रं सार्द्धवृत्तम् । व्यासस्य वर्गे भनवाग्निनिघ्ने सूक्ष्मं फलं पञ्चसहस्रभक्ते । रुद्राहते शक्रहृतेऽथवा स्यात् स्थूलं फलं तद्ब्यवहारयोग्यम् ॥ घनीकृतव्यासदलं निजैकविंशांशयुग्गोलघनं फलं स्यात् ॥ व्यासः ७ । अस्य वर्गे ४९ । भनवाग्निनिघ्ने पञ्चसहस्रभक्ते तदेव सूक्ष्मं फलम् ३८ (२२३४/५०००) । अथवा व्यासस्य वर्गे ४९ । रुद्राहते ५३९ । शक्रहृते लब्धं स्थूलं फलम् ३८ (१/२) । धनीकृतव्यासदलम् (३४३/२) । निजैकतिंशांशयुग्गोलस्य घनफलं स्थूलम् १७९ (२/३) । शरजीवानयनाय करणसूत्रं सार्द्धवृत्तम् । ज्याव्यासयोगान्तरघातमूलं व्यासस्तदूनो दलितः शरः स्यात् ॥ व्यासाच्छरोनाच्छरसंगुणाच्च मूलं द्विनिघ्नं भवतीह जीवा । जीवार्द्धवर्गे शरभक्तयुक्ते व्यासप्रमाणं प्रवदन्ति वृत्ते ॥ उदाहरणम् । दशविस्तृतिवृत्तान्तर्यत्र ज्या षण्मिता सखे ! । तत्रेषुं वद वाणाज्ज्यां ज्यावाणाभ्याञ्च विस्तृतिम् ॥ व्यासः १० । ज्या ६ । योगः १६ । अन्तरम् ४ । षातः ६४ । मूलम् ८ । एतदूनो व्यासः २ । दलितः १ । जातः शरः १ । व्यासात् १० । शरोनात् ९ । शर १ । सङ्गुणात् ९ । मूलम् ३ । द्विनिघ्नं जाता जीवा ६ । एवं ज्ञाताभ्यां ज्यावाणाभ्यां व्यासानयनं यथा जीवा- ६ । र्द्ध ३ । घर्गे ९ । शर १ । भक्ते ९ । शर १ । युक्ते जातो व्यासः १० । अथ वृत्तान्तस्त्र्यस्रादिनवास्रान्तक्षेत्राणां भुजमानानयनाय करणसूत्रं वृत्तत्रयम् । त्रिद्ब्यङ्काग्निनभश्चन्द्रैः १०३९२३ स्त्रिवाणाष्टयुगाष्टभिः ८४८५३ । वेदाग्निवाणखाश्वैश्च ७०५३४ खखाभ्राभ्ररसैः ६०००० क्रमात् ॥ वाणेषुनखवाणैश्च ५२०५५ द्विद्विनन्देषुसागरैः ४५९२२ । कुरामदशवेदैश्च ४१०३१ वृत्तव्यासे समाहते ॥ खखखाम्रार्क्र- १२०००० संभक्ते लभ्यन्ते क्रमशो भुजाः । वृत्तान्तस्त्र्यस्रपूर्व्वेषां नवास्रान्तं पृथक् पृथक् ॥ उदाहरणम् । सहस्रद्बितयव्यासं यद्वृत्तं तस्य मध्यतः । समत्र्यस्रादिकानांमे भुजान् वद पृथक् पृथक् ॥ अथ वृत्तान्तस्त्रिभुजे भुजमानानयनाय । व्यासः २००० । त्रिद्व्यङ्काग्निनभश्चन्द्रैः १०३९२३ । गुणितः २०७८४६००० । खखखाभ्रार्कैः १२०००० । भक्ते लब्धं त्र्यस्रे भुजमानं १७३२ (१/२०) । वृत्तान्तश्चतुर्भुजे भुजमानानयनाय । व्यासः २००० त्रिवाणाष्टयुगाष्टभिः ८४८५३ गुणितः १६९,७०६,००० । खखखाभ्रार्कैः १२०००० । भक्ते लब्धं चतुरस्रे भुजमानं १४१४ (१३/६०) । वृत्तान्तःपञ्चभुजे भुजमानानयनाय । व्यासः २००० । वेदाग्निवाणखाश्वैः ७०५३४ । गुणितः १४१०६८००० खखखाभ्रार्कैः १२०००० । भक्ते लब्धं पञ्चास्रे भुजमानं ११७५ (१७/३०) । वृत्तान्तःषड्भुजे भुजमानानयनाय । व्यासः २००० खखाभ्राभ्ररसैः ६०००० । गुणितः १२०,०००,००० । खखखाभ्रार्कैः १२०००० । भक्ते लब्धं षडसे भुजमानं १००० । वृत्तान्तः सप्तभुजे भुजमानानयनाय । व्यासः २००० वाणेषुनखवाणैः ५२०५५ । गुणितः १०४,११०,००० । खखखाभ्रार्कैः १२०००० । भक्ते लब्धं सप्तास्रे भुजमानं ८६७ (७/१२) । वृत्तान्तरष्टभुजे भुजमानानयनाय । व्यासः २००० । द्बिद्बिनन्देषुसागरैः ४५९२२ । गुणितः ९१,८४४,००० । खखखाभ्रार्कैः १२०००० भक्ते लब्धमष्टास्रे भुजमानं ७६५ (११/३०) । वृत्तान्तर्नवभुजे भुजमानानयनाय । व्यासः २००० । कुरामदशवेदैः ४१०३१ गुणितः ८२,०६२,००० । खखखाभ्रार्कैः १२०००० । भक्ते लब्धं नवास्रे भुजमानं ६८३(१७/२०) । <P>एवमिष्टव्यासादेभ्योऽन्यापि जीवाः सिध्यन्तीति तास्तु गोले ज्योत्पत्तौ वक्ष्ये । अथ स्थूलजीवाज्ञानार्थं लघुक्रियया करणसूत्रं वृत्तम् । चापोननिघ्नपरिधिः प्रथमाह्वयः स्यात् पञ्चाहतः परिधिवर्गचतुर्थभागः । आद्योनितेन खलु तेन भजेच्चतुर्घ्नव्यासाहतं प्रथममाप्तमिह ज्यका स्यात् ॥ उदाहरणम् । अष्टादशांशेन वृतेः समानमेकादिनिघ्नेन च यत्र चापम् । पृथक् पृथक् तत्र वदाशु जीवां खाकर्मितं व्यासदलञ्च यत्र ॥ <P>व्यासः २४० । अत्र किलाङ्कलाघवाय विंशतेः सार्द्धार्कशतांशमिलितः सूक्ष्मपरिधिः ७५४ । अस्याष्टादशांशः ४२ । अत्रापि अङ्कलाघवाय द्बयोरष्टादशांशयुतो गृहीतः अनेन पृथक् पृथगेकादिगुणितेन तुल्ये धनुषि कल्पिते ज्याः साध्याः । <P>अथवात्र सुखार्थं परिधेरष्टादशांशेन परिधिं घनूंषि चापवर्त्त्य ज्याः साध्यास्तथापि ता एव भवन्ति । <P>अपवर्त्तिते न्यासः । परिधिः १८ । चापानि च १ । २ । ३ । ४ । ५ । ६ । ७ । ८ । ९ । यथोक्तकरणेन लब्धा जीवाः ४२ । ८२ । १२० । १५४ । १८४ । २०८ । २२६ । २३६ । २४० । अथ चापानयनाय करणसूत्रं वृत्तम् । व्यासाब्धिघातयुतमौर्व्विकया विभक्तो जीवाङ्घ्रिपञ्चगुणितः परिधेस्तु वर्गः । लब्धोनितात् परिधिवर्गचतुर्थभागादाप्ते पदे वृतिदलात् पतिते धनुः स्यात् ॥ उदाहरणम् । विहिता इह ये गुणास्ततो वद तेषामधुना धनुर्मितिम् । यदि तेऽस्ति धनुर्गुणक्रिया गणिते गाणितिकातिनैपुणम् ॥ <P>न्यासः ४२ । ८२ । १२० । १५४ । १८४ । २०८ । २२६ । २३६ । २४० । स एवापवर्त्तितपरिधिः १८ । जीवाङ्घ्रिणा । (२१/२) पञ्चभिश्च ५ । परिधेः १८ । वर्गो ३२४ गुणितः १७०१० । व्यासा२४० । ब्धि ४ । घात ९६० । युतमौर्विकयानया १००२ भक्तो लब्धः १७ । अत्राङ्कलाघवाय चतुर्विंशतेर्द्ब्यधिकसहस्रांशयुतो गृहीतोऽनेनोनितात् परिधिः १८ । वर्ग ३२४ । चतुर्थभागात् ६४ । पदे प्राप्ते ८ । वृति १८ । दलात् ९ । पतिते १ । जातं धनुः एवं जातानि धनूंषि । १ । २ । ३ । ४ । ५ । ६ । ७ । ८ । ९ । एतानि परिधिष्वष्टादशांशेन गुणितानि स्युः । इति श्रीभास्कराचार्य्यविरचितायां लीलावत्यां क्षेत्रव्यवहारः समाप्तः ॥"
         }
-    };
-    const getCurrentSkanda = async (id)=>{
-        try {
-            const response = await axios.get("/api/harililakalpataru/skanda", {
-                params: {
-                    id: id
-                }
-            });
-            setCurrentSkanda(response.data.data);
-            return;
-        } catch (error) {
-            console.error("Error geting data:", error);
+    ],
+    "APHI": [
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  'खेत, मैदान, भूमि'"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  'भूसंपत्ति, भूमि'"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  'स्थान, आवास, भूखण्ड, गोदाम'"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  'पुण्यस्थान, तीर्थस्थान'"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  बाड़ा"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  उर्वरा भूमि"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  जन्मस्थान"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  पत्नी"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  कायक्षेत्र शरीर"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  मन"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  'घर, नगर'"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  सपाट आकृति जैसे कि त्रिभुज"
+        },
+        {
+            "word": "क्षेत्रम्",
+            "content": "क्षेत्रम् नपुं. -  क्षि + ष्ट्रन्  रेखाचित्र"
         }
-    };
-    const getCurrentAdhyayList = async (id)=>{
-        try {
-            const response = await axios.get("/api/harililakalpataru/adhyay", {
-                params: {
-                    skandaId: id
-                }
-            });
-            setCurrentAdhyayList(response.data.data);
-            return;
-        } catch (error) {
-            console.error("Error geting data:", error);
+    ],
+    "AM_APHI": [
+        {
+            "word": "क्षेत्रम्",
+            "content": "<lexhead no=\"1958\">\n<dentry>क्षेत्रम्</dentry>\n<prAwipaxikam>क्षेत्र</prAwipaxikam>\n<grammar>नपुं*</grammar>\n<etymology>[क्षि+ष्ट्रन् ]</etymology>\n<jAwi>अचलनिर्जीववस्तु</jAwi>\n<kind_of>स्त्री</kind_of>\n<jAwi>मनुष्यः</jAwi>\n<is_a_part>क्षेत्रगणम्</is_a_part>\n<jAwi>पृथ्वी</jAwi>\n<sense no=\"1\">खेत, मैदान, भूमि, चीयते बालिशस्यापि सत्क्षेत्रपतिता कृषिः<citation>मुद्रा*१।३</citation></sense>\n<sense n=\"2\">भूसंपत्ति, भूमि</sense>\n<sense n=\"3\">स्थान, आवास, भूखण्ड, गोदामकपटशतमयं क्षेत्रमप्रत्ययानाम्<citation>पंच* १।१९१</citation><citation>भर्तृ* १।७७</citation><citation>मेघ* १६</citation></sense>\n<sense n=\"4\">पुण्यस्थान, तीर्थस्थानक्षेत्रं क्षत्रप्रधनपिशुनं कौरवं तद्भजेथाः<citation>मेघ* ४६</citation><citation>भग* १।१</citation></sense>\n<sense n=\"5\">बाड़ा</sense>\n<sense n=\"6\">उर्वरा भूमि</sense>\n<sense n=\"7\">जन्मस्थान</sense>\n<sense n=\"8\">पत्नीअपि नाम कुलपतेरियमसवर्णक्षेत्रसंभवा स्यात्<citation>श* १</citation><citation>मनु* ३।१८५</citation></sense>\n<sense n=\"9\">कायक्षेत्र शरीरयोगिनो यं विचिन्वन्ति क्षेत्राभ्यन्तरवर्तिनम्<citation>कु* ६।७७</citation><citation>भग* १३।१</citation>२, ३ आत्मा का कर्म क्षेत्र</sense>\n<sense n=\"10\">मन</sense>\n<sense n=\"11\">घर, नगर</sense>\n<sense n=\"12\">सपाट आकृति जैसे कि त्रिभुज</sense>\n<sense n=\"13\">रेखाचित्र</sense>\n</lexhead>\n\n"
         }
-    };
-    const getCurrentAdhyay = async (skandaId, id)=>{
-        try {
-            const response = await axios.get("/api/harililakalpataru/adhyay", {
-                params: {
-                    skandaId: skandaId,
-                    id: id
-                }
-            });
-            setCurrentAdhyay(response.data.data);
-            return;
-        } catch (error) {
-            console.error("Error geting data:", error);
-        }
-    };
-    const getCurrentVersesList = async (skandaId, adhyayId)=>{
-        try {
-            const response = await axios.get("/api/harililakalpataru/verses", {
-                params: {
-                    skandaId: skandaId,
-                    adhyayId: adhyayId
-                }
-            });
-            setCurrentVersesList(response.data.data);
-            return;
-        } catch (error) {
-            console.error("Error getCurrentVersesList data:", error);
-        }
-    };
-    useEffect(()=>{
-        getAllSkanda();
-        if (harililakalpataru_name.length >= 1) {
-            getCurrentSkanda(harililakalpataru_name[0]);
-            getCurrentAdhyayList(harililakalpataru_name[0]);
-        } else {
-            setCurrentSkanda({});
-            setCurrentAdhyayList([]);
-        }
-        if (harililakalpataru_name.length >= 2) {
-            getCurrentAdhyay(harililakalpataru_name[0], harililakalpataru_name[1]);
-            getCurrentVersesList(harililakalpataru_name[0], harililakalpataru_name[1]);
-        } else {
-            setCurrentAdhyay({});
-            setCurrentVersesList([]);
-        }
-    }, [
-        router.query,
-        harililakalpataru_name
-    ]);
-    // console.log("harililakalpataruSkanda----------", harililakalpataruSkanda);
-    // console.log("currentSkanda----------", currentSkanda);
-    // console.log("currentAdhyayList----------", currentAdhyayList);
-    // console.log("currentAdhyay----------", currentAdhyay);
-    // console.log("currentVersesList----------", currentVersesList);
-    const handlePage = (page)=>{
-        if (harililakalpataru_name.length == 1 && harililakalpataruSkanda) {
-            const currentObject = harililakalpataruSkanda === null || harililakalpataruSkanda === void 0 ? void 0 : harililakalpataruSkanda.find((obj)=>obj.id == harililakalpataru_name[0]);
-            const currentIndexInArray = harililakalpataruSkanda === null || harililakalpataruSkanda === void 0 ? void 0 : harililakalpataruSkanda.indexOf(currentObject);
-            if (page == "NEXT") {
-                const nextObject = harililakalpataruSkanda[currentIndexInArray + 1];
-                return nextObject ? nextObject.id : harililakalpataru_name[harililakalpataru_name.length - 1];
-            }
-            if (page == "PREVIOUS") {
-                const nextObject = harililakalpataruSkanda[currentIndexInArray - 1];
-                return nextObject ? nextObject.id : harililakalpataru_name[harililakalpataru_name.length - 1];
-            }
-        } else if (harililakalpataru_name.length == 2 && currentAdhyayList) {
-            const currentObject = currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.find((obj)=>obj.id == harililakalpataru_name[1]);
-            const currentIndexInArray = currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.indexOf(currentObject);
-            if (page == "NEXT") {
-                const nextObject = currentAdhyayList[currentIndexInArray + 1];
-                return nextObject ? "".concat(harililakalpataru_name[0], "/").concat(nextObject.id) : "".concat(harililakalpataru_name[0], "/").concat(harililakalpataru_name[harililakalpataru_name.length - 1]);
-            }
-            if (page == "PREVIOUS") {
-                const nextObject = currentAdhyayList[currentIndexInArray - 1];
-                return nextObject ? "".concat(harililakalpataru_name[0], "/").concat(nextObject.id) : "".concat(harililakalpataru_name[0], "/").concat(harililakalpataru_name[harililakalpataru_name.length - 1]);
-            }
-        }
-    // else if (
-    //   harililakalpataru_name.length == 3 &&
-    //   currentSangiJeevansDiscription
-    // ) {
-    //   const currentData =
-    //     currentSangiJeevansText &&
-    //     currentSangiJeevansText?.items?.filter((a) => a.id !== -1);
-    //   const currentObject = currentData?.find(
-    //     (obj) => obj.id == harililakalpataru_name[2]
-    //   );
-    //   const currentIndexInArray = currentData?.indexOf(currentObject);
-    //   if (page == "NEXT") {
-    //     const nextObject = currentData[currentIndexInArray + 1];
-    //     return nextObject
-    //       ? `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${nextObject.id}`
-    //       : `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${
-    //           harililakalpataru_name[harililakalpataru_name.length - 1]
-    //         }`;
-    //   }
-    //   if (page == "PREVIOUS") {
-    //     const nextObject = currentData[currentIndexInArray - 1];
-    //     return nextObject
-    //       ? `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${nextObject.id}`
-    //       : `${harililakalpataru_name[0]}/${harililakalpataru_name[1]}/${
-    //           harililakalpataru_name[harililakalpataru_name.length - 1]
-    //         }`;
-    //   }
-    // } else {
-    //   if (page == "NEXT") {
-    //     return `${harililakalpataru_name[0]}/${
-    //       parseInt(harililakalpataru_name[1]) + 1
-    //     }`;
-    //   }
-    //   if (page == "PREVIOUS") {
-    //     return `${harililakalpataru_name[0]}/${
-    //       parseInt(harililakalpataru_name[1]) - 1
-    //     }`;
-    //   }
-    // }
-    };
-    return /*#__PURE__*/ _jsxDEV("div", {
-        children: [
-            /*#__PURE__*/ _jsxDEV(TitleCard, {
-                backGroundImage: true,
-                children: /*#__PURE__*/ _jsxDEV("span", {
-                    className: "flex items-center justify-between",
-                    children: [
-                        /*#__PURE__*/ _jsxDEV(Link, {
-                            href: "/harililakalpataru/".concat(handlePage("PREVIOUS")).concat(router.query.tab ? "?tab=" + router.query.tab : "", " "),
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: "cursor-pointer rounded bg-secondary",
-                                children: /*#__PURE__*/ _jsxDEV(FaAngleLeft, {
-                                    className: "w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9",
-                                    color: "#f8ecc2"
-                                }, void 0, false, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 215,
-                                    columnNumber: 15
-                                }, this)
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 214,
-                                columnNumber: 13
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 209,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ _jsxDEV("span", {
-                            className: "capitalize",
-                            children: [
-                                /*#__PURE__*/ _jsxDEV(Link, {
-                                    className: "hover:underline text-[#C00000] font-bold",
-                                    style: {
-                                        textShadow: "3px 2px 3px silver",
-                                        fontFamily: "".concat(devanagari.style.fontFamily)
-                                    },
-                                    href: "/harililakalpataru",
-                                    children: "॥ हरिलीलाकल्पतरु ॥"
-                                }, void 0, false, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 222,
-                                    columnNumber: 13
-                                }, this),
-                                currentSkanda && " > ",
-                                currentSkanda && /*#__PURE__*/ _jsxDEV(Link, {
-                                    className: "hover:underline text-[#C00000] font-bold",
-                                    style: {
-                                        textShadow: "3px 2px 3px silver",
-                                        fontFamily: "".concat(devanagari.style.fontFamily)
-                                    },
-                                    href: "/harililakalpataru/".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id),
-                                    children: currentSkanda && (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.title)
-                                }, void 0, false, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 235,
-                                    columnNumber: 15
-                                }, this),
-                                currentAdhyay && " > ",
-                                currentAdhyay && /*#__PURE__*/ _jsxDEV(Link, {
-                                    className: "hover:underline text-[#C00000] font-bold",
-                                    style: {
-                                        textShadow: "3px 2px 3px silver",
-                                        fontFamily: "".concat(devanagari.style.fontFamily)
-                                    },
-                                    href: "/harililakalpataru/".concat(currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.id, "/").concat(currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.id),
-                                    children: currentAdhyay && (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.title)
-                                }, void 0, false, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 249,
-                                    columnNumber: 15
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 221,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ _jsxDEV(Link, {
-                            href: "/harililakalpataru/".concat(handlePage("NEXT")).concat(router.query.tab ? "?tab=" + router.query.tab : "", " "),
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: " cursor-pointer rounded bg-secondary",
-                                children: /*#__PURE__*/ _jsxDEV(FaAngleRight, {
-                                    className: "w-6 2xs:w-7 md:w-9 h-6 2xs:h-7 md:h-9",
-                                    color: "#f8ecc2"
-                                }, void 0, false, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 268,
-                                    columnNumber: 15
-                                }, this)
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 267,
-                                columnNumber: 13
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 262,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                    lineNumber: 208,
-                    columnNumber: 9
-                }, this)
-            }, void 0, false, {
-                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                lineNumber: 207,
-                columnNumber: 7
-            }, this),
-            /*#__PURE__*/ _jsxDEV("div", {
-                className: "mb-10",
-                children: harililakalpataru_name.length === 1 && currentAdhyayList.length > 0 ? /*#__PURE__*/ _jsxDEV("div", {
-                    className: "bg-card border-b",
-                    children: [
-                        (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.header) && /*#__PURE__*/ _jsxDEV("div", {
-                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: "break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
-                                dangerouslySetInnerHTML: {
-                                    __html: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.header
-                                }
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 282,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 281,
-                            columnNumber: 15
-                        }, this),
-                        currentAdhyayList && (currentAdhyayList === null || currentAdhyayList === void 0 ? void 0 : currentAdhyayList.map((e, k)=>{
-                            return /*#__PURE__*/ _jsxDEV(Link, {
-                                href: "/harililakalpataru/".concat(harililakalpataru_name.join("/"), "/").concat(e === null || e === void 0 ? void 0 : e.id),
-                                children: /*#__PURE__*/ _jsxDEV("div", {
-                                    className: "border-b border-x border-b_color p-2 text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full",
-                                    children: [
-                                        /*#__PURE__*/ _jsxDEV("div", {
-                                            className: "mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
-                                            children: convertToHindi(k + 1)
-                                        }, void 0, false, {
-                                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                            lineNumber: 300,
-                                            columnNumber: 23
-                                        }, this),
-                                        /*#__PURE__*/ _jsxDEV("div", {
-                                            className: "inline-block break-words align-baseline font-bold text-red",
-                                            children: e === null || e === void 0 ? void 0 : e.title
-                                        }, void 0, false, {
-                                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                            lineNumber: 303,
-                                            columnNumber: 23
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                    lineNumber: 299,
-                                    columnNumber: 21
-                                }, this)
-                            }, k, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 293,
-                                columnNumber: 19
-                            }, this);
-                        })),
-                        (currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.footer) && /*#__PURE__*/ _jsxDEV("div", {
-                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: "break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
-                                dangerouslySetInnerHTML: {
-                                    __html: currentSkanda === null || currentSkanda === void 0 ? void 0 : currentSkanda.footer
-                                }
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 312,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 311,
-                            columnNumber: 15
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                    lineNumber: 279,
-                    columnNumber: 11
-                }, this) : harililakalpataru_name.length === 2 && currentVersesList.length > 0 ? /*#__PURE__*/ _jsxDEV("div", {
-                    className: "bg-card border-b",
-                    children: [
-                        (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.header) && /*#__PURE__*/ _jsxDEV("div", {
-                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: "break-words text-center text-xs 2xs:text-sm xs:text-base md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
-                                dangerouslySetInnerHTML: {
-                                    __html: currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.header
-                                }
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 326,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 325,
-                            columnNumber: 15
-                        }, this),
-                        currentVersesList && (currentVersesList === null || currentVersesList === void 0 ? void 0 : currentVersesList.map((e, k)=>{
-                            return /*#__PURE__*/ _jsxDEV("div", {
-                                className: "flex items-center border-b border-x border-b_color p-2 sm:p-2 text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full",
-                                children: [
-                                    /*#__PURE__*/ _jsxDEV("div", {
-                                        className: "mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle",
-                                        children: convertToHindi(k + 1)
-                                    }, void 0, false, {
-                                        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                        lineNumber: 341,
-                                        columnNumber: 21
-                                    }, this),
-                                    (e === null || e === void 0 ? void 0 : e.shabda_chheda) && /*#__PURE__*/ _jsxDEV(ShabdaChhedaCardInLine, {
-                                        shabda_chheda: e === null || e === void 0 ? void 0 : e.shabda_chheda,
-                                        original: e === null || e === void 0 ? void 0 : e.title
-                                    }, void 0, false, {
-                                        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                        lineNumber: 352,
-                                        columnNumber: 23
-                                    }, this)
-                                ]
-                            }, k, true, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 337,
-                                columnNumber: 19
-                            }, this);
-                        })),
-                        (currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.footer) && /*#__PURE__*/ _jsxDEV("div", {
-                            className: "bg-card border-b p-2 flex justify-center border-x border-b_color",
-                            children: /*#__PURE__*/ _jsxDEV("div", {
-                                className: "break-words text-xs 2xs:text-sm xs:text-base text-center md:text-lg lg:text-xl leading-6 sm:leading-9 mt-1",
-                                dangerouslySetInnerHTML: {
-                                    __html: currentAdhyay === null || currentAdhyay === void 0 ? void 0 : currentAdhyay.footer
-                                }
-                            }, void 0, false, {
-                                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                                lineNumber: 362,
-                                columnNumber: 17
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                            lineNumber: 361,
-                            columnNumber: 15
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                    lineNumber: 323,
-                    columnNumber: 11
-                }, this) : /*#__PURE__*/ _jsxDEV(LottieAnimation, {}, void 0, false, {
-                    fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                    lineNumber: 372,
-                    columnNumber: 11
-                }, this)
-            }, void 0, false, {
-                fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-                lineNumber: 277,
-                columnNumber: 7
-            }, this)
-        ]
-    }, void 0, true, {
-        fileName: "H:\\DHRUVIK\\sardhar-ashtadhyayi\\src\\pages\\harililakalpataru\\[...harililakalpataru_name].js",
-        lineNumber: 206,
-        columnNumber: 5
-    }, this);
-};
-_s(HarililakalpataruName, "brqQf9wQHdlnaqt5+T9HUccgEcU=", false, function() {
-    return [
-        useRouter
-    ];
-});
-_c = HarililakalpataruName;
-HarililakalpataruName.getInitialProps = async (param)=>{
-    let { query  } = param;
-    const { harililakalpataru_name  } = query;
-    return {
-        harililakalpataru_name
-    };
-};
-export default HarililakalpataruName;
-var _c;
-$RefreshReg$(_c, "HarililakalpataruName");
-
-
-;
-    // Wrapped in an IIFE to avoid polluting the global scope
-    ;
-    (function () {
-        var _a, _b;
-        // Legacy CSS implementations will `eval` browser code in a Node.js context
-        // to extract CSS. For backwards compatibility, we need to check we're in a
-        // browser context before continuing.
-        if (typeof self !== 'undefined' &&
-            // AMP / No-JS mode does not inject these helpers:
-            '$RefreshHelpers$' in self) {
-            // @ts-ignore __webpack_module__ is global
-            var currentExports = __webpack_module__.exports;
-            // @ts-ignore __webpack_module__ is global
-            var prevExports = (_b = (_a = __webpack_module__.hot.data) === null || _a === void 0 ? void 0 : _a.prevExports) !== null && _b !== void 0 ? _b : null;
-            // This cannot happen in MainTemplate because the exports mismatch between
-            // templating and execution.
-            self.$RefreshHelpers$.registerExportsForReactRefresh(currentExports, __webpack_module__.id);
-            // A module can be accepted automatically based on its exports, e.g. when
-            // it is a Refresh Boundary.
-            if (self.$RefreshHelpers$.isReactRefreshBoundary(currentExports)) {
-                // Save the previous exports on update so we can compare the boundary
-                // signatures.
-                __webpack_module__.hot.dispose(function (data) {
-                    data.prevExports = currentExports;
-                });
-                // Unconditionally accept an update to this module, we'll check if it's
-                // still a Refresh Boundary later.
-                // @ts-ignore importMeta is replaced in the loader
-                import.meta.webpackHot.accept();
-                // This field is set when the previous version of this module was a
-                // Refresh Boundary, letting us know we need to check for invalidation or
-                // enqueue an update.
-                if (prevExports !== null) {
-                    // A boundary can become ineligible if its exports are incompatible
-                    // with the previous exports.
-                    //
-                    // For example, if you add/remove/change exports, we'll want to
-                    // re-execute the importing modules, and force those components to
-                    // re-render. Similarly, if you convert a class component to a
-                    // function, we want to invalidate the boundary.
-                    if (self.$RefreshHelpers$.shouldInvalidateReactRefreshBoundary(prevExports, currentExports)) {
-                        __webpack_module__.hot.invalidate();
-                    }
-                    else {
-                        self.$RefreshHelpers$.scheduleUpdate();
-                    }
-                }
-            }
-            else {
-                // Since we just executed the code for the module, it's possible that the
-                // new exports made it ineligible for being a boundary.
-                // We only care about the case when we were _previously_ a boundary,
-                // because we already accepted this update (accidental side effect).
-                var isNoLongerABoundary = prevExports !== null;
-                if (isNoLongerABoundary) {
-                    __webpack_module__.hot.invalidate();
-                }
-            }
-        }
-    })();
-�   webpack://./node_modules/next/dist/compiled/@next/react-refresh-utils/dist/loader.js!./node_modules/next/dist/build/webpack/loaders/next-swc-loader.js??ruleSet[1].rules[1].oneOf[2].use[1]!./src/pages/harililakalpataru/[...harililakalpataru_name].js�]  {"version":3,"sources":["webpack://./src/pages/harililakalpataru/[...harililakalpataru_name].js"],"sourcesContent":["import React, { useEffect, useState } from \"react\";\r\nimport { useDebounce } from \"use-debounce\";\r\nimport { FaAngleLeft, FaAngleRight } from \"react-icons/fa\";\r\nimport { useRouter } from \"next/router\";\r\nimport Link from \"next/link\";\r\nimport axios from \"axios\";\r\nimport { convertToHindi } from \"@/utils/ashtadhyayi/Function\";\r\nimport LottieAnimation from \"@/components/LottieAnimation \";\r\nimport TitleCard from \"@/components/Card/TitleCard\";\r\nimport ShabdaChhedaCardInLine from \"@/components/Card/ShabdaChhedaCardInLine\";\r\nimport { Noto_Serif_Devanagari, Noto_Serif_Gujarati } from \"next/font/google\";\r\n\r\nconst gujarati = Noto_Serif_Gujarati({\r\n  subsets: [\"gujarati\"],\r\n});\r\n\r\nconst devanagari = Noto_Serif_Devanagari({\r\n  subsets: [\"devanagari\"],\r\n});\r\n\r\nconst HarililakalpataruName = ({ harililakalpataru_name }) => {\r\n  const router = useRouter();\r\n  const [currentSkanda, setCurrentSkanda] = useState({});\r\n  const [currentAdhyayList, setCurrentAdhyayList] = useState([]);\r\n  const [currentVersesList, setCurrentVersesList] = useState([]);\r\n  const [currentAdhyay, setCurrentAdhyay] = useState([]);\r\n  const [harililakalpataruSkanda, setHarililakalpataruSkanda] = useState([]);\r\n\r\n  const getAllSkanda = async () => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/skanda\");\r\n      setHarililakalpataruSkanda(response?.data?.data);\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentSkanda = async (id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/skanda\", {\r\n        params: {\r\n          id: id,\r\n        },\r\n      });\r\n      setCurrentSkanda(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentAdhyayList = async (id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/adhyay\", {\r\n        params: {\r\n          skandaId: id,\r\n        },\r\n      });\r\n      setCurrentAdhyayList(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentAdhyay = async (skandaId, id) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/adhyay\", {\r\n        params: {\r\n          skandaId: skandaId,\r\n          id: id,\r\n        },\r\n      });\r\n      setCurrentAdhyay(response.data.data);\r\n      return;\r\n    } catch (error) {\r\n      console.error(\"Error geting data:\", error);\r\n    }\r\n  };\r\n\r\n  const getCurrentVersesList = async (skandaId, adhyayId) => {\r\n    try {\r\n      const response = await axios.get(\"/api/harililakalpataru/verses\", {\r\n        params: {\r\n          skandaId: skandaId,\r\n          adhyayId: adhyayId,\r\n        },\r\n  
+    ]
+}

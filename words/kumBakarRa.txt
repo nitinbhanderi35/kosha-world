@@ -1,84 +1,11 @@
-import { RouteModule } from "../route-module";
-import { RequestAsyncStorageWrapper } from "../../../async-storage/request-async-storage-wrapper";
-import { StaticGenerationAsyncStorageWrapper } from "../../../async-storage/static-generation-async-storage-wrapper";
-import { handleBadRequestResponse, handleInternalServerErrorResponse } from "../helpers/response-handlers";
-import { HTTP_METHODS, isHTTPMethod } from "../../../web/http";
-import { addImplicitTags, patchFetch } from "../../../lib/patch-fetch";
-import { getTracer } from "../../../lib/trace/tracer";
-import { AppRouteRouteHandlersSpan } from "../../../lib/trace/constants";
-import { getPathnameFromAbsolutePath } from "./helpers/get-pathname-from-absolute-path";
-import { resolveHandlerError } from "./helpers/resolve-handler-error";
-import * as Log from "../../../../build/output/log";
-import { autoImplementMethods } from "./helpers/auto-implement-methods";
-import { appendMutableCookies } from "../../../web/spec-extension/adapters/request-cookies";
-import { HeadersAdapter } from "../../../web/spec-extension/adapters/headers";
-import { RequestCookiesAdapter } from "../../../web/spec-extension/adapters/request-cookies";
-import { parsedUrlQueryToParams } from "./helpers/parsed-url-query-to-params";
-import * as serverHooks from "../../../../client/components/hooks-server-context";
-import { DynamicServerError } from "../../../../client/components/hooks-server-context";
-import { requestAsyncStorage } from "../../../../client/components/request-async-storage.external";
-import { staticGenerationAsyncStorage } from "../../../../client/components/static-generation-async-storage.external";
-import { actionAsyncStorage } from "../../../../client/components/action-async-storage.external";
-import * as sharedModules from "./shared-modules";
-import { getIsServerAction } from "../../../lib/server-action-request-meta";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
-import { cleanURL } from "./helpers/clean-url";
-import { StaticGenBailoutError } from "../../../../client/components/static-generation-bailout";
-/**
- * AppRouteRouteHandler is the handler for app routes.
- */ export class AppRouteRouteModule extends RouteModule {
-    static #_ = this.sharedModules = sharedModules;
-    constructor({ userland, definition, resolvedPagePath, nextConfigOutput }){
-        super({
-            userland,
-            definition
-        });
-        /**
-   * A reference to the request async storage.
-   */ this.requestAsyncStorage = requestAsyncStorage;
-        /**
-   * A reference to the static generation async storage.
-   */ this.staticGenerationAsyncStorage = staticGenerationAsyncStorage;
-        /**
-   * An interface to call server hooks which interact with the underlying
-   * storage.
-   */ this.serverHooks = serverHooks;
-        /**
-   * A reference to the mutation related async storage, such as mutations of
-   * cookies.
-   */ this.actionAsyncStorage = actionAsyncStorage;
-        this.resolvedPagePath = resolvedPagePath;
-        this.nextConfigOutput = nextConfigOutput;
-        // Automatically implement some methods if they aren't implemented by the
-        // userland module.
-        this.methods = autoImplementMethods(userland);
-        // Get the non-static methods for this route.
-        this.hasNonStaticMethods = hasNonStaticMethods(userland);
-        // Get the dynamic property from the userland module.
-        this.dynamic = this.userland.dynamic;
-        if (this.nextConfigOutput === "export") {
-            if (!this.dynamic || this.dynamic === "auto") {
-                this.dynamic = "error";
-            } else if (this.dynamic === "force-dynamic") {
-                throw new Error(`export const dynamic = "force-dynamic" on page "${definition.pathname}" cannot be used with "output: export". See more info here: https://nextjs.org/docs/advanced-features/static-html-export`);
-            }
+{
+    "word": "kumBakarRa",
+    "PE": [
+        {
+            "word": "kumBakarRa",
+            "eid": "3804",
+            "pagenum": 439,
+            "content": "KUMBHAKARṆA¦. <dvsn n='NI'/>1) <i>Genealogy.</i> Descended from Viṣṇu thus: Brahmā— Pulastya—Viśravas—Kumbhakarṇa. <dvsn n='NI'/>2) <i>Birth.</i> Pulastya, one of the Prajāpatis married Havirbhū (Māninī) and a son called Viśravas was born to them. <dvsn n='NI'/>Rāvaṇa and Kumbhakarṇa were born to Viśravas of Puṣpotkaṭā, and Vibhīṣaṇa was born to him of Rākā, and Khara and Śūrpaṇakhā were born to him of Mālinī. The above version is based on verses—1 to 8 in Chapter 275 of the Vana Parva. But, according to Uttara Rāmāyaṇa, Rāvaṇa, Vibhīṣaṇa and Kumbhakarṇa were born to Viśravas of his wife called Kaikasī. According to the Agni Purāṇa, Puṣpotkaṭā and Kaikaśi were one and the same. <dvsn n='NI'/>3) <i>Former births of Kumbhakarṇa.</i> Rāvaṇa and Kumbhakarṇa were originally the two Devas called Jaya and Vijaya. Viṣṇu appointed them as gate-keepers at Vaikuṇṭha. Once they stopped sages like Sanaka and others at the gates, and the latter cursed Jaya and Vijaya into Rākṣasas. When they complained about the curse to Viṣṇu he promised to welcome them back to Vaikuṇṭha after they had lived three births as Rākṣasas. Accordingly Jaya was born as Hiraṇyākṣa and Vijaya as Hiraṇyakaśipu, both of them Asuras. Mahāviṣṇu incarnated himself as a Boar and killed Hiraṇyākṣa and as Narasiṃha he killed Hiraṇyakaśipu. Hiraṇyākṣa and Hiraṇyakaśipu were reborn as Rāvaṇa and Kumbhakarṇa respectively. Mahāviṣṇu, during his incarnation as Śrī Rāma killed both Rāvaṇa and Kumbhakarṇa. Rāvaṇa was reborn as Śiśupāla and Kumbhakarṇa as Dantavaktra. Both of them were killed by Mahāviṣṇu during his incarnation as Śrī Kṛṣṇa. Thus the Deva called Vijaya, on account of the curse of Sanaka and other sages, passed through three lives as Hiraṇyakaśipu, Kumbhakarṇa and Dantavaktra and finally reached Vaikuṇṭha. (Bhāgavata, 7th Skandha). <dvsn n='NI'/>4) <i>Kumbhakarṇa secured boons.</i> Kumbhakarṇa spent his childhood with his brothers at the āśrama of his father on mount Gandhamādana. Kubera was at the zenith of his glory at that time, having been crowned king of the Yakṣas, and also having got the Puṣpaka Vimāna. The reputation of Kubera kindled jealousy in Kumbhakarṇa and his brothers. They too performed penance in the forest on one foot for a thousand years. But, Brahmā did not appear. They continued the penance without eating any food. Khara and Śūrpaṇakhā stayed there serving their brothers. Even after the second thousand years Brahmā did not appear. Then Rāvaṇa cut off his ten heads and made offerings of them to Brahmā. Then Brahmā appeared. Brahmā restored his heads to Rāvaṇa and he was granted the boon that he would not be killed by anybody but a man. The Devas shuddered at the gift to Rāvaṇa, and feared about the future in case Kumbhakarṇa too got such a boon. At their request Sarasvatī danced on his tongue at the time of Kumbhakarṇa's request for a boon. Kumbhakarṇa wanted NIRDEVATVAM (Absence of all Devas). But by a slip of the tongue (caused by Sarasvatī) what he asked for was nidrāvatvam (sleep). Brahmā granted him nidrāvatvam; he said that Kumbhakarṇa would sleep for six months of the year continuously. Vibhīṣaṇa got the boon that he should remember righteousness in danger and use the Brahmāstra without any training in its use. The brothers returned home after securing the boons, and, after driving off Kubera, the lord of Laṅkā, Rāvaṇa and his brothers took their abode there. (Vana Parva, Chapter 275 and Uttara Rāmāyaṇa). <dvsn n='NI'/>5) <i>Death of Kumbhakarṇa.</i> Kumbhakarṇa played a very important part in the Rāma-Rāvaṇa war. Prominent warriors on the side of Rāma, like Sugrīva, his ministers and Lakṣmaṇa fought with him. But, none of them could kill him. At last, Śrī Rāma's arrows killed him. (Vālmīki Rāmāyaṇa, Yuddha Kāṇḍa, Chapter 67). <dvsn n='NI'/>Kumbhakarṇa is not to be viewed merely and purely as an evil character. His advice to Rāvaṇa on various occasions shows noble traits of his character. When Śrī Rāma with his army of monkeys appeared on the other side of the ocean Rāvaṇa held a conference of his brothers, ministers and others at which Kumbhakarṇa spoke as follows:—“You abducted Sītā without consulting us, and we would not therefore be responsible for the consequences of that action of yours. But, it is not proper that the younger brother should keep away when danger faces the elder one, and on that principle here I am ready to fight Rāma.” <dvsn n='NI'/>These weighty words of Kumbhakarṇa throw considerable light on the character of Kumbhakarṇa. <dvsn n='NI'/>(Vālmīki Rāmāyaṇa, Yuddhakāṇḍa, Chapter 12)."
         }
-        // We only warn in development after here, so return if we're not in
-        // development.
-        if (process.env.NODE_ENV === "development") {
-            // Print error in development if the exported handlers are in lowercase, only
-            // uppercase handlers are supported.
-            const lowercased = HTTP_METHODS.map((method)=>method.toLowerCase());
-            for (const method of lowercased){
-                if (method in this.userland) {
-                    Log.error(`Detected lowercase method '${method}' in '${this.resolvedPagePath}'. Export the uppercase '${method.toUpperCase()}' method name to fix this error.`);
-                }
-            }
-            // Print error if the module exports a default handler, they must use named
-            // exports for each HTTP method.
-            if ("default" in this.userland) {
-                Log.error(`Detected default export in '${this.resolvedPagePath}'. Export a named export for each HTTP method instead.`);
-            }
-            // If there is no methods exported by this module, then return a not found
-            // response.
-            if (!HTTP_METHODS
+    ]
+}

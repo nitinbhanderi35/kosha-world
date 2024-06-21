@@ -1,231 +1,39 @@
-lving additional hints for this error: ${err2.message}`;
-								err.stack += `
-
-A fatal error happened during resolving additional hints for this error:
-${err2.stack}`;
-								return callback(err);
-							}
-							if (hints && hints.length > 0) {
-								err.message += `
-${hints.join("\n\n")}`;
-							}
-
-							// Check if the extension is missing a leading dot (e.g. "js" instead of ".js")
-							let appendResolveExtensionsHint = false;
-							const specifiedExtensions = Array.from(
-								resolver.options.extensions
-							);
-							const expectedExtensions = specifiedExtensions.map(extension => {
-								if (LEADING_DOT_EXTENSION_REGEX.test(extension)) {
-									appendResolveExtensionsHint = true;
-									return `.${extension}`;
-								}
-								return extension;
-							});
-							if (appendResolveExtensionsHint) {
-								err.message += `\nDid you miss the leading dot in 'resolve.extensions'? Did you mean '${JSON.stringify(
-									expectedExtensions
-								)}' instead of '${JSON.stringify(specifiedExtensions)}'?`;
-							}
-
-							callback(err);
-						}
-					);
-				}
-				callback(err, resolvedResource, resolvedResourceResolveData);
-			}
-		);
-	}
-
-	/**
-	 * @param {Error} error error
-	 * @param {ModuleFactoryCreateDataContextInfo} contextInfo context info
-	 * @param {string} context context
-	 * @param {string} unresolvedResource unresolved resource
-	 * @param {ResolverWithOptions} resolver resolver
-	 * @param {ResolveContext} resolveContext resolver context
-	 * @param {Callback<string[]>} callback callback
-	 * @private
-	 */
-	_resolveResourceErrorHints(
-		error,
-		contextInfo,
-		context,
-		unresolvedResource,
-		resolver,
-		resolveContext,
-		callback
-	) {
-		asyncLib.parallel(
-			[
-				callback => {
-					if (!resolver.options.fullySpecified) return callback();
-					resolver
-						.withOptions({
-							fullySpecified: false
-						})
-						.resolve(
-							contextInfo,
-							context,
-							unresolvedResource,
-							resolveContext,
-							(err, resolvedResource) => {
-								if (!err && resolvedResource) {
-									const resource = parseResource(resolvedResource).path.replace(
-										/^.*[\\/]/,
-										""
-									);
-									return callback(
-										null,
-										`Did you mean '${resource}'?
-BREAKING CHANGE: The request '${unresolvedResource}' failed to resolve only because it was resolved as fully specified
-(probably because the origin is strict EcmaScript Module, e. g. a module with javascript mimetype, a '*.mjs' file, or a '*.js' file where the package.json contains '"type": "module"').
-The extension in the request is mandatory for it to be fully specified.
-Add the extension to the request.`
-									);
-								}
-								callback();
-							}
-						);
-				},
-				callback => {
-					if (!resolver.options.enforceExtension) return callback();
-					resolver
-						.withOptions({
-							enforceExtension: false,
-							extensions: []
-						})
-						.resolve(
-							contextInfo,
-							context,
-							unresolvedResource,
-							resolveContext,
-							(err, resolvedResource) => {
-								if (!err && resolvedResource) {
-									let hint = "";
-									const match = /(\.[^.]+)(\?|$)/.exec(unresolvedResource);
-									if (match) {
-										const fixedRequest = unresolvedResource.replace(
-											/(\.[^.]+)(\?|$)/,
-											"$2"
-										);
-										if (resolver.options.extensions.has(match[1])) {
-											hint = `Did you mean '${fixedRequest}'?`;
-										} else {
-											hint = `Did you mean '${fixedRequest}'? Also note that '${match[1]}' is not in 'resolve.extensions' yet and need to be added for this to work?`;
-										}
-									} else {
-										hint = `Did you mean to omit the extension or to remove 'resolve.enforceExtension'?`;
-									}
-									return callback(
-										null,
-										`The request '${unresolvedResource}' failed to resolve only because 'resolve.enforceExtension' was specified.
-${hint}
-Including the extension in the request is no longer possible. Did you mean to enforce including the extension in requests with 'resolve.extensions: []' instead?`
-									);
-								}
-								callback();
-							}
-						);
-				},
-				callback => {
-					if (
-						/^\.\.?\//.test(unresolvedResource) ||
-						resolver.options.preferRelative
-					) {
-						return callback();
-					}
-					resolver.resolve(
-						contextInfo,
-						context,
-						`./${unresolvedResource}`,
-						resolveContext,
-						(err, resolvedResource) => {
-							if (err || !resolvedResource) return callback();
-							const moduleDirectories = resolver.options.modules
-								.map(m => (Array.isArray(m) ? m.join(", ") : m))
-								.join(", ");
-							callback(
-								null,
-								`Did you mean './${unresolvedResource}'?
-Requests that should resolve in the current directory need to start with './'.
-Requests that start with a name are treated as module requests and resolve within module directories (${moduleDirectories}).
-If changing the source code is not an option there is also a resolve options called 'preferRelative' which tries to resolve these kind of requests in the current directory too.`
-							);
-						}
-					);
-				}
-			],
-			(err, hints) => {
-				if (err) return callback(err);
-				callback(null, /** @type {string[]} */ (hints).filter(Boolean));
-			}
-		);
-	}
-
-	/**
-	 * @param {ModuleFactoryCreateDataContextInfo} contextInfo context info
-	 * @param {string} context context
-	 * @param {LoaderItem[]} array array
-	 * @param {ResolverWithOptions} resolver resolver
-	 * @param {ResolveContext} resolveContext resolve context
-	 * @param {Callback<LoaderItem[]>} callback callback
-	 * @returns {void} result
-	 */
-	resolveRequestArray(
-		contextInfo,
-		context,
-		array,
-		resolver,
-		resolveContext,
-		callback
-	) {
-		// LoaderItem
-		if (array.length === 0) return callback(null, array);
-		asyncLib.map(
-			array,
-			(item, callback) => {
-				resolver.resolve(
-					contextInfo,
-					context,
-					item.loader,
-					resolveContext,
-					(err, result, resolveRequest) => {
-						if (
-							err &&
-							/^[^/]*$/.test(item.loader) &&
-							!/-loader$/.test(item.loader)
-						) {
-							return resolver.resolve(
-								contextInfo,
-								context,
-								item.loader + "-loader",
-								resolveContext,
-								err2 => {
-									if (!err2) {
-										err.message =
-											err.message +
-											"\n" +
-											"BREAKING CHANGE: It's no longer allowed to omit the '-loader' suffix when using loaders.\n" +
-											`                 You need to specify '${item.loader}-loader' instead of '${item.loader}',\n` +
-											"                 see https://webpack.js.org/migrate/3/#automatic-loader-module-name-extension-removed";
-									}
-									callback(err);
-								}
-							);
-						}
-						if (err) return callback(err);
-
-						const parsedResult = this._parseResourceWithoutFragment(result);
-
-						const type = /\.mjs$/i.test(parsedResult.path)
-							? "module"
-							: /\.cjs$/i.test(parsedResult.path)
-								? "commonjs"
-								: /** @type {ResolveRequest} */
-									(resolveRequest).descriptionFileData === undefined
-									? undefined
-									: /** @type {ResolveRequest} */
-										(resolveRequest).descriptionFileData.type;
-						const resolved = {
-	
+{
+    "word": "join",
+    "AE": [
+        {
+            "word": "join",
+            "eid": "5874",
+            "pagenum": 243,
+            "content": "<b>Join,</b>¦ <i>v. t.</i> युज् 7 U, 10, सं-आ°-, संसंज् 1 P, यु 2 P, संश्लिष् c., सं-धा 3 U, संबंध् 9 P, संहन् 2 P, एकत्र कृ 8 U, संग्रंथ् 9 P, योक्त्रयति (D.), घट् c. (घटयति), संपृच् 2 A, 7 P. <b>2</b> (Go to) समुपागम् 1 P, सं- -इ 2 P, संमिल् 6 P, संगम् 1 A; pass. of roots above (with instr.); ‘j. hands’ अंजलिं बंध् 9 P, प्रां(सां)जलि- <i>a.</i> भू, हस्तौ समा-नी 1 P; ‘i. ed their hands in marriage’ विवाहविधिना ताभ्यां अन्योन्य- -पाणिग्रहणं कारयामास, वधूवरं संगममांचकार <b>-ed,</b> <i>a.</i> युक्त, युत, संयुक्त, संयुत, संश्लिष्ट, संहत, सं-समा-सक्त, लग्न, संलग्न, संबद्ध, संपृक्त, संहित, सहित, संगत, समेत, मिलित, घटित. <b>-er,</b> <i>s.</i> तक्षकः, रथकारः, सूत्रधारः, तष्टृ, <i>m.,</i> तक्षन् <i>m.,</i> काष्ठतक्ष् <i>m.,</i> वर्धकिः <b>-ery,</b> <i>s.</i> काष्टतक्षणं. <b>-ing,</b> <i>s.</i> सं-, योगः, संधिः, संसर्गः, संधानं, संश्लेषः, संघातः, सं- -गमः, संसक्ति <i>f.</i> <b>-Joint,</b> <i>s.</i> संधिः, पर्वन् <i>n.,</i> ग्रंथिः, कांडः-डं, अस्थिग्रंथिः-संधिः; ‘out of j.’ विलग्न, विसंधि. <i>-a.</i> संयुक्त, समवेत, एककार्यव्यापृत, सहत. <b>2</b> असंविभक्त, अ- -विभक्त, साधारण (णी <i>f.</i>), सामान्य, सह in comp.; संघातवत्, संभूयकारिन्, j. proprietor सहाधिकारिन् <i>m.</i>; ‘j. family property’ संसृष्टिधनं; ‘members of a j. family’ संसृष्टाः, संसृष्टिनः, ‘with j. labour’ संभूयश्रमेण, सर्वेषां यत्नेन; ‘j.-stock company’ संभूयसमुत्थानं; ‘j.-heir’ भागिन् <i>m.,</i> संविभागिन् <i>m.,</i> समांशहरः, समांशिन् <i>m.</i> -<i>v. t.</i> संधियुक्त <i>-a.</i> कृ; ex. by <i>(s).</i> <b>-ed,</b> <i>a.</i> सधिविशिष्ट, ग्रंथिल, संधि-ग्रंथि-युक्त, पर्ववत्, <b>-ly,</b> <i>adv.</i> समं, सह, संभूय, संयोगेन, सहितं, समवायेन, एकीभूय, एकचित्तीभूय, युगपत् <b>-Jointure,</b> <i>s.</i> विधवाधनं; स्त्रीधनं."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "join",
+            "eid": "12871",
+            "pagenum": 397,
+            "content": "<b>JOIN</b>¦ (v. t.:) <dvsn n='I'>I To unite: q.v.: युनक्ति <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>योज- यति, सं-, आ-,</dvsn> (युज्, c. 7. and 10.), <dvsn n='xe'><i>you have j. ed</i> <i>yourself in great penances:</i></dvsn> <dvsn n='xs'>आयोजिज्तस्तपसि   महत्यात्मा,</dvsn> K. </dvsn><dvsn n='I'>II To come to go over: गच्छति (गम्, c. 1.). याति (या, c. 2.), एति (इ, c. 2.), etc., <dvsn n='xe'><i>j. ed Yudhiṣṭhira with his forces:</i></dvsn> <dvsn n='xs'>बलेनागादुयुधिष्ठिरम्।</dvsn> <dvsn n='xe'><i>Dhṛṣṭaketu j. ed the sons of Pāṇḍu:</i></dvsn> <dvsn n='xs'>धृष्टकेत्य्रुपाग- च्छत् पाण्डवान्;</dvsn> <i>with the hill-chiefs, j. ed the sons</i> <dvsn n='xe'><i>of Pāṇḍu:</i></dvsn> <dvsn n='xs'>पार्वतीयैर्महीपालैः सहितः पाण्डवानियात्;</dvsn> <dvsn n='xe'><i>j. ed</i> <i>Duryodhana:</i></dvsn> <dvsn n='xs'>दुर्योधनमुपयातौ,</dvsn> Mah. v. 19. 1-17.; <dvsn n='xe'><i>to j. battle:</i></dvsn> <dvsn n='xs'>रणं गच्छति,</dvsn> V. p.</dvsn>"
+        },
+        {
+            "word": "join",
+            "eid": "12872",
+            "pagenum": 397,
+            "content": "<b>JOIN</b>¦ (v. i.): <dvsn n='I'>I Lit.: </dvsn><dvsn n='1'>(1) संयुज्यते (pass. of युज्) (rare); </dvsn><dvsn n='1'>(2) by युक्तः (क्ता, क्तं). </dvsn><dvsn n='I'>II To take part in: </dvsn><dvsn n='1'>(1) उपागच्छति (गम्, c. 1.); </dvsn><dvsn n='1'>(2) उपैति (इ, c. 2.); </dvsn><dvsn n='1'>(3) आयाति (य, c. 2.).</dvsn>"
+        }
+    ],
+    "MWE": [
+        {
+            "word": "join",
+            "eid": "16911",
+            "pagenum": 419,
+            "content": "<i>To</i> JOIN¦, <i>v. a.</i> युज् (c. 7. युनक्ति, युंक्ते, योक्तुं, c. 10. योजयति -यितुं), संयुज्, आयुज्, समायुज्, सन्धा (c. 3. -दधाति -धातुं), उपसन्धा, सम्बन्ध् (c. 9. -बध्नाति -बन्द्धुं), संश्लिष् (c. 10. -श्लेषयति -यितुं), श्लिष्, संहन् (c. 2. -हन्ति -न्तुं), सङ्गम् (c. 10. -गमयति -यितुं), संलग्नीकृ, एकीकृ, एकत्र कृ. — (Tie together) ग्रन्थ् (c. 9. ग्रथ्नाति, ग्रन्थितुं), योक्त्र (nom. योक्त्र- यति -यितुं)."
+        },
+        {
+            "word": "join",
+            "eid": "16912",
+            "pagenum": 419,
+            "content": "<i>To</i> JOIN¦, <i>v. n.</i> (Be in contact, unite) संयुज् in pass. (-युज्यते), समायुज्, सन्धा in pass. (-धीयते), संश्लिष् in pass. (-श्लिष्यते), संहन् in pass. (-हन्यते), सङ्गम् (c. 1. -गच्छति -गन्तुं), समे (समैति -तुं, rt. इ), संलग्नीभू, एकीभू, संसक्तीभू, एकत्र भू, सम्मिल् (c. 6. -मिलति -मेलितुं)."
+        }
+    ]
+}

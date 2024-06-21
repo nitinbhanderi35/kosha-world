@@ -1,888 +1,263 @@
-odErrorMessage(310));
-      }
-    }
-
-    currentHook = nextCurrentHook;
-    const newHook = {
-      memoizedState: currentHook.memoizedState,
-      baseState: currentHook.baseState,
-      baseQueue: currentHook.baseQueue,
-      queue: currentHook.queue,
-      next: null
-    };
-
-    if (workInProgressHook === null) {
-      // This is the first hook in the list.
-      currentlyRenderingFiber$1.memoizedState = workInProgressHook = newHook;
-    } else {
-      // Append to the end of the list.
-      workInProgressHook = workInProgressHook.next = newHook;
-    }
-  }
-
-  return workInProgressHook;
-} // NOTE: defining two versions of this function to avoid size impact when this feature is disabled.
-// Previously this function was inlined, the additional `memoCache` property makes it not inlined.
-
-
-let createFunctionComponentUpdateQueue;
-
 {
-  createFunctionComponentUpdateQueue = () => {
-    return {
-      lastEffect: null,
-      events: null,
-      stores: null,
-      memoCache: null
-    };
-  };
-}
-
-function useThenable(thenable) {
-  // Track the position of the thenable within this fiber.
-  const index = thenableIndexCounter;
-  thenableIndexCounter += 1;
-
-  if (thenableState === null) {
-    thenableState = createThenableState();
-  }
-
-  const result = trackUsedThenable(thenableState, thenable, index);
-
-  if (currentlyRenderingFiber$1.alternate === null && (workInProgressHook === null ? currentlyRenderingFiber$1.memoizedState === null : workInProgressHook.next === null)) {
-    // Initial render, and either this is the first time the component is
-    // called, or there were no Hooks called after this use() the previous
-    // time (perhaps because it threw). Subsequent Hook calls should use the
-    // mount dispatcher.
-    {
-      ReactCurrentDispatcher$1.current = HooksDispatcherOnMount;
-    }
-  }
-
-  return result;
-}
-
-function use(usable) {
-  if (usable !== null && typeof usable === 'object') {
-    // $FlowFixMe[method-unbinding]
-    if (typeof usable.then === 'function') {
-      // This is a thenable.
-      const thenable = usable;
-      return useThenable(thenable);
-    } else if (usable.$$typeof === REACT_CONTEXT_TYPE || usable.$$typeof === REACT_SERVER_CONTEXT_TYPE) {
-      const context = usable;
-      return readContext(context);
-    }
-  } // eslint-disable-next-line react-internal/safe-string-coercion
-
-
-  throw Error(formatProdErrorMessage(438, String(usable)));
-}
-
-function useMemoCache(size) {
-  let memoCache = null; // Fast-path, load memo cache from wip fiber if already prepared
-
-  let updateQueue = currentlyRenderingFiber$1.updateQueue;
-
-  if (updateQueue !== null) {
-    memoCache = updateQueue.memoCache;
-  } // Otherwise clone from the current fiber
-
-
-  if (memoCache == null) {
-    const current = currentlyRenderingFiber$1.alternate;
-
-    if (current !== null) {
-      const currentUpdateQueue = current.updateQueue;
-
-      if (currentUpdateQueue !== null) {
-        const currentMemoCache = currentUpdateQueue.memoCache;
-
-        if (currentMemoCache != null) {
-          memoCache = {
-            data: currentMemoCache.data.map(array => array.slice()),
-            index: 0
-          };
+    "word": "जनी",
+    "KRM": [
+        {
+            "word": "जनी",
+            "eid": "583",
+            "pagenum": 551,
+            "content": "(583) <b>“जनी प्रादुर्भावे”</b>¦ (IV-दिवादिः-1149. अक. सेट्. आत्म.) प्रादुर्भावः = उत्पत्तिरभिव्यक्तिर्वा । अनुपूर्वकोऽयं धातुः सकर्मकः । <sup>1</sup> जनकः-निका, <sup>2</sup> जनकः-निका, <sup>3</sup> जिजनिषकः-षिका, <sup>4</sup> जञ्जनकः-जन्जनकः-निका, जाजायकः-यिका; जनिता-त्री, जनयिता-त्री, जिजनिषिता-त्री, जञ्जनिता-जाजायिता-त्री; -<sup>5</sup> जनयन्-न्ती, जनयिष्यन्-न्ती-ती; — -<sup>6</sup> जायमानः, — जिजनिषमाणः, जञ्जन्यमानः<sup>A</sup> जाजायमानः; जनिष्यमाणः, — जिजनिषिष्यमाणः, जञ्जनिष्यमाणः-जाजायिष्यमाणः; <sup>7</sup> प्रजा-प्रजानौ-प्रजानः; — — — -<sup>8</sup> जातम्<sup>B</sup> जातः-जातवान्, जनितः, जिजनिषितः, जञ्जनितः-जाजायितः-तवान्; <sup>A</sup> जनः, <sup>1</sup> प्रजनिष्णुः, <sup>B</sup> <sup>2</sup> जज्ञिः, <sup>3</sup> विजावा-विजावानौ-विजावानः, विजावरी, <sup>4</sup> जन्यः, <sup>5</sup> मन्दुरजः, <sup>6</sup> प्रावृषिजः-शरदिजः-कालेजः<sup>C</sup> दिविजः, <sup>7</sup> सरसिजम्-सरोजम्, <sup>8</sup> वर्षेजः-वर्षजः-क्षरेजः-क्षरजः-शरेजःशरजः-वरेजः-वरजः, <sup>9</sup> संस्कारजः-अदृष्टजः, <sup>10</sup> प्रजा-अनुजः, <sup>D</sup> <sup>11</sup> बीजम्<sup>1</sup> पुमनुजा-रामानुजः, <sup>2</sup> पुंसाऽनुजः, <sup>3</sup> अजः-द्विजः, <sup>A</sup> ब्राह्मणजः, क्षत्रियजः-नगजः <sup>B</sup> <sup>C</sup> वनजः, कौसल्याजः, <sup>D</sup> अभिजः-परिजः [केशः], जनः, जिजनिषुः, जञ्जनः<sup>4</sup> जाजः; जनितव्यम्, जनयितव्यम्, जिजनिषितव्यम्, जञ्जनितव्यम्-जाजायितव्यम्; जननीयम्, जननीयम्, जिजनिषणीयम्, जञ्जननीयम्-जाजायनीयम्; <sup>5</sup> जन्यम्, <sup>E</sup> जन्यम्, जिजनिष्यम्, जञ्जन्यम्-जाजाय्यम्; ईषज्जनः-दुर्जनः-सुजनः; — — -जन्यमानः-जायमानः, जन्यमानः, जिजनिष्यमाणः, जञ्जन्यमानः-जाजाय्यमानः; प्रजनः, जनः, जिजनिषः, जञ्जनः-जाजायः; जनितुम्, जनयितुम्, जिजनिषितुम्, जञ्जनितुम्-जाजायितुम्; <sup>1</sup> जातिः, <sup>2</sup> अजननिः, <sup>A</sup> जनना, निजनिषा, जञ्जना-जाजाया; जननम्, जननम्, जिजनिषणम्, जञ्जननम्-जाजायनम्; जनित्वा, जनयित्वा, जिजनिषित्वा, जञ्जनित्वा-जाजायित्वा; प्रजन्य-प्रजाय, <sup>3</sup> प्रजनय्य, प्रजिजनिष्य, प्रजञ्जन्य-प्रजाजाय्य; <note n='1'/>जनम् 2, जनित्वा 2, <sup>4</sup> जनम् 2 -जानम् 2, जनयित्वा 2, जिजनिषम् 2, जिजनिषित्वा 2, जञ्जनम् 2 -जाजायम् 2; जञ्जनित्वा 2 -जजायित्वा 2; <sup>5</sup> जन्तुः, <sup>6</sup> जनयित्नुः, <sup>7</sup> जनकः, <sup>8</sup> जन्म, <sup>9</sup> जाया, <sup>10</sup> जठरम्, <sup>11</sup> जनुः. <F>1. ‘जनिवध्योश्च’ (7-3-35) इति निषेधात्, ‘अत उपधायाः’ (7-2-116) इति वृद्धिर्न भवति । एवं घञि, णमुल्यपि ज्ञेयम् ।</F> <F>2. णिचि, ‘अत उपधायाः’ (7-2-116) इति प्राप्ता वृद्धिः, ‘जनिवध्योश्च’ (7-3-35) इति निषिध्यते । न च वृद्धौ सत्यामपि, ‘जनीजॄष्—’ (गणसूत्रम्-भ्वादौ) इति वचनेन मित्त्वात्, ‘मितां ह्रस्वः’ (6-4-92) इति ह्रस्वः स्यादिति शङ्क्यम्; मित्त्वविधानस्य, चिण्णमुल्परकणौ दीर्घविकल्पविधानेन चारितार्थ्यात् । ‘जनिवध्योश्च’ (7-3-35) इति निषेधस्य जागरूकत्वाच्च । एवं ण्यन्ते सर्वत्र ज्ञेयम् ।</F> <F>3. ‘जनसनखनां सन्झलोः’ (6-4-42) इति सूत्रेण आत्वं तु नात्र प्रवर्तते । झलादौ सनि तद्विधानात् । अत्र चेडागमप्रवृत्त्या सनः झलादित्वाभावात् । एवं सन्नन्ते सर्वत्र ज्ञेयम् ।</F> <F>4. ‘ये विभाषा’ (6-4-43) इत्यनेन आत्त्वविकल्यः । आत्त्वाभावपक्षे, द्वित्वे, अभ्यासस्य ‘नुगतोऽनुनासिकान्तस्य’ (7-4-85) इति नुगागमः । आत्त्वपक्षे ‘दीर्घोऽकितः’ (7-4-83) इति अभ्यासस्य दीर्घे जाजायकः इति रूपम् । एवं यङन्ते सर्वत्र रूपद्वयं बोध्यम् । नुकः ‘पदान्तवद्वाच्यः’ (वा. 7-4-85) इति वचनात् कदाचित् परसवर्णाभावरूपोऽपि साधुरेव ।</F> <F>5. ‘बुधयुधनशजनेङ्प्रुद्रुश्रुभ्यो णेः’ (1-3-86) इति ण्यन्तात् परस्मैपदमेव । न तु शानच् ।</F> <F>6. ‘दिवादिभ्यः—’ (3-1-69) इति श्यन्प्रत्ययः । ‘ज्ञाजनोर्जा (7-3-79) इति प्रकृतेः जादेशः ।</F> <F>A. ‘जाजायमानेन भयेन नभ्राडतायताथो सहसोत्थितश्च ।’ वा. वि. 3. 44.</F> <F>7. क्विपि, ‘अनुनासिकस्य क्विझलोः क्ङिति’ (6-4-15) इति दीर्घः । ‘न लोपः प्रातिपदिकान्तस्य’ (8-2-7) इति नकारलोपः ।</F> <F>8. ईदित्त्वेन, ‘श्वीदितो निष्ठायाम्’ (7-2-14) इतीण्णिषेधः । ‘जनसनखनां सञ्झलोः’ (6-4-42) इति नकारस्याकारः । सवर्णदीर्घः ।</F> <F>B. ‘असौ कुमारस्तमजोऽनुजातस्रिविष्टपस्येव पतिं जयन्तः ।’ रघुवंशे 6. 78.</F> <F>A. ‘तावज्जनित्वा व्रजनाथपत्न्त्या मनो जनस्याभिनिविश्य देव्या ।’ वा. वि. 3. 39.</F> <F>1. ‘अलंकृञ्निराकृञ्प्रजनोत्पद—’ (3-2-136) इत्यादिना तच्छीलादिषु कर्तृषु प्रोपसृष्टादस्मात् इष्णुच् प्रत्ययः ।</F> <F>B. ‘तर्पणं प्रजनिष्णूनां सस्यानाममलं पयः ।’ भ का. 7. 2.</F> <F>2. ‘भाषायां धाञ्कृसृगमिजनिनमिभ्यः—’ (वा. 3-2-171) इति लिटः किः किन् वा आदेशः । लिड्वद्भावात् ‘लिटि धातोरनभ्यासस्य’ (6-1-8) इति द्विर्वचनम् । ताच्छीलिकोऽयं प्रत्ययः । अभ्यासकार्यम् । ‘गमहनजनखनघसां लोपः क्ङित्यनङि’ (6-4-98) इत्युपधालोपः । ‘स्तोः श्चुना श्चुः’ (8-4-40) इति श्चुत्वम् ।</F> <F>3. ‘अन्येभ्योऽपि दृश्यन्ते’ (3-2-75) इति वनिप्प्रत्यये, ‘विड्वनोरनुनासिकस्यात्’ (6-4-41) इत्यात्त्वे, सवर्णदीर्घे, ‘नलोपः प्रातिपदिकान्तस्य’ (8-2-7) इति नकारलोपे, रूपम् । नकारान्तोऽयं शब्दः । स्त्रियाम्, ‘वनो र च’ (4-1-7) इति ङीब्रेफौ भवतः ।</F> <F>4. ‘भव्यगेयप्रवचनीयोपस्थानीयजन्याप्लाव्यापात्या वा’ (3-4-68) इति कर्तरि यत्प्रत्ययान्तो निपातितः । पक्षे भावेऽष्ययं प्रत्ययः ।</F> <F>5. ‘सप्तम्यां जनेर्डः’ (3-2-97) इति डप्रत्ययः । ‘ङ्यापोः संज्ञाच्छन्दसोर्बहुलम्’ (6-3-63) इति पूर्वपदस्य ह्रस्वः ।</F> <F>6. ‘प्रावृट्शरत्कालदिवां जे’ (6-3-15) इति सप्तम्या अलुक् ।</F> <F>C. ‘अवश्यलाव्या दिविजा ममाद्य ये खेचरीं वाचमुदैरिरंस्ताम् । नूनं गृहेशूर इतीमके मां क्षिपन्ति वर्षेजजलानिवार्यम् ॥’ वा. वि. 2. 18.</F> <F>7. ‘तत्पुरुषे कृति बहुलम्’ (6-3-14) इति वा सप्तम्या अलुक् ।</F> <F>8. ‘विभाषा वर्षक्षरशरवरात्’ (6-3-16) इति विभाया सप्तम्या अलुक् ।</F> <F>9. ‘पञ्चम्यामजातौ’ (3-2-98) इति डप्रत्ययः ।</F> <F>10. ‘उपसर्गे च संज्ञायाम्’ (3-2-99) इति डप्रत्ययः ।</F> <F>D. ‘मन्ये किञ्जमहं घ्नन्तं त्वामक्षत्रियजे रणे । लक्ष्मणाधिज दुर्वृत्तं प्रयुक्तमनुजेन नः ॥’ भ. का. 6. 136.</F> <F>11. विशेषेण जायते इति बीजम् । ‘उपसर्गे च संज्ञायाम्’ (3-2-99) इति डप्रत्ययः । ‘कृञो द्वितीयतृतीयशम्बबीजात् कृषौ’ (5-4-58) इत्यत्र, ‘बीज’ इति निर्देशात्, पृषोदरादित्वेन (6-3-109) ‘वि’ इत्युपसर्गस्य दीर्घः, वकारस्य बकारादेशः ।</F> <F>1. ‘अनौ कर्मणि’ (3-2-100) इति डप्रत्ययः ।</F> <F>2. ‘पुंसाऽनुजो जनुषाऽन्ध इति वक्तव्यम्’ (वा. 6-3-3) इति तृतीयाया अलुक् ।</F> <F>3. ‘अन्येष्वपि दृश्यते’ (3-2-101) इति डप्रत्ययः । “—‘सप्तम्याम्—’ (3-2-97) इत्युक्तम्; असप्तम्यामपि दृश्यते—न जायते इत्यजः । द्विर्जाताः द्विजाः । ‘पञ्चम्यामजातौ’ (3-2-98) इत्युक्तम्; जातावपि दृश्यते—ब्राह्मणजो धर्मः, क्षत्रियजं युद्धम् । ‘उपसर्गे च संज्ञायाम्’ (3-2-99) इत्युक्तम्; असंज्ञायामपि दृश्यते-अभिजाः, परिजाः केशाः । ‘अनौ कर्मणि’ (3-2-100) इत्युक्तम्; अकर्मण्यपि दृश्यते—अनुजातः = अनुजः । अपिशब्दः सर्वोपाधिव्यभिचारार्थः । तेन धात्वन्तरादपि भवति, कारकान्तरेऽपि—परितः खाता = परिखा, आखा ।” इति काशिका (3-2-101) अत्रानुसन्धेया ।</F> <F>A. ‘वेदिवत् सपरिग्राहा यज्ञियैः संस्कृता द्विजैः ।’ भ. का. 7-45.</F> <F>B. ‘न गजा नगजा दयिता दयिता विगतं विगतं वलितम् वलितम् । प्रमदाप्रमदा महता महतामरणं मरणं समयात् समयात् ॥’ भ. का. 10. 9.</F> <F>C. ‘घनगिरीन्द्रविलङ्घनशालिना वनगता वनजद्युतिलोचना । जनमता ददृशे जनकात्मजा तरुमृगेण तरुस्थलशायिनी ॥’ भ. का. 10. 15.</F> <F>D. ‘पञ्च पञ्चनखा भक्ष्या ये प्रोक्ताः कृतजैर्द्विजैः । कौसल्याज शशादीनां तेषां नैकोऽप्यहं कपिः ॥’ भ. का. 6. 134.</F> <F>4. यङन्तात् पचाद्यचि (3-1-134) पृथगल्लोपे, अकारस्य स्थानिवद्भावात् उत्तरखण्डाकारस्य लोपः ।</F> <F>5. ‘तकिशसिचतिजनिभ्यो यद्वाच्यः’ (वा. 3-1-97) इति ण्यदपवादो यत् ।</F> <F>E. ‘स प्रोषिवानेत्य पुरं प्रवेक्ष्यन् शुश्राव घोषं न जनौघजन्यम् ।’ भ. का. 3. 27.</F> <F>1. ‘तितुत्र—’ (7-2-9) इतीण्णिषेधे, ‘जनसनखनां सञ्झलोः’ (6-4-42) इति आत्वे, सवर्णदीर्घे रूपम् ।</F> <F>2. स्त्रियां भावे ‘आक्रोशे नञ्यनिः’ (3-3-112) इत्यनिप्रत्ययः ।</F> <F>A. ‘तस्याजननिरेवास्तु जननीक्लेशकारिणः ॥’ शिशुपालवधे 24. 5.</F> <F>3. ‘ल्यपि लघुपूर्वात्’ (6-4-56) इति णेरयादेशः ।</F> <F>4. ‘जनीजॄष्—’ (गणसूत्रम्—भ्वादौ) इति वचनेन मित्त्वात्, ‘चिण्णमुलोर्दीर्घोऽन्यतरस्याम्’ (6-4-93) इति णमुल्परे णौ दीर्घविकल्पः । मित्त्वस्येदमेवासाधारणं प्रयोजनम् ।</F> <F>5. ‘कमिमनिजनि—’ [द. उ. 1-125] इत्यादिना तुप्रत्ययः । जायते, जजन्ति इति वा जन्तुः = प्राणी ।</F> <F>6. ण्यन्तादस्मात् औणादिके [द. उ. 1-140] इत्नुच्प्रत्यये जनयित्नुः = पिता । ‘अयामन्ताल्वाय्येत्न्विष्णुषु च’ (6-4-55) इति णेरयादेशः ।</F> <F>7. जनयतीति जनकः = पिता । ‘क्कुन् शिल्पिसंज्ञयोः’ [द. उ. 3-5] इति क्कुन्प्रत्ययः ।</F> <F>8. ‘मनिन्’ [द. उ. 6-73] इति मनिनि रूपम् । जायते, जन्यते इति वा जन्म</F> <F>9. ‘जनेर्यक्’ [द. उ. 8-13] इति यक्प्रत्ययः । जायते, जन्यते वाऽस्यापत्यमिति जाया = भार्या । ‘ये विभाषा’ (6-4-43) इत्यात्वे, सवर्णदीर्घें च रूपम् ।</F> <F>10. ‘जनेरर ठः’ [द. उ. 8-98] इति अरप्रत्यये, धातोश्च ठकारेऽन्तादेशे रूपम् । जायन्तेऽस्मिन् अतिशयेन वातादिवैषम्यात् व्याधय इति जठरम् = उदरम् ।</F> <F>11. ‘जनेरुसिः’ [द. उ. 9-37] इत्युसिप्रत्ययः । जायते इति जनुः = जन्म ।</F>"
         }
-      }
-    }
-  } // Finally fall back to allocating a fresh instance of the cache
-
-
-  if (memoCache == null) {
-    memoCache = {
-      data: [],
-      index: 0
-    };
-  }
-
-  if (updateQueue === null) {
-    updateQueue = createFunctionComponentUpdateQueue();
-    currentlyRenderingFiber$1.updateQueue = updateQueue;
-  }
-
-  updateQueue.memoCache = memoCache;
-  let data = memoCache.data[memoCache.index];
-
-  if (data === undefined) {
-    data = memoCache.data[memoCache.index] = new Array(size);
-
-    for (let i = 0; i < size; i++) {
-      data[i] = REACT_MEMO_CACHE_SENTINEL;
-    }
-  }
-
-  memoCache.index++;
-  return data;
-}
-
-function basicStateReducer(state, action) {
-  // $FlowFixMe[incompatible-use]: Flow doesn't like mixed types
-  return typeof action === 'function' ? action(state) : action;
-}
-
-function mountReducer(reducer, initialArg, init) {
-  const hook = mountWorkInProgressHook();
-  let initialState;
-
-  if (init !== undefined) {
-    initialState = init(initialArg);
-  } else {
-    initialState = initialArg;
-  }
-
-  hook.memoizedState = hook.baseState = initialState;
-  const queue = {
-    pending: null,
-    lanes: NoLanes,
-    dispatch: null,
-    lastRenderedReducer: reducer,
-    lastRenderedState: initialState
-  };
-  hook.queue = queue;
-  const dispatch = queue.dispatch = dispatchReducerAction.bind(null, currentlyRenderingFiber$1, queue);
-  return [hook.memoizedState, dispatch];
-}
-
-function updateReducer(reducer, initialArg, init) {
-  const hook = updateWorkInProgressHook();
-  return updateReducerImpl(hook, currentHook, reducer);
-}
-
-function updateReducerImpl(hook, current, reducer) {
-  const queue = hook.queue;
-
-  if (queue === null) {
-    throw Error(formatProdErrorMessage(311));
-  }
-
-  queue.lastRenderedReducer = reducer; // The last rebase update that is NOT part of the base state.
-
-  let baseQueue = hook.baseQueue; // The last pending update that hasn't been processed yet.
-
-  const pendingQueue = queue.pending;
-
-  if (pendingQueue !== null) {
-    // We have new updates that haven't been processed yet.
-    // We'll add them to the base queue.
-    if (baseQueue !== null) {
-      // Merge the pending queue and the base queue.
-      const baseFirst = baseQueue.next;
-      const pendingFirst = pendingQueue.next;
-      baseQueue.next = pendingFirst;
-      pendingQueue.next = baseFirst;
-    }
-
-    current.baseQueue = baseQueue = pendingQueue;
-    queue.pending = null;
-  }
-
-  const baseState = hook.baseState;
-
-  if (baseQueue === null) {
-    // If there are no pending updates, then the memoized state should be the
-    // same as the base state. Currently these only diverge in the case of
-    // useOptimistic, because useOptimistic accepts a new baseState on
-    // every render.
-    hook.memoizedState = baseState; // We don't need to call markWorkInProgressReceivedUpdate because
-    // baseState is derived from other reactive values.
-  } else {
-    // We have a queue to process.
-    const first = baseQueue.next;
-    let newState = baseState;
-    let newBaseState = null;
-    let newBaseQueueFirst = null;
-    let newBaseQueueLast = null;
-    let update = first;
-
-    do {
-      // An extra OffscreenLane bit is added to updates that were made to
-      // a hidden tree, so that we can distinguish them from updates that were
-      // already there when the tree was hidden.
-      const updateLane = removeLanes(update.lane, OffscreenLane);
-      const isHiddenUpdate = updateLane !== update.lane; // Check if this update was made while the tree was hidden. If so, then
-      // it's not a "base" update and we should disregard the extra base lanes
-      // that were added to renderLanes when we entered the Offscreen tree.
-
-      const shouldSkipUpdate = isHiddenUpdate ? !isSubsetOfLanes(getWorkInProgressRootRenderLanes(), updateLane) : !isSubsetOfLanes(renderLanes, updateLane);
-
-      if (shouldSkipUpdate) {
-        // Priority is insufficient. Skip this update. If this is the first
-        // skipped update, the previous update/state is the new base
-        // update/state.
-        const clone = {
-          lane: updateLane,
-          revertLane: update.revertLane,
-          action: update.action,
-          hasEagerState: update.hasEagerState,
-          eagerState: update.eagerState,
-          next: null
-        };
-
-        if (newBaseQueueLast === null) {
-          newBaseQueueFirst = newBaseQueueLast = clone;
-          newBaseState = newState;
-        } else {
-          newBaseQueueLast = newBaseQueueLast.next = clone;
-        } // Update the remaining priority in the queue.
-        // TODO: Don't need to accumulate this. Instead, we can remove
-        // renderLanes from the original lanes.
-
-
-        currentlyRenderingFiber$1.lanes = mergeLanes(currentlyRenderingFiber$1.lanes, updateLane);
-        markSkippedUpdateLanes(updateLane);
-      } else {
-        // This update does have sufficient priority.
-        // Check if this is an optimistic update.
-        const revertLane = update.revertLane;
-
-        if (revertLane === NoLane) {
-          // This is not an optimistic update, and we're going to apply it now.
-          // But, if there were earlier updates that were skipped, we need to
-          // leave this update in the queue so it can be rebased later.
-          if (newBaseQueueLast !== null) {
-            const clone = {
-              // This update is going to be committed so we never want uncommit
-              // it. Using NoLane works because 0 is a subset of all bitmasks, so
-              // this will never be skipped by the check above.
-              lane: NoLane,
-              revertLane: NoLane,
-              action: update.action,
-              hasEagerState: update.hasEagerState,
-              eagerState: update.eagerState,
-              next: null
-            };
-            newBaseQueueLast = newBaseQueueLast.next = clone;
-          }
-        } else {
-          // This is an optimistic update. If the "revert" priority is
-          // sufficient, don't apply the update. Otherwise, apply the update,
-          // but leave it in the queue so it can be either reverted or
-          // rebased in a subsequent render.
-          if (isSubsetOfLanes(renderLanes, revertLane)) {
-            // The transition that this optimistic update is associated with
-            // has finished. Pretend the update doesn't exist by skipping
-            // over it.
-            update = update.next;
-            continue;
-          } else {
-            const clone = {
-              // Once we commit an optimistic update, we shouldn't uncommit it
-              // until the transition it is associated with has finished
-              // (represented by revertLane). Using NoLane here works because 0
-              // is a subset of all bitmasks, so this will never be skipped by
-              // the check above.
-              lane: NoLane,
-              // Reuse the same revertLane so we know when the transition
-              // has finished.
-              revertLane: update.revertLane,
-              action: update.action,
-              hasEagerState: update.hasEagerState,
-              eagerState: update.eagerState,
-              next: null
-            };
-
-            if (newBaseQueueLast === null) {
-              newBaseQueueFirst = newBaseQueueLast = clone;
-              newBaseState = newState;
-            } else {
-              newBaseQueueLast = newBaseQueueLast.next = clone;
-            } // Update the remaining priority in the queue.
-            // TODO: Don't need to accumulate this. Instead, we can remove
-            // renderLanes from the original lanes.
-
-
-            currentlyRenderingFiber$1.lanes = mergeLanes(currentlyRenderingFiber$1.lanes, revertLane);
-            markSkippedUpdateLanes(revertLane);
-          }
-        } // Process this update.
-
-
-        const action = update.action;
-
-        if (shouldDoubleInvokeUserFnsInHooksDEV) {
-          reducer(newState, action);
+    ],
+    "ABCH": [
+        {
+            "word": "जनी",
+            "linga": "स्त्री",
+            "pagenum": "23",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1601",
+            "group": "530",
+            "synonyms": [
+                "सधर्मिणी",
+                "पत्नी",
+                "सहचरी",
+                "पाणिगृहीती",
+                "गृहिणी",
+                "गृहाः",
+                "गृह",
+                "दाराः",
+                "क्षेत्र",
+                "वधू",
+                "भार्या",
+                "जाया",
+                "परिग्रह",
+                "द्वितीया",
+                "ऊढा",
+                "कलत्र"
+            ],
+            "content": "सुवासिनी वधूटी स्याच्चिरिण्ट्यथ सधर्मिणी ।\nपत्नी सहचरी पाणिगृहीती गृहिणी गृहाः ॥ ५१२ ॥\nदारा क्षेत्रं वधूर्भार्या जनी जाया परिग्रहः ।\nद्वितीयोढा कलत्रं च पुरंध्री तु कुटुम्बिनी ॥ ५१३ ॥"
+        },
+        {
+            "word": "जनी",
+            "linga": "स्त्री",
+            "pagenum": "23",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1604",
+            "group": "531",
+            "synonyms": [
+                "सूनुजाया",
+                "स्नुषा",
+                "वधू"
+            ],
+            "content": "प्रजावती भ्रातुर्जाया सूनोः स्नुषा जनी वधूः ।"
         }
-
-        if (update.hasEagerState) {
-          // If this update is a state update (not a reducer) and was processed eagerly,
-          // we can use the eagerly computed state
-          newState = update.eagerState;
-        } else {
-          newState = reducer(newState, action);
+    ],
+    "BOP": [
+        {
+            "word": "जनी",
+            "eid": "3366",
+            "pagenum": 135,
+            "content": "जनी¦ <i>correptum</i> जनि <i>f.</i> (a जन vir signo fem. ई, correptum इ) mulier; cf. जानि. (Hib. <i>gean</i> «a woman»; goth. <i>qvêns</i>, Th. <i>qvêni</i> uxor, <i>qveins</i>, Th. <i>qveini</i> id., angl. <i>queen</i>; de goth. <i>qvinô</i> et slav. <lang n='Slavonic'>ЖЕНⲀ</lang> <i>schena</i> v. जन.)"
         }
-      }
-
-      update = update.next;
-    } while (update !== null && update !== first);
-
-    if (newBaseQueueLast === null) {
-      newBaseState = newState;
-    } else {
-      newBaseQueueLast.next = newBaseQueueFirst;
-    } // Mark that the fiber performed work, but only if the new state is
-    // different from the current state.
-
-
-    if (!objectIs(newState, hook.memoizedState)) {
-      markWorkInProgressReceivedUpdate();
-    }
-
-    hook.memoizedState = newState;
-    hook.baseState = newBaseState;
-    hook.baseQueue = newBaseQueueLast;
-    queue.lastRenderedState = newState;
-  }
-
-  if (baseQueue === null) {
-    // `queue.lanes` is used for entangling transitions. We can set it back to
-    // zero once the queue is empty.
-    queue.lanes = NoLanes;
-  }
-
-  const dispatch = queue.dispatch;
-  return [hook.memoizedState, dispatch];
+    ],
+    "BUR": [
+        {
+            "word": "जनी",
+            "eid": "7022",
+            "pagenum": 259,
+            "content": "जनी¦ <i>janī</i> <ab>f.</ab> (<ab>cf.</ab> <i>jana)</i> femme [par <ab>oppos.</ab> à jeune fille]. <ab>Gr.</ab> <lang n='greek'>γυνή</lang>; <ab>irland.</ab> gean."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "जनी",
+            "eid": "10990",
+            "pagenum": 180,
+            "content": "ज/नी¦ <lex>f.</lex> woman, wife, <ab>pl.</ab> metaph. the fingers; जनि also birth, origin, birthplace."
+        },
+        {
+            "word": "जनी",
+            "eid": "11002",
+            "pagenum": 181,
+            "content": "ज/नी¦ <ab>v.</ab> ज/नि."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "जनी",
+            "eid": "7416",
+            "pagenum": 132,
+            "content": "ज/नी¦ <i>s.</i> ज/नि."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "जनी",
+            "eid": "1574",
+            "pagenum": 158,
+            "content": "<b>jánī,</b>¦ <i><ab>f.</ab> same as</i> <b>jani.</b>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "जनी",
+            "eid": "14245.2",
+            "pagenum": 284,
+            "content": "janI¦ <i>f.</i> 1. Birth, creation, production; 2. a woman; 3. a mother; 4. a daughter-in-law; 5. a wife."
+        }
+    ],
+    "MW": [
+        {
+            "word": "जनी",
+            "eid": "76980",
+            "pagenum": "411,1",
+            "content": "ज/नी ¦ <lex>f.</lex>, see °नि<info lex='f'/>"
+        },
+        {
+            "word": "जनी",
+            "eid": "76981",
+            "pagenum": "411,1",
+            "content": "¦ a daughter-in-law (<ab>cf.</ab> जामि/), <ls>L.</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "जनी",
+            "eid": "41588",
+            "pagenum": 2,
+            "content": "ज/नी¦ <ab>s.</ab> ज/नि."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "जनी",
+            "eid": "26569",
+            "pagenum": 3,
+            "content": "जनी¦ s.u. जनि ."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "जनी",
+            "eid": "13178",
+            "pagenum": "2-508-a",
+            "content": "जनी¦, स्त्री, (जायते सन्ततिर्यस्यामिति । जन + “जनिघसिभ्यामिण् ।” उणां ४ । १२९ । इतीण् जनिवध्योश्चेति वृद्धिनिषेधः । ततः कृदिकारादिति ङीष् ।) सीमन्तिनी । बधूः (जन + भावे इण् ।) उत्पत्तिः । (जायते आरोग्यमनया । करणे इण् ।) ओषधीभित् । इति मेदिनी । ने, ६ ॥ शेषस्य पर्य्यायः । जतूका २ रजनी ३ जतुकृत् ४ चक्रवर्त्तिनी ५ संस्पर्शा ६ । इत्यमरः । २ । ४ । १५३ ॥ जतुका ७ जनिः ८ जननी ९ । इति भरतः ॥ राजनिर्घण्टोक्तगुणपर्य्यायौ जतुकाशब्दे द्रष्ठव्यौ ॥"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "जनी",
+            "content": "जनी स्त्री. -  जनि +  ङीष् 'जन्म,सृजन,उत्पादन,'"
+        },
+        {
+            "word": "जनी",
+            "content": "जनी स्त्री. -  जनि +  ङीष् स्त्री"
+        },
+        {
+            "word": "जनी",
+            "content": "जनी स्त्री. -  जनि +  ङीष् माता"
+        },
+        {
+            "word": "जनी",
+            "content": "जनी स्त्री. -  जनि +  ङीष् पत्नी"
+        },
+        {
+            "word": "जनी",
+            "content": "जनी स्त्री. -  जनि +  ङीष् 'स्नुषा, पुत्रवधू'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "जनी",
+            "पदविभागः": "धातुः",
+            "कन्नडार्थः": "ಹುಟ್ಟು \\/ಜನ್ಮಪಡೆ \\/ಉತ್ಪತ್ತಿ ಹೊಂದು",
+            "content": ""
+        },
+        {
+            "word": "जनी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಸ್ನುಷೆ \\/ಸೊಸೆ",
+            "निष्पत्तिः": "जनी (प्रादुर्भावे)'इण्' (उ० ४-१२९)",
+            "व्युत्पत्तिः": "जायते सन्ततिरस्याम्",
+            "प्रयोगाः": "'तथा तथा हृषितवपुर्मुदाकुला द्विषां चमूरजनि जनीव चेतसा'",
+            "उल्लेखाः": "माघ० १७-४३",
+            "content": ""
+        },
+        {
+            "word": "जनी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ತಾಯಿ",
+            "content": ""
+        },
+        {
+            "word": "जनी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಪತ್ನಿ \\/ಹೆಂಡತಿ",
+            "content": ""
+        },
+        {
+            "word": "जनी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಹೆಂಗಸು",
+            "content": ""
+        },
+        {
+            "word": "जनी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಉತ್ಪತ್ತಿ \\/ಹುಟ್ಟು",
+            "विस्तारः": "'जनीस्नुषावनितयोः'हेम० ।",
+            "content": ""
+        },
+        {
+            "word": "जनी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ವಧೂವರರು\\/ದಂಪತಿಗಳು",
+            "विस्तारः": "'जनिर्वरस्त्रीपत्योश्च'वैज० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "जनी",
+            "linga": "S",
+            "artha": "चक्रवर्तिनी",
+            "synonyms": [
+                "जनी",
+                "जतूका",
+                "रजनी",
+                "जतुकृत्",
+                "चक्रवर्तिनी",
+                "संस्पर्शा"
+            ],
+            "num": "2.4.153",
+            "text": "तस्यां कटम्भरा राजबला भद्रबलेत्यपि । जनी जतूका रजनी जतुकृच्चक्रवर्तिनी ॥",
+            "content": ""
+        },
+        {
+            "word": "जनी",
+            "linga": "S",
+            "artha": "पुत्रभार्या",
+            "synonyms": [
+                "स्नुषा",
+                "जनी",
+                "वधू"
+            ],
+            "num": "2.6.9",
+            "text": "समाः स्नुषाजनीवध्वश्चिरिण्टी तु सुवासिनी । इच्छावती कामुका स्याद्वृषस्यन्ती तु कामुकी ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "जनी",
+            "content": "<lexhead no=\"78\">\n<dentry>जनी</dentry>\n<prAwipaxikam>जनी</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[जनि+ ङीष्]</etymology>\n<kind_of>स्त्री</kind_of>\n<jAwi>मनुष्यः</jAwi>\n<kind_of>सूक्ष्मशाखामूलयुक्तवृक्षः</kind_of>\n<jAwi>ओषधिः</jAwi>\n<sense no=\"1\">जन्म, सृजन, उत्पादन</sense>\n<sense n=\"2\">स्त्री</sense>\n<sense n=\"3\">माता</sense>\n<sense n=\"4\">पत्नी</sense>\n<sense n=\"5\">स्नुषा, पुत्रवधू</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "जनी",
+            "content": "<span lang=\"sa\">जनी - प्रादुर्भावे (दिवा० आत्म० अक० से०) जायते ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>धातुः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹುಟ್ಟು /ಜನ್ಮಪಡೆ /ಉತ್ಪತ್ತಿ ಹೊಂದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>                  <span lang=\"sa\">जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸ್ನುಷೆ /ಸೊಸೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>जनी (प्रादुर्भावे) - \"इण्\" (उ० ४-१२९)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>जायते सन्ततिरस्याम्<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"तथा तथा हृषितवपुर्मुदाकुला द्विषां चमूरजनि जनीव चेतसा\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० १७-४३<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತಾಯಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪತ್ನಿ /ಹೆಂಡತಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹೆಂಗಸು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಉತ್ಪತ್ತಿ /ಹುಟ್ಟು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"जनीस्नुषावनितयोः\" - हेम० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಧೂವರರು/ದಂಪತಿಗಳು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"जनिर्वरस्त्रीपत्योश्च\" - वैज० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span> <span lang=\"sa\">जनी - प्रादुर्भावे (दिवा० आत्म० अक० से०) जायते ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>धातुः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹುಟ್ಟು /ಜನ್ಮಪಡೆ /ಉತ್ಪತ್ತಿ ಹೊಂದು<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>                  <span lang=\"sa\">जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸ್ನುಷೆ /ಸೊಸೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>जनी (प्रादुर्भावे) - \"इण्\" (उ० ४-१२९)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>जायते सन्ततिरस्याम्<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"तथा तथा हृषितवपुर्मुदाकुला द्विषां चमूरजनि जनीव चेतसा\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० १७-४३<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತಾಯಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪತ್ನಿ /ಹೆಂಡತಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹೆಂಗಸು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಉತ್ಪತ್ತಿ /ಹುಟ್ಟು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"जनीस्नुषावनितयोः\" - हेम० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जनी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಧೂವರರು/ದಂಪತಿಗಳು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"जनिर्वरस्त्रीपत्योश्च\" - वैज० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-
-function rerenderReducer(reducer, initialArg, init) {
-  const hook = updateWorkInProgressHook();
-  const queue = hook.queue;
-
-  if (queue === null) {
-    throw Error(formatProdErrorMessage(311));
-  }
-
-  queue.lastRenderedReducer = reducer; // This is a re-render. Apply the new render phase updates to the previous
-  // work-in-progress hook.
-
-  const dispatch = queue.dispatch;
-  const lastRenderPhaseUpdate = queue.pending;
-  let newState = hook.memoizedState;
-
-  if (lastRenderPhaseUpdate !== null) {
-    // The queue doesn't persist past this render pass.
-    queue.pending = null;
-    const firstRenderPhaseUpdate = lastRenderPhaseUpdate.next;
-    let update = firstRenderPhaseUpdate;
-
-    do {
-      // Process this render phase update. We don't have to check the
-      // priority because it will always be the same as the current
-      // render's.
-      const action = update.action;
-      newState = reducer(newState, action);
-      update = update.next;
-    } while (update !== firstRenderPhaseUpdate); // Mark that the fiber performed work, but only if the new state is
-    // different from the current state.
-
-
-    if (!objectIs(newState, hook.memoizedState)) {
-      markWorkInProgressReceivedUpdate();
-    }
-
-    hook.memoizedState = newState; // Don't persist the state accumulated from the render phase updates to
-    // the base state unless the queue is empty.
-    // TODO: Not sure if this is the desired semantics, but it's what we
-    // do for gDSFP. I can't remember why.
-
-    if (hook.baseQueue === null) {
-      hook.baseState = newState;
-    }
-
-    queue.lastRenderedState = newState;
-  }
-
-  return [newState, dispatch];
-}
-
-function mountSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-  const fiber = currentlyRenderingFiber$1;
-  const hook = mountWorkInProgressHook();
-  let nextSnapshot;
-  const isHydrating = getIsHydrating();
-
-  if (isHydrating) {
-    if (getServerSnapshot === undefined) {
-      throw Error(formatProdErrorMessage(407));
-    }
-
-    nextSnapshot = getServerSnapshot();
-  } else {
-    nextSnapshot = getSnapshot();
-    // Right before committing, we will walk the tree and check if any of the
-    // stores were mutated.
-    //
-    // We won't do this if we're hydrating server-rendered content, because if
-    // the content is stale, it's already visible anyway. Instead we'll patch
-    // it up in a passive effect.
-
-
-    const root = getWorkInProgressRoot();
-
-    if (root === null) {
-      throw Error(formatProdErrorMessage(349));
-    }
-
-    const rootRenderLanes = getWorkInProgressRootRenderLanes();
-
-    if (!includesBlockingLane(root, rootRenderLanes)) {
-      pushStoreConsistencyCheck(fiber, getSnapshot, nextSnapshot);
-    }
-  } // Read the current snapshot from the store on every render. This breaks the
-  // normal rules of React, and only works because store updates are
-  // always synchronous.
-
-
-  hook.memoizedState = nextSnapshot;
-  const inst = {
-    value: nextSnapshot,
-    getSnapshot
-  };
-  hook.queue = inst; // Schedule an effect to subscribe to the store.
-
-  mountEffect(subscribeToStore.bind(null, fiber, inst, subscribe), [subscribe]); // Schedule an effect to update the mutable instance fields. We will update
-  // this whenever subscribe, getSnapshot, or value changes. Because there's no
-  // clean-up function, and we track the deps correctly, we can call pushEffect
-  // directly, without storing any additional state. For the same reason, we
-  // don't need to set a static flag, either.
-
-  fiber.flags |= Passive$1;
-  pushEffect(HasEffect | Passive, updateStoreInstance.bind(null, fiber, inst, nextSnapshot, getSnapshot), createEffectInstance(), null);
-  return nextSnapshot;
-}
-
-function updateSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
-  const fiber = currentlyRenderingFiber$1;
-  const hook = updateWorkInProgressHook(); // Read the current snapshot from the store on every render. This breaks the
-  // normal rules of React, and only works because store updates are
-  // always synchronous.
-
-  let nextSnapshot;
-  const isHydrating = getIsHydrating();
-
-  if (isHydrating) {
-    // Needed for strict mode double render
-    if (getServerSnapshot === undefined) {
-      throw Error(formatProdErrorMessage(407));
-    }
-
-    nextSnapshot = getServerSnapshot();
-  } else {
-    nextSnapshot = getSnapshot();
-  }
-
-  const prevSnapshot = (currentHook || hook).memoizedState;
-  const snapshotChanged = !objectIs(prevSnapshot, nextSnapshot);
-
-  if (snapshotChanged) {
-    hook.memoizedState = nextSnapshot;
-    markWorkInProgressReceivedUpdate();
-  }
-
-  const inst = hook.queue;
-  updateEffect(subscribeToStore.bind(null, fiber, inst, subscribe), [subscribe]); // Whenever getSnapshot or subscribe changes, we need to check in the
-  // commit phase if there was an interleaved mutation. In concurrent mode
-  // this can happen all the time, but even in synchronous mode, an earlier
-  // effect may have mutated the store.
-
-  if (inst.getSnapshot !== getSnapshot || snapshotChanged || // Check if the subscribe function changed. We can save some memory by
-  // checking whether we scheduled a subscription effect above.
-  workInProgressHook !== null && workInProgressHook.memoizedState.tag & HasEffect) {
-    fiber.flags |= Passive$1;
-    pushEffect(HasEffect | Passive, updateStoreInstance.bind(null, fiber, inst, nextSnapshot, getSnapshot), createEffectInstance(), null); // Unless we're rendering a blocking lane, schedule a consistency check.
-    // Right before committing, we will walk the tree and check if any of the
-    // stores were mutated.
-
-    const root = getWorkInProgressRoot();
-
-    if (root === null) {
-      throw Error(formatProdErrorMessage(349));
-    }
-
-    if (!isHydrating && !includesBlockingLane(root, renderLanes)) {
-      pushStoreConsistencyCheck(fiber, getSnapshot, nextSnapshot);
-    }
-  }
-
-  return nextSnapshot;
-}
-
-function pushStoreConsistencyCheck(fiber, getSnapshot, renderedSnapshot) {
-  fiber.flags |= StoreConsistency;
-  const check = {
-    getSnapshot,
-    value: renderedSnapshot
-  };
-  let componentUpdateQueue = currentlyRenderingFiber$1.updateQueue;
-
-  if (componentUpdateQueue === null) {
-    componentUpdateQueue = createFunctionComponentUpdateQueue();
-    currentlyRenderingFiber$1.updateQueue = componentUpdateQueue;
-    componentUpdateQueue.stores = [check];
-  } else {
-    const stores = componentUpdateQueue.stores;
-
-    if (stores === null) {
-      componentUpdateQueue.stores = [check];
-    } else {
-      stores.push(check);
-    }
-  }
-}
-
-function updateStoreInstance(fiber, inst, nextSnapshot, getSnapshot) {
-  // These are updated in the passive phase
-  inst.value = nextSnapshot;
-  inst.getSnapshot = getSnapshot; // Something may have been mutated in between render and commit. This could
-  // have been in an event that fired before the passive effects, or it could
-  // have been in a layout effect. In that case, we would have used the old
-  // snapsho and getSnapshot values to bail out. We need to check one more time.
-
-  if (checkIfSnapshotChanged(inst)) {
-    // Force a re-render.
-    forceStoreRerender(fiber);
-  }
-}
-
-function subscribeToStore(fiber, inst, subscribe) {
-  const handleStoreChange = () => {
-    // The store changed. Check if the snapshot changed since the last time we
-    // read from the store.
-    if (checkIfSnapshotChanged(inst)) {
-      // Force a re-render.
-      forceStoreRerender(fiber);
-    }
-  }; // Subscribe to the store and return a clean-up function.
-
-
-  return subscribe(handleStoreChange);
-}
-
-function checkIfSnapshotChanged(inst) {
-  const latestGetSnapshot = inst.getSnapshot;
-  const prevValue = inst.value;
-
-  try {
-    const nextValue = latestGetSnapshot();
-    return !objectIs(prevValue, nextValue);
-  } catch (error) {
-    return true;
-  }
-}
-
-function forceStoreRerender(fiber) {
-  const root = enqueueConcurrentRenderForLane(fiber, SyncLane);
-
-  if (root !== null) {
-    scheduleUpdateOnFiber(root, fiber, SyncLane);
-  }
-}
-
-function mountStateImpl(initialState) {
-  const hook = mountWorkInProgressHook();
-
-  if (typeof initialState === 'function') {
-    // $FlowFixMe[incompatible-use]: Flow doesn't like mixed types
-    initialState = initialState();
-  }
-
-  hook.memoizedState = hook.baseState = initialState;
-  const queue = {
-    pending: null,
-    lanes: NoLanes,
-    dispatch: null,
-    lastRenderedReducer: basicStateReducer,
-    lastRenderedState: initialState
-  };
-  hook.queue = queue;
-  return hook;
-}
-
-function mountState(initialState) {
-  const hook = mountStateImpl(initialState);
-  const queue = hook.queue;
-  const dispatch = dispatchSetState.bind(null, currentlyRenderingFiber$1, queue);
-  queue.dispatch = dispatch;
-  return [hook.memoizedState, dispatch];
-}
-
-function updateState(initialState) {
-  return updateReducer(basicStateReducer);
-}
-
-function rerenderState(initialState) {
-  return rerenderReducer(basicStateReducer);
-}
-
-function mountOptimistic(passthrough, reducer) {
-  const hook = mountWorkInProgressHook();
-  hook.memoizedState = hook.baseState = passthrough;
-  const queue = {
-    pending: null,
-    lanes: NoLanes,
-    dispatch: null,
-    // Optimistic state does not use the eager update optimization.
-    lastRenderedReducer: null,
-    lastRenderedState: null
-  };
-  hook.queue = queue; // This is different than the normal setState function.
-
-  const dispatch = dispatchOptimisticSetState.bind(null, currentlyRenderingFiber$1, true, queue);
-  queue.dispatch = dispatch;
-  return [passthrough, dispatch];
-}
-
-function updateOptimistic(passthrough, reducer) {
-  const hook = updateWorkInProgressHook();
-  return updateOptimisticImpl(hook, currentHook, passthrough, reducer);
-}
-
-function updateOptimisticImpl(hook, current, passthrough, reducer) {
-  // Optimistic updates are always rebased on top of the latest value passed in
-  // as an argument. It's called a passthrough because if there are no pending
-  // updates, it will be returned as-is.
-  //
-  // Reset the base state to the passthrough. Future updates will be applied
-  // on top of this.
-  hook.baseState = passthrough; // If a reducer is not provided, default to the same one used by useState.
-
-  const resolvedReducer = typeof reducer === 'function' ? reducer : basicStateReducer;
-  return updateReducerImpl(hook, currentHook, resolvedReducer);
-}
-
-function rerenderOptimistic(passthrough, reducer) {
-  // Unlike useState, useOptimistic doesn't support render phase updates.
-  // Also unlike useState, we need to replay all pending updates again in case
-  // the passthrough value changed.
-  //
-  // So instead of a forked re-render implementation that knows how to handle
-  // render phase udpates, we can use the same implementation as during a
-  // regular mount or update.
-  const hook = updateWorkInProgressHook();
-
-  if (currentHook !== null) {
-    // This is an update. Process the update queue.
-    return updateOptimisticImpl(hook, currentHook, passthrough, reducer);
-  } // This is a mount. No updates to process.
-  // Reset the base state to the passthrough. Future updates will be applied
-  // on top of this.
-
-
-  hook.baseState = passthrough;
-  const dispatch = hook.queue.dispatch;
-  return [passthrough, dispatch];
-} // useFormState actions run sequentially, because each action receives the
-// previous state as an argument. We store pending actions on a queue.
-
-
-function dispatchFormState(fiber, actionQueue, setState, payload) {
-  if (isRenderPhaseUpdate(fiber)) {
-    throw Error(formatProdErrorMessage(485));
-  }
-
-  const last = actionQueue.pending;
-
-  if (last === null) {
-    // There are no pending actions; this is the first one. We can run
-    // it immediately.
-    const newLast = {
-      payload,
-      next: null // circular
-
-    };
-    newLast.next = actionQueue.pending = newLast;
-    runFormStateAction(actionQueue, setState, payload);
-  } else {
-    // There's already an action running. Add to the queue.
-    const first = last.next;
-    const newLast = {
-      payload,
-      next: first
-    };
-    actionQueue.pending = last.next = newLast;
-  }
-}
-
-function runFormStateAction(actionQueue, setState, payload) {
-  const action = actionQueue.action;
-  const prevState = actionQueue.state; // This is a fork of startTransition
-
-  const prevTransition = ReactCurrentBatchConfig$3.transition;
-  ReactCurrentBatchConfig$3.transition = {};
-
-  try {
-    const returnValue = action(prevState, payload);
-
-    if (returnValue !== null && typeof returnValue === 'object' && // $FlowFixMe[method-unbinding]
-    typeof returnValue.then === 'function') {
-      const thenable = returnValue; // Attach a listener to read the return state of the action. As soon as
-      // this resolves, we can run the next action in the sequence.
-
-      thenable.then(nextState => {
-        actionQueue.state = nextState;
-        finishRunningFormStateAction(actionQueue, setState);
-      }, () => finishRunningFormStateAction(actionQueue, setState));
-      const entangledResult = requestAsyncActionContext(thenable, null);
-      setState(entangledResult);
-    } else {
-      // This is either `returnValue` or a thenable that resolves to
-      // `returnValue`, depending on whether we're inside an async action scope.
-      const entangledResult = requestSyncActionContext(returnValue, null);
-      setState(entangledResult);
-      const nextState = returnValue;
-      actionQueue.state = nextState;
-      finishRunningFormStateAction(actionQueue, setState);
-    }
-  } catch (error) {
-    // This is a trick to get the `useFormState` hook to rethrow the error.
-    // When it unwraps the thenable with the `use` algorithm, the error
-    // will be thrown.
-    const rejectedThenable = {
-      then() {},
-
-      status: 'rejected',
-      reason: error // $FlowFixMe: Not sure why this doesn't work
-
-    };
-    setState(rejectedThenable);
-    finishRunningFormStateAction(actionQueue, setState);
-  } finally {
-    ReactCurrentBatchConfig$3.transition = prevTransition;
-  }
-}
-
-function finishRunningFormStateAction(actionQueue, setState) {
-  // The action finished running. Pop it from the queue and run the next pending
-  // action, if there are any.
-  const last = actionQueue.pending;
-
-  if (last !== null) {
-    const first = last.next;
-
-    if (first === last) {
-      // This was the last action in the queue.
-      actionQueue.pending = null;
-    } else {
-      // Remove the first node from the circular queue.
-      const next = first.next;
-      last.next = next; // Run the next action.
-
-      runFormStateAction(actionQueue, setState, next.payload);
-    }
-  }
-}
-
-function formStateReducer(oldState, newState) {
-  return newState;
-}
-
-function mountFormState(action, initialStateProp, permalink) {
-  let initialState = initialStateProp;
-
-  if (getIsHydrating()) {
-    const root = getWorkInProgressRoot();
-    const ssrFormState = root.formState; // If a formState option was passed to the root, there are form state
-    // markers that we need to hydrate. These indicate whether the form state
-    // matches this hook instance.
-
-    if (ssrFormState !== null) {
-      const isMatching = tryToClaimNextHydratableFormMarkerInstance();
-
-      if (isMatching) {
-        initialState = ssrFormState[0];
-      }
-    }
-  } // State hook. The state is stored in a thenable which is then unwrapped by
-  // the `use` algorithm during render.
-
-
-  const stateHook = mountWorkInProgressHook();
-  stateHook.memoizedState = stateHook.baseState = initialState; // TODO: Typing this "correctly" results in recursion limit errors
-  // const stateQueue: UpdateQueue<S | Awaited<S>, S | Awaited<S>> = {
-
-  const stateQueue = {
-    pending: null,
-    lanes: NoLanes,
-    dispatch: null,
-    lastRenderedReducer: formStateReducer,
-    lastRenderedState: initialState
-  };
-  stateHook.queue = stateQueue;
-  const setState = dispatchSetState.bind(null, currentlyRenderingFiber$1, stateQueue);
-  stateQueue.dispatch = setState; // Action queue hook. This is used to queue pending actions. The queue is
-  // shared between all instances of the hook. Similar to a regular state queue,
-  // but different because the actions are run sequentially, and they run in
-  // an event instead of during render.
-
-  const actionQueueHook = mountWorkInProgressHook();
-  const actionQueue = {
-    state: initialState,
-    dispatch: null,
-    // circular
-    action,
-    pending: null
-  };
-  actionQueueHook.queue = actionQueue;
-  const dispatch = dispatchFormState.bind(null, currentlyRenderingFiber$1, actionQueue, setState);
-  actionQueue.dispatch = dispatch; // Stash the action function on the memoized state of the hook. We'll use this
-  // to detect when the action function changes so we can update it in
-  // an effect.
-
-  actionQueueHook.memoizedState = action;
-  return [initialState, dispatch];
-}
-
-function updateFormState(action, initialState, permalink) {
-  const stateHook = updateWorkInProgressHook();
-  const currentStateHook = currentHook;
-  return updateFormStateImpl(stateHook, currentStateHook, action);
-}
-
-function updateFormStateImpl(stateHook, currentStateHook, action, initialState, permalink) {
-  const _updateReducerImpl = updateReducerImpl(stateHook, currentStateHook, formStateReducer),
-        actionResult = _updateReducerImpl[0]; // This will suspend until the action finishes.
-
-
-  const state = typeof actionResult === 'object' && actionResult !== null && // $FlowFixMe[method-unbinding]
-  typeof actionResult.then === 'function' ? useThenable(actionResult) : actionResult;
-  const actionQueueHook = updateWorkInProgressHook();
-  const actionQueue = actionQueueHook.queue;
-  const dispatch = actionQueue.dispatch; // Check if a new action was passed. If so, update it in an effect.
-
-  const prevAction = actionQueueHook.memoizedState;
-
-  if (action !== prevAction) {
-    currentlyRenderingFiber$1.flags |= Passive$1;
-    pushEffect(HasEffect | Passive, formStateActionEffect.bind(null, actionQueue, action), createEffectInstance(), null);
-  }
-
-  return [state, dispatch];
-}
-
-function formStateActionEffect(actionQueue, action) {
-  actionQueue.action = action;
-}
-
-function rerenderFormState(action, initialState, permalink) {
-  // Unlike useState, useFormState doesn't support render phase updates.
-  // Also unlike useState, we need to re

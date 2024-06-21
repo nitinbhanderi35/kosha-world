@@ -1,594 +1,250 @@
-': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'credit [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$y = docCreditRole;
-	docCreditRole$1.default = _default$y;
-
-	var docCreditsRole$1 = {};
-
-	Object.defineProperty(docCreditsRole$1, "__esModule", {
-	  value: true
-	});
-	docCreditsRole$1.default = void 0;
-	var docCreditsRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'credits [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$x = docCreditsRole;
-	docCreditsRole$1.default = _default$x;
-
-	var docDedicationRole$1 = {};
-
-	Object.defineProperty(docDedicationRole$1, "__esModule", {
-	  value: true
-	});
-	docDedicationRole$1.default = void 0;
-	var docDedicationRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'dedication [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$w = docDedicationRole;
-	docDedicationRole$1.default = _default$w;
-
-	var docEndnoteRole$1 = {};
-
-	Object.defineProperty(docEndnoteRole$1, "__esModule", {
-	  value: true
-	});
-	docEndnoteRole$1.default = void 0;
-	var docEndnoteRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'rearnote [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: ['doc-endnotes'],
-	  requiredContextRole: ['doc-endnotes'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'listitem']]
-	};
-	var _default$v = docEndnoteRole;
-	docEndnoteRole$1.default = _default$v;
-
-	var docEndnotesRole$1 = {};
-
-	Object.defineProperty(docEndnotesRole$1, "__esModule", {
-	  value: true
-	});
-	docEndnotesRole$1.default = void 0;
-	var docEndnotesRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'rearnotes [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['doc-endnote']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$u = docEndnotesRole;
-	docEndnotesRole$1.default = _default$u;
-
-	var docEpigraphRole$1 = {};
-
-	Object.defineProperty(docEpigraphRole$1, "__esModule", {
-	  value: true
-	});
-	docEpigraphRole$1.default = void 0;
-	var docEpigraphRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'epigraph [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$t = docEpigraphRole;
-	docEpigraphRole$1.default = _default$t;
-
-	var docEpilogueRole$1 = {};
-
-	Object.defineProperty(docEpilogueRole$1, "__esModule", {
-	  value: true
-	});
-	docEpilogueRole$1.default = void 0;
-	var docEpilogueRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'epilogue [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$s = docEpilogueRole;
-	docEpilogueRole$1.default = _default$s;
-
-	var docErrataRole$1 = {};
-
-	Object.defineProperty(docErrataRole$1, "__esModule", {
-	  value: true
-	});
-	docErrataRole$1.default = void 0;
-	var docErrataRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'errata [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$r = docErrataRole;
-	docErrataRole$1.default = _default$r;
-
-	var docExampleRole$1 = {};
-
-	Object.defineProperty(docExampleRole$1, "__esModule", {
-	  value: true
-	});
-	docExampleRole$1.default = void 0;
-	var docExampleRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$q = docExampleRole;
-	docExampleRole$1.default = _default$q;
-
-	var docFootnoteRole$1 = {};
-
-	Object.defineProperty(docFootnoteRole$1, "__esModule", {
-	  value: true
-	});
-	docFootnoteRole$1.default = void 0;
-	var docFootnoteRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'footnote [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$p = docFootnoteRole;
-	docFootnoteRole$1.default = _default$p;
-
-	var docForewordRole$1 = {};
-
-	Object.defineProperty(docForewordRole$1, "__esModule", {
-	  value: true
-	});
-	docForewordRole$1.default = void 0;
-	var docForewordRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'foreword [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$o = docForewordRole;
-	docForewordRole$1.default = _default$o;
-
-	var docGlossaryRole$1 = {};
-
-	Object.defineProperty(docGlossaryRole$1, "__esModule", {
-	  value: true
-	});
-	docGlossaryRole$1.default = void 0;
-	var docGlossaryRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'glossary [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['definition'], ['term']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$n = docGlossaryRole;
-	docGlossaryRole$1.default = _default$n;
-
-	var docGlossrefRole$1 = {};
-
-	Object.defineProperty(docGlossrefRole$1, "__esModule", {
-	  value: true
-	});
-	docGlossrefRole$1.default = void 0;
-	var docGlossrefRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'glossref [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command', 'link']]
-	};
-	var _default$m = docGlossrefRole;
-	docGlossrefRole$1.default = _default$m;
-
-	var docIndexRole$1 = {};
-
-	Object.defineProperty(docIndexRole$1, "__esModule", {
-	  value: true
-	});
-	docIndexRole$1.default = void 0;
-	var docIndexRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'index [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark', 'navigation']]
-	};
-	var _default$l = docIndexRole;
-	docIndexRole$1.default = _default$l;
-
-	var docIntroductionRole$1 = {};
-
-	Object.defineProperty(docIntroductionRole$1, "__esModule", {
-	  value: true
-	});
-	docIntroductionRole$1.default = void 0;
-	var docIntroductionRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'introduction [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$k = docIntroductionRole;
-	docIntroductionRole$1.default = _default$k;
-
-	var docNoterefRole$1 = {};
-
-	Object.defineProperty(docNoterefRole$1, "__esModule", {
-	  value: true
-	});
-	docNoterefRole$1.default = void 0;
-	var docNoterefRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'noteref [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command', 'link']]
-	};
-	var _default$j = docNoterefRole;
-	docNoterefRole$1.default = _default$j;
-
-	var docNoticeRole$1 = {};
-
-	Object.defineProperty(docNoticeRole$1, "__esModule", {
-	  value: true
-	});
-	docNoticeRole$1.default = void 0;
-	var docNoticeRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'notice [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'note']]
-	};
-	var _default$i = docNoticeRole;
-	docNoticeRole$1.default = _default$i;
-
-	var docPagebreakRole$1 = {};
-
-	Object.defineProperty(docPagebreakRole$1, "__esModule", {
-	  value: true
-	});
-	docPagebreakRole$1.default = void 0;
-	var docPagebreakRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: true,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'pagebreak [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole
+{
+    "word": "समा",
+    "AP90": [
+        {
+            "word": "समा",
+            "eid": "29359",
+            "pagenum": 1095,
+            "content": "समा¦ (generally in <ab>pl.</ab>, but used by Pāṇini in <ab>sing.</ab> also, <i><ab>e. g.</ab></i> समां समां <ls>P. V. 2. 12.</ls>) A year; तेनाष्टौ परिगमिताः समाः कथंचित् <ls>R. 8. 92</ls>; तयोश्चतुर्दशैकेन समं प्राव्राजयत्समाः  <lbinfo n='ls:12.+6'/> <ls n='R.'>12. 6</ls>; <ls n='R.'>19. 4</ls>; <ls>Mv. 4. 41.</ls> <i>--<ab>ind.</ab></i> With; together with."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "समा",
+            "eid": "8291",
+            "pagenum": 369,
+            "content": "समा¦ <i>f.</i> (<i>Fem.</i> vocis सम similis, aequalis) annus. H. 2. 21. SU. 1. 34. (Lat. <i>bîmus</i> e <i>bĭ-smus</i> mutilatum esse videtur, sicut e. c. gr. <lang n='greek'>εἰμί</lang> et goth. <i>im</i> ex <lang n='greek'>ἐσμί</lang>, <i>ismi</i>, v. Pott II. 279.)"
+        }
+    ],
+    "BUR": [
+        {
+            "word": "समा",
+            "eid": "17699",
+            "pagenum": 683,
+            "content": "समा¦ <i>samā</i> <ab>f.</ab> année; <ab>cf.</ab> <i>sama.</i>"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "समा",
+            "eid": "35236",
+            "pagenum": 592,
+            "content": "स/मा¦ <lex>f.</lex> half-year, season, year."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "समा",
+            "eid": "26405",
+            "pagenum": 476,
+            "content": "स/मा¦ <i>f.</i> Jahr."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "समा",
+            "eid": "9383",
+            "pagenum": 1481,
+            "content": "<b>sámā,</b>¦ <ab>f.</ab>, <i>Jahr</i> [<lang>zend.</lang> hama Sommer]. <dvsn n='TS'>-ām úttarām-uttarām {353,7}. <dvsn n='TS'>-ās [<ab>A.</ab> <ab>p.</ab>] bahvī́s {950,4}. <dvsn n='TS'>-ānām ā́kṛtis {911,5} (neben mā́sas)."
+        }
+    ],
+    "INM": [
+        {
+            "word": "समा",
+            "eid": "9322",
+            "pagenum": 609,
+            "content": "<b>Samā</b>¦ (<i>°āḥ</i>, pl. C.), a region. § 575<i>c</i> (Bhūmip.): After these regions is seen a habitation of the name <i>Samā</i>. It is of a starry shape with four corners and thirty-three <i>maṇḍalas</i>. There dwell the four world-elephants (<i>diggajāḥ), Vāmana</i>, <i>Airāvata</i>, etc., and also <i>Supratīka</i>, whose dimensions have for ever remained unascertained; there winds blow from all directions and are seized by the elephants with the tips of their trunks and let out over the earth; in consequence thereof people draw breath and live: VI, <b>12</b>, 473 (<i>°ā nāma dṛśyate</i> (C. <i>°ante</i>) <i>lokasaṃsthitiḥ</i> (C. <i>°te</i>))."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "समा",
+            "eid": "39747",
+            "pagenum": 758,
+            "content": "samA¦ <i>(I) f. (According to Amara’s lexicon this word is always used in the plural. Pāṇini, however, uses it in the singular.)</i> Year, तेनाष्टौ परिगमिताः समाः कथंचिद्बालत्वादवितथसूनृतेन सूनोः <ls>R.</ls>viii.92, <ls>Bh.V.</ls>iv.36."
+        },
+        {
+            "word": "समा",
+            "eid": "39748",
+            "pagenum": 758,
+            "content": "samA¦ <i>(II) m.</i> With, together with."
+        }
+    ],
+    "MD": [
+        {
+            "word": "समा",
+            "eid": "18872",
+            "pagenum": 337,
+            "content": "समा¦ sámā, <lex>f.</lex> half-year (<ab>AV.</ab>, <i>rare</i>); season, 🞄weather (<ab>Br.</ab>, <ab>S.</ab>, <i>rare</i>); year (<ab>V.</ab>, <ab>C.</ab>)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "समा",
+            "eid": "233009",
+            "pagenum": "1152,1",
+            "content": "समा <hom>a</hom>, ¦ (आ), <lex>f.</lex> a year, see समा <ab>p.</ab> 1153<info lex='f'/>"
+        },
+        {
+            "word": "समा",
+            "eid": "233276",
+            "pagenum": "1153,2",
+            "content": "स/मा <hom>b</hom> ¦ <lex>f.</lex> (of <hom>2.</hom> सम above) a year, <ls>RV.</ls> &c. &c. (also सम <lex type='hwalt'>n.</lex> in पाप-स/म, पुण्य-स्°, सु-ष/म)<info lex='f:n'/>"
+        },
+        {
+            "word": "समा",
+            "eid": "233277",
+            "pagenum": "1153,2",
+            "content": "¦ a half-year, <ls>AV.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समा",
+            "eid": "233278",
+            "pagenum": "1153,2",
+            "content": "¦ season, weather, <ls>AitBr.</ls>; <ls>Kauś.</ls>; <ls>Nir.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समा",
+            "eid": "233279",
+            "pagenum": "1153,2",
+            "content": "¦ a day, <ls>MW.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समा",
+            "eid": "234006",
+            "pagenum": "1158,2",
+            "content": "समा <hom>c</hom> ¦ See <pcol>p. 1153, col. 2</pcol>."
+        }
+    ],
+    "MW72": [
+        {
+            "word": "समा",
+            "eid": "49544",
+            "pagenum": 1067,
+            "content": "1. <i>samā,</i>¦ f. (sometimes <i>ās,</i> pl.; for 2. <i>samā</i> see s. v.), a year; a day (according to some). <i>—Samāṃ-</i> <i>samīnā,</i> f. a cow bearing a calf every year. <i>—Samā-</i> <i>nicaya, as, ā, am,</i> one who has a store (of provisions) sufficient for a year. <i>—Samānta (°mā-an°),</i> <i>as,</i> m. the end of a year."
+        },
+        {
+            "word": "समा",
+            "eid": "49877",
+            "pagenum": 1071,
+            "content": "समा 2¦. <i>samā</i> (for 1. see p. 1067, col. 1), ind. (apparently an old inst. and connected with 2. <i>sam,</i> see <i>sami;</i> cf. <i>amā,</i> p. 74, <i>sacā,</i> p. 1049), with, together with."
+        }
+    ],
+    "PW": [
+        {
+            "word": "समा",
+            "eid": "120165",
+            "pagenum": 7,
+            "content": "स/मा¦ <lex>f.</lex> <dvsn n='1'>— 1〉 <i>Halbjahr</i>. <dvsn n='1'>— 2〉 <i>Jahreszeit, Wetter</i>. <dvsn n='1'>— 3〉 <i>Jahr</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समा",
+            "eid": "105495",
+            "pagenum": 7,
+            "content": "स/मा¦ f. <ls>TRIK. 3, 5, 1.</ls> <dvsn n='1'> 1) ursprünglich wohl <i>Sommer</i> (vgl. im Zend <i>hama</i>); <i>Halbjahr</i> <ls>AV. 1, 35, 4.</ls> <ls n='AV.'>2, 6, 1.</ls> समा^ः संवत्स\\रान्मासा^न् <ls n='AV.'>3, 10, 9.</ls> — <dvsn n='1'>— 2) <i>Jahreszeit</i> überh., <i>Wetter</i>: दारुणा <ls>KAUŚ. 93. 102.</ls> कल्याणीह समा भवति <ls>AIT. BR. 4, 25.</ls> सस्यं च समा च <ls>NIR. 9, 41.</ls> <dvsn n='1'>— 3) <i>Jahr</i> <ls>NIR. 11, 5.</ls> <ls>AK. 1, 1, 3, 20.</ls> <ls>H. 159.</ls> <ls>HĀR. 28.</ls> <ls>HALĀY. 1, 116.</ls> <ls>ṚV. 4, 57, 7.</ls> <ls n='ṚV.'>10, 85, 5.</ls> <ls n='ṚV. 10,'>124, 4.</ls> <ls>AV. 5, 8, 8.</ls> <ls n='AV.'>6, 75, 2.</ls> <ls>VS. 14, 19. 19, 46. 38, 28. 40, 8.</ls> <ls>AIT. BR. 2, 1.</ls> <ls>TS. 2, 3, 11, 5.</ls> <ls n='TS.'>6, 1, 10, 4.</ls> <ls>ŚAT. BR. 1, 8, 1, 4. 5. 14, 8, 12, 1.</ls> <ls>ŚĀṄKH. GṚHY. 9, 41.</ls> <ls>M. 3, 40. 5, 53. 9, 76. 11, 25. 72.</ls> <ls>MBH. 1, 5945.</ls> <ls n='MBH. 1,'>7651.</ls> <ls n='MBH.'>12, 9202.</ls> <ls>R. 1, 2, 18.</ls> <ls n='R. 1,'>64, 20.</ls> <ls n='R.'>2, 34, 43.</ls> <ls n='R. 2,'>90, 12</ls> (<ls n='GORR. 2,'>99, 15</ls> <ls>GORR.</ls>). <ls>RAGH. 12, 6.</ls> <ls>VARĀH. BṚH. S. 8, 21. 69, 30.</ls> <ls>BṚH. 7, 5. 8, 8. 9.</ls> <ls>RĀJA-TAR. 1, 273. 3, 272. 4, 123. 392.</ls> समां समाम् <i>Jahr für Jahr</i> <ls>P. 5, 2, 12.</ls> समान्ते <ls>M. 4, 26.</ls> °निचय <lex>adj.</lex> <ls n='M.'>6, 18.</ls> त्रिसमाः <i>drei Jahre lang</i> <ls>YĀJÑ. 3, 254.</ls> दिव्य° <ls>BHĀG. P. 7, 3, 19.</ls> सहस्रसम <lex>adj.</lex> <ls n='BHĀG. P.'>1, 1, 4.</ls> <dvsn n='v'>— Vgl. पापसम, पुण्य° ."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "समा",
+            "eid": "25968",
+            "pagenum": 356,
+            "content": "<i>samā</i>¦ ° = <i>lavaṇākara</i>, <ls>S</ls> I, 406, 1. {part=,seq=26315,type=,n=1}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समा",
+            "eid": "42611",
+            "pagenum": 762,
+            "content": "समा¦ f. (-मा) Year; (according to AMARA'S lexicon this word is always used in the plural: PĀNINI however, uses it in the singular.) Ind. With, together with. E. सम + अच्--टाप् ।"
+        }
+    ],
+    "STC": [
+        {
+            "word": "समा",
+            "eid": "21755",
+            "pagenum": 792,
+            "content": "<b>samā-</b>¦ <ab>f.</ab> année ; <ab>n.</ab> d'un monde ; et <ab>cf.</ab> <i>-sama-.</i>  <P><i>°nicaya-</i> <ab>a.</ab> qui a des provisions pour un an.  <P><i>samānte</i> <ab>adv.</ab> à la fin de l'année.  <P><i>samārbuda-</i> <ab>nt.</ab> 100 millions d'années."
+        }
+    ],
+    "VEI": [
+        {
+            "word": "समा",
+            "eid": "3491",
+            "pagenum": 2,
+            "content": "<b>Samā</b>¦ appears originally to have denoted ‘summer,’ a sense which may be seen in a few passages of the Atharvaveda.<sup>1</sup> Hence it also denotes more generally ‘season,’ a rare use.<sup>2</sup> More commonly it is simply ‘year’;<sup>3</sup> but in one place the Śatapatha Brāhmaṇa<sup>4</sup> interprets it in the Vājasaneyi Saṃhitā<sup>5</sup> as meaning ‘month,’ a doubtful sense. <F>1) i. 35, 4; ii. 6, 1; iii. 10, 9. <i>Cf.</i> Whitney, Translation of the Atharvaveda, 36.</F> <F>2) Aitareya Brāhmaṇa, iv. 25, 7; Nirukta, ix. 41.</F> <F>3) Rv. iv. 57, 7; x. 85, 5; 124, 4; Av. v. 8, 8; vi. 75, 2, etc.</F> <F>4) vi. 2, 1, 25.</F> <F>5) xxvii. 1, with Mahīdhara's note. See Eggeling, <i>Sacred Books of the East,</i> 41, 168, n. 1. <dvsn n='P'/><i>Cf.</i> Zimmer, <i>Altindisches Leben,</i> 372; Schrader, <i>Prehistoric Antiquities,</i> 301.</F>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समा",
+            "eid": "37923",
+            "pagenum": "5-271-a",
+            "content": "समा¦, स्त्री, (सम वैक्लव्ये + पचाद्यच् । ततष्टाप् ।) वत्सरः । इत्यमरः ॥ समति विकलयति भावान् समा सम ष्टम वैक्लव्ये पचादित्वादन् आप् । समा नित्यबहुवचनान्ताः स्त्रियामिति वामनादयः । समां समां विज्ञायते इत्येकत्वेऽपि दृश्यते इति स्वामी । अतएव समा इति बहुवचनेन क्वचित् पाठः । समेति क्वचिदेकवचनेन । इति तट्टीकायां भरतः ॥ (यथा, रामायणे । १ । २ । १५ । “मा निषाद प्रतिष्ठां त्वमगमः शाश्वतीः समाः । यत् क्रौञ्चमिथुनादेकमवधीः काममोहितम् ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "समा",
+            "eid": "45286",
+            "pagenum": "5231,a",
+            "content": "समा¦ स्त्री समयति विकलयति भावान् सम--अच्--टाप् । वत्सरे अमरकृतास्य नित्यबहुवचनान्तताङ्गीकृता पाणिनिना तु “समांसमां विजायते” इति सूत्रे एकवचनान्तता निर्दिष्टा ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समा",
+            "content": "समा स्त्री. -  सम् + अच् + टाप् वर्ष"
+        },
+        {
+            "word": "समा",
+            "content": "समा अव्य. - 'से, साथ मिला कर'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "समा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ವರ್ಷ \\/ಸಂವತ್ಸರ",
+            "निष्पत्तिः": "षम (वैक्लव्ये)'अच्' (३-१-१३४)",
+            "व्युत्पत्तिः": "समन्ति विक्लवं कुर्वन्ति सर्वम्",
+            "प्रयोगाः": "'मा निषाद प्रतिष्ठां त्वमगमः शाश्वतीः समाः । यत्र क्रौञ्चमिथुनादेकमवधीः काममोहितम् ॥'",
+            "उल्लेखाः": "रामा०",
+            "विस्तारः": "'हायनोऽस्त्री शरत्समाः' ಎಂದು ಬಹುವಚನ ನಿರ್ದೇಶಿಸಿರುವುದರಿಂದ ಇದು ನಿತ್ಯಬಹುವಚನಾಂತ ಶಬ್ದ. 'समां समां विजायते' (५-२-१२)ಎಂದು ನಿರ್ದೇಶವಿರುವುದರಿಂದ ಏಕವಚನಾಂತವೂ ಉಂಟು.",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "समा",
+            "content": "<lexhead no=\"690\">\n<dentry>समा</dentry>\n<prAwipaxikam>समा</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[सम्+अच्+टाप्]</etymology>\n<sense no=\"1\">वर्ष, तेनाष्टौ परिगमिताः समाः कथंचित्<citation>रघु* ८।९२</citation>तयोश्चतुर्दशैकेन रामं प्राव्राजयत्समाः १२।६, १९।४<citation>महावीर* ४।४१</citation>प्रायः ब* व* में प्रयोग, परन्तु पाणिनि द्वारा एक वचन में भी प्रयुक्त - उदा* समा* समाम् - पा* ५।२।१२</sense>\n<sense n=\"2\">से, साथ मिला कर</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "समा",
+            "content": "<body><s>samA strI samayati vikalayati BAvAn sama—ac—wAp . vatsare amarakftAsya nityabahuvacanAntatANgIkftA pARi­ninA tu <q>samAMsamAM vijAyate</q> iti sUtre ekavacanAntatA nirdizwA .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "समा",
+            "content": "<H1B><h><key1>samA</key1><key2>samA</key2><hom>a</hom></h><body><s>samA</s> <hom>a</hom>,   (<s>A</s>), <lex>f.</lex> a year, see <s>samA</s> <ab>p.</ab> 1153<info lex=\"f\" /></body><tail><L>233009</L><pc>1152,1</pc></tail></H1B>\n <H2><h><key1>samA</key1><key2>sa/mA</key2><hom>b</hom></h><body><s>sa/mA</s> <hom>b</hom>   <lex>f.</lex> (of <hom>2.</hom> <s>sama</s> above) a year, <ls>RV.</ls> &amp;c. &amp;c. (also <s>sama</s> <lex type=\"hwalt\">n.</lex> in <s>pApa-sa/ma</s>, <s>puRya-s°</s>, <s>su-za/ma</s>)<info lex=\"f:n\" /></body><tail><L>233276</L><pc>1153,2</pc></tail></H2>\n <H2A><h><key1>samA</key1><key2>sa/mA</key2></h><body>  a half-year, <ls>AV.</ls><info lex=\"inh\" /></body><tail><L>233277</L><pc>1153,2</pc></tail></H2A>\n <H2A><h><key1>samA</key1><key2>sa/mA</key2></h><body>  season, weather, <ls>AitBr.</ls>; <ls>Kauś.</ls>; <ls>Nir.</ls><info lex=\"inh\" /></body><tail><L>233278</L><pc>1153,2</pc></tail></H2A>\n <H2A><h><key1>samA</key1><key2>sa/mA</key2></h><body>  a day, <ls>MW.</ls><info lex=\"inh\" /></body><tail><L>233279</L><pc>1153,2</pc></tail></H2A>\n <H1><h><key1>samA</key1><key2>samA</key2><hom>c</hom></h><body><s>samA</s> <hom>c</hom>   See <pcol>p. 1153, col. 2</pcol>.</body><tail><L>234006</L><pc>1158,2</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समा",
+            "content": "<H1><h><key1>samA</key1><key2>samA</key2></h><body><s>samA</s>  <div n=\"1\">f. (<s>-mA</s>) Year; (according to AMARA'S lexicon this word is always <lb />used in the plural: PĀNINI however, uses it in the singular.) <lb />Ind. With, together with.</div><div n=\"E\"> E. <s>sama + ac--wAp .</s></div></body><tail><L>42611</L><pc>762-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "समा",
+            "content": "<span lang=\"sa\">समा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವರ್ಷ /ಸಂವತ್ಸರ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>षम (वैक्लव्ये) - \"अच्\" (३-१-१३४)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>समन्ति विक्लवं कुर्वन्ति सर्वम्<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"मा निषाद प्रतिष्ठां त्वमगमः शाश्वतीः समाः । यत्र क्रौञ्चमिथुनादेकमवधीः काममोहितम् ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रामा०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"हायनोऽस्त्री शरत्समाः\" ಎಂದು ಬಹುವಚನ ನಿರ್ದೇಶಿಸಿರುವುದರಿಂದ ಇದು ನಿತ್ಯಬಹುವಚನಾಂತ ಶಬ್ದ। \"समां समां विजायते\" (५-२-१२)ಎಂದು ನಿರ್ದೇಶವಿರುವುದರಿಂದ ಏಕವಚನಾಂತವೂ ಉಂಟು।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

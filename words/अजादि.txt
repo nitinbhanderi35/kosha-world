@@ -1,62 +1,31 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.LegacyAWSTemporaryCredentialProvider = exports.AWSSDKCredentialProvider = exports.AWSTemporaryCredentialProvider = void 0;
-const deps_1 = require("../../deps");
-const error_1 = require("../../error");
-const utils_1 = require("../../utils");
-const AWS_RELATIVE_URI = 'http://169.254.170.2';
-const AWS_EC2_URI = 'http://169.254.169.254';
-const AWS_EC2_PATH = '/latest/meta-data/iam/security-credentials';
-/**
- * @internal
- *
- * Fetches temporary AWS credentials.
- */
-class AWSTemporaryCredentialProvider {
-    static get awsSDK() {
-        AWSTemporaryCredentialProvider._awsSDK ??= (0, deps_1.getAwsCredentialProvider)();
-        return AWSTemporaryCredentialProvider._awsSDK;
-    }
-    static get isAWSSDKInstalled() {
-        return !('kModuleError' in AWSTemporaryCredentialProvider.awsSDK);
-    }
+{
+    "word": "अजादि",
+    "MW": [
+        {
+            "word": "अजादि",
+            "eid": "2014",
+            "pagenum": "9,3",
+            "content": "ajA<srs/>di ¦ a <ab>g.</ab> of <ls>Pāṇ. iv, 1, 4.</ls>"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "अजादि",
+            "eid": "731",
+            "pagenum": "0091,a",
+            "content": "अजादि¦ पु० ६ त० । ङीब्बाधकटाब्निमित्ते पाणिन्युक्ते शब्दसमूहे स च गणः । एडका, कोकिला, चटका, अश्वा मूषिका, बाला, होडा, वत्सा, पाका, मन्दा विलाता, पूर्व्वापहाणा, अपरापहाणा (सम्भस्त्राजिनशणपिण्डेभ्यः फलात्) । (सदच्काण्डप्रान्तशतैकेभ्यः पुष्पात्) । (मूलान्नञः) (शूद्रा चामहत्--पूर्व्वा जातिः) ज्येष्ठा कनिष्ठा मध्यमा (पुंयोगेऽपि) क्रुञ्चा उष्णिहा देवविशा दंष्ट्रा ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "अजादि",
+            "content": "अजादिः पुं. - पाणिनि का एक गण"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "अजादि",
+            "content": "<body><s>ajAdi pu° 6 ta° . NIbbADakawAbnimitte pARinyukte SabdasamUhe sa ca gaRaH . eqakA, kokilA, cawakA, aSvA mUzikA, bAlA, hoqA, vatsA, pAkA, mandA vilAtA, pUrvvApahARA, aparApahARA (samBastrAji­naSaRapiRqeByaH PalAt) . (sadackARqaprAntaSatEkeByaH puzpAt) . (mUlAnnaYaH) (SUdrA cAmahat—pUrvvA jAtiH) jyezWA kanizWA maDyamA (puMyoge'pi) kruYcA uzRihA devaviSA daMzwrA .</s></body>"
+        }
+    ]
 }
-exports.AWSTemporaryCredentialProvider = AWSTemporaryCredentialProvider;
-/** @internal */
-class AWSSDKCredentialProvider extends AWSTemporaryCredentialProvider {
-    /**
-     * The AWS SDK caches credentials automatically and handles refresh when the credentials have expired.
-     * To ensure this occurs, we need to cache the `provider` returned by the AWS sdk and re-use it when fetching credentials.
-     */
-    get provider() {
-        if ('kModuleError' in AWSTemporaryCredentialProvider.awsSDK) {
-            throw AWSTemporaryCredentialProvider.awsSDK.kModuleError;
-        }
-        if (this._provider) {
-            return this._provider;
-        }
-        let { AWS_STS_REGIONAL_ENDPOINTS = '', AWS_REGION = '' } = process.env;
-        AWS_STS_REGIONAL_ENDPOINTS = AWS_STS_REGIONAL_ENDPOINTS.toLowerCase();
-        AWS_REGION = AWS_REGION.toLowerCase();
-        /** The option setting should work only for users who have explicit settings in their environment, the driver should not encode "defaults" */
-        const awsRegionSettingsExist = AWS_REGION.length !== 0 && AWS_STS_REGIONAL_ENDPOINTS.length !== 0;
-        /**
-         * The following regions use the global AWS STS endpoint, sts.amazonaws.com, by default
-         * https://docs.aws.amazon.com/sdkref/latest/guide/feature-sts-regionalized-endpoints.html
-         */
-        const LEGACY_REGIONS = new Set([
-            'ap-northeast-1',
-            'ap-south-1',
-            'ap-southeast-1',
-            'ap-southeast-2',
-            'aws-global',
-            'ca-central-1',
-            'eu-central-1',
-            'eu-north-1',
-            'eu-west-1',
-            'eu-west-2',
-            'eu-west-3',
-            'sa-east-1',
-            'us-east-1',
-            'us-east-2',
-            'us-

@@ -1,132 +1,95 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-Object.defineProperty(exports, "getImgProps", {
-    enumerable: true,
-    get: function() {
-        return getImgProps;
-    }
-});
-const _warnonce = require("./utils/warn-once");
-const _imageblursvg = require("./image-blur-svg");
-const _imageconfig = require("./image-config");
-const VALID_LOADING_VALUES = [
-    "lazy",
-    "eager",
-    undefined
-];
-function isStaticRequire(src) {
-    return src.default !== undefined;
-}
-function isStaticImageData(src) {
-    return src.src !== undefined;
-}
-function isStaticImport(src) {
-    return typeof src === "object" && (isStaticRequire(src) || isStaticImageData(src));
-}
-const allImgs = new Map();
-let perfObserver;
-function getInt(x) {
-    if (typeof x === "undefined") {
-        return x;
-    }
-    if (typeof x === "number") {
-        return Number.isFinite(x) ? x : NaN;
-    }
-    if (typeof x === "string" && /^[0-9]+$/.test(x)) {
-        return parseInt(x, 10);
-    }
-    return NaN;
-}
-function getWidths(param, width, sizes) {
-    let { deviceSizes, allSizes } = param;
-    if (sizes) {
-        // Find all the "vw" percent sizes used in the sizes prop
-        const viewportWidthRe = /(^|\s)(1?\d?\d)vw/g;
-        const percentSizes = [];
-        for(let match; match = viewportWidthRe.exec(sizes); match){
-            percentSizes.push(parseInt(match[2]));
+{
+    "word": "त्रिवर्त्मन्",
+    "INM": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "eid": "10986",
+            "pagenum": 683,
+            "content": "<b>Trivartman</b>¦ = Viṣṇu: III, 12983."
         }
-        if (percentSizes.length) {
-            const smallestRatio = Math.min(...percentSizes) * 0.01;
-            return {
-                widths: allSizes.filter((s)=>s >= deviceSizes[0] * smallestRatio),
-                kind: "w"
-            };
+    ],
+    "MW": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "eid": "88228",
+            "pagenum": "460,2",
+            "content": "त्रि—वर्त्मन् ¦ <lex>mfn.</lex> going by 3 paths, <ls>ŚvetUp. v, 7</ls><info lex='m:f:n'/>"
         }
-        return {
-            widths: allSizes,
-            kind: "w"
-        };
-    }
-    if (typeof width !== "number") {
-        return {
-            widths: deviceSizes,
-            kind: "w"
-        };
-    }
-    const widths = [
-        ...new Set(// > This means that most OLED screens that say they are 3x resolution,
-        // > are actually 3x in the green color, but only 1.5x in the red and
-        // > blue colors. Showing a 3x resolution image in the app vs a 2x
-        // > resolution image will be visually the same, though the 3x image
-        // > takes significantly more data. Even true 3x resolution screens are
-        // > wasteful as the human eye cannot see that level of detail without
-        // > something like a magnifying glass.
-        // https://blog.twitter.com/engineering/en_us/topics/infrastructure/2019/capping-image-fidelity-on-ultra-high-resolution-devices.html
-        [
-            width,
-            width * 2 /*, width * 3*/ 
-        ].map((w)=>allSizes.find((p)=>p >= w) || allSizes[allSizes.length - 1]))
-    ];
-    return {
-        widths,
-        kind: "x"
-    };
+    ],
+    "PW": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "eid": "47762",
+            "pagenum": 3,
+            "content": "त्रिवर्त्मन्¦ <lex>Adj.</lex> <i>auf drei Pfaden wandernd</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "eid": "31125",
+            "pagenum": 3,
+            "content": "1. त्रिवर्त्मन्¦ (त्रि + व°) <lex>n.</lex> <i>drei Pfade</i>: °वर्त्मगा <lex>adj.</lex> <lex>f.</lex> <i>drei Pfade durchwandernd</i>, Beiw. der <is>Gaṅgā</is> <ls>MBH. 13, 1842.</ls> <dvsn n='v'>— Vgl. त्रिपथगा, °गामिनी, त्रिमार्गगा unter त्रिपथ und त्रिमार्ग ."
+        },
+        {
+            "word": "त्रिवर्त्मन्",
+            "eid": "31126",
+            "pagenum": 3,
+            "content": "2. त्रिवर्त्मन्¦ (wie eben) <lex>adj.</lex> <i>auf drei Pfaden wandernd</i> <ls>ŚVETĀŚV. UP. 5, 7</ls>; vgl. <ls n='ŚVETĀŚV. UP.'>1, 4.</ls>"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "eid": "23782",
+            "pagenum": "3379,b",
+            "content": "त्रिवर्त्मन्¦ पु० त्रीणि वर्त्मान्यस्य । देवयानपितृयानदक्षिणायानरूपमार्गत्रययुक्ते जीवे “स विश्वरूपस्त्रिगुणस्त्रिवर्त्मा प्राणाधिपः स करोति स्वकर्मभिः” श्वेता० ५ । ७ । त्रीणि वर्त्मानि देवयानादयो मार्गभेदा अस्येति त्रिवर्त्मा धर्म्माधर्मज्ञानमार्गभेदान् अर्हति वा” भा० २ गङ्गायां स्त्री । त्रिगुणितं वर्त्म । ३ स्वर्गमर्त्यपातालस्थे मार्गे “ऊर्द्ध्वावतीं महापुण्यां मधुवतीं तिवर्त्मगाम” । भा० आनु० २६ अ० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "content": "त्रिवर्त्मन् पुं. त्रि-वर्त्मन्  - आकाश"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ದೇವಯಾನ ಪಿತೃಯಾನ ಮತ್ತು ದಕ್ಷಿಣಾಯನಗಳೆಂಬ ಮೂರು ಮಾರ್ಗಗಳಲ್ಲಿ ಹೋಗುವ ಜೀವ",
+            "व्युत्पत्तिः": "त्रीणि वर्त्मान्यस्य",
+            "content": ""
+        },
+        {
+            "word": "त्रिवर्त्मन्",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸ್ವರ್ಗ ಮಧ್ಯ ಮತ್ತು ಪಾತಾಳಗಳ ಮಾರ್ಗ",
+            "व्युत्पत्तिः": "त्रिगुणितं वर्त्म",
+            "content": ""
+        },
+        {
+            "word": "त्रिवर्त्मन्",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಗಂಗಾನದಿ",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "content": "<segmenthd>\n<dentry>त्रिवर्त्मन्</dentry>\n<prAwipaxikam>त्रिवर्त्मन्</prAwipaxikam>\n<seg>त्रि-वर्त्मन्</seg>\n<grammar>पुं*</grammar>\n<sense no=\"2\">आकाश</sense></segmenthd>\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "content": "<body><s>trivartman pu° trIRi vartmAnyasya . devayAnapitfyAnadakzi­RAyAnarUpamArgatrayayukte jIve <q>sa viSvarUpastriguRastri­vartmA prARADipaH sa karoti svakarmaBiH</q> SvetA° 5 . 7 . trIRi vartmAni devayAnAdayo mArgaBedA asyeti trivartmA DarmmADarmajYAnamArgaBedAn arhati vA” BA° 2 gaNgAyAM strI . triguRitaM vartma . 3 svargamartyapAtAlasTe mArge <q>UrdDvAvatIM mahApuRyAM maDuvatIM tivartmagAma</q> . BA° Anu° 26 a° .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिवर्त्मन्",
+            "content": "<span lang=\"sa\">त्रिवर्त्मन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದೇವಯಾನ ಪಿತೃಯಾನ ಮತ್ತು ದಕ್ಷಿಣಾಯನಗಳೆಂಬ ಮೂರು ಮಾರ್ಗಗಳಲ್ಲಿ ಹೋಗುವ ಜೀವ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीणि वर्त्मान्यस्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिवर्त्मन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸ್ವರ್ಗ ಮಧ್ಯ ಮತ್ತು ಪಾತಾಳಗಳ ಮಾರ್ಗ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिगुणितं वर्त्म<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिवर्त्मन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗಂಗಾನದಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-function generateImgAttrs(param) {
-    let { config, src, unoptimized, width, quality, sizes, loader } = param;
-    if (unoptimized) {
-        return {
-            src,
-            srcSet: undefined,
-            sizes: undefined
-        };
-    }
-    const { widths, kind } = getWidths(config, width, sizes);
-    const last = widths.length - 1;
-    return {
-        sizes: !sizes && kind === "w" ? "100vw" : sizes,
-        srcSet: widths.map((w, i)=>loader({
-                config,
-                src,
-                quality,
-                width: w
-            }) + " " + (kind === "w" ? w : i + 1) + kind).join(", "),
-        // It's intended to keep `src` the last attribute because React updates
-        // attributes in order. If we keep `src` the first one, Safari will
-        // immediately start to fetch `src`, before `sizes` and `srcSet` are even
-        // updated by React. That causes multiple unnecessary requests if `srcSet`
-        // and `sizes` are defined.
-        // This bug cannot be reproduced in Chrome or Firefox.
-        src: loader({
-            config,
-            src,
-            quality,
-            width: widths[last]
-        })
-    };
-}
-function getImgProps(param, _state) {
-    let { src, sizes, unoptimized = false, priority = false, loading, className, quality, width, height, fill = false, style, overrideSrc, onLoad, onLoadingComplete, placeholder = "empty", blurDataURL, fetchPriority, layout, objectFit, objectPosition, lazyBoundary, lazyRoot, ...rest } = param;
-    const { imgConf, showAltText, blurComplete, defaultLoader } = _state;
-    let config;
-    let c = imgConf || _imageconfig.imageConfigDefault;
-    if ("allSizes" in c) {
-        config = c;
-    } else {
-        const allSizes = [
-            ...c.deviceSizes,
-            ...c.imageSizes
-        ].sort((a, b)

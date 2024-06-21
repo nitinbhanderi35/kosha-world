@@ -1,577 +1,223 @@
-ultA.value);
-	    } else if (!$setHas(b, resultA.value)) {
-	      if (opts.strict) {
-	        return false;
-	      }
-	      if (!setMightHaveLoosePrim(a, b, resultA.value)) {
-	        return false;
-	      }
-	      if (!set) {
-	        set = new $Set();
-	      }
-	      $setAdd(set, resultA.value);
-	    }
-	  }
-	  if (set) {
-	    while ((resultB = iB.next()) && !resultB.done) {
-	      // We have to check if a primitive value is already matching and only if it's not, go hunting for it.
-	      if (resultB.value && typeof resultB.value === 'object') {
-	        if (!setHasEqualElement(set, resultB.value, opts.strict, channel)) {
-	          return false;
-	        }
-	      } else if (!opts.strict && !$setHas(a, resultB.value) && !setHasEqualElement(set, resultB.value, opts.strict, channel)) {
-	        return false;
-	      }
-	    }
-	    return $setSize(set) === 0;
-	  }
-	  return true;
-	}
-	function mapEquiv(a, b, opts, channel) {
-	  if ($mapSize(a) !== $mapSize(b)) {
-	    return false;
-	  }
-	  var iA = getIterator(a);
-	  var iB = getIterator(b);
-	  var resultA;
-	  var resultB;
-	  var set;
-	  var key;
-	  var item1;
-	  var item2;
-	  while ((resultA = iA.next()) && !resultA.done) {
-	    key = resultA.value[0];
-	    item1 = resultA.value[1];
-	    if (key && typeof key === 'object') {
-	      if (!set) {
-	        set = new $Set();
-	      }
-	      $setAdd(set, key);
-	    } else {
-	      item2 = $mapGet(b, key);
-	      if (typeof item2 === 'undefined' && !$mapHas(b, key) || !internalDeepEqual(item1, item2, opts, channel)) {
-	        if (opts.strict) {
-	          return false;
-	        }
-	        if (!mapMightHaveLoosePrim(a, b, key, item1, opts, channel)) {
-	          return false;
-	        }
-	        if (!set) {
-	          set = new $Set();
-	        }
-	        $setAdd(set, key);
-	      }
-	    }
-	  }
-	  if (set) {
-	    while ((resultB = iB.next()) && !resultB.done) {
-	      key = resultB.value[0];
-	      item2 = resultB.value[1];
-	      if (key && typeof key === 'object') {
-	        if (!mapHasEqualEntry(set, a, key, item2, opts, channel)) {
-	          return false;
-	        }
-	      } else if (!opts.strict && (!a.has(key) || !internalDeepEqual($mapGet(a, key), item2, opts, channel)) && !mapHasEqualEntry(set, a, key, item2, assign({}, opts, {
-	        strict: false
-	      }), channel)) {
-	        return false;
-	      }
-	    }
-	    return $setSize(set) === 0;
-	  }
-	  return true;
-	}
-	function objEquiv(a, b, opts, channel) {
-	  /* eslint max-statements: [2, 100], max-lines-per-function: [2, 120], max-depth: [2, 5], max-lines: [2, 400] */
-	  var i, key;
-	  if (typeof a !== typeof b) {
-	    return false;
-	  }
-	  if (a == null || b == null) {
-	    return false;
-	  }
-	  if ($objToString(a) !== $objToString(b)) {
-	    return false;
-	  }
-	  if (isArguments(a) !== isArguments(b)) {
-	    return false;
-	  }
-	  var aIsArray = isArray(a);
-	  var bIsArray = isArray(b);
-	  if (aIsArray !== bIsArray) {
-	    return false;
-	  }
-
-	  // TODO: replace when a cross-realm brand check is available
-	  var aIsError = a instanceof Error;
-	  var bIsError = b instanceof Error;
-	  if (aIsError !== bIsError) {
-	    return false;
-	  }
-	  if (aIsError || bIsError) {
-	    if (a.name !== b.name || a.message !== b.message) {
-	      return false;
-	    }
-	  }
-	  var aIsRegex = isRegex(a);
-	  var bIsRegex = isRegex(b);
-	  if (aIsRegex !== bIsRegex) {
-	    return false;
-	  }
-	  if ((aIsRegex || bIsRegex) && (a.source !== b.source || flags(a) !== flags(b))) {
-	    return false;
-	  }
-	  var aIsDate = isDate(a);
-	  var bIsDate = isDate(b);
-	  if (aIsDate !== bIsDate) {
-	    return false;
-	  }
-	  if (aIsDate || bIsDate) {
-	    // && would work too, because both are true or both false here
-	    if ($getTime(a) !== $getTime(b)) {
-	      return false;
-	    }
-	  }
-	  if (opts.strict && gPO && gPO(a) !== gPO(b)) {
-	    return false;
-	  }
-	  var aWhich = whichTypedArray(a);
-	  var bWhich = whichTypedArray(b);
-	  if ((aWhich || bWhich) && aWhich !== bWhich) {
-	    return false;
-	  }
-	  var aIsBuffer = isBuffer(a);
-	  var bIsBuffer = isBuffer(b);
-	  if (aIsBuffer !== bIsBuffer) {
-	    return false;
-	  }
-	  if (aIsBuffer || bIsBuffer) {
-	    // && would work too, because both are true or both false here
-	    if (a.length !== b.length) {
-	      return false;
-	    }
-	    for (i = 0; i < a.length; i++) {
-	      if (a[i] !== b[i]) {
-	        return false;
-	      }
-	    }
-	    return true;
-	  }
-	  var aIsArrayBuffer = isArrayBuffer(a);
-	  var bIsArrayBuffer = isArrayBuffer(b);
-	  if (aIsArrayBuffer !== bIsArrayBuffer) {
-	    return false;
-	  }
-	  if (aIsArrayBuffer || bIsArrayBuffer) {
-	    // && would work too, because both are true or both false here
-	    if (byteLength(a) !== byteLength(b)) {
-	      return false;
-	    }
-	    return typeof Uint8Array === 'function' && internalDeepEqual(new Uint8Array(a), new Uint8Array(b), opts, channel);
-	  }
-	  var aIsSAB = isSharedArrayBuffer(a);
-	  var bIsSAB = isSharedArrayBuffer(b);
-	  if (aIsSAB !== bIsSAB) {
-	    return false;
-	  }
-	  if (aIsSAB || bIsSAB) {
-	    // && would work too, because both are true or both false here
-	    if (sabByteLength(a) !== sabByteLength(b)) {
-	      return false;
-	    }
-	    return typeof Uint8Array === 'function' && internalDeepEqual(new Uint8Array(a), new Uint8Array(b), opts, channel);
-	  }
-	  if (typeof a !== typeof b) {
-	    return false;
-	  }
-	  var ka = objectKeys(a);
-	  var kb = objectKeys(b);
-	  // having the same number of owned properties (keys incorporates hasOwnProperty)
-	  if (ka.length !== kb.length) {
-	    return false;
-	  }
-
-	  // the same set of keys (although not necessarily the same order),
-	  ka.sort();
-	  kb.sort();
-	  // ~~~cheap key test
-	  for (i = ka.length - 1; i >= 0; i--) {
-	    if (ka[i] != kb[i]) {
-	      return false;
-	    } // eslint-disable-line eqeqeq
-	  }
-
-	  // equivalent values for every corresponding key, and ~~~possibly expensive deep test
-	  for (i = ka.length - 1; i >= 0; i--) {
-	    key = ka[i];
-	    if (!internalDeepEqual(a[key], b[key], opts, channel)) {
-	      return false;
-	    }
-	  }
-	  var aCollection = whichCollection(a);
-	  var bCollection = whichCollection(b);
-	  if (aCollection !== bCollection) {
-	    return false;
-	  }
-	  if (aCollection === 'Set' || bCollection === 'Set') {
-	    // aCollection === bCollection
-	    return setEquiv(a, b, opts, channel);
-	  }
-	  if (aCollection === 'Map') {
-	    // aCollection === bCollection
-	    return mapEquiv(a, b, opts, channel);
-	  }
-	  return true;
-	}
-	var deepEqual = function deepEqual(a, b, opts) {
-	  return internalDeepEqual(a, b, opts, getSideChannel());
-	};
-
-	Object.defineProperty(elementRoleMap$1, "__esModule", {
-	  value: true
-	});
-	elementRoleMap$1.default = void 0;
-	var _deepEqual = _interopRequireDefault$2(deepEqual);
-	var _iterationDecorator$1 = _interopRequireDefault$2(iterationDecorator$1);
-	var _rolesMap$2 = _interopRequireDefault$2(rolesMap$1);
-	function _interopRequireDefault$2(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-	function _slicedToArray$1(arr, i) {
-	  return _arrayWithHoles$1(arr) || _iterableToArrayLimit$1(arr, i) || _unsupportedIterableToArray$1(arr, i) || _nonIterableRest$1();
-	}
-	function _nonIterableRest$1() {
-	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	}
-	function _iterableToArrayLimit$1(arr, i) {
-	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-	  if (_i == null) return;
-	  var _arr = [];
-	  var _n = true;
-	  var _d = false;
-	  var _s, _e;
-	  try {
-	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-	      _arr.push(_s.value);
-	      if (i && _arr.length === i) break;
-	    }
-	  } catch (err) {
-	    _d = true;
-	    _e = err;
-	  } finally {
-	    try {
-	      if (!_n && _i["return"] != null) _i["return"]();
-	    } finally {
-	      if (_d) throw _e;
-	    }
-	  }
-	  return _arr;
-	}
-	function _arrayWithHoles$1(arr) {
-	  if (Array.isArray(arr)) return arr;
-	}
-	function _createForOfIteratorHelper$1(o, allowArrayLike) {
-	  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-	  if (!it) {
-	    if (Array.isArray(o) || (it = _unsupportedIterableToArray$1(o)) || allowArrayLike && o && typeof o.length === "number") {
-	      if (it) o = it;
-	      var i = 0;
-	      var F = function F() {};
-	      return {
-	        s: F,
-	        n: function n() {
-	          if (i >= o.length) return {
-	            done: true
-	          };
-	          return {
-	            done: false,
-	            value: o[i++]
-	          };
-	        },
-	        e: function e(_e2) {
-	          throw _e2;
-	        },
-	        f: F
-	      };
-	    }
-	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	  }
-	  var normalCompletion = true,
-	    didErr = false,
-	    err;
-	  return {
-	    s: function s() {
-	      it = it.call(o);
-	    },
-	    n: function n() {
-	      var step = it.next();
-	      normalCompletion = step.done;
-	      return step;
-	    },
-	    e: function e(_e3) {
-	      didErr = true;
-	      err = _e3;
-	    },
-	    f: function f() {
-	      try {
-	        if (!normalCompletion && it.return != null) it.return();
-	      } finally {
-	        if (didErr) throw err;
-	      }
-	    }
-	  };
-	}
-	function _unsupportedIterableToArray$1(o, minLen) {
-	  if (!o) return;
-	  if (typeof o === "string") return _arrayLikeToArray$1(o, minLen);
-	  var n = Object.prototype.toString.call(o).slice(8, -1);
-	  if (n === "Object" && o.constructor) n = o.constructor.name;
-	  if (n === "Map" || n === "Set") return Array.from(o);
-	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen);
-	}
-	function _arrayLikeToArray$1(arr, len) {
-	  if (len == null || len > arr.length) len = arr.length;
-	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-	    arr2[i] = arr[i];
-	  }
-	  return arr2;
-	}
-	var elementRoles$1 = [];
-	var keys$1 = _rolesMap$2.default.keys();
-	for (var i$1 = 0; i$1 < keys$1.length; i$1++) {
-	  var key = keys$1[i$1];
-	  var role = _rolesMap$2.default.get(key);
-	  if (role) {
-	    var concepts = [].concat(role.baseConcepts, role.relatedConcepts);
-	    for (var k = 0; k < concepts.length; k++) {
-	      var relation = concepts[k];
-	      if (relation.module === 'HTML') {
-	        var concept = relation.concept;
-	        if (concept) {
-	          (function () {
-	            var conceptStr = JSON.stringify(concept);
-	            var elementRoleRelation = elementRoles$1.find(function (relation) {
-	              return JSON.stringify(relation[0]) === conceptStr;
-	            });
-	            var roles = void 0;
-	            if (elementRoleRelation) {
-	              roles = elementRoleRelation[1];
-	            } else {
-	              roles = [];
-	            }
-	            var isUnique = true;
-	            for (var _i = 0; _i < roles.length; _i++) {
-	              if (roles[_i] === key) {
-	                isUnique = false;
-	                break;
-	              }
-	            }
-	            if (isUnique) {
-	              roles.push(key);
-	            }
-	            elementRoles$1.push([concept, roles]);
-	          })();
-	        }
-	      }
-	    }
-	  }
-	}
-	var elementRoleMap = {
-	  entries: function entries() {
-	    return elementRoles$1;
-	  },
-	  forEach: function forEach(fn) {
-	    var thisArg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-	    var _iterator = _createForOfIteratorHelper$1(elementRoles$1),
-	      _step;
-	    try {
-	      for (_iterator.s(); !(_step = _iterator.n()).done;) {
-	        var _step$value = _slicedToArray$1(_step.value, 2),
-	          _key = _step$value[0],
-	          values = _step$value[1];
-	        fn.call(thisArg, values, _key, elementRoles$1);
-	      }
-	    } catch (err) {
-	      _iterator.e(err);
-	    } finally {
-	      _iterator.f();
-	    }
-	  },
-	  get: function get(key) {
-	    var item = elementRoles$1.find(function (tuple) {
-	      return (0, _deepEqual.default)(key, tuple[0]);
-	    });
-	    return item && item[1];
-	  },
-	  has: function has(key) {
-	    return !!elementRoleMap.get(key);
-	  },
-	  keys: function keys() {
-	    return elementRoles$1.map(function (_ref) {
-	      var _ref2 = _slicedToArray$1(_ref, 1),
-	        key = _ref2[0];
-	      return key;
-	    });
-	  },
-	  values: function values() {
-	    return elementRoles$1.map(function (_ref3) {
-	      var _ref4 = _slicedToArray$1(_ref3, 2),
-	        values = _ref4[1];
-	      return values;
-	    });
-	  }
-	};
-	var _default$1 = (0, _iterationDecorator$1.default)(elementRoleMap, elementRoleMap.entries());
-	elementRoleMap$1.default = _default$1;
-
-	var roleElementMap$1 = {};
-
-	Object.defineProperty(roleElementMap$1, "__esModule", {
-	  value: true
-	});
-	roleElementMap$1.default = void 0;
-	var _iterationDecorator = _interopRequireDefault$1(iterationDecorator$1);
-	var _rolesMap$1 = _interopRequireDefault$1(rolesMap$1);
-	function _interopRequireDefault$1(obj) {
-	  return obj && obj.__esModule ? obj : {
-	    default: obj
-	  };
-	}
-	function _slicedToArray(arr, i) {
-	  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
-	}
-	function _nonIterableRest() {
-	  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	}
-	function _iterableToArrayLimit(arr, i) {
-	  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-	  if (_i == null) return;
-	  var _arr = [];
-	  var _n = true;
-	  var _d = false;
-	  var _s, _e;
-	  try {
-	    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-	      _arr.push(_s.value);
-	      if (i && _arr.length === i) break;
-	    }
-	  } catch (err) {
-	    _d = true;
-	    _e = err;
-	  } finally {
-	    try {
-	      if (!_n && _i["return"] != null) _i["return"]();
-	    } finally {
-	      if (_d) throw _e;
-	    }
-	  }
-	  return _arr;
-	}
-	function _arrayWithHoles(arr) {
-	  if (Array.isArray(arr)) return arr;
-	}
-	function _createForOfIteratorHelper(o, allowArrayLike) {
-	  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
-	  if (!it) {
-	    if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
-	      if (it) o = it;
-	      var i = 0;
-	      var F = function F() {};
-	      return {
-	        s: F,
-	        n: function n() {
-	          if (i >= o.length) return {
-	            done: true
-	          };
-	          return {
-	            done: false,
-	            value: o[i++]
-	          };
-	        },
-	        e: function e(_e2) {
-	          throw _e2;
-	        },
-	        f: F
-	      };
-	    }
-	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-	  }
-	  var normalCompletion = true,
-	    didErr = false,
-	    err;
-	  return {
-	    s: function s() {
-	      it = it.call(o);
-	    },
-	    n: function n() {
-	      var step = it.next();
-	      normalCompletion = step.done;
-	      return step;
-	    },
-	    e: function e(_e3) {
-	      didErr = true;
-	      err = _e3;
-	    },
-	    f: function f() {
-	      try {
-	        if (!normalCompletion && it.return != null) it.return();
-	      } finally {
-	        if (didErr) throw err;
-	      }
-	    }
-	  };
-	}
-	function _unsupportedIterableToArray(o, minLen) {
-	  if (!o) return;
-	  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-	  var n = Object.prototype.toString.call(o).slice(8, -1);
-	  if (n === "Object" && o.constructor) n = o.constructor.name;
-	  if (n === "Map" || n === "Set") return Array.from(o);
-	  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
-	}
-	function _arrayLikeToArray(arr, len) {
-	  if (len == null || len > arr.length) len = arr.length;
-	  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-	    arr2[i] = arr[i];
-	  }
-	  return arr2;
-	}
-	var roleElement = [];
-	var keys = _rolesMap$1.default.keys();
-	var _loop = function _loop(i) {
-	  var key = keys[i];
-	  var role = _rolesMap$1.default.get(key);
-	  if (role) {
-	    var concepts = [].concat(role.baseConcepts, role.relatedConcepts);
-	    for (var k = 0; k < concepts.length; k++) {
-	      var relation = concepts[k];
-	      if (relation.module === 'HTML') {
-	        var concept = relation.concept;
-	        if (concept) {
-	          var roleElementRelation = roleElement.find(function (item) {
-	            return item[0] === key;
-	          });
-	          var relationConcepts = void 0;
-	          if (roleElementRelation) {
-	            relationConcepts = roleElementRelation[1];
-	          } else {
-	            relationConcepts = [];
-	          }
-	          relationConcepts.push(concept);
-	          roleElement.push([key, relationConcepts]);
-	        }
-	      }
-	    }
-	  }
-	};
-	for (var i = 0; i < keys.length; i++) {
-	  _loop(i);
-	}
-	var roleElementMap = {
-	  entries: function entries() {
-	    return roleElement;
-	  },
-	  forEach: function forEach(fn) {
-	    var thisArg = arguments.length > 
+{
+    "word": "समन्त",
+    "BEN": [
+        {
+            "word": "समन्त",
+            "eid": "15576",
+            "pagenum": 1009,
+            "content": "समन्त¦ <i>sam-anta,</i> <b>I.</b> <ab>adj.</ab> <b>1.</b> From every part, <ls>Böhtl. Ind. Spr.</ls> 1446; entire. <b>2.</b> All. <b>II.</b> <ab>Abl.</ab> <i>tāt,</i> <ab>adv.</ab> <b>1.</b> From every part, <ls>Pañc.</ls> 51, 18. <b>2.</b>  All round, on every side, <ls>Mālat.</ls> 158, 4; <ls>Pañc.</ls> 230, 16; <ls>Chr.</ls> 4, 20. <b>3.</b> Completely, <ls>Pañc.</ls> 148, 12. <b>III.</b> <ab>m.</ab> Limit, boundary."
+        }
+    ],
+    "BHS": [
+        {
+            "word": "समन्त",
+            "eid": "15871",
+            "pagenum": 562,
+            "content": "<b>Samanta</b>¦, <ab>n.</ab> of a Bodhisattva: <ls>Mmk</ls> 〔576.15〕 (<ab>vs</ab>); <ab>prob.</ab> a short form (<ab>m.c.</ab>) for the well-known <b>Samaṇtabhadra</b>, <ab>q.v.</ab>; in the same line <b>Mahāsthāma</b>, <ab>q.v.</ab>, also <ab>prob.</ab> a short form."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "समन्त",
+            "eid": "8281",
+            "pagenum": 369,
+            "content": "समन्त¦ (e सम् et अन्त finis). <i>Abl.</i> समन्तात् undique. SU. 3. 3. N. 12. 39. BH. 11. 30. (Vid. sq. et cf. germ. vet. <i>sa-</i> <i>mant</i> simul; v. gr. comp. 294. fin.)"
+        }
+    ],
+    "BUR": [
+        {
+            "word": "समन्त",
+            "eid": "17628",
+            "pagenum": 681,
+            "content": "समन्त¦ <i>samanta</i> <ab>m.</ab> <i>(sam)</i> limite, terme, borne. -- À l'<ab>ab.</ab> de toutes parts.  <P><i>samantatas</i> <ab>adv.</ab> de tous côtés.  <P><i>samantadugdhā</i> <ab>f.</ab> euphorbe, <ab>bot.</ab>  <P><i>samantabhuj</i> <ab>m.</ab> <s1 slp1='agni'>Agni</s1>, le feu."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "समन्त",
+            "eid": "35138",
+            "pagenum": 591,
+            "content": "स/मन्त¦ <lex>a.</lex> adjoining, neighbouring, all, complete. <lex>f.</lex> आ <ab>pl.</ab> neighbourhood. <lex>n.</lex> स/मन्तम् near, close to (<ab>instr.</ab>). समन्तेन all around, <ab>w.</ab> neg. nowhere. °—, समन्त/म्, सम°न्तात् & सम°न्ततस् all around, everywhere; completely, thoroughly."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "समन्त",
+            "eid": "26351",
+            "pagenum": 476,
+            "content": "स/मन्त¦ zusammenhängend, vollständig. <i>n.</i> स/मन्तम् <lbinfo n='6'/> in der Nähe von <i>(Instr.)</i>; समन्त/म्, समन्त (°—), °न्तात्, °न्ततस् <i>u.</i> °न्तेन allerseits, ringsum."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "समन्त",
+            "eid": "9371",
+            "pagenum": 1480,
+            "content": "<b>sám-anta,</b>¦ <ab>a.</ab>, <i>aneinander gränzend, benachbart;</i> insbesondere 2〉 -am als <ab>Adv.</ab> <i>vereint</i> mit [<ab>I.</ab>]. <dvsn n='TS'>-am 2〉 yajatébhis {355,11}. <dvsn n='TS'>-ā [<ab>du.</ab> <ab>m.</ab>] gharmā́ {940,1}. <dvsn n='TS'>-e [<ab>du.</ab> <ab>n.</ab>] rájasī {596,1}. <dvsn n='TS'>-e [<ab>du.</ab> <ab>f.</ab>] samgáchamāne yuvatī́ 〰 {185,5}."
+        }
+    ],
+    "IEG": [
+        {
+            "word": "समन्त",
+            "eid": "5078",
+            "pagenum": 289,
+            "content": "<i>samanta</i>¦ (IE 8-1), corrupt form of <i>saṃvat.</i>"
+        }
+    ],
+    "MD": [
+        {
+            "word": "समन्त",
+            "eid": "18833",
+            "pagenum": 336,
+            "content": "समन्त¦ sám-anta, <ab>V.</ab> <lex>a.</lex> (having <i>their</i> ends 🞄together), contiguous, neighbouring; complete, 🞄entire: <b>-m,</b> <lex>ad.</lex> together with (<ab>in.</ab>, 🞄<ab>RV.¹</ab>); (<b>á</b>) <b>-m,</b> <ab>V.</ab> <lex>ad.</lex> (<i>also</i> <ab>°—</ab> in <ab>C.</ab>) on all 🞄sides, around; completely, entirely; <ab>ab.</ab> (<ab>C.</ab>) 🞄from <i>or</i> on all sides, in all directions, all 🞄round; around (<ab>g.</ab>); completely; <b>-tas,</b> <lex>ad.</lex> <ab>id.</ab>."
+        }
+    ],
+    "MW": [
+        {
+            "word": "समन्त",
+            "eid": "233550",
+            "pagenum": "1155,1",
+            "content": "स/म्-अन्त ¦ <lex>mf(आ)n.</lex> ‘having the ends together’, contiguous, neighbouring, adjacent, <ls>RV.</ls>; <ls>AV.</ls>; <ls>PañcavBr.</ls><info lex='m:f#A:n'/>"
+        },
+        {
+            "word": "समन्त",
+            "eid": "233551",
+            "pagenum": "1155,1",
+            "content": "¦ ‘being on every side’, universal, whole, entire, all (स/मन्तम् <lex type='phw'>ind.</lex> ‘in contiguity or conjunction with’, ‘together with’; समन्त/म् <lex type='phw'>ind.</lex> or °तात् <lex type='phw'>ind.</lex> or °त-तस् <lex type='phw'>ind.</lex> ‘on all sides, around’, ‘or, wholly, completely’; °तेन <lex type='phw'>ind.</lex> ‘all round’; with न = ‘nowhere’), <ls>AV.</ls> &c. &c.<info phwchild='233555.1'/><info phwchild='233555.2'/><info phwchild='233555.3'/><info phwchild='233555.4'/><info phwchild='233555.5'/><info lex='inh'/>"
+        },
+        {
+            "word": "समन्त",
+            "eid": "233554",
+            "pagenum": "1155,1",
+            "content": "स/म्-अन्त ¦ <lex>n.</lex> (also with अग्नेः, वरुणस्य, or वसिष्ठस्य) <ab>N.</ab> of various <s1 slp1='saman'>Saman</s1>s, <ls>Br.</ls><info lex='n'/>"
+        },
+        {
+            "word": "समन्त",
+            "eid": "233555",
+            "pagenum": "1155,1",
+            "content": "स/म्-अन्त ¦ <lex>n.</lex> or <lex type='hw'>m.</lex> (?) <ab>N.</ab> of a country, <ls>Buddh.</ls><info lex='m:n'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "समन्त",
+            "eid": "49651",
+            "pagenum": 1068,
+            "content": "समन्त¦ <i>sam-anta, as, ā, am,</i> being on every side or part, universal, complete, whole, entire, all; (<i>as</i>), m. limit, boundary, term, end; (<i>am</i>), ind. to the very end, on all sides, wholly, altogether; (<i>āt</i>), ind. from every side, on every side, from every part, all round, completely. <i>—Samanta-tas,</i> ind. all round, on every side, altogether, wholly. <i>—Samanta-dug-</i> <i>dhā,</i> f. the milk hedge-plant <i>(= snuhī)</i>. <i>—Samanta-</i> <i>pañcaka, am,</i> n. the district Kuru-kṣetra, q. v. (said to have been once bordered by five lakes filled by Paraśu-rāma with the blood of the slaughtered Kṣatriyas). <i>—Samanta-bhadra, as,</i> m. ‘wholly auspicious,’ a Buddha or Jina. <i>—Samanta-bhuj, k,</i> m. ‘alldevouring,’ epithet of Agni or fire."
+        }
+    ],
+    "PW": [
+        {
+            "word": "समन्त",
+            "eid": "119889",
+            "pagenum": 7,
+            "content": "स/मन्त¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> (<lex>f.</lex> आ) <dvsn n='2'>— a〉 <i>angrenzend, benachbart</i>. <dvsn n='2'>— b〉 <i>sämmtlich, vollständig</i>. <dvsn n='1'>— 2〉 <lex>f.</lex> आ <dvsn n='2'>— a〉 <ab>Pl.</ab> <i>Nachbarschaft</i>. <dvsn n='2'>— b〉 Titel einer Grammatik. <dvsn n='1'>— 3〉 <lex>n.</lex> <dvsn n='2'>— a〉 Name verschiedener <is>Sāman</is>. <dvsn n='2'>— b〉 *<ab>N. pr.</ab> eines Reichs. Könnte auch <lex>m.</lex> sein. <dvsn n='1'>— 4〉 <lex>Adv.</lex> <dvsn n='2'>— a〉 स/मन्तम् <i>in der Nähe von, vereint mit</i> (<ab>Instr.</ab>). <dvsn n='2'>— b〉 समन्त/म् <i>auf allen Seiten, ringsum; vollständig;</i> Am anfange eines <ab>Comp.</ab> समन्त°. <dvsn n='2'>— c〉 समन्तात् <i>von —, auf —, nach allen Seiten, allerwärts; ringsum, im Umkreis von</i> (<ab>Gen.</ab>); <i>vollständig, gründlich</i>. <dvsn n='2'>— d〉 समन्ततस् <ab>dass.</ab> mit <ab>Acc.</ab> <i>rings um</i>. <dvsn n='2'>— e〉 समन्तेन <i>ringsum</i>. Mit einer Negation so <ab>v. a.</ab> <i>nirgends</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समन्त",
+            "eid": "105294",
+            "pagenum": 7,
+            "content": "स/मन्त¦ (2. सम् + अन्त) <ls>P. 6, 2, 180</ls> (oxyt., vgl. 5) <i>b</i>). <dvsn n='1'> 1) <lex>adj.</lex> (f. आ) <dvsn n='2'> a) <i>angrenzend, benachbart</i>: Himmel und Erde <ls>ṚV. 1, 185, 5.</ls> <ls n='ṚV.'>7, 80, 1.</ls> <ls>AV. 8, 8, 12.</ls> अन्तरिक्षेण द्यावापृथिवी समन्ते <ls>PAÑCAV. BR. 15, 4, 8. 19, 12, 6.</ls> घ\\र्मा <ls>ṚV. 10, 114, 1.</ls> <dvsn n='2'>— b) <i>sämmtlich, vollständig</i> <ls>AV. PRĀT. 4, 38</ls> (पूरणे und zwar ohne <is>Avagraha</is> in dieser Bed.). सम^ग्र\\ः सम^न्तो भूयास\\ं गोभि\\रश्वै^ः <ls>AV. 7, 81, 4.</ls> पु\\ष्क\\रिणी^ः <ls n='AV.'>4, 34, 5.</ls> <dvsn n='1'>— 2) <lex>f.</lex> आ <dvsn n='2'> a) pl. <i>Nachbarschaft</i>: शतानीकः समन्तासु हयमादत्त <ls>ŚAT. BR. 13, 5, 4, 21.</ls> <dvsn n='2'>— b) Titel einer Grammatik <ls>COLEBR. Misc. Ess. 2, 49.</ls> <dvsn n='1'>— 3) <lex>n.</lex> <dvsn n='2'> a) N. verschiedener <is>Sāman</is> <ls>Ind. St. 3, 242,b.</ls> अग्नेः oder वसिष्ठस्य 200,b. वरुणस्य 232,b. <dvsn n='2'>— b) N. pr. eines Reichs (könnte auch masc. sein) <ls>WASSILJEW 207.</ls> <ls>TĀRAN. 147.</ls> <dvsn n='1'>— 4) adv. <dvsn n='2'> a) स/मन्तम् <i>in der Nähe von, vereint mit</i> (instr.): रथ\\मा ति^ष्ठ यज\\तेभि\\ः सम^न्तम् <ls>ṚV. 5, 1, 11.</ls> <dvsn n='2'>— b) समन्त/म् <i>auf allen Seiten, ringsum; vollständig</i>: यथा^ वृ\\क्षं लिबु^जा सम\\न्तं प^रिषस्व\\जे <ls>AV. 6, 8, 1.</ls> <ls n='AV. 6,'>99, 2.</ls> स\\म\\न्तं प\\र्यव^द्यति सम\\न्तमे\\वेन्द्रि\\यं वी\\र्य^ं यज^माने दधाति <ls>TS. 2, 3, 7, 4.</ls> <ls n='TS.'>7, 4, 14, 1.</ls> <ls>AIT. BR. 2, 19. 31.</ls> <ls>ŚAT. BR. 3, 3, 1, 5. 9, 2, 16. 8, 3, 4, 15. 14, 4, 1, 19. 6, 3, 2.</ls> <ls>GOBH. 1, 5, 15. 7, 9.</ls> समन्तपर्यायिन् <ls>AIT. BR. 8, 15.</ls> °प्रासादिक <ls>BURNOUF, Intr. 198.</ls> °वृत <ls>WASSILJEW 299.</ls> °संबाध <ls>Spr. (II) 3401</ls> (Conj.). °शितिबाहु <i>auf jeder</i> d. h. <i>auf beiden Seiten</i> <ls>VS. 24, 2.</ls> <dvsn n='2'>— c) समन्तात् <i>von —,</i> <i>auf —, nach allen Seiten, allerwärts, ringsum</i> <ls>H. 1529.</ls> <ls>HALĀY. 5, 88.</ls> <ls>BHAG. 11, 30.</ls> <ls>MBH. 1, 1129.</ls> <ls n='MBH. 1,'>7681.</ls> <ls n='MBH.'>2, 80.</ls> <ls n='MBH.'>3, 2439.</ls> <ls n='MBH. 3,'>11920.</ls> <ls n='MBH.'>4, 290.</ls> <ls n='MBH.'>5, 5961.</ls> <ls n='MBH.'>13, 2396.</ls> <ls>HARIV. 15635.</ls> <ls>R. 2, 57, 31.</ls> <ls n='R. 2,'>71, 20.</ls> <ls n='R. 2,'>73, 18.</ls> <ls n='R. 2,'>91, 29.</ls> <ls n='R. 2, 91,'>60.</ls> <ls n='R. 2,'>93, 10.</ls> <ls n='R.'>3, 79, 1.</ls> <ls n='R.'>6, 99, 23.</ls> <ls>MṚCCH. 49, 1.</ls> <ls>ṚT. 1, 22.</ls> <ls>ŚĀK. 7, 23. 77, 5. 94, 5.</ls> <ls>Spr. (II) 1129.</ls> <ls n='Spr. (II)'>4929.</ls> <ls n='Spr. (II)'>6574.</ls> <ls>AK. 2, 10, 46.</ls> <ls>VARĀH. BṚH. S. 21, 35. 53, 21. 116.</ls> <ls>MĀLATĪM. 158, 4.</ls> <ls>MUDRĀR. 41, 15.</ls> <ls>PRAB. 26, 7.</ls> <ls>SĀH. D. 70, 14.</ls> <ls>BRAHMA-P. in LA. (III) 49, 10.</ls> <ls>DHŪRTAS. 71, 8.</ls> <ls>BHĀG. P. 3, 12, 16. 4, 6, 41. 5, 16, 19. 7, 8, 31. 9, 8, 8. 22, 36.</ls> <ls>PAÑCAT. 51, 18. 63, 8. 148, 12. ed. orn. 50, 2.</ls> <i>vollständig, gründlich</i>: समन्ताज्ज्ञानं स्यात्समुदागमः <ls>TRIK. 3, 2, 12.</ls> mit gen. <i>im Umkreis von, ringsum</i>: अग्नेः समन्तात्प्रमार्ष्टि <ls>ŚĀṄKH. GṚHY. 1, 7.</ls> <ls>R. 2, 98, 29.</ls> <ls>Spr. (II) 7226.</ls> <ls>PAÑCAT. 148, 10.</ls> <ls n='PAÑCAT.'>159, 25.</ls> <ls n='PAÑCAT.'>230, 16.</ls> <dvsn n='2'>— d) समन्ततस् dass. <ls>AK. 3, 5, 13.</ls> <ls>H.</ls> <ls>HALĀY.</ls> समन्ततः सर्वतः पृथिवीं परीयाय <ls>AIT. BR. 8, 21.</ls> <ls>M. 7, 190. 8, 237. 11, 23</ls> (रक्ष्). <ls>MBH. 1, 1017.</ls> <ls n='MBH. 1,'>1175.</ls> <ls n='MBH.'>3, 1767.</ls> <ls>BHAG. 6, 24.</ls> <ls>R. 1, 34, 8.</ls> <ls n='R. 1,'>38, 14.</ls> <ls n='R. 1,'>50, 12.</ls> <ls n='R.'>2, 21, 3.</ls> <ls n='R. 2,'>31, 4.</ls> <ls n='R. 2,'>54, 18.</ls> <ls n='R. 2,'>89, 11.</ls> <ls n='R. 2,'>93, 2.</ls> <ls n='R. 2,'>96, 11.</ls> <ls n='R. 2,'>99, 2.</ls> <ls n='R.'>3, 75, 32.</ls> <ls n='R.'>4, 2, 5.</ls> <ls n='R. 4,'>8, 25</ls> (रक्ष्). <ls n='R. 1,'>24, 29.</ls> <ls n='R.'>6, 37, 102.</ls> <ls>SUŚR. 2, 361, 7.</ls> <ls>KĀM. NĪTIS. 11, 39.</ls> <ls>Spr. (II) 5906.</ls> <ls>VARĀH. BṚH. S. 4, 15. 43, 4. 53, 31. 56, 12. 26.</ls> <ls>KATHĀS. 12, 110.</ls> <ls n='KATHĀS.'>48, 118.</ls> <ls>MĀRK. P. 58, 5.</ls> <ls>BHĀG. P. 4, 1, 18. 5, 1, 33.</ls> <ls>LA. (III) 5, 17. 52, 5.</ls> <i>vollständig, gründlich</i> <ls>HARIV. 9986.</ls> <ls n='HARIV.'>9989.</ls> <ls>Spr. (II) 2407.</ls> एतेषु च स्वधर्मेषु स्वेषु तिष्ठेत्समन्ततः <ls>MĀRK. P. 28, 33.</ls> mit acc. <i>rings um</i>: तस्थुः समन्ततः खरम् <ls>R. 3, 29, 31.</ls> <dvsn n='2'>— e) समन्तेन <i>ringsum</i>: नहि भूतं समन्तेन त्रिषु लोकेषु विद्यते so v. a. <i>nirgends</i> <ls>MBH. 7, 9516.</ls> <dvsn n='v'>— Vgl. प्रति°, सामन्त ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समन्त",
+            "eid": "42524",
+            "pagenum": 761,
+            "content": "समन्त¦ mfn. (-न्तः-न्ता-न्तं) All, entire, universal. m. (-न्तः) Limit, term, boundary, end. E. सम् intensitive, अन्त end."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "समन्त",
+            "eid": "40507",
+            "pagenum": 894,
+            "content": "समन्त¦ mfn. (-न्तः-न्ता-न्तं) All, entire, universal. m. (-न्तः) Limit, term, boundary, end. .E. सम् intensitive, अन्त end."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "समन्त",
+            "eid": "40219",
+            "pagenum": 814,
+            "content": "समन्त¦ (न्तः) 1. <i>m.</i> Limit, time. <i>a.</i> Entire, universal."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समन्त",
+            "eid": "37874",
+            "pagenum": "5-267-b",
+            "content": "समन्तः¦, पुं, सीमा । सम्यक्प्रकारेण अन्तः इति तत्पुरुषसमासनिष्पन्नः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "समन्त",
+            "eid": "45242",
+            "pagenum": "5229,a",
+            "content": "समन्त¦ पु० सम्यक् अन्तः, स यत्र वा । १ सम्यगन्ते २ सीमायाञ्च"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समन्त",
+            "content": "समन्त वि. -  सम्यक् अन्तो यत्र ब.स .  'हर दिशा में मौजूद, विश्वव्यापी'"
+        },
+        {
+            "word": "समन्त",
+            "content": "समन्त वि. -  सम्यक् अन्तो यत्र ब.स .  पूर्ण समस्त"
+        },
+        {
+            "word": "समन्त",
+            "content": "समन्तः पुं. - 'सीमा, हद, मर्यादा'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "समन्त",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಎಲ್ಲೆ \\/ಗಡಿ",
+            "content": ""
+        },
+        {
+            "word": "समन्त",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಎಲ್ಲಾ ಕಡೆಯಲ್ಲೂ ಇರುವ",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "समन्त",
+            "content": "<lexhead no=\"652\">\n<dentry>समन्त</dentry>\n<prAwipaxikam>समन्त</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">समन्त</prAwipaxikam>\n<etymology>[सम्यक् अन्तो यत्र ब* स*]</etymology>\n<sense no=\"1\">हर दिशा में मौजूद, विश्वव्यापी</sense>\n<sense n=\"2\">पूर्ण समस्त</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "समन्त",
+            "content": "<body><s>samanta pu° samyak antaH, sa yatra vA . <lb/><b>1</b> samyagante <lb/><b>2</b> sImAyAYca</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "समन्त",
+            "content": "<H1><h><key1>samanta</key1><key2>sa/m-anta</key2></h><body><s>sa/m-anta</s>   <lex>mf(<s>A</s>)n.</lex> ‘having the ends together’, contiguous, neighbouring, adjacent, <ls>RV.</ls>; <ls>AV.</ls>; <ls>PañcavBr.</ls><info lex=\"m:f#A:n\" /></body><tail><L>233550</L><pc>1155,1</pc></tail></H1>\n <H1A><h><key1>samanta</key1><key2>sa/m-anta</key2></h><body>  ‘being on every side’, universal, whole, entire, all (<s>sa/mantam</s> <lex type=\"phw\">ind.</lex> ‘in contiguity or conjunction with’, ‘together with’; <s>samanta/m</s> <lex type=\"phw\">ind.</lex> or <s>°tAt</s> <lex type=\"phw\">ind.</lex> or <s>°ta-tas</s> <lex type=\"phw\">ind.</lex> ‘on all sides, around’, ‘or, wholly, completely’; <s>°tena</s> <lex type=\"phw\">ind.</lex> ‘all round’; with <s>na</s> = ‘nowhere’), <ls>AV.</ls> &amp;c. &amp;c.<info phwchild=\"233555.1\" /><info phwchild=\"233555.2\" /><info phwchild=\"233555.3\" /><info phwchild=\"233555.4\" /><info phwchild=\"233555.5\" /><info lex=\"inh\" /></body><tail><L>233551</L><pc>1155,1</pc></tail></H1A>\n <H1B><h><key1>samanta</key1><key2>sa/m-anta</key2></h><body><s>sa/m-anta</s>   <lex>n.</lex> (also with <s>agneH</s>, <s>varuRasya</s>, or <s>vasizWasya</s>) <ab>N.</ab> of various <s1 slp1=\"saman\">Saman</s1>s, <ls>Br.</ls><info lex=\"n\" /></body><tail><L>233554</L><pc>1155,1</pc></tail></H1B>\n <H1B><h><key1>samanta</key1><key2>sa/m-anta</key2></h><body><s>sa/m-anta</s>   <lex>n.</lex> or <lex type=\"hw\">m.</lex> (?) <ab>N.</ab> of a country, <ls>Buddh.</ls><info lex=\"m:n\" /></body><tail><L>233555</L><pc>1155,1</pc></tail></H1B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समन्त",
+            "content": "<H1><h><key1>samanta</key1><key2>samanta</key2></h><body><s>samanta</s>  <div n=\"1\">mfn. (<s>-ntaH-ntA-ntaM</s>) All, entire, universal. </div><div n=\"1\">m. (<s>-ntaH</s>) Limit, term, <lb />boundary, end.</div><div n=\"E\"> E. <s>sam</s> intensitive, <s>anta</s> end.</div></body><tail><L>42524</L><pc>761-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "समन्त",
+            "content": "<span lang=\"sa\">समन्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಎಲ್ಲೆ /ಗಡಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>समन्त<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಎಲ್ಲಾ ಕಡೆಯಲ್ಲೂ ಇರುವ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

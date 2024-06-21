@@ -1,746 +1,177 @@
-ook();
-  }
-
-  if (current !== null && !didReceiveUpdate) {
-    bailoutHooks(current, workInProgress, renderLanes);
-    return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
-  }
-
-  if (getIsHydrating() && hasId) {
-    pushMaterializedTreeId(workInProgress);
-  } // React DevTools reads this flag.
-
-
-  workInProgress.flags |= PerformedWork;
-  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
-  return workInProgress.child;
-}
-
-function replayFunctionComponent(current, workInProgress, nextProps, Component, secondArg, renderLanes) {
-  // This function is used to replay a component that previously suspended,
-  // after its data resolves. It's a simplified version of
-  // updateFunctionComponent that reuses the hooks from the previous attempt.
-  prepareToReadContext(workInProgress, renderLanes);
-
-  const nextChildren = replaySuspendedComponentWithHooks(current, workInProgress, Component, nextProps, secondArg);
-  const hasId = checkDidRenderIdHook();
-
-  if (current !== null && !didReceiveUpdate) {
-    bailoutHooks(current, workInProgress, renderLanes);
-    return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
-  }
-
-  if (getIsHydrating() && hasId) {
-    pushMaterializedTreeId(workInProgress);
-  } // React DevTools reads this flag.
-
-
-  workInProgress.flags |= PerformedWork;
-  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
-  return workInProgress.child;
-}
-
-function updateClassComponent(current, workInProgress, Component, nextProps, renderLanes) {
-  // During mounting we don't know the child context yet as the instance doesn't exist.
-  // We will invalidate the child context in finishClassComponent() right after rendering.
-
-
-  let hasContext;
-
-  if (isContextProvider(Component)) {
-    hasContext = true;
-    pushContextProvider(workInProgress);
-  } else {
-    hasContext = false;
-  }
-
-  prepareToReadContext(workInProgress, renderLanes);
-  const instance = workInProgress.stateNode;
-  let shouldUpdate;
-
-  if (instance === null) {
-    resetSuspendedCurrentOnMountInLegacyMode(current, workInProgress); // In the initial pass we might need to construct the instance.
-
-    constructClassInstance(workInProgress, Component, nextProps);
-    mountClassInstance(workInProgress, Component, nextProps, renderLanes);
-    shouldUpdate = true;
-  } else if (current === null) {
-    // In a resume, we'll already have an instance we can reuse.
-    shouldUpdate = resumeMountClassInstance(workInProgress, Component, nextProps, renderLanes);
-  } else {
-    shouldUpdate = updateClassInstance(current, workInProgress, Component, nextProps, renderLanes);
-  }
-
-  const nextUnitOfWork = finishClassComponent(current, workInProgress, Component, shouldUpdate, hasContext, renderLanes);
-
-  return nextUnitOfWork;
-}
-
-function finishClassComponent(current, workInProgress, Component, shouldUpdate, hasContext, renderLanes) {
-  // Refs should update even if shouldComponentUpdate returns false
-  markRef$1(current, workInProgress);
-  const didCaptureError = (workInProgress.flags & DidCapture) !== NoFlags$1;
-
-  if (!shouldUpdate && !didCaptureError) {
-    // Context providers should defer to sCU for rendering
-    if (hasContext) {
-      invalidateContextProvider(workInProgress, Component, false);
-    }
-
-    return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
-  }
-
-  const instance = workInProgress.stateNode; // Rerender
-
-  ReactCurrentOwner$1.current = workInProgress;
-  let nextChildren;
-
-  if (didCaptureError && typeof Component.getDerivedStateFromError !== 'function') {
-    // If we captured an error, but getDerivedStateFromError is not defined,
-    // unmount all the children. componentDidCatch will schedule an update to
-    // re-render a fallback. This is temporary until we migrate everyone to
-    // the new API.
-    // TODO: Warn in a future release.
-    nextChildren = null;
-  } else {
-
-    {
-      nextChildren = instance.render();
-    }
-  } // React DevTools reads this flag.
-
-
-  workInProgress.flags |= PerformedWork;
-
-  if (current !== null && didCaptureError) {
-    // If we're recovering from an error, reconcile without reusing any of
-    // the existing children. Conceptually, the normal children and the children
-    // that are shown on error are two different sets, so we shouldn't reuse
-    // normal children even if their identities match.
-    forceUnmountCurrentAndReconcile(current, workInProgress, nextChildren, renderLanes);
-  } else {
-    reconcileChildren(current, workInProgress, nextChildren, renderLanes);
-  } // Memoize state using the values we just used to render.
-  // TODO: Restructure so we never read values from the instance.
-
-
-  workInProgress.memoizedState = instance.state; // The context might have changed so we need to recalculate it.
-
-  if (hasContext) {
-    invalidateContextProvider(workInProgress, Component, true);
-  }
-
-  return workInProgress.child;
-}
-
-function pushHostRootContext(workInProgress) {
-  const root = workInProgress.stateNode;
-
-  if (root.pendingContext) {
-    pushTopLevelContextObject(workInProgress, root.pendingContext, root.pendingContext !== root.context);
-  } else if (root.context) {
-    // Should always be set
-    pushTopLevelContextObject(workInProgress, root.context, false);
-  }
-
-  pushHostContainer(workInProgress, root.containerInfo);
-}
-
-function updateHostRoot(current, workInProgress, renderLanes) {
-  pushHostRootContext(workInProgress);
-
-  if (current === null) {
-    throw Error(formatProdErrorMessage(387));
-  }
-
-  const nextProps = workInProgress.pendingProps;
-  const prevState = workInProgress.memoizedState;
-  const prevChildren = prevState.element;
-  cloneUpdateQueue(current, workInProgress);
-  processUpdateQueue(workInProgress, nextProps, null, renderLanes);
-  const nextState = workInProgress.memoizedState;
-
-  {
-    const nextCache = nextState.cache;
-    pushCacheProvider(workInProgress, nextCache);
-
-    if (nextCache !== prevState.cache) {
-      // The root cache refreshed.
-      propagateContextChange(workInProgress, CacheContext, renderLanes);
-    }
-  } // Caution: React DevTools currently depends on this property
-  // being called "element".
-
-
-  const nextChildren = nextState.element;
-
-  if (prevState.isDehydrated) {
-    // This is a hydration root whose shell has not yet hydrated. We should
-    // attempt to hydrate.
-    // Flip isDehydrated to false to indicate that when this render
-    // finishes, the root will no longer be dehydrated.
-    const overrideState = {
-      element: nextChildren,
-      isDehydrated: false,
-      cache: nextState.cache
-    };
-    const updateQueue = workInProgress.updateQueue; // `baseState` can always be the last state because the root doesn't
-    // have reducer functions so it doesn't need rebasing.
-
-    updateQueue.baseState = overrideState;
-    workInProgress.memoizedState = overrideState;
-
-    if (workInProgress.flags & ForceClientRender) {
-      // Something errored during a previous attempt to hydrate the shell, so we
-      // forced a client render.
-      const recoverableError = createCapturedValueAtFiber(Error(formatProdErrorMessage(423)), workInProgress);
-      return mountHostRootWithoutHydrating(current, workInProgress, nextChildren, renderLanes, recoverableError);
-    } else if (nextChildren !== prevChildren) {
-      const recoverableError = createCapturedValueAtFiber(Error(formatProdErrorMessage(424)), workInProgress);
-      return mountHostRootWithoutHydrating(current, workInProgress, nextChildren, renderLanes, recoverableError);
-    } else {
-      // The outermost shell has not hydrated yet. Start hydrating.
-      enterHydrationState(workInProgress);
-      const child = mountChildFibers(workInProgress, null, nextChildren, renderLanes);
-      workInProgress.child = child;
-      let node = child;
-
-      while (node) {
-        // Mark each child as hydrating. This is a fast path to know whether this
-        // tree is part of a hydrating tree. This is used to determine if a child
-        // node has fully mounted yet, and for scheduling event replaying.
-        // Conceptually this is similar to Placement in that a new subtree is
-        // inserted into the React tree here. It just happens to not need DOM
-        // mutations because it already exists.
-        node.flags = node.flags & ~Placement | Hydrating;
-        node = node.sibling;
-      }
-    }
-  } else {
-    // Root is not dehydrated. Either this is a client-only root, or it
-    // already hydrated.
-    resetHydrationState();
-
-    if (nextChildren === prevChildren) {
-      return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
-    }
-
-    reconcileChildren(current, workInProgress, nextChildren, renderLanes);
-  }
-
-  return workInProgress.child;
-}
-
-function mountHostRootWithoutHydrating(current, workInProgress, nextChildren, renderLanes, recoverableError) {
-  // Revert to client rendering.
-  resetHydrationState();
-  queueHydrationError(recoverableError);
-  workInProgress.flags |= ForceClientRender;
-  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
-  return workInProgress.child;
-}
-
-function updateHostComponent$1(current, workInProgress, renderLanes) {
-  pushHostContext(workInProgress);
-
-  if (current === null) {
-    tryToClaimNextHydratableInstance(workInProgress);
-  }
-
-  const type = workInProgress.type;
-  const nextProps = workInProgress.pendingProps;
-  const prevProps = current !== null ? current.memoizedProps : null;
-  let nextChildren = nextProps.children;
-  const isDirectTextChild = shouldSetTextContent(type, nextProps);
-
-  if (isDirectTextChild) {
-    // We special case a direct text child of a host node. This is a common
-    // case. We won't handle it as a reified child. We will instead handle
-    // this in the host environment that also has access to this prop. That
-    // avoids allocating another HostText fiber and traversing it.
-    nextChildren = null;
-  } else if (prevProps !== null && shouldSetTextContent(type, prevProps)) {
-    // If we're switching from a direct text child to a normal child, or to
-    // empty, we need to schedule the text content to be reset.
-    workInProgress.flags |= ContentReset;
-  }
-
-  {
-    const memoizedState = workInProgress.memoizedState;
-
-    if (memoizedState !== null) {
-      // This fiber has been upgraded to a stateful component. The only way
-      // happens currently is for form actions. We use hooks to track the
-      // pending and error state of the form.
-      //
-      // Once a fiber is upgraded to be stateful, it remains stateful for the
-      // rest of its lifetime.
-      const newState = renderTransitionAwareHostComponentWithHooks(current, workInProgress, renderLanes); // If the transition state changed, propagate the change to all the
-      // descendents. We use Context as an implementation detail for this.
-      //
-      // This is intentionally set here instead of pushHostContext because
-      // pushHostContext gets called before we process the state hook, to avoid
-      // a state mismatch in the event that something suspends.
-      //
-      // NOTE: This assumes that there cannot be nested transition providers,
-      // because the only renderer that implements this feature is React DOM,
-      // and forms cannot be nested. If we did support nested providers, then
-      // we would need to push a context value even for host fibers that
-      // haven't been upgraded yet.
-
-      {
-        HostTransitionContext._currentValue = newState;
-      }
-
-      {
-        if (didReceiveUpdate) {
-          if (current !== null) {
-            const oldStateHook = current.memoizedState;
-            const oldState = oldStateHook.memoizedState; // This uses regular equality instead of Object.is because we assume
-            // that host transition state doesn't include NaN as a valid type.
-
-            if (oldState !== newState) {
-              propagateContextChange(workInProgress, HostTransitionContext, renderLanes);
-            }
-          }
+{
+    "word": "तृप",
+    "KRM": [
+        {
+            "word": "तृप",
+            "eid": "770",
+            "pagenum": 687,
+            "content": "(770) <b>“तृप प्रीणने”</b>¦ (IV-दिवादिः-1195. सक. वेट्. पर.) रधादिः । प्रीणनम् = तृप्तिः, तर्पणं च । आद्येऽकर्मकः, द्वितीये—सकर्मकः । <dvsn n='NI'>‘तृप्नोति तृप्यतीत्येते प्रीणने श्नौ श्यनि क्रमात् । तृप्तावन्यतरस्यां णौ स्यातां तर्पति तर्पयेत् ॥’ (श्लो. 133) इति देवः । <dvsn n='NI'><sup>1</sup> तर्पकः-र्पिका, तर्पकः-र्पिका, <sup>2</sup> तितर्पिषकः-षिका, तितृप्सकः-प्सिका, <sup>3</sup> तरीतृपकः-पिका; <sup>4</sup> तर्पिता-तर्प्ता-त्रप्ता-त्री, <sup>A</sup> तर्पयिता-त्री, तितर्पिषिता-तितृप्सिता-त्री, तरीतृपिता-त्री; <sup>5</sup> तृप्यन्<sup>B</sup> न्ती, तर्पयन्-न्ती, तितर्पिषन्-तितृप्सन्-न्ती; -तर्पिष्यन्-तर्प्स्यन्<sup>6</sup> त्रप्स्यन्-न्ती-ती, तर्पयिष्यन्-न्ती-ती, तितर्पिषिष्यन्-तितृप्सिष्यन्-न्ती-ती; <sup>7</sup> व्यतितृप्यमाणः, तर्पयमाणः, <sup>8</sup> व्यतितितर्पिषमाणः-व्यतितितृप्समानः, <sup>9</sup> तरीतृप्यमाणः; व्यतितर्पिष्यमाणः-व्यतितर्प्स्यमानः-व्यतित्रप्स्यमानः, तर्पयिष्यमाणः, व्यतितितर्पिषिष्यमाणः-व्यतितितृप्सिष्यमाणः, तरीतृपिष्यमाणः; सुतृप्-सुतृब्-सुतृपौ-सुतृपः; — — -<sup>1</sup> तृप्तम्-[फलानां] <sup>2</sup> तृप्तः-तृप्तवान्, तर्पितः, तितर्पिषितः-तितृप्सितः, तरीतृपितः-तवान्; तृपः, <sup>3</sup> सन्तर्पी, तर्पः, तितर्पिषुः-तितृप्सुः, तरीतृपः; तर्पितव्यम्-तर्प्तव्यम्-त्रप्तव्यम्, तर्पयितव्यम्, तितर्पिषितव्यम्-तितृप्सितव्यम्, तरीतृपितव्यम्; तर्पणीयम्, तर्पणीयम्, तितर्पिषणीयम्-तितृप्सनीयम्, तरीतृपणीयम्; <sup>4</sup> तृप्यम्, तर्प्यम्, तितर्पिष्यम्-तितृप्स्यम्, तरीतृप्यम्, ईषत्तर्पः-दुस्तर्पः-सुतर्पः; — -तृप्यमाणः, तर्प्यमाणः, तितर्पिष्यमाणः-तितृप्स्यमानः, तरीतृप्यमाणः; तर्पः, तर्पः, तितर्पिषः-तितृप्सः, तरीतृपाः; तर्पितुम्-तर्प्तुम्-त्रप्तुम्, तर्पयितुम्, तितर्पिषितुम्-तितृप्सितुम्, तरीतृपितुम्; तृप्तिः, तर्पणा, तितर्पिषा-तितृप्सा, तरीतृपा; <sup>A</sup> तर्पणम्, तर्पणम्, तितर्पिषणम्-तितृप्सनम्, तरीतृपणम्; <sup>5</sup> तर्पित्वा-तृप्त्वा, तर्पयित्वा, तितर्पिषित्वा-तितृप्सित्वा, तरीतृपित्वा; सन्तृप्य, सन्तर्प्य, प्रतितर्पिष्य-प्रतितृप्स्य, प्रतरीतृप्य; <note n='1'/>तर्पम् 2, तर्पित्वा 2-तृप्त्वा 2, तर्पम् 2, तर्पयित्वा 2, तितर्पिषम् 2-तितृप्सम् 2, तितर्पिषित्वा 2-तितृप्सित्वा 2, तरीतृपम् 2; तरीतृपीत्वा 2; <sup>1</sup> तृप्रः, <sup>2</sup> तृपला. <F>1. ‘सार्वधातुकार्धधातुकयोः’ (7-3-84) इति गुणः । स च ‘उरण् रपरः’ (1-1-51) इति रेफविशिष्टो भवति । एवमुत्तरत्रापि ज्ञेयम् ।</F> <F>2. ‘एकाच उपदेशेऽनुदात्तात्’ (7-2-10) इत्यत्रानिट्कारिकासु, ‘—लिपिं लुपिं तृप्यतिदृप्यती सृपिम् ।’ (काशिका 7-2-10) इति पाठात् वलाद्यार्धधातुकेषु इडागमोऽस्य धातोर्यद्यपि न भवेत्—तथापि, ‘रधादिभ्यश्च’ (7-2-45) इत्यत्र पाठात् इड्विकल्पः । अनुदात्तत्वफलं तु अमागम इति ज्ञेयम् । इट्पक्षे तु— ‘इको झल्’ (1-2-9) इति सनः कित्त्वान्न गुणः, नापि अमागमः, अमागमविधायके सूत्रे, ‘सृजिदृशोः—’ (6-1-58) इत्यतः, ‘अकिति’ इत्यनुवृत्तेः ।</F> <F>3. ‘रीगृदुपधस्य च’ (7-4-90) इति रीगागमः । एवं यङन्ते सर्वत्र बोध्यम् ।</F> <F>4. ‘रधादिभ्यश्च’ (7-2-45) इतीड्विकल्पः । इडभावपक्षे, ‘अनुदात्तस्य च ऋदुपधस्यान्यतरस्याम्’ (6-1-59) इति अमागमविकल्पः । ‘मिदचोऽन्त्यात् परः’ (1-1-47) इति अम् ऋकारात् परो भवति । ‘इको यणचि’ (6-1-77) इति यण् । लघूपधगुणापवादोऽयममागमः । एवं तव्यदादिष्वपि ज्ञेयम् ।</F> <F>A. ‘दातुः स्थातुर्द्विषां मूर्ध्नि यष्टुस्तर्पयितुः पितॄन् ।’ भ. का. 18. 40.</F> <F>5. ‘दिवादिभ्यः—’ (3-1-69) श्ति श्यन् विकरणप्रत्ययः । तस्य सार्वधातुकत्वेन ङिद्वद्भावादङ्गस्य गुणो न ।</F> <F>B. ‘रद्धारये सोऽयमनश्वराय तृप्यन्मना दृप्तजनद्गुहेऽस्मै ।’ धा. का. 2. 64.</F> <F>6. स्यप्रत्ययेऽपि अकित्त्वात् अमागमो भवति । अमागमपक्षे रूपमेवम् ।</F> <F>7. ‘कर्तरि कर्मव्यतीहारे’ (1-3-14) इति शानचि रूपम् ।</F> <F>8. ‘पूर्ववत् सनः’ (1-3-62) इति सन्नन्तात् शानचि रूपम् ।</F> <F>9. यङन्ताच्छानचि, ‘ऋवर्णान्नस्य णत्वं वाच्यम्’ (वा. 8-4-1) इति णत्वम् ।</F> <F>1. रधादित्वेनास्य धातोर्वलाद्यार्धधातुकेषु वैकल्पिकेट्कत्वात् निष्ठायाम्, ‘यस्य विभाषा’ (7-2-15) इतीण्णिषेधः ।</F> <F>2. ‘फलानां तृप्तः’ इत्यत्र, ‘पूरणगुणसुहितार्थ—’ (2-2-11) इत्यादिना षष्ठीसमासनिषेधः । सुहितार्थः = तृप्त्यर्थः ।</F> <F>3. ताच्छील्ये णिनिप्रत्ययः ।</F> <F>4. ‘ऋदुपधाच्चाकॢपिचृतेः’ (3-1-110) इति क्यपि रूपम् ।</F> <F>A. ‘जप्तदग्निसूनुपितृतर्पणीरपो वहति स्म या विरलशैवला इव ॥’ शि. व. 13. 52.</F> <F>5. रधादित्वेनेड्विकल्पः । इट्पक्षे, ‘न क्त्वा सेट्’ (1-2-18) इति कित्त्वनिषेधात् गुणो भवति । इडभावपक्षे प्रत्ययस्य कित्त्वेन गुणोऽमागमश्च न ।</F> <F>1. ‘स्फायितञ्चि—’ [द. उ. 8-31] इति रक्प्रत्ययः । तृप्रः = पुरोडाशः ।</F> <F>2. ‘कलस्तृपश्च’ [द. उ. 8-107] इति कलप्रत्ययः । तृपला = लताविशेषः ।</F>"
+        },
+        {
+            "word": "तृप",
+            "eid": "771",
+            "pagenum": 690,
+            "content": "(771) <b>“तृप प्रीणने”</b>¦ (V-स्वादिः-1271. सक. सेट्. पर.) <sup>[अ]</sup> <dvsn n='NI'>‘तृप्नोति तृप्यतीत्येते प्रीणने श्नौ श्यनि क्रमात् । तृप्तावन्यतरस्यां णौ स्याताम् तर्पति तर्पयेत् ॥’ (श्लो. 133) इति देवः । तर्पकः-र्पिका, तर्पकः-र्पिका, तितर्पिषकः-षिका, तरीतृपकः-पिका; तर्पिता-त्री, तर्पयिता-त्री, तितर्पिषिता-त्री, तरीतृपिता-त्री; <sup>3</sup> तृप्नुवन्-ती, तर्पयन्-न्ती, तितर्पिषन्-न्ती; -तर्पिष्यन्-न्ती-ती, तर्पयिष्यन्-न्ती-ती, तितर्पिषिष्यन्-न्ती-ती; -— तर्पयमाणः, तर्पयिष्यमाणः, — तरीतृप्यमाणः, तरीतृपिष्यमाणः; प्रतृप्-प्रतृब्-प्रतृपौ-प्रतृपः; — — -तृपितम्-तः, तर्पितः, तितर्पिषितः, तरीतृपितः-तवान्; तृपः, तर्पः, तितर्पिषुः, तरीतर्पः; तर्पितव्यम्, तर्पयितव्यम्, तितर्पिषितव्यम्, तरीतृपितव्यम्; तर्पणीयम्, तर्पणीयम्, तितर्पिषणीयम्, तरीतृपणीयम्; <sup>4</sup> तृप्यम्, तर्प्यम्, तितर्पिष्यम्, तरीतृप्यम्; ईषत्तर्पः-दुस्तर्पः-सुतर्पः; — — -तृप्यमाणः, तर्प्यमाणः, तितर्पिष्यमाणः, तरीतृप्यमाणः; तर्पः, तर्पः, तितर्पिषः, तरीतृपः; तर्पितुम्, तर्पयितुम्, तितर्पिषितुम्, तरीतृपितुम्; <sup>1</sup> तृप्तिः, तर्पणा, तितर्पिषा, तरीतृपा; तर्पणम्, तर्पणम्, तितर्पिषणम्, तरीतृपणम्; <sup>2</sup> तर्पित्वा, तर्पयित्वा, तितर्पिषित्वा, तरीतृपित्वा; सन्तृप्य, सन्तर्प्य, प्रतितर्पिष्य, प्रतरीतृप्य; <note n='1'/>तर्पम् 2, तर्पित्वा 2, तर्पम् 2, तर्पयित्वा 2, तितर्पिषम् 2, तितर्पिषित्वा 2, तरीतृपम् 2; तरीतृपित्वा 2. <F>[अ] स्वादिषु केषाञ्चिन्मतेनास्य धातोः पाठः । ‘स्वादौ क्षुभ्नादित्वात् (8-4-39) पाठ उन्नेयः ।’ इति क्षीरस्वामी । देघोऽपि स्वादिषु पाठमनुमेने । अनिट्कारिकासु ‘तृप्यतिदृप्यती सृपिम्’ (काशिका 7-2-10) इति श्यना निर्देशव्यावर्त्यत्वेन ‘तुदादिषु यौ तृपिदृपी, तावुदात्तौ’ इति वृत्तिकारेणाभिधानात् तदनुसारिणो न्यासकारादयः स्वादिपाठं नेच्छन्ति । क्षुभ्नादिषु णत्वनिषेधार्थं ‘तृप्नु’ इति पाठे व्यत्ययेन श्नुः इति न्यासकारादीनां मतम् । देवश्लोकपरामर्शनेन देवस्य तुदादिष्वेव पाठोऽस्य धातोरनभिमत इति प्रतीयते । सिद्धान्तकौमुद्याद्यनुसारेणास्माभिरयं धातुर्लिखितः ।</F> <F>3. शतरि, ‘स्वादिभ्यः—’ (3-1-73) इति श्नुः विकरणप्रस्ययः । ‘अचि श्नुधातु—’ (6-4-77) इत्युवङ् । ‘क्षुभ्नादिषु च’ (8-4-39) इति णत्वनिषेधः ।</F> <F>4. ‘ऋदुपधाच्चाकॢपिचृतेः’ (3-1-110) इति क्यप्प्रत्ययः ।</F> <F>1. ‘तितुत्र—’ (7-2-9) इति इण्णिषेधः ।</F> <F>2. धातोरस्य सेट्त्वात्, क्त्वायाम्, ‘न क्त्वा सेट्’ (1-2-18) इति कित्त्वनिषेधाद् गुणः ।</F>"
+        },
+        {
+            "word": "तृप",
+            "eid": "772",
+            "pagenum": 691,
+            "content": "(772) <b>“तृप तृप्तौ”</b>¦ (VI-तुदादिः-1307. अक. सेट्. पर.) ‘तृफ’ इति क्षीरस्वामिप्रभृतयः पठन्ति । ‘तृप्नोति तृप्यतीत्येके प्रीणने श्नौ श्यनि क्रमात् ।’ (श्लो. 133) इति देवः । <dvsn n='NI'>अत्र पुरुषकारे— ‘तृप तृप्तौ’ तुदादिश्चायम् ।’ इत्युक्तम् । तर्पकः-र्पिका, तर्पकः-र्पिका, तितर्पिषकः-षिका, तरीतृपकः-पिका; तर्पिता-त्री, तर्पयिता-त्री, तितर्पिषिता-त्री, तरीतृपिता-त्री; <sup>3</sup> तृपन्-न्ती-ती, तर्पयन्-न्ती, तितर्पिषन्-न्ती; -तर्पिष्यन्-न्ती-ती, तर्पयिष्यन्-न्ती-ती, तितर्पिषिष्यन्-न्ती-ती; -<sup>4</sup> व्यतितृपमाणः, तर्पयमाणः, — तरीतृप्यमाणः; व्यतितृपिष्यमाणः, तर्पयिष्यमाणः, — तरीतृपिष्यमाणः; सुतृप्-सुतृब्-सुतृपौ-सुतृपः; — -तृपितम्<sup>A</sup> तः, तर्पितः, तितर्पिषितः, तरीतृपितः-तवान्; तृपः, सन्तपीं, तृपः, तितर्पिषुः, तरीतृपः; तर्पितव्यम्, तर्पयितव्यम्, तितर्पिषितव्यम्, तरीतृपितव्यम्; तर्पणीयम्, तर्पणीयम्, तितर्पिषणीयम्, तरीतृपणीयम्; <sup>1</sup> तृप्यम्, तर्प्यम्, तितर्पिष्यम्, तरीतृप्यम्; ईषत्तर्पः-दुस्तर्पः-सुतर्पः; — -तृप्यमाणः, तर्प्यमाणः, तितर्पिष्यमाणः, तरीतृप्यमाणः; तर्पः, तर्पः, तितर्पिषः, तरीतृपः; तर्पितुम्, तर्पयितुम्, तितर्पिषितुम्, तरीतृपितुम्; तृप्तिः, तर्पणा, तितर्पिषा, तरीतृपा; तर्पणम्, तर्पणम्, तितर्पिषणम्, तरीतृपणम्; तर्पित्वा, तर्पयित्वा, तितर्पिषित्वा, तरीतृपित्वा; प्रतृप्य, प्रतर्प्य, प्रतितर्पिष्य, प्रतरीतृप्य; <note n='1'/>तृपम् 2, तर्पित्वा 2, तर्पम् 2, तर्पयित्वा 2, तितर्पिषम् 2, तितर्पिषित्वा 2, तरीतृपम् 2; तरीतृपित्वा 2. <F>3. ‘तुदादिभ्यः—’ (3-1-77) इति शः विकरणप्रत्ययः । तस्य ङिद्वद्भावादङ्गस्य गुणो न ।</F> <F>4. ‘कर्तरि कर्मव्यतीहारे’ (1-3-14) इति शानच् ।</F> <F>A. ‘शत्रूल्लोभकरेफरीढितृपिता तृम्फाय तोफार्थिनो राज्ञो नित्यमतुम्पकात् वितुफती बन्धूंश्च सन्तुम्फती ।’ धा. का. 2. 74.</F> <F>1. ‘ऋदुपधाच्चाकॢपिचृतेः’ (3-1-110) इति भावकर्मणोः क्यप् ।</F>"
+        },
+        {
+            "word": "तृप",
+            "eid": "773",
+            "pagenum": 692,
+            "content": "(773) <b>“तृप तृप्तौ”</b>¦ (X-चुरादिः-1820. सक. सेट्. उभ.) आधृषीयः । <dvsn n='NI'>‘तृप्तावन्यतरस्यां णौ स्यातां तर्पति तर्पयेत् ॥’ (श्लो. 133) इति देवः । ‘प्रीणने च’ इति कविकल्पद्रुमे । ‘सन्दीपने’ इति क्षीरस्वामी । आधृषीयत्वेनास्य धातोर्णिज्विकल्पः । तर्पकः-र्पिका, तितर्पयिषकः-षिका, तर्पकः-र्पिका, तितर्पिषकः-षिका, तरीतृपकः-पिका; इत्यादीनि सर्वाण्यपि रूपाणि चौरादिकचर्पयतिवत् (554) ज्ञेयानि । णिजभावपक्षे शुद्धाद्धातोः ‘शेषात् कर्तरि—’ (1-3-78) इति परस्मैपदं शता भवतीति विशेषः । <sup>A</sup> तर्पन्-न्ती इति रूपम् । <F>A. ‘प्रजहार हरिं रणेष्वतर्पन् सुदृढं छर्दितमन्युरप्रदर्भन् ॥’ धा. का. 3. 49.</F>"
         }
-      }
-    }
-  }
-
-  markRef$1(current, workInProgress);
-  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
-  return workInProgress.child;
-}
-
-function updateHostHoistable(current, workInProgress, renderLanes) {
-  markRef$1(current, workInProgress);
-  const currentProps = current === null ? null : current.memoizedProps;
-  const resource = workInProgress.memoizedState = getResource(workInProgress.type, currentProps, workInProgress.pendingProps);
-
-  if (current === null) {
-    if (!getIsHydrating() && resource === null) {
-      // This is not a Resource Hoistable and we aren't hydrating so we construct the instance.
-      workInProgress.stateNode = createHoistableInstance(workInProgress.type, workInProgress.pendingProps, getRootHostContainer(), workInProgress);
-    }
-  } // Resources never have reconciler managed children. It is possible for
-  // the host implementation of getResource to consider children in the
-  // resource construction but they will otherwise be discarded. In practice
-  // this precludes all but the simplest children and Host specific warnings
-  // should be implemented to warn when children are passsed when otherwise not
-  // expected
-
-
-  return null;
-}
-
-function updateHostSingleton(current, workInProgress, renderLanes) {
-  pushHostContext(workInProgress);
-
-  if (current === null) {
-    claimHydratableSingleton(workInProgress);
-  }
-
-  const nextChildren = workInProgress.pendingProps.children;
-
-  if (current === null && !getIsHydrating()) {
-    // Similar to Portals we append Singleton children in the commit phase. So we
-    // Track insertions even on mount.
-    // TODO: Consider unifying this with how the root works.
-    workInProgress.child = reconcileChildFibers(workInProgress, null, nextChildren, renderLanes);
-  } else {
-    reconcileChildren(current, workInProgress, nextChildren, renderLanes);
-  }
-
-  markRef$1(current, workInProgress);
-  return workInProgress.child;
-}
-
-function updateHostText$1(current, workInProgress) {
-  if (current === null) {
-    tryToClaimNextHydratableTextInstance(workInProgress);
-  } // Nothing to do here. This is terminal. We'll do the completion step
-  // immediately after.
-
-
-  return null;
-}
-
-function mountLazyComponent(_current, workInProgress, elementType, renderLanes) {
-  resetSuspendedCurrentOnMountInLegacyMode(_current, workInProgress);
-  const props = workInProgress.pendingProps;
-  const lazyComponent = elementType;
-  const payload = lazyComponent._payload;
-  const init = lazyComponent._init;
-  let Component = init(payload); // Store the unwrapped component in the type.
-
-  workInProgress.type = Component;
-  const resolvedTag = workInProgress.tag = resolveLazyComponentTag(Component);
-  const resolvedProps = resolveDefaultProps(Component, props);
-  let child;
-
-  switch (resolvedTag) {
-    case FunctionComponent:
-      {
-
-        child = updateFunctionComponent(null, workInProgress, Component, resolvedProps, renderLanes);
-        return child;
-      }
-
-    case ClassComponent:
-      {
-
-        child = updateClassComponent(null, workInProgress, Component, resolvedProps, renderLanes);
-        return child;
-      }
-
-    case ForwardRef:
-      {
-
-        child = updateForwardRef(null, workInProgress, Component, resolvedProps, renderLanes);
-        return child;
-      }
-
-    case MemoComponent:
-      {
-
-        child = updateMemoComponent(null, workInProgress, Component, resolveDefaultProps(Component.type, resolvedProps), // The inner type can have defaults too
-        renderLanes);
-        return child;
-      }
-  }
-
-  let hint = '';
-  // because the fact that it's a separate type of work is an
-  // implementation detail.
-
-
-  throw Error(formatProdErrorMessage(306, Component, hint));
-}
-
-function mountIncompleteClassComponent(_current, workInProgress, Component, nextProps, renderLanes) {
-  resetSuspendedCurrentOnMountInLegacyMode(_current, workInProgress); // Promote the fiber to a class and try rendering again.
-
-  workInProgress.tag = ClassComponent; // The rest of this function is a fork of `updateClassComponent`
-  // Push context providers early to prevent context stack mismatches.
-  // During mounting we don't know the child context yet as the instance doesn't exist.
-  // We will invalidate the child context in finishClassComponent() right after rendering.
-
-  let hasContext;
-
-  if (isContextProvider(Component)) {
-    hasContext = true;
-    pushContextProvider(workInProgress);
-  } else {
-    hasContext = false;
-  }
-
-  prepareToReadContext(workInProgress, renderLanes);
-  constructClassInstance(workInProgress, Component, nextProps);
-  mountClassInstance(workInProgress, Component, nextProps, renderLanes);
-  return finishClassComponent(null, workInProgress, Component, true, hasContext, renderLanes);
-}
-
-function mountIndeterminateComponent(_current, workInProgress, Component, renderLanes) {
-  resetSuspendedCurrentOnMountInLegacyMode(_current, workInProgress);
-  const props = workInProgress.pendingProps;
-  let context;
-
-  {
-    const unmaskedContext = getUnmaskedContext(workInProgress, Component, false);
-    context = getMaskedContext(workInProgress, unmaskedContext);
-  }
-
-  prepareToReadContext(workInProgress, renderLanes);
-  let value;
-  let hasId;
-
-  {
-    value = renderWithHooks(null, workInProgress, Component, props, context, renderLanes);
-    hasId = checkDidRenderIdHook();
-  }
-
-
-  workInProgress.flags |= PerformedWork;
-
-  if ( // Run these checks in production only if the flag is off.
-  // Eventually we'll delete this branch altogether.
-  typeof value === 'object' && value !== null && typeof value.render === 'function' && value.$$typeof === undefined) {
-
-
-    workInProgress.tag = ClassComponent; // Throw out any hooks that were used.
-
-    workInProgress.memoizedState = null;
-    workInProgress.updateQueue = null; // Push context providers early to prevent context stack mismatches.
-    // During mounting we don't know the child context yet as the instance doesn't exist.
-    // We will invalidate the child context in finishClassComponent() right after rendering.
-
-    let hasContext = false;
-
-    if (isContextProvider(Component)) {
-      hasContext = true;
-      pushContextProvider(workInProgress);
-    } else {
-      hasContext = false;
-    }
-
-    workInProgress.memoizedState = value.state !== null && value.state !== undefined ? value.state : null;
-    initializeUpdateQueue(workInProgress);
-    adoptClassInstance(workInProgress, value);
-    mountClassInstance(workInProgress, Component, props, renderLanes);
-    return finishClassComponent(null, workInProgress, Component, true, hasContext, renderLanes);
-  } else {
-    // Proceed under the assumption that this is a function component
-    workInProgress.tag = FunctionComponent;
-
-    if (getIsHydrating() && hasId) {
-      pushMaterializedTreeId(workInProgress);
-    }
-
-    reconcileChildren(null, workInProgress, value, renderLanes);
-
-    return workInProgress.child;
-  }
-}
-
-const SUSPENDED_MARKER = {
-  dehydrated: null,
-  treeContext: null,
-  retryLane: NoLane
-};
-
-function mountSuspenseOffscreenState(renderLanes) {
-  return {
-    baseLanes: renderLanes,
-    cachePool: getSuspendedCache()
-  };
-}
-
-function updateSuspenseOffscreenState(prevOffscreenState, renderLanes) {
-  let cachePool = null;
-
-  {
-    const prevCachePool = prevOffscreenState.cachePool;
-
-    if (prevCachePool !== null) {
-      const parentCache = CacheContext._currentValue ;
-
-      if (prevCachePool.parent !== parentCache) {
-        // Detected a refresh in the parent. This overrides any previously
-        // suspended cache.
-        cachePool = {
-          parent: parentCache,
-          pool: parentCache
-        };
-      } else {
-        // We can reuse the cache from last time. The only thing that would have
-        // overridden it is a parent refresh, which we checked for above.
-        cachePool = prevCachePool;
-      }
-    } else {
-      // If there's no previous cache pool, grab the current one.
-      cachePool = getSuspendedCache();
-    }
-  }
-
-  return {
-    baseLanes: mergeLanes(prevOffscreenState.baseLanes, renderLanes),
-    cachePool
-  };
-} // TODO: Probably should inline this back
-
-
-function shouldRemainOnFallback(current, workInProgress, renderLanes) {
-  // If we're already showing a fallback, there are cases where we need to
-  // remain on that fallback regardless of whether the content has resolved.
-  // For example, SuspenseList coordinates when nested content appears.
-  // TODO: For compatibility with offscreen prerendering, this should also check
-  // whether the current fiber (if it exists) was visible in the previous tree.
-  if (current !== null) {
-    const suspenseState = current.memoizedState;
-
-    if (suspenseState === null) {
-      // Currently showing content. Don't hide it, even if ForceSuspenseFallback
-      // is true. More precise name might be "ForceRemainSuspenseFallback".
-      // Note: This is a factoring smell. Can't remain on a fallback if there's
-      // no fallback to remain on.
-      return false;
-    }
-  } // Not currently showing content. Consult the Suspense context.
-
-
-  const suspenseContext = suspenseStackCursor.current;
-  return hasSuspenseListContext(suspenseContext, ForceSuspenseFallback);
-}
-
-function getRemainingWorkInPrimaryTree(current, primaryTreeDidDefer, renderLanes) {
-  let remainingLanes = current !== null ? removeLanes(current.childLanes, renderLanes) : NoLanes;
-
-  if (primaryTreeDidDefer) {
-    // A useDeferredValue hook spawned a deferred task inside the primary tree.
-    // Ensure that we retry this component at the deferred priority.
-    // TODO: We could make this a per-subtree value instead of a global one.
-    // Would need to track it on the context stack somehow, similar to what
-    // we'd have to do for resumable contexts.
-    remainingLanes = mergeLanes(remainingLanes, peekDeferredLane());
-  }
-
-  return remainingLanes;
-}
-
-function updateSuspenseComponent(current, workInProgress, renderLanes) {
-  const nextProps = workInProgress.pendingProps; // This is used by DevTools to force a boundary to suspend.
-
-  let showFallback = false;
-  const didSuspend = (workInProgress.flags & DidCapture) !== NoFlags$1;
-
-  if (didSuspend || shouldRemainOnFallback(current)) {
-    // Something in this boundary's subtree already suspended. Switch to
-    // rendering the fallback children.
-    showFallback = true;
-    workInProgress.flags &= ~DidCapture;
-  } // Check if the primary children spawned a deferred task (useDeferredValue)
-  // during the first pass.
-
-
-  const didPrimaryChildrenDefer = (workInProgress.flags & DidDefer) !== NoFlags$1;
-  workInProgress.flags &= ~DidDefer; // OK, the next part is confusing. We're about to reconcile the Suspense
-  // boundary's children. This involves some custom reconciliation logic. Two
-  // main reasons this is so complicated.
-  //
-  // First, Legacy Mode has different semantics for backwards compatibility. The
-  // primary tree will commit in an inconsistent state, so when we do the
-  // second pass to render the fallback, we do some exceedingly, uh, clever
-  // hacks to make that not totally break. Like transferring effects and
-  // deletions from hidden tree. In Concurrent Mode, it's much simpler,
-  // because we bailout on the primary tree completely and leave it in its old
-  // state, no effects. Same as what we do for Offscreen (except that
-  // Offscreen doesn't have the first render pass).
-  //
-  // Second is hydration. During hydration, the Suspense fiber has a slightly
-  // different layout, where the child points to a dehydrated fragment, which
-  // contains the DOM rendered by the server.
-  //
-  // Third, even if you set all that aside, Suspense is like error boundaries in
-  // that we first we try to render one tree, and if that fails, we render again
-  // and switch to a different tree. Like a try/catch block. So we have to track
-  // which branch we're currently rendering. Ideally we would model this using
-  // a stack.
-
-  if (current === null) {
-    // Initial mount
-    // Special path for hydration
-    // If we're currently hydrating, try to hydrate this boundary.
-    if (getIsHydrating()) {
-      // We must push the suspense handler context *before* attempting to
-      // hydrate, to avoid a mismatch in case it errors.
-      if (showFallback) {
-        pushPrimaryTreeSuspenseHandler(workInProgress);
-      } else {
-        pushFallbackTreeSuspenseHandler(workInProgress);
-      }
-
-      tryToClaimNextHydratableSuspenseInstance(workInProgress); // This could've been a dehydrated suspense component.
-
-      const suspenseState = workInProgress.memoizedState;
-
-      if (suspenseState !== null) {
-        const dehydrated = suspenseState.dehydrated;
-
-        if (dehydrated !== null) {
-          return mountDehydratedSuspenseComponent(workInProgress, dehydrated);
+    ],
+    "GRA": [
+        {
+            "word": "तृप",
+            "eid": "3878",
+            "pagenum": 549,
+            "content": "<b>(tṛpa),</b>¦ <ab>a.</ab>, <i>befriedigt</i> [von tṛp], enthalten in a-tṛpá."
         }
-      } // If hydration didn't succeed, fall through to the normal Suspense path.
-      // To avoid a stack mismatch we need to pop the Suspense handler that we
-      // pushed above. This will become less awkward when move the hydration
-      // logic to its own fiber.
-
-
-      popSuspenseHandler(workInProgress);
-    }
-
-    const nextPrimaryChildren = nextProps.children;
-    const nextFallbackChildren = nextProps.fallback;
-
-    if (showFallback) {
-      pushFallbackTreeSuspenseHandler(workInProgress);
-      const fallbackFragment = mountSuspenseFallbackChildren(workInProgress, nextPrimaryChildren, nextFallbackChildren, renderLanes);
-      const primaryChildFragment = workInProgress.child;
-      primaryChildFragment.memoizedState = mountSuspenseOffscreenState(renderLanes);
-      primaryChildFragment.childLanes = getRemainingWorkInPrimaryTree(current, didPrimaryChildrenDefer, renderLanes);
-      workInProgress.memoizedState = SUSPENDED_MARKER;
-
-      return fallbackFragment;
-    } else if (typeof nextProps.unstable_expectedLoadTime === 'number') {
-      // This is a CPU-bound tree. Skip this tree and show a placeholder to
-      // unblock the surrounding content. Then immediately retry after the
-      // initial commit.
-      pushFallbackTreeSuspenseHandler(workInProgress);
-      const fallbackFragment = mountSuspenseFallbackChildren(workInProgress, nextPrimaryChildren, nextFallbackChildren, renderLanes);
-      const primaryChildFragment = workInProgress.child;
-      primaryChildFragment.memoizedState = mountSuspenseOffscreenState(renderLanes);
-      primaryChildFragment.childLanes = getRemainingWorkInPrimaryTree(current, didPrimaryChildrenDefer, renderLanes);
-      workInProgress.memoizedState = SUSPENDED_MARKER; // TODO: Transition Tracing is not yet implemented for CPU Suspense.
-      // Since nothing actually suspended, there will nothing to ping this to
-      // get it started back up to attempt the next item. While in terms of
-      // priority this work has the same priority as this current render, it's
-      // not part of the same transition once the transition has committed. If
-      // it's sync, we still want to yield so that it can be painted.
-      // Conceptually, this is really the same as pinging. We can use any
-      // RetryLane even if it's the one currently rendering since we're leaving
-      // it behind on this node.
-
-      workInProgress.lanes = SomeRetryLane;
-      return fallbackFragment;
-    } else {
-      pushPrimaryTreeSuspenseHandler(workInProgress);
-      return mountSuspensePrimaryChildren(workInProgress, nextPrimaryChildren);
-    }
-  } else {
-    // This is an update.
-    // Special path for hydration
-    const prevState = current.memoizedState;
-
-    if (prevState !== null) {
-      const dehydrated = prevState.dehydrated;
-
-      if (dehydrated !== null) {
-        return updateDehydratedSuspenseComponent(current, workInProgress, didSuspend, didPrimaryChildrenDefer, nextProps, dehydrated, prevState, renderLanes);
-      }
-    }
-
-    if (showFallback) {
-      pushFallbackTreeSuspenseHandler(workInProgress);
-      const nextFallbackChildren = nextProps.fallback;
-      const nextPrimaryChildren = nextProps.children;
-      const fallbackChildFragment = updateSuspenseFallbackChildren(current, workInProgress, nextPrimaryChildren, nextFallbackChildren, renderLanes);
-      const primaryChildFragment = workInProgress.child;
-      const prevOffscreenState = current.child.memoizedState;
-      primaryChildFragment.memoizedState = prevOffscreenState === null ? mountSuspenseOffscreenState(renderLanes) : updateSuspenseOffscreenState(prevOffscreenState, renderLanes);
-
-      primaryChildFragment.childLanes = getRemainingWorkInPrimaryTree(current, didPrimaryChildrenDefer, renderLanes);
-      workInProgress.memoizedState = SUSPENDED_MARKER;
-      return fallbackChildFragment;
-    } else {
-      pushPrimaryTreeSuspenseHandler(workInProgress);
-      const nextPrimaryChildren = nextProps.children;
-      const primaryChildFragment = updateSuspensePrimaryChildren(current, workInProgress, nextPrimaryChildren, renderLanes);
-      workInProgress.memoizedState = null;
-      return primaryChildFragment;
-    }
-  }
+    ],
+    "MW": [
+        {
+            "word": "तृप",
+            "eid": "86725",
+            "pagenum": "453,3",
+            "content": "तृप ¦ <lex>mfn.</lex> अ-तृप/<info lex='m:f:n'/>"
+        },
+        {
+            "word": "तृप",
+            "eid": "86726",
+            "pagenum": "453,3",
+            "content": "¦ असु-<info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "तृप",
+            "eid": "21275",
+            "pagenum": 383,
+            "content": "<i>Tṛpa.</i>¦ See <i>a-tṛpa.</i>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "तृप",
+            "eid": "46801",
+            "pagenum": 3,
+            "content": "तृप¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> in अ° und असु°. <dvsn n='1'>— 2〉 *<lex>f.</lex> आ <i>eine <ab>best.</ab> Pflanze</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "तृप",
+            "eid": "30414",
+            "pagenum": 3,
+            "content": "तृप¦ (von तर्प्) s. अतृप ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "तृप",
+            "eid": "17809",
+            "pagenum": 319,
+            "content": "तृप¦ r. 1st cl. (तर्पति) 4th cl. (ञि, उ) ञितृपु (तृप्यति) 5th cl. (तृप्नोति) 6th cl. (तृम्पति) and 10th cl. (तर्पयति-ते) 1. To please, to satisfy, to content. 2. To be pleased or satisfied, to be content or satiate. 3. (In the 1st and 10th cls.) To light or kindle. E. भ्वा-पर-सक-सेट् । दिवा-पर-सक-सेट् । स्वादि-पर-सक-सेट् । चुरा-उभ-तुदा-मुचादि-पर-सक-सेट् ।"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "तृप",
+            "eid": "17826",
+            "pagenum": 384,
+            "content": "तृप¦ r. 1st cl. (तर्पति) 4th cl. (ञि, उ) ञितृपु (तृप्यति) 5th cl. (तृप्नोति) 6th cl. (तृपति) and 10th cl. (तर्पयति) .²1 To please, to satisfy, to content. .²2 To be pleased or satisfied, to be content or satiate. .²3 (In the 1st and 10th cls.) To light or kindle."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "तृप",
+            "eid": "15286",
+            "pagenum": "2-644-a",
+            "content": "तृप¦, कि सन्दीपने । प्रीणने । इति कविकल्पद्रुमः ॥ (चुरां-पक्षे भ्वां-परं-सकं-सेट् ।) कि, तर्पयति तर्पति । योऽग्नित्रयं तर्पयतीति हलायुधः । इति दुर्गादासः ॥"
+        },
+        {
+            "word": "तृप",
+            "eid": "15287",
+            "pagenum": "2-644-b",
+            "content": "तृप¦, न प्रीणने । इति कविकल्पद्रुमः ॥ (स्वां-परंसकं-सेट् ।) प्रीणनं प्रीतीकरणम् । न, तृप्नोति पितरं पुत्त्रः । ततर्प । इति दुर्गादासः ॥"
+        },
+        {
+            "word": "तृप",
+            "eid": "15288",
+            "pagenum": "2-644-b",
+            "content": "तृप¦, प श प्रीणने । इति कविकल्पद्रुमः ॥ (तुदांपरं-सकं-सेट् ।) प श, तृम्पति ततर्प । इति दुर्गादासः ॥"
+        },
+        {
+            "word": "तृप",
+            "eid": "15289",
+            "pagenum": "2-644-b",
+            "content": "तृप¦, ञि ऌ य ऊ प्रीणने । इति कविकल्पद्रुमः ॥ (दिवां-परं-अकं-सकं च-वेट् ।) ञि, तृप्तोऽस्ति । ऌ, अतृपत् । अस्य ऌदित्वेऽपि कृषमृशस्पृशेत्यादिविशेषविधानात् पक्षे ट्यांसिस्तेन अतार्प्सीत् अत्राप्सीत् अतर्पीदित्यपि । य, तृप्यति । ऊ, तर्पिष्यति तर्प्स्यति । प्रीणनमिह प्रीतीभावः प्रीतीकरणञ्च । स्यन्दीनि तृप्यतु मधूनि पिबन्निवायमिति श्रीहर्षः । पितॄनतार्प्सीन्नृपरक्ततोयैरिति भट्टिः । इति दुर्गादासः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "तृप",
+            "eid": "23286",
+            "pagenum": "3345,b",
+            "content": "तृप¦ प्रीणने स्वा० पर० सक० सेट् । तृप्नोति अतर्पीत् । ततर्प ।"
+        },
+        {
+            "word": "तृप",
+            "eid": "23287",
+            "pagenum": "3345,b",
+            "content": "तृप¦ सन्दीपने प्रीणने च वा चुरा० उभ० पक्षे भ्वा० पर० सक० सेट् । तर्पयात ते तर्पति अततर्पत्त अतीतृपत् त । अतर्पीत् । ततर्प ततर्पथ ।"
+        },
+        {
+            "word": "तृप",
+            "eid": "23288",
+            "pagenum": "3345,b",
+            "content": "तृप¦ प्रीणने दि० पर० सक० वेट् इरित् । तृप्यति अतर्पीत् अत्राप्सीत्--अर्ताप्सीत्--अतृपत् । ततर्ष ।"
+        },
+        {
+            "word": "तृप",
+            "eid": "23289",
+            "pagenum": "3345,b",
+            "content": "तृप¦ प्रीणने तु० पर० सक० सेट् । तृपति अतर्पीत् । “तृपत्सोमं पाहि” ऋ० २ । ११ । १५ ।"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "तृप",
+            "पदविभागः": "धातुः",
+            "कन्नडार्थः": "ತೃಪ್ತಿಗೊಳಿಸು",
+            "प्रयोगाः": "'नाग्निस्तृप्यति काष्ठानाम्' । 'पितृनतार्प्सीत्' ।",
+            "उल्लेखाः": "हितो० २-६-११५, भट्टि० २-५२",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "तृप",
+            "content": "<body><s>tfpa prIRane svA° para° saka° sew . tfpnoti atarpIt . tatarpa .</s></body> <body><s>tfpa sandIpane prIRane ca vA curA° uBa° pakze BvA° para° saka° sew . tarpayAta te tarpati atatarpatta atItfpat ta . atarpIt . tatarpa tatarpaTa .</s></body> <body><s>tfpa prIRane di° para° saka° vew irit . tfpyati atarpIt atrA­psIt—artApsIt—atfpat . tatarza .</s></body> <body><s>tfpa prIRane tu° para° saka° sew . tfpati atarpIt . <q>tfpatsomaM pAhi</q> f° 2 . 11 . 15 .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "तृप",
+            "content": "<H2><h><key1>tfpa</key1><key2>tfpa</key2></h><body><s>tfpa</s>   <lex>mfn.</lex> <s>a-tfpa/</s><info lex=\"m:f:n\" /></body><tail><L>86725</L><pc>453,3</pc></tail></H2>\n <H2A><h><key1>tfpa</key1><key2>tfpa</key2></h><body>  <s>asu-</s><info lex=\"inh\" /></body><tail><L>86726</L><pc>453,3</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "तृप",
+            "content": "<H1><h><key1>tfpa</key1><key2>tfpa</key2></h><body><s>tfpa</s> <div n=\"1\">r. 1st cl. (<s>tarpati</s>) 4th cl. <s>(Yi, u) Yitfpu (tfpyati)</s> 5th cl. (<s>tfpnoti</s>) 6th cl. <lb />(<s>tfmpati</s>) and 10th cl. (<s>tarpayati-te</s>) </div><div n=\"2\"> 1. To please, to satisfy, to <lb />content. </div><div n=\"2\"> 2. To be pleased or satisfied, to be content or satiate. <lb />3. (In the 1st and 10th cls.) To light or kindle.</div><div n=\"E\"> E. <s>BvA-para-saka-sew .</s> <lb /><s>divA-para-saka-sew . svAdi-para-saka-sew . curA-uBa-tudA-mucAdi-para-saka-sew .</s></div></body><tail><L>17809</L><pc>319-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "तृप",
+            "content": "<span lang=\"sa\">तृप - प्रीणने (दिवा० पर० अक० /सक० वे०) तृप्यति ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>धातुः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತೃಪ್ತಿಗೊಳಿಸು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"नाग्निस्तृप्यति काष्ठानाम्\" । \"पितृनतार्प्सीत्\" ।<div class=\"h-2\"> </div><b>उल्लेखाः - </b>हितो० २-६-११५, भट्टि० २-५२<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-
-function mountSuspensePrimaryChildren(workInProgress, primaryChildren, renderLanes) {
-  const mode = workInProgress.mode;
-  const primaryChildProps = {
-    mode: 'visible',
-    children: primaryChildren
-  };
-  const primaryChildFragment = mountWorkInProgressOffscreenFiber(primaryChildProps, mode);
-  primaryChildFragment.return = workInProgress;
-  workInProgress.child = primaryChildFragment;
-  return primaryChildFragment;
-}
-
-function mountSuspense

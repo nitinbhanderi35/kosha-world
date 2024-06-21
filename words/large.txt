@@ -1,237 +1,27 @@
-# ws: a Node.js WebSocket library
-
-[![Version npm](https://img.shields.io/npm/v/ws.svg?logo=npm)](https://www.npmjs.com/package/ws)
-[![CI](https://img.shields.io/github/workflow/status/websockets/ws/CI/master?label=CI&logo=github)](https://github.com/websockets/ws/actions?query=workflow%3ACI+branch%3Amaster)
-[![Coverage Status](https://img.shields.io/coveralls/websockets/ws/master.svg?logo=coveralls)](https://coveralls.io/github/websockets/ws)
-
-ws is a simple to use, blazing fast, and thoroughly tested WebSocket client and
-server implementation.
-
-Passes the quite extensive Autobahn test suite: [server][server-report],
-[client][client-report].
-
-**Note**: This module does not work in the browser. The client in the docs is a
-reference to a back end with the role of a client in the WebSocket
-communication. Browser clients must use the native
-[`WebSocket`](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
-object. To make the same code work seamlessly on Node.js and the browser, you
-can use one of the many wrappers available on npm, like
-[isomorphic-ws](https://github.com/heineiuo/isomorphic-ws).
-
-## Table of Contents
-
-- [Protocol support](#protocol-support)
-- [Installing](#installing)
-  - [Opt-in for performance](#opt-in-for-performance)
-- [API docs](#api-docs)
-- [WebSocket compression](#websocket-compression)
-- [Usage examples](#usage-examples)
-  - [Sending and receiving text data](#sending-and-receiving-text-data)
-  - [Sending binary data](#sending-binary-data)
-  - [Simple server](#simple-server)
-  - [External HTTP/S server](#external-https-server)
-  - [Multiple servers sharing a single HTTP/S server](#multiple-servers-sharing-a-single-https-server)
-  - [Client authentication](#client-authentication)
-  - [Server broadcast](#server-broadcast)
-  - [echo.websocket.org demo](#echowebsocketorg-demo)
-  - [Use the Node.js streams API](#use-the-nodejs-streams-api)
-  - [Other examples](#other-examples)
-- [FAQ](#faq)
-  - [How to get the IP address of the client?](#how-to-get-the-ip-address-of-the-client)
-  - [How to detect and close broken connections?](#how-to-detect-and-close-broken-connections)
-  - [How to connect via a proxy?](#how-to-connect-via-a-proxy)
-- [Changelog](#changelog)
-- [License](#license)
-
-## Protocol support
-
-- **HyBi drafts 07-12** (Use the option `protocolVersion: 8`)
-- **HyBi drafts 13-17** (Current default, alternatively option
-  `protocolVersion: 13`)
-
-## Installing
-
-```
-npm install ws
-```
-
-### Opt-in for performance
-
-There are 2 optional modules that can be installed along side with the ws
-module. These modules are binary addons which improve certain operations.
-Prebuilt binaries are available for the most popular platforms so you don't
-necessarily need to have a C++ compiler installed on your machine.
-
-- `npm install --save-optional bufferutil`: Allows to efficiently perform
-  operations such as masking and unmasking the data payload of the WebSocket
-  frames.
-- `npm install --save-optional utf-8-validate`: Allows to efficiently check if a
-  message contains valid UTF-8.
-
-## API docs
-
-See [`/doc/ws.md`](./doc/ws.md) for Node.js-like documentation of ws classes and
-utility functions.
-
-## WebSocket compression
-
-ws supports the [permessage-deflate extension][permessage-deflate] which enables
-the client and server to negotiate a compression algorithm and its parameters,
-and then selectively apply it to the data payloads of each WebSocket message.
-
-The extension is disabled by default on the server and enabled by default on the
-client. It adds a significant overhead in terms of performance and memory
-consumption so we suggest to enable it only if it is really needed.
-
-Note that Node.js has a variety of issues with high-performance compression,
-where increased concurrency, especially on Linux, can lead to [catastrophic
-memory fragmentation][node-zlib-bug] and slow performance. If you intend to use
-permessage-deflate in production, it is worthwhile to set up a test
-representative of your workload and ensure Node.js/zlib will handle it with
-acceptable performance and memory usage.
-
-Tuning of permessage-deflate can be done via the options defined below. You can
-also use `zlibDeflateOptions` and `zlibInflateOptions`, which is passed directly
-into the creation of [raw deflate/inflate streams][node-zlib-deflaterawdocs].
-
-See [the docs][ws-server-options] for more options.
-
-```js
-const WebSocket = require('ws');
-
-const wss = new WebSocket.Server({
-  port: 8080,
-  perMessageDeflate: {
-    zlibDeflateOptions: {
-      // See zlib defaults.
-      chunkSize: 1024,
-      memLevel: 7,
-      level: 3
-    },
-    zlibInflateOptions: {
-      chunkSize: 10 * 1024
-    },
-    // Other options settable:
-    clientNoContextTakeover: true, // Defaults to negotiated value.
-    serverNoContextTakeover: true, // Defaults to negotiated value.
-    serverMaxWindowBits: 10, // Defaults to negotiated value.
-    // Below options specified as default values.
-    concurrencyLimit: 10, // Limits zlib concurrency for perf.
-    threshold: 1024 // Size (in bytes) below which messages
-    // should not be compressed.
-  }
-});
-```
-
-The client will only use the extension if it is supported and enabled on the
-server. To always disable the extension on the client set the
-`perMessageDeflate` option to `false`.
-
-```js
-const WebSocket = require('ws');
-
-const ws = new WebSocket('ws://www.host.com/path', {
-  perMessageDeflate: false
-});
-```
-
-## Usage examples
-
-### Sending and receiving text data
-
-```js
-const WebSocket = require('ws');
-
-const ws = new WebSocket('ws://www.host.com/path');
-
-ws.on('open', function open() {
-  ws.send('something');
-});
-
-ws.on('message', function incoming(data) {
-  console.log(data);
-});
-```
-
-### Sending binary data
-
-```js
-const WebSocket = require('ws');
-
-const ws = new WebSocket('ws://www.host.com/path');
-
-ws.on('open', function open() {
-  const array = new Float32Array(5);
-
-  for (var i = 0; i < array.length; ++i) {
-    array[i] = i / 2;
-  }
-
-  ws.send(array);
-});
-```
-
-### Simple server
-
-```js
-const WebSocket = require('ws');
-
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
-  });
-
-  ws.send('something');
-});
-```
-
-### External HTTP/S server
-
-```js
-const fs = require('fs');
-const https = require('https');
-const WebSocket = require('ws');
-
-const server = https.createServer({
-  cert: fs.readFileSync('/path/to/cert.pem'),
-  key: fs.readFileSync('/path/to/key.pem')
-});
-const wss = new WebSocket.Server({ server });
-
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
-  });
-
-  ws.send('something');
-});
-
-server.listen(8080);
-```
-
-### Multiple servers sharing a single HTTP/S server
-
-```js
-const http = require('http');
-const WebSocket = require('ws');
-const url = require('url');
-
-const server = http.createServer();
-const wss1 = new WebSocket.Server({ noServer: true });
-const wss2 = new WebSocket.Server({ noServer: true });
-
-wss1.on('connection', function connection(ws) {
-  // ...
-});
-
-wss2.on('connection', function connection(ws) {
-  // ...
-});
-
-server.on('upgrade', function upgrade(request, socket, head) {
-  const pathname = url.parse(request.url).pathname;
-
-  if (pathname === '/foo') {
-    wss1
+{
+    "word": "large",
+    "AE": [
+        {
+            "word": "large",
+            "eid": "6054",
+            "pagenum": 251,
+            "content": "<b>Large,</b>¦ <i>a.</i> (In size) विशाल, पृथु, बृहत्, स्थूल, विपुल, महत्, गुरु, उरु, पृथुल, आयत, विस्तीर्ण. <b>2</b> (Of l. body) महाकाय, स्थूल- -विकट-शरीर, पृथु-बृहत्-शरीर; पीन, पीवर. <b>3</b> (In number) महत्, गुरु, पुष्कल, विपुल, प्रभूत, प्रचुर, बहु, बहुल, भूरि; ‘of l. soul’ महात्मन्; ‘of l. nature’ उदारधी, महात्म- -न्, अकृपणचेतस्. <b>4</b> (In age) वृद्ध, वयोधि- -क; ‘larger boy’ वर्षीयान् बालः; ‘at l.’ अपराधीनं, स्वेच्छया, स्वेच्छाचारेण, निर्यंत्रणं, निरवग्रहं, निरवरोधं. <b>2</b> सविस्तरं, विस्तरेण, वि- -स्तरशः. <b>3</b> पूर्णतया, साकल्येन. <b>-ly,</b> <i>adv.</i> बहु, भूरि, अतीव, विपुलं, प्राचुर्येण, सु-अति- pr. <b>-ness,</b> <i>s.</i> स्थूलता, बृहत्त्वं, वैपुल्यं, प्राचुर्यं, बहुत्वं, बाहुल्यं; महाकायता, शरीरबृहत्त्वं, पीनता, पीवरता. <b>2</b> आयामः, विस्तारः."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "large",
+            "eid": "13210",
+            "pagenum": 407,
+            "content": "<b>LARGE:</b>¦ <dvsn n='I'>I In size or extent: </dvsn><dvsn n='1'>(1) बृहत् (f. ती), <dvsn n='xe'><i>a l. wrapper:</i></dvsn> <dvsn n='xs'>बृहद्बृहतिका,</dvsn> Ki.; <dvsn n='xe'><i>with l. halls of</i> <i>precious stones:</i></dvsn> <dvsn n='xs'>बृहन्मणिशिलाशालः</dvsn> (ला, लं), Ku.;</dvsn> <dvsn n='1'>(2) विशालः (ला, लं), <dvsn n='xe'><i>a l. silk-cotton tree:</i></dvsn> <dvsn n='xs'>विशालः   शाल्मलीतरुः</dvsn> <ls>H.</ls> ; <dvsn n='xe'><i>his eyes l.:</i></dvsn> <dvsn n='xs'>विशाले तस्य लोचने,</dvsn> Ri.; </dvsn><dvsn n='1'>(3) विपुलः (ला, लं), <i>and the world is l.:</i> विपुला च पृथ्वी, Ma.; <dvsn n='xe'><i>a l. river:</i></dvsn> <dvsn n='xs'>विपुला नदी,</dvsn> Mah.; </dvsn><dvsn n='1'>(4) महत् (f. ती), <dvsn n='xe'><i>having l. arms:</i></dvsn> <dvsn n='xs'>महा- भुजः</dvsn> (जा, जं), <ls>R.</ls> ; <dvsn n='xe'><i>a very l. fish:</i></dvsn> <dvsn n='xs'>सुमहान्मत्स्यः,</dvsn> Mah.; </dvsn><dvsn n='1'>(5) पृथु (f. थुः <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>थ्वी</dvsn>); </dvsn><dvsn n='1'>(6) पृथुलः (ला, लं); </dvsn><dvsn n='1'>(7) व्यूढः (ढा, ढं); </dvsn><dvsn n='1'>(8) उरु (f. रुः <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>र्वी</dvsn>). </dvsn><dvsn n='I'>II Fig., noble, far-sighted: बृहत् (f. ती), <dvsn n='xe'><i>l. -hearted:</i></dvsn> <dvsn n='xs'>बृहन्मनस्</dvsn> (mfn.), Ki. </dvsn><dvsn n='I'>III Numerous, populous: महत् (f. ती), <dvsn n='xe'><i>of the</i> <i>very l. army of the Śavaras:</i></dvsn> <dvsn n='xs'>अतिमहतः शवरसैन्यस्य,</dvsn> <ls>K.</ls> ; <i>although</i> (<i>his</i>) <dvsn n='xe'><i>seraglio was l.:</i></dvsn> <dvsn n='xs'>अवरोधे   महत्यपि,</dvsn> <ls>R.</ls> </dvsn><dvsn n='I'>IV. Abundant, ample: q. v.: विपुलः (ला, लं). </dvsn><dvsn n='I'>V Diffuse: q. v.: विपुलः (ला, लं), <dvsn n='xe'><i>in neither very concise nor very l.</i> <i></i> <i>writing:</i></dvsn> <dvsn n='xs'>नातिलघुविपुलरचनाभिः,</dvsn> </dvsn><dvsn n='I'>V m. Ph.: <i>at</i> <i>l.:</i> (a) without restraint: स्वेच्छाधीनः (ना,   नं); (b) diffusely: विस्तरशः।</dvsn>"
+        }
+    ],
+    "MWE": [
+        {
+            "word": "large",
+            "eid": "17420",
+            "pagenum": 437,
+            "content": "LARGE¦, <i>a.</i> (Big, bulky in size) वृहन् -हती -हत् (त्), विपुलः -ला -लं, विशालः -ला -लं, पृथुः -थुः -थ्वी -थु, पृथुलः -ला -लं, स्थूलः -ला -लं, वृहत्कायः -या -यं, महाकायः -या -यं, महान् -हती -हत् (त्), महा in comp., वृहत् in comp., उरुः -रुः -र्व्वी -रु, विकटः -टा -टं, विशङ्कटः -टा -टी -टं, गृरुः -र्वी -रु, परिवृढः -ढा -ढं, वृढः -ढा -ढं, वड्रः -ड्रा -ड्रं, मन्थरः -रा -रं, मन्दरः -रा -रं, वाष्कलः -ला -लं, बभ्रुः -भ्रुः -भ्रु. — (Extensive, wide) विपुलः -ला -लं, विस्तीर्णः -र्णा -र्णं, विशालः -ला -लं, आयतः -ता -तं, लम्बः -म्बा -म्बं. — (Abundant, copious) प्रचुरः -रा -रं, विपुलः -ला -लं, पुष्कलः -ला -लं, बहुः -हुः -ह्वी -हु, बहुलः -ला -लं, भूरिः -रिः -रि, यथेष्टः -ष्टा -ष्टं. — (Fat) पीनः -ना -नं, पीवरः -रा -रं, पीवा -वा -व (न्), पुष्टः -ष्टा -ष्टं. — (Having a large body) वृहच्छरीरः -रा -रं, पृथुशरीरः -रा -रं, स्थूलशरीरः -रा -रं, विकटशरीरः -रा -रं, वृहत्कायः -या -यं, वृहदङ्गः -ङ्गा -ङ्गं, स्थूलकायः -या -यं; ‘larger,’ वृहत्तरः -रा -रं, उरुतरः -रा -रं, वरीयान् -यसी -यः (स्), महत्तरः -रा -रं, अधिकः -का -कं; ‘largest,’ वरिष्ठः -ष्ठा -ष्ठं, वृहत्तमः -मा -मं; ‘at large, without restraint,’ निर्यन्त्रितं, निर्यन्त्रणं, निर्विघ्नं, निरवरोधेन, अनिवारितं, स्वेच्छया; ‘at large, diffusely,’ विस्तरशस्, विस्तरेण, सुविस्तरं."
+        }
+    ]
+}

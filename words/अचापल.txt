@@ -1,1 +1,104 @@
-ery.search || router.query.page ? (\r\n            <SearchListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.sutraani_id ? (\r\n            <SutraaniListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.filter ? (\r\n            <SutraaniFilterSlider open={open} close={toggleSlider} />\r\n          ) : router.query.wordindex_id ? (\r\n            <WordListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.vasu_english_id ? (\r\n            <VasuIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.kashika_id ? (\r\n            <KashikaIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.nyaas_id ? (\r\n            <NyaasIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.padamanjari_id ? (\r\n            <PadamanjariIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.shivasutra_id ? (\r\n            <ShivasutraIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.kaumudi_id ? (\r\n            <KaumudiIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.balamanorama_id ? (\r\n            <BalamanoramaiIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.tattvabodhini_id ? (\r\n            <TattvabodhiniiIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.praudhamanorama_id ? (\r\n            <PraudhamanoramaiIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.laghushabdendushekhar_id ? (\r\n            <LaghushabdendushekharIndexListSlider\r\n              open={open}\r\n              close={toggleSlider}\r\n            />\r\n          ) : router.query.laghukaumudi_id ? (\r\n            <LaghukaumudiIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.sudha_id ? (\r\n            <SudhaIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.bhashya_id ? (\r\n            <BhashyaIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.upasargarthachandrika_id ? (\r\n            <UpasargarthachandrikaIndexListSlider\r\n              open={open}\r\n              close={toggleSlider}\r\n            />\r\n          ) : router.query.amara_id ? (\r\n            <AmaraIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.sutratype_id ? (\r\n            <SutratypeIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.chanting_id ? (\r\n            <ChantingIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.shabda_id ? (\r\n            <ShabdaIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.vakyapadeeyam_id ? (\r\n            <VakyapadeeyamIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.details_id ? (\r\n            <DetailsIndexListSlider open={open} close={toggleSlider} />\r\n          ) : router.query.paribhashendushekhar_id ? (\r\n            <ParibhashendushekharIndexListSlider\r\n              open={open}\r\n              close={toggleSlider}\r\n            />\r\n          ) : router.query.paramalaghumanjoosha_id ? (\r\n            <ParamalaghumanjooshaIndexListSlider\r\n              open={open}\r\n              close={toggleSlider}\r\n            />\r\n          ) : router.query.bhushanasaar_id ?
+{
+    "word": "अचापल",
+    "AP90": [
+        {
+            "word": "अचापल",
+            "eid": "322",
+            "pagenum": 22,
+            "content": "अचापल --ल्य¦ <i><ab>a.</ab></i> [बहु.] Devoid of fickleness, steady. --लं --ल्यं [न. त.] Steadiness."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "अचापल",
+            "eid": "169",
+            "pagenum": 10,
+            "content": "अचापल¦ <i>acāpala,</i> comme <i>acapala.</i>"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "अचापल",
+            "eid": "350",
+            "pagenum": 6,
+            "content": "अचापल¦ <lex>n.</lex> non-unsteadiness; firmness, constancy."
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "अचापल",
+            "eid": "197",
+            "pagenum": 1,
+            "content": "अचापल¦ <lex>n.</lex> <i>Gesetztheit, Besonnenheit</i> <ls>MBH. 12,329,19</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "अचापल",
+            "eid": "705",
+            "pagenum": 10,
+            "content": "<i>acāpala</i>¦ n. Gesetztheit, Besonnenheit, <ls>MBh.</ls> 12, 329, 19. {part=,seq=724,type=,n=2}"
+        }
+    ],
+    "STC": [
+        {
+            "word": "अचापल",
+            "eid": "215",
+            "pagenum": 7,
+            "content": "<b>a-cāpala-</b>¦ <ab>nt.</ab> pondération ; <i>-ya-</i> <ab>id.</ab>"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "अचापल",
+            "eid": "621",
+            "pagenum": "0083,b",
+            "content": "अचापल¦ न० चपलस्य भावः अण् न० त० । चाञ्चल्यविरोधिस्थिरतायाम् । ब० । चाञ्चल्यशून्ये स्थिरे त्रि० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "अचापल",
+            "content": "अचापल 'वि . ,न.ब . '  - 'चंचलतारहित, स्थिर'"
+        },
+        {
+            "word": "अचापल",
+            "content": "अचापलम् नपुं. - स्थिरता"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "अचापल",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸ್ಥಿರತೆ",
+            "निष्पत्तिः": "'अण्' (५-१-१२२) ।",
+            "व्युत्पत्तिः": "चपलस्य भावः । न चापलम् ।",
+            "content": ""
+        },
+        {
+            "word": "अचापल",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಅಚಂಚಲವಾದ \\/ ಸ್ಥಿರವಾದ",
+            "व्युत्पत्तिः": "न चापलं यस्य ।",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "अचापल",
+            "content": "<lexhead no=\"269\">\n<dentry>अचापल</dentry>\n<prAwipaxikam>अचापल</prAwipaxikam>\n<grammar>वि* न* ब* </grammar>\n<prAwipaxikam gen=\"स्त्री\">अचापल</prAwipaxikam>\n<sense no=\"1\">चंचलता रहित, स्थिर</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "अचापल",
+            "content": "<body><s>acApala na° capalasya BAvaH aR na° ta° . cAYcalyaviroDi­sTiratAyAm . ba° . cAYcalyaSUnye sTire tri° .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "अचापल",
+            "content": "<span lang=\"sa\">अचापल<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸ್ಥಿರತೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>“अण्” (५-१-१२२) ।<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>चपलस्य भावः । न चापलम् ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>अचापल<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಚಂಚಲವಾದ / ಸ್ಥಿರವಾದ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>न चापलं यस्य ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

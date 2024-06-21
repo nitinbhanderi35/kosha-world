@@ -1,148 +1,25 @@
-/**
- * @license React
- * react.react-server.production.min.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-'use strict';
-
-const assign = Object.assign;
-
-// -----------------------------------------------------------------------------
-// Ready for next major.
-//
-// Alias __NEXT_MAJOR__ to false for easier skimming.
-// -----------------------------------------------------------------------------
-
-const __NEXT_MAJOR__ = false; // Not ready to break experimental yet.
-// as a normal prop instead of stripping it from the props object.
-// Passes `ref` as a normal prop instead of stripping it from the props object
-// during element creation.
-
-const enableRefAsProp = __NEXT_MAJOR__; // Not ready to break experimental yet.
-
-/**
- * Keeps track of the current Cache dispatcher.
- */
-const ReactCurrentCache = {
-  current: null
-};
-
-function createFetchCache() {
-  return new Map();
-}
-
-const simpleCacheKey = '["GET",[],null,"follow",null,null,null,null]'; // generateCacheKey(new Request('https://blank'));
-
-function generateCacheKey(request) {
-  // We pick the fields that goes into the key used to dedupe requests.
-  // We don't include the `cache` field, because we end up using whatever
-  // caching resulted from the first request.
-  // Notably we currently don't consider non-standard (or future) options.
-  // This might not be safe. TODO: warn for non-standard extensions differing.
-  // IF YOU CHANGE THIS UPDATE THE simpleCacheKey ABOVE.
-  return JSON.stringify([request.method, Array.from(request.headers.entries()), request.mode, request.redirect, request.credentials, request.referrer, request.referrerPolicy, request.integrity]);
-}
-
 {
-  if (typeof fetch === 'function') {
-    const originalFetch = fetch;
-
-    const cachedFetch = function fetch(resource, options) {
-      const dispatcher = ReactCurrentCache.current;
-
-      if (!dispatcher) {
-        // We're outside a cached scope.
-        return originalFetch(resource, options);
-      }
-
-      if (options && options.signal && options.signal !== dispatcher.getCacheSignal()) {
-        // If we're passed a signal that is not ours, then we assume that
-        // someone else controls the lifetime of this object and opts out of
-        // caching. It's effectively the opt-out mechanism.
-        // Ideally we should be able to check this on the Request but
-        // it always gets initialized with its own signal so we don't
-        // know if it's supposed to override - unless we also override the
-        // Request constructor.
-        return originalFetch(resource, options);
-      } // Normalize the Request
-
-
-      let url;
-      let cacheKey;
-
-      if (typeof resource === 'string' && !options) {
-        // Fast path.
-        cacheKey = simpleCacheKey;
-        url = resource;
-      } else {
-        // Normalize the request.
-        // if resource is not a string or a URL (its an instance of Request)
-        // then do not instantiate a new Request but instead
-        // reuse the request as to not disturb the body in the event it's a ReadableStream.
-        const request = typeof resource === 'string' || resource instanceof URL ? new Request(resource, options) : resource;
-
-        if (request.method !== 'GET' && request.method !== 'HEAD' || // $FlowFixMe[prop-missing]: keepalive is real
-        request.keepalive) {
-          // We currently don't dedupe requests that might have side-effects. Those
-          // have to be explicitly cached. We assume that the request doesn't have a
-          // body if it's GET or HEAD.
-          // keepalive gets treated the same as if you passed a custom cache signal.
-          return originalFetch(resource, options);
+    "word": "त्रिलौही",
+    "SKD": [
+        {
+            "word": "त्रिलौही",
+            "eid": "15614",
+            "pagenum": "2-661-c",
+            "content": "त्रिलौही¦, स्त्री, (त्रीणि लौहानि साधनत्वेनास्त्यस्याः । अच् । गौरादित्वात् ङीष् ।) मुद्राविशेषः । यथा, अथ मन्त्रिणां हितर्थाय त्रिलौही मुद्रा निरूप्यते । “सोमसूर्य्याग्निरूपाः स्युवेर्णा लौहत्रयं तथा । रौप्यमिन्दूः स्मृतो हेम सूर्य्यस्ताम्रो हुताशनः ॥ लौहभागाः समुद्दिष्टाः स्वराद्यक्षरसंख्यया । तैर्लौहैः कारयेन्मुद्रामसङ्कलितसङ्गताम् ॥ एषु स्वराः स्मृताः सौम्याः स्पर्शाः सौराः शुभोदयाः । आग्नेया व्यापकाः सर्व्वे सोमसूर्य्याग्निदेवताः ॥ स्वराः षोडश विख्याताः स्पर्शास्ते पञ्चविंशतिः । व्यापका दश ते कामधनधर्म्मप्रदायिनः ॥ साष्टं सहस्रं संजप्य स्पृष्ट्वा तां जुहुयात्ततः । तस्यां सम्पातयेन्मन्त्री सर्पिषा पूर्व्वसंख्यया ॥ निःक्षिप्य कुम्भे तां मुद्रामभिषेकोक्तवर्त्मना । आवाह्य पूजयेद्देवीमुपचारैर्व्विधानतः ॥ अभिषिच्य विनीताय दद्यात्तां मुद्रिकां गुरुः । इयं मुद्रा क्षुद्ररोगविषज्वरविनाशिनी ॥ व्यालचौरमृगादिभ्यो रक्षां कुर्य्याद्बिशेषतः । युद्धे विजयमाप्नोति धारयन् मनुजेश्वरः ॥ मन्त्रसिद्धिकरी पुंसां चतुर्व्वर्गफलप्रदा । धारयन्मनुजो नित्यं देवतुल्यो भवेद्भुवि ॥” इति तन्त्रसारः ॥"
         }
-
-        cacheKey = generateCacheKey(request);
-        url = request.url;
-      }
-
-      const cache = dispatcher.getCacheForType(createFetchCache);
-      const cacheEntries = cache.get(url);
-      let match;
-
-      if (cacheEntries === undefined) {
-        // We pass the original arguments here in case normalizing the Request
-        // doesn't include all the options in this environment.
-        match = originalFetch(resource, options);
-        cache.set(url, [cacheKey, match]);
-      } else {
-        // We use an array as the inner data structure since it's lighter and
-        // we typically only expect to see one or two entries here.
-        for (let i = 0, l = cacheEntries.length; i < l; i += 2) {
-          const key = cacheEntries[i];
-          const value = cacheEntries[i + 1];
-
-          if (key === cacheKey) {
-            match = value; // I would've preferred a labelled break but lint says no.
-
-            return match.then(response => response.clone());
-          }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिलौही",
+            "eid": "23777",
+            "pagenum": "3379,a",
+            "content": "त्रिलौही¦ स्त्री त्रीणि लौहानि साधनत्वेनास्त्यस्याः गौरा० ङीष् । सुवर्णरजतताम्रपरिमाणभेदेन निर्मिते मुद्राभेदे “अथ मन्त्रिणां हितार्थाय त्रिलौही मुद्रा निरूप्यते । सोमसूर्य्याग्निरूपाः स्थुर्वर्णा लौहत्रयं तथा । रौप्यमिन्दुः स्मृतो हेम सूर्य्यस्ताम्रो हुताशनः । लौहभागाः समुद्दिष्टाः स्वराद्यक्षरसंख्यया । तैर्लोहैः कारयेन्मुद्रामसङ्कलितसङ्गताम् । एषु स्वराः स्मृताः सौम्याः स्पर्शाः सौराः शुभोदयाः । आग्नेया व्यापकाः सर्वे सोमसूर्य्याग्निदेवताः । स्वराः षोडश विख्याताः स्पर्शाः स्युः पञ्चविंशतिः । व्यापका दश ते कामधनधर्मप्रदायिनः । साष्टं सहस्रं संजप्य स्पृष्ट्वा तां जुहुयात्ततः । तस्यां सम्पातयेन्मन्त्री सर्पिषा पूर्वसंख्यया । निःक्षिप्य कुम्भे तां मुद्रामभिषेकोक्त वर्त्मना । आवाह्य पूजयेद्देवीमुपचारैर्विधानतः । अभिषिच्य विनीताय दद्यात्तां मुद्रिकां गुरुः । इयं मुद्रा क्षुद्ररोगविषमज्वरनाशिनी । व्यालचौरमृगादिभ्यो रक्षां कुर्य्याद्विशेषतः । युद्धे विजयमाप्नोति धारयन् मनुजेश्वरः । मन्त्रसिद्धिकरी पुंसां चतुर्वर्गफलप्रदा । धारयन् मनुजो नित्यं देवतुल्यो भवेद्भुवि” तन्त्रसा० ।"
         }
-
-        match = originalFetch(resource, options);
-        cacheEntries.push(cacheKey, match);
-      } // We clone the response so that each time you call this you get a new read
-      // of the body so that it can be read multiple times.
-
-
-      return match.then(response => response.clone());
-    }; // We don't expect to see any extra properties on fetch but if there are any,
-    // copy them over. Useful for extended fetch environments or mocks.
-
-
-    assign(cachedFetch, originalFetch);
-
-    try {
-      // eslint-disable-next-line no-native-reassign
-      fetch = cachedFetch;
-    } catch (error1) {
-      try {
-        // In case assigning it globally fails, try globalThis instead just in case it exists.
-        globalThis.fetch = cachedFetch;
-      } catch (error2) {
-        // Log even in production just to make sure this is seen if only prod is frozen.
-        // eslint-disable-next-line react-internal/no-production-logging
-        console.warn('React was unable to patch the fetch() function in this environment. ' + 'Suspensey APIs m
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिलौही",
+            "content": "<body><s>trilOhI strI trIRi lOhAni sADanatvenAstyasyAH gOrA° NIz . suvarRarajatatAmraparimARaBedena nirmite mudrABede <q>aTa mantriRAM hitArTAya trilOhI mudrA nirUpyate . somasUryyAgnirUpAH sTurvarRA lOhatrayaM taTA . rOpyaminduH smfto hema sUryyastAmro hutASanaH . lOhaBAgAH samuddizwAH svarAdyakzara­saMKyayA . tErlohEH kArayenmudrAmasaNkalitasaNgatAm . ezu svarAH smftAH sOmyAH sparSAH sOrAH SuBodayAH . AgneyA vyApakAH sarve somasUryyAgnidevatAH . svarAH zoqaSa viKyAtAH sparSAH syuH paYcaviMSatiH . vyApakA daSa te kAmaDanaDarmapradAyinaH . sAzwaM sahasraM saMjapya spfzwvA tAM juhuyAttataH . tasyAM sampAtayenmantrI sarpizA pUrva­saMKyayA . niHkzipya kumBe tAM mudrAmaBizekokta vartmanA . AvAhya pUjayeddevImupacArErviDAnataH . aBi­zicya vinItAya dadyAttAM mudrikAM guruH . iyaM mudrA kzudrarogavizamajvaranASinI . vyAlacOramfgAdiByo rakzAM kuryyAdviSezataH . yudDe vijayamApnoti DArayan manujeSvaraH . mantrasidDikarI puMsAM caturvargaPalapradA . DArayan manujo nityaM devatulyo BavedBuvi</q> tantrasA° .</s></body>"
+        }
+    ]
+}

@@ -1,1167 +1,315 @@
-    } else ;
-
-    if (node === propagationRoot) {
-      break;
-    }
-
-    node = node.return;
-  }
-}
-function propagateContextChange(workInProgress, context, renderLanes) {
-  {
-    propagateContextChange_eager(workInProgress, context, renderLanes);
-  }
-}
-
-function propagateContextChange_eager(workInProgress, context, renderLanes) {
-
-  let fiber = workInProgress.child;
-
-  if (fiber !== null) {
-    // Set the return pointer of the child to the work-in-progress fiber.
-    fiber.return = workInProgress;
-  }
-
-  while (fiber !== null) {
-    let nextFiber; // Visit this fiber.
-
-    const list = fiber.dependencies;
-
-    if (list !== null) {
-      nextFiber = fiber.child;
-      let dependency = list.firstContext;
-
-      while (dependency !== null) {
-        // Check if the context matches.
-        if (dependency.context === context) {
-          // Match! Schedule an update on this fiber.
-          if (fiber.tag === ClassComponent) {
-            // Schedule a force update on the work-in-progress.
-            const lane = pickArbitraryLane(renderLanes);
-            const update = createUpdate(lane);
-            update.tag = ForceUpdate; // TODO: Because we don't have a work-in-progress, this will add the
-            // update to the current fiber, too, which means it will persist even if
-            // this render is thrown away. Since it's a race condition, not sure it's
-            // worth fixing.
-            // Inlined `enqueueUpdate` to remove interleaved update check
-
-            const updateQueue = fiber.updateQueue;
-
-            if (updateQueue === null) ; else {
-              const sharedQueue = updateQueue.shared;
-              const pending = sharedQueue.pending;
-
-              if (pending === null) {
-                // This is the first update. Create a circular list.
-                update.next = update;
-              } else {
-                update.next = pending.next;
-                pending.next = update;
-              }
-
-              sharedQueue.pending = update;
-            }
-          }
-
-          fiber.lanes = mergeLanes(fiber.lanes, renderLanes);
-          const alternate = fiber.alternate;
-
-          if (alternate !== null) {
-            alternate.lanes = mergeLanes(alternate.lanes, renderLanes);
-          }
-
-          scheduleContextWorkOnParentPath(fiber.return, renderLanes, workInProgress); // Mark the updated lanes on the list, too.
-
-          list.lanes = mergeLanes(list.lanes, renderLanes); // Since we already found a match, we can stop traversing the
-          // dependency list.
-
-          break;
-        }
-
-        dependency = dependency.next;
-      }
-    } else if (fiber.tag === ContextProvider) {
-      // Don't scan deeper if this is a matching provider
-      nextFiber = fiber.type === workInProgress.type ? null : fiber.child;
-    } else if (fiber.tag === DehydratedFragment) {
-      // If a dehydrated suspense boundary is in this subtree, we don't know
-      // if it will have any context consumers in it. The best we can do is
-      // mark it as having updates.
-      const parentSuspense = fiber.return;
-
-      if (parentSuspense === null) {
-        throw Error(formatProdErrorMessage(341));
-      }
-
-      parentSuspense.lanes = mergeLanes(parentSuspense.lanes, renderLanes);
-      const alternate = parentSuspense.alternate;
-
-      if (alternate !== null) {
-        alternate.lanes = mergeLanes(alternate.lanes, renderLanes);
-      } // This is intentionally passing this fiber as the parent
-      // because we want to schedule this fiber as having work
-      // on its children. We'll use the childLanes on
-      // this fiber to indicate that a context has changed.
-
-
-      scheduleContextWorkOnParentPath(parentSuspense, renderLanes, workInProgress);
-      nextFiber = fiber.sibling;
-    } else {
-      // Traverse down.
-      nextFiber = fiber.child;
-    }
-
-    if (nextFiber !== null) {
-      // Set the return pointer of the child to the work-in-progress fiber.
-      nextFiber.return = fiber;
-    } else {
-      // No child. Traverse to next sibling.
-      nextFiber = fiber;
-
-      while (nextFiber !== null) {
-        if (nextFiber === workInProgress) {
-          // We're back to the root of this subtree. Exit.
-          nextFiber = null;
-          break;
-        }
-
-        const sibling = nextFiber.sibling;
-
-        if (sibling !== null) {
-          // Set the return pointer of the sibling to the work-in-progress fiber.
-          sibling.return = nextFiber.return;
-          nextFiber = sibling;
-          break;
-        } // No more siblings. Traverse up.
-
-
-        nextFiber = nextFiber.return;
-      }
-    }
-
-    fiber = nextFiber;
-  }
-}
-function prepareToReadContext(workInProgress, renderLanes) {
-  currentlyRenderingFiber = workInProgress;
-  lastContextDependency = null;
-  lastFullyObservedContext = null;
-  const dependencies = workInProgress.dependencies;
-
-  if (dependencies !== null) {
-    {
-      const firstContext = dependencies.firstContext;
-
-      if (firstContext !== null) {
-        if (includesSomeLane(dependencies.lanes, renderLanes)) {
-          // Context list has a pending update. Mark that this fiber performed work.
-          markWorkInProgressReceivedUpdate();
-        } // Reset the work-in-progress list
-
-
-        dependencies.firstContext = null;
-      }
-    }
-  }
-}
-function readContext(context) {
-
-  return readContextForConsumer(currentlyRenderingFiber, context);
-}
-function readContextDuringReconcilation(consumer, context, renderLanes) {
-  if (currentlyRenderingFiber === null) {
-    prepareToReadContext(consumer, renderLanes);
-  }
-
-  return readContextForConsumer(consumer, context);
-}
-
-function readContextForConsumer(consumer, context) {
-  const value = context._currentValue ;
-
-  if (lastFullyObservedContext === context) ; else {
-    const contextItem = {
-      context: context,
-      memoizedValue: value,
-      next: null
-    };
-
-    if (lastContextDependency === null) {
-      if (consumer === null) {
-        throw Error(formatProdErrorMessage(308));
-      } // This is the first dependency for this component. Create a new list.
-
-
-      lastContextDependency = contextItem;
-      consumer.dependencies = {
-        lanes: NoLanes,
-        firstContext: contextItem
-      };
-    } else {
-      // Append a new context item.
-      lastContextDependency = lastContextDependency.next = contextItem;
-    }
-  }
-
-  return value;
-}
-
-// replace it with a lightweight shim that only has the features we use.
-
-const AbortControllerLocal = typeof AbortController !== 'undefined' ? AbortController : // $FlowFixMe[missing-this-annot]
-// $FlowFixMe[prop-missing]
-function AbortControllerShim() {
-  const listeners = [];
-  const signal = this.signal = {
-    aborted: false,
-    addEventListener: (type, listener) => {
-      listeners.push(listener);
-    }
-  };
-
-  this.abort = () => {
-    signal.aborted = true;
-    listeners.forEach(listener => listener());
-  };
-} ; // Intentionally not named imports because Rollup would
-// use dynamic dispatch for CommonJS interop named imports.
-
-const scheduleCallback$1 = Scheduler.unstable_scheduleCallback,
-      NormalPriority = Scheduler.unstable_NormalPriority;
-const CacheContext = {
-  $$typeof: REACT_CONTEXT_TYPE,
-  // We don't use Consumer/Provider for Cache components. So we'll cheat.
-  Consumer: null,
-  Provider: null,
-  // We'll initialize these at the root.
-  _currentValue: null,
-  _currentValue2: null,
-  _threadCount: 0,
-  _defaultValue: null,
-  _globalName: null
-} ;
-// for retaining the cache once it is in use (retainCache), and releasing the cache
-// once it is no longer needed (releaseCache).
-
-
-function createCache() {
-
-  const cache = {
-    controller: new AbortControllerLocal(),
-    data: new Map(),
-    refCount: 0
-  };
-  return cache;
-}
-function retainCache(cache) {
-
-  cache.refCount++;
-} // Cleanup a cache instance, potentially freeing it if there are no more references
-
-function releaseCache(cache) {
-
-  cache.refCount--;
-
-  if (cache.refCount === 0) {
-    scheduleCallback$1(NormalPriority, () => {
-      cache.controller.abort();
-    });
-  }
-}
-function pushCacheProvider(workInProgress, cache) {
-
-  pushProvider(workInProgress, CacheContext, cache);
-}
-function popCacheProvider(workInProgress, cache) {
-
-  popProvider(CacheContext);
-}
-
-const ReactCurrentBatchConfig$2 = ReactSharedInternals.ReactCurrentBatchConfig;
-const NoTransition = null;
-function requestCurrentTransition() {
-  return ReactCurrentBatchConfig$2.transition;
-} // When retrying a Suspense/Offscreen boundary, we restore the cache that was
-// used during the previous render by placing it here, on the stack.
-
-const resumedCache = createCursor(null); // During the render/synchronous commit phase, we don't actually process the
-
-function peekCacheFromPool() {
-  // If we're rendering inside a Suspense boundary that is currently hidden,
-  // we should use the same cache that we used during the previous render, if
-  // one exists.
-
-
-  const cacheResumedFromPreviousRender = resumedCache.current;
-
-  if (cacheResumedFromPreviousRender !== null) {
-    return cacheResumedFromPreviousRender;
-  } // Otherwise, check the root's cache pool.
-
-
-  const root = getWorkInProgressRoot();
-  const cacheFromRootCachePool = root.pooledCache;
-  return cacheFromRootCachePool;
-}
-
-function requestCacheFromPool(renderLanes) {
-  // Similar to previous function, except if there's not already a cache in the
-  // pool, we allocate a new one.
-  const cacheFromPool = peekCacheFromPool();
-
-  if (cacheFromPool !== null) {
-    return cacheFromPool;
-  } // Create a fresh cache and add it to the root cache pool. A cache can have
-  // multiple owners:
-  // - A cache pool that lives on the FiberRoot. This is where all fresh caches
-  //   are originally created (TODO: except during refreshes, until we implement
-  //   this correctly). The root takes ownership immediately when the cache is
-  //   created. Conceptually, root.pooledCache is an Option<Arc<Cache>> (owned),
-  //   and the return value of this function is a &Arc<Cache> (borrowed).
-  // - One of several fiber types: host root, cache boundary, suspense
-  //   component. These retain and release in the commit phase.
-
-
-  const root = getWorkInProgressRoot();
-  const freshCache = createCache();
-  root.pooledCache = freshCache;
-  retainCache(freshCache);
-
-  if (freshCache !== null) {
-    root.pooledCacheLanes |= renderLanes;
-  }
-
-  return freshCache;
-}
-function pushTransition(offscreenWorkInProgress, prevCachePool, newTransitions) {
-  {
-    if (prevCachePool === null) {
-      push(resumedCache, resumedCache.current);
-    } else {
-      push(resumedCache, prevCachePool.pool);
-    }
-  }
-}
-function popTransition(workInProgress, current) {
-  if (current !== null) {
-
-    {
-      pop(resumedCache);
-    }
-  }
-}
-function getSuspendedCache() {
-  // cache that would have been used to render fresh data during this render,
-  // if there was any, so that we can resume rendering with the same cache when
-  // we receive more data.
-
-
-  const cacheFromPool = peekCacheFromPool();
-
-  if (cacheFromPool === null) {
-    return null;
-  }
-
-  return {
-    // We must also save the parent, so that when we resume we can detect
-    // a refresh.
-    parent: CacheContext._currentValue ,
-    pool: cacheFromPool
-  };
-}
-function getOffscreenDeferredCache() {
-
-  const cacheFromPool = peekCacheFromPool();
-
-  if (cacheFromPool === null) {
-    return null;
-  }
-
-  return {
-    // We must also store the parent, so that when we resume we can detect
-    // a refresh.
-    parent: CacheContext._currentValue ,
-    pool: cacheFromPool
-  };
-}
-
-/**
- * Tag the fiber with an update effect. This turns a Placement into
- * a PlacementAndUpdate.
- */
-
-function markUpdate(workInProgress) {
-  workInProgress.flags |= Update;
-}
-
-function markRef(workInProgress) {
-  workInProgress.flags |= Ref | RefStatic;
-}
-
-function appendAllChildren(parent, workInProgress, needsVisibilityToggle, isHidden) {
-  {
-    // We only have the top Fiber that was created but we need recurse down its
-    // children to find all the terminal nodes.
-    let node = workInProgress.child;
-
-    while (node !== null) {
-      if (node.tag === HostComponent || node.tag === HostText) {
-        appendInitialChild(parent, node.stateNode);
-      } else if (node.tag === HostPortal || (node.tag === HostSingleton )) ; else if (node.child !== null) {
-        node.child.return = node;
-        node = node.child;
-        continue;
-      }
-
-      if (node === workInProgress) {
-        return;
-      } // $FlowFixMe[incompatible-use] found when upgrading Flow
-
-
-      while (node.sibling === null) {
-        // $FlowFixMe[incompatible-use] found when upgrading Flow
-        if (node.return === null || node.return === workInProgress) {
-          return;
-        }
-
-        node = node.return;
-      } // $FlowFixMe[incompatible-use] found when upgrading Flow
-
-
-      node.sibling.return = node.return;
-      node = node.sibling;
-    }
-  }
-} // An unfortunate fork of appendAllChildren because we have two different parent types.
-
-function updateHostComponent(current, workInProgress, type, newProps, renderLanes) {
-  {
-    // If we have an alternate, that means this is an update and we need to
-    // schedule a side-effect to do the updates.
-    const oldProps = current.memoizedProps;
-
-    if (oldProps === newProps) {
-      // In mutation mode, this is sufficient for a bailout because
-      // we won't touch this node even if children changed.
-      return;
-    }
-
-    markUpdate(workInProgress);
-  }
-} // This function must be called at the very end of the complete phase, because
-// it might throw to suspend, and if the resource immediately loads, the work
-// loop will resume rendering as if the work-in-progress completed. So it must
-// fully complete.
-// TODO: This should ideally move to begin phase, but currently the instance is
-// not created until the complete phase. For our existing use cases, host nodes
-// that suspend don't have children, so it doesn't matter. But that might not
-// always be true in the future.
-
-
-function preloadInstanceAndSuspendIfNeeded(workInProgress, type, props, renderLanes) {
-  {
-    // If this flag was set previously, we can remove it. The flag
-    // represents whether this particular set of props might ever need to
-    // suspend. The safest thing to do is for maySuspendCommit to always
-    // return true, but if the renderer is reasonably confident that the
-    // underlying resource won't be evicted, it can return false as a
-    // performance optimization.
-    workInProgress.flags &= ~MaySuspendCommit;
-    return;
-  } // Mark this fiber with a flag. This gets set on all host instances
-}
-
-function preloadResourceAndSuspendIfNeeded(workInProgress, resource, type, props, renderLanes) {
-  // This is a fork of preloadInstanceAndSuspendIfNeeded, but for resources.
-  if (!mayResourceSuspendCommit(resource)) {
-    workInProgress.flags &= ~MaySuspendCommit;
-    return;
-  }
-
-  workInProgress.flags |= MaySuspendCommit;
-  const rootRenderLanes = getWorkInProgressRootRenderLanes();
-
-  if (!includesOnlyNonUrgentLanes(rootRenderLanes)) ; else {
-    const isReady = preloadResource(resource);
-
-    if (!isReady) {
-      if (shouldRemainOnPreviousScreen()) {
-        workInProgress.flags |= ShouldSuspendCommit;
-      } else {
-        suspendCommit();
-      }
-    }
-  }
-}
-
-function scheduleRetryEffect(workInProgress, retryQueue) {
-  const wakeables = retryQueue;
-
-  if (wakeables !== null) {
-    // Schedule an effect to attach a retry listener to the promise.
-    // TODO: Move to passive phase
-    workInProgress.flags |= Update;
-  } else {
-    // This boundary suspended, but no wakeables were added to the retry
-    // queue. Check if the renderer suspended commit. If so, this means
-    // that once the fallback is committed, we can immediately retry
-    // rendering again, because rendering wasn't actually blocked. Only
-    // the commit phase.
-    // TODO: Consider a model where we always schedule an immediate retry, even
-    // for normal Suspense. That way the retry can partially render up to the
-    // first thing that suspends.
-    if (workInProgress.flags & ScheduleRetry) {
-      const retryLane = // TODO: This check should probably be moved into claimNextRetryLane
-      // I also suspect that we need some further consolidation of offscreen
-      // and retry lanes.
-      workInProgress.tag !== OffscreenComponent ? claimNextRetryLane() : OffscreenLane;
-      workInProgress.lanes = mergeLanes(workInProgress.lanes, retryLane);
-    }
-  }
-}
-
-function updateHostText(current, workInProgress, oldText, newText) {
-  {
-    // If the text differs, mark it as an update. All the work in done in commitWork.
-    if (oldText !== newText) {
-      markUpdate(workInProgress);
-    }
-  }
-}
-
-function cutOffTailIfNeeded(renderState, hasRenderedATailFallback) {
-  if (getIsHydrating()) {
-    // If we're hydrating, we should consume as many items as we can
-    // so we don't leave any behind.
-    return;
-  }
-
-  switch (renderState.tailMode) {
-    case 'hidden':
-      {
-        // Any insertions at the end of the tail list after this point
-        // should be invisible. If there are already mounted boundaries
-        // anything before them are not considered for collapsing.
-        // Therefore we need to go through the whole tail to find if
-        // there are any.
-        let tailNode = renderState.tail;
-        let lastTailNode = null;
-
-        while (tailNode !== null) {
-          if (tailNode.alternate !== null) {
-            lastTailNode = tailNode;
-          }
-
-          tailNode = tailNode.sibling;
-        } // Next we're simply going to delete all insertions after the
-        // last rendered item.
-
-
-        if (lastTailNode === null) {
-          // All remaining items in the tail are insertions.
-          renderState.tail = null;
-        } else {
-          // Detach the insertion after the last node that was already
-          // inserted.
-          lastTailNode.sibling = null;
-        }
-
-        break;
-      }
-
-    case 'collapsed':
-      {
-        // Any insertions at the end of the tail list after this point
-        // should be invisible. If there are already mounted boundaries
-        // anything before them are not considered for collapsing.
-        // Therefore we need to go through the whole tail to find if
-        // there are any.
-        let tailNode = renderState.tail;
-        let lastTailNode = null;
-
-        while (tailNode !== null) {
-          if (tailNode.alternate !== null) {
-            lastTailNode = tailNode;
-          }
-
-          tailNode = tailNode.sibling;
-        } // Next we're simply going to delete all insertions after the
-        // last rendered item.
-
-
-        if (lastTailNode === null) {
-          // All remaining items in the tail are insertions.
-          if (!hasRenderedATailFallback && renderState.tail !== null) {
-            // We suspended during the head. We want to show at least one
-            // row at the tail. So we'll keep on and cut off the rest.
-            renderState.tail.sibling = null;
-          } else {
-            renderState.tail = null;
-          }
-        } else {
-          // Detach the insertion after the last node that was already
-          // inserted.
-          lastTailNode.sibling = null;
-        }
-
-        break;
-      }
-  }
-}
-
-function bubbleProperties(completedWork) {
-  const didBailout = completedWork.alternate !== null && completedWork.alternate.child === completedWork.child;
-  let newChildLanes = NoLanes;
-  let subtreeFlags = NoFlags$1;
-
-  if (!didBailout) {
-    // Bubble up the earliest expiration time.
-    {
-      let child = completedWork.child;
-
-      while (child !== null) {
-        newChildLanes = mergeLanes(newChildLanes, mergeLanes(child.lanes, child.childLanes));
-        subtreeFlags |= child.subtreeFlags;
-        subtreeFlags |= child.flags; // Update the return pointer so the tree is consistent. This is a code
-        // smell because it assumes the commit phase is never concurrent with
-        // the render phase. Will address during refactor to alternate model.
-
-        child.return = completedWork;
-        child = child.sibling;
-      }
-    }
-
-    completedWork.subtreeFlags |= subtreeFlags;
-  } else {
-    // Bubble up the earliest expiration time.
-    {
-      let child = completedWork.child;
-
-      while (child !== null) {
-        newChildLanes = mergeLanes(newChildLanes, mergeLanes(child.lanes, child.childLanes)); // "Static" flags share the lifetime of the fiber/hook they belong to,
-        // so we should bubble those up even during a bailout. All the other
-        // flags have a lifetime only of a single render + commit, so we should
-        // ignore them.
-
-        subtreeFlags |= child.subtreeFlags & StaticMask;
-        subtreeFlags |= child.flags & StaticMask; // Update the return pointer so the tree is consistent. This is a code
-        // smell because it assumes the commit phase is never concurrent with
-        // the render phase. Will address during refactor to alternate model.
-
-        child.return = completedWork;
-        child = child.sibling;
-      }
-    }
-
-    completedWork.subtreeFlags |= subtreeFlags;
-  }
-
-  completedWork.childLanes = newChildLanes;
-  return didBailout;
-}
-
-function completeDehydratedSuspenseBoundary(current, workInProgress, nextState) {
-  if (hasUnhydratedTailNodes() && (workInProgress.mode & ConcurrentMode) !== NoMode && (workInProgress.flags & DidCapture) === NoFlags$1) {
-    warnIfUnhydratedTailNodes();
-    resetHydrationState();
-    workInProgress.flags |= ForceClientRender | DidCapture;
-    return false;
-  }
-
-  const wasHydrated = popHydrationState(workInProgress);
-
-  if (nextState !== null && nextState.dehydrated !== null) {
-    // We might be inside a hydration state the first time we're picking up this
-    // Suspense boundary, and also after we've reentered it for further hydration.
-    if (current === null) {
-      if (!wasHydrated) {
-        throw Error(formatProdErrorMessage(318));
-      }
-
-      prepareToHydrateHostSuspenseInstance(workInProgress);
-      bubbleProperties(workInProgress);
-
-      return false;
-    } else {
-      // We might have reentered this boundary to hydrate it. If so, we need to reset the hydration
-      // state since we're now exiting out of it. popHydrationState doesn't do that for us.
-      resetHydrationState();
-
-      if ((workInProgress.flags & DidCapture) === NoFlags$1) {
-        // This boundary did not suspend so it's now hydrated and unsuspended.
-        workInProgress.memoizedState = null;
-      } // If nothing suspended, we need to schedule an effect to mark this boundary
-      // as having hydrated so events know that they're free to be invoked.
-      // It's also a signal to replay events and the suspense callback.
-      // If something suspended, schedule an effect to attach retry listeners.
-      // So we might as well always mark this.
-
-
-      workInProgress.flags |= Update;
-      bubbleProperties(workInProgress);
-
-      return false;
-    }
-  } else {
-    // Successfully completed this tree. If this was a forced client render,
-    // there may have been recoverable errors during first hydration
-    // attempt. If so, add them to a queue so we can log them in the
-    // commit phase.
-    upgradeHydrationErrorsToRecoverable(); // Fall through to normal Suspense path
-
-    return true;
-  }
-}
-
-function completeWork(current, workInProgress, renderLanes) {
-  const newProps = workInProgress.pendingProps; // Note: This intentionally doesn't check if we're hydrating because comparing
-  // to the current tree provider fiber is just as fast and less error-prone.
-  // Ideally we would have a special version of the work loop only
-  // for hydration.
-
-  popTreeContext(workInProgress);
-
-  switch (workInProgress.tag) {
-    case IndeterminateComponent:
-    case LazyComponent:
-    case SimpleMemoComponent:
-    case FunctionComponent:
-    case ForwardRef:
-    case Fragment:
-    case Mode:
-    case Profiler:
-    case ContextConsumer:
-    case MemoComponent:
-      bubbleProperties(workInProgress);
-      return null;
-
-    case ClassComponent:
-      {
-        const Component = workInProgress.type;
-
-        if (isContextProvider(Component)) {
-          popContext();
-        }
-
-        bubbleProperties(workInProgress);
-        return null;
-      }
-
-    case HostRoot:
-      {
-        const fiberRoot = workInProgress.stateNode;
-
+{
+    "word": "दोहद",
+    "ABCH": [
         {
-          let previousCache = null;
-
-          if (current !== null) {
-            previousCache = current.memoizedState.cache;
-          }
-
-          const cache = workInProgress.memoizedState.cache;
-
-          if (cache !== previousCache) {
-            // Run passive effects to retain/release the cache.
-            workInProgress.flags |= Passive$1;
-          }
-
-          popCacheProvider();
+            "word": "दोहद",
+            "linga": "क्ली",
+            "pagenum": "24",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1679",
+            "group": "568",
+            "synonyms": [
+                "दौर्हृद",
+                "श्रद्धा",
+                "लालसा"
+            ],
+            "content": "दोहदं दौर्हृदं श्रद्धा लालसा सूतिमासि तु ।\nवैजननो विजननं प्रसवो नन्दनः पुनः ॥ ५४१ ॥\nउद्वहोऽङ्गात्मजः सूनुस्तनयो दारकः सुतः ।\nपुत्रे दुहितरि स्त्रीत्वे तोकापत्यप्रसूतयः ॥ ५४२ ॥\nतुक्प्रजोभयोर्भ्रात्रीयो भ्रातृव्यो भ्रातुरात्मजे ।"
         }
-        popHostContainer();
-        popTopLevelContextObject();
-
-        if (fiberRoot.pendingContext) {
-          fiberRoot.context = fiberRoot.pendingContext;
-          fiberRoot.pendingContext = null;
-        }
-
-        if (current === null || current.child === null) {
-          // If we hydrated, pop so that we can delete any remaining children
-          // that weren't hydrated.
-          const wasHydrated = popHydrationState(workInProgress);
-
-          if (wasHydrated) {
-            // If we hydrated, then we'll need to schedule an update for
-            // the commit side-effects on the root.
-            markUpdate(workInProgress);
-          } else {
-            if (current !== null) {
-              const prevState = current.memoizedState;
-
-              if ( // Check if this is a client root
-              !prevState.isDehydrated || // Check if we reverted to client rendering (e.g. due to an error)
-              (workInProgress.flags & ForceClientRender) !== NoFlags$1) {
-                // Schedule an effect to clear this container at the start of the
-                // next commit. This handles the case of React rendering into a
-                // container with previous children. It's also safe to do for
-                // updates too, because current.child would only be null if the
-                // previous render was null (so the container would already
-                // be empty).
-                workInProgress.flags |= Snapshot; // If this was a forced client render, there may have been
-                // recoverable errors during first hydration attempt. If so, add
-                // them to a queue so we can log them in the commit phase.
-
-                upgradeHydrationErrorsToRecoverable();
-              }
-            }
-          }
-        }
-        bubbleProperties(workInProgress);
-
-        return null;
-      }
-
-    case HostHoistable:
-      {
+    ],
+    "AP90": [
         {
-          const nextResource = workInProgress.memoizedState;
-
-          if (current === null) {
-            // We are mounting and must Update this Hoistable in this commit
-            // @TODO refactor this block to create the instance here in complete
-            // phase if we are not hydrating.
-            markUpdate(workInProgress);
-
-            if (workInProgress.ref !== null) {
-              markRef(workInProgress);
-            }
-
-            if (nextResource !== null) {
-              // This is a Hoistable Resource
-              // This must come at the very end of the complete phase.
-              bubbleProperties(workInProgress);
-              preloadResourceAndSuspendIfNeeded(workInProgress, nextResource);
-              return null;
-            } else {
-              // This is a Hoistable Instance
-              // This must come at the very end of the complete phase.
-              bubbleProperties(workInProgress);
-              preloadInstanceAndSuspendIfNeeded(workInProgress);
-              return null;
-            }
-          } else {
-            // We are updating.
-            const currentResource = current.memoizedState;
-
-            if (nextResource !== currentResource) {
-              // We are transitioning to, from, or between Hoistable Resources
-              // and require an update
-              markUpdate(workInProgress);
-            }
-
-            if (current.ref !== workInProgress.ref) {
-              markRef(workInProgress);
-            }
-
-            if (nextResource !== null) {
-              // This is a Hoistable Resource
-              // This must come at the very end of the complete phase.
-              bubbleProperties(workInProgress);
-
-              if (nextResource === currentResource) {
-                workInProgress.flags &= ~MaySuspendCommit;
-              } else {
-                preloadResourceAndSuspendIfNeeded(workInProgress, nextResource);
-              }
-
-              return null;
-            } else {
-              // This is a Hoistable Instance
-              // We may have props to update on the Hoistable instance.
-              {
-                const oldProps = current.memoizedProps;
-
-                if (oldProps !== newProps) {
-                  markUpdate(workInProgress);
-                }
-              } // This must come at the very end of the complete phase.
-
-
-              bubbleProperties(workInProgress);
-              preloadInstanceAndSuspendIfNeeded(workInProgress);
-              return null;
-            }
-          }
-        } // Fall through
-
-      }
-
-    case HostSingleton:
-      {
+            "word": "दोहद",
+            "eid": "15707",
+            "pagenum": 582,
+            "content": "दोहदः --दं¦ [दोहमाकर्षं ददाति दा-क] <b>1</b> (<i>a</i>) The longing of a pregnant woman; प्रजावती दोहदशंसिनी ते  <lbinfo n='ls:R. 14.+ 45'/> <ls>R. 14. 45</ls>; उपेत्य सा दोहददुःखशीलतां यदेव वव्रे तदाश्यदाहृतं <ls n='R.'>3. 6</ls>, <ls n='R. 3.'>7.</ls> (<i>b</i>) The desired object itself. <b>--2</b> Pregnancy. <b>--3</b> The desire of plants at budding time (as, for instance, of the Aśoka to be kicked by young ladies, of the Bakula to with sprinkled by <lbinfo n='mouth+fuls'/> mouthfuls of liquor &c.); महीरुहा <lbinfo n='dohadaseka#SakterAkAlikaM'/> दोहदसेकशक्तेराकालिकं कोरकमुद्गिरंति <ls>N. 3. 21</ls>; <ls>R. 8. 62</ls>; <ls>Me. 78</ls>; see अशोक. <b>--4</b> Vehement desire;  <lbinfo n='pravartitamahAsamarado#hadA'/> प्रवर्तितमहासमरदोहदा नरपतयः <ls>Ve. 4.</ls> <b>--5</b> Wish or <lbinfo n='de+sire'/> desire in general. <b>--Comp.</b> --लक्षणं {1} the fœtus, the embryo (= दौर्हृद-क्षण <ab>q. v.</ab>) {2} the period of passing from one stage of life to another."
+        }
+    ],
+    "BEN": [
         {
-          popHostContext(workInProgress);
-          const rootContainerInstance = getRootHostContainer();
-          const type = workInProgress.type;
-
-          if (current !== null && workInProgress.stateNode != null) {
-            {
-              const oldProps = current.memoizedProps;
-
-              if (oldProps !== newProps) {
-                markUpdate(workInProgress);
-              }
-            }
-
-            if (current.ref !== workInProgress.ref) {
-              markRef(workInProgress);
-            }
-          } else {
-            if (!newProps) {
-              if (workInProgress.stateNode === null) {
-                throw Error(formatProdErrorMessage(166));
-              } // This can happen when we abort work.
-
-
-              bubbleProperties(workInProgress);
-              return null;
-            }
-
-            const currentHostContext = getHostContext();
-            const wasHydrated = popHydrationState(workInProgress);
-            let instance;
-
-            if (wasHydrated) {
-              // We ignore the boolean indicating there is an updateQueue because
-              // it is used only to set text children and HostSingletons do not
-              // use them.
-              prepareToHydrateHostInstance(workInProgress, currentHostContext);
-              instance = workInProgress.stateNode;
-            } else {
-              instance = resolveSingletonInstance(type, newProps, rootContainerInstance);
-              workInProgress.stateNode = instance;
-              markUpdate(workInProgress);
-            }
-
-            if (workInProgress.ref !== null) {
-              // If there is a ref on a host node we need to schedule a callback
-              markRef(workInProgress);
-            }
-          }
-
-          bubbleProperties(workInProgress);
-          return null;
-        } // Fall through
-
-      }
-
-    case HostComponent:
-      {
-        popHostContext(workInProgress);
-        const type = workInProgress.type;
-
-        if (current !== null && workInProgress.stateNode != null) {
-          updateHostComponent(current, workInProgress, type, newProps);
-
-          if (current.ref !== workInProgress.ref) {
-            markRef(workInProgress);
-          }
-        } else {
-          if (!newProps) {
-            if (workInProgress.stateNode === null) {
-              throw Error(formatProdErrorMessage(166));
-            } // This can happen when we abort work.
-
-
-            bubbleProperties(workInProgress);
-            return null;
-          }
-
-          const currentHostContext = getHostContext(); // TODO: Move createInstance to beginWork and keep it on a context
-          // "stack" as the parent. Then append children as we go in beginWork
-          // or completeWork depending on whether we want to add them top->down or
-          // bottom->up. Top->down is faster in IE11.
-
-          const wasHydrated = popHydrationState(workInProgress);
-
-          if (wasHydrated) {
-            // TODO: Move this and createInstance step into the beginPhase
-            // to consolidate.
-            prepareToHydrateHostInstance(workInProgress, currentHostContext);
-          } else {
-            const rootContainerInstance = getRootHostContainer();
-            const instance = createInstance(type, newProps, rootContainerInstance, currentHostContext, workInProgress); // TODO: For persistent renderers, we should pass children as part
-            // of the initial instance creation
-
-            appendAllChildren(instance, workInProgress);
-            workInProgress.stateNode = instance; // Certain renderers require commit-time effects for initial mount.
-            // (eg DOM renderer supports auto-focus for certain elements).
-            // Make sure such renderers get scheduled for later work.
-
-            if (finalizeInitialChildren(instance, type, newProps)) {
-              markUpdate(workInProgress);
-            }
-          }
-
-          if (workInProgress.ref !== null) {
-            // If there is a ref on a host node we need to schedule a callback
-            markRef(workInProgress);
-          }
+            "word": "दोहद",
+            "eid": "6747",
+            "pagenum": 419,
+            "content": "दोहद¦ <i>dohada</i> (a form of <i>daurhṛda;</i> <ab>cf.</ab> <i>dauhṛda</i>), <ab>m.</ab> and <ab>n.</ab> <b>1.</b> The desired object of a pregnant woman, <ls>Yājñ.</ls> 3, 79. <b>2.</b> The longing of pregnant women, <ls>Kathās.</ls> 9, 46. <b>3.</b> Pregnancy, <ls>Ragh.</ls> 3, 6. <b>4.</b> Morbid desire, <ls>Pañc.</ls> 208, 19. <b>5.</b> Desire, <ls>Rām.</ls> 5, 25, 45. <b>6.</b> A kind of incense used as a manure, Pūrva <ls>Naiṣ.</ls> i. 82."
         }
-
-        bubbleProperties(workInProgress); // This must come at the very end of the complete phase, because it might
-        // throw to suspend, and if the resource immediately loads, the work loop
-        // will resume rendering as if the work-in-progress completed. So it must
-        // fully complete.
-
-        preloadInstanceAndSuspendIfNeeded(workInProgress);
-        return null;
-      }
-
-    case HostText:
-      {
-        const newText = newProps;
-
-        if (current && workInProgress.stateNode != null) {
-          const oldText = current.memoizedProps; // If we have an alternate, that means this is an update and we need
-          // to schedule a side-effect to do the updates.
-
-          updateHostText(current, workInProgress, oldText, newText);
-        } else {
-          if (typeof newText !== 'string') {
-            if (workInProgress.stateNode === null) {
-              throw Error(formatProdErrorMessage(166));
-            } // This can happen when we abort work.
-
-          }
-
-          const rootContainerInstance = getRootHostContainer();
-          const currentHostContext = getHostContext();
-          const wasHydrated = popHydrationState(workInProgress);
-
-          if (wasHydrated) {
-            if (prepareToHydrateHostTextInstance(workInProgress)) {
-              markUpdate(workInProgress);
-            }
-          } else {
-            workInProgress.stateNode = createTextInstance(newText, rootContainerInstance, currentHostContext, workInProgress);
-          }
+    ],
+    "BOP": [
+        {
+            "word": "दोहद",
+            "eid": "4241",
+            "pagenum": 176,
+            "content": "दोहद¦ <i>m.</i> (e praec. et द dans) 1) graviditas. RAGH. 3. 1. 6. UR. 83. 20. 2) desiderium. RAGH. 14. 45."
         }
-
-        bubbleProperties(workInProgress);
-        return null;
-      }
-
-    case SuspenseComponent:
-      {
-        popSuspenseHandler(workInProgress);
-        const nextState = workInProgress.memoizedState; // Special path for dehydrated boundaries. We may eventually move this
-        // to its own fiber type so that we can add other kinds of hydration
-        // boundaries that aren't associated with a Suspense tree. In anticipation
-        // of such a refactor, all the hydration logic is contained in
-        // this branch.
-
-        if (current === null || current.memoizedState !== null && current.memoizedState.dehydrated !== null) {
-          const fallthroughToNormalSuspensePath = completeDehydratedSuspenseBoundary(current, workInProgress, nextState);
-
-          if (!fallthroughToNormalSuspensePath) {
-            if (workInProgress.flags & ForceClientRender) {
-              // Special case. There were remaining unhydrated nodes. We treat
-              // this as a mismatch. Revert to client rendering.
-              return workInProgress;
-            } else {
-              // Did not finish hydrating, either because this is the initial
-              // render or because something suspended.
-              return null;
-            }
-          } // Continue with the normal Suspense path.
-
+    ],
+    "CAE": [
+        {
+            "word": "दोहद",
+            "eid": "14655",
+            "pagenum": 240,
+            "content": "दोहद¦ <lex>m.</lex> the longing of pregnant women, <ab>i.g.</ab> ardent wish or desire of (<ab>loc.</ab> or —°); pregnancy, <ab>fig.</ab> of plants before blossoming."
         }
-
-        if ((workInProgress.flags & DidCapture) !== NoFlags$1) {
-          // Something suspended. Re-render with the fallback children.
-          workInProgress.lanes = renderLanes; // Do not reset the effect list.
-
-
-          return workInProgress;
+    ],
+    "CCS": [
+        {
+            "word": "दोहद",
+            "eid": "10499",
+            "pagenum": 185,
+            "content": "दोहद¦ <i>m.</i> das Gelüste <i>(bes. der Schwan-</i> geren), Schwangerschaft, Verlangen nach <i>(Loc.)</i>, Blüterlust <i>(der Pflanzen).</i>"
         }
-
-        const nextDidTimeout = nextState !== null;
-        const prevDidTimeout = current !== null && current.memoizedState !== null;
-
-        if (nextDidTimeout) {
-          const offscreenFiber = workInProgress.child;
-          let previousCache = null;
-
-          if (offscreenFiber.alternate !== null && offscreenFiber.alternate.memoizedState !== null && offscreenFiber.alternate.memoizedState.cachePool !== null) {
-            previousCache = offscreenFiber.alternate.memoizedState.cachePool.pool;
-          }
-
-          let cache = null;
-
-          if (offscreenFiber.memoizedState !== null && offscreenFiber.memoizedState.cachePool !== null) {
-            cache = offscreenFiber.memoizedState.cachePool.pool;
-          }
-
-          if (cache !== previousCache) {
-            // Run passive effects to retain/release the cache.
-            offscreenFiber.flags |= Passive$1;
-          }
-        } // If the suspended state of the boundary changes, we need to schedule
-        // a passive effect, which is when we process the transitions
-
-
-        if (nextDidTimeout !== prevDidTimeout) {
-          // an effect to toggle the subtree's visibility. When we switch from
-          // fallback -> primary, the inner Offscreen fiber schedules this effect
-          // as part of its normal complete phase. But when we switch from
-          // primary -> fallback, the inner Offscreen fiber does not have a complete
-          // phase. So we need to schedule its effect here.
-          //
-          // We also use this flag to connect/disconnect the effects, but the same
-          // logic applies: when re-connecting, the Offscreen fiber's complete
-          // phase will handle scheduling the effect. It's only when the fallback
-          // is active that we have to do anything special.
-
-
-          if (nextDidTimeout) {
-            const offscreenFiber = workInProgress.child;
-            offscreenFiber.flags |= Visibility;
-          }
+    ],
+    "LRV": [
+        {
+            "word": "दोहद",
+            "eid": "17720",
+            "pagenum": 346,
+            "content": "dohada¦ <i>m.n.</i> 1. The longing of a pregnant woman, उपेत्य सा दोहददुःखशीलतां यदेव वव्रे तदपश्यदाहृतम् <ls>R.</ls>iii.6, 7, xiv.45; 2. pregnancy; 3. the desire of plants before budding, (e.g. that of the <i>Aśoka</i> to be touched by the foot of a beautiful girl), <ls>Megh.</ls>ii.15, <ls>R.</ls>viii.62; See वकुल; 4. violent desire; 5. desire in general."
         }
-
-        const retryQueue = workInProgress.updateQueue;
-        scheduleRetryEffect(workInProgress, retryQueue);
-
-        bubbleProperties(workInProgress);
-
-        return null;
-      }
-
-    case HostPortal:
-      popHostContainer();
-
-      if (current === null) {
-        preparePortalMount(workInProgress.stateNode.containerInfo);
-      }
-
-      bubbleProperties(workInProgress);
-      return null;
-
-    case ContextProvider:
-      // Pop provider fiber
-      const context = workInProgress.type._context;
-      popProvider(context);
-      bubbleProperties(workInProgress);
-      return null;
-
-    case IncompleteClassComponent:
-      {
-        // Same as class component case. I put it down here so that the tags are
-        // sequential to ensure this switch is compiled to a jump table.
-        const Component = workInProgress.type;
-
-        if (isContextProvider(Component)) {
-          popContext();
+    ],
+    "MD": [
+        {
+            "word": "दोहद",
+            "eid": "9656",
+            "pagenum": 126,
+            "content": "दोहद¦ dohada, <lex>m.</lex> [<i>corruption of</i> dau(r)hṛda] 🞄longing of pregnant women; violent 🞄desire, for (<ab>lc.</ab>, <ab>—°</ab>); longing of plants <i>for the 🞄touch of a beautiful maiden which elicits their 🞄blossoms</i>: <b>-duḥkha-śīla,</b> <lex>a.</lex> suffering from morbid 🞄longing pregnancy: <b>-tā,</b> <lex>f.</lex> morbid 🞄condition of longing during pregnancy; <b>-lakṣaṇa,</b> <lex>n.</lex> sign of pregnancy."
         }
-
-        bubbleProperties(workInProgress);
-        return null;
-      }
-
-    case SuspenseListComponent:
-      {
-        popSuspenseListContext();
-        const renderState = workInProgress.memoizedState;
-
-        if (renderState === null) {
-          // We're running in the default, "independent
+    ],
+    "MW": [
+        {
+            "word": "दोहद",
+            "eid": "97151",
+            "pagenum": "499,1",
+            "content": "दोहद ¦ <lex>m.</lex> (also <lex type='hwalt'>n.</lex>, <ls>L.</ls>; probably <ns>Prākṛt</ns> for. दौर्हृद <ab>lit.</ab> sickness of heart, nausea) the longing of a pregnant woman for <ab>partic.</ab> objects (<ab>fig.</ab> said of plants which at budding time long to be touched by the foot or by the mouth [<ls>Ragh. xix, 12</ls>] of a lovely woman)<info lex='m:n'/>"
+        },
+        {
+            "word": "दोहद",
+            "eid": "97152",
+            "pagenum": "499,1",
+            "content": "¦ any morbid desire or wish for (<ab>loc.</ab> or <ab>comp.</ab> <lex type='hwifc'>f(आ). </lex>), <ls>Yājñ.</ls>; <ls>R.</ls>; <ls>Kālid.</ls>; <ls>Pañc.</ls>; <ls>Kathās.</ls> &c.<info lex='f#A'/><info lex='inh'/>"
+        },
+        {
+            "word": "दोहद",
+            "eid": "97153",
+            "pagenum": "499,1",
+            "content": "¦ pregnancy<info lex='inh'/>"
+        },
+        {
+            "word": "दोहद",
+            "eid": "97153.1",
+            "pagenum": "1329,1",
+            "content": "¦ (<ab>accord.</ab> to <ls>Luders</ls> <ab>fr.</ab> दुहली = द्विहृद्, ‘pregnant’).<info or='97153.1,dohada;97163.1,dohala'/><info n='sup'/><info lex='inh'/>"
+        },
+        {
+            "word": "दोहद",
+            "eid": "97154",
+            "pagenum": "499,1",
+            "content": "¦ a kind of fragrant substance used as manure, <ls>Naiṣ. i, 82</ls>, <ab>Sch.</ab><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "दोहद",
+            "eid": "22818",
+            "pagenum": 437,
+            "content": "दोहद¦ <i>dohada, as, am,</i> m. n. (a Prākṛt form for <i>daurhṛda;</i> cf. <i>dauhṛda</i>), the longing of a pregnant woman, that craving after particular objects which is regarded as a sign of impregnation; (sometimes) the desired object itself; pregnancy; the desire of plants at budding time to be touched by the foot of a beautiful girl, (poetically imagined to cause the production of blossoms); violent or morbid desire, desire in general, wish; a kind of incense used as a manure. <i>—Dohada-lakṣaṇa, am,</i> n. ‘having longing desire as its mark,’ the fetus, the embryo, (sometimes confounded with the womb itself); the period of passing from one season of life to another (as from childhood to youth, from youth to manhood). <i>—Dohada-vatī,</i> f. or <i>dohadānvitā</i> <i>(°da-an°),</i> f. ‘possessing the desire of a pregnant woman,’ a pregnant woman longing for anything; [cf. <i>dohala</i> and <i>divya-dohada.</i>]"
+        }
+    ],
+    "PW": [
+        {
+            "word": "दोहद",
+            "eid": "53058",
+            "pagenum": 3,
+            "content": "दोहद¦ <dvsn n='1'>— 1〉 <lex>m.</lex> (*<lex>n.</lex>) (<ab>adj. Comp.</ab> <lex>f.</lex> आ) <dvsn n='2'>— a〉 <i>das Gelüste schwangerer Frauen nach bestimmten Dingen</i>. <dvsn n='2'>— b〉 <i>heftiges Verlangen, Gelüste nach</i> (<ab>Loc.</ab> oder im <ab>Comp.</ab> vorangehend) <ab>überh.</ab> <ls>KĀD. 130,13. 139,22</ls>. <dvsn n='2'>— c〉 <i>das Gelüste</i> von Pflanzen besteht <i>in dem unwiderstehlichen Verlangen mit einem Körpertheile einer schönen Jungfrau in Berührung zu kommen, um dadurch die Geburt der Blüthen zu ermöglichen</i>. <dvsn n='2'>— d〉 <i>ein <ab>best.</ab> Räucherwerk, das eine Mannichfaltigkeit in den Früchten bewirken soll</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <ab>Pl.</ab> <ab>N. pr.</ab> eines Volkes <ls>VP.² 2,180</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "दोहद",
+            "eid": "35051",
+            "pagenum": 3,
+            "content": "दोहद¦ (entstanden aus दौहृद, दौर्हृद) <lex>m.</lex> <lex>n.</lex> <ls>TRIK. 3, 5, 11.</ls> <i>das Gelüste schwangerer Frauen nach bestimmten Dingen</i>; bisweilen auch Bez. <i>der Schwangerschaft</i> selbst; dann <i>heftiges Verlangen, Gelüste</i> überh. <ls>AK. 1, 1, 7, 27.</ls> <ls>H. 541.</ls> <ls>HĀR. 219.</ls> दोहदस्याप्रदानेन गर्भो दोषमवाप्नुयात् <ls>YĀJÑ. 3, 79.</ls> गर्भाविर्भूतदोहदा <ls>VIKR. 78, 20.</ls> उपेत्य सा दोहददुःखशीलतां यदेव वव्रे तदपश्यदाहृतम् <ls>RAGH. 3, 6.</ls> क्रमेण निस्तीर्य च दोहदव्यथाम् 7. तस्यास्तव हृदयस्य - भक्षणे दोहदः संजातः <ls>PAÑCAT. 208, 19.</ls> ययाचे साथ भर्तारम् - दोहदम् - वापीनिमज्जनम् <ls>KATHĀS. 9, 46.</ls> तं च दोहदमेतस्याः - समपूरयत् <ls n='KATHĀS.'>22, 12.</ls> प्रजावती दोहदशंसिनी ते तपोवनेभ्यः स्पृहयालुरेव <ls>RAGH. 14, 45.</ls> (सीता) आनन्दयित्री परिनेतुरासीदनक्षरव्यञ्जितदोहदेन <ls n='RAGH.'>26.</ls> °लिङ्गदर्शिन् <ls n='RAGH.'>71.</ls> इमाम् - दृष्ट्वा ममाभूद्दोहदो महान् ॥ यकृत्पिण्डम् u. s. w. स्वादयेयमिति मतिः (eine <is>Rākṣasī</is> spricht) <ls>R. 5, 25, 45.</ls> <i>das Gelüste der Pflanzen</i> besteht <i>in dem unwiderstehlichen Verlangen mit dem Fusse einer schönen Jungfrau u.s.w. in Berührung zu kommen, um dadurch die Geburt der Blüthen zu ermöglichen</i>: कुसुमं कृतदोहदस्त्वया (<ab>d. i.</ab> <i>von deinem Fusse berührt</i>) यदशोको ऽयमुदीरयिष्यति (vgl. u. अशोक u. कान्ताङ्घ्रिदोहद, कान्ताचरण°) <ls>RAGH. 8, 61.</ls> सर्वाशोकलतानाम् - निर्वृत्तदोहदे ऽस्मिन् (अशोके) संक्रान्तानीव मुकुलानि <ls>MĀLAV. 80. 33, 8, v. l.</ls> <ls>MEGH. 76.</ls> मुखासवं सो ऽपिबद्वकुलतुल्यदोहदः (der <is>Vakula</is> soll Blüthen treiben, wenn er von dem Munde eines Weibes benetzt wird) <ls>RAGH. 19, 12.</ls> <dvsn n='v'>— Vgl. दोहल, दिव्यदोहद ."
+        },
+        {
+            "word": "दोहद",
+            "eid": "76237",
+            "pagenum": 5,
+            "content": "दोहद¦ in der Stelle दाडिमे °धूपिनि द्रुमे <ls>NAIṢ. 1, 82</ls> nach dem Schol. = फलवैलक्षण्यजनकधूपद्रव्यविशेष ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "दोहद",
+            "eid": "19833",
+            "pagenum": 355,
+            "content": "दोहद¦ n. (-दं) 1. Wish, desire. 2. The longing of a pregnant woman, especially as a sign of impregnation. E. दोह here said to mean satisfaction, and द what gives."
+        }
+    ],
+    "STC": [
+        {
+            "word": "दोहद",
+            "eid": "10977",
+            "pagenum": 328,
+            "content": "<b>dohada-</b>¦ <ab>m.</ab> envie de femme enceinte, objet de cette envie ; <ab>fig.</ab> condition considérée comme nécessaire à la floraison de certaines plantes (p. ex. pour l'aśoka, d'être frappé par une jeune femme) ; désir violent ou morbide de <ab>qqch.</ab> (<ab>loc.</ab> <ab>ifc.</ab>) ; <i>-in-</i> <ab>a.</ab> qui éprouve pareil désir.  <P><i>°duḥkha-śīlatā-</i> <ab>f.</ab> fait d'éprouver une envie morbide ; grossesse.  <P><i>°lakṣaṇa-</i> <ab>nt.</ab> embryon, fœtus."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "दोहद",
+            "eid": "19847",
+            "pagenum": 427,
+            "content": "दोहद¦ n. (-दं) .²1 Wish, desire. .²2 The longing of a pregnant woman, especially as a sign of impregnation. .E. दोह here said to mean satisfaction, and द what gives."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "दोहद",
+            "eid": "19326",
+            "pagenum": 380,
+            "content": "दोह-द¦ (दं) 1. <i>n.</i> Wish; longing of a pregnant woman; manuring."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "दोहद",
+            "eid": "17162",
+            "pagenum": "2-754-b",
+            "content": "दोहदं¦, क्ली, (दोहमाकर्षणं ददातीति । दोह + दा + “आतोऽनुपसर्गे कः ।” ३ । २ । ३ । इति कः ।) इच्छा । इत्यमरः । १ । ७ । २७ ॥"
+        },
+        {
+            "word": "दोहद",
+            "eid": "17163",
+            "pagenum": "2-754-b",
+            "content": "दोहदः¦, पुं, क्ली, (दोहमाकर्षं ददातीति । दा + कः ।) गर्भिण्यभिलाषः । साद इति भाषा । तत्पर्य्यायः । दौर्हृदम् २ श्रद्धा ३ लालसा ४ । इति हेमचन्द्रः । ३ । २०५ ॥ जातुजः ५ । इति रत्नकोषः ॥ (यथा, याज्ञवल्क्यसंहितायाम् । ३ । ७९ । “दोहदस्याप्रदानेन गर्भो दोषमवाप्नुयात् । वैरूप्यं मरणं वापि तस्मात् कार्य्यं प्रियं स्त्रियाः ॥”) गर्भचिह्नम् । इति भरतधृतकोषान्तरम् ॥ (पुष्पोद्गमकौषधम् । यथा, रघौ । ८ । ६२ । “कुसुमं कृतदोहदस्त्वया यदशोकोऽयमुदीरयिष्यति । अलकाभरणं कथं नु तत् तव नेष्यामि निवापमाल्यताम् ॥” यथा च, मेघदूते । ७८ । “रक्ताशोकश्चलकिशलयः केशरस्तत्र कान्तः प्रत्यासन्नः कुरुवकवृतेर्माधवीमण्डपस्य । एकः सख्यास्तव सह मया वामपादाभिलाषी काङ्क्षत्यन्यो वदनमदिरां दोहदच्छद्मनास्याः ॥” अत्र यस्य यो दोहदः स धृतो मल्लिनाथेन यथा, “स्त्रीणां स्पर्शात् प्रियङ्गर्विकसति वकुलः शीधुगण्डूषसेकात् पादाघातादशोकस्तिलककुरुवकौ वीक्षणालिङ्गनाभ्याम् । मन्दारो नर्म्मवाक्यात् पटुमृदुहसनात् चम्पको वक्त्रवातात् चूतो गीतान्नमेरुर्विकसति च पुरो नर्त्तनात् कर्णिकारः ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "दोहद",
+            "eid": "26271",
+            "pagenum": "3768,a",
+            "content": "दोहद¦ पु० न० दोहमाकर्षं ददाति दा--क । १ गर्भे २ लालसामात्रे ३ गर्भिण्या अभिलाषे च मे० । सुश्रुते तु दौह(हृ)दमिति पठित्वा तदुपहत्यां दोषादिकमुक्तं यथा “द्विहृदयाञ्च नारीं दौहृ(ह)दिनीमाचक्षते । दौहृ(ह)दविमाननात् कुब्जं कुणिं खञ्जं जडं वामनं विकृताक्षनासं वा नारी सुतं जनयति । तस्मात् सा यद्यदिच्छेत्तत्तस्यै दापयेत् । लब्धदौ(ह)हृदा हि वीर्यवन्तं चिरायुषञ्च पुत्रं जनयति” । भवन्ति चात्र “इन्द्रियार्थांन्तु यान् यान् सा भोक्तुमिच्छति गर्भिणी । गर्भाबाधभयात्तांस्तान् भिषगाहृत्य दापयेत् । सा प्राप्तदौ(ह)हृदा पुत्त्रं जनयेत गुणान्वितम् । अलब्धदौ(ह)हृदा गर्भे लभेदात्मनि वा भयम् । येषु येष्विन्द्रियार्थेषु दौहृ(ह)दे वै विमानना । प्रजायेत सुतस्यार्त्तिस्तस्मिंस्तस्मिंस्तथेन्द्रिये । राजसन्दर्शने यस्या दौहृ(ह)दं जायते स्त्रियाः । अर्थवन्तं महाभागं कुमारं सा प्रसूयते । दुकूलपट्टकौशेयभूषणादिषु दौ(ह)हृदात् । अलङ्कारैषिणं पुत्रं ललितं सा प्रसूयते । आश्रमे संयतात्मानं धर्मशीलं प्रसूयते । देवताप्रतिमायान्तु प्रसूते पार्षदोपमम् । दर्शने व्यालजातीनां हिसाशीलं प्रसूयते । गोधामांसाऽशने पुत्रं सुषुप्सुर्धारणात्मकम् । गवां मांसे च बलिनं सर्वक्लेशसहन्तथा । माहिषे दौ(ह)हृदाच्छूरं रक्ताक्षं लोमसंयुतम् । वराहमांसात् स्वप्नालुं शूरं सञ्जनयेत् सुतम् । मार्गाद्विक्रान्तजङ्घालं सदा वनचरं सुतम् । सृमराद्विम्नमनसं नित्यभीतं च तैत्तिरात् । अतोऽनुक्तेषु या नारी त्वमभिध्याति दौ(ह)हृदम् । शरीराचारशीतैः सा समानं जनयिष्यति । कर्मणा चोदितं जन्तोर्भवितव्य पुनर्भवेत् । यथा तथा दैवयोगाद्दौ(ह)हृदं जनयेद्धृदि” । यात्रायां दिग्भेदे दोषशान्त्यर्थे ४ सेव्यपदार्थे यथाह मु० चि० “आज्यं तिलौदनं मत्स्यं पयश्चापि यथाक्रमम् । भक्षयेद्दोहदं दिश्यमाशां पूर्वादिकां व्रजेत् । रसालां पायसं काञ्जीं शृतं दुग्धं तथा दधि । पयोऽशृतं तिलान्नं च भक्षयेद्वारदोहदम् । पक्षादितोऽर्कदलतण्डुलवारिसर्पिः श्राणाहविष्यमपि हेमजलं त्वपूपम् । भुक्त्वा व्रजेद्रुचकमम्बु च धेनुमूत्रं यावान्नपायसगुडानसृगन्नमुद्गान्” मु० चि० अथ दिग्दोहदमनुष्टुभाह आज्यमिति । आज्यं घृतं पूर्वस्याम् । तिलौदनं तिलमिश्रौदनं दक्षिणस्याम् । मत्स्यं प्रसिद्धं पश्चिमायाम्, पयोदुग्धमुत्तरस्याम् । एतद्यथाक्रमं दिश्यमभीष्टदिग्भवं दोहदं भक्षयेत्ततः पूर्वादिकाभाशां जिगमिषितां दिशां व्रजेत् । यदाह श्रीपतिः “आज्यं तिलौदनं मत्स्यं पयः प्राक्प्रभृतिक्रमात् । भुक्त्वेति शेषः नारदेन त्वन्यथोक्तं “घृतान्नं तिलपिष्टान्नं मत्स्यान्नं घृतपायसम् । प्रागादिक्रमशो भुक्त्वा याति राजा जयत्यरीन्” । वसिष्ठेनापि “घृतान्नं कृसरान्नं च मत्स्यान्नं घृतपायसम् । पूर्वादिषु क्रमाद्भुक्त्वा याता सिद्धिमवाप्नुयात्” इति । अत्रैवं विरोधे विकल्पो यथादेशाचारं वा व्यवस्था । अथ वारदोहदमनुष्टुभाह रसालामिति । रसाला शर्करादधिमरीचकर्पूरैला संसृष्टा लोके शिखरिणीति प्रसिद्धा तां रविवारे । पायसकाञ्ज्यौ प्रसिद्धे सोममङ्गलवारयोः । शृतं पक्वं दुग्धं बुधे, शृतं पाक इति साधु । तत्रापि क्षीरहविषोरेवेति वार्तिकात् प्रस्तुते क्षीरे साधुत्वम् । दधि प्रसिद्धं गुरुवारे । अशृतमपक्वं दुग्धं शुक्रे, तिलान्नं तिलमिश्रसोदनं शनौ । एतद्वारदोहदं रविबारादौ क्रमेण भक्षयेत् । यदाह श्रीपतिः “मज्जिकां सघृतपायसं तथा काञ्जिकं शृतपयोऽदधि क्रमात् । क्षीरमाममथ तत् कथितं तिलौदगं वारदोहदविधिर्बुधैः स्मृतः “इति वसिष्ठनारदाभ्यां दुग्धस्य पक्वापक्वविशेषो नाभ्यधायि “मज्जिकां परमान्नं च काञ्जिकं च पयोदधि । क्षीरं तिलौदनं भुक्त्वा भानुवारादिषु क्रमादिति” । मज्जिका रसाला । “स्याद्रसाला तु मज्जिका” इत्यभिधानात् । गुरुस्तु विशेषनाह “सूर्यवारे घृतं पाश्यं चन्द्रवारे पयस्तथा । गुडमङ्गारके वारे बुधवारे तिलानपि । गुरुवारे दषिप्राश्य शुक्रवारे यवानपि । माषान् भुक्त्वा शनेर्वारे शूले गच्छन्नदोषभागिति” । अथ तिथिदोहदं वसन्ततिलकाच्छन्दसाह पक्षादित इति । पक्षादिः प्रतिपत्तस्याः ल्यप्लोपे पञ्चमी । प्रतिपदादिपञ्चदशतिथिषु क्रमेण तिथिदोहदं भुक्त्वा व्रजेत् । यथा प्रतिपदि अर्कस्य वृक्षविशेषस्य दलानि पर्णानि । द्वितीयायां तण्डुलवारिक्षालिततण्डुलजलम् । तृतीयायां सर्पिर्घृतम् । चतुर्थ्यां श्राणा यवागूः । पञ्चम्यां हविष्यं मुद्गादि । षष्ठ्यां हेमजलं प्रक्षालितसुवर्णजलम् । सप्तम्यामपूपम् । अष्टम्यां रुचकं वीजपूरफलम् । “फलपूरी वीजपूरो रुचको मातुलिङ्गके” इत्यमरः । नवम्यामम्बु जलम् । दशम्यां धेनुमूत्रं स्त्रीगवीमूत्रं न तु वृषमूत्रं धेनुशब्दग्रहणात् । एकादश्यां यावान्नं यवविकारम् । द्वादश्यां पायसम् । त्रयोदश्यां गुडमिक्षुविकारं, चतुर्दश्यामसृक् रुधिरम् । पञ्चदश्यामन्नमुद्गानोदनमिश्रितमुद्गान् । यदाह वृहस्पतिः “अर्कपत्रं भवेद्यातुः प्रथमायान्तु भक्षणम् । द्वितीयायां भवेद्यातुर्भक्ष्यं सत्तण्डुलोदकम् । तृतीयायां तथा सर्पिर्यवागूः स्यात्ततः परम् । पञ्चम्यां तद्धविष्यं स्यात् षष्ठ्यां वा काञ्चनोदकम् । अपूपभुक्तिः सप्तम्यामष्टम्यां वीजपूरकम् । नवम्यां तोयपानं स्याद्गोमूत्रन्तु ततःपरम् । एकादश्यां यवानद्यात् द्वादश्यां पायसं पिबेत् । त्रयोदश्यां गुडं लेह्यं रुधिरं स्याच्चतुर्दशे । मुद्गौदनं भवेद्धोज्यं पञ्चदश्यां यियासतः । पक्षयोरुभयोरेवं यात्रा योगे विधिः स्मृतः” इति । दैवज्ञमनोहरेऽपि क्वचिद्भेदः । यथा “अर्कदलतण्डुलोदकसर्पीषि हविष्यदधिसुवर्णपयः । तिलवारिवीजपूरकमध्वाज्यकमूत्रषिष्टिकाश्चापि । तिलपिष्टकदम्बमूलानि शाकमथ शस्तवृक्षपर्णानि प्रतिपत्प्रभृतिषु भुक्त्वा प्रस्थाता सिद्धिमाप्नोतीति” । ननु “आलभ्यालभ्य भक्ष्यान् वा स्मृत्वा दृष्ट्वाथ तान् व्रजेत् । दत्त्वा वा सिद्धिमाप्नोति दुष्टभादिषु भूपतिरिति” गुरूक्तेः दुष्टवारादिषु दोहदाभिधानं सार्थकम् । विहितेषु पुनर्नक्षत्रतिथिवारादिषु दोहदाभिधानं व्यर्थम् । दोषनिवारणफलको हि दोहदस्तदभावे वैयर्थ्यप्रसङ्गात् । उच्यते । दुष्टभादिषु भूपतिरित्यत्र दुष्टत्वं किन्नैसर्गिकमुतान्यत् अहितनक्षत्रेष्वपि क्रूरग्रहसाहित्यादिर्महान् दोषः सम्भावितोऽस्ति तदपाकरणाय दोहदाभिधानं सार्थकम् एवं सर्ववर्णानामपि पारिघदण्डे विरुद्धताराक्रूरग्रहमाहित्यादिमहादोषनिवारणाय दोहदोक्ते पार्थक्याच्च । एवं विहिततिथिदोहदाभिधानं योगिन्यादिदोषनाशार्थम् । “सक्रूररांशेरशुभा तिथिः स्यात्” इत्येतद्दोषनिवारणार्थं च । तद्दोषाभिधानं च रत्नमालायाम् । “आद्याश्चतस्रः क्रियपूर्वकाणां मेषाच्चतुर्णामिह पञ्चमी स्यात् । पराः परेषां परतस्तथैव सक्रूरराशेरशुभा तिथिः स्यात्” इति । एवं वारदोहदोक्तिरपि वक्रिग्रहवारशूलादिदोषहान्या सार्थिका दिग्दोहोक्तिरपि त्रिविधप्रतिबुधप्रतिशुक्रप्रतिभौमादिदोषहान्या सार्थिका” पी० धा० तत्र गर्भे “सुदक्षिणा दोहदलक्षणं दधौ” रघुः । अभिलाषे “उदकक्रीडादोहदागतानाञ्च” काद० गर्भिण्यभिलाषे “प्रजावती दोहदशंसिनी ते” रघुः ५ पुष्पोद्गमौषधे च “कुसुमं कृतदोहदस्त्वया यदशोकोऽयमुदीरयिष्यति” रघुः “काङ्क्षत्यन्योवदनमदिरादोहदच्छद्मनास्याः” मेघः अशोकबकुलयोः स्त्रीपदताडनगण्डूषमदिरे दोहदमिति प्रसिद्धिः । “स्त्रीणां स्पर्शात् प्रियङ्गुर्विकसति बकुलः शीधुगण्डूषसेकात् पादाघातादशोकस्तिलककुरुवकौ वीक्षणालिङ्गनाभ्याम् । मन्दारो नर्मवाक्यात् पटुमृदुहसनात् चम्पको वक्त्रवातात् चूतो गीतान्नमेरुर्विकसति च पुरोनर्तनात् कर्णिकारः” मल्लि० धृतवाक्यम्"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "दोहद",
+            "content": "दोहदः पुं. -  दोहमाकर्ष ददाति- दा +  क गर्भवती स्त्री की प्रबल रुचि"
+        },
+        {
+            "word": "दोहद",
+            "content": "दोहदः पुं. -  दोहमाकर्ष ददाति- दा +  क गर्भावस्था"
+        },
+        {
+            "word": "दोहद",
+            "content": "दोहदः पुं. -  दोहमाकर्ष ददाति- दा +  क कली आने के समय पौधों की इच्छा"
+        },
+        {
+            "word": "दोहद",
+            "content": "दोहदः पुं. -  दोहमाकर्ष ददाति- दा +  क उत्कट अभिलाष"
+        },
+        {
+            "word": "दोहद",
+            "content": "दोहदः पुं. -  दोहमाकर्ष ददाति- दा +  क 'सामान्यतः कामना, इच्छा'"
+        },
+        {
+            "word": "दोहद",
+            "content": "दोहदम् नपुं. - गर्भवती स्त्री की प्रबल रुचि"
+        },
+        {
+            "word": "दोहद",
+            "content": "दोहदम् नपुं. - गर्भावस्था"
+        },
+        {
+            "word": "दोहद",
+            "content": "दोहदम् नपुं. - कली आने के समय पौधों की इच्छा"
+        },
+        {
+            "word": "दोहद",
+            "content": "दोहदम् नपुं. - उत्कट अभिलाष"
+        },
+        {
+            "word": "दोहद",
+            "content": "दोहदम् नपुं. - 'सामान्यतः कामना, इच्छा'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "दोहद",
+            "पदविभागः": "पुल्लिङ्गः \\/नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಬಯಕೆ \\/ಇಚ್ಛೆ \\/ಅಭಿಲಾಷೆ",
+            "निष्पत्तिः": "डुदाञ् (दाने)'कः' (३-२-३)",
+            "व्युत्पत्तिः": "दोषमाकर्षं ददाति",
+            "प्रयोगाः": "'ताभिरप्युपहृतं मुखासवं सोऽपिबद्वकुलतुल्यदोहदः'",
+            "उल्लेखाः": "रघु० १९-१२",
+            "content": ""
+        },
+        {
+            "word": "दोहद",
+            "पदविभागः": "पुल्लिङ्गः \\/नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಗರ್ಭಿಣಿಯರ ಬಯಕೆ \\/ಗರ್ಭದ ಲಕ್ಷಣವನ್ನು ತಿಳಿಸುವ ಬಯಕೆ",
+            "प्रयोगाः": "'प्रजावती दोहदशंसिनी ते तपोवनेषु स्पृहयालुरेव'",
+            "उल्लेखाः": "रघु० १४-४५",
+            "content": ""
+        },
+        {
+            "word": "दोहद",
+            "पदविभागः": "पुल्लिङ्गः \\/नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಗರ್ಭ \\/ಬಸಿರು",
+            "विस्तारः": "'दोहदो गर्भलक्षणे । अभिलाषे तथा गर्भे'- हेम० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "दोहद",
+            "linga": "N",
+            "artha": "स्पृहा",
+            "synonyms": [
+                "दोहद",
+                "इच्छा",
+                "काङ्क्षा",
+                "स्पृहा",
+                "ईहा",
+                "तृष्",
+                "वाञ्छा",
+                "लिप्सा",
+                "मनोरथ",
+                "काम",
+                "अभिलाष",
+                "तर्ष",
+                "भग",
+                "रुचि",
+                "तृष्णा",
+                "श्रद्धा",
+                "प्रतियत्न",
+                "छन्दस्"
+            ],
+            "num": "1.7.28",
+            "text": "शुचौ तु चरिते शीलमुन्मादश्चित्तविभ्रमः । प्रेमा ना प्रियता हार्दं प्रेमस्नेहोऽथ दोहदम् ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "दोहद",
+            "content": "<body><s>dohada pu° na° dohamAkarzaM dadAti dA—ka . <lb/><b>1</b> garBe <lb/><b>2</b> lAla­sAmAtre <lb/><b>3</b> garBiRyA aBilAze ca me° . suSrute tu dO­ha(hf)damiti paWitvA tadupahatyAM dozAdikamuktaM yaTA <q>dvihfdayAYca nArIM dOhf(ha)dinImAcakzate . dOhf(ha)da­vimAnanAt kubjaM kuRiM KaYjaM jaqaM vAmanaM vikftAkzanAsaM vA nArI sutaM janayati . tasmAt sA yadyadicCettattasyE dApayet . labDadO(ha)hfdA hi vIryavantaM cirAyuzaYca putraM janayati</q> . Bavanti cAtra <q>indriyArTAMntu yAn yAn sA BoktumicCati garBiRI . garBAbADaBayAttAMstAn BizagAhftya dApayet . sA prAptadO(ha)hfdA puttraM janayeta guRAnvitam . alabDadO(ha)hfdA garBe laBedAtmani vA Bayam . yezu yezvindriyArTezu dOhf(ha)de vE vimAnanA . prajAyeta sutasyArttistasmiMstasmiMstaTendriye . rAjasanda­rSane yasyA dOhf(ha)daM jAyate striyAH . arTavantaM mahA­BAgaM kumAraM sA prasUyate . dukUlapawwakOSeyaBUzaRAdizu dO(ha)hfdAt . alaNkArEziRaM putraM lalitaM sA prasUyate . ASrame saMyatAtmAnaM DarmaSIlaM prasUyate . devatAprati­mAyAntu prasUte pArzadopamam . darSane vyAlajAtInAM hisASIlaM prasUyate . goDAmAMsA'Sane putraM suzupsurDA­raRAtmakam . gavAM mAMse ca balinaM sarvakleSasahantaTA . mAhize dO(ha)hfdAcCUraM raktAkzaM lomasaMyutam . varA­hamAMsAt svapnAluM SUraM saYjanayet sutam . mArgAdvikrA­ntajaNGAlaM sadA vanacaraM sutam . sfmarAdvimnamanasaM nityaBItaM ca tEttirAt . ato'nuktezu yA nArI tvamaBiDyAti dO(ha)hfdam . SarIrAcAraSItEH sA samAnaM janayizyati . karmaRA coditaM jantorBavitavya punarBavet . yaTA taTA dEvayogAddO(ha)hfdaM janayedDfdi</q> . yAtrAyAM digBede dozaSAntyarTe <lb/><b>4</b> sevyapadArTe yaTAha mu° ci° <q>AjyaM tilOdanaM matsyaM payaScApi yaTAkramam . Bakza­yeddohadaM diSyamASAM pUrvAdikAM vrajet . rasAlAM pAyasaM kAYjIM SftaM dugDaM taTA daDi . payo'SftaM tilAnnaM ca BakzayedvAradohadam . pakzAdito'rkadalataRqulavArisarpiH SrARAhavizyamapi hemajalaM tvapUpam . BuktvA vrajedrucakamambu ca DenumUtraM yAvAnnapAyasaguqAnasfgannamudgAn</q> mu° ci° aTa digdohadamanuzwuBAha Ajyamiti . AjyaM GftaM pUrvasyAm . tilOdanaM tilamiSrOdanaM dakziRasyAm . matsyaM prasidDaM paScimAyAm, payodugDamuttarasyAm . etadyaTAkramaM diSyamaBIzwadigBavaM dohadaM BakzayettataH pUrvAdikABASAM jigamizitAM diSAM vrajet . yadAha SrIpatiH <q>AjyaM tilOdanaM matsyaM payaH prAkpraBftikramAt . Buktveti SezaH nAradena tvanyaToktaM “GftAnnaM tilapizwAnnaM matsyAnnaM GftapAyasam . prAgAdikramaSo BuktvA yAti rAjA jaya­tyarIn</q> . vasizWenApi <q>GftAnnaM kfsarAnnaM ca mat­syAnnaM GftapAyasam . pUrvAdizu kramAdBuktvA yAtA sidDimavApnuyAt</q> iti . atrEvaM viroDe vikalpo yaTA­deSAcAraM vA vyavasTA . aTa vAradohadamanuzwuBAha rasAlAmiti . rasAlA SarkarAdaDimarIcakarpUrElA saMsfzwA loke SiKariRIti prasidDA tAM ravivAre . pAyasakAYjyO prasidDe somamaNgalavArayoH . SftaM pakvaM dugDaM buDe, SftaM pAka iti sADu . tatrApi kzIrahavi­zoreveti vArtikAt prastute kzIre sADutvam . daDi prasidDaM guruvAre . aSftamapakvaM dugDaM Sukre, tilAnnaM tila­miSrasodanaM SanO . etadvAradohadaM ravibArAdO krameRa Bakzayet . yadAha SrIpatiH <q>majjikAM saGftapAyasaM taTA kAYjikaM Sftapayo'daDi kramAt . kzIramAmamaTa tat kaTitaM tilOdagaM vAradohadaviDirbuDEH smftaH “iti vasizWanAradAByAM dugDasya pakvApakvaviSezo nAByaDAyi “majjikAM paramAnnaM ca kAYjikaM ca payodaDi . kzIraM tilOdanaM BuktvA BAnuvArAdizu kramAditi</q> . majjikA rasAlA . <q>syAdrasAlA tu majjikA</q> ityaBiDAnAt . gurustu viSezanAha <q>sUryavAre GftaM pASyaM candravAre payastaTA . guqamaNgArake vAre buDavAre tilAnapi . guruvAre daziprASya SukravAre yavAnapi . mAzAn BuktvA SanervAre SUle gacCannadozaBAgiti</q> . aTa tiTidohadaM vasantatilakAcCandasAha pakzAdita iti . pakzAdiH prati­pattasyAH lyaplope paYcamI . pratipadAdipaYcadaSatiTizu krameRa tiTidohadaM BuktvA vrajet . yaTA pratipadi arkasya vfkzaviSezasya dalAni parRAni . dvitIyAyAM taRqulavAri­kzAlitataRqulajalam . tftIyAyAM sarpirGftam . caturTyAM SrARA yavAgUH . paYcamyAM havizyaM mudgAdi . zazWyAM he­majalaM prakzAlitasuvarRajalam . saptamyAmapUpam . azwamyAM rucakaM vIjapUraPalam . <q>PalapUrI vIjapUro rucako mAtuliNgake</q> ityamaraH . navamyAmambu jalam . daSamyAM DenumUtraM strIgavImUtraM na tu vfzamUtraM DenuSabdagraha­RAt . ekAdaSyAM yAvAnnaM yavavikAram . dvAdaSyAM pAyasam . trayodaSyAM guqamikzuvikAraM, caturdaSyA­masfk ruDiram . paYcadaSyAmannamudgAnodanamiSrita­mudgAn . yadAha vfhaspatiH <q>arkapatraM BavedyAtuH praTamAyAntu BakzaRam . dvitIyAyAM BavedyAturBakzyaM sattaRqulodakam . tftIyAyAM taTA sarpiryavAgUH syA­ttataH param . paYcamyAM tadDavizyaM syAt zazWyAM vA kAYcanodakam . apUpaBuktiH saptamyAmazwamyAM vIjapUra­kam . navamyAM toyapAnaM syAdgomUtrantu tataHparam . ekAdaSyAM yavAnadyAt dvAdaSyAM pAyasaM pibet . trayo­daSyAM guqaM lehyaM ruDiraM syAccaturdaSe . mudgOdanaM Bave­dDojyaM paYcadaSyAM yiyAsataH . pakzayoruBayorevaM yAtrA yoge viDiH smftaH</q> iti . dEvajYamanohare'pi kvaci­dBedaH . yaTA <q>arkadalataRqulodakasarpIzi havizyadaDi­suvarRapayaH . tilavArivIjapUrakamaDvAjyakamUtrazizwikA­ScApi . tilapizwakadambamUlAni SAkamaTa SastavfkzaparRAni pratipatpraBftizu BuktvA prasTAtA sidDimApnotIti</q> . nanu <q>AlaByAlaBya BakzyAn vA smftvA dfzwvATa tAn vrajet . dattvA vA sidDimApnoti duzwaBAdizu BUpatiriti</q> gurUkteH duzwavArAdizu dohadABiDAnaM sArTakam . vihitezu puna­rnakzatratiTivArAdizu dohadABiDAnaM vyarTam . doza­nivAraRaPalako hi dohadastadaBAve vEyarTyaprasaNgAt . ucyate . duzwaBAdizu BUpatirityatra duzwatvaM kinnEsargikamu­tAnyat ahitanakzatrezvapi krUragrahasAhityAdirmahAn dozaH samBAvito'sti tadapAkaraRAya dohadABiDAnaM sArTakam evaM sarvavarRAnAmapi pAriGadaRqe virudDatArAkrUra­grahamAhityAdimahAdozanivAraRAya dohadokte pArTa­kyAcca . evaM vihitatiTidohadABiDAnaM yoginyAdi­dozanASArTam . <q>sakrUrarAMSeraSuBA tiTiH syAt</q> itye­taddozanivAraRArTaM ca . taddozABiDAnaM ca ratnamAlA­yAm . <q>AdyAScatasraH kriyapUrvakARAM mezAccaturRAmiha paYcamI syAt . parAH parezAM paratastaTEva sakrUrarASe­raSuBA tiTiH syAt</q> iti . evaM vAradohadoktirapi vakrigrahavAraSUlAdidozahAnyA sArTikA digdohokti­rapi triviDapratibuDapratiSukrapratiBOmAdidozahAnyA sA­rTikA” pI° DA° tatra garBe <q>sudakziRA dohadalakzaRaM daDO</q> raGuH . aBilAze <q>udakakrIqAdohadAgatAnAYca</q> kAda° garBiRyaBilAze <q>prajAvatI dohadaSaMsinI te</q> raGuH <lb/><b>5</b> puzpodgamOzaDe ca <q>kusumaM kftadohadastvayA yadaSoko'yamudIrayizyati</q> raGuH <q>kANkzatyanyovadanamadirAdohadacCadmanAsyAH</q> meGaH aSokabakulayoH strIpadatAqanagaRqUzamadire dohada­miti prasidDiH . <q>strIRAM sparSAt priyaNgurvikasati bakulaH SIDugaRqUzasekAt pAdAGAtAdaSokastilaka­kuruvakO vIkzaRAliNganAByAm . mandAro narmavAkyAt pawumfduhasanAt campako vaktravAtAt cUto gItAnnamerurvi­kasati ca puronartanAt karRikAraH</q> malli° DftavAkyam</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "दोहद",
+            "content": "<H1><h><key1>dohada</key1><key2>dohada</key2></h><body><s>dohada</s>   <lex>m.</lex> (also <lex type=\"hwalt\">n.</lex>, <ls>L.</ls>; probably <lang>Prākṛt</lang> for. <s>dOrhfda</s> <ab>lit.</ab> sickness of heart, nausea) the longing of a pregnant woman for <ab>partic.</ab> objects (<ab>fig.</ab> said of plants which at budding time long to be touched by the foot or by the mouth [<ls>Ragh. xix, 12</ls>] of a lovely woman)<info lex=\"m:n\" /></body><tail><L>97151</L><pc>499,1</pc></tail></H1>\n <H1A><h><key1>dohada</key1><key2>dohada</key2></h><body>  any morbid desire or wish for (<ab>loc.</ab> or <ab>comp.</ab> <lex type=\"hwifc\">f(<s>A</s>). </lex>), <ls>Yājñ.</ls>; <ls>R.</ls>; <ls>Kālid.</ls>; <ls>Pañc.</ls>; <ls>Kathās.</ls> &amp;c.<info lex=\"f#A\" /><info lex=\"inh\" /></body><tail><L>97152</L><pc>499,1</pc></tail></H1A>\n <H1A><h><key1>dohada</key1><key2>dohada</key2></h><body>  pregnancy<info lex=\"inh\" /></body><tail><L>97153</L><pc>499,1</pc></tail></H1A>\n <H1A><h><key1>dohada</key1><key2>dohada</key2></h><body>  (<ab>accord.</ab> to <ls>Luders</ls> <ab>fr.</ab> <s>duhalI</s> = <s>dvihfd</s>, ‘pregnant’).<info or=\"97153.1,dohada;97163.1,dohala\" /><info n=\"sup\" /><info lex=\"inh\" /></body><tail><L>97153.1</L><pc>1329,1</pc></tail></H1A>\n <H1A><h><key1>dohada</key1><key2>dohada</key2></h><body>  a kind of fragrant substance used as manure, <ls>Naiṣ. i, 82</ls>, <ab>Sch.</ab><info lex=\"inh\" /></body><tail><L>97154</L><pc>499,1</pc></tail></H1A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "दोहद",
+            "content": "<H1><h><key1>dohada</key1><key2>dohada</key2></h><body><s>dohada</s>  <div n=\"1\">n. (<s>-daM</s>) </div><div n=\"2\"> 1. Wish, desire. </div><div n=\"2\"> 2. The longing of a pregnant woman, <lb />especially as a sign of impregnation.</div><div n=\"E\"> E. <s>doha</s> here said to mean <lb />satisfaction, and <s>da</s> what gives.</div></body><tail><L>19833</L><pc>355-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "दोहद",
+            "content": "<span lang=\"sa\">दोहद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः /नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬಯಕೆ /ಇಚ್ಛೆ /ಅಭಿಲಾಷೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>डुदाञ् (दाने) - \"कः\" (३-२-३)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>दोषमाकर्षं ददाति<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"ताभिरप्युपहृतं मुखासवं सोऽपिबद्वकुलतुल्यदोहदः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० १९-१२<div class=\"h-2\"> </div><div class=\"h-2\"> </div>दोहद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः /नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗರ್ಭಿಣಿಯರ ಬಯಕೆ /ಗರ್ಭದ ಲಕ್ಷಣವನ್ನು ತಿಳಿಸುವ ಬಯಕೆ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"प्रजावती दोहदशंसिनी ते तपोवनेषु स्पृहयालुरेव\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० १४-४५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>दोहद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः /नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗರ್ಭ /ಬಸಿರು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"दोहदो गर्भलक्षणे । अभिलाषे तथा गर्भे\"- हेम० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

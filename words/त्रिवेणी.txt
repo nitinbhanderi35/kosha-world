@@ -1,150 +1,120 @@
-= createNamedFunction(constructor.name || "unknownFunctionName", function() {});
-            dummy.prototype = constructor.prototype;
-            var obj = new dummy();
-            var r = constructor.apply(obj, argumentList);
-            return r instanceof Object ? r : obj;
+{
+    "word": "त्रिवेणी",
+    "BUR": [
+        {
+            "word": "त्रिवेणी",
+            "eid": "8290",
+            "pagenum": 305,
+            "content": "त्रिवेणी¦ <i>triveṇī</i> <ab>f.</ab> le Gange [aux trois confluents]."
         }
-        function craftInvokerFunction(humanName, argTypes, classType, cppInvokerFunc, cppTargetFunc) {
-            var argCount = argTypes.length;
-            if (argCount < 2) {
-                throwBindingError("argTypes array size mismatch! Must at least get return value and 'this' types!");
-            }
-            var isClassMethodFunc = argTypes[1] !== null && classType !== null;
-            var needsDestructorStack = false;
-            for(var i = 1; i < argTypes.length; ++i){
-                if (argTypes[i] !== null && argTypes[i].destructorFunction === undefined) {
-                    needsDestructorStack = true;
-                    break;
-                }
-            }
-            var returns = argTypes[0].name !== "void";
-            var argsList = "";
-            var argsListWired = "";
-            for(var i = 0; i < argCount - 2; ++i){
-                argsList += (i !== 0 ? ", " : "") + "arg" + i;
-                argsListWired += (i !== 0 ? ", " : "") + "arg" + i + "Wired";
-            }
-            var invokerFnBody = "return function " + makeLegalFunctionName(humanName) + "(" + argsList + ") {\n" + "if (arguments.length !== " + (argCount - 2) + ") {\n" + "throwBindingError('function " + humanName + " called with ' + arguments.length + ' arguments, expected " + (argCount - 2) + " args!');\n" + "}\n";
-            if (needsDestructorStack) {
-                invokerFnBody += "var destructors = [];\n";
-            }
-            var dtorStack = needsDestructorStack ? "destructors" : "null";
-            var args1 = [
-                "throwBindingError",
-                "invoker",
-                "fn",
-                "runDestructors",
-                "retType",
-                "classParam"
-            ];
-            var args2 = [
-                throwBindingError,
-                cppInvokerFunc,
-                cppTargetFunc,
-                runDestructors,
-                argTypes[0],
-                argTypes[1]
-            ];
-            if (isClassMethodFunc) {
-                invokerFnBody += "var thisWired = classParam.toWireType(" + dtorStack + ", this);\n";
-            }
-            for(var i = 0; i < argCount - 2; ++i){
-                invokerFnBody += "var arg" + i + "Wired = argType" + i + ".toWireType(" + dtorStack + ", arg" + i + "); // " + argTypes[i + 2].name + "\n";
-                args1.push("argType" + i);
-                args2.push(argTypes[i + 2]);
-            }
-            if (isClassMethodFunc) {
-                argsListWired = "thisWired" + (argsListWired.length > 0 ? ", " : "") + argsListWired;
-            }
-            invokerFnBody += (returns ? "var rv = " : "") + "invoker(fn" + (argsListWired.length > 0 ? ", " : "") + argsListWired + ");\n";
-            if (needsDestructorStack) {
-                invokerFnBody += "runDestructors(destructors);\n";
-            } else {
-                for(var i = isClassMethodFunc ? 1 : 2; i < argTypes.length; ++i){
-                    var paramName = i === 1 ? "thisWired" : "arg" + (i - 2) + "Wired";
-                    if (argTypes[i].destructorFunction !== null) {
-                        invokerFnBody += paramName + "_dtor(" + paramName + "); // " + argTypes[i].name + "\n";
-                        args1.push(paramName + "_dtor");
-                        args2.push(argTypes[i].destructorFunction);
-                    }
-                }
-            }
-            if (returns) {
-                invokerFnBody += "var ret = retType.fromWireType(rv);\n" + "return ret;\n";
-            } else {}
-            invokerFnBody += "}\n";
-            args1.push(invokerFnBody);
-            var invokerFunction = new_(Function, args1).apply(null, args2);
-            return invokerFunction;
+    ],
+    "LRV": [
+        {
+            "word": "त्रिवेणी",
+            "eid": "16182.1",
+            "pagenum": 318,
+            "content": "tri-veRI¦ <i>f.</i> the place near <i>Prayāga</i> where the rivers Yamunā and Sarasvatī join the Ganges."
         }
-        function ensureOverloadTable(proto, methodName, humanName) {
-            if (undefined === proto[methodName].overloadTable) {
-                var prevFunc = proto[methodName];
-                proto[methodName] = function() {
-                    if (!proto[methodName].overloadTable.hasOwnProperty(arguments.length)) {
-                        throwBindingError("Function '" + humanName + "' called with an invalid number of arguments (" + arguments.length + ") - expects one of (" + proto[methodName].overloadTable + ")!");
-                    }
-                    return proto[methodName].overloadTable[arguments.length].apply(this, arguments);
-                };
-                proto[methodName].overloadTable = [];
-                proto[methodName].overloadTable[prevFunc.argCount] = prevFunc;
-            }
+    ],
+    "MW": [
+        {
+            "word": "त्रिवेणी",
+            "eid": "88300",
+            "pagenum": "460,3",
+            "content": "त्रि—वेणी ¦ <lex>f.</lex> (<ab>g.</ab> SivA<srs/>di) ‘triple-braided’, the place of confluence (<s1 slp1='prayAga'>Prayāga</s1>, now <ns>Allāhābād</ns>) of the Ganges with the <s1 slp1='yamunA'>Yamunā</s1> (<ns>Jumnā</ns>) and the subterranean <s1 slp1='sarasvatI'>Sarasvatī</s1><info lex='f'/>"
+        },
+        {
+            "word": "त्रिवेणी",
+            "eid": "88301",
+            "pagenum": "460,3",
+            "content": "¦ <ab>N.</ab> of another place.<info lex='inh'/>"
         }
-        function exposePublicSymbol(name, value, numArguments) {
-            if (Module.hasOwnProperty(name)) {
-                if (undefined === numArguments || undefined !== Module[name].overloadTable && undefined !== Module[name].overloadTable[numArguments]) {
-                    throwBindingError("Cannot register public name '" + name + "' twice");
-                }
-                ensureOverloadTable(Module, name, name);
-                if (Module.hasOwnProperty(numArguments)) {
-                    throwBindingError("Cannot register multiple overloads of a function with the same number of arguments (" + numArguments + ")!");
-                }
-                Module[name].overloadTable[numArguments] = value;
-            } else {
-                Module[name] = value;
-                if (undefined !== numArguments) {
-                    Module[name].numArguments = numArguments;
-                }
-            }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिवेणी",
+            "eid": "31154",
+            "pagenum": 3,
+            "content": "त्रिवेणी¦ (त्रि + वेणी) <lex>f.</lex> <is>gaṇa</is> शिवादि zu <ls>P. 4, 1, 112.</ls> <i>der Ort, wo die</i> <is>Gaṅgā</is> <i>mit der</i> <is>Yamunā</is> <i>und nach einer mythischen Voraussetzung auch mit der</i> <is>Sarasvatī</is> <i>sich verbindet</i>: °स्तोत्र <ls>Verz. d. B. H. No. 1341.</ls> त्रिवेण्या माहात्म्यम् <ls n='Verz. d. B. H.'>S. 144, 11.</ls> Ueber eine andere <is>Triveṇī</is> s. <ls>LIA. I, 116.</ls> = गङ्गा <ls>ŚABDAC.</ls> im <ls>ŚKDR.</ls> तिस्रो वेणयो ऽस्यामिति त्रिवेणिः <ls>UJJVAL.</ls> zu <ls>UṆĀDIS. 4, 48.</ls> <dvsn n='v'>— Vgl. त्रैवण ."
         }
-        function heap32VectorToArray(count, firstElement) {
-            var array = [];
-            for(var i = 0; i < count; i++){
-                array.push(HEAP32[(firstElement >> 2) + i]);
-            }
-            return array;
+    ],
+    "SHS": [
+        {
+            "word": "त्रिवेणी",
+            "eid": "18142",
+            "pagenum": 325,
+            "content": "त्रिवेणी¦ f. (-णी) A name of the Ganges. E. त्रि three, वेणी a braid of hair: the name is especially applied to the river at Allahabad, where it receives the Jumuna, and is supposed to receive under ground the Saraswati; it is also that of a village in Bengal, above Hugli."
         }
-        function replacePublicSymbol(name, value, numArguments) {
-            if (!Module.hasOwnProperty(name)) {
-                throwInternalError("Replacing nonexistent public symbol");
-            }
-            if (undefined !== Module[name].overloadTable && undefined !== numArguments) {
-                Module[name].overloadTable[numArguments] = value;
-            } else {
-                Module[name] = value;
-                Module[name].argCount = numArguments;
-            }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिवेणी",
+            "eid": "18159",
+            "pagenum": 391,
+            "content": "त्रिवेणी¦ f. (-णी) A name of the Ganges. .E. त्रि three, वेणी a braid of hair: the name is especially applied to the river at <i>Allahabad,</i> where it receives the <i>Jumna,</i> and is supposed to receive under ground the <i>Sarasvatī;</i> it is also that of a village in <i>Bengal,</i> above <i>Hugli.</i>"
         }
-        function dynCallLegacy(sig, ptr, args) {
-            var f = Module["dynCall_" + sig];
-            return args && args.length ? f.apply(null, [
-                ptr
-            ].concat(args)) : f.call(null, ptr);
+    ],
+    "YAT": [
+        {
+            "word": "त्रिवेणी",
+            "eid": "17635",
+            "pagenum": 346,
+            "content": "त्रि-वेणी¦ (णी) 3. <i>f. Ganges;</i> a village."
         }
-        function dynCall(sig, ptr, args) {
-            if (sig.includes("j")) {
-                return dynCallLegacy(sig, ptr, args);
-            }
-            return wasmTable.get(ptr).apply(null, args);
+    ],
+    "SKD": [
+        {
+            "word": "त्रिवेणी",
+            "eid": "15627",
+            "pagenum": "2-662-c",
+            "content": "त्रिवेणी¦, स्त्री, (तिस्रो वेण्यः वारिप्रवाहा वियुक्ताः संयुक्ता वा यत्र ।) स्थानविशेषः । यत्र गङ्गया यमुनासरस्वत्योर्वियोगः । सा दक्षिणप्रयागः । तस्य सीमनिर्णयः । यथा, “प्रद्युम्नस्य ह्रदात् याम्ये सरस्वत्यास्तथोत्तरे । तद्दक्षिणप्रयागस्तु गङ्गातो यमुना गता ॥” इति प्रायश्चित्ततत्त्वम् ॥ इयं मुक्तवेणीति कथ्यते । प्रयागे युक्तवेणी ॥ (अत्र गङ्गया यमुनासरस्वत्योः सङ्गमात् ॥ * ॥ हठयोगोक्तेडापिङ्गलासुषुम्नारूपपारिभाषिकनदीत्रयसङ्गमस्थानम् । यथा, हठयोगप्रदीपिकायाम् । ३ । २४ । “कालपाशमहाबन्धविमोचनविचक्षणः । त्रिवेणीसङ्गमं धत्ते केदारं प्रापयेन्मनः ॥” इदन्तत्वाद्वा ङीबिति त्रिवेणिरपि पाठः ॥)"
         }
-        function getDynCaller(sig, ptr) {
-            var argCache = [];
-            return function() {
-                argCache.length = arguments.length;
-                for(var i = 0; i < arguments.length; i++){
-                    argCache[i] = arguments[i];
-                }
-                return dynCall(sig, ptr, argCache);
-            };
+    ],
+    "VCP": [
+        {
+            "word": "त्रिवेणी",
+            "eid": "23801",
+            "pagenum": "3383,b",
+            "content": "त्रिवे(णि)णी¦ स्त्री तिस्रः वेणयः प्रवाहाः विच्छिन्नाः संयुक्ता वा यत्र ततः इदन्तत्वात् वा ङीप् । गङ्गायमुनासरस्वतीनां विच्छिन्नप्रवाहे १ दक्षिणप्रयागे युक्तप्रवाहे २ प्रयागे तीर्थभेदे च दक्षिणप्रयागसीमा च यथा “प्रद्युम्नस्य ह्रदात् याम्ये सरस्वत्यास्तथोत्तरे । तद्दक्षिणप्रयागन्तु गङ्गातो यमुना गता” प्रा० त० । त्रिवेण्या इदम् शिवा० अण् । त्रैवेण । तदोये त्रि० ।"
         }
-        function embind__req
+    ],
+    "APHI": [
+        {
+            "word": "त्रिवेणी",
+            "content": "त्रिवेणी स्त्री. त्रि-वेणी  - प्रयाग के निकट त्रिवेणी संगम जहाँ गंगा यमुना और सरस्वती मिलती हैं"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिवेणी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಗಂಗಾ ಯಮುನಾ ಮತ್ತು ಸರಸ್ವತೀ ನದಿಗಳು ಸೇರುವ ಸ್ಥಳ",
+            "व्युत्पत्तिः": "तिस्रो वेण्यः प्रवाहा यत्र",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रिवेणी",
+            "content": "<segmenthd>\n<dentry>त्रिवेणी</dentry>\n<prAwipaxikam>त्रिवेणी</prAwipaxikam>\n<seg>त्रि-वेणी</seg>\n<grammar>स्त्री*</grammar>\n<sense no=\"1\">प्रयाग के निकट त्रिवेणी संगम जहाँ गंगा यमुना और सरस्वती मिलती हैं</sense></segmenthd>\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिवेणी",
+            "content": "<body><s>trive(Ri)RI strI tisraH veRayaH pravAhAH vicCinnAH saM­yuktA vA yatra tataH idantatvAt vA NIp . gaNgA­yamunAsarasvatInAM vicCinnapravAhe <lb/><b>1</b> dakziRaprayAge yukta­pravAhe <lb/><b>2</b> prayAge tIrTaBede ca dakziRaprayAgasImA ca yaTA <q>pradyumnasya hradAt yAmye sarasvatyAstaTottare . taddakziRaprayAgantu gaNgAto yamunA gatA</q> prA° ta° . triveRyA idam SivA° aR . trEveRa . tadoye tri° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिवेणी",
+            "content": "<H1><h><key1>triveRI</key1><key2>triveRI</key2></h><body><s>triveRI</s>  <div n=\"1\">f. (<s>-RI</s>) A name of the Ganges.</div><div n=\"E\"> E. <s>tri</s> three, <s>veRI</s> a braid of hair: <lb />the name is especially applied to the river at Allahabad, where it [Page326-a+ 60] <lb />receives the Jumuna, and is supposed to receive under ground the <lb />Saraswati; it is also that of a village in Bengal, above Hugli.</div></body><tail><L>18142</L><pc>325-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिवेणी",
+            "content": "<span lang=\"sa\">त्रिवेणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗಂಗಾ ಯಮುನಾ ಮತ್ತು ಸರಸ್ವತೀ ನದಿಗಳು ಸೇರುವ ಸ್ಥಳ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>तिस्रो वेण्यः प्रवाहा यत्र<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

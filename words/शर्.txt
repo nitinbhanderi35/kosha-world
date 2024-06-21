@@ -1,145 +1,95 @@
-5-.5zm11-4.74V15h-1.5v-2.23c0-2.24-1.76-4.07-4-4.07V7.2c1.02 0 1.85-.83 1.85-1.85S17.52 3.5 16.5 3.5V2c1.85 0 3.35 1.5 3.35 3.35 0 .93-.38 1.77-1 2.38 1.87.89 3.15 2.81 3.15 5.03zM11.15 8.32V8.3c0-1.85 1.5-3.35 3.35-3.35v1.5c-1.02 0-1.85.73-1.85 1.75s.83 2 1.85 2h1.53c1.87 0 3.47 1.35 3.47 3.16V15H18v-1.3c0-1.31-.92-2.05-1.97-2.05h-1.55l-3.33-3.33z"},"child":[]}]})(props);
-};
-export function MdOutlineVapingRooms (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M2 16.5h1c1.33 0 2.71-.18 4-.5v3c-1.29-.32-2.67-.5-4-.5H2v-2zm20-.5v3H8v-3h14zm-11 1.5c0-.28-.22-.5-.5-.5s-.5.22-.5.5.22.5.5.5.5-.22.5-.5zm11-4.74V15h-1.5v-2.23c0-2.24-1.76-4.07-4-4.07V7.2c1.02 0 1.85-.83 1.85-1.85S17.52 3.5 16.5 3.5V2c1.85 0 3.35 1.5 3.35 3.35 0 .93-.38 1.77-1 2.38 1.87.89 3.15 2.81 3.15 5.03zm-2.5.6V15H18v-1.3c0-1.31-.92-2.05-1.97-2.05H14.5a3.35 3.35 0 0 1 0-6.7v1.5c-1.02 0-1.85.73-1.85 1.75s.83 2 1.85 2h1.53c1.87 0 3.47 1.35 3.47 3.16z"},"child":[]}]})(props);
-};
-export function MdOutlineVilla (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M19 10c-1.1 0-2 .9-2 2h-1V3L3 8v13h18v-9c0-1.1-.9-2-2-2zM5 9.37l9-3.46V12H9v7H5V9.37zM19 19h-3v-3h-2v3h-3v-5h8v5z"},"child":[]}]})(props);
-};
-export function MdOutlineWash (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M20.75 16a1.25 1.25 0 0 0 0-2.5H12v-1h6.75c.69 0 1.25-.56 1.25-1.25 0-.67-.53-1.2-1.18-1.24L8.87 10l1.48-2.6c.09-.17.14-.34.14-.54 0-.26-.09-.5-.26-.7L9.12 5l-7.18 6.8c-.6.56-.94 1.35-.94 2.17V20c0 1.66 1.34 3 3 3h13.75a1.25 1.25 0 0 0 0-2.5H12v-1h7.75a1.25 1.25 0 0 0 0-2.5H12v-1h8.75zM10 21H4c-.55 0-1-.45-1-1v-6c0-.39.23-.64.36-.75L7 9.87V12h3v9zm3.5-12c.83 0 1.5-.67 1.5-1.5 0-.84-1.5-2.5-1.5-2.5S12 6.66 12 7.5c0 .83.67 1.5 1.5 1.5zm5-8S16 3.83 16 5.5a2.5 2.5 0 0 0 5 0C21 3.83 18.5 1 18.5 1zm0 5.5c-.55 0-1-.45-1-1 0-.4.43-1.22 1-2.05.57.83 1 1.65 1 2.05 0 .55-.45 1-1 1z"},"child":[]}]})(props);
-};
-export function MdOutlineWaterDamage (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M12 3 2 12h3v8h14v-8h3L12 3zM7 18v-7.81l5-4.5 5 4.5V18H7zm7-4c0 1.1-.9 2-2 2s-2-.9-2-2 2-4 2-4 2 2.9 2 4z"},"child":[]}]})(props);
-};
-export function MdOutlineWheelchairPickup (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M4.5 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm5.5 6.95V9c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v6h2v7h3.5v-.11c-1.24-1.26-2-2.99-2-4.89 0-2.58 1.41-4.84 3.5-6.05zM16.5 17c0 1.65-1.35 3-3 3s-3-1.35-3-3c0-1.11.61-2.06 1.5-2.58v-2.16c-2.02.64-3.5 2.51-3.5 4.74 0 2.76 2.24 5 5 5s5-2.24 5-5h-2zm3.04-3H15V8h-2v8h5.46l2.47 3.71 1.66-1.11-3.05-4.6z"},"child":[]}]})(props);
-};
-export function MdOutlineBathroom (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M8 14c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm4 1c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3 0c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm-3-7.5c-1.76 0-3.22 1.31-3.46 3h6.93a3.52 3.52 0 0 0-3.47-3M12 6c2.76 0 5 2.24 5 5v1H7v-1c0-2.76 2.24-5 5-5zM9 18c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3 0c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm3 0c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1zm5-14H4v16h16V4m0-2c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h16z"},"child":[]}]})(props);
-};
-export function MdOutlineBed (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M21 10.78V8c0-1.65-1.35-3-3-3h-4c-.77 0-1.47.3-2 .78-.53-.48-1.23-.78-2-.78H6C4.35 5 3 6.35 3 8v2.78c-.61.55-1 1.34-1 2.22v6h2v-2h16v2h2v-6c0-.88-.39-1.67-1-2.22zM14 7h4c.55 0 1 .45 1 1v2h-6V8c0-.55.45-1 1-1zM5 8c0-.55.45-1 1-1h4c.55 0 1 .45 1 1v2H5V8zm-1 7v-2c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v2H4z"},"child":[]}]})(props);
-};
-export function MdOutlineBedroomBaby (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M17.94 14.04c-.34.34-.71.64-1.1.92L16 13.5V11h1v-1h-5.62L9.65 7H6l1 .76L5.5 9.5l.95 1L8 9.51v3.99l-.84 1.46c-.39-.27-.76-.58-1.1-.92L5 15.1c1.87 1.87 4.36 2.9 7 2.9s5.13-1.03 7-2.9l-1.06-1.06zm-9.49 1.67.03-.06.81-1.41c1.74.65 3.66.65 5.4 0l.81 1.41.03.06c-1.1.51-2.3.79-3.55.79s-2.43-.27-3.53-.79zM20 4v16H4V4h16m0-2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"},"child":[]}]})(props);
-};
-export function MdOutlineBedroomChild (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M20 4v16H4V4h16m0-2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3.5 8.67V9c0-1.1-.9-2-2-2h-5c-1.1 0-2 .9-2 2v1.67c-.88.35-1.5 1.2-1.5 2.2V17h1.5v-1.5h9V17H18v-4.13c0-1-.62-1.85-1.5-2.2zM15 8.5v2H9v-2h6zm-7.5 4.37c0-.48.39-.87.87-.87h7.27c.48 0 .87.39.87.87V14h-9v-1.13H7.5z"},"child":[]}]})(props);
-};
-export function MdOutlineBedroomParent (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M18.35 11.45V9c0-1.1-.9-2-2-2H13c-.37 0-.72.12-1 .32-.28-.2-.63-.32-1-.32H7.65c-1.1 0-2 .9-2 2v2.45c-.4.46-.65 1.06-.65 1.72V17h1.5v-1.5h11V17H19v-3.83c0-.66-.25-1.26-.65-1.72zm-1.6-.95h-4v-2h4v2zm-9.5-2h4v2h-4v-2zM17.5 14h-11v-1c0-.55.45-1 1-1h9c.55 0 1 .45 1 1v1zM20 4v16H4V4h16m0-2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"},"child":[]}]})(props);
-};
-export function MdOutlineBlender (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M16.13 15.13 18 3h-4V2h-4v1H5c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h2.23l.64 4.13C6.74 16.05 6 17.43 6 19v1c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-1c0-1.57-.74-2.95-1.87-3.87zM5 9V5h1.31l.62 4H5zm10.67-4-1.38 9H9.72L8.33 5h7.34zM16 20H8v-1c0-1.65 1.35-3 3-3h2c1.65 0 3 1.35 3 3v1z"},"child":[]},{"tag":"circle","attr":{"cx":"12","cy":"18","r":"1"},"child":[]}]})(props);
-};
-export function MdOutlineCameraIndoor (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M14 13v-1c0-.55-.45-1-1-1H9c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1l2 1.06v-4.12L14 13zm-2-7.5 6 4.5v9H6v-9l6-4.5M12 3 4 9v12h16V9l-8-6z"},"child":[]}]})(props);
-};
-export function MdOutlineCameraOutdoor (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M18 13c0-.55-.45-1-1-1h-4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1l2 1.06v-4.12L18 14v-1zM12 3 4 9v12h16v-2H6v-9l6-4.5 6 4.5v1h2V9l-8-6z"},"child":[]}]})(props);
-};
-export function MdOutlineChairAlt (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M17 10c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v3c0 1.1.9 2 2 2h1v2H7c-1.1 0-2 .9-2 2v7h2v-3h10v3h2v-7c0-1.1-.9-2-2-2h-1v-2h1zM7 8V5h10v3H7zm10 8H7v-2h10v2zm-3-4h-4v-2h4v2z"},"child":[]}]})(props);
-};
-export function MdOutlineChair (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M20 8V6c0-1.65-1.35-3-3-3H7C5.35 3 4 4.35 4 6v2c-1.65 0-3 1.35-3 3v5c0 1.65 1.35 3 3 3v1c0 .55.45 1 1 1s1-.45 1-1v-1h12v1c0 .55.45 1 1 1s1-.45 1-1v-1c1.65 0 3-1.35 3-3v-5c0-1.65-1.35-3-3-3zM6 6c0-.55.45-1 1-1h10c.55 0 1 .45 1 1v2.78c-.61.55-1 1.34-1 2.22v2H7v-2c0-.88-.39-1.67-1-2.22V6zm15 10c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1v-5c0-.55.45-1 1-1s1 .45 1 1v4h14v-4c0-.55.45-1 1-1s1 .45 1 1v5z"},"child":[]}]})(props);
-};
-export function MdOutlineCoffeeMaker (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M18 6V4h2V2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14v-2h-4.03A4.966 4.966 0 0 0 18 16v-5H8v5c0 1.64.81 3.09 2.03 4H6V4h2v2c0 .55.45 1 1 1h8c.55 0 1-.45 1-1zm-8 10v-3h6v3c0 1.65-1.35 3-3 3s-3-1.35-3-3z"},"child":[]},{"tag":"circle","attr":{"cx":"13","cy":"9","r":"1"},"child":[]}]})(props);
-};
-export function MdOutlineCoffee (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M18.5 3H6c-1.1 0-2 .9-2 2v5.71c0 3.83 2.95 7.18 6.78 7.29 3.96.12 7.22-3.06 7.22-7v-1h.5c1.93 0 3.5-1.57 3.5-3.5S20.43 3 18.5 3zM16 5v3H6V5h10zm0 5v1c0 2.76-2.24 5-5 5s-5-2.24-5-5v-1m12.5-2H18V5h.5c.83 0 1.5.67 1.5 1.5S19.33 8 18.5 8zM4 19h16v2H4v-2z"},"child":[]}]})(props);
-};
-export function MdOutlineDining (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M14.75 6c-1.37 0-2.5 1.52-2.5 3.4 0 1.48.7 2.71 1.67 3.18l.08.04V19h1.5v-6.38l.08-.03c.97-.47 1.67-1.7 1.67-3.18 0-1.88-1.12-3.41-2.5-3.41M10.5 6c-.27 0-.5.22-.5.5V9h-.75V6.5c0-.28-.22-.5-.5-.5s-.5.22-.5.5V9H7.5V6.5c0-.28-.22-.5-.5-.5s-.5.22-.5.5v3.8c0 .93.64 1.71 1.5 1.93V19h1.5v-6.77c.86-.22 1.5-1 1.5-1.93V6.5c0-.28-.22-.5-.5-.5zM20 4H4v16h16V4m0-2c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h16z"},"child":[]}]})(props);
-};
-export function MdOutlineDoorBack (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M19 19V5c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v14H3v2h18v-2h-2zm-2 0H7V5h10v14z"},"child":[]},{"tag":"path","attr":{"d":"M9 11h2v2H9z"},"child":[]}]})(props);
-};
-export function MdOutlineDoorFront (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M19 19V5c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v14H3v2h18v-2h-2zm-2 0H7V5h10v14zm-4-8h2v2h-2v-2z"},"child":[]}]})(props);
-};
-export function MdOutlineDoorSliding (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M10 13H8v-2h2v2zm6-2h-2v2h2v-2zm5 8v2H3v-2h1V5c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v14h1zM11 5H6v14h5V5zm7 0h-5v14h5V5z"},"child":[]}]})(props);
-};
-export function MdOutlineDoorbell (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M11 16.5h2c0 .55-.45 1-1 1s-1-.45-1-1zm4-1.5v-2.34c0-1.54-.81-2.82-2.25-3.16v-.25c0-.41-.34-.75-.75-.75s-.75.34-.75.75v.25C9.82 9.84 9 11.12 9 12.66V15H8v1h8v-1h-1zm-3-9.5L6 10v9h12v-9l-6-4.5M12 3l8 6v12H4V9l8-6z"},"child":[]}]})(props);
-};
-export function MdOutlineFeed (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M16 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8l-5-5zm3 16H5V5h10v4h4v10zM7 17h10v-2H7v2zm5-10H7v2h5V7zm-5 6h10v-2H7v2z"},"child":[]}]})(props);
-};
-export function MdOutlineFlatware (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M16 7.08c0 1.77-.84 3.25-2 3.82V21h-2V10.9c-1.16-.57-2-2.05-2-3.82C10.01 4.83 11.35 3 13 3c1.66 0 3 1.83 3 4.08zM17 3v18h2v-8h2V7c0-1.76-1.24-4-4-4zM8.28 3c-.4 0-.72.32-.72.72V7h-.84V3.72C6.72 3.32 6.4 3 6 3s-.72.32-.72.72V7h-.84V3.72c0-.4-.32-.72-.72-.72S3 3.32 3 3.72V9c0 1.1.9 2 2 2v10h2V11c1.1 0 2-.9 2-2V3.72c0-.4-.32-.72-.72-.72z"},"child":[]}]})(props);
-};
-export function MdOutlineGarage (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16z"},"child":[]},{"tag":"circle","attr":{"cx":"9","cy":"13","r":"1"},"child":[]},{"tag":"circle","attr":{"cx":"15","cy":"13","r":"1"},"child":[]},{"tag":"path","attr":{"d":"M5.78 18.5h.44c.43 0 .78-.36.78-.81V16.5h10v1.19c0 .45.34.81.78.81h.44c.43 0 .78-.36.78-.81v-6.5c-.82-2.46-1.34-4.03-1.56-4.69-.05-.16-.12-.29-.19-.4-.02-.02-.03-.04-.05-.07-.38-.52-.92-.53-.92-.53H7.72s-.54.01-.92.54c-.02.02-.03.04-.05.06-.07.11-.14.24-.19.4-.22.66-.74 2.22-1.56 4.69v6.5c0 .45.35.81.78.81zm2.55-11h7.34l.23.69.43 1.31H7.67l.66-2zM7 11.51v-.01h10v3H7v-2.99z"},"child":[]}]})(props);
-};
-export function MdOutlineLight (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M13 6.06V3h-2v3.06c-4.5.5-8 4.31-8 8.93C3 16.1 3.9 17 5.01 17H8c0 2.21 1.79 4 4 4s4-1.79 4-4h2.99c1.11 0 2.01-.9 2.01-2.01 0-4.62-3.5-8.43-8-8.93zM12 19c-1.1 0-2-.9-2-2h4c0 1.1-.9 2-2 2zm0-4H5c0-3.86 3.14-7 7-7s7 3.14 7 7h-7z"},"child":[]}]})(props);
-};
-export function MdOutlineLiving (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M17.75 10.35V9c0-1.66-1.34-3-3-3h-5.5c-1.66 0-3 1.34-3 3v1.35C5.51 10.78 5 11.58 5 12.5V16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-3.5c0-.92-.51-1.72-1.25-2.15zM9.25 7.5h5.5c.83 0 1.5.67 1.5 1.5v1.03A2.48 2.48 0 0 0 14 12.5v.5h-4v-.5c0-1.3-.99-2.35-2.25-2.47V9c0-.83.67-1.5 1.5-1.5zM17.5 16c0 .28-.22.5-.5.5H7c-.28 0-.5-.22-.5-.5v-3.5c0-.55.45-1 1-1s1 .45 1 1v2h7v-2c0-.55.45-1 1-1s1 .45 1 1V16zM20 4v16H4V4h16m0-2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"},"child":[]}]})(props);
-};
-export function MdOutlineManageSearch (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M7 9H2V7h5v2zm0 3H2v2h5v-2zm13.59 7-3.83-3.83c-.8.52-1.74.83-2.76.83-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5c0 1.02-.31 1.96-.83 2.75L22 17.59 20.59 19zM17 11c0-1.65-1.35-3-3-3s-3 1.35-3 3 1.35 3 3 3 3-1.35 3-3zM2 19h10v-2H2v2z"},"child":[]}]})(props);
-};
-export function MdOutlinePodcasts (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M14 12c0 .74-.4 1.38-1 1.72V22h-2v-8.28c-.6-.35-1-.98-1-1.72 0-1.1.9-2 2-2s2 .9 2 2zm-2-6c-3.31 0-6 2.69-6 6 0 1.74.75 3.31 1.94 4.4l1.42-1.42A3.957 3.957 0 0 1 8 12c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.19-.53 2.25-1.36 2.98l1.42 1.42A5.957 5.957 0 0 0 18 12c0-3.31-2.69-6-6-6zm0-4C6.48 2 2 6.48 2 12c0 2.85 1.2 5.41 3.11 7.24l1.42-1.42A7.987 7.987 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8c0 2.29-.98 4.36-2.53 5.82l1.42 1.42C20.8 17.41 22 14.85 22 12c0-5.52-4.48-10-10-10z"},"child":[]}]})(props);
-};
-export function MdOutlineShower (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M9 17c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1zm3-1c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm4 0c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm3-4v2H5v-2c0-3.53 2.61-6.43 6-6.92V3h2v2.08c3.39.49 6 3.39 6 6.92zm-2 0c0-2.76-2.24-5-5-5s-5 2.24-5 5h10zm-9 7c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm4 0c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm4 0c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"},"child":[]}]})(props);
-};
-export function MdOutlineTableBar (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M22 7.5C22 5.57 17.52 4 12 4S2 5.57 2 7.5c0 1.81 3.95 3.31 9 3.48V15H9.35c-.82 0-1.55.5-1.86 1.26L6 20h2l1.2-3h5.6l1.2 3h2l-1.5-3.74c-.3-.76-1.04-1.26-1.85-1.26H13v-4.02c5.05-.17 9-1.67 9-3.48zM12 6c4.05 0 6.74.86 7.72 1.5C18.74 8.14 16.05 9 12 9s-6.74-.86-7.72-1.5C5.26 6.86 7.95 6 12 6z"},"child":[]}]})(props);
-};
-export function MdOutlineTableRestaurant (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"m21.96 9.73-1.43-5a.996.996 0 0 0-.96-.73H4.43c-.45 0-.84.3-.96.73l-1.43 5c-.18.63.3 1.27.96 1.27h2.2L4 20h2l.67-5h10.67l.66 5h2l-1.2-9H21c.66 0 1.14-.64.96-1.27zM6.93 13l.27-2h9.6l.27 2H6.93zm-2.6-4 .86-3h13.63l.86 3H4.33z"},"child":[]}]})(props);
-};
-export function MdOutlineWindow (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 8h-6V5h6v6zm-8-6v6H5V5h6zm-6 8h6v6H5v-6zm8 6v-6h6v6h-6z"},"child":[]}]})(props);
-};
-export function MdOutlineYard (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M18 13c-3.31 0-6 2.69-6 6 3.31 0 6-2.69 6-6zM6 13c0 3.31 2.69 6 6 6 0-3.31-2.69-6-6-6zm2-1.97a1.562 1.562 0 0 0 2.45 1.28l-.01.12c0 .86.7 1.56 1.56 1.56s1.56-.7 1.56-1.56l-.01-.12c.25.17.56.28.89.28.86 0 1.56-.7 1.56-1.56 0-.62-.37-1.16-.89-1.41.52-.24.89-.78.89-1.4a1.562 1.562 0 0 0-2.45-1.28l.01-.12c0-.86-.7-1.56-1.56-1.56s-1.56.7-1.56 1.56l.01.12A1.562 1.562 0 0 0 8 8.22c0 .62.37 1.16.89 1.41-.52.24-.89.78-.89 1.4zm4-2.97c.86 0 1.56.7 1.56 1.56s-.7 1.56-1.56 1.56-1.56-.7-1.56-1.56.7-1.56 1.56-1.56zM20 4v16H4V4h16m0-2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"},"child":[]}]})(props);
-};
-export function MdOutline18UpRating (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M8.5 15H10V9H7v1.5h1.5z"},"child":[]},{"tag":"path","attr":{"d":"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"},"child":[]},{"tag":"path","attr":{"d":"M12.5 15H15c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1h-2.5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm.5-5h1.5v1.5H13V10zm0 2.5h1.5V14H13v-1.5z"},"child":[]}]})(props);
-};
-export function MdOutline6FtApart (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M6 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 3.43c0-.81-.48-1.53-1.22-1.85a6.95 6.95 0 0 0-5.56 0A2.01 2.01 0 0 0 2 9.43V10h8v-.57zM18 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 3.43c0-.81-.48-1.53-1.22-1.85a6.95 6.95 0 0 0-5.56 0A2.01 2.01 0 0 0 14 9.43V10h8v-.57zM19 17v-2.01L5 15v2l-3-3 3-3v2.01L19 13v-2l3 3-3 3zm-9 2v-1H7.5c-.28 0-.5.22-.5.5v3c0 .28.22.5.5.5h2c.28 0 .5-.22.5-.5V20c0-.28-.22-.5-.5-.5H8V19h2zm-1 1.5v.5H8v-.5h1zm8.5-1.5h-1v3h-1v-3h-1v-1h3v1zm-5 0v.5h1v1h-1V22h-1v-4H14v1h-1.5z"},"child":[]}]})(props);
-};
-export function MdOutlineAddModerator (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M6 11.09v-4.7l6-2.25 6 2.25v3.69c.71.1 1.38.31 2 .6V5l-8-3-8 3v6.09c0 5.05 3.41 9.76 8 10.91.03-.01.05-.02.08-.02-.79-.78-1.4-1.76-1.75-2.84C7.76 17.53 6 14.42 6 11.09z"},"child":[]},{"tag":"path","attr":{"d":"M17 12c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm3 5.5h-2.5V20h-1v-2.5H14v-1h2.5V14h1v2.5H20v1z"},"child":[]}]})(props);
-};
-export function MdOutlineAddReaction (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M7 9.5C7 8.67 7.67 8 8.5 8s1.5.67 1.5 1.5S9.33 11 8.5 11 7 10.33 7 9.5zm5 8c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5zm3.5-6.5c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zM22 1h-2v2h-2v2h2v2h2V5h2V3h-2V1zm-2 11c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8c1.46 0 2.82.4 4 1.08V2.84A9.929 9.929 0 0 0 11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12c0-1.05-.17-2.05-.47-3H19.4c.38.93.6 1.94.6 3z"},"child":[]}]})(props);
-};
-export function MdOutlineArchitecture (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M6.36 18.78 6.61 21l1.62-1.54 2.77-7.6c-.68-.17-1.28-.51-1.77-.98l-2.87 7.9zM14.77 10.88c-.49.47-1.1.81-1.77.98l2.77 7.6L17.39 21l.26-2.22-2.88-7.9zM15 8c0-1.3-.84-2.4-2-2.82V3h-2v2.18C9.84 5.6 9 6.7 9 8c0 1.66 1.34 3 3 3s3-1.34 3-3zm-3 1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"},"child":[]}]})(props);
-};
-export function MdOutlineAssistWalker (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"circle","attr":{"cx":"12.5","cy":"4.5","r":"2"},"child":[]},{"tag":"path","attr":{"d":"m19.77 17.72-.64-6.37A1.49 1.49 0 0 0 17.64 10H16c-1.5-.02-2.86-.54-3.76-1.44l-2-1.98A1.95 1.95 0 0 0 8.83 6c-.51 0-1.02.2-1.41.59L4.08 9.91c-.53.68-.51 1.57-.21 2.13l1.43 2.8-3.15 4.05 1.57 1.24L7.4 15.4l-.17-1.36.77.71V20h2v-6.12l-2.12-2.12 2.36-2.36c.94.94 1.72 1.82 3.59 2.32L13 20h1.5l.41-3.5h3.18l.14 1.22c-.44.26-.73.74-.73 1.28 0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5c0-.54-.29-1.02-.73-1.28zM15.09 15l.41-3.5h2l.41 3.5h-2.82z"},"child":[]}]})(props);
-};
-export function MdOutlineBackHand (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M21 7a2.5 2.5 0 0 0-3-2.45V4a2.5 2.5 0 0 0-3.17-2.41A2.509 2.509 0 0 0 12.5 0c-1.23 0-2.25.89-2.46 2.06A2.5 2.5 0 0 0 7 4.5v5.89c-.34-.31-.76-.54-1.22-.66l-.77-.21c-.83-.23-1.7.09-2.19.83-.38.57-.4 1.31-.15 1.95l2.56 6.43A8.354 8.354 0 0 0 13 24c4.42 0 8-3.58 8-8V7zm-2 9c0 3.31-2.69 6-6 6-2.61 0-4.95-1.59-5.91-4.01l-2.6-6.54.53.14c.46.12.83.46 1 .9L7 15h2V4.5c0-.28.22-.5.5-.5s.5.22.5.5V12h2V2.5c0-.28.22-.5.5-.5s.5.22.5.5V12h2V4c0-.28.22-.5.5-.5s.5.22.5.5v8h2V7c0-.28.22-.5.5-.5s.5.22.5.5v9z"},"child":[]}]})(props);
-};
-export function MdOutlineBlind (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"circle","attr":{"cx":"11.5","cy":"3.5","r":"2"},"child":[]},{"tag":"path","attr":{"d":"M12.13 7.12c-.17-.35-.44-.65-.8-.85a1.98 1.98 0 0 0-1.93-.03v-.01L4 9.3V14h2v-3.54l1.5-.85C7.18 10.71 7 11.85 7 13v5.33L4.4 21.8 6 23l3-4 .22-3.54L11 18v5h2v-6.5l-1.97-2.81c-.04-.52-.14-1.76.45-3.4.75 1.14 1.88 1.98 3.2 2.41L20.63 23l.87-.5-5.48-9.5H17v-2c-.49 0-2.88.17-4.08-2.21"},"child":[]}]})(props);
-};
-export function MdOutlineBoy (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M12 7.5c.97 0 1.75-.78 1.75-1.75S12.97 4 12 4s-1.75.78-1.75 1.75S11.03 7.5 12 7.5zM14 20v-5h1v-4.5c0-1.1-.9-2-2-2h-2c-1.1 0-2 .9-2 2V15h1v5h4z"},"child":[]}]})(props);
-};
-export function MdOutlineCake (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0V0z"},"child":[]},{"tag":"path","attr":{"d":"M12 6a2 2 0 0 0 2-2c0-.38-.1-.73-.29-1.03L12 0l-1.71 2.97c-.19.3-.29.65-.29 1.03 0 1.1.9 2 2 2zm6 3h-5V7h-2v2H6c-1.66 0-3 1.34-3 3v9c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-9c0-1.66-1.34-3-3-3zm1 11H5v-3c.9-.01 1.76-.37 2.4-1.01l1.09-1.07 1.07 1.07c1.31 1.31 3.59 1.3 4.89 0l1.08-1.07 1.07 1.07c.64.64 1.5 1 2.4 1.01v3zm0-4.5c-.51-.01-.99-.2-1.35-.57l-2.13-2.13-2.14 2.13c-.74.74-2.03.74-2.77 0L8.48 12.8l-2.14 2.13c-.35.36-.83.56-1.34.57V12c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v3.5z"},"child":[]}]})(props);
-};
-export function MdOutlineCatchingPokemon (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M14.5 12a2.5 2.5 0 0 1-5 0 2.5 2.5 0 0 1 5 0zm7.5 0c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2s10 4.48 10 10zm-2 0h-4c0-2.21-1.79-4-4-4s-4 1.79-4 4H4c0 4.41 3.59 8 8 8s8-3.59 8-8z"},"child":[]}]})(props);
-};
-export function MdOutlineCleanHands (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"m16.99 5 .63 1.37 1.37.63-1.37.63L16.99 9l-.63-1.37L14.99 7l1.37-.63.63-1.37M20 14c1.1 0 2-.9 2-2s-2-4-2-4-2 2.9-2 4 .9 2 2 2zm-9-7.9V4h2c.57 0 1.1.17 1.55.45l1.43-1.43A4.899 4.899 0 0 0 13 2H7.5v2H9v2.11c-1.78.37-3.2 1.68-3.75 3.39h2.16C7.94 8.61 8.89 8 10 8c1.62 0 2.94 1.29 2.99 2.9l2.01.75V11a5 5 0 0 0-4-4.9zM22 19v1l-8 2.5-7-1.94V22H1V11h7.97l6.16 2.3A2.89 2.89 0 0 1 17 16h2c1.66 0 3 1.34 3 3zM5 20v-7H3v7h2zm14.9-1.43c-.16-.33-.51-.56-.9-.56h-5.35c-.54 0-1.07-.09-1.58-.26l-2.38-.79.63-1.9 2.38.79c.31.1 2.3.15 2.3.15 0-.37-.23-.7-.57-.83L8.61 13H7v5.48l6.97 1.93 5.93-1.84z"},"child":[]}]})(props);
-};
-export function MdOutlineCo2 (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M14 9h-3c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1zm-.5 4.5h-2v-3h2v3zM8 13v1c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1H6.5v-.5h-2v3h2V13H8zm12.5 2.5h-2v1h3V18H17v-2.5c0-.55.45-1 1-1h2v-1h-3V12h3.5c.55 0 1 .45 1 1v1.5c0 .55-.45 1-1 1z"},"child":[]}]})(props);
-};
-export function MdOutlineCompost (props) {
-  return GenIcon({"tag":"svg","attr":{"viewBox":"0 0 24 24"},"child":[{"tag":"path","attr":{"fill":"none","d":"M0 0h24v24H0z"},"child":[]},{"tag":"path","attr":{"d":"M12.87 11.81A2.5 2.5 0 0 1 15 8h1c1.51 0 2-1 2-1s.55 6-3 6c-.49 0-.94-.14-1.32-.38-.24.64-.59 1.76-.76 2.96 1.26.22 2.28.89 2.77 1.77A6
+{
+    "word": "शर्",
+    "CCS": [
+        {
+            "word": "शर्",
+            "eid": "24195",
+            "pagenum": 437,
+            "content": "शर्,¦ शृणा/ति (शृणति) zerbrechen, zermalmen, <lbinfo n='7'/> verletzen, <i>Pass.</i> शीर्यते (°ति) brechen, reißen, abfallen, verwelken, <lbinfo n='7'/> vergehen. <i>p. p.</i> शीर्ण/ zerbrochen, zerrissen, abgefallen, verwelkt, verfault. वि <i>Pass.</i> zerbrechen, zerreißen, zerfallen, <lbinfo n='7'/> verderben. <i>p. p.</i> विशीर्ण zerbrochen, <lbinfo n='8'/> zerfallen, zerschmettert, zerbrochen, <lbinfo n='8'/> zerfallen, zerschmetter, zerstört, vernichtet."
+        },
+        {
+            "word": "शर्",
+            "eid": "29981",
+            "pagenum": 541,
+            "content": "शर्¦ <i>mit</i> सम् zerbrechen, zermalmen."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "शर्",
+            "eid": "8678",
+            "pagenum": 1381,
+            "content": "<hom>1.</hom> <b>√śar,</b> <b>√śir</b>¦ [<ls>Cu. 〔53〕</ls>], 1〉 <i>zertrennen</i> [<ab>A.</ab>] durch Schneiden, Brechen, Brennen, also <i>zerschneiden, zerbrechen, zerschmettern, entzweibrennen;</i> daher auch 2〉 bildlich <i>verletzen, verwunden, vernichten</i> [<ab>A.</ab>]; 3〉 <ab>med.</ab> oder <ab>pass.</ab>, <i>brechen, zerbrechen</i> (<ab>intrans.</ab>), <i>verkürzt werden;</i> 4〉 <ab>med.</ab>, <i>sich</i> etwas [<ab>A.</ab>] <i>brechen, zu Grunde richten</i>. <dvsn n='Pf'>Mit <b>párā</b> <i>zermalmen, vernichten</i> [<ab>A.</ab>]. <dvsn n='Pf'><b>prá</b> Spitze [<ab>A.</ab>] <i>abbrechen, zerbrechen</i> [<ab>A.</ab>]. <dvsn n='Pf'><b>práti</b> <i>zertrennen, zerbrechen</i> [<ab>A.</ab>]. <dvsn n='Pf'><b>ví</b> <ab>me.</ab>, <i>zerschellen</i> (<ab>intr.</ab>). <dvsn n='Pf'><b>sám</b> <ab>me.</ab> <i>zusammenbrechen</i> (<ab>intr.</ab>), <i>zu Grunde gehen</i>. [Page1382] <dvsn n='H'>Stamm <b>śṛṇā́, śṛṇī (śṛṇ-)</b>: <dvsn n='TS'>-āsi 1〉 ásis ná párva vṛjinā́ 〰 {915,8}. <dvsn n='TS'>-ā́ti 1〉 vīḍú {915,6}. <dvsn n='TS'>-īhi 1〉 tásya pṛṣṭī́s {913,10} (hárasā). — <b>párā</b> yātudhā́nān, rákṣas, mū́radevān, asutṛ́pas {913,14}. — <b>prá</b> párvāṇi {913,5}. — <b>práti</b> tásya trī́ṇi ágrā {913,10}; háras {913,25} (hárasā); ágram (rákṣasas) {264,17}. <dvsn n='TS'>-ītam <b>párā</b> acítas {620,1}. <dvsn n='TS'>-antu <b>párā</b> vṛjinám {913,15}. <dvsn n='H'><ab>Impf.</ab> <b>aśṛṇā:</b> <dvsn n='TS'>-āt 1〉 śátrūn {964,4} (virúkmatā). <dvsn n='H'><ab>Pass.</ab> <b>śīrya:</b> <dvsn n='TS'>-ate ákṣas ná 〰 {164,13} wo <ls>AV.</ls> chidyate. <dvsn n='H'><ab>Aor.</ab> <b>śār:</b> <dvsn n='TS'>-ri [<pe>3.</pe> <ab>s.</ab> <ab>me.</ab>] 3〉 mā́ mā́trā 〰 ápasas purā́‿ ṛtós {219,5}. — <b>ví</b> mā́ yugám {287,17}. — <b>sám</b> mā́kīm 〰 kévaṭe {495,7}. <dvsn n='H'><ab>Part.</ab> <b>śṛṇāná:</b> <dvsn n='TS'>-ā́s 4〉 svayám bálāni tanúas 〰 {854,11}. <dvsn n='H'><ab>Inf.</ab> <b>śárītu:</b> <dvsn n='TS'>-os 3〉 índras patalyè dadatām 〰 {287,17}. <dvsn n='H'>Verbale <b>śír</b> (<ls>Kir. 〔16,5〕</ls>. <ls>BR</ls>)."
+        },
+        {
+            "word": "शर्",
+            "eid": "8679",
+            "pagenum": 1382,
+            "content": "<hom>2.</hom> <b>(√śar)</b>¦ = śri."
+        },
+        {
+            "word": "शर्",
+            "eid": "12616",
+            "pagenum": 1771,
+            "content": "<b>śar,</b>¦<info vn='add 555 gra'/> <dvsn n='H'>Stamm <b>śṛṇī:</b> <dvsn n='TS'>-īhi <b>práti</b> in {913,25} -īhí betont."
+        }
+    ],
+    "PW": [
+        {
+            "word": "शर्",
+            "eid": "110496",
+            "pagenum": 6,
+            "content": "<hom>1.</hom> √शर्¦, शृणा/ति <dvsn n='1'>— 1〉 <ab>Act.</ab> <i>zerbrechen, zerschmettern;</i> <ab>Med.</ab> <i>sich (sibi) brechen, — zu Grunde richten</i>. <dvsn n='1'>— 2〉 <ab>Act.</ab> <i>erlegen</i> (Wild). <dvsn n='1'>— 3〉 <ab>Pass.</ab> शीर्यते, °ति (metrisch) <dvsn n='2'>— a〉 <i>brechen, reissen, bersten, auseinandergehen</i>. <dvsn n='2'>— b〉 <i>sich lostrennen, abfallen, ausfallen</i>. <dvsn n='2'>— c〉 <i>in sich zusammenfallen, verwelken</i>. <dvsn n='2'>— d〉 <i>sich abnutzen, sich aufreiben, vergehen</i>. <dvsn n='1'>— 4〉 शीर्ण/ <dvsn n='2'>— a〉 <i>zerbrochen, zersprungen, zerrissen</i>. <dvsn n='2'>— b〉 <i>abgesprungen, abgefallen, ausgefallen</i>. <dvsn n='2'>— c〉 <i>ausgebrochen</i> (Wasser aus den Flussbette). <dvsn n='2'>— d〉 <i>zerfallen, verfault, verwest</i>. <dvsn n='2'>— e〉 in Verbindung mit Wörten, die <i>Frucht, Blüthe, Blatt</i> und <ab>dgl.</ab> bedeuten, sowohl <i>abgefallen,</i> als <i>verwelkt, verfault</i>. <dvsn n='1'>— 5〉 शीर्त in अशीर्ततनु und दुःशीर्ततनु. <dvsn n='1'>— 6〉 शुर्त/ <i>zerschmettert</i> <ls>ṚV. 1,174,6</ls>. Nach <ls>NIGH.</ls> = क्षिप्र. <dvsn n='p'>— Mit व्यति <ab>Pass.</ab> <i>in viele Stücke zerbrechen, — zerspringen</i>. <dvsn n='p'>— Mit अनु/ in *अनुशर. <dvsn n='p'>— Mit अपि <dvsn n='1'>— 1〉 <ab>Act.</ab> <i>abbrechen;</i> <ab>Med.</ab> <i>sich (sibi) brechen</i>. <dvsn n='1'>— 2〉 <ab>Pass.</ab> <i>zerbrechen</i> (<ab>intrans.</ab>). <dvsn n='p'>— Mit अव <dvsn n='1'>— 1〉 <ab>Act.</ab> <i>zerbrechen</i>. <dvsn n='1'>— 2〉 <ab>Pass.</ab> <i>auseinanderstieben</i>. <dvsn n='1'>— 3〉 अवशीर्ण <dvsn n='2'>— a〉 <i>zerstreut</i> <ls>KAUŚ. 88</ls>. <dvsn n='2'>— b〉 <i>auseinanderfallend, [Page6-209-c] wackelig</i>. <dvsn n='2'>— c〉 <i>heruntergekommen, mitgenommen</i>. °गव <ls>BAUDH.</ls> im <ls>Comm. zu ĀPAST. ŚR. 5,29,1</ls> und in der Einleitung zu <ls n='ĀPAST. ŚR.'>10,1,1</ls>. <dvsn n='p'>— Mit आ <ab>Pass.</ab> <i>herausfallen aus</i> (<ab>Abl.</ab>) <ls>GOP. BR. 1,2,18</ls>. <dvsn n='p'>— Mit नि <i>abbrechen</i>. <dvsn n='p'>— Mit निस् <i>zerbrechen, zerschmettern</i>. <dvsn n='p'>— Mit परा <i>zerbrechen, zermalmen</i>. पराशीर्ण <i>zerschmettert</i> in einer Etymologie. <dvsn n='p'>— Mit परि <ab>Pass.</ab> <i>zerspringen, bersten</i>. <dvsn n='p'>— Mit प्र <i>zerbrechen, abbrechen</i>. प्रशीर्ण <i>zerbrochen, abgebrochen</i>. <dvsn n='p'>— Mit संप्र <ab>Pass.</ab> <i>auseinanderbersten</i> <ls>HARIV. 2,11,3</ls> (संप्राशीर्यत zu lesen). <dvsn n='p'>— Mit प्रति <i>abbrechen,</i> (die Spitze) <i>abstossen</i>. <dvsn n='p'>— Mit वि <ab>Pass.</ab> <dvsn n='1'>— 1〉 <i>zerbrechen, zerspringen, zerfallen, auseinanderfallen, auseinanderstieben</i>. मेदिनीम् so <ab>v. a.</ab> <i>zersplittern und in den Erdboden dringen</i>. <dvsn n='1'>— 2〉 <i>sich ablösen von</i> (<ab>Abl.</ab>). <dvsn n='1'>— 3〉 <i>verderben, zu Grunde gehen</i>. <dvsn n='1'>— 4〉 विशीर्ण <dvsn n='2'>— a〉 <i>zerbrochen, zerfallen, zerrissen, zerstoben, auseinandergeworfen, umherliegend</i>. <dvsn n='2'>— b〉 <i>zerschmettert, zermalmt, zerstört</i>. <dvsn n='2'>— c〉 <i>ausgefallen</i>. <dvsn n='2'>— d〉 <i>abgerieben</i>. <dvsn n='2'>— e〉 <i>verschleudert</i> (Schatz), <i>zu Grunde gerichtet, zu Nichte geworden</i>. <dvsn n='p'>— Mit अभिवि <ab>Pass.</ab> <i>auseinandergerissen werden</i>. <dvsn n='p'>— Mit निर्वि <ab>Pass.</ab> <i>sich ablösen und auseinanderfallen</i>. <dvsn n='p'>— Mit प्रवि, °शीर्ण <i>zerfallen, abgefallen</i>. <dvsn n='p'>— Mit सम् <dvsn n='1'>— 1〉 <ab>Act.</ab> <i>zusammenbrechen</i> (<ab>trans.</ab>), <i>zerbrechen</i>. <dvsn n='1'>— 2〉 <ab>Med.</ab> <dvsn n='2'>— a〉 <i>zusammenbrechen</i> (<ab>intrans.</ab>). <dvsn n='2'>— b〉 <i>zerstieben</i>. <dvsn n='m'>— <ab>Desid.</ab> in संशिशरिषु."
+        },
+        {
+            "word": "शर्",
+            "eid": "110497",
+            "pagenum": 6,
+            "content": "<hom>2.</hom> शर्¦ = <hom>1.</hom> श्रा <i>sieden, kochen;</i> davon श/रस्, शृत/ (<ab>s. u.</ab> <hom>1.</hom> श्रा) <ab>u. s. w.</ab>"
+        },
+        {
+            "word": "शर्",
+            "eid": "110498",
+            "pagenum": 6,
+            "content": "<hom>3.</hom> शर्¦ = <hom>1.</hom> श्रि <i>sich anlehnen</i> <ab>u. s. w.</ab> in शरण/ <ab>u. s. w.</ab> <dvsn n='p'>— Mit अधि, °शृत fehlerhaft für °श्रित <i>aufʼs Feuer gesetzt</i> <ls>HARIV. 3872</ls>. <dvsn n='p'>— Mit उद् <i>aufrichten</i>. उच्छ्रियते = उच्छ्रीयते <ls>ĀPAST. ŚR. 9,11,26</ls>. <dvsn n='p'>— Mit संपरि <i>überdecken</i>. <ab>Pass.</ab> °श्रियेते = °श्रीयेते <ls>AIT. BR. 1,29,21</ls>. <dvsn n='p'>— Mit अभिसम् <ab>pass.</ab> <i>erlangt —, erreicht werden</i>. अभिसंश्रियते <ls>MBH. 12,298,34</ls>. अभिसंश्रीयते <ab>v. l.</ab>"
+        },
+        {
+            "word": "शर्",
+            "eid": "110499",
+            "pagenum": 6,
+            "content": "<hom>4.</hom> शर्¦ <ab>s.</ab> <hom>2.</hom> शिर्."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "शर्",
+            "eid": "98029",
+            "pagenum": 7,
+            "content": "1. शर्¦, शृणा/ति <ls>NAIGH. 2, 19</ls> (वधकर्मन्). <ls>DHĀTUP. 31, 18</ls> (हिंसायाम्). शृणान/; अशरीत्, अशरैत्; शशरिथ <ls>P. 6, 4, 126</ls>, Schol. शशरुस् und शश्रुस् <ls n='P.'>7, 4, 12.</ls> <ls>VOP. 16, 5.</ls> शश्रे/, शरिष्यते, °शीर्य, श/रीतोस् <ls>ṚV. 3, 53, 17.</ls> <i>zerbrechen</i>: रु\\द्रो वो^ ग्री\\वा अ^शरैत् <ls>AV. 6, 32, 2.</ls> पृ\\ष्टीः <ls>ṚV. 10, 87, 10.</ls> वी\\ळु <ls n='ṚV. 10,'>89, 6.</ls> शत्रू^न् <ls n='ṚV. 10,'>138, 4.</ls> <ls>ŚAT. BR. 11, 1, 6, 35.</ls> <ls>TBR. 1, 5, 1, 4.</ls> med. <i>sich brechen</i> (z. B. den Arm): श\\श्रे पाद^म\\ङ्गुरि^म् <ls>AV. 4, 18, 6.</ls> स्व\\यं बला^नि त\\न्व^ः शृणा\\नाः <ls>ṚV. 10, 28, 11.</ls> act. so v. a. <i>erlegen</i>: शृणाति यस्तान् (मृगान्) प्रसभेन तस्य ते <ls>KIR. 14, 13.</ls> pass. शीर्यते (auch शीर्यति u. s. w. aus metrischen Rücksichten), शारि; <i>brechen, reissen, bersten, auseinandergehen; sich lostrennen</i>: अक्षो\\ न शी^र्यते <ls>ṚV. 1, 164, 13.</ls> मा मात्रा^ शार्य\\पस^ः पु\\र ऋ\\तोः <ls n='ṚV.'>2, 28, 5.</ls> <ls>TS. 5, 2, 6, 2.</ls> <ls n='TS.'>6, 1, 3, 5.</ls> हिमवान् शीर्येत् <ls>MBH. 3, 591.</ls> पृथिवी शीर्येत् <ls>R. GORR. 2, 15, 29.</ls> अशीर्यन्त शिलाः <ls n='R. GORR.'>5, 54, 7.</ls> सानवः <ls>KATHĀS. 107, 90.</ls> यत्क्षारदग्धं न शीर्यते <ls>SUŚR. 1, 34, 2. 99, 1.</ls> धनुर्वाशीर्यदस्यतः <ls>MBH. 6, 5058.</ls> नाशीर्यत धनुश्चास्य <ls n='MBH. 6,'>5059.</ls> शीर्यते रथचक्रवत् <ls>KĀM. NĪTIS. 8, 2.</ls> विव्याध पाण्डवं हस्ते तस्य मुष्टिरशीर्यत <ls>MBH. 4, 1943.</ls> शीर्यमाणः संलक्ष्यते न च्छिदुरो ऽपि हारः <ls>RAGH. 16, 62.</ls> कञ्चुके शीर्यमाणे निजे ऽस्मिंस्तस्मिंश्च देहे <ls>MĀRK. P. 25, 14.</ls> शीर्यत्तृणलघु <ls>Spr. (II) 3178.</ls> तरूणां पुष्पिताग्राणां सर्वपुष्पमशीर्यत <i>fiel ab</i> <ls>R. 5, 5, 16.</ls> आमः स्यात्पक्वसंकाशो न तु शीर्येत कर्हिचित् <ls>Spr. 5263.</ls> केशाः शीर्यन्त वेधसः <i>ausfallen</i> <ls>MĀRK. P. 48, 21.</ls> <i>in sich zusammenfallen, verwelken</i> <ls>Spr. (II) 1845, v. l.</ls> अधिवासो न शीर्यते <i>sich abnutzen, vergehen</i> <ls>RĀJA-TAR. 3, 426.</ls> धीः शीर्यते सदा <i>sich aufreiben</i> <ls>HARIV. 16121.</ls> <ls>ŚAT. BR. 14, 6, 9, 28.</ls> शीर्ण/ <ls>P. 8, 2, 42.</ls> <i>zerbrochen, zersprungen</i> (= विशीर्ण und तनु <ls>MED. ṇ. 30</ls>): यथा शीर्णेन शीर्णं संधित्सेत् <ls>ŚAT. BR. 11, 5, 8, 6.</ls> (वज्रम्) दशधा शतधा चैव तच्छीर्णं वृत्रमूर्धनि <ls>MBH. 1, 6485.</ls> <ls n='MBH.'>13, 665.</ls> शीर्णापरायुध <ls>KATHĀS. 47, 72.</ls> रथ <ls>R. 3, 45, 12.</ls> °शीर्षन् <ls>BHĀG. P. 3, 18, 5.</ls> °दन्त (गज) <ls>MBH. 7, 4564.</ls> <ls>Spr. (II) 480.</ls> <ls n='Spr.'>(I) 2547.</ls> <i>zerrissen</i>: कन्था <ls n='Spr.'>(II) 2426, v. l.</ls> (für जीर्णा). <i>abgesprungen, abgefallen</i>: नगाग्रादिव शीर्णानां शृङ्गाणां पततां क्षितौ <ls>MBH. 3, 2540.</ls> कनकबिन्दवः <ls>R. GORR. 2, 96, 16.</ls> <ls n='R. GORR.'>3, 67, 7.</ls> शिरःशीर्णैस्तत्कचैः <i>ausgefallen</i> <ls>RĀJA-TAR. 2, 88.</ls> आपः <i>ausgebrochen</i> (aus dem Flussbett) <ls>NIR. 4, 25.</ls> <i>zerfallen, verfault, verwest</i> <ls>R. GORR. 2, 33, 21.</ls> तरु <ls>Spr. 3012.</ls> सद्मन् <ls>KATHĀS. 3, 56.</ls> <ls>MĀLATĪM. 79, 18.</ls> <ls>MĀRK. P. 34, 25.</ls> शीर्णो गङ्गाजले ऽन्त्यजः <ls>KATHĀS. 27, 128.</ls> कुष्ठशीर्णकराङ्घ्रिक <ls n='KATHĀS.'>64, 131.</ls> in Verbindung mit Wörtern, die <i>Frucht, Blüthe, Blatt</i> u. s. w. bedeuten, sowohl <i>abgefallen</i>, als <i>verwelkt, verfault</i>: पुष्पमूलफलैः स्वयं शीर्णैः <i>von selbst abgefallen</i> <ls>M. 6, 21.</ls> °पर्णाशिन् <ls>MBH. 13, 760.</ls> <ls n='MBH.'>15, 974.</ls> <ls>R. 1, 51, 26</ls> (<ls n='GORR. 1,'>52, 25</ls> <ls>GORR.</ls>). <ls>R. GORR. 1, 44, 11.</ls> कर्णिकारस्य शाखेव शीर्णपुष्पा <ls>R. 2, 92, 22</ls> (<ls n='GORR. 2,'>101, 24</ls> <ls>GORR.</ls> शीर्णपर्णा). शीर्णपर्णफलैर्द्रुमैः <ls>MBH. 1, 5891.</ls> <ls n='MBH.'>5, 7349.</ls> <ls>ṚT. 1, 23.</ls> <ls>MEGH. 30.</ls> <ls>VARĀH. BṚH. S. 51, 3. 89, 1.</ls> <ls>SĀH. D. 42, 11.</ls> शीर्णानि फलानि कोशे <i>verfault</i> <ls>KATHĀS. 75, 32.</ls> <ls>RĀJA-TAR. 3, 326.</ls> <ls>BHĀG. P. 4, 8, 73.</ls>  <dvsn n='p'>— व्यति pass. <i>in viele Stücke zerbrechen, - zerspringen</i>: पुङ्खानां व्यतिशीर्यताम् <ls>MBH. 4, 1517.</ls>  <dvsn n='p'>— अनु vgl. अनुशर (?).  <dvsn n='p'>— अपि <i>abbrechen</i>, act.: पृ\\ष्टीः <ls>AV. 2, 7, 5.</ls> <ls n='AV.'>6, 32, 2.</ls> <ls n='AV.'>19, 45, 1.</ls> med. : बाहुम् <ls>ŚAT. BR. 1, 7, 3, 19.</ls> pass.: यदि ग्रावापिशीर्यते <i>zerbricht</i> <ls>PAÑCAV. BR. 9, 9, 13.</ls> °शीर्ण <ls>AV. 4, 3, 6.</ls>  <dvsn n='p'>— अव <i>zerbrechen</i>: मन्यून् <ls>PAÑCAV. BR. 7, 5, 2.</ls> pass. <i>auseinanderstieben</i>: (पावकः) समन्तादवशीर्यत <ls>R. ed. Bomb. 1, 37, 13.</ls> °शीर्ण <ls>KAUŚ. 88.</ls> <i>auseinanderfallend, wackelig</i>: न भग्ने नावशीर्णे च शयने प्रस्वपीत च <ls>MBH. 13, 5003.</ls>  <dvsn n='p'>— आ vgl. आशरीक .  <dvsn n='p'>— नि <i>abbrechen</i>: नि\\शीर्य^ श\\ल्याना\\ं मुखा^ <ls>VS. 16, 13.</ls> <dvsn n='v'>— Vgl. निशरण, °शारण, °शारुक .  <dvsn n='p'>— निस् <i>zerbrechen</i>: ग्रीवाः <ls>KĀṬH. 24, 10.</ls> शत्रू^न् <ls>AV. 3, 6, 2.</ls> <ls n='AV.'>8, 8, 3.</ls>  <dvsn n='p'>— परा <i>zerbrechen, zermalmen</i>; act. <ls>ṚV. 7, 104, 1.</ls> <ls n='ṚV.'>10, 87, 14.</ls> fg. °शरैत् <ls>AV. 6, 66, 2.</ls> °शरीत् <ls n='AV. 6,'>75, 1.</ls> °शीर्ण <ls>NIR. 6, 30.</ls> <dvsn n='v'>— Vgl. पराशर .  <dvsn n='p'>— परि pass. <i>zerspringen, bersten</i>: (महागिरिः) समन्तात्पर्यशीर्यत <ls>MBH. 3, 11141.</ls> नभसः परिशीर्यतः <ls n='MBH.'>1, 8283.</ls>  <dvsn n='p'>— प्र <i>zerbrechen, abbrechen</i>: पर्वा^णि <ls>ṚV. 10, 87, 5.</ls> पूर्वार्धम् <ls>ŚAT. BR. 1, 8, 1, 13. 39.</ls> <ls>KĀTY. ŚR. 3, 4, 7.</ls> °शीर्ण partic.: अग्र° <ls>ŚAT. BR. 11, 1, 8, 6.</ls> स्वयं° <ls n='ŚAT. BR.'>5, 3, 2, 5.</ls> अ° <ls>KĀTY. ŚR. 2, 3, 31.</ls> प्रशीर्णे धनुषि <ls>MBH. 7, 4425.</ls> °मुष्टि <ls n='MBH.'>8, 4697.</ls>  <dvsn n='p'>— प्रति <i>abbrechen</i>, (die Spitze) <i>abstossen</i>: प्रत्यग्र^ं शृणीहि <ls>ṚV. 3, 30, 17.</ls> <ls n='ṚV.'>10, 87, 10.</ls> <ls>TBR. 1, 5, 1, 4.</ls> प्र\\स्त\\रम् <ls>TS. 2, 6, 5, 3.</ls> <dvsn n='v'>— Vgl. प्रतिशर .  <dvsn n='p'>— वि pass. <i>zerbrechen, zerspringen, zerfallen</i>: मा यु\\गं वि शा^रि <ls>ṚV. 3, 53, 17.</ls> <ls>PAÑCAV. BR. 14, 9, 27.</ls> रथाङ्गम् <ls>ŚĀṄKH. GṚHY. 1, 15. 2, 13.</ls> भाण्डं पृथिव्यां तद्व्यशीर्यत <ls>R. 2, 78, 17.</ls> ध्वजाः <ls>MBH. 2, 2695.</ls> नेमिः <ls>Verz. d. Oxf. H. 11,b,13</ls> v. u. (व्यशीर्यत zu lesen). (शक्तिः) व्यशीर्यत मेदिनीम् <i>zersplitterte und drang in den Erdboden</i> <ls>MBH. 6, 4763.</ls> उल्का <ls n='MBH.'>2, 2648.</ls> गिरिः <ls n='MBH.'>1, 8283.</ls> <ls>R. 1, 65, 12.</ls> शिखरः सहस्रधा <ls n='R.'>5, 56, 43.</ls> <ls n='R. 5,'>5, 13.</ls> <ls n='R.'>2, 71, 17.</ls> भवनानि <ls n='R.'>5, 50, 10.</ls> प्रासादः <ls n='R. 1,'>38, 35.</ls> फलानि <ls>BHĀG. P. 5, 16, 18.</ls> तिलशो विशीर्यमाणं शरीरम् <ls n='BHĀG. P.'>26, 28.</ls> <ls>R. GORR. 1, 26, 12.</ls> <ls>Spr. (II) 3172.</ls> विशीर्यन्तीं नावमिव <ls>MBH. 3, 15713.</ls> गदा विशीर्यन्ती <ls n='MBH.'>6, 5424.</ls> तस्यैव पाणिः सनखो   विशीर्येत् <ls n='MBH.'>5, 1879.</ls> गिरेरिव विशीर्यतः <ls>R. GORR. 1, 69, 19.</ls> संदेहस्ते व्यशीर्यत् <ls>CHĀND. UP. 5, 15, 2.</ls> व्यशीर्यद्बन्धनम् <ls>MBH. 14, 1712.</ls> व्यशीर्यन्त शरीरात्स्वात्सर्वगात्राणि <i>lösten sich ab</i> <ls>R. 1, 25, 12.</ls> पुष्पमुच्चावचं भूमौ व्यशीर्यत समन्ततः <i>auseinanderfallen</i> <ls>HARIV. 3933.</ls> सैन्यानि विशीर्यन्ते सैकताः सेतवो यथा <ls>Spr. (II) 2945.</ls> भिन्नं हि तव (बलं) काष्ठमिव तृणदघ्नं विशीर्यते <ls>KĀM. NĪTIS. 17, 40.</ls> गन्धादेव व्यशीर्यन्त (गजा तथा व्यदीर्यन्त die neuere Ausg.) सिंहस्येवेतरे मृगाः <i>auseinanderstieben</i> <ls>HARIV. 13522.</ls> विशीर्यमाणा पृतना <ls>BHĀG. P. 6, 11, 2. 10, 63, 17.</ls> यन्नावि किंचिद्विशीर्येत <i>verderben, zu Grunde gehen</i> <ls>M. 8, 408.</ls> (मनस्वी, कुसुमस्तबकः) विशीर्यति वने <ls>Spr. (II) 1845.</ls> देहे विशीर्यमाणे पुरुषो न विशीर्यते ऽजः <ls>BHĀG. P. 2, 7, 49.</ls> व्यशीर्यत ततो राष्ट्रं क्षयैर्नानाविधैस्तदा <ls>MBH. 1, 3726.</ls> तस्य व्यशीर्यत्कोशवाहनम् <ls>MBH. 14, 75.</ls> तमो विशीर्यते मह्यम् <ls>BHĀG. P. 2, 4, 5.</ls> स्रवत्यन्ॐकृतं पूर्वं परस्ताच्च विशीर्यते (ब्रह्म) <ls>M. 2, 74.</ls> विशीर्यन्ते स्वयं चैव दैवोपहतकाः <ls>Spr. 3140.</ls> आस्तिक्यं विशीर्यते <ls>HARIV. 11316.</ls> अर्थाः <ls>SARVADARŚANAS. 15, 3.</ls> — partic. विशीर्ण <i>zerbrochen, zerfallen, zerrissen</i> <ls>SUND. 2, 18</ls> (विकीर्ण <ls>MBH. 1, 7669</ls>). <ls>MBH. 3, 14332.</ls> <ls>HARIV. 5596</ls> (विकीर्ण die neuere Ausg.). <ls n='HARIV.'>13512.</ls> fg. <ls n='HARIV.'>13521.</ls> <ls>R. 3, 32, 20.</ls> <ls n='R. 3,'>35, 51.</ls> <ls n='R. 3, 35,'>53.</ls> <ls n='R. 3, 35,'>58.</ls> <ls n='R. 3,'>67, 14.</ls> <ls n='R.'>4, 7, 23.</ls> <ls n='R. 4,'>21, 37.</ls> <ls n='R.'>5, 4, 9.</ls> <ls n='R. 5,'>87, 4.</ls> <ls n='R.'>6, 3, 51.</ls> <ls n='R. 6,'>81, 26.</ls> <ls>SUŚR. 1, 38, 3. 99, 10.</ls> <ls>MṚCCH. 98, 17.</ls> <ls>KĀM. NĪTIS. 13, 65.</ls> <ls>Spr. (II) 4227.</ls> <ls>RAGH. 16, 11.</ls> <ls>VARĀH. BṚH. S. 80, 15. 104, 63.</ls> <ls>MĀRK. P. 47, 12.</ls> <ls>BHĀG. P. 1, 9, 38.</ls> कुक्षि <ls n='BHĀG. P.'>3, 13, 29. 19, 26.</ls> फल <ls n='BHĀG. P.'>5, 16, 20. 7, 2, 29.</ls> <ls>PAÑCAT. 80, 9.</ls> °मूर्ति <i>zerschmettert, zermalmt</i> <ls>KUMĀRAS. 5, 54.</ls> वानराः <ls>R. 5, 83, 8.</ls> <ls>RAGH. 12, 51, v. l.</ls> रेवाम् - विन्ध्यापादे विशीर्णाम् <ls>MEGH. 19.</ls> बाष्पेण स्तनतटविशीर्णेन <i>zerstoben</i> <ls>Spr. (II) 3965.</ls> आश्लेषविशीर्णचन्दनरजःपुञ्जप्रकर्ष <i>abgerieben</i> <ls n='Spr. (II)'>4014.</ls> पुरी <i>zerstört</i> <ls>BHĀG. P. 4, 28, 7. 24.</ls> हार <i>zerrissen</i> <ls>R. 3, 58, 36.</ls> वल्कलम् - विशीर्णसंहति <ls>KUMĀRAS. 5, 8.</ls> °पङ्क्ति (यूथ) <ls>RAGH. 9, 56.</ls> °प्रतिसंधान <ls>Verz. d. Oxf. H. 216,a,6.</ls> °जीर्णवसन <ls>Spr. 2045.</ls> <ls>KATHĀS. 2, 51.</ls> <ls n='KATHĀS.'>21, 41.</ls> रत्नराशिर्विशीर्णो ऽयम् <i>auseinandergeworfen</i> <ls>MBH. 3, 2548.</ls> कुजम्भस्य च मार्गेषु विशीर्णास्ते महागजाः <i>umherliegend</i> <ls>HARIV. 13521.</ls> दन्तालि <i>ausgefallen</i> <ls>Spr. 4965.</ls> कोश <i>verschleudert, zu Grunde gerichtet</i> <ls>MBH. 14, 56.</ls> <ls n='MBH. 14,'>60.</ls> प्रारम्भ <i>zu Nichte geworden</i> <ls>Spr. 2847.</ls> <dvsn n='v'>— Vgl. उदकेविशीर्ण, विशर, विशरण, विशारण .  <dvsn n='p'>— अभिवि pass. <i>auseinandergerissen werden</i>: (वाहिनी) सात्त्वतेन शतधाभिव्यशीर्यत <ls>MBH. 7, 4378.</ls>  <dvsn n='p'>— निर्वि pass. <i>sich ablösen und auseinanderfallen</i>: भूषणानि महीतले । सद्यः खान्निर्व्यशीर्यन्त क्षीणास्तारा इवाम्बरात् <ls>R. 3, 58, 35.</ls>  <dvsn n='p'>— प्रवि, partic. °शीर्ण <i>zerfallen, abgefallen</i>: °मांस <ls>SUŚR. 1, 67, 13.</ls>  <dvsn n='p'>— सम् <i>zusammenbrechen</i>: सं वै गुरुर्भारः शृणाति <ls>AIT. BR. 4, 13.</ls> <ls>ŚAT. BR. 1, 1, 1, 18.</ls> <ls n='ŚAT. BR.'>2, 1, 4, 26.</ls> यदि^ क\\र्तं प^ति\\त्वा स^ंश\\श्रे <ls>AV. 4, 12, 7.</ls> <ls n='AV.'>12, 4, 3.</ls> <ls n='AV. 12, 4,'>5.</ls> <ls>ṚV. 6, 54, 7.</ls> einen Bogen <ls>ĀŚV. GṚHY. 4, 2, 22.</ls> <ls>PAÑCAV. BR. 11, 5, 8. 21, 14, 4.</ls> सुसंत्रस्तं बलं ते समशीर्यत <i>auseinanderstieben</i> <ls>MBH. 5, 2495.</ls> <dvsn n='v'>— Vgl. संशर ."
+        },
+        {
+            "word": "शर्",
+            "eid": "98030",
+            "pagenum": 7,
+            "content": "2. शर्¦ = श्रा <i>sieden, kochen</i>; davon शरस्, शृत (partic.), आशिर्, आशिर, आशीर्त ."
+        },
+        {
+            "word": "शर्",
+            "eid": "98031",
+            "pagenum": 7,
+            "content": "3. शर्¦ = श्रि <i>sich anlehnen</i> u. s. w.; davon शरण, शरीर, शर्मन्, आशार, शाला ."
+        },
+        {
+            "word": "शर्",
+            "eid": "122292",
+            "pagenum": 7,
+            "content": "1. शर्¦ mit संप्र <i>auseinanderbersten</i>: संप्राशिर्यत (lies संप्राशीर्यत) <ls>HARIV. 3654</ls> nach der Lesart der neueren Ausg.  <dvsn n='p'>— प्रवि, °शीर्ण <ls>PAT. a. a. O. 5,80,b.</ls>  <dvsn n='p'>— सम् desid. vgl. संशिशरिषु ."
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "शर्",
+            "content": "a brief term or Pratyahara standing for the three sibilant or spirant consonants श्, ष् and स्."
+        }
+    ]
+}

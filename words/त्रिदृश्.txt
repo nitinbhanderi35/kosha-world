@@ -1,1 +1,190 @@
-.ck-toolbar{background:var(--ck-color-toolbar-background);border:1px solid var(--ck-color-toolbar-border);padding:0 var(--ck-spacing-small)}.ck.ck-toolbar .ck.ck-toolbar__separator{align-self:stretch;background:var(--ck-color-toolbar-border);margin-bottom:var(--ck-spacing-small);margin-top:var(--ck-spacing-small);min-width:1px;width:1px}.ck.ck-toolbar .ck-toolbar__line-break{height:0}.ck.ck-toolbar>.ck-toolbar__items>:not(.ck-toolbar__line-break){margin-right:var(--ck-spacing-small)}.ck.ck-toolbar>.ck-toolbar__items:empty+.ck.ck-toolbar__separator{display:none}.ck.ck-toolbar>.ck-toolbar__items>:not(.ck-toolbar__line-break),.ck.ck-toolbar>.ck.ck-toolbar__grouped-dropdown{margin-bottom:var(--ck-spacing-small);margin-top:var(--ck-spacing-small)}.ck.ck-toolbar.ck-toolbar_vertical{padding:0}.ck.ck-toolbar.ck-toolbar_vertical>.ck-toolbar__items>.ck{border-radius:0;margin:0;width:100%}.ck.ck-toolbar.ck-toolbar_compact{padding:0}.ck.ck-toolbar.ck-toolbar_compact>.ck-toolbar__items>*{margin:0}.ck.ck-toolbar.ck-toolbar_compact>.ck-toolbar__items>:not(:first-child):not(:last-child){border-radius:0}.ck.ck-toolbar>.ck.ck-toolbar__grouped-dropdown>.ck.ck-button.ck-dropdown__button{padding-left:var(--ck-spacing-tiny)}.ck.ck-toolbar .ck-toolbar__nested-toolbar-dropdown>.ck-dropdown__panel{min-width:auto}.ck.ck-toolbar .ck-toolbar__nested-toolbar-dropdown>.ck-button>.ck-button__label{max-width:7em;width:auto}.ck.ck-toolbar:focus{outline:none}.ck-toolbar-container .ck.ck-toolbar{border:0}.ck.ck-toolbar[dir=rtl]>.ck-toolbar__items>.ck,[dir=rtl] .ck.ck-toolbar>.ck-toolbar__items>.ck{margin-right:0}.ck.ck-toolbar[dir=rtl]:not(.ck-toolbar_compact)>.ck-toolbar__items>.ck,[dir=rtl] .ck.ck-toolbar:not(.ck-toolbar_compact)>.ck-toolbar__items>.ck{margin-left:var(--ck-spacing-small)}.ck.ck-toolbar[dir=rtl]>.ck-toolbar__items>.ck:last-child,[dir=rtl] .ck.ck-toolbar>.ck-toolbar__items>.ck:last-child{margin-left:0}.ck.ck-toolbar.ck-toolbar_compact[dir=rtl]>.ck-toolbar__items>.ck:first-child,[dir=rtl] .ck.ck-toolbar.ck-toolbar_compact>.ck-toolbar__items>.ck:first-child{border-bottom-left-radius:0;border-top-left-radius:0}.ck.ck-toolbar.ck-toolbar_compact[dir=rtl]>.ck-toolbar__items>.ck:last-child,[dir=rtl] .ck.ck-toolbar.ck-toolbar_compact>.ck-toolbar__items>.ck:last-child{border-bottom-right-radius:0;border-top-right-radius:0}.ck.ck-toolbar.ck-toolbar_grouping[dir=rtl]>.ck-toolbar__items:not(:empty):not(:only-child),.ck.ck-toolbar[dir=rtl]>.ck.ck-toolbar__separator,[dir=rtl] .ck.ck-toolbar.ck-toolbar_grouping>.ck-toolbar__items:not(:empty):not(:only-child),[dir=rtl] .ck.ck-toolbar>.ck.ck-toolbar__separator{margin-left:var(--ck-spacing-small)}.ck.ck-toolbar[dir=ltr]>.ck-toolbar__items>.ck:last-child,[dir=ltr] .ck.ck-toolbar>.ck-toolbar__items>.ck:last-child{margin-right:0}.ck.ck-toolbar.ck-toolbar_compact[dir=ltr]>.ck-toolbar__items>.ck:first-child,[dir=ltr] .ck.ck-toolbar.ck-toolbar_compact>.ck-toolbar__items>.ck:first-child{border-bottom-right-radius:0;border-top-right-radius:0}.ck.ck-toolbar.ck-toolbar_compact[dir=ltr]>.ck-toolbar__items>.ck:last-child,[dir=ltr] .ck.ck-toolbar.ck-toolbar_compact>.ck-toolbar__items>.ck:last-child{border-bottom-left-radius:0;border-top-left-radius:0}.ck.ck-toolbar.ck-toolbar_grouping[dir=ltr]>.ck-toolbar__items:not(:empty):not(:only-child),.ck.ck-toolbar[dir=ltr]>.ck.ck-toolbar__separator,[dir=ltr] .ck.ck-toolbar.ck-toolbar_grouping>.ck-toolbar__items:not(:empty):not(:only-child),[dir=ltr] .ck.ck-toolbar>.ck.ck-toolbar__separator{margin-right:var(--ck-spacing-small)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/toolbar/toolbar.css","webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/toolbar/toolbar.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css"],names:[],mappings:"AAOA,eAKC,kBAAmB,CAFnB,YAAa,CACb,oBAAqB,CCFrB,qBAAsB,CACtB,wBAAyB,CAEzB,gBD6CD,CA3CC,kCAGC,kBAAmB,CAFnB,YAAa,CACb,kBAAmB,CAEnB,WAED,CAEA,yCACC,oBAWD,CAJC,yGAEC,YACD,CAGD,uCACC,eACD,CAEA,sDACC,gBACD,CAEA,sDACC,qBACD,CAEA,sDACC,gBACD,CAGC,yFACC,YACD,CE/CF,eCGC,eDwGD,CA3GA,qECOE,qCDoGF,CA3GA,eAGC,6CAA8C,CAE9C,+CAAgD,CADhD,iCAuGD,CApGC,yCACC,kBAAmB,CAGnB,yCAA0C,CAO1C,qCAAsC,CADtC,kCAAmC,CAPnC,aAAc,CADd,SAUD,CAEA,uCACC,QACD,CAGC,gEAEC,oCACD,CAIA,kEACC,YACD,CAGD,gHAIC,qCAAsC,CADtC,kCAED,CAEA,mCAEC,SAaD,CAVC,0DAQC,eAAgB,CAHhB,QAAS,CAHT,UAOD,CAGD,kCAEC,SAWD,CATC,uDAEC,QAMD,CAHC,yFACC,eACD,CASD,kFACC,mCACD,CAMA,wEACC,cACD,CAEA,iFACC,aAAc,CACd,UACD,CAGD,qBACC,YACD,CAtGD,qCAyGE,QAEF,CAYC,+FACC,cACD,CAEA,iJAEC,mCACD,CAEA,qHACC,aACD,CAIC,6JAEC,2BAA4B,CAD5B,wBAED,CAGA,2JAEC,4BAA6B,CAD7B,yBAED,CASD,8RACC,mCACD,CAWA,qHACC,cACD,CAIC,6JAEC,4BAA6B,CAD7B,yBAED,CAGA,2JAEC,2BAA4B,CAD5B,wBAED,CASD,8RACC,oCACD",sourcesContent:['/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../mixins/_unselectable.css";\n\n.ck.ck-toolbar {\n\t@mixin ck-unselectable;\n\n\tdisplay: flex;\n\tflex-flow: row nowrap;\n\talign-items: center;\n\n\t& > .ck-toolbar__items {\n\t\tdisplay: flex;\n\t\tflex-flow: row wrap;\n\t\talign-items: center;\n\t\tflex-grow: 1;\n\n\t}\n\n\t& .ck.ck-toolbar__separator {\n\t\tdisplay: inline-block;\n\n\t\t/*\n\t\t * A leading or trailing separator makes no sense (separates from nothing on one side).\n\t\t * For instance, it can happen when toolbar items (also separators) are getting grouped one by one and\n\t\t * moved to another toolbar in the dropdown.\n\t\t */\n\t\t&:first-child,\n\t\t&:last-child {\n\t\t\tdisplay: none;\n\t\t}\n\t}\n\n\t& .ck-toolbar__line-break {\n\t\tflex-basis: 100%;\n\t}\n\n\t&.ck-toolbar_grouping > .ck-toolbar__items {\n\t\tflex-wrap: nowrap;\n\t}\n\n\t&.ck-toolbar_vertical > .ck-toolbar__items {\n\t\tflex-direction: column;\n\t}\n\n\t&.ck-toolbar_floating > .ck-toolbar__items {\n\t\tflex-wrap: nowrap;\n\t}\n\n\t& > .ck.ck-toolbar__grouped-dropdown {\n\t\t& > .ck-dropdown__button .ck-dropdown__arrow {\n\t\t\tdisplay: none;\n\t\t}\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * Makes element unselectable.\n */\n@define-mixin ck-unselectable {\n\t-moz-user-select: none;\n\t-webkit-user-select: none;\n\t-ms-user-select: none;\n\tuser-select: none\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_rounded.css";\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n\n.ck.ck-toolbar {\n\t@mixin ck-rounded-corners;\n\n\tbackground: var(--ck-color-toolbar-background);\n\tpadding: 0 var(--ck-spacing-small);\n\tborder: 1px solid var(--ck-color-toolbar-border);\n\n\t& .ck.ck-toolbar__separator {\n\t\talign-self: stretch;\n\t\twidth: 1px;\n\t\tmin-width: 1px;\n\t\tbackground: var(--ck-color-toolbar-border);\n\n\t\t/*\n\t\t * These margins make the separators look better in balloon toolbars (when aligned with the "tip").\n\t\t * See https://github.com/ckeditor/ckeditor5/issues/7493.\n\t\t */\n\t\tmargin-top: var(--ck-spacing-small);\n\t\tmargin-bottom: var(--ck-spacing-small);\n\t}\n\n\t& .ck-toolbar__line-break {\n\t\theight: 0;\n\t}\n\n\t& > .ck-toolbar__items {\n\t\t& > *:not(.ck-toolbar__line-break) {\n\t\t\t/* (#11) Separate toolbar items. */\n\t\t\tmargin-right: var(--ck-spacing-small);\n\t\t}\n\n\t\t/* Don\'t display a separator after an empty items container, for instance,\n\t\twhen all items were grouped */\n\t\t&:empty + .ck.ck-toolbar__separator {\n\t\t\tdisplay: none;\n\t\t}\n\t}\n\n\t& > .ck-toolbar__items > *:not(.ck-toolbar__line-break),\n\t& > .ck.ck-toolbar__grouped-dropdown {\n\t\t/* Make sure items wrapped to the next line have v-spacing */\n\t\tmargin-top: var(--ck-spacing-small);\n\t\tmargin-bottom: var(--ck-spacing-small);\n\t}\n\n\t&.ck-toolbar_vertical {\n\t\t/* Items in a vertical toolbar span the entire width. */\n\t\tpadding: 0;\n\n\t\t/* Specificity matters here. See https://github.com/ckeditor/ckeditor5-theme-lark/issues/168. */\n\t\t& > .ck-toolbar__items > .ck {\n\t\t\t/* Items in a vertical toolbar should span the horizontal space. */
+{
+    "word": "त्रिदृश्",
+    "ABCH": [
+        {
+            "word": "त्रिदृश्",
+            "linga": "पुं",
+            "pagenum": "12",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "664",
+            "group": "160",
+            "synonyms": [
+                "शम्भु",
+                "शर्व",
+                "स्थाणु",
+                "ईशान",
+                "ईश",
+                "रुद्र",
+                "उड्डीश",
+                "वामदेव",
+                "वृषाङ्क",
+                "कण्ठेकाल",
+                "शङ्कर",
+                "नीलकण्ठ",
+                "श्रीकण्ठ",
+                "उग्र",
+                "धूर्जटि",
+                "भीम",
+                "भर्ग",
+                "मृत्युञ्जय",
+                "पञ्चमुख",
+                "अष्टमूर्ति",
+                "श्मशानवेश्मन्",
+                "गिरिश",
+                "गिरीश",
+                "षण्ढ",
+                "कपर्दिन्",
+                "ईश्वर",
+                "ऊर्ध्वलिङ्ग",
+                "एकदृश्",
+                "भालदृश्",
+                "एकपाद्",
+                "मृड",
+                "अट्टहासिन्",
+                "घनवाहन",
+                "अहिर्बुध्न",
+                "विरूपाक्ष",
+                "विषान्तक",
+                "महाव्रतिन्",
+                "वह्निरेतस्",
+                "हिरण्यरेतस्",
+                "शिव",
+                "अस्थिधन्वन्",
+                "पुरुषास्थिमालिन्",
+                "व्योमकेश",
+                "शिपिविष्ट",
+                "भैरव",
+                "दिग्वासस्",
+                "कृत्तिवासस्",
+                "भव",
+                "नीललोहित",
+                "सर्वज्ञ",
+                "नाट्यप्रिय",
+                "खण्डपर्शु",
+                "महादेव",
+                "महानट",
+                "महेश्वर",
+                "हर",
+                "पशुपति",
+                "प्रमथपति",
+                "उमापति",
+                "पिङ्गजट",
+                "पिङ्गेक्षण",
+                "पिनाकभृत्",
+                "शूलभृत्",
+                "खट्वाङ्गभृत्",
+                "गङ्गाभृत्",
+                "अहिभृत्",
+                "इन्दुभृत्",
+                "कपालभृत्",
+                "गजासुहृद्",
+                "पूषासुहृद्",
+                "अनङ्गासुहृद्",
+                "कालासुहृद्",
+                "अन्धकासुहृद्",
+                "मखासुहृद्"
+            ],
+            "content": "शंभुः शर्वः स्थाणुरीशान ईशो रुद्रोड्डीशौ वामदेवो वृषाङ्कः ।\nकण्ठेकालः शंकरो नीलकण्ठः श्रीकण्ठोग्रौ धूर्जटिर्भीमभर्गौ ॥ १९५ ॥\nमृत्युंजयः पञ्चमुखोऽष्टमूर्तिः श्मशानवेश्मा गिरिशो गिरीशः ।\nषण्ढः कपर्दीश्वर ऊर्ध्वलिङ्ग एकत्रिदृग्भालदृगेकपादः ॥ १९६ ॥\nमृडोऽट्टहासी घनवाहनोऽहिर्बुध्नो विरूपाक्षविषान्तकौ च ।\nमहाव्रती वह्निहिरण्यरेताः शिवोऽस्थिधन्वा पुरुषास्थिमाली ॥ १९७ ॥\nस्याव्द्योमकेशः शिपिविष्टभैरवौ दिक्कृत्तिवासा भवनीललोहितौ ।\nसर्वज्ञनाट्यप्रियखण्डपर्शवो महापरा देवनटेश्वरा हरः ॥ १९८ ॥\nपशुप्रमथभूतोमापतिः पिङ्गजटेक्षणः ।\nपिनाकशूलखट्वाङ्गगङ्गाहीन्दुकपालभृत् ॥ १९९ ॥\nगजपूषपुरानङ्गकालान्धकमखासुहृत् ।"
+        }
+    ],
+    "BUR": [
+        {
+            "word": "त्रिदृश्",
+            "eid": "8243",
+            "pagenum": 303,
+            "content": "त्रिदृश्¦ <i>tridṛś</i> <ab>m.</ab> <i>(dṛś)</i> <s1 slp1='Siva'>Śiva</s1> aux trois yeux."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिदृश्",
+            "eid": "16120",
+            "pagenum": 318,
+            "content": "tri-dfS¦ <i>m.</i> an epithet of Śiva."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिदृश्",
+            "eid": "87810",
+            "pagenum": "458,3",
+            "content": "त्रि—दृश् ¦ <lex>m.</lex> = -नेत्र, <s1 slp1='Siva'>Śiva</s1>, <ls>L.</ls><info lex='m'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिदृश्",
+            "eid": "47500",
+            "pagenum": 3,
+            "content": "*त्रिदृश्¦ <lex>m.</lex> <ab>Bein.</ab> <is>Śiva</is>ʼs."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिदृश्",
+            "eid": "30972",
+            "pagenum": 3,
+            "content": "त्रिदृश्¦ (त्रि + दृश्) <lex>m.</lex> <i>der Dreiäugige</i>, Bein. <is>Śiva's</is> <ls>H. 196.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिदृश्",
+            "eid": "18069",
+            "pagenum": 324,
+            "content": "त्रिदृश्¦ mfn. (-दृक्) Tri-ocular, three-eyed. m. (-दृक्) A name of SIVA. E. त्रि three, and दृश् an eye."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिदृश्",
+            "eid": "18086",
+            "pagenum": 389,
+            "content": "त्रिदृश्¦ mfn. (-दृक्) Tri-ocular, three-eyed. m. (-दृक्) A name of ŚIVA. .E. त्रि three, and दृश् an eye."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिदृश्",
+            "eid": "17562",
+            "pagenum": 345,
+            "content": "त्रि-दृश्¦ (क्) 5. <i>m. Shiva;</i> three-eyed."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिदृश्",
+            "eid": "23657",
+            "pagenum": "3367,a",
+            "content": "त्रिदृश्¦ पु० तिस्रः दृशोऽस्य त्रीणि भूतादीनि पश्यति वा दृश--कर्त्तरि क्विप् वा । १ त्रिनयने शिवे हेमच० ।"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिदृश्",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಪರಶಿವ \\/ಪರಮೇಶ್ವರ",
+            "व्युत्पत्तिः": "तिस्रो दृशः अस्य",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिदृश्",
+            "content": "<body><s>tridfS pu° tisraH dfSo'sya trIRi BUtAdIni paSyati vA dfSa—karttari kvip vA . <lb/><b>1</b> trinayane Sive hemaca° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिदृश्",
+            "content": "<H1><h><key1>tridfS</key1><key2>tridfS</key2></h><body><s>tridfS</s>  <div n=\"1\">mfn. (<s>-dfk</s>) Tri-ocular, three-eyed. </div><div n=\"1\">m. (<s>-dfk</s>) A name of SIVA.</div><div n=\"E\"> E. <lb /><s>tri</s> three, and <s>dfS</s> an eye.</div></body><tail><L>18069</L><pc>324-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिदृश्",
+            "content": "<span lang=\"sa\">त्रिदृश्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪರಶಿವ /ಪರಮೇಶ್ವರ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>तिस्रो दृशः अस्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

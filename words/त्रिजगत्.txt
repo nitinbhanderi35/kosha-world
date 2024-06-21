@@ -1,1 +1,121 @@
-listenTo(t,"keydown",((t,e)=>{this._listener.fire("_keydown:"+wi(e),e)}))}set(t,e,n={}){const o=_i(t),i=n.priority;this._listener.listenTo(this._listener,"_keydown:"+o,((t,n)=>{e(n,(()=>{n.preventDefault(),n.stopPropagation(),t.stop()})),t.return=!0}),{priority:i})}press(t){return!!this._listener.fire("_keydown:"+wi(t),t)}stopListening(t){this._listener.stopListening(t)}destroy(){this.stopListening()}}function Qi(t){return et(t)?new Map(t):function(t){const e=new Map;for(const n in t)e.set(n,t[n]);return e}(t)}function Xi(t,e){let n;function o(...i){o.cancel(),n=setTimeout((()=>t(...i)),e)}return o.cancel=()=>{clearTimeout(n)},o}function tr(t,e){return!!(n=t.charAt(e-1))&&1==n.length&&/[\ud800-\udbff]/.test(n)&&function(t){return!!t&&1==t.length&&/[\udc00-\udfff]/.test(t)}(t.charAt(e));var n}function er(t,e){return!!(n=t.charAt(e))&&1==n.length&&/[\u0300-\u036f\u1ab0-\u1aff\u1dc0-\u1dff\u20d0-\u20ff\ufe20-\ufe2f]/.test(n);var n}const nr=function(){const t=/\p{Regional_Indicator}{2}/u.source,e="(?:"+[/\p{Emoji}[\u{E0020}-\u{E007E}]+\u{E007F}/u,/\p{Emoji}\u{FE0F}?\u{20E3}/u,/\p{Emoji}\u{FE0F}/u,/(?=\p{General_Category=Other_Symbol})\p{Emoji}\p{Emoji_Modifier}*/u].map((t=>t.source)).join("|")+")";return new RegExp(`${t}|${e}(?:‍${e})*`,"ug")}();function or(t,e){const n=String(t).matchAll(nr);return Array.from(n).some((t=>t.index<e&&e<t.index+t[0].length))}class ir extends(K()){constructor(t){super(),this._disableStack=new Set,this.editor=t,this.set("isEnabled",!0)}forceDisabled(t){this._disableStack.add(t),1==this._disableStack.size&&(this.on("set:isEnabled",rr,{priority:"highest"}),this.isEnabled=!1)}clearForceDisabled(t){this._disableStack.delete(t),0==this._disableStack.size&&(this.off("set:isEnabled",rr),this.isEnabled=!0)}destroy(){this.stopListening()}static get isContextPlugin(){return!1}}function rr(t){t.return=!1,t.stop()}class sr extends(K()){constructor(t){super(),this.editor=t,this.set("value",void 0),this.set("isEnabled",!1),this._affectsData=!0,this._isEnabledBasedOnSelection=!0,this._disableStack=new Set,this.decorate("execute"),this.listenTo(this.editor.model.document,"change",(()=>{this.refresh()})),this.listenTo(t,"change:isReadOnly",(()=>{this.refresh()})),this.on("set:isEnabled",(e=>{if(!this.affectsData)return;const n=t.model.document.selection,o=!("$graveyard"==n.getFirstPosition().root.rootName)&&t.model.canEditAt(n);(t.isReadOnly||this._isEnabledBasedOnSelection&&!o)&&(e.return=!1,e.stop())}),{priority:"highest"}),this.on("execute",(t=>{this.isEnabled||t.stop()}),{priority:"high"})}get affectsData(){return this._affectsData}set affectsData(t){this._affectsData=t}refresh(){this.isEnabled=!0}forceDisabled(t){this._disableStack.add(t),1==this._disableStack.size&&(this.on("set:isEnabled",ar,{priority:"highest"}),this.isEnabled=!1)}clearForceDisabled(t){this._disableStack.delete(t),0==this._disableStack.size&&(this.off("set:isEnabled",ar),this.refresh())}execute(...t){}destroy(){this.stopListening()}}function ar(t){t.return=!1,t.stop()}class cr extends sr{constructor(){super(...arguments),this._childCommandsDefinitions=[]}refresh(){}execute(...t){const e=this._getFirstEnabledCommand();return!!e&&e.execute(t)}registerChildCommand(t,e={}){w(this._childCommandsDefinitions,{command:t,priority:e.priority||"normal"}),t.on("change:isEnabled",(()=>this._checkEnabled())),this._checkEnabled()}_checkEnabled(){this.isEnabled=!!this._getFirstEnabledCommand()}_getFirstEnabledCommand(){const t=this._childCommandsDefinitions.find((({command:t})=>t.isEnabled));return t&&t.command}}class lr extends(P()){constructor(t,e=[],n=[]){super(),this._plugins=new Map,this._context=t,this._availablePlugins=new Map;for(const t of e)t.pluginName&&this._availablePlugins.set(t.pluginName,t);this._contextPlugins=new Map;for(const[t,e]of n)this._contextPlugins.set(t,e),this._contextPlugins.set(e,t),t.pluginName&&this._availablePlugins.set(t.pluginName,t)}*[Symbol.iterator](){for(const t of this._plugins)"function"==typeof t[0]&&(yield t)}get(t){const e=this._plugins.get(t);if(!e){let e=t;throw"function"==typeof t&&(e=t.pluginName||t.name),new A("plugincollection-plugin-not-loaded",this._context,{plugin:e})}return e}has(t){return this._plugins.has(t)}init(t,e=[],n=[]){const o=this,i=this._context;!function t(e,n=new Set){e.forEach((e=>{a(e)&&(n.has(e)||(n.add(e),e.pluginName&&!o._availablePlugins.has(e.pluginName)&&o._availablePlugins.set(e.pluginName,e),e.requires&&t(e.requires,n)))}))}(t),h(t);const r=[...function t(e,n=new Set){return e.map((t=>a(t)?t:o._availablePlugins.get(t))).reduce(((e,o)=>n.has(o)?e:(n.add(o),o.requires&&(h(o.requires,o),t(o.requires,n).forEach((t=>e.add(t)))),e.add(o))),new Set)}(t.filter((t=>!l(t,e))))];!function(t,e){for(const n of e){if("function"!=typeof n)throw new A("plugincollection-replace-plugin-invalid-type",null,{pluginItem:n});const e=n.pluginName;if(!e)throw new A("plugincollection-replace-plugin-missing-name",null,{pluginItem:n});if(n.requires&&n.requires.length)throw new A("plugincollection-plugin-for-replacing-cannot-have-dependencies",null,{pluginName:e});const i=o._availablePlugins.get(e);if(!i)throw new A("plugincollection-plugin-for-replacing-not-exist",null,{pluginName:e});const r=t.indexOf(i);if(-1===r){if(o._contextPlugins.has(i))return;throw new A("plugincollection-plugin-for-replacing-not-loaded",null,{pluginName:e})}if(i.requires&&i.requires.length)throw new A("plugincollection-replaced-plugin-cannot-have-dependencies",null,{pluginName:e});t.splice(r,1,n),o._availablePlugins.set(e,n)}}(r,n);const 
+{
+    "word": "त्रिजगत्",
+    "BUR": [
+        {
+            "word": "त्रिजगत्",
+            "eid": "8233",
+            "pagenum": 303,
+            "content": "त्रिजगत्¦ <i>trijagat</i> <ab>n.</ab> les trois mondes [le ciel, la terre, la région intermédiaire; ou bien: le ciel, la terre, la région inférieure]."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिजगत्",
+            "eid": "12838",
+            "pagenum": 211,
+            "content": "त्रिजगत्¦ <lex>n.</lex> sgl. & <ab>pl.</ab>, °ती <lex>f.</lex> the triple world (heaven, earth, & the lower <ab>w.</ab>)."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिजगत्",
+            "eid": "9000",
+            "pagenum": 160,
+            "content": "त्रिजगत्¦ <i>n. Sgl. u. Pl.</i> die Dreiwelt <i>(Himmel</i>, <lbinfo n='4'/> <i>Erde und Luft resp. Unterwelt).</i>"
+        }
+    ],
+    "IEG": [
+        {
+            "word": "त्रिजगत्",
+            "eid": "6027",
+            "pagenum": 343,
+            "content": "<i>tri-jagat</i>¦ (IE 7-1-2), ‘three’; but <i>jagat</i> sometimes also means ‘fourteen’."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिजगत्",
+            "eid": "16089",
+            "pagenum": 318,
+            "content": "tri-jagat¦ <i>m.</i> the triple world, viz., (1) the heaven, atmosphere and the earth, or (2) the heaven, the earth and the lower world."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिजगत्",
+            "eid": "87694",
+            "pagenum": "458,2",
+            "content": "त्रि—जगत् ¦ <lex>n.</lex> <ab>sg.</ab> = जगत् त्रय, <ls>BhP. viii</ls>; <ls>Caurap.</ls>; <ls>Kathās.</ls>; <ls>Vet.</ls><info lex='n'/>"
+        },
+        {
+            "word": "त्रिजगत्",
+            "eid": "87695",
+            "pagenum": "458,2",
+            "content": "¦ <ab>pl.</ab> <ls>Ānand.</ls>, <ab>Sch.</ab> <ab>Introd.</ab> 1<info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिजगत्",
+            "eid": "47428",
+            "pagenum": 3,
+            "content": "त्रिजगत्¦ <lex>n.</lex> <ab>Sg.</ab> und <ab>Pl.</ab> und °ती <lex>f.</lex> <i>die drei Welten: Himmel, Erde und Unterwelt</i>. °गज्जननी <lex>f.</lex> <i>die Mutter der Dreiwelt,</i> <ab>Beiw.</ab> der <is>Pārvatī</is>. °गम्मोहिनी <lex>f.</lex> <i>Sinnesverwirrerin der <ab n='Dreiwelt'>Dr.</ab>,</i> wohl <i>eine Form der</i> <is>Durgā</is>. °गदीश्वर <lex>m.</lex> <ab>Bein.</ab> eines <is>Jina</is> <ls>Ind. St. 13,367</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिजगत्",
+            "eid": "30919",
+            "pagenum": 3,
+            "content": "त्रिजगत्¦ (त्रि + जगत्) <lex>n.</lex> sg. <i>die Dreiwelt: Himmel, Luftraum und Erde</i> <ls>CAURAP. 38.</ls> <ls>VET. 5, 1.</ls> <ls>BHĀG. P. 8, 8, 25. 22, 19.</ls> pl. त्रिजगताम् <ls>Verz. d. Oxf. H. 108,b, N.</ls> °जगती <lex>f.</lex> dass. <ls>BHĀG. P. 5, 26, 5.</ls> त्रिजगज्जननी <i>Mutter der Dreiwelt</i>, Beiw. der <is>Pārvatī</is> <ls>KATHĀS. 1, 14.</ls> त्रिजगन्मोहिनी <i>Sinnesverwirrerin der Dreiwelt</i>, wohl eine Form der <is>Durgā</is> <ls>BRAHMA-P.</ls> in <ls>Verz. d. Oxf. H. 19,a,29.</ls>"
+        },
+        {
+            "word": "त्रिजगत्",
+            "eid": "75276",
+            "pagenum": 5,
+            "content": "त्रिजगत्¦, त्रिजगत्यस्मिन् <ls>Spr. 4990.</ls>"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिजगत्",
+            "eid": "23615",
+            "pagenum": "3365,a",
+            "content": "त्रिजगत्¦ न० त्रिगुणितं जगत् संज्ञात्वात् कर्मधारयः । स्वर्गमर्त्यपातालरूपे लोकत्रये “तस्यां शिवस्त्रिजगतो जनको जनन्याः” भाग० ८ । ८ । १९ श्लो० । त्रिजगत्यप्यत्र स्त्री “अन्तराल एव त्रिजगत्यास्तु दक्षिणस्याम्” भाग० ५ । २६ । ६ श्लो० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिजगत्",
+            "content": "त्रिजगत् नपुं. त्रि-जगत्  - तीन लोक"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिजगत्",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸ್ವರ್ಗ ಮಧ್ಯ ಮತ್ತು ಪಾತಾಳಗಳೆಂಬ ೩ ಲೋಕಗಳು",
+            "प्रयोगाः": "'नाथे नः पुरुषोत्तमे त्रिजगतामेकाधिपे चेतसा'",
+            "उल्लेखाः": "मु० मा०",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रिजगत्",
+            "content": "<segmenthd>\n<dentry>त्रिजगत्</dentry>\n<prAwipaxikam>त्रिजगत्</prAwipaxikam>\n<seg>त्रि-जगत्</seg>\n<grammar>नपुं*</grammar>\n<sense no=\"1\">तीन लोक स्वर्गलोक, अन्तरिक्षलोक तथा भूलोक या स्वर्गलोक, भूलोक, पाताललोक</sense></segmenthd>\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिजगत्",
+            "content": "<body><s>trijagat na° triguRitaM jagat saMjYAtvAt karmaDArayaH . svargamartyapAtAlarUpe lokatraye <q>tasyAM Sivastrijagato janako jananyAH</q> BAga° 8 . 8 . 19 Slo° . trijagatya­pyatra strI <q>antarAla eva trijagatyAstu dakziRasyAm</q> BAga° 5 . 26 . 6 Slo° .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिजगत्",
+            "content": "<span lang=\"sa\">त्रिजगत्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸ್ವರ್ಗ ಮಧ್ಯ ಮತ್ತು ಪಾತಾಳಗಳೆಂಬ ೩ ಲೋಕಗಳು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"नाथे नः पुरुषोत्तमे त्रिजगतामेकाधिपे चेतसा\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मु० मा०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

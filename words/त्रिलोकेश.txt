@@ -1,244 +1,159 @@
-OR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
-
-  if (typeof maybeIterator === 'function') {
-    return maybeIterator;
-  }
-
-  return null;
-}
-
-// $FlowFixMe[method-unbinding]
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-
-const ReactCurrentOwner = ReactSharedInternals.ReactCurrentOwner;
-
-function hasValidRef(config) {
-
-  return config.ref !== undefined;
-}
-
-function hasValidKey(config) {
-
-  return config.key !== undefined;
-}
-/**
- * Factory method to create a new React element. This no longer adheres to
- * the class pattern, so do not use new to call it. Also, instanceof check
- * will not work. Instead test $$typeof field against Symbol.for('react.element') to check
- * if something is a React Element.
- *
- * @param {*} type
- * @param {*} props
- * @param {*} key
- * @param {string|object} ref
- * @param {*} owner
- * @param {*} self A *temporary* helper to detect places where `this` is
- * different from the `owner` when React.createElement is called, so that we
- * can warn. We want to get rid of owner and replace string `ref`s with arrow
- * functions, and as long as `this` and owner are the same, there will be no
- * change in behavior.
- * @param {*} source An annotation object (added by a transpiler or otherwise)
- * indicating filename, line number, and/or other information.
- * @internal
- */
-
-
-function ReactElement(type, key, _ref, self, source, owner, props) {
-  let ref;
-
-  {
-    ref = _ref;
-  }
-
-  let element;
-
-  {
-    // In prod, `ref` is a regular property. It will be removed in a
-    // future release.
-    element = {
-      // This tag allows us to uniquely identify this as a React Element
-      $$typeof: REACT_ELEMENT_TYPE,
-      // Built-in properties that belong on the element
-      type,
-      key,
-      ref,
-      props,
-      // Record the component responsible for creating this element.
-      _owner: owner
-    };
-  }
-
-  return element;
-}
-/**
- * Create and return a new ReactElement of the given type.
- * See https://reactjs.org/docs/react-api.html#createelement
- */
-
-function createElement(type, config, children) {
-
-  let propName; // Reserved names are extracted
-
-  const props = {};
-  let key = null;
-  let ref = null;
-
-  if (config != null) {
-    if (hasValidRef(config)) {
-      {
-        ref = config.ref;
-      }
-    }
-
-    if (hasValidKey(config)) {
-
-      key = '' + config.key;
-    } // Remaining properties are added to a new props object
-
-
-    for (propName in config) {
-      if (hasOwnProperty.call(config, propName) && // Skip over reserved prop names
-      propName !== 'key' && (propName !== 'ref') && // Even though we don't use these anymore in the runtime, we don't want
-      // them to appear as props, so in createElement we filter them out.
-      // We don't have to do this in the jsx() runtime because the jsx()
-      // transform never passed these as props; it used separate arguments.
-      propName !== '__self' && propName !== '__source') {
-        props[propName] = config[propName];
-      }
-    }
-  } // Children can be more than one argument, and those are transferred onto
-  // the newly allocated props object.
-
-
-  const childrenLength = arguments.length - 2;
-
-  if (childrenLength === 1) {
-    props.children = children;
-  } else if (childrenLength > 1) {
-    const childArray = Array(childrenLength);
-
-    for (let i = 0; i < childrenLength; i++) {
-      childArray[i] = arguments[i + 2];
-    }
-
-    props.children = childArray;
-  } // Resolve default props
-
-
-  if (type && type.defaultProps) {
-    const defaultProps = type.defaultProps;
-
-    for (propName in defaultProps) {
-      if (props[propName] === undefined) {
-        props[propName] = defaultProps[propName];
-      }
-    }
-  }
-
-  const element = ReactElement(type, key, ref, undefined, undefined, ReactCurrentOwner.current, props);
-
-  return element;
-}
-function cloneAndReplaceKey(oldElement, newKey) {
-  return ReactElement(oldElement.type, newKey, // When enableRefAsProp is on, this argument is ignored. This check only
-  // exists to avoid the `ref` access warning.
-  oldElement.ref, undefined, undefined, oldElement._owner, oldElement.props);
-}
-/**
- * Clone and return a new ReactElement using element as the starting point.
- * See https://reactjs.org/docs/react-api.html#cloneelement
- */
-
-function cloneElement(element, config, children) {
-  if (element === null || element === undefined) {
-    throw Error(formatProdErrorMessage(267, element));
-  }
-
-  let propName; // Original props are copied
-
-  const props = assign({}, element.props); // Reserved names are extracted
-
-  let key = element.key;
-  let ref = element.ref; // Owner will be preserved, unless ref is overridden
-
-  let owner = element._owner;
-
-  if (config != null) {
-    if (hasValidRef(config)) {
-      {
-        // Silently steal the ref from the parent.
-        ref = config.ref;
-      }
-
-      owner = ReactCurrentOwner.current;
-    }
-
-    if (hasValidKey(config)) {
-
-      key = '' + config.key;
-    } // Remaining properties override existing props
-
-
-    let defaultProps;
-
-    if (element.type && element.type.defaultProps) {
-      defaultProps = element.type.defaultProps;
-    }
-
-    for (propName in config) {
-      if (hasOwnProperty.call(config, propName) && // Skip over reserved prop names
-      propName !== 'key' && (propName !== 'ref') && // ...and maybe these, too, though we currently rely on them for
-      // warnings and debug information in dev. Need to decide if we're OK
-      // with dropping them. In the jsx() runtime it's not an issue because
-      // the data gets passed as separate arguments instead of props, but
-      // it would be nice to stop relying on them entirely so we can drop
-      // them from the internal Fiber field.
-      propName !== '__self' && propName !== '__source' && // Undefined `ref` is ignored by cloneElement. We treat it the same as
-      // if the property were missing. This is mostly for
-      // backwards compatibility.
-      !(enableRefAsProp  )) {
-        if (config[propName] === undefined && defaultProps !== undefined) {
-          // Resolve default props
-          props[propName] = defaultProps[propName];
-        } else {
-          props[propName] = config[propName];
+{
+    "word": "त्रिलोकेश",
+    "CAE": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "12916",
+            "pagenum": 213,
+            "content": "त्रिलोकेश¦ <lex>m.</lex> <ab>E.</ab> of Viṣṇu or Śiva."
         }
-      }
-    }
-  } // Children can be more than one argument, and those are transferred onto
-  // the newly allocated props object.
-
-
-  const childrenLength = arguments.length - 2;
-
-  if (childrenLength === 1) {
-    props.children = children;
-  } else if (childrenLength > 1) {
-    const childArray = Array(childrenLength);
-
-    for (let i = 0; i < childrenLength; i++) {
-      childArray[i] = arguments[i + 2];
-    }
-
-    props.children = childArray;
-  }
-
-  const clonedElement = ReactElement(element.type, key, ref, undefined, undefined, owner, props);
-
-  return clonedElement;
+    ],
+    "INM": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "10954",
+            "pagenum": 681,
+            "content": "<b>Trilokeśa</b><sup>1</sup>¦ = Brahmán: VIII, 1528 (<i>Pitāmahaṃ</i>); XII, 10182."
+        },
+        {
+            "word": "त्रिलोकेश",
+            "eid": "10955",
+            "pagenum": 681,
+            "content": "<b>Trilokeśa</b><sup>2</sup>¦ = Śiva: XIV, 207."
+        },
+        {
+            "word": "त्रिलोकेश",
+            "eid": "10956",
+            "pagenum": 681,
+            "content": "<b>Trilokeśa</b><sup>3</sup>¦ = Indra: V, 3662; XII, 8348, 9527 (<i>Purandaraḥ</i>)."
+        },
+        {
+            "word": "त्रिलोकेश",
+            "eid": "10957",
+            "pagenum": 681,
+            "content": "<b>Trilokeśa</b><sup>4</sup>¦ = Viṣṇu: III, 8103 (<i>V°</i>); XIII, 7018 (1000 names)."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "16171",
+            "pagenum": 318,
+            "content": "tri-loka˚ISa¦ <i>m.</i> the sun."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "88185",
+            "pagenum": "460,1",
+            "content": "tri—loke<srs/>Sa ¦ <lex>m.</lex> ‘<ab n='Triloka' slp1='triloka'>T°</ab>-lord’, <s1 slp1='vizRu'>Viṣṇu</s1>, <ls>Siṃhās.</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिलोकेश",
+            "eid": "88186",
+            "pagenum": "460,1",
+            "content": "¦ <s1 slp1='Siva'>Śiva</s1>, <ls>MBh. xiv</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिलोकेश",
+            "eid": "88187",
+            "pagenum": "460,1",
+            "content": "¦ the sun, <ls>L.</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "47735",
+            "pagenum": 3,
+            "content": "त्रिलोकेश¦ <lex>m.</lex> <ab>Bein.</ab> <dvsn n='1'>— 1〉 <is>Viṣṇu</is>ʼs <ls>Spr. 2543</ls>. <dvsn n='1'>— 2〉 <is>Śiva</is>ʼs. <dvsn n='1'>— 3〉 *<i>der Sonne</i>."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "18126",
+            "pagenum": 325,
+            "content": "त्रिलोकेश¦ m. (-शः) 1. The sun. 2. God. E. त्रिलोक the three worlds or the universe, and ईश lord. त्रयाणां लोकानाम् ईशः ।"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "18143",
+            "pagenum": 391,
+            "content": "त्रिलोकेश¦ m. (-शः) The sun. .E. त्रिलोक the three worlds or the universe, and ईश lord."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "17619",
+            "pagenum": 346,
+            "content": "त्रिलोके-श¦ (शः) 1. <i>m.</i> The sun."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "15608",
+            "pagenum": "2-661-c",
+            "content": "त्रिलोकेशः¦, पुं, (त्रयाणां लोकानामीशः ।) सूर्य्यः । इति शब्दचन्द्रिका ॥ (विष्णुः । यथा, महाभारते । १३ । १४९ । ८२ । “त्रिलोकात्मा त्रिलोकेशः केशवः केशिहा हरिः ॥” “त्रयो लोकास्तदाज्ञप्ताः स्वेषु स्वेषु कर्म्मसु वर्त्तन्त इति त्रिलोकेशः ॥” इति शाङ्करभाष्यम् ॥ महादेवः । यथा, महाभारते । १४ । ८ । २७ । “त्रिपुरघ्नं त्रिनयनं त्रिलोकेशं महौजसम् ॥” त्रिलोकाधिपतौ, त्रि । यथा, तत्रैव । ३ । ८४ । ११७ । “अभिगम्य त्रिलोकेशं वरदं विष्णुमव्ययम् । अश्वमेधमवाप्नोति विष्णु लोकञ्च गच्छति ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिलोकेश",
+            "eid": "23773",
+            "pagenum": "3378,b",
+            "content": "त्रिलोकेश¦ पु० त्रयाणां लोकानामीशः उत्तरपदद्विगुघटितस्तत्पुरुषः । १ परमेश्वरे “त्रिलोकात्मा त्रिलोकेशः” विष्णु० । २ सूर्य्ये शब्दच० । त्रिलोकेश्वरादयोऽप्यत्र ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिलोकेश",
+            "content": "त्रिलोकेशः पुं. त्रि-लोकम्-ईशः  - सूर्य"
+        },
+        {
+            "word": "त्रिलोकेश",
+            "content": "त्रिलोकेशः पुं. त्रि-लोकम्-ईशः  - शिव का विशेषण"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिलोकेश",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ವಿಷ್ಣು \\/ಪರಮಾತ್ಮ",
+            "व्युत्पत्तिः": "त्रयाणां लोकानां ईशः",
+            "प्रयोगाः": "'त्रिलोकात्मा त्रिलोकेशः केशवः केशिहा हरिः'",
+            "उल्लेखाः": "वि० स०",
+            "विस्तारः": "'त्रिलोकानामिशतया त्रिलोकेशः प्रकीर्तितः'निरुक्तिः ।",
+            "content": ""
+        },
+        {
+            "word": "त्रिलोकेश",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸೂರ್ಯ",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिलोकेश",
+            "content": "<body><s>trilokeSa pu° trayARAM lokAnAmISaH uttarapadadviguGawita­statpuruzaH . <lb/><b>1</b> parameSvare <q>trilokAtmA trilokeSaH</q> vizRu° . <lb/><b>2</b> sUryye Sabdaca° . trilokeSvarAdayo'pyatra .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिलोकेश",
+            "content": "<H1><h><key1>trilokeSa</key1><key2>trilokeSa</key2></h><body><s>trilokeSa</s>  <div n=\"1\">m. (<s>-SaH</s>) </div><div n=\"2\"> 1. The sun. </div><div n=\"2\"> 2. God.</div><div n=\"E\"> E. <s>triloka</s> the three worlds or the <lb />universe, and <s>ISa</s> lord. <s>trayARAM lokAnAm ISaH .</s></div></body><tail><L>18126</L><pc>325-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिलोकेश",
+            "content": "<span lang=\"sa\">त्रिलोकेश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿಷ್ಣು /ಪರಮಾತ್ಮ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रयाणां लोकानां ईशः<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"त्रिलोकात्मा त्रिलोकेशः केशवः केशिहा हरिः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>वि० स०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"त्रिलोकानामिशतया त्रिलोकेशः प्रकीर्तितः\" - निरुक्तिः ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिलोकेश<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸೂರ್ಯ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-/**
- * Verifies the object is a ReactElement.
- * See https://reactjs.org/docs/react-api.html#isvalidelement
- * @param {?object} object
- * @return {boolean} True if `object` is a ReactElement.
- * @final
- */
-
-
-function isValidElement(object) {
-  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-}
-
-const SEPARATOR = '.';
-cons

@@ -1,1 +1,190 @@
--ck-widget-handler-icon-size:16px;--ck-widget-handler-animation-duration:200ms;--ck-widget-handler-animation-curve:ease;--ck-color-widget-blurred-border:#dedede;--ck-color-widget-hover-border:#ffc83d;--ck-color-widget-editable-focus-background:var(--ck-color-base-background);--ck-color-widget-drag-handler-icon-color:var(--ck-color-base-background)}.ck .ck-widget{outline-color:transparent;outline-style:solid;outline-width:var(--ck-widget-outline-thickness);transition:outline-color var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve)}.ck .ck-widget.ck-widget_selected,.ck .ck-widget.ck-widget_selected:hover{outline:var(--ck-widget-outline-thickness) solid var(--ck-color-focus-border)}.ck .ck-widget:hover{outline-color:var(--ck-color-widget-hover-border)}.ck .ck-editor__nested-editable{border:1px solid transparent}.ck .ck-editor__nested-editable.ck-editor__nested-editable_focused,.ck .ck-editor__nested-editable:focus{background-color:var(--ck-color-widget-editable-focus-background);border:var(--ck-focus-ring);box-shadow:var(--ck-inner-shadow),0 0;outline:none}.ck .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle{background-color:transparent;border-radius:var(--ck-border-radius) var(--ck-border-radius) 0 0;box-sizing:border-box;left:calc(0px - var(--ck-widget-outline-thickness));opacity:0;padding:4px;top:0;transform:translateY(-100%);transition:background-color var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve),visibility var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve),opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve)}.ck .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle .ck-icon{color:var(--ck-color-widget-drag-handler-icon-color);height:var(--ck-widget-handler-icon-size);width:var(--ck-widget-handler-icon-size)}.ck .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle .ck-icon .ck-icon__selected-indicator{opacity:0;transition:opacity .3s var(--ck-widget-handler-animation-curve)}.ck .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle:hover .ck-icon .ck-icon__selected-indicator{opacity:1}.ck .ck-widget.ck-widget_with-selection-handle:hover>.ck-widget__selection-handle{background-color:var(--ck-color-widget-hover-border);opacity:1}.ck .ck-widget.ck-widget_with-selection-handle.ck-widget_selected:hover>.ck-widget__selection-handle,.ck .ck-widget.ck-widget_with-selection-handle.ck-widget_selected>.ck-widget__selection-handle{background-color:var(--ck-color-focus-border);opacity:1}.ck .ck-widget.ck-widget_with-selection-handle.ck-widget_selected:hover>.ck-widget__selection-handle .ck-icon .ck-icon__selected-indicator,.ck .ck-widget.ck-widget_with-selection-handle.ck-widget_selected>.ck-widget__selection-handle .ck-icon .ck-icon__selected-indicator{opacity:1}.ck[dir=rtl] .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle{left:auto;right:calc(0px - var(--ck-widget-outline-thickness))}.ck.ck-editor__editable.ck-read-only .ck-widget{transition:none}.ck.ck-editor__editable.ck-read-only .ck-widget:not(.ck-widget_selected){--ck-widget-outline-thickness:0px}.ck.ck-editor__editable.ck-read-only .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle,.ck.ck-editor__editable.ck-read-only .ck-widget.ck-widget_with-selection-handle .ck-widget__selection-handle:hover{background:var(--ck-color-widget-blurred-border)}.ck.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected,.ck.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected:hover{outline-color:var(--ck-color-widget-blurred-border)}.ck.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected.ck-widget_with-selection-handle:hover>.ck-widget__selection-handle,.ck.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected.ck-widget_with-selection-handle:hover>.ck-widget__selection-handle:hover,.ck.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected.ck-widget_with-selection-handle>.ck-widget__selection-handle,.ck.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected.ck-widget_with-selection-handle>.ck-widget__selection-handle:hover{background:var(--ck-color-widget-blurred-border)}.ck.ck-editor__editable blockquote>.ck-widget.ck-widget_with-selection-handle:first-child,.ck.ck-editor__editable>.ck-widget.ck-widget_with-selection-handle:first-child{margin-top:calc(1em + var(--ck-widget-handler-icon-size))}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-widget/theme/widget.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-widget/widget.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_focus.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css"],names:[],mappings:"AAKA,MACC,+CAAgD,CAChD,6CAAsD,CACtD,uCAAgD,CAEhD,kDAAmD,CACnD,gCAAiC,CACjC,kEACD,CAOA,8DAEC,iBAqBD,CAnBC,4EACC,iBAOD,CALC,qFAGC,aACD,CASD,iLACC,kBACD,CAGD,kBACC,qDAAsD,CAEtD,qDAAsD,CACtD,6CAA8C,CAF9C,0CAA2C,CAI3C,aAAc,CADd,kCAAmC,CAGnC,uCAAwC,CACxC,4CAA6C,CAF7C,iCAsCD,CAlCC,8NAKC,iBACD,CAEA,0CAEC,qCAAsC,CADtC,oCAED,CAEA,2CAEC,sCAAuC,CADvC,oCAED,CAEA,8CACC,uCAAwC,CACxC,sCACD,CAEA,6CACC,uCAAwC,CACxC,qCACD,CAGA,8CAEC,QAAS,CADT,6CAAgD,CAEhD,yBACD,CCjFD,MACC,iCAAkC,CAClC,kCAAmC,CACnC,4CAA6C,CAC7C,wCAAyC,CAEzC,wCAAiD,CACjD,sCAAkD,CAClD,2EAA4E,CAC5E,yEACD,CAEA,eAGC,yBAA0B,CAD1B,mBAAoB,CADpB,gDAAiD,CAGjD,6GAUD,CARC,0EAEC,6EACD,CAEA,qBACC,iDACD,CAGD,gCACC,4BAWD,CAPC,yGAKC,iEAAkE,CCnCnE,2BAA2B,CCF3B,qCAA8B,CDC9B,YDqCA,CAIA,4EAKC,4BAA6B,CAa7B,iEAAkE,CAhBlE,qBAAsB,CAoBtB,mDAAoD,CAhBpD,SAAU,CALV,WAAY,CAsBZ,KAAM,CAFN,2BAA4B,CAT5B,6SAgCD,CAnBC,qFAIC,oDAAqD,CADrD,yCAA0C,CAD1C,wCAWD,CANC,kHACC,SAAU,CAGV,+DACD,CAID,wHACC,SACD,CAID,kFAEC,oDAAqD,CADrD,SAED,CAKC,oMAEC,6CAA8C,CAD9C,SAOD,CAHC,gRACC,SACD,CAOH,qFACC,SAAU,CACV,oDACD,CAGA,gDAEC,eAkBD,CAhBC,yEAOC,iCACD,CAGC,gOAEC,gDACD,CAOD,wIAEC,mDAQD,CALE,ghBAEC,gDACD,CAKH,yKAOC,yDACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t--ck-color-resizer: var(--ck-color-focus-border);\n\t--ck-color-resizer-tooltip-background: hsl(0, 0%, 15%);\n\t--ck-color-resizer-tooltip-text: hsl(0, 0%, 95%);\n\n\t--ck-resizer-border-radius: var(--ck-border-radius);\n\t--ck-resizer-tooltip-offset: 10px;\n\t--ck-resizer-tooltip-height: calc(var(--ck-spacing-small) * 2 + 10px);\n}\n\n.ck .ck-widget {\n\t/* This is neccessary for type around UI to be positioned properly. */\n\tposition: relative;\n}\n\n.ck .ck-widget.ck-widget_with-selection-handle {\n\t/* Make the widget wrapper a relative positioning container for the drag handle. */\n\tposition: relative;\n\n\t& .ck-widget__selection-handle {\n\t\tposition: absolute;\n\n\t\t& .ck-icon {\n\t\t\t/* Make sure the icon in not a subject to font-size or line-height to avoid\n\t\t\tunnecessary spacing around it. */\n\t\t\tdisplay: block;\n\t\t}\n\t}\n\n\t/* Show the selection handle on mouse hover over the widget, but not for nested widgets. */\n\t&:hover > .ck-widget__selection-handle {\n\t\tvisibility: visible;\n\t}\n\n\t/* Show the selection handle when the widget is selected, but not for nested widgets. */\n\t&.ck-widget_selected > .ck-widget__selection-handle {\n\t\tvisibility: visible;\n\t}\n}\n\n.ck .ck-size-view {\n\tbackground: var(--ck-color-resizer-tooltip-background
+{
+    "word": "त्रिदशालय",
+    "BOP": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "3894",
+            "pagenum": 160,
+            "content": "त्रिदशालय¦ (e त्रिदश et आलय domus, habitatio) 1) <i>TATP.</i> deorum habitatio. IN. 5. 36. 2) <i>BAH.</i> deorum habitationem habens i. e. Deus. IN. 1. 12."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "12852",
+            "pagenum": 212,
+            "content": "1 त्रिदशालय¦ <lex>m.</lex> the residence of the gods, <ab>i.e.</ab> heaven."
+        },
+        {
+            "word": "त्रिदशालय",
+            "eid": "12853",
+            "pagenum": 212,
+            "content": "2 त्रिदशालय¦ <lex>m.</lex> a dweller in heaven, a god."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "9013",
+            "pagenum": 160,
+            "content": "1. त्रिदशालय¦ <i>m.</i> Götterwohnung, Himmel."
+        },
+        {
+            "word": "त्रिदशालय",
+            "eid": "9014",
+            "pagenum": 160,
+            "content": "2. त्रिदशालय¦ <i>m.</i> Himmelsbewohner, Gott."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "16108",
+            "pagenum": 318,
+            "content": "tri-daSa˚Alaya¦ <i>m.</i> 1. heaven; 2. the mountain Meru."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "87781",
+            "pagenum": "458,3",
+            "content": "tri—da°SA<srs/>laya ¦ <lex>m.</lex> ‘abode of the gods’, heaven, <ls>MBh. iii</ls>; <ls>R. i</ls>; <ls>Vet.</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिदशालय",
+            "eid": "87782",
+            "pagenum": "458,3",
+            "content": "tri—da°SA<srs/>laya ¦ <lex>n.</lex> the mountain <s1 slp1='su-meru'>Su-meru</s1>, <ls>L.</ls><info lex='n'/>"
+        },
+        {
+            "word": "त्रिदशालय",
+            "eid": "87783",
+            "pagenum": "458,3",
+            "content": "¦ a heaven-dweller, god, <ls>MBh. iii, 1725</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "47483",
+            "pagenum": 3,
+            "content": "<hom>1.</hom> त्रिदशालय¦ <lex>m.</lex> <i>der Götter Wohnort;</i> <dvsn n='1'>— 1〉 <i>der Himmel</i>. <dvsn n='1'>— 2〉 *<ab>Bein.</ab> des Berges <is>Sumeru</is>."
+        },
+        {
+            "word": "त्रिदशालय",
+            "eid": "47484",
+            "pagenum": 3,
+            "content": "<hom>2.</hom> त्रिदशालय¦ <lex>m.</lex> <i>ein Himmelsbewohner, ein Gott</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "30960",
+            "pagenum": 3,
+            "content": "1. त्रिदशालय¦ (त्रिदश + आलय) <lex>m.</lex> <i>der Götter Wohnort, der Himmel</i> <ls>AK. 1, 1, 1, 1.</ls> <ls>MBH. 3, 1852.</ls> <ls>R. 1, 2, 3.</ls> <ls>VET. 27, 17.</ls> <i>der Berg</i> <is>Sumeru</is> <ls>HALĀY.</ls> im <ls>ŚKDR.</ls>"
+        },
+        {
+            "word": "त्रिदशालय",
+            "eid": "30961",
+            "pagenum": 3,
+            "content": "2. त्रिदशालय¦ (wie eben) <lex>m.</lex> <i>ein Bewohner der Götterwelt, ein Gott</i> <ls>MBH. 3, 1725.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "18060",
+            "pagenum": 324,
+            "content": "त्रिदशालय¦ m. (-यः) 1. Swarga, INDRA'S heaven or paradise. 2. The mountain Sumeru. E. त्रिदश a deity, and आलय an abode."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "18077",
+            "pagenum": 389,
+            "content": "त्रिदशालय¦ m. (-यः) .²1 <i>Svarga,</i> INDRA'S heaven or paradise. .²2 The mountain <i>Sumeru.</i> .E. त्रिदश a deity, and आलय an abode."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "17553",
+            "pagenum": 345,
+            "content": "त्रिदशा_लय¦ (यः) 1. <i>m. Indra's</i> heaven; the mountain <i>Sumeru.</i>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "15531",
+            "pagenum": "2-657-a",
+            "content": "त्रिदशालयः¦, पुं, (त्रिदशानां देवानां आलयः ।) स्वर्गः । इत्यमरः । १ । १ । ६ ॥ (यथा, महाभारते । १ । ७६ । ६६ । “गुरोरुष्य सकाशे तु दशवर्षशतानि सः । अनुज्ञातः कचो गन्तुमियेष त्रिदशालयम् ॥”) सुमेरुपर्व्वतः । इति हलायुधः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिदशालय",
+            "eid": "23647",
+            "pagenum": "3367,a",
+            "content": "त्रिदशालय¦ पु० ६ त० । १ स्वर्गे अमरः । २ सुमेरुपर्वते हलायु"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिदशालय",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ದೇವತೆಗಳ ವಾಸಸ್ಥಾನ \\/ಸ್ವರ್ಗಲೋಕ",
+            "content": ""
+        },
+        {
+            "word": "त्रिदशालय",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸುಮೇರು ಪರ್ವತ",
+            "व्युत्पत्तिः": "त्रिदशानामालयः",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "त्रिदशालय",
+            "linga": "P",
+            "artha": "स्वर्गः",
+            "synonyms": [
+                "स्वर्",
+                "स्वर्ग",
+                "नाक",
+                "त्रिदिव",
+                "त्रिदशालय",
+                "सुरलोक",
+                "द्यो",
+                "दिव्",
+                "त्रिविष्टप",
+                "गो"
+            ],
+            "num": "1.1.6",
+            "text": "स्वरव्ययं स्वर्गनाकत्रिदिवत्रिदशालयाः । सुरलोको द्योदिवौ द्वे स्त्रियां क्लीबे त्रिविष्टपम् ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिदशालय",
+            "content": "<body><s>tridaSAlaya pu° 6 ta° . <lb/><b>1</b> svarge amaraH . <lb/><b>2</b> sumeruparvate halAyu°</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिदशालय",
+            "content": "<H1><h><key1>tridaSAlaya</key1><key2>tridaSAlaya</key2></h><body><s>tridaSAlaya</s>  <div n=\"1\">m. (<s>-yaH</s>) </div><div n=\"2\"> 1. Swarga, INDRA'S heaven or paradise. </div><div n=\"2\"> 2. The moun- <lb />tain Sumeru.</div><div n=\"E\"> E. <s>tridaSa</s> a deity, and <s>Alaya</s> an abode.</div></body><tail><L>18060</L><pc>324-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिदशालय",
+            "content": "<span lang=\"sa\">त्रिदशालय<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದೇವತೆಗಳ ವಾಸಸ್ಥಾನ /ಸ್ವರ್ಗಲೋಕ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिदशालय<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸುಮೇರು ಪರ್ವತ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिदशानामालयः<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

@@ -1,254 +1,39 @@
-perty-descriptors": "^1.0.0",
-        "object-keys": "^1.1.1"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/ljharb"
-      }
-    },
-    "node_modules/dequal": {
-      "version": "2.0.3",
-      "resolved": "https://registry.npmjs.org/dequal/-/dequal-2.0.3.tgz",
-      "integrity": "sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==",
-      "dev": true,
-      "engines": {
-        "node": ">=6"
-      }
-    },
-    "node_modules/didyoumean": {
-      "version": "1.2.2",
-      "resolved": "https://registry.npmjs.org/didyoumean/-/didyoumean-1.2.2.tgz",
-      "integrity": "sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==",
-      "dev": true
-    },
-    "node_modules/dir-glob": {
-      "version": "3.0.1",
-      "resolved": "https://registry.npmjs.org/dir-glob/-/dir-glob-3.0.1.tgz",
-      "integrity": "sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==",
-      "dev": true,
-      "dependencies": {
-        "path-type": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=8"
-      }
-    },
-    "node_modules/dlv": {
-      "version": "1.1.3",
-      "resolved": "https://registry.npmjs.org/dlv/-/dlv-1.1.3.tgz",
-      "integrity": "sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==",
-      "dev": true
-    },
-    "node_modules/doctrine": {
-      "version": "3.0.0",
-      "resolved": "https://registry.npmjs.org/doctrine/-/doctrine-3.0.0.tgz",
-      "integrity": "sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==",
-      "dev": true,
-      "dependencies": {
-        "esutils": "^2.0.2"
-      },
-      "engines": {
-        "node": ">=6.0.0"
-      }
-    },
-    "node_modules/eastasianwidth": {
-      "version": "0.2.0",
-      "resolved": "https://registry.npmjs.org/eastasianwidth/-/eastasianwidth-0.2.0.tgz",
-      "integrity": "sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==",
-      "dev": true
-    },
-    "node_modules/emoji-regex": {
-      "version": "9.2.2",
-      "resolved": "https://registry.npmjs.org/emoji-regex/-/emoji-regex-9.2.2.tgz",
-      "integrity": "sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==",
-      "dev": true
-    },
-    "node_modules/enhanced-resolve": {
-      "version": "5.16.0",
-      "resolved": "https://registry.npmjs.org/enhanced-resolve/-/enhanced-resolve-5.16.0.tgz",
-      "integrity": "sha512-O+QWCviPNSSLAD9Ucn8Awv+poAkqn3T1XY5/N7kR7rQO9yfSGWkYZDwpJ+iKF7B8rxaQKWngSqACpgzeapSyoA==",
-      "dev": true,
-      "dependencies": {
-        "graceful-fs": "^4.2.4",
-        "tapable": "^2.2.0"
-      },
-      "engines": {
-        "node": ">=10.13.0"
-      }
-    },
-    "node_modules/es-abstract": {
-      "version": "1.23.3",
-      "resolved": "https://registry.npmjs.org/es-abstract/-/es-abstract-1.23.3.tgz",
-      "integrity": "sha512-e+HfNH61Bj1X9/jLc5v1owaLYuHdeHHSQlkhCBiTK8rBvKaULl/beGMxwrMXjpYrv4pz22BlY570vVePA2ho4A==",
-      "dev": true,
-      "dependencies": {
-        "array-buffer-byte-length": "^1.0.1",
-        "arraybuffer.prototype.slice": "^1.0.3",
-        "available-typed-arrays": "^1.0.7",
-        "call-bind": "^1.0.7",
-        "data-view-buffer": "^1.0.1",
-        "data-view-byte-length": "^1.0.1",
-        "data-view-byte-offset": "^1.0.0",
-        "es-define-property": "^1.0.0",
-        "es-errors": "^1.3.0",
-        "es-object-atoms": "^1.0.0",
-        "es-set-tostringtag": "^2.0.3",
-        "es-to-primitive": "^1.2.1",
-        "function.prototype.name": "^1.1.6",
-        "get-intrinsic": "^1.2.4",
-        "get-symbol-description": "^1.0.2",
-        "globalthis": "^1.0.3",
-        "gopd": "^1.0.1",
-        "has-property-descriptors": "^1.0.2",
-        "has-proto": "^1.0.3",
-        "has-symbols": "^1.0.3",
-        "hasown": "^2.0.2",
-        "internal-slot": "^1.0.7",
-        "is-array-buffer": "^3.0.4",
-        "is-callable": "^1.2.7",
-        "is-data-view": "^1.0.1",
-        "is-negative-zero": "^2.0.3",
-        "is-regex": "^1.1.4",
-        "is-shared-array-buffer": "^1.0.3",
-        "is-string": "^1.0.7",
-        "is-typed-array": "^1.1.13",
-        "is-weakref": "^1.0.2",
-        "object-inspect": "^1.13.1",
-        "object-keys": "^1.1.1",
-        "object.assign": "^4.1.5",
-        "regexp.prototype.flags": "^1.5.2",
-        "safe-array-concat": "^1.1.2",
-        "safe-regex-test": "^1.0.3",
-        "string.prototype.trim": "^1.2.9",
-        "string.prototype.trimend": "^1.0.8",
-        "string.prototype.trimstart": "^1.0.8",
-        "typed-array-buffer": "^1.0.2",
-        "typed-array-byte-length": "^1.0.1",
-        "typed-array-byte-offset": "^1.0.2",
-        "typed-array-length": "^1.0.6",
-        "unbox-primitive": "^1.0.2",
-        "which-typed-array": "^1.1.15"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/ljharb"
-      }
-    },
-    "node_modules/es-define-property": {
-      "version": "1.0.0",
-      "resolved": "https://registry.npmjs.org/es-define-property/-/es-define-property-1.0.0.tgz",
-      "integrity": "sha512-jxayLKShrEqqzJ0eumQbVhTYQM27CfT1T35+gCgDFoL82JLsXqTJ76zv6A0YLOgEnLUMvLzsDsGIrl8NFpT2gQ==",
-      "dev": true,
-      "dependencies": {
-        "get-intrinsic": "^1.2.4"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      }
-    },
-    "node_modules/es-errors": {
-      "version": "1.3.0",
-      "resolved": "https://registry.npmjs.org/es-errors/-/es-errors-1.3.0.tgz",
-      "integrity": "sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==",
-      "dev": true,
-      "engines": {
-        "node": ">= 0.4"
-      }
-    },
-    "node_modules/es-iterator-helpers": {
-      "version": "1.0.19",
-      "resolved": "https://registry.npmjs.org/es-iterator-helpers/-/es-iterator-helpers-1.0.19.tgz",
-      "integrity": "sha512-zoMwbCcH5hwUkKJkT8kDIBZSz9I6mVG//+lDCinLCGov4+r7NIy0ld8o03M0cJxl2spVf6ESYVS6/gpIfq1FFw==",
-      "dev": true,
-      "dependencies": {
-        "call-bind": "^1.0.7",
-        "define-properties": "^1.2.1",
-        "es-abstract": "^1.23.3",
-        "es-errors": "^1.3.0",
-        "es-set-tostringtag": "^2.0.3",
-        "function-bind": "^1.1.2",
-        "get-intrinsic": "^1.2.4",
-        "globalthis": "^1.0.3",
-        "has-property-descriptors": "^1.0.2",
-        "has-proto": "^1.0.3",
-        "has-symbols": "^1.0.3",
-        "internal-slot": "^1.0.7",
-        "iterator.prototype": "^1.1.2",
-        "safe-array-concat": "^1.1.2"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      }
-    },
-    "node_modules/es-object-atoms": {
-      "version": "1.0.0",
-      "resolved": "https://registry.npmjs.org/es-object-atoms/-/es-object-atoms-1.0.0.tgz",
-      "integrity": "sha512-MZ4iQ6JwHOBQjahnjwaC1ZtIBH+2ohjamzAO3oaHcXYup7qxjF2fixyH+Q71voWHeOkI2q/TnJao/KfXYIZWbw==",
-      "dev": true,
-      "dependencies": {
-        "es-errors": "^1.3.0"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      }
-    },
-    "node_modules/es-set-tostringtag": {
-      "version": "2.0.3",
-      "resolved": "https://registry.npmjs.org/es-set-tostringtag/-/es-set-tostringtag-2.0.3.tgz",
-      "integrity": "sha512-3T8uNMC3OQTHkFUsFq8r/BwAXLHvU/9O9mE0fBc/MY5iq/8H7ncvO947LmYA6ldWw9Uh8Yhf25zu6n7nML5QWQ==",
-      "dev": true,
-      "dependencies": {
-        "get-intrinsic": "^1.2.4",
-        "has-tostringtag": "^1.0.2",
-        "hasown": "^2.0.1"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      }
-    },
-    "node_modules/es-shim-unscopables": {
-      "version": "1.0.2",
-      "resolved": "https://registry.npmjs.org/es-shim-unscopables/-/es-shim-unscopables-1.0.2.tgz",
-      "integrity": "sha512-J3yBRXCzDu4ULnQwxyToo/OjdMx6akgVC7K6few0a7F/0wLtmKKN7I73AH5T2836UuXRqN7Qg+IIUw/+YJksRw==",
-      "dev": true,
-      "dependencies": {
-        "hasown": "^2.0.0"
-      }
-    },
-    "node_modules/es-to-primitive": {
-      "version": "1.2.1",
-      "resolved": "https://registry.npmjs.org/es-to-primitive/-/es-to-primitive-1.2.1.tgz",
-      "integrity": "sha512-QCOllgZJtaUo9miYBcLChTUaHNjJF3PYs1VidD7AwiEj1kYxKeQTctLAezAOH5ZKRH0g2IgPn6KwB4IT8iRpvA==",
-      "dev": true,
-      "dependencies": {
-        "is-callable": "^1.1.4",
-        "is-date-object": "^1.0.1",
-        "is-symbol": "^1.0.2"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/ljharb"
-      }
-    },
-    "node_modules/escape-string-regexp": {
-      "version": "4.0.0",
-      "resolved": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz",
-      "integrity": "sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==",
-      "dev": true,
-      "engines": {
-        "node": ">=10"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/sindresorhus"
-      }
-    },
-    "node_modules/eslint": {
-      "version": "8.57.0",
-      "resolved": "https://registry.npmjs.org/eslint/-/eslint-8.57.0.tgz",
-      "integrity": "sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ=="
+{
+    "word": "kind",
+    "AE": [
+        {
+            "word": "kind",
+            "eid": "5942",
+            "pagenum": 246,
+            "content": "<b>Kind,</b>¦ <i>a.</i> दयालु, सदय, कृपाकुल, कृपालु, अनु- -कंपिन्, सानुकंप, सकरुण, करुणात्मन्, दया- -करुणा-शील, करुणार्द्र, दयार्द्र, स्निग्ध, कृपा- -दया-घृणा-वत्, कारुणिक (की <i>f.</i>); प्रियकर (री <i>f.</i>), हित, प्रियैषिन्, हितैषिन्, हितकाम, हितबुद्धि, उपकार-पर-शील, उपकारिन्, सु- -हृदय, अनुकूल, सुशील, प्रसन्न, प्रीत. <b>2</b> मधुर, प्रिय; ‘k. to the poor’ दीनानुकंपिन्, दीन- -वत्सल; ‘k. office’ उपकारः; ‘k. act’ सुकृतं; ‘k. words’ प्रियवचनं; ‘speaking k. words’ प्रियंवद, प्रियवादिन्; ‘k. present’ प्रीतिदानं. <i>-s.</i> जाति <i>f.,</i> गणः, वर्गः. <b>2</b> विशेषः, भेदः, प्रकारः, जातिः, रूपं, विधा, in comp.; ‘of many k. s’ बहुविध; ‘of various k. a’ विविध, नानारूप- -विध, नाना <i>ind.;</i> ‘of this k.’ एवंविध, एवंरूप; ‘of all k. s’ सर्वप्रकार; ‘Jāti is a k. of flower’ जातिः कुसुमविशेषः-भेदः. <b>-ly,</b> <i>a.</i> सौम्य, मृदु, कोमल, स्निग्ध, प्रिय. <b>2</b> अनुकूल; समानशील. <i>-adv.</i> सदयं, सकरुणं, दयया, कृपया, प्रीत्या, सस्नेहं, सानुकंप, सा- -नुग्रहं; प्रियं, हितेच्छया, सुशीलवत्, सुजनवत्; ‘speaking k.’ प्रियवादिन्; ‘k. disposed’ हितबुद्धि, अनुरक्त. <b>-ness,</b> <i>s.</i> प्रसादः, अनु- -ग्रहः, कृपा, दया, अनुकंपा, करुणा, प्रीति <i>f.,</i> स्नेहः, कृपालुता, दयालुता, हितेच्छा, कृया- -शीलता, सुशीलं, सौजन्यं, प्रेमन् <i>m. n.,</i> आनु- -कूल्यं. <b>2</b> उपकारः, उपकृतं-ति <i>f.,</i> प्रियं, सुकृतं- -तिः, हितं. <b>-Kindliness,</b> <i>s.</i> सौम्यता, स्निग्धता; सौजन्यं, सुशीलता."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "kind",
+            "eid": "13019",
+            "pagenum": 401,
+            "content": "<b>KIND</b>¦ (subs.): <dvsn n='I'>I Race, genus: जातिः। </dvsn><dvsn n='I'>II Sort:</dvsn> <dvsn n='1'>(1) भेदः, <dvsn n='xe'><i>k. s. of heroes:</i></dvsn> <dvsn n='xs'>नायकभेदाः,</dvsn> Sah.; </dvsn><dvsn n='1'>(2) प्रकारः (of things etc.); </dvsn><dvsn n='1'>(3) -विधः (धा, धं) in comp., <dvsn n='xe'><i>of three k. s:.</i></dvsn> <dvsn n='xs'>त्रिविधः</dvsn> (धा, धं); <dvsn n='xe'><i>of the same</i> <i>k.:</i></dvsn> <dvsn n='xs'>तथाविधः</dvsn> (धा, धं); <dvsn n='xe'><i>of how many k. s:</i></dvsn> <dvsn n='xs'>कतिविधः</dvsn> (धा, धं). Ph.: (a) <i>a kind of</i> = somewhat: q.v.; (b) <i>in k.:</i> i. e. not in money: expr. by the commodity implied.</dvsn>"
+        },
+        {
+            "word": "kind",
+            "eid": "13020",
+            "pagenum": 401,
+            "content": "<b>KIND</b>¦ (adj.): <dvsn n='I'>I Generous, merciful: </dvsn><dvsn n='1'>(1) दयालु (mfn.), <dvsn n='xe'><i>as if by k. penance:</i></dvsn> <dvsn n='xs'>दयालुनेव तपसा,</dvsn> Ki. vi. 27.; </dvsn><dvsn n='1'>(2) दयावत् (f. ती) (of persons only); </dvsn><dvsn n='1'>(3) सदयः (या, यं). Ph.: <dvsn n='xe'><i>k. act:</i></dvsn> <dvsn n='xs'>उपकारः:</dvsn> v. Good (subs.). </dvsn><dvsn n='I'>II Of words: </dvsn><dvsn n='1'>(1) प्रियः (या, यं); </dvsn><dvsn n='1'>(2) मधुरः (रा, रं).</dvsn>"
+        }
+    ],
+    "MWE": [
+        {
+            "word": "kind",
+            "eid": "17123",
+            "pagenum": 426,
+            "content": "KIND¦, <i>a.</i> (Disposed to make others happy, benevolent) प्रियकरः -री -रं, प्रियङ्करः -री -रं, प्रियकारः -री -रं, प्रियकृत् <i>m. f. n.,</i> प्रियः -या -यं, प्रीतः -ता -तं, प्रीतिमान् -मती -मत् (त्), हितः -ता -तं, प्रियैषी -विणी -वि (न्), हितैषी &c., हितवान् -वती -वत् (त्), सुहितः -ता -तं, हितकामः -मा -मं, हितकरः -री -रं, हितबुद्धिः -द्धिः -द्धि, उपकार- शीलः -ला -लं, उपकारी -रिणी -रि (न्), उपकारपरः -रा -रं, परोप- कारी &c., लोकोपकारी &c., उपकारबुद्धिः -द्धिः -द्धि, स्निग्धः -ग्धा -ग्धं, स्नेहशीलः -ला -लं, स्नेही -हिनी -हि (न्), हृदयालुः -लुः -लु, सुहृदयः -या -यं, सुहृत्तमः -मा -मं, अनुकूलः -ला -लं, कृपालुः -लुः -लु, कृपाशीलः -ला -लं, अनुकम्पकः -का -कं, अनुकम्पी -म्पिनी -म्पि (न्), दयालुः -लुः -लु, करुणात्मा -त्मा -त्म (न्), दयावान् &c., लोकानुकम्पनः -ना -नं, अद्रोही -हिणी -हि (न्), परहितेच्छुः -च्छुः -च्छु, परकल्याणेच्छुः &c., सुशीलः -ला -लं, प्रसन्नः -न्ना -न्नं, अनुनयी -यिनी -यि (न्), अनुग्राही &c.; ‘kind to servants,’ भृत्यकामकृत्; ‘kind to the poor,’ दरिद्रोपकारी &c., दीनानुकम्यनः -ना -नं, दीनवत्सलः -ला -लं; ‘kind offices,’ उपकारः, उपचारः; ‘kind act,’ सुकृतं, सुकृतिः <i>f.,</i> प्रीतिकर्म्म <i>n.</i> (न्); ‘kind words,’ प्रीतिवचस् <i>n.,</i> प्रिय- भाषणं; ‘speaking kind words,’ प्रियवादी -दिनी -दि (न्), प्रियंवदः -दा -दं; ‘kind present,’ प्रीतिदानं."
+        },
+        {
+            "word": "kind",
+            "eid": "17124",
+            "pagenum": 427,
+            "content": "KIND¦, <i>s.</i> (Genus, class) जातिः <i>f.,</i> गणः, वर्णः, वर्गः, सामान्यं. — (Sort) विशेषः, भेदः, प्रभेदः, प्रकारः, आकारः, जातिः <i>f.,</i> -तं, रूपं, विधिः <i>m.,</i> विधानं, विधः in comp.; ‘a kind of fish,’ मत्स्यभेदः, मत्स्यविशेषः; ‘of various kinds,’ विविधः -धा -धं, नानाविधः -धा -धं, नानारूपः -पी -पं; ‘of many kinds,’ बहुविधः -धा -धं, बहुरूपः -पी -पं, अनेकाकारः -रा -रं, अनेकरूपः -पी -पं; ‘of two kinds,’ द्विविधः -धा -धं; ‘of four kinds,’ चतुर्विधः -धा -धं, चतुःप्रकारः -रा -रं; ‘of all kinds,’ सर्व्वप्रकारः -रा -रं; ‘all kinds of food,’ सर्व्वप्र- कारमन्नं; ‘of the same kind,’ सविधः -धा -धं, सजातिः -तिः -ति, सजातीयः -या -यं, समानजातीयः -या -यं; ‘of such a kind,’ एवंविधः -धा -धं, तथाविधः -धा -धं, एवंरूपः -पा -पं. — (Manner, way) रीतिः <i>f.,</i> प्रकारः, विधानं, प्रभृतिः <i>f.</i>"
+        }
+    ]
+}

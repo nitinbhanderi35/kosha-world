@@ -1,1751 +1,426 @@
- null or undefined values.
-// This is only typesafe because these option objects have entirely optional fields where
-// null and undefined represent the same thing as no property.
-
-
-function trimOptions(options) {
-  if (options == null) return null;
-  var hasProperties = false;
-  var trimmed = {};
-
-  for (var key in options) {
-    if (options[key] != null) {
-      hasProperties = true;
-      trimmed[key] = options[key];
-    }
-  }
-
-  return hasProperties ? trimmed : null;
-}
-
-function getImagePreloadKey(href, imageSrcSet, imageSizes) {
-  var uniquePart = '';
-
-  if (typeof imageSrcSet === 'string' && imageSrcSet !== '') {
-    uniquePart += '[' + imageSrcSet + ']';
-
-    if (typeof imageSizes === 'string') {
-      uniquePart += '[' + imageSizes + ']';
-    }
-  } else {
-    uniquePart += '[][]' + href;
-  }
-
-  return "[image]" + uniquePart;
-}
-
-var ReactDOMCurrentDispatcher = ReactDOMSharedInternals.Dispatcher;
-function prepareHostDispatcher() {
-  ReactDOMCurrentDispatcher.current = ReactDOMFlightServerDispatcher;
-} // Used to distinguish these contexts from ones used in other renderers.
-// small, smaller than how we encode undefined, and is unambiguous. We could use
-// a different tuple structure to encode this instead but this makes the runtime
-// cost cheaper by eliminating a type checks in more positions.
-// prettier-ignore
-
-function createHints() {
-  return new Set();
-}
-
-var requestStorage = new async_hooks.AsyncLocalStorage();
-
-// ATTENTION
-// When adding new symbols to this file,
-// Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
-// The Symbol used to tag the ReactElement-like types.
-var REACT_ELEMENT_TYPE = Symbol.for('react.element');
-var REACT_FRAGMENT_TYPE = Symbol.for('react.fragment');
-var REACT_SERVER_CONTEXT_TYPE = Symbol.for('react.server_context');
-var REACT_FORWARD_REF_TYPE = Symbol.for('react.forward_ref');
-var REACT_SUSPENSE_TYPE = Symbol.for('react.suspense');
-var REACT_SUSPENSE_LIST_TYPE = Symbol.for('react.suspense_list');
-var REACT_MEMO_TYPE = Symbol.for('react.memo');
-var REACT_LAZY_TYPE = Symbol.for('react.lazy');
-var REACT_MEMO_CACHE_SENTINEL = Symbol.for('react.memo_cache_sentinel');
-var REACT_POSTPONE_TYPE = Symbol.for('react.postpone');
-var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
-var FAUX_ITERATOR_SYMBOL = '@@iterator';
-function getIteratorFn(maybeIterable) {
-  if (maybeIterable === null || typeof maybeIterable !== 'object') {
-    return null;
-  }
-
-  var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
-
-  if (typeof maybeIterator === 'function') {
-    return maybeIterator;
-  }
-
-  return null;
-}
-
-// Forming a reverse tree.
-// The structure of a context snapshot is an implementation of this file.
-// Currently, it's implemented as tracking the current active node.
-
-
-var rootContextSnapshot = null; // We assume that this runtime owns the "current" field on all ReactContext instances.
-// This global (actually thread local) state represents what state all those "current",
-// fields are currently in.
-
-var currentActiveSnapshot = null;
-
-function popNode(prev) {
-  {
-    prev.context._currentValue = prev.parentValue;
-  }
-}
-
-function pushNode(next) {
-  {
-    next.context._currentValue = next.value;
-  }
-}
-
-function popToNearestCommonAncestor(prev, next) {
-  if (prev === next) ; else {
-    popNode(prev);
-    var parentPrev = prev.parent;
-    var parentNext = next.parent;
-
-    if (parentPrev === null) {
-      if (parentNext !== null) {
-        throw new Error('The stacks must reach the root at the same time. This is a bug in React.');
-      }
-    } else {
-      if (parentNext === null) {
-        throw new Error('The stacks must reach the root at the same time. This is a bug in React.');
-      }
-
-      popToNearestCommonAncestor(parentPrev, parentNext); // On the way back, we push the new ones that weren't common.
-
-      pushNode(next);
-    }
-  }
-}
-
-function popAllPrevious(prev) {
-  popNode(prev);
-  var parentPrev = prev.parent;
-
-  if (parentPrev !== null) {
-    popAllPrevious(parentPrev);
-  }
-}
-
-function pushAllNext(next) {
-  var parentNext = next.parent;
-
-  if (parentNext !== null) {
-    pushAllNext(parentNext);
-  }
-
-  pushNode(next);
-}
-
-function popPreviousToCommonLevel(prev, next) {
-  popNode(prev);
-  var parentPrev = prev.parent;
-
-  if (parentPrev === null) {
-    throw new Error('The depth must equal at least at zero before reaching the root. This is a bug in React.');
-  }
-
-  if (parentPrev.depth === next.depth) {
-    // We found the same level. Now we just need to find a shared ancestor.
-    popToNearestCommonAncestor(parentPrev, next);
-  } else {
-    // We must still be deeper.
-    popPreviousToCommonLevel(parentPrev, next);
-  }
-}
-
-function popNextToCommonLevel(prev, next) {
-  var parentNext = next.parent;
-
-  if (parentNext === null) {
-    throw new Error('The depth must equal at least at zero before reaching the root. This is a bug in React.');
-  }
-
-  if (prev.depth === parentNext.depth) {
-    // We found the same level. Now we just need to find a shared ancestor.
-    popToNearestCommonAncestor(prev, parentNext);
-  } else {
-    // We must still be deeper.
-    popNextToCommonLevel(prev, parentNext);
-  }
-
-  pushNode(next);
-} // Perform context switching to the new snapshot.
-// To make it cheap to read many contexts, while not suspending, we make the switch eagerly by
-// updating all the context's current values. That way reads, always just read the current value.
-// At the cost of updating contexts even if they're never read by this subtree.
-
-
-function switchContext(newSnapshot) {
-  // The basic algorithm we need to do is to pop back any contexts that are no longer on the stack.
-  // We also need to update any new contexts that are now on the stack with the deepest value.
-  // The easiest way to update new contexts is to just reapply them in reverse order from the
-  // perspective of the backpointers. To avoid allocating a lot when switching, we use the stack
-  // for that. Therefore this algorithm is recursive.
-  // 1) First we pop which ever snapshot tree was deepest. Popping old contexts as we go.
-  // 2) Then we find the nearest common ancestor from there. Popping old contexts as we go.
-  // 3) Then we reapply new contexts on the way back up the stack.
-  var prev = currentActiveSnapshot;
-  var next = newSnapshot;
-
-  if (prev !== next) {
-    if (prev === null) {
-      // $FlowFixMe[incompatible-call]: This has to be non-null since it's not equal to prev.
-      pushAllNext(next);
-    } else if (next === null) {
-      popAllPrevious(prev);
-    } else if (prev.depth === next.depth) {
-      popToNearestCommonAncestor(prev, next);
-    } else if (prev.depth > next.depth) {
-      popPreviousToCommonLevel(prev, next);
-    } else {
-      popNextToCommonLevel(prev, next);
-    }
-
-    currentActiveSnapshot = next;
-  }
-}
-function getActiveContext() {
-  return currentActiveSnapshot;
-}
-function readContext$1(context) {
-  var value = context._currentValue ;
-  return value;
-}
-
-// Corresponds to ReactFiberWakeable and ReactFizzWakeable modules. Generally,
-// changes to one module should be reflected in the others.
-// TODO: Rename this module and the corresponding Fiber one to "Thenable"
-// instead of "Wakeable". Or some other more appropriate name.
-// An error that is thrown (e.g. by `use`) to trigger Suspense. If we
-// detect this is caught by userspace, we'll log a warning in development.
-var SuspenseException = new Error("Suspense Exception: This is not a real error! It's an implementation " + 'detail of `use` to interrupt the current render. You must either ' + 'rethrow it immediately, or move the `use` call outside of the ' + '`try/catch` block. Capturing without rethrowing will lead to ' + 'unexpected behavior.\n\n' + 'To handle async errors, wrap your component in an error boundary, or ' + "call the promise's `.catch` method and pass the result to `use`");
-function createThenableState() {
-  // The ThenableState is created the first time a component suspends. If it
-  // suspends again, we'll reuse the same state.
-  return [];
-}
-
-function noop() {}
-
-function trackUsedThenable(thenableState, thenable, index) {
-  var previous = thenableState[index];
-
-  if (previous === undefined) {
-    thenableState.push(thenable);
-  } else {
-    if (previous !== thenable) {
-      // Reuse the previous thenable, and drop the new one. We can assume
-      // they represent the same value, because components are idempotent.
-      // Avoid an unhandled rejection errors for the Promises that we'll
-      // intentionally ignore.
-      thenable.then(noop, noop);
-      thenable = previous;
-    }
-  } // We use an expando to track the status and result of a thenable so that we
-  // can synchronously unwrap the value. Think of this as an extension of the
-  // Promise API, or a custom interface that is a superset of Thenable.
-  //
-  // If the thenable doesn't have a status, set it to "pending" and attach
-  // a listener that will update its status and result when it resolves.
-
-
-  switch (thenable.status) {
-    case 'fulfilled':
-      {
-        var fulfilledValue = thenable.value;
-        return fulfilledValue;
-      }
-
-    case 'rejected':
-      {
-        var rejectedError = thenable.reason;
-        throw rejectedError;
-      }
-
-    default:
-      {
-        if (typeof thenable.status === 'string') ; else {
-          var pendingThenable = thenable;
-          pendingThenable.status = 'pending';
-          pendingThenable.then(function (fulfilledValue) {
-            if (thenable.status === 'pending') {
-              var fulfilledThenable = thenable;
-              fulfilledThenable.status = 'fulfilled';
-              fulfilledThenable.value = fulfilledValue;
-            }
-          }, function (error) {
-            if (thenable.status === 'pending') {
-              var rejectedThenable = thenable;
-              rejectedThenable.status = 'rejected';
-              rejectedThenable.reason = error;
-            }
-          }); // Check one more time in case the thenable resolved synchronously
-
-          switch (thenable.status) {
-            case 'fulfilled':
-              {
-                var fulfilledThenable = thenable;
-                return fulfilledThenable.value;
-              }
-
-            case 'rejected':
-              {
-                var rejectedThenable = thenable;
-                throw rejectedThenable.reason;
-              }
-          }
-        } // Suspend.
-        //
-        // Throwing here is an implementation detail that allows us to unwind the
-        // call stack. But we shouldn't allow it to leak into userspace. Throw an
-        // opaque placeholder value instead of the actual thenable. If it doesn't
-        // get captured by the work loop, log a warning, because that means
-        // something in userspace must have caught it.
-
-
-        suspendedThenable = thenable;
-        throw SuspenseException;
-      }
-  }
-} // This is used to track the actual thenable that suspended so it can be
-// passed to the rest of the Suspense implementation — which, for historical
-// reasons, expects to receive a thenable.
-
-var suspendedThenable = null;
-function getSuspendedThenable() {
-  // This is called right after `use` suspends by throwing an exception. `use`
-  // throws an opaque value instead of the thenable itself so that it can't be
-  // caught in userspace. Then the work loop accesses the actual thenable using
-  // this function.
-  if (suspendedThenable === null) {
-    throw new Error('Expected a suspended thenable. This is a bug in React. Please file ' + 'an issue.');
-  }
-
-  var thenable = suspendedThenable;
-  suspendedThenable = null;
-  return thenable;
-}
-
-var currentRequest$1 = null;
-var thenableIndexCounter = 0;
-var thenableState = null;
-function prepareToUseHooksForRequest(request) {
-  currentRequest$1 = request;
-}
-function resetHooksForRequest() {
-  currentRequest$1 = null;
-}
-function prepareToUseHooksForComponent(prevThenableState) {
-  thenableIndexCounter = 0;
-  thenableState = prevThenableState;
-}
-function getThenableStateAfterSuspending() {
-  var state = thenableState;
-  thenableState = null;
-  return state;
-}
-
-function readContext(context) {
-  {
-    if (context.$$typeof !== REACT_SERVER_CONTEXT_TYPE) {
-      if (isClientReference(context)) {
-        error('Cannot read a Client Context from a Server Component.');
-      } else {
-        error('Only createServerContext is supported in Server Components.');
-      }
-    }
-
-    if (currentRequest$1 === null) {
-      error('Context can only be read while React is rendering. ' + 'In classes, you can read it in the render method or getDerivedStateFromProps. ' + 'In function components, you can read it directly in the function body, but not ' + 'inside Hooks like useReducer() or useMemo().');
-    }
-  }
-
-  return readContext$1(context);
-}
-
-var HooksDispatcher = {
-  useMemo: function (nextCreate) {
-    return nextCreate();
-  },
-  useCallback: function (callback) {
-    return callback;
-  },
-  useDebugValue: function () {},
-  useDeferredValue: unsupportedHook,
-  useTransition: unsupportedHook,
-  readContext: readContext,
-  useContext: readContext,
-  useReducer: unsupportedHook,
-  useRef: unsupportedHook,
-  useState: unsupportedHook,
-  useInsertionEffect: unsupportedHook,
-  useLayoutEffect: unsupportedHook,
-  useImperativeHandle: unsupportedHook,
-  useEffect: unsupportedHook,
-  useId: useId,
-  useSyncExternalStore: unsupportedHook,
-  useCacheRefresh: function () {
-    return unsupportedRefresh;
-  },
-  useMemoCache: function (size) {
-    var data = new Array(size);
-
-    for (var i = 0; i < size; i++) {
-      data[i] = REACT_MEMO_CACHE_SENTINEL;
-    }
-
-    return data;
-  },
-  use: use
-};
-
-function unsupportedHook() {
-  throw new Error('This Hook is not supported in Server Components.');
-}
-
-function unsupportedRefresh() {
-  throw new Error('Refreshing the cache is not supported in Server Components.');
-}
-
-function useId() {
-  if (currentRequest$1 === null) {
-    throw new Error('useId can only be used while React is rendering');
-  }
-
-  var id = currentRequest$1.identifierCount++; // use 'S' for Flight components to distinguish from 'R' and 'r' in Fizz/Client
-
-  return ':' + currentRequest$1.identifierPrefix + 'S' + id.toString(32) + ':';
-}
-
-function use(usable) {
-  if (usable !== null && typeof usable === 'object' || typeof usable === 'function') {
-    // $FlowFixMe[method-unbinding]
-    if (typeof usable.then === 'function') {
-      // This is a thenable.
-      var thenable = usable; // Track the position of the thenable within this fiber.
-
-      var index = thenableIndexCounter;
-      thenableIndexCounter += 1;
-
-      if (thenableState === null) {
-        thenableState = createThenableState();
-      }
-
-      return trackUsedThenable(thenableState, thenable, index);
-    } else if (usable.$$typeof === REACT_SERVER_CONTEXT_TYPE) {
-      var context = usable;
-      return readContext(context);
-    }
-  }
-
-  {
-    if (isClientReference(usable)) {
-      error('Cannot use() an already resolved Client Reference.');
-    }
-  } // eslint-disable-next-line react-internal/safe-string-coercion
-
-
-  throw new Error('An unsupported type was passed to use(): ' + String(usable));
-}
-
-function createSignal() {
-  return new AbortController().signal;
-}
-
-function resolveCache() {
-  var request = resolveRequest();
-
-  if (request) {
-    return getCache(request);
-  }
-
-  return new Map();
-}
-
-var DefaultCacheDispatcher = {
-  getCacheSignal: function () {
-    var cache = resolveCache();
-    var entry = cache.get(createSignal);
-
-    if (entry === undefined) {
-      entry = createSignal();
-      cache.set(createSignal, entry);
-    }
-
-    return entry;
-  },
-  getCacheForType: function (resourceType) {
-    var cache = resolveCache();
-    var entry = cache.get(resourceType);
-
-    if (entry === undefined) {
-      entry = resourceType(); // TODO: Warn if undefined?
-
-      cache.set(resourceType, entry);
-    }
-
-    return entry;
-  }
-};
-
-var isArrayImpl = Array.isArray; // eslint-disable-next-line no-redeclare
-
-function isArray(a) {
-  return isArrayImpl(a);
-}
-
-var getPrototypeOf = Object.getPrototypeOf;
-
-// in case they error.
-
-var jsxPropsParents = new WeakMap();
-var jsxChildrenParents = new WeakMap();
-
-function isObjectPrototype(object) {
-  if (!object) {
-    return false;
-  }
-
-  var ObjectPrototype = Object.prototype;
-
-  if (object === ObjectPrototype) {
-    return true;
-  } // It might be an object from a different Realm which is
-  // still just a plain simple object.
-
-
-  if (getPrototypeOf(object)) {
-    return false;
-  }
-
-  var names = Object.getOwnPropertyNames(object);
-
-  for (var i = 0; i < names.length; i++) {
-    if (!(names[i] in ObjectPrototype)) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function isSimpleObject(object) {
-  if (!isObjectPrototype(getPrototypeOf(object))) {
-    return false;
-  }
-
-  var names = Object.getOwnPropertyNames(object);
-
-  for (var i = 0; i < names.length; i++) {
-    var descriptor = Object.getOwnPropertyDescriptor(object, names[i]);
-
-    if (!descriptor) {
-      return false;
-    }
-
-    if (!descriptor.enumerable) {
-      if ((names[i] === 'key' || names[i] === 'ref') && typeof descriptor.get === 'function') {
-        // React adds key and ref getters to props objects to issue warnings.
-        // Those getters will not be transferred to the client, but that's ok,
-        // so we'll special case them.
-        continue;
-      }
-
-      return false;
-    }
-  }
-
-  return true;
-}
-function objectName(object) {
-  // $FlowFixMe[method-unbinding]
-  var name = Object.prototype.toString.call(object);
-  return name.replace(/^\[object (.*)\]$/, function (m, p0) {
-    return p0;
-  });
-}
-
-function describeKeyForErrorMessage(key) {
-  var encodedKey = JSON.stringify(key);
-  return '"' + key + '"' === encodedKey ? key : encodedKey;
-}
-
-function describeValueForErrorMessage(value) {
-  switch (typeof value) {
-    case 'string':
-      {
-        return JSON.stringify(value.length <= 10 ? value : value.slice(0, 10) + '...');
-      }
-
-    case 'object':
-      {
-        if (isArray(value)) {
-          return '[...]';
-        }
-
-        var name = objectName(value);
-
-        if (name === 'Object') {
-          return '{...}';
-        }
-
-        return name;
-      }
-
-    case 'function':
-      return 'function';
-
-    default:
-      // eslint-disable-next-line react-internal/safe-string-coercion
-      return String(value);
-  }
-}
-
-function describeElementType(type) {
-  if (typeof type === 'string') {
-    return type;
-  }
-
-  switch (type) {
-    case REACT_SUSPENSE_TYPE:
-      return 'Suspense';
-
-    case REACT_SUSPENSE_LIST_TYPE:
-      return 'SuspenseList';
-  }
-
-  if (typeof type === 'object') {
-    switch (type.$$typeof) {
-      case REACT_FORWARD_REF_TYPE:
-        return describeElementType(type.render);
-
-      case REACT_MEMO_TYPE:
-        return describeElementType(type.type);
-
-      case REACT_LAZY_TYPE:
+{
+    "word": "कृमि",
+    "ABCH": [
         {
-          var lazyComponent = type;
-          var payload = lazyComponent._payload;
-          var init = lazyComponent._init;
-
-          try {
-            // Lazy may contain any component type so we recursively resolve it.
-            return describeElementType(init(payload));
-          } catch (x) {}
+            "word": "कृमि",
+            "linga": "पुं",
+            "pagenum": "47",
+            "kanda": "तिर्यक्काण्डः",
+            "varga": "चतुरिन्द्रियाः",
+            "eid": "3662",
+            "group": "1520",
+            "synonyms": [
+                "ऊर्णनाभ",
+                "तन्तुवाय",
+                "जालिक",
+                "जालकारक",
+                "मर्कटक",
+                "लूता",
+                "लालास्राव",
+                "अष्टपाद्"
+            ],
+            "content": "ऊर्णनाभस्तन्तुवायो जालिको जालकारकः ।\nकृमिर्मर्कटको लूता लालास्रावोष्टपाच्च सः ॥ १२१० ॥"
         }
-    }
-  }
-
-  return '';
-}
-
-function describeObjectForErrorMessage(objectOrArray, expandedName) {
-  var objKind = objectName(objectOrArray);
-
-  if (objKind !== 'Object' && objKind !== 'Array') {
-    return objKind;
-  }
-
-  var str = '';
-  var start = -1;
-  var length = 0;
-
-  if (isArray(objectOrArray)) {
-    if (jsxChildrenParents.has(objectOrArray)) {
-      // Print JSX Children
-      var type = jsxChildrenParents.get(objectOrArray);
-      str = '<' + describeElementType(type) + '>';
-      var array = objectOrArray;
-
-      for (var i = 0; i < array.length; i++) {
-        var value = array[i];
-        var substr = void 0;
-
-        if (typeof value === 'string') {
-          substr = value;
-        } else if (typeof value === 'object' && value !== null) {
-          substr = '{' + describeObjectForErrorMessage(value) + '}';
-        } else {
-          substr = '{' + describeValueForErrorMessage(value) + '}';
-        }
-
-        if ('' + i === expandedName) {
-          start = str.length;
-          length = substr.length;
-          str += substr;
-        } else if (substr.length < 15 && str.length + substr.length < 40) {
-          str += substr;
-        } else {
-          str += '{...}';
-        }
-      }
-
-      str += '</' + describeElementType(type) + '>';
-    } else {
-      // Print Array
-      str = '[';
-      var _array = objectOrArray;
-
-      for (var _i = 0; _i < _array.length; _i++) {
-        if (_i > 0) {
-          str += ', ';
-        }
-
-        var _value = _array[_i];
-
-        var _substr = void 0;
-
-        if (typeof _value === 'object' && _value !== null) {
-          _substr = describeObjectForErrorMessage(_value);
-        } else {
-          _substr = describeValueForErrorMessage(_value);
-        }
-
-        if ('' + _i === expandedName) {
-          start = str.length;
-          length = _substr.length;
-          str += _substr;
-        } else if (_substr.length < 10 && str.length + _substr.length < 40) {
-          str += _substr;
-        } else {
-          str += '...';
-        }
-      }
-
-      str += ']';
-    }
-  } else {
-    if (objectOrArray.$$typeof === REACT_ELEMENT_TYPE) {
-      str = '<' + describeElementType(objectOrArray.type) + '/>';
-    } else if (jsxPropsParents.has(objectOrArray)) {
-      // Print JSX
-      var _type = jsxPropsParents.get(objectOrArray);
-
-      str = '<' + (describeElementType(_type) || '...');
-      var object = objectOrArray;
-      var names = Object.keys(object);
-
-      for (var _i2 = 0; _i2 < names.length; _i2++) {
-        str += ' ';
-        var name = names[_i2];
-        str += describeKeyForErrorMessage(name) + '=';
-        var _value2 = object[name];
-
-        var _substr2 = void 0;
-
-        if (name === expandedName && typeof _value2 === 'object' && _value2 !== null) {
-          _substr2 = describeObjectForErrorMessage(_value2);
-        } else {
-          _substr2 = describeValueForErrorMessage(_value2);
-        }
-
-        if (typeof _value2 !== 'string') {
-          _substr2 = '{' + _substr2 + '}';
-        }
-
-        if (name === expandedName) {
-          start = str.length;
-          length = _substr2.length;
-          str += _substr2;
-        } else if (_substr2.length < 10 && str.length + _substr2.length < 40) {
-          str += _substr2;
-        } else {
-          str += '...';
-        }
-      }
-
-      str += '>';
-    } else {
-      // Print Object
-      str = '{';
-      var _object = objectOrArray;
-
-      var _names = Object.keys(_object);
-
-      for (var _i3 = 0; _i3 < _names.length; _i3++) {
-        if (_i3 > 0) {
-          str += ', ';
-        }
-
-        var _name = _names[_i3];
-        str += describeKeyForErrorMessage(_name) + ': ';
-        var _value3 = _object[_name];
-
-        var _substr3 = void 0;
-
-        if (typeof _value3 === 'object' && _value3 !== null) {
-          _substr3 = describeObjectForErrorMessage(_value3);
-        } else {
-          _substr3 = describeValueForErrorMessage(_value3);
-        }
-
-        if (_name === expandedName) {
-          start = str.length;
-          length = _substr3.length;
-          str += _substr3;
-        } else if (_substr3.length < 10 && str.length + _substr3.length < 40) {
-          str += _substr3;
-        } else {
-          str += '...';
-        }
-      }
-
-      str += '}';
-    }
-  }
-
-  if (expandedName === undefined) {
-    return str;
-  }
-
-  if (start > -1 && length > 0) {
-    var highlight = ' '.repeat(start) + '^'.repeat(length);
-    return '\n  ' + str + '\n  ' + highlight;
-  }
-
-  return '\n  ' + str;
-}
-
-var ReactSharedServerInternals = // $FlowFixMe: It's defined in the one we resolve to.
-React.__SECRET_SERVER_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-
-if (!ReactSharedServerInternals) {
-  throw new Error('The "react" package in this environment is not configured correctly. ' + 'The "react-server" condition must be enabled in any environment that ' + 'runs React Server Components.');
-}
-
-var ObjectPrototype = Object.prototype;
-var stringify = JSON.stringify; // Serializable values
-// Thenable<ReactClientValue>
-
-var PENDING$1 = 0;
-var COMPLETED = 1;
-var ABORTED = 3;
-var ERRORED$1 = 4;
-var ReactCurrentCache = ReactSharedServerInternals.ReactCurrentCache;
-var ReactCurrentDispatcher = ReactSharedInternals.ReactCurrentDispatcher;
-
-function defaultErrorHandler(error) {
-  console['error'](error); // Don't transform to our wrapper
-}
-
-function defaultPostponeHandler(reason) {// Noop
-}
-
-var OPEN = 0;
-var CLOSING = 1;
-var CLOSED = 2;
-function createRequest(model, bundlerConfig, onError, context, identifierPrefix, onPostpone) {
-  if (ReactCurrentCache.current !== null && ReactCurrentCache.current !== DefaultCacheDispatcher) {
-    throw new Error('Currently React only supports one RSC renderer at a time.');
-  }
-
-  prepareHostDispatcher();
-  ReactCurrentCache.current = DefaultCacheDispatcher;
-  var abortSet = new Set();
-  var pingedTasks = [];
-  var cleanupQueue = [];
-
-  var hints = createHints();
-  var request = {
-    status: OPEN,
-    flushScheduled: false,
-    fatalError: null,
-    destination: null,
-    bundlerConfig: bundlerConfig,
-    cache: new Map(),
-    nextChunkId: 0,
-    pendingChunks: 0,
-    hints: hints,
-    abortableTasks: abortSet,
-    pingedTasks: pingedTasks,
-    completedImportChunks: [],
-    completedHintChunks: [],
-    completedRegularChunks: [],
-    completedErrorChunks: [],
-    writtenSymbols: new Map(),
-    writtenClientReferences: new Map(),
-    writtenServerReferences: new Map(),
-    writtenProviders: new Map(),
-    writtenObjects: new WeakMap(),
-    identifierPrefix: identifierPrefix || '',
-    identifierCount: 1,
-    taintCleanupQueue: cleanupQueue,
-    onError: onError === undefined ? defaultErrorHandler : onError,
-    onPostpone: onPostpone === undefined ? defaultPostponeHandler : onPostpone,
-    // $FlowFixMe[missing-this-annot]
-    toJSON: function (key, value) {
-      return resolveModelToJSON(request, this, key, value);
-    }
-  };
-  request.pendingChunks++;
-  var rootContext = createRootContext();
-  var rootTask = createTask(request, model, rootContext, abortSet);
-  pingedTasks.push(rootTask);
-  return request;
-}
-var currentRequest = null;
-function resolveRequest() {
-  if (currentRequest) return currentRequest;
-
-  {
-    var store = requestStorage.getStore();
-    if (store) return store;
-  }
-
-  return null;
-}
-
-function createRootContext(reqContext) {
-  return importServerContexts();
-}
-
-function serializeThenable(request, thenable) {
-  request.pendingChunks++;
-  var newTask = createTask(request, null, getActiveContext(), request.abortableTasks);
-
-  switch (thenable.status) {
-    case 'fulfilled':
-      {
-        // We have the resolved value, we can go ahead and schedule it for serialization.
-        newTask.model = thenable.value;
-        pingTask(request, newTask);
-        return newTask.id;
-      }
-
-    case 'rejected':
-      {
-        var x = thenable.reason;
-
+    ],
+    "AP90": [
         {
-          var digest = logRecoverableError(request, x);
-          emitErrorChunk(request, newTask.id, digest, x);
+            "word": "कृमि",
+            "eid": "11421",
+            "pagenum": 420,
+            "content": "कृमि¦ <i><ab>a.</ab></i> [क्रम्-इन् अत इत्वम्  <lbinfo n='ls:Uṇ. 4.+ 121'/> <ls>Uṇ. 4. 121</ls>] Full of worms, wormy. --मिः <b>1</b> A worm, an insect in general; कृमिकुलचितं <ls>Bh. 2. 9.</ls> <b>--2</b> Worms (disease). <b>--3</b> An ass. <b>--4</b> A spider. <b>--5</b> The lac. (dye). <b>--6</b> An ant. <b>--Comp.</b> --कंटकं <ab>N.</ab> of several plants:--विडंग, चित्रांग, उदुंबर. --करः a kind of poisonous worm. --कर्णः, --कर्णकः ‘worms or lice in the ear,’ a kind of disease of the ear. --कोशः, --कोषः the cocoon of a <lbinfo n='silk+worm'/> silkworm. °उत्थं silken cloth.  <lbinfo n='--graM#TiH'/> --ग्रंथिः a disease of the ear. --घ्नः <ab>N.</ab> of several plants used as <lbinfo n='vermi+fuge'/> vermifuge; as the onion, the root of the jujube, marking-nut plant &c. --घ्नी turmeric. --जं, --जग्धं agallochum, aloe wood. --जा lac, the red dye <lbinfo n='pro+duced'/> produced by insects. --जलजः, --वारिरुहः a shell-fish, an animal (fish, &c.) living in a shell. --दंतकः tooth-ache. --पर्वतः, --शैलः an ant-hill. --फलः the Udumbara tree. --भोजनः <ab>N.</ab> of a hell. --रिपुः, --शत्रुः an anthelmintic plant (विडंग). --वर्णः red cloth. --शंखः the fish living in the conch. --शुक्तिः <i><ab>f.</ab></i> {1} a bivalve shell. {2} the animal living in it. {3} an oyster."
         }
-
-        return newTask.id;
-      }
-
-    default:
-      {
-        if (typeof thenable.status === 'string') {
-          // Only instrument the thenable if the status if not defined. If
-          // it's defined, but an unknown value, assume it's been instrumented by
-          // some custom userspace implementation. We treat it as "pending".
-          break;
-        }
-
-        var pendingThenable = thenable;
-        pendingThenable.status = 'pending';
-        pendingThenable.then(function (fulfilledValue) {
-          if (thenable.status === 'pending') {
-            var fulfilledThenable = thenable;
-            fulfilledThenable.status = 'fulfilled';
-            fulfilledThenable.value = fulfilledValue;
-          }
-        }, function (error) {
-          if (thenable.status === 'pending') {
-            var rejectedThenable = thenable;
-            rejectedThenable.status = 'rejected';
-            rejectedThenable.reason = error;
-          }
-        });
-        break;
-      }
-  }
-
-  thenable.then(function (value) {
-    newTask.model = value;
-    pingTask(request, newTask);
-  }, function (reason) {
-    {
-      newTask.status = ERRORED$1;
-
-      var _digest = logRecoverableError(request, reason);
-
-      emitErrorChunk(request, newTask.id, _digest, reason);
-    }
-
-    request.abortableTasks.delete(newTask);
-
-    if (request.destination !== null) {
-      flushCompletedChunks(request, request.destination);
-    }
-  });
-  return newTask.id;
-}
-
-function emitHint(request, code, model) {
-  emitHintChunk(request, code, model);
-  enqueueFlush(request);
-}
-function getHints(request) {
-  return request.hints;
-}
-function getCache(request) {
-  return request.cache;
-}
-
-function readThenable(thenable) {
-  if (thenable.status === 'fulfilled') {
-    return thenable.value;
-  } else if (thenable.status === 'rejected') {
-    throw thenable.reason;
-  }
-
-  throw thenable;
-}
-
-function createLazyWrapperAroundWakeable(wakeable) {
-  // This is a temporary fork of the `use` implementation until we accept
-  // promises everywhere.
-  var thenable = wakeable;
-
-  switch (thenable.status) {
-    case 'fulfilled':
-    case 'rejected':
-      break;
-
-    default:
-      {
-        if (typeof thenable.status === 'string') {
-          // Only instrument the thenable if the status if not defined. If
-          // it's defined, but an unknown value, assume it's been instrumented by
-          // some custom userspace implementation. We treat it as "pending".
-          break;
-        }
-
-        var pendingThenable = thenable;
-        pendingThenable.status = 'pending';
-        pendingThenable.then(function (fulfilledValue) {
-          if (thenable.status === 'pending') {
-            var fulfilledThenable = thenable;
-            fulfilledThenable.status = 'fulfilled';
-            fulfilledThenable.value = fulfilledValue;
-          }
-        }, function (error) {
-          if (thenable.status === 'pending') {
-            var rejectedThenable = thenable;
-            rejectedThenable.status = 'rejected';
-            rejectedThenable.reason = error;
-          }
-        });
-        break;
-      }
-  }
-
-  var lazyType = {
-    $$typeof: REACT_LAZY_TYPE,
-    _payload: thenable,
-    _init: readThenable
-  };
-  return lazyType;
-}
-
-function attemptResolveElement(request, type, key, ref, props, prevThenableState) {
-  if (ref !== null && ref !== undefined) {
-    // When the ref moves to the regular props object this will implicitly
-    // throw for functions. We could probably relax it to a DEV warning for other
-    // cases.
-    throw new Error('Refs cannot be used in Server Components, nor passed to Client Components.');
-  }
-
-  {
-    jsxPropsParents.set(props, type);
-
-    if (typeof props.children === 'object' && props.children !== null) {
-      jsxChildrenParents.set(props.children, type);
-    }
-  }
-
-  if (typeof type === 'function') {
-    if (isClientReference(type)) {
-      // This is a reference to a Client Component.
-      return [REACT_ELEMENT_TYPE, type, key, props];
-    } // This is a server-side component.
-
-
-    prepareToUseHooksForComponent(prevThenableState);
-    var result = type(props);
-
-    if (typeof result === 'object' && result !== null && typeof result.then === 'function') {
-      // When the return value is in children position we can resolve it immediately,
-      // to its value without a wrapper if it's synchronously available.
-      var thenable = result;
-
-      if (thenable.status === 'fulfilled') {
-        return thenable.value;
-      } // TODO: Once we accept Promises as children on the client, we can just return
-      // the thenable here.
-
-
-      return createLazyWrapperAroundWakeable(result);
-    }
-
-    return result;
-  } else if (typeof type === 'string') {
-    // This is a host element. E.g. HTML.
-    return [REACT_ELEMENT_TYPE, type, key, props];
-  } else if (typeof type === 'symbol') {
-    if (type === REACT_FRAGMENT_TYPE) {
-      // For key-less fragments, we add a small optimization to avoid serializing
-      // it as a wrapper.
-      // TODO: If a key is specified, we should propagate its key to any children.
-      // Same as if a Server Component has a key.
-      return props.children;
-    } // This might be a built-in React component. We'll let the client decide.
-    // Any built-in works as long as its props are serializable.
-
-
-    return [REACT_ELEMENT_TYPE, type, key, props];
-  } else if (type != null && typeof type === 'object') {
-    if (isClientReference(type)) {
-      // This is a reference to a Client Component.
-      return [REACT_ELEMENT_TYPE, type, key, props];
-    }
-
-    switch (type.$$typeof) {
-      case REACT_LAZY_TYPE:
+    ],
+    "BEN": [
         {
-          var payload = type._payload;
-          var init = type._init;
-          var wrappedType = init(payload);
-          return attemptResolveElement(request, wrappedType, key, ref, props, prevThenableState);
+            "word": "कृमि",
+            "eid": "3733",
+            "pagenum": 213,
+            "content": "कृमि¦ <i>kṛmi,</i> also क्रिमि <i>krimi,</i> <ab>i. e.</ab> <i>hvṛ + mi,</i> <b>I.</b> <ab>m.</ab> A worm, an insect in general, <ls>Man.</ls> 1, 40; <ls>Suśr.</ls> 2, 509, 11 sqq. <b>II.</b> <ab>m.</ab> and <ab>f.</ab> Proper names, <ls>Hariv.</ls> 2002; 1675. -- <ab>Cf.</ab> <ab>Lat.</ab> vermis; <ab>Goth.</ab> vaurms; <lang n='greek'>ἕλμινς</lang>."
         }
-
-      case REACT_FORWARD_REF_TYPE:
+    ],
+    "BHS": [
         {
-          var render = type.render;
-          prepareToUseHooksForComponent(prevThenableState);
-          return render(props, undefined);
+            "word": "कृमि",
+            "eid": "5134",
+            "pagenum": 191,
+            "content": "<b>kṛmi</b>¦ (in sense of <i>glow-worm</i>, see <b>kimi</b>); Kṛmi, <ab>n.</ab> of a nāga king: <ls>Mvy</ls> 〔3248〕; <ls>Māy</ls> 〔246.33〕."
         }
-
-      case REACT_MEMO_TYPE:
+    ],
+    "BOP": [
         {
-          return attemptResolveElement(request, type.type, key, ref, props, prevThenableState);
+            "word": "कृमि",
+            "eid": "2380",
+            "pagenum": 82,
+            "content": "कृमि¦ <i>m.</i> (fortasse a r. कृष्) insectum, vermis. RAGH. 16. 20.: तिरस्क्रियन्ते कृमितन्तुज्ञालैः…गवाक्षाः (Schol. Calc. कृमि explicat per ऊर्णनाभ); BHAR. 1. 63.: कृमि- कुलशतावृततनुः…श्वा. (कृमि correptum est e कर्मि, v. ऋ. Lith. <i>kirminis, kirmē4lē4</i>, russ. <lang n='russian'>червь</lang> <i>ervj</i>, mutato <i>m</i> in <i>v</i>; hib. <i>cruimh</i>, cambo-bret. <i>pryv</i>; goth. <i>vaurms</i>, Th. <i>vaurmi</i>, e <i>hvaurmi</i>, v. gr. comp. 388.; lat. <i>vermi-s</i> e <i>quermi-s</i>; fortasse gr. <lang n='greek'>ἕλμινς</lang> e <lang n='greek'>ἕϱμινς</lang>, cf. lith. <i>kirminis.</i>)"
         }
-    }
-  }
-
-  throw new Error("Unsupported Server Component type: " + describeValueForErrorMessage(type));
-}
-
-function pingTask(request, task) {
-  var pingedTasks = request.pingedTasks;
-  pingedTasks.push(task);
-
-  if (pingedTasks.length === 1) {
-    request.flushScheduled = request.destination !== null;
-    scheduleWork(function () {
-      return performWork(request);
-    });
-  }
-}
-
-function createTask(request, model, context, abortSet) {
-  var id = request.nextChunkId++;
-  var task = {
-    id: id,
-    status: PENDING$1,
-    model: model,
-    context: context,
-    ping: function () {
-      return pingTask(request, task);
-    },
-    thenableState: null
-  };
-  abortSet.add(task);
-  return task;
-}
-
-function serializeByValueID(id) {
-  return '$' + id.toString(16);
-}
-
-function serializeLazyID(id) {
-  return '$L' + id.toString(16);
-}
-
-function serializePromiseID(id) {
-  return '$@' + id.toString(16);
-}
-
-function serializeServerReferenceID(id) {
-  return '$F' + id.toString(16);
-}
-
-function serializeSymbolReference(name) {
-  return '$S' + name;
-}
-
-function serializeNumber(number) {
-  if (Number.isFinite(number)) {
-    if (number === 0 && 1 / number === -Infinity) {
-      return '$-0';
-    } else {
-      return number;
-    }
-  } else {
-    if (number === Infinity) {
-      return '$Infinity';
-    } else if (number === -Infinity) {
-      return '$-Infinity';
-    } else {
-      return '$NaN';
-    }
-  }
-}
-
-function serializeUndefined() {
-  return '$undefined';
-}
-
-function serializeDateFromDateJSON(dateJSON) {
-  // JSON.stringify automatically calls Date.prototype.toJSON which calls toISOString.
-  // We need only tack on a $D prefix.
-  return '$D' + dateJSON;
-}
-
-function serializeBigInt(n) {
-  return '$n' + n.toString(10);
-}
-
-function serializeRowHeader(tag, id) {
-  return id.toString(16) + ':' + tag;
-}
-
-function encodeReferenceChunk(request, id, reference) {
-  var json = stringify(reference);
-  var row = id.toString(16) + ':' + json + '\n';
-  return stringToChunk(row);
-}
-
-function serializeClientReference(request, parent, key, clientReference) {
-  var clientReferenceKey = getClientReferenceKey(clientReference);
-  var writtenClientReferences = request.writtenClientReferences;
-  var existingId = writtenClientReferences.get(clientReferenceKey);
-
-  if (existingId !== undefined) {
-    if (parent[0] === REACT_ELEMENT_TYPE && key === '1') {
-      // If we're encoding the "type" of an element, we can refer
-      // to that by a lazy reference instead of directly since React
-      // knows how to deal with lazy values. This lets us suspend
-      // on this component rather than its parent until the code has
-      // loaded.
-      return serializeLazyID(existingId);
-    }
-
-    return serializeByValueID(existingId);
-  }
-
-  try {
-    var clientReferenceMetadata = resolveClientReferenceMetadata(request.bundlerConfig, clientReference);
-    request.pendingChunks++;
-    var importId = request.nextChunkId++;
-    emitImportChunk(request, importId, clientReferenceMetadata);
-    writtenClientReferences.set(clientReferenceKey, importId);
-
-    if (parent[0] === REACT_ELEMENT_TYPE && key === '1') {
-      // If we're encoding the "type" of an element, we can refer
-      // to that by a lazy reference instead of directly since React
-      // knows how to deal with lazy values. This lets us suspend
-      // on this component rather than its parent until the code has
-      // loaded.
-      return serializeLazyID(importId);
-    }
-
-    return serializeByValueID(importId);
-  } catch (x) {
-    request.pendingChunks++;
-    var errorId = request.nextChunkId++;
-    var digest = logRecoverableError(request, x);
-    emitErrorChunk(request, errorId, digest, x);
-    return serializeByValueID(errorId);
-  }
-}
-
-function outlineModel(request, value) {
-  request.pendingChunks++;
-  var newTask = createTask(request, value, getActiveContext(), request.abortableTasks);
-  retryTask(request, newTask);
-  return newTask.id;
-}
-
-function serializeServerReference(request, parent, key, serverReference) {
-  var writtenServerReferences = request.writtenServerReferences;
-  var existingId = writtenServerReferences.get(serverReference);
-
-  if (existingId !== undefined) {
-    return serializeServerReferenceID(existingId);
-  }
-
-  var bound = getServerReferenceBoundArguments(request.bundlerConfig, serverReference);
-  var serverReferenceMetadata = {
-    id: getServerReferenceId(request.bundlerConfig, serverReference),
-    bound: bound ? Promise.resolve(bound) : null
-  };
-  var metadataId = outlineModel(request, serverReferenceMetadata);
-  writtenServerReferences.set(serverReference, metadataId);
-  return serializeServerReferenceID(metadataId);
-}
-
-function serializeLargeTextString(request, text) {
-  request.pendingChunks += 2;
-  var textId = request.nextChunkId++;
-  var textChunk = stringToChunk(text);
-  var binaryLength = byteLengthOfChunk(textChunk);
-  var row = textId.toString(16) + ':T' + binaryLength.toString(16) + ',';
-  var headerChunk = stringToChunk(row);
-  request.completedRegularChunks.push(headerChunk, textChunk);
-  return serializeByValueID(textId);
-}
-
-function serializeMap(request, map) {
-  var entries = Array.from(map);
-
-  for (var i = 0; i < entries.length; i++) {
-    var key = entries[i][0];
-
-    if (typeof key === 'object' && key !== null) {
-      var writtenObjects = request.writtenObjects;
-      var existingId = writtenObjects.get(key);
-
-      if (existingId === undefined) {
-        // Mark all object keys as seen so that they're always outlined.
-        writtenObjects.set(key, -1);
-      }
-    }
-  }
-
-  var id = outlineModel(request, entries);
-  return '$Q' + id.toString(16);
-}
-
-function serializeSet(request, set) {
-  var entries = Array.from(set);
-
-  for (var i = 0; i < entries.length; i++) {
-    var key = entries[i];
-
-    if (typeof key === 'object' && key !== null) {
-      var writtenObjects = request.writtenObjects;
-      var existingId = writtenObjects.get(key);
-
-      if (existingId === undefined) {
-        // Mark all object keys as seen so that they're always outlined.
-        writtenObjects.set(key, -1);
-      }
-    }
-  }
-
-  var id = outlineModel(request, entries);
-  return '$W' + id.toString(16);
-}
-
-function escapeStringValue(value) {
-  if (value[0] === '$') {
-    // We need to escape $ prefixed strings since we use those to encode
-    // references to IDs and as special symbol values.
-    return '$' + value;
-  } else {
-    return value;
-  }
-}
-var modelRoot = false;
-
-function resolveModelToJSON(request, parent, key, value) {
-  // Make sure that `parent[key]` wasn't JSONified before `value` was passed to us
-  {
-    // $FlowFixMe[incompatible-use]
-    var originalValue = parent[key];
-
-    if (typeof originalValue === 'object' && originalValue !== value && !(originalValue instanceof Date)) {
-      if (objectName(originalValue) !== 'Object') {
-        var jsxParentType = jsxChildrenParents.get(parent);
-
-        if (typeof jsxParentType === 'string') {
-          error('%s objects cannot be rendered as text children. Try formatting it using toString().%s', objectName(originalValue), describeObjectForErrorMessage(parent, key));
-        } else {
-          error('Only plain objects can be passed to Client Components from Server Components. ' + '%s objects are not supported.%s', objectName(originalValue), describeObjectForErrorMessage(parent, key));
+    ],
+    "BUR": [
+        {
+            "word": "कृमि",
+            "eid": "5021",
+            "pagenum": 182,
+            "content": "कृमि¦ <i>kṛmi</i> <ab>m.</ab> ver, insecte en général. || Kermès, laque ou cochenille. || <ab>Np.</ab> d'un <s1 slp1='asura'>Asura</s1>. || <ab>Lith.</ab> kirminis; <ab>goth.</ab> vaurms; <ab>angl.</ab> worm; <ab>lat.</ab> vermis; <ab>gr.</ab> <lang n='greek'>ἔλμινς</lang>.  <P><i>kṛmikaṇṭaka</i> <ab>n.</ab> nom de plusieurs végétaux: <lbinfo n='5'/> le figuier à feuilles opposées, la salvinia <lbinfo n='5'/> cucullata, le <i>viḍaṅga.</i>  <P><i>kṛmikośottha</i> <ab>a.</ab> <i>(kośa; ut; sthā)</i> de soie [<ab>m à m.</ab> qui vient du cocon d'un ver].  <P><i>kṛmighna</i> <ab>m.</ab> <i>(han)</i> erycibe paniculata, arbuste <lbinfo n='5'/> ayant des propriétés anthelmintiques.  <P><i>kṛmija</i> <ab>n.</ab> <i>(jan)</i> agallochum ou aloès; <ab>cf.</ab> <i>krimija.</i> -- <i>kṛmijā</i> <ab>f.</ab> teinture de cochenille.  <P><i>kṛmiripu</i> <ab>m.</ab> <ab>cf.</ab> <i>kṛmighna.</i>  <P><i>kṛmila</i> <ab>a.</ab> véreux, où il y a des vers. -- <i>kṛimilā</i> <ab>f.</ab> femme féconde.  <P><i>kṛmiśailaka</i> <ab>m.</ab> <i>(śaila)</i> fourmilière, tas de terre élevée par des insectes.  <P><i>kṛmīlaka</i> <ab>m.</ab> <ab>esp.</ab> de haricot sauvage."
         }
-      } else {
-        error('Only plain objects can be passed to Client Components from Server Components. ' + 'Objects with toJSON methods are not supported. Convert it manually ' + 'to a simple value before passing it to props.%s', describeObjectForErrorMessage(parent, key));
-      }
-    }
-  } // Special Symbols
-
-
-  switch (value) {
-    case REACT_ELEMENT_TYPE:
-      return '$';
-  }
-
-
-  while (typeof value === 'object' && value !== null && (value.$$typeof === REACT_ELEMENT_TYPE || value.$$typeof === REACT_LAZY_TYPE)) {
-
-    try {
-      switch (value.$$typeof) {
-        case REACT_ELEMENT_TYPE:
-          {
-            var writtenObjects = request.writtenObjects;
-            var existingId = writtenObjects.get(value);
-
-            if (existingId !== undefined) {
-              if (existingId === -1) {
-                // Seen but not yet outlined.
-                var newId = outlineModel(request, value);
-                return serializeByValueID(newId);
-              } else if (modelRoot === value) {
-                // This is the ID we're currently emitting so we need to write it
-                // once but if we discover it again, we refer to it by id.
-                modelRoot = null;
-              } else {
-                // We've already emitted this as an outlined object, so we can
-                // just refer to that by its existing ID.
-                return serializeByValueID(existingId);
-              }
-            } else {
-              // This is the first time we've seen this object. We may never see it again
-              // so we'll inline it. Mark it as seen. If we see it again, we'll outline.
-              writtenObjects.set(value, -1);
-            } // TODO: Concatenate keys of parents onto children.
-
-
-            var element = value; // Attempt to render the Server Component.
-
-            value = attemptResolveElement(request, element.type, element.key, element.ref, element.props, null);
-            break;
-          }
-
-        case REACT_LAZY_TYPE:
-          {
-            var payload = value._payload;
-            var init = value._init;
-            value = init(payload);
-            break;
-          }
-      }
-    } catch (thrownValue) {
-      var x = thrownValue === SuspenseException ? // This is a special type of exception used for Suspense. For historical
-      // reasons, the rest of the Suspense implementation expects the thrown
-      // value to be a thenable, because before `use` existed that was the
-      // (unstable) API for suspending. This implementation detail can change
-      // later, once we deprecate the old API in favor of `use`.
-      getSuspendedThenable() : thrownValue;
-
-      if (typeof x === 'object' && x !== null) {
-        // $FlowFixMe[method-unbinding]
-        if (typeof x.then === 'function') {
-          // Something suspended, we'll need to create a new task and resolve it later.
-          request.pendingChunks++;
-          var newTask = createTask(request, value, getActiveContext(), request.abortableTasks);
-          var ping = newTask.ping;
-          x.then(ping, ping);
-          newTask.thenableState = getThenableStateAfterSuspending();
-          return serializeLazyID(newTask.id);
+    ],
+    "CAE": [
+        {
+            "word": "कृमि",
+            "eid": "8354",
+            "pagenum": 131,
+            "content": "कृमि¦ <lex>m.</lex> worm, <ab>esp.</ab> silk-worm, mite, spider, insect <ab>i.g.</ab>; a man's name; <lex>f.</lex> a woman's name (also कृमी), <ab>N.</ab> of a river."
         }
-      } // Something errored. We'll still send everything we have up until this point.
-      // We'll replace this element with a lazy reference that throws on the client
-      // once it gets rendered.
-
-
-      request.pendingChunks++;
-      var errorId = request.nextChunkId++;
-      var digest = logRecoverableError(request, x);
-      emitErrorChunk(request, errorId, digest, x);
-      return serializeLazyID(errorId);
-    }
-  }
-
-  if (value === null) {
-    return null;
-  }
-
-  if (typeof value === 'object') {
-
-    if (isClientReference(value)) {
-      return serializeClientReference(request, parent, key, value);
-    }
-
-    var _writtenObjects = request.writtenObjects;
-
-    var _existingId = _writtenObjects.get(value); // $FlowFixMe[method-unbinding]
-
-
-    if (typeof value.then === 'function') {
-      if (_existingId !== undefined) {
-        if (modelRoot === value) {
-          // This is the ID we're currently emitting so we need to write it
-          // once but if we discover it again, we refer to it by id.
-          modelRoot = null;
-        } else {
-          // We've seen this promise before, so we can just refer to the same result.
-          return serializePromiseID(_existingId);
+    ],
+    "CCS": [
+        {
+            "word": "कृमि",
+            "eid": "5325",
+            "pagenum": 91,
+            "content": "कृमि¦ <i>m.</i> Wurm, Made, Insekt; <i>bes.</i> Seidenraupe. <lbinfo n='6'/>"
         }
-      } // We assume that any object with a .then property is a "Thenable" type,
-      // or a Promise type. Either of which can be represented by a Promise.
-
-
-      var promiseId = serializeThenable(request, value);
-
-      _writtenObjects.set(value, promiseId);
-
-      return serializePromiseID(promiseId);
-    }
-
-    if (_existingId !== undefined) {
-      if (_existingId === -1) {
-        // Seen but not yet outlined.
-        var _newId = outlineModel(request, value);
-
-        return serializeByValueID(_newId);
-      } else if (modelRoot === value) {
-        // This is the ID we're currently emitting so we need to write it
-        // once but if we discover it again, we refer to it by id.
-        modelRoot = null;
-      } else {
-        // We've already emitted this as an outlined object, so we can
-        // just refer to that by its existing ID.
-        return serializeByValueID(_existingId);
-      }
-    } else {
-      // This is the first time we've seen this object. We may never see it again
-      // so we'll inline it. Mark it as seen. If we see it again, we'll outline.
-      _writtenObjects.set(value, -1);
-    }
-
-    if (isArray(value)) {
-      // $FlowFixMe[incompatible-return]
-      return value;
-    }
-
-    if (value instanceof Map) {
-      return serializeMap(request, value);
-    }
-
-    if (value instanceof Set) {
-      return serializeSet(request, value);
-    }
-
-    var iteratorFn = getIteratorFn(value);
-
-    if (iteratorFn) {
-      return Array.from(value);
-    } // Verify that this is a simple plain object.
-
-
-    var proto = getPrototypeOf(value);
-
-    if (proto !== ObjectPrototype && (proto === null || getPrototypeOf(proto) !== null)) {
-      throw new Error('Only plain objects, and a few built-ins, can be passed to Client Components ' + 'from Server Components. Classes or null prototypes are not supported.');
-    }
-
-    {
-      if (objectName(value) !== 'Object') {
-        error('Only plain objects can be passed to Client Components from Server Components. ' + '%s objects are not supported.%s', objectName(value), describeObjectForErrorMessage(parent, key));
-      } else if (!isSimpleObject(value)) {
-        error('Only plain objects can be passed to Client Components from Server Components. ' + 'Classes or other objects with methods are not supported.%s', describeObjectForErrorMessage(parent, key));
-      } else if (Object.getOwnPropertySymbols) {
-        var symbols = Object.getOwnPropertySymbols(value);
-
-        if (symbols.length > 0) {
-          error('Only plain objects can be passed to Client Components from Server Components. ' + 'Objects with symbol properties like %s are not supported.%s', symbols[0].description, describeObjectForErrorMessage(parent, key));
+    ],
+    "INM": [
+        {
+            "word": "कृमि",
+            "eid": "5901",
+            "pagenum": 412,
+            "content": "<b>Kṛmi</b>,¦ pl. (<i>°ayaḥ</i>), a people. § 562 (Bhagavadyānap.): V, <b>74</b>γ, 2729 (ruled by Vasu; C. has <i>Kram°</i>)."
+        },
+        {
+            "word": "कृमि",
+            "eid": "5902",
+            "pagenum": 412,
+            "content": "<b>Kṛmi</b>,¦ a river. § 574 (Jambūkh.): VI, <b>9</b>λ, 324 (only B., cf. Ikṣuinālavī)."
         }
-      }
-    } // $FlowFixMe[incompatible-return]
-
-
-    return value;
-  }
-
-  if (typeof value === 'string') {
-
-
-    if (value[value.length - 1] === 'Z') {
-      // Possibly a Date, whose toJSON automatically calls toISOString
-      // $FlowFixMe[incompatible-use]
-      var _originalValue = parent[key];
-
-      if (_originalValue instanceof Date) {
-        return serializeDateFromDateJSON(value);
-      }
-    }
-
-    if (value.length >= 1024) {
-      // For large strings, we encode them outside the JSON payload so that we
-      // don't have to double encode and double parse the strings. This can also
-      // be more compact in case the string has a lot of escaped characters.
-      return serializeLargeTextString(request, value);
-    }
-
-    return escapeStringValue(value);
-  }
-
-  if (typeof value === 'boolean') {
-    return value;
-  }
-
-  if (typeof value === 'number') {
-    return serializeNumber(value);
-  }
-
-  if (typeof value === 'undefined') {
-    return serializeUndefined();
-  }
-
-  if (typeof value === 'function') {
-
-    if (isClientReference(value)) {
-      return serializeClientReference(request, parent, key, value);
-    }
-
-    if (isServerReference(value)) {
-      return serializeServerReference(request, parent, key, value);
-    }
-
-    if (/^on[A-Z]/.test(key)) {
-      throw new Error('Event handlers cannot be passed to Client Component props.' + describeObjectForErrorMessage(parent, key) + '\nIf you need interactivity, consider converting part of this to a Client Component.');
-    } else {
-      throw new Error('Functions cannot be passed directly to Client Components ' + 'unless you explicitly expose it by marking it with "use server".' + describeObjectForErrorMessage(parent, key));
-    }
-  }
-
-  if (typeof value === 'symbol') {
-    var writtenSymbols = request.writtenSymbols;
-
-    var _existingId2 = writtenSymbols.get(value);
-
-    if (_existingId2 !== undefined) {
-      return serializeByValueID(_existingId2);
-    } // $FlowFixMe[incompatible-type] `description` might be undefined
-
-
-    var name = value.description;
-
-    if (Symbol.for(name) !== value) {
-      throw new Error('Only global symbols received from Symbol.for(...) can be passed to Client Components. ' + ("The symbol Symbol.for(" + // $FlowFixMe[incompatible-type] `description` might be undefined
-      value.description + ") cannot be found among global symbols.") + describeObjectForErrorMessage(parent, key));
-    }
-
-    request.pendingChunks++;
-    var symbolId = request.nextChunkId++;
-    emitSymbolChunk(request, symbolId, name);
-    writtenSymbols.set(value, symbolId);
-    return serializeByValueID(symbolId);
-  }
-
-  if (typeof value === 'bigint') {
-
-    return serializeBigInt(value);
-  }
-
-  throw new Error("Type " + typeof value + " is not supported in Client Component props." + describeObjectForErrorMessage(parent, key));
+    ],
+    "LAN": [
+        {
+            "word": "कृमि",
+            "eid": "1196",
+            "pagenum": 144,
+            "content": "<b>kṛ́mi,</b>¦ <i><ab>m.</ab></i> worm."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "कृमि",
+            "eid": "10225",
+            "pagenum": 205,
+            "content": "kfmi¦ <i>(I) a.</i> Full of worms, wormy."
+        },
+        {
+            "word": "कृमि",
+            "eid": "10226",
+            "pagenum": 205,
+            "content": "kfmi¦ <i>(II) m.</i> 1. A worm, an insect in general, <ls>M.</ls>i.40; 2. worms (disease); 3. an ass; 4. the lac (dye)."
+        }
+    ],
+    "MCI": [
+        {
+            "word": "कृमि",
+            "eid": "2237",
+            "pagenum": 700,
+            "content": "<b>Kṛmi</b>¦ m. (pl.): Name of a people. <dvsn n='P'>Mentioned by Bhīma among the sixteen peoples whose kings were defilers of their families (<i>kulapāṃsanāḥ</i>), most wicked men in their families (<i>kuleṣu puruṣādha-</i> <i>māḥ</i>), and who extirpated their kinsmen and friends together with their relatives (<i>ye samuccicchidur jñātīn suhṛdaś ca sa-</i> <i>bāndhavān</i>); one of them was the rude Vasu of the Kṛmis (<i>kṛmīṇām uddhato</i> <i>vasuḥ</i>) 5. 72. 11, 13."
+        }
+    ],
+    "MD": [
+        {
+            "word": "कृमि",
+            "eid": "6245",
+            "pagenum": 73,
+            "content": "कृमि¦ kṛ́-mi, <lex>m.</lex> [worker], worm; insect, maggot; 🞄[Page73-3] 🞄silk-worm; <b>-ka,</b> <lex>m.</lex> little worm; *<b>-kośaja, *-kośa‿uttha,</b> <lex>a.</lex> silken; <b>-ja,</b> <lex>a.</lex> produced 🞄by a worm; <lex>n.</lex> aloe-wood; <b>-tantu-jāla,</b> <lex>n.</lex> 🞄cobweb; <b>-la,</b> <lex>a.</lex> wormy."
+        }
+    ],
+    "MW": [
+        {
+            "word": "कृमि",
+            "eid": "54931",
+            "pagenum": "305,2",
+            "content": "कृ/मि ¦ <lex>m.</lex> or क्रि/मि (<ab>fr.</ab> √ क्रम्, <ls>Uṇ.</ls>), a worm, insect, <ls>VS.</ls>; <ls>TS.</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls>; <ls>Mn.</ls> &c.<info lex='m'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.05",
+            "pagenum": "305,2",
+            "content": "¦ ‘a spider’ (See -तन्तु-जाल)<info lex='inh'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.10",
+            "pagenum": "305,2",
+            "content": "¦ a silk-worm, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.15",
+            "pagenum": "305,2",
+            "content": "¦ a shield-louse, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.20",
+            "pagenum": "305,2",
+            "content": "¦ an ant, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.25",
+            "pagenum": "305,2",
+            "content": "¦ lac (red dye caused by insects), <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.30",
+            "pagenum": "305,2",
+            "content": "¦ <ab>N.</ab> of a son (of <s1 slp1='uSInara'>Uśīnara</s1>, <ls>Hariv. 1676 ff.</ls>; of <s1 slp1='BajamAna'>Bhajamāna</s1>, <ls>Hariv. 2002</ls>)<info lex='inh'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.35",
+            "pagenum": "305,2",
+            "content": "¦ of an <s1 slp1='asura'>Asura</s1> (brother of <s1 slp1='rAvaRa'>Rāvaṇa</s1>), <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.40",
+            "pagenum": "305,2",
+            "content": "¦ of a <s1 slp1='nAga-rAja'>Nāga-rāja</s1>, <ls>Buddh.</ls>; <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.45",
+            "pagenum": "305,2",
+            "content": "कृ/मि ¦ <lex>f.</lex> (इस्) <ab>N.</ab> of the wife of <s1 slp1='uSInara'>Uśīnara</s1> and mother of <s1 slp1='kfmi'>Kṛmi</s1>, <ls>Hariv. 1675</ls> & <ls>VP.</ls> (<ab>v.l.</ab> कृमी)<info lex='f'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.50",
+            "pagenum": "305,2",
+            "content": "¦ <ab>N.</ab> of a river, <ls>MBh. vi, 9, 17</ls>; <info lex='inh'/>"
+        },
+        {
+            "word": "कृमि",
+            "eid": "54931.75",
+            "pagenum": "305,2",
+            "content": "कृमि ¦ [<ab>cf.</ab> <ab>Lith.</ab> <etym>kirminis</etym>, <etym>kirmele</etym>; <ab>Russ.</ab> <etym>červj</etym>; <ab>Hib.</ab> <etym>cruimh</etym>; <ab>Cambro-Brit.</ab> <etym>pryv</etym>; <ab>Goth.</ab> <etym>vaurms</etym>; <ab>Lat.</ab> <etym>vermi-s</etym> for <etym>quermi-s</etym>.]"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "कृमि",
+            "eid": "15665",
+            "pagenum": 249,
+            "content": "कृमि¦ <i>kṛmi, is,</i> or <i>krimi, is,</i> m. (said to be fr. rt. <i>kram;</i> cf. <i>krami</i>), a worm, an insect in general; a spider; an ant; lac, the red dye caused by insects; N. of a son of Uśīnara; N. of an Asura, the brother of Rāvaṇa; N. of a Nāga-rāja; (<i>is</i>), f., N. of the wife of Uśīnara and mother of Kṛmi; [cf. Lith. <nsi>kirminis, kirmele;</nsi> Russ. <nsi>cervj;</nsi> Hib. <nsi>cruimh;</nsi> Cambro-Brit. <nsi>pryv;</nsi> Goth. <nsi>vaurms,</nsi> Them. <nsi>vaurmi</nsi> for <nsi>hvaurmi;</nsi> Lat. <nsi>vermi-s</nsi> for <nsi>quermi-s;</nsi> perhaps Gr. <lang n='greek'>ἕλμινς</lang> for <lang n='greek'>ἕρμινς.</lang>] <i>—Kṛ-</i> <i>mi-kaṇṭaka, am,</i> n. several plants efficacious in destroying worms, Ficus Glomerata; another plant, <i>= citrā</i> or <i>citrāṅga;</i> another plant, <i>= viḍaṅga.</i> <i>—Kṛmi-kara, as,</i> m. a kind of poisonous insect. <i>—Kṛmi-karṇa</i> or <i>kṛmi-karṇaka, as,</i> m. worms or lice generated in the external ear. <i>—Kṛmi-kośa</i> or <i>kṛmi-koṣa, as,</i> m. the cocoon of a silkworm. <i>—Kṛmikośottha (°śa-ut°), as, ā, am,</i> silk, silken. <i>—Kṛmi-granthi, is,</i> m. a disease of the eyes, caused by insects generated at the roots of the eyelashes. <i>—Kṛmi-ghātin, ī, inī, i,</i> destroying worms; (<i>ī</i>), m. a medicinal drug, <i>= viḍaṅga</i> (?). <i>—Kṛmi-</i> <i>ghna, as, ī, am,</i> vermifuge, anthelmintic; (<i>as</i>), m. a shrub used in medicine as a vermifuge, commonly Bīreng, Erycibe Paniculata, see <i>viḍaṅga;</i> the onion; the root of the jujube; the marking nut plant; (<i>ī</i>), f. turmeric. <i>—Kṛmi-ja, as, ā, am,</i> produced by worms; (<i>ā</i>), f. lac, a red dye produced by an insect, commonly called Lākṣā; (<i>am</i>), n. Agallochum. <i>—Kṛmi-jagdha, am,</i> n. Agallochum. <i>—Kṛmi- </i> <i>jalaja, as,</i> m. a shell-fish, an animal living in a shell. <i>—Kṛmi-dantaka, as,</i> m. tooth-ache with decay of the teeth. <i>—Kṛmi-parvata, as,</i> m. an ant-hill. <i>—Kṛmi-bhakṣa, as,</i> m., N. of a hell. <i>—Kṛmi-</i> <i>bhojana, as, ā, am,</i> one whose food consists of worms; (<i>as</i>), m., N. of a hell. <i>—Kṛmi-mat, ān, atī, at,</i> affected or covered with worms. <i>—Kṛmi-ripu, us,</i> m. an anthelmintic plant, <i>= viḍaṅga</i>. <i>—Kṛmi-roga, as,</i> m. disease caused by worms. <i>—Kṛmi-varṇa, as</i> or <i>am</i> (?), m. or n. (?), red cloth. <i>—Kṛmi-vāriruha,</i> <i>as,</i> m. a fish living in a shell. <i>—Kṛmi-vṛkṣa,</i> <i>as,</i> m. a kind of plant, Koṣāmra. <i>—Kṛmi-śaṅkha,</i> <i>as,</i> m. the fish living in the conch. <i>—Kṛmi-śatru,</i> <i>us,</i> m. an anthelmintic plant, Erythrina Fulgens, <i>=</i> <i>viḍaṅga</i>. <i>—Kṛmi-śātrava, as,</i> m. the plant Acacia Farnesiana. <i>—Kṛmi-śukti, is,</i> f. a bivalve shell, a muscle; the animal living in a bivalve shell; an oyster. <i>—Kṛmi-śaila</i> or <i>kṛmi-śailaka, as,</i> m. an ant or mole-hill; [cf. <i>kṛmi-parvata.</i>] <i>—Kṛmi-</i> <i>sarārī,</i> f. a kind of poisonous insect. <i>—Kṛmi-sena,</i> <i>as,</i> m., N. of a Yakṣa. <i>—Kṛmi-hantṛ, tā, trī,</i> <i>tṛ,</i> or <i>kṛmi-hara, as, ī, am,</i> anthelmintic, vermifuge. <i>—Kṛmi-hā,</i> f. an anthelmintic plant, <i>= vi-</i> <i>ḍaṅga</i>. <i>—Kṛmīśa (°mi-īśa), as,</i> m., N. of a hell."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "कृमि",
+            "eid": "3481",
+            "pagenum": 1,
+            "content": "<i>Kṛmi</i> (I)¦ — the son of Kṛmi and Uśīnara. His capital was Kṛmilā (Krimilā-<i>Vā. P.</i>). <dvsn n='P'/>Br. III. 74. 20-21; Vā. 99. 20, 22; Vi. IV. 18. 9"
+        },
+        {
+            "word": "कृमि",
+            "eid": "3482",
+            "pagenum": 1,
+            "content": "<i>Kṛmi</i> (II)¦ — a son of Cyavana. <dvsn n='P'/>M. 50. 25."
+        }
+    ],
+    "PW": [
+        {
+            "word": "कृमि",
+            "eid": "30190",
+            "pagenum": 2,
+            "content": "कृ/मि¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <dvsn n='2'>— a〉 <i>Wurm, Made, Insect;</i> <ab>insbes.</ab> <i>Eingeweidewurm, Seidenraupe, Spinne, Schildlaus und *Ameise</i>. <dvsn n='2'>— b〉 *<i>die von der Schildlaus kommende rothe Farbe</i>. <dvsn n='2'>— c〉 <ab>N. pr.</ab> <dvsn n='3'>— α〉 *eines <is>Asura</is>. <dvsn n='3'>— β〉 *eines Schlangendämons. <dvsn n='3'>— γ〉 verschiedener Männer. <dvsn n='1'>— 2〉 <lex>f.</lex> <ab>N. pr.</ab> <dvsn n='2'>— a〉 der Gattin <is>Uśīnara</is>ʼs कृमी <ls>HARIV. 1,31,23</ls>. <ls>VP.² 4,121</ls>. <dvsn n='2'>— b〉 eines Flusses <ls>MBH. 6,9,17</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "कृमि",
+            "eid": "18757",
+            "pagenum": 2,
+            "content": "कृ/मि¦ und क्रि/मि <ls>Uṇ. 4, 123.</ls> (Die Schreibart ist so wechselnd, dass z. B. im <ls>AV.</ls> kaum eine Stelle ist, in welcher nicht die Handschriften sowohl die eine als die andere darböten; der besseren Uebersicht wegen haben wir Alles unter कृमि zusammengestellt, welche Form sich näher an die der verwandten Sprachen anschliesst.) <dvsn n='1'> 1) <lex>m.</lex> <ls>SIDDH. K. 249,b,3</ls> v. u. <dvsn n='2'> a) <i>Wurm, Made</i> <ls>AK. 2, 5, 13.</ls> <ls n='AK.'>2, 6, 3, 12.</ls> <ls n='AK.'>3, 1, 51.</ls> <ls>H. 1202. 21.</ls> <ls>an. 2, 319.</ls> <ls>MED. m. 7.</ls> <ls>HĀR. 163.</ls> <ls>VS. 24, 30.</ls> <ls>TS. 5, 5, 11, 1.</ls> <ls>AV. 2, 31, 1. fgg.</ls> <ls n='AV. 2,'>32, 1. fgg.</ls> <ls n='AV.'>5, 23, 1. fgg.</ls> <ls>ŚAT. BR. 5, 4, 1, 2.</ls> <ls n='ŚAT. BR.'>14, 9, 2, 14.</ls> <ls>M. 1, 40. 2, 201. 3, 92. 8, 232. 10, 91. 11, 70. 12, 42. 56. 59.</ls> <ls>MBH. 1, 1796.</ls> <ls n='MBH. 1,'>1798.</ls> <ls n='MBH.'>14, 1136.</ls> <ls>SUŚR. 1, 4, 20. 155, 12. 172, 7. 2, 509, 11. fgg.</ls> (Aufzählung der versch. Arten). <ls>BHARTṚ. 1, 63.</ls> <ls>BHĀG. P. 3, 31, 6. 27. 5, 26, 18.</ls> <i>Spinne</i> <ls>H. 1210.</ls> तिरस्क्रियन्ते कृमितन्तुजालैः - गवाक्षाः <ls>RAGH. 16, 20.</ls> <i>Ameise</i>; vgl. कृमिपर्वत, कृमिशैल . <dvsn n='2'>— b) <i>die von einem Insect herrührende rothe Farbe</i> लाक्षा <ls>H. an.</ls> <ls>MED.</ls> <ls>VIŚVA</ls> im <ls>ŚKDR.</ls> <dvsn n='2'>— c) N. pr. eines Sohnes von <is>Uśīnara</is> <ls>HARIV. 1676.</ls> <ls n='HARIV.'>1678.</ls> <ls>VP. 444.</ls> von <is>Bhajamāna</is> <ls>HARIV. 2002.</ls> <ls>VP. 424,</ls> <ls>N. 2.</ls> N. pr. eines <is>Asura</is>, des Bruders von <is>Rāvaṇa</is> (खर) <ls>MED.</ls> <ls>VIŚVA</ls> im <ls>ŚKDR.</ls> eines <is>Nāgarāja</is> <ls>VYUTP. 84.</ls> <dvsn n='1'>— 2) <lex>f.</lex> N. pr. der Gemahlin <is>Uśīnara's</is> und Mutter <is>Kṛmi's</is> <ls>HARIV. 1675.</ls> <dvsn n='1'>— 3) <lex>adj.</lex> = कृमिल <ls>MED.</ls> <ls>VIŚVA.</ls> — Viell. von क्रम्; vgl. क्रमि ."
+        },
+        {
+            "word": "कृमि",
+            "eid": "71399",
+            "pagenum": 5,
+            "content": "कृमि¦ <dvsn n='1'> 1) <dvsn n='2'> a) कृमिकीटादयः <ls>WEBER, RĀMAT. UP. 345.</ls> = कीट <ls>HALĀY. 3, 14.</ls> <i>Spinne</i> <ls n='HALĀY.'>2, 101.</ls> <i>Seidenwurm</i> <ls n='HALĀY.'>394.</ls> <dvsn n='2'>— b) <ls>HALĀY. 5, 37</ls>; vgl. कृमिराग ."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "कृमि",
+            "eid": "11189",
+            "pagenum": 154,
+            "content": "<i>kṛmi</i>¦ m. *Cochenille-Farbstoff, <ls>S</ls> II, 348, 27 <i>[krimi</i> gedruckt]. {part=,seq=11359,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "कृमि",
+            "eid": "11422",
+            "pagenum": 201,
+            "content": "कृमि¦ m. (-मिः) 1. A worm, an insect in general. 2. Lac. the red dye, which is in fact an insect. 3. An Asur or demon. 4. One subject to worms. E. क्रम् to go, इन् Unadi affix, and the corresponding vowel substituted for र; also क्रिमि."
+        }
+    ],
+    "STC": [
+        {
+            "word": "कृमि",
+            "eid": "8236",
+            "pagenum": 206,
+            "content": "<b>kṛmi-</b>¦ (<i>krimi-</i>) <ab>m.</ab> ver, larve, insecte ; <i>-ka-</i> vermisseau.  <P><i>°ja-</i> <ab>a.</ab> fabriquée par les vers (soie).  <P><i>°tantu-jāla-</i> <ab>nt.</ab> toile d'araignée.  <P><i>°bhojana-</i> <ab>a.</ab> qui se nourrit de vers ; <ab>m.</ab> <ab>n.</ab> d'un enfer.  <P><i>°rāga-</i> <ab>a.</ab> teint en rouge (avec la laque produite <lbinfo n='5'/> par un insecte)."
+        }
+    ],
+    "VEI": [
+        {
+            "word": "कृमि",
+            "eid": "692",
+            "pagenum": 1,
+            "content": "<b>Kṛmi,</b>¦ ‘worm.’ In the later Saṃhitās,<sup>1</sup> and especially in the Atharvaveda,<sup>2</sup> worms play a considerable part. They are regarded as poisonous, and are spoken of as found in the mountains, in forests, in waters, in plants, and in the human body. In accordance with widespread primitive ideas, they are considered to be the causes of disease in men and animals. The Atharvaveda contains three hymns<sup>2</sup> as charms directed against them. The first of these hymns is of a general character, the second is meant to destroy worms in cattle, and the third is intended to cure children of worms. When found in men, worms are said to have their place in the head and ribs,<sup>3</sup> and to creep into the eyes, nose, and teeth.<sup>4</sup> They are described as dark brown, but white in the fore part of the body, with black ears, and as having three heads.<sup>5</sup> They are given many specific names: <b>Alāṇḍu, Ejatka, Kaṣkaṣa, Kīṭa, Kurūru, Nīlaṅgu,</b> <b>Yevāṣa, Vaghā, Vṛkṣasarpī, Śaluna, Śavarta, Śipavitnuka,</b> <b>Stega.</b> <F>1) Taittirīya Saṃhitā, v. 5, 11, 1; Maitrāyaṇī Saṃhitā, iii. 14, 11; Vājasaneyi Saṃhitā, xxiv. 30; Mantra Brāhmaṇa, ii. 7; Taittirīya Āraṇyaka, iv. 36; Śatapatha Brāhmaṇa, v. 4, 1, 2; and <i>of.</i> Rv. i. 191.</F> <F>2) ii. 31. 32; v. 23.</F> <F>2) ii. 31, 32; v. 23.</F> <F>3) Av. ii. 31, 4.</F> <F>4) Av. v. 23, 3.</F> <F>5) Av. v. 23, 4 <i>et seq.</i> <dvsn n='P'/><i>Cf.</i> Zimmer, <i>Altindisches Leben,</i> 98, 393; Kuhn, <i>Zeitschrift für vergleichende</i> <i>Sprachforschung,</i> 13, 49 <i>et seq.;</i> 113 <i>et seq.;</i> Bloomfield, <i>Hymns of the</i> <i>Atharvaveda,</i> 313 <i>et seq.;</i> Weber, <i>Indische</i> <i>Studien,</i> 13, 199; Whitney, Translation of the Atharvaveda, 73.</F>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "कृमि",
+            "eid": "11428",
+            "pagenum": 244,
+            "content": "कृमि¦ m. (-मिः) .²1 A worm, an insect in general. .²2 Lac, the red dye, which is in fact an insect. .²5 An <i>Asura</i> or demon. .²4 One subject to worms. .E. क्रम to go, इन् Uṇādi affix, and the corresponding vowel substituted for र; also किमि."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "कृमि",
+            "eid": "10877",
+            "pagenum": 208,
+            "content": "कृमि¦ (मिः) 2. <i>m.</i> A worm, an insect; lac; a demon. <i>a.</i> Having worms."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कृमि",
+            "eid": "8624",
+            "pagenum": "2-178-a",
+            "content": "कृमिः¦ पुं, (क्रामतीति । क्रमु पादविक्षेपे + “क्रमितमिशतिस्तम्भामत इच्च” । उणां । ४ । १२१ । इति इन् “भ्रमेः सम्प्रसारणञ्च” इति अनुवृत्तेः सम्प्रसारणञ्च ।) कीटः । पोका इति भाषा । तत्पर्य्यायः । नीलाङ्गः २ । इत्यमरः । २ । ५ । १३ । निलाङ्गुः ३ क्रिमिः ४ । इति तट्टीका ॥ पुण्ड्रः ५ । इति जटाधरः ॥ लाक्षा । कृमिलः । खरः । इति विश्वमेदिन्यौ ॥ उदरजातकीटरोगः । तस्यौषधं यथा, “वदरीकारवीमूलं गुडाज्येन समन्वितम् । अग्निना साधितं जग्ध्वा कृमीन्सर्व्वान् हरेच्छिव !” ॥ इति गारुडे १९४ अध्यायः ॥ (“कृमयो द्विविधाः प्रोक्ता वाह्याभ्यन्तरसम्भवाः । वाह्या यूकाः प्रिसद्गाः स्युः किञ्चुलूकास्तथान्तराः ॥ सप्तधा हि भवेद्वाह्याः षड्धाश्चान्तः समुद्भवाः । तेषां वक्ष्यामि सभूतिं वाह्यानाभ्यन्तरे नृणाम् ॥ रूक्षादतिबलात् स्वेदात् चिन्तया शोचनादपि । कफधातुसमुद्भूतास्तीक्ष्णा यूका भवन्ति हि ॥ यूकाः कृष्णाः पराः श्वेतास्तृतीयाश्चर्म्मणि स्थिताः । सूक्ष्मातिविकटा रूक्षाश्चर्म्माभाश्चर्म्मयूकिकाः । चतुर्थी विन्दुकी नाम वर्तुला मूत्रसम्भवा ॥ मत्कुणाद्याश्च पञ्चम्यो वाह्योपद्रवकारिणः । यूका मस्तकसंस्थाने श्वेता वस्त्रनिवासिनी ॥ चर्म्मयूका नेत्रचर्म्मे सूक्ष्मे रोमणि यष्टिका । उष्णद्रव्यनिषेवाच्च अजीर्णे मधुरद्रवात् ॥ रूक्षान्नगोधूमयवान्नपिष्टर्गुडेन वा क्षीरविपर्य्ययेण । दिवाशयाने च सपिच्छलेन घर्म्मेण पापोदकसेचनेन ॥ सञ्जायते तेन मलाशयेषु कृमिव्रजं कोष्ठविकारकारि ॥ षड्विधास्ते समुद्दिष्टास्तेषां वक्ष्यामि लक्षणम् । कफकोष्ठं मलाधारं कोष्ठे सर्पन्ति सर्पवत् ॥ पृथुमण्डा भवन्त्येके केचित् किञ्चुकसन्निभाः । धान्याङ्कुरनिभाः केचित् केचित् सूक्ष्मास्तथाणवः ॥ सूचीमुखाः परिज्ञेयाश्चान्त्राणि सादयन्ति ते । वक्ष्यामि लक्षणं तेषां चिकित्साञ्च शृणुष्व मे ॥ ज्वरोहृद्रोगशूलं वा वमिकृत् क्लेदनं भ्रमः । अरुचिर्बन्धवैवर्ण्यमतीसारं सफोनिलम् ॥ गर्ज्जनं जठरे चैव मन्दाग्नित्वञ्च जायते । पिपासा पीतता नेत्रे किञ्चुकैः पीडितस्य च ॥ इति गण्डूपदलक्षणम् ॥ * ॥ सूचीवत्तुद्यतेऽन्त्राणि रक्तञ्चैवातिसार्य्यते । यकृद्वा भक्षयन्त्यन्ते रक्तं वा वमते भृशम् ॥ क्लेदो मुखेऽरुचिर्जाड्यं मन्दाग्नित्वञ्च वेपथुः । क्षुत्तृष्णा च ज्वरो ज्ञेयाः सूचीमुखकृमोरुजाम् ॥ इति शूचीमुखलक्षणम् ॥ * ॥ ये च धान्याङ्कुरास्तेषां वक्ष्याम्यथ च लक्षणम् । मलाशयस्थाः कृमयो मलं जघ्नन्ति ते भृशम् ॥ तैस्तु संपीड्यते देहे विड्विभेदं परूषता । कृशत्वञ्चापि हृत्क्लेदं कृमयो जनयन्ति ते ॥ हारीतः संशयापन्नः पादौ संगृह्य पृच्छति । कथं देहे मनुष्यस्य मलमूत्रवसाशये ॥ सम्भवन्ति कथञ्चादौ वर्द्धयन्ति कथं पुनः । कथं वा शीर्णेऽन्नरसे नानाहारावभक्षणे ॥ जायन्ते केन कृमयः सूक्ष्माधोगामिनोऽप्यथ । नानाऽऽमपक्वभक्षान्नं दहते वा हुताशनः ॥ कथन्ते कृमयश्चान्ते न दह्यन्तेऽन्तराग्निना । एवं पृष्टो महाचार्य्यः प्रोवाच मुनिपुङ्गवः ॥ आत्रेय उवाच । शृणुपुत्त्र ! महाबाहो ! कृमिसम्भवकारणम् । विरुद्धान्नरसैः पुत्त्र ! रक्तञ्चैवास्य कुप्यति ॥ कफेनैकदिनं याति शुक्रेणाकारणं व्रजेत् । पञ्चभूतात्मके वायौ ते तु जाताः सचेतनाः ॥ कोष्ठाग्निना न दह्यन्ते न जीर्य्यन्ते रसानिति । विषे जातो यथा कीटो न विषेण मृतिं व्रजेत् ॥ तथा हुताशनोद्भ्तं न हुताशेन जीर्य्यति । भेषजं संप्रवक्ष्यामि येन तेऽपि तरन्ति वै ॥ पतन्ति वा शमंयान्ति भेषजानि शृणुष्व मे । वचाऽजमोदा कृमिजित्पलाश वीजं शठी रामठकं त्रिवृच्च । उष्णोदके तत्परिपिष्यपेयं पतन्ति शीघ्रं शतधातुकीटाः ॥ शठी यवानी पिचुमर्द्दपत्रान् विडङ्गकृष्णातिविषा रसोनम् । सम्पिष्य मूत्रेण त्रिवृत्प्रयुक्तम् विनाशनं सर्व्वकृमीरुजानाम् ॥ मरिचं पिप्पलीमूलं विडङ्गशिग्रुयवानिकात्रिवृतः । गोमूत्रेण तु पेष्यं पानं शीघ्रं कृमीन् हन्ति ॥ मुस्ता विशाला त्रिफला सुपर्णा शिग्रुः सुवाह्वं सलिलेन कल्कः । पानं सकृष्णा कृमिशत्रुचूर्णं विनाशनं सर्व्वकृमीरुजाञ्च” ॥ “मातुलुङ्गस्य मूलानि रसोनं कृमिजित्त्रिवृत् । अजमोदा निम्बपत्रं गोमूत्रेण तु पेषयेत् ॥ पानमेतत् प्रशंसन्ति कृमिदोषनिवारणम् । ज्वरप्रोक्तानि पथ्यानि कृमिदोषे प्रदापयेत् ॥ इति कृमिचिकित्सा” ॥ * ॥ इति महर्ष्यात्रेयभाषिते हारीतोत्तरे कृमिचिकित्सा नाम पञ्चमोऽध्यायः ॥ * ॥ अस्य निदानपूर्व्वकससम्प्राप्तिचिकित्सितं-यथा । “अजीर्णाध्यशनासात्म्यैर्विरुद्धमलिनाशनैः । अव्यायामदिवास्वप्नगुर्व्वतिस्निग्धशीतलैः । माषपिष्टान्नविदलविसशालूकशेरुकैः ॥ पर्णशाकसुवाशुक्तदधिक्षीरगुडेक्षुभिः । पलालानूपपिशितपिण्याकपृथुकादिभिः ॥ स्वाद्वम्लद्रव्यपानैश्च श्लेष्मा पित्तञ्च कुप्यति । कृमीन् बहुविधाकारान् करोति विविधाश्रयान् ॥ आमपक्काशयस्तेषां प्रसवः प्रायशः स्मृतः । विंशतेः कृमिजातीनां त्रिविधः सम्भवः स्मृतः ॥ पुरीषकफरक्तानि तेषां वक्ष्यामि लक्षणम् । अयवा वियवाः किप्याश्चिप्या गण्डूपदास्तथा । चूरवो द्विमुखाश्चैव सप्तैवैते पुरीषजाः ॥ श्वेताः सूक्ष्मास्तुदन्त्येते गुदं प्रतिसरन्ति च । तेषामेवापरे पुच्छैः पृथवश्च भवन्ति हि ॥ शूलाग्निमान्द्यपाण्डुत्वविष्टम्भबलसंक्षयाः । प्रसेकारुचिहृद्रोगविड्भेदास्तु पुरीषजैः ॥ रक्ता गण्डूपदा दीर्घा गुदकण्डूनिपातिनः । शूलाटोपशकृद्भेदपक्तिनाशकराश्च ते ॥ दर्भपुष्पा महापुष्पाः प्रलूनाश्चिपिटास्तथा । पिपीलिका दारुणाश्च कफकोपसमुद्भवाः ॥ रोमशा रोममूर्द्धानः सपुच्छाः श्यावमण्डलाः । मूढधान्याङ्कुराकाराः शुक्लास्ते तनवस्तथा ॥ मज्जादा नेत्रलेढारस्तालुश्रोत्रभुजस्तथा । शिरोहृद्रोगवमथुप्रतिश्यायकराश्च ते ॥ केशरोमनस्वादाश्च दन्तादाः किक्विशास्तथा । कुष्ठजाश्च परीसर्प्पाः ज्ञेयाः शोणितसम्भवाः ॥ ते सरक्ताश्च कृष्णाश्च स्निग्धाश्च पृथवस्तथा । रक्ताधिष्ठानजान् प्रायो विकारान् जनयन्ति ते ॥ माषपिष्टान्नलवणगुडशाकैः पुरीषजाः । मांसमाषगुडक्षीरदधिशुक्तैः कफोद्भवाः ॥ विरुद्धा जीर्णशाकाद्यैः शोणितोत्था भवन्ति हि ॥ ज्वरो विवर्णताशूलं हृद्रोगः सदनं भ्रमः ॥ भक्तद्वेषोऽतिमारश्च सञ्जातकृमिलक्षणम् । दृश्यास्त्रयोदशाद्यास्तु कृमीणां परिकीर्त्तिताः ॥ केशादाद्यास्त्वदृश्यास्ते द्वावाद्यौ परिवर्ज्जयेत् । एषामन्यतमं ज्ञात्वा जिघांसुः स्निग्धमातुरम् ॥ सुरसादिविपक्वेन सर्पिषा वान्तमादितः । विरेचयेत्तीक्ष्णतरैर्योगैरास्थापयेच्च तम् ॥ यवकोलकुलत्थानां सुरसादेर्गणस्य च । विडङ्गस्नेहयुक्तेन क्वाथेन लवणेन च ॥ प्रत्यागते निरूहे तु नरं स्नातं सुखाम्बुना । युञ्ज्यात् कृमिघ्नैरशनैस्ततः शीघ्रं भिषग्वरः ॥ स्नेहेनोक्तेन चैनन्तु योजयेत् स्नेहवस्तिना । ततः शिरीषकिणिही-रसं क्षौद्रयुतं पिबेत् । केचूकस्वरसं वापि पूर्व्ववत्तीक्ष्णभोजनः ॥ पलाशवीजस्वरसं कल्कं वा तण्डुलाम्बुना । पारिभद्रकपत्राणां क्षौद्रेण स्वरसं पिबेत् ॥ पत्तूरस्वरसं वापि पिबेद्वा सुरसादिजम् । लिह्यादश्वशकृच्चूर्णं विडङ्गं वा समाक्षिकम् ॥ पत्रैर्मूषिकपर्ण्या वा सुपिष्टैः पिष्टमिश्रितैः । खादेत् पूपालिकान् पक्वान् धान्याम्लञ्च पिबेदनु ॥ सुरसादिगणे तैलं पक्वं वा पानमिष्यते । विडङ्गचूर्ण-पिष्टाभ्यां तस्मिन् भक्ष्यन्तु कारयेत् ॥ तत्कषायप्रपीतानां तिलानां स्नेहमेव वा । श्वाविधः शकृतश्चूर्णं सप्तकृत्वः सुभावितम् ॥ विडङ्गानां कषायेण त्रैफलेन तथैव च ॥ क्षौद्रेण लिढ्वानुपिबेद्रसमामलकोद्भवम् । अक्षाभया रसञ्चापि विधिरेषोऽयसामपि ॥ पूतीकस्वरसं वापि पिबेद्वा मधुना सह । पिबेद्वा पिप्पलीमूलमजामूत्रेण संयुतम् ॥ सप्तरात्रं पिबेद्घृष्टन्त्रपुवा दधिमस्तुना । पुरीषजान् कफोत्थांश्च हन्यादेवं कृमीन् भिषक् ॥ शिरोहृद्घ्राणवक्त्राक्षि संसृतांश्च पृथग्विधान् । विशेषेणाञ्जनैर्नस्यैरवपीडैश्च साधयेत् ॥ शकृद्रसन्तुरङ्गस्य सुशुष्कं भावयेदति । निःक्वाथेन विडङ्गानां चूर्णं प्रधमनन्तु तत् ॥ अयश्चूर्णान्यनेनैव विधिना योजयेद्भिषक् । सकांस्यनीलं तैलञ्च नस्यं स्यात् सुरसादिके ॥ इन्द्रलुप्तविधिश्चापि विधेयो रोमभोजिषु । दन्तादानां समुद्दिष्टं विधानं मुखरोगिकम् ॥ रक्तजानां समुद्दिष्टं कुर्य्यात् कुष्ठचिकित्सिते । सुरसादिन्तु सर्व्वेषु सर्व्वथैवोपयोजयेत् ॥ प्रव्यक्ततिक्तकटुकं भोजनञ्च हितं भवेत् । कुलत्थक्वाथसंसृष्टं क्षीरपानञ्च पूजितम् ॥ * ॥ क्षीराणि मांसानि घृतानि चैव दधीनि शाकानि च पर्व्ववन्ति । समासतोऽम्लान् मधुरान् हिमांश्च कृमीन् जिघांसुः परिवर्ज्जयेत्तु” ॥ इति सुश्रुत उत्तरतन्त्रे चतुःपञ्चाशत्तमोऽध्यायः ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "कृमि",
+            "eid": "14751",
+            "pagenum": "2194,a",
+            "content": "कृ(क्रि)मि¦ पु० क्रम--इन् अतैत्त्वम् “भ्रमेः सम्प्रसारणञ्च” उ० इत्यतः सम्प्रसारणानुवृत्तौ सम्प्रवा । १ क्षुद्रजन्तुभेदे उज्ज्वल० । “लुम्पन्ति कीटकृमयः परितस्तथैते” नागार्ज्जनीये ऋकारयुक्तपाठः । २ लक्षायां ३ कृमियुक्ते ४ खरे गर्द्दभे च मेदि० । ५ रोगभेदे पु० । तन्निदानादि सुश्रुते उक्तं यथा “अथातः कृमिरोगमध्यायं व्याख्यास्यामः । अजीर्ण्णाध्यशनासात्म्यैर्व्विरुद्धमलिनाशनैः । अव्यायामदिवास्वप्नगुर्व्वतिस्निग्धशीतलैः । माषपिष्टान्नविदलविसशालूकषेरुकैः । पर्ण्णशाकसुराशुक्तदधिक्षीरगुडेक्षुभिः । पललानूपपिशितपिन्याकपृथुकादिभिः । स्वाद्वम्लद्रवपानैश्च श्लेष्मा पित्तञ्च कुप्यति । कृमीन् बहुविधाकारान् करोति विविधाश्रयान् । आमपक्वाशयस्तेषां प्रसवः प्रायशः स्मृतः । विंशतेः कृमिजातीनां त्रिविधः सम्भवः स्मृतः । पुरीषकफरक्तानि तेषा वक्ष्यामि लक्षणम् । अयवा वियवाः किप्पा श्चिप्यागण्डूपदास्तथा । चूरवो द्विमुखाश्चैव सप्तैवैते पुरीषजाः । श्वेताः सूक्ष्मास्तुदन्त्येते गुदं प्रतिसरन्ति च । तेषामेवापरे पुच्छैः पृथवश्च भवन्ति हि । शूलाग्निमान्द्यपाण्डुत्वविष्टम्भबलसङ्क्षयाः । प्रसेकारुचिहृद्रोगविड्भेदास्तु पुरीषजैः । रक्ता गण्डूपदा दोर्घा गुदकण्डूनिपातिनः । शूलाटोपशकृद्भेदपक्तिनाशकराश्चते । दर्भपुष्पाः १ महापुष्पाः २ प्रलूना ३ टिपिटा ४ स्तथा । पिपीलिका ३ दारुणाश्च ६ कफकोपसमुद्भवाः । रोमशा रोममूर्द्धानः सपुच्छाः श्यावमण्डलाः । मूढधान्याङ्गुराकाराः शुक्लास्ते तनवस्तथा । मज्जादा १ नेत्रलेढार २ स्तालुश्रोतभुज ३ स्तथा । शिरोहृद्रोगवमथुप्रतिश्यायकराश्चते । केशरोमनखादाश्च ४ दन्तादाः ५ किक्किशा ६ स्तथा । कुष्ठजाश्र परीमर्प्पा ७ ज्ञेयाः शोणितसम्भवाः । ते सरक्ताश्र कृष्णाय स्रिग्धाश्च पृथयस्तथा । रक्ताधिष्ठानजान् प्रायोविकारान् जनयन्ति ते । माषपिष्टान्नलवणगुडशाकैः पुरीषजाः । मांसमाषगुडक्षीरदधिशुक्तैः कफोद्भवाः । विरुद्धाजीर्णशाकाद्येः शोणितोत्था भवन्ति हि । ज्वरो विवर्णता शूलं हृद्रोगः मदसंभ्रमः । भक्तद्वेषोऽतिसारश्च सञ्जातकृमिलक्षणम् । दृश्यास्त्रयोदशाद्यास्तु कृमीणां परिकीर्त्तिताः । केशादाद्यास्त्वदृश्यास्ते द्वावाद्यौ परिवर्जयेत् । एषामन्यतमं ज्ञात्वा जिघांसुः म्निग्वमातुरम्” । “तुदन्त्यामत्वचं र्दशा मशकामत्कुणादयः । रुदन्तं विगतज्ञानं क्रिमयः क्रिमिलं यथा” भाग०, ३, ३१, २८, स्वार्थे क तत्रार्थे “ततो भक्षयतस्तस्य फलात् कृमिरभूदणुः । सत्यवागस्तु स मुनिः कृमिर्मां दशतामयम्” । “एवमुक्त्वा स राजेन्द्रो ग्रीवायां सन्निवेश्य तम् । कृमिकं प्राहसत्तूर्ण्णं मुमूर्षुर्नष्टचेतनः” भा० आ० ४३ अ० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कृमि",
+            "content": "कृमि वि. -  'क्रम् - इन्, अत इत्वम् संप्र . ' 'कीड़ों से भरा हुआ, कीटयुक्त'"
+        },
+        {
+            "word": "कृमि",
+            "content": "कृमि वि. -  'क्रम् - इन्, अत इत्वम् संप्र . ' कीड़े"
+        },
+        {
+            "word": "कृमि",
+            "content": "कृमि वि. -  'क्रम् - इन्, अत इत्वम् संप्र . ' गधा"
+        },
+        {
+            "word": "कृमि",
+            "content": "कृमि वि. -  'क्रम् - इन्, अत इत्वम् संप्र . ' मकड़ी"
+        },
+        {
+            "word": "कृमि",
+            "content": "कृमि वि. -  'क्रम् - इन्, अत इत्वम् संप्र . ' लाख"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कृमि",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಹುಳು \\/ಜಂತು",
+            "निष्पत्तिः": "क्रमु (पादविक्षेपे)'इत्' (उ० ४-१२१)",
+            "व्युत्पत्तिः": "क्रामति",
+            "प्रयोगाः": "'कृमिकीटपतङ्गाश्च यूकामक्षिकमत्कुणम्'",
+            "उल्लेखाः": "मनु० १-४०",
+            "content": ""
+        },
+        {
+            "word": "कृमि",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಅರಗು",
+            "content": ""
+        },
+        {
+            "word": "कृमि",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಗರ್ದಭ \\/ಕತ್ತೆ",
+            "content": ""
+        },
+        {
+            "word": "कृमि",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಹುಳುಗಳಿಂದ ಕೂಡಿದ",
+            "विस्तारः": "'कृमिर्ना क्रिमिवत् कीटे लाक्षायां कृमिले खरे'मेदि० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "कृमि",
+            "linga": "P",
+            "artha": "कृमिः",
+            "synonyms": [
+                "नीलङ्गु",
+                "कृमि"
+            ],
+            "num": "2.5.15",
+            "text": "नीलङ्गुस्तु कृमिः कर्णजलौकाः शतपद्युभे । वृश्चिकः शूककीटः स्यादलिद्रुणौ तु वृश्चिके ॥",
+            "content": ""
+        },
+        {
+            "word": "कृमि",
+            "linga": "P",
+            "artha": "वस्त्रयोनिः",
+            "synonyms": [
+                "त्वच्",
+                "फल",
+                "कृमि",
+                "रोमन्"
+            ],
+            "num": "2.6.111",
+            "text": "हंसकः पादकटकः किङ्किणी क्षुद्रघण्टिका । त्वक्फलकृमिरोमाणि वस्त्रयोनिर्दश त्रिषु ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "कृमि",
+            "content": "<lexhead no=\"1472\">\n<dentry>कृमि</dentry>\n<prAwipaxikam>कृमि</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">कृमि</prAwipaxikam>\n<etymology>[क्रम् - इन्, अत इत्वम् संप्र*]</etymology>\n<is_a_part>वस्त्रम्</is_a_part>\n<jAwi>कीटः</jAwi>\n<kind_of>पशुः</kind_of>\n<jAwi>कीटः</jAwi>\n<sense no=\"1\">कीड़ों से भरा हुआ, कीटयुक्त, कृमिकुलचितम्<citation>भर्तृ* २।९</citation></sense>\n<sense n=\"2\">कीड़े रोग</sense>\n<sense n=\"3\">गधा</sense>\n<sense n=\"4\">मकड़ी</sense>\n<sense n=\"5\">लाख रंग</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "कृमि",
+            "content": "<body><s>kf(kri)mi pu° krama—in atEttvam <q>BrameH samprasAraRaYca</q> u° ityataH samprasAraRAnuvfttO sampravA . <lb/><b>1</b> kzudrajantuBede ujjva­la° . <q>lumpanti kIwakfmayaH paritastaTEte</q> nAgArjjanIye fkArayuktapAWaH . <lb/><b>2</b> lakzAyAM <lb/><b>3</b> kfmiyukte <lb/><b>4</b> Kare garddaBe ca medi° . <lb/><b>5</b> rogaBede pu° . tannidAnAdi suSrute uktaM yaTA <q>aTAtaH kfmirogamaDyAyaM vyAKyAsyAmaH . ajIrRRADyaSa­nAsAtmyErvvirudDamalinASanEH . avyAyAmadivAsvapnagurvva­tisnigDaSItalEH . mAzapizwAnnavidalavisaSAlUkazerukEH . parRRaSAkasurASuktadaDikzIraguqekzuBiH . palalAnUpapiSita­pinyAkapfTukAdiBiH . svAdvamladravapAnESca SlezmA pittaYca kupyati . kfmIn bahuviDAkArAn karoti viviDASrayAn . AmapakvASayastezAM prasavaH prAyaSaH smftaH . viMSateH kfmi­jAtInAM triviDaH samBavaH smftaH . purIzakaParaktAni tezA vakzyAmi lakzaRam . ayavA viyavAH kippA ScipyAgaRqU­padAstaTA . cUravo dvimuKAScEva saptEvEte purIzajAH . SvetAH sUkzmAstudantyete gudaM pratisaranti ca . tezAmevApare pucCEH pf­TavaSca Bavanti hi . SUlAgnimAndyapARqutvavizwamBabalasa­NkzayAH . prasekArucihfdrogaviqBedAstu purIzajEH . raktA gaRqUpadA dorGA gudakaRqUnipAtinaH . SUlAwopaSakf­dBedapaktinASakarAScate . darBapuzpAH 1 mahApuzpAH 2 pralUnA 3 wipiwA 4 staTA . pipIlikA 3 dAruRASca <lb/><b>6</b> kaPakopasamu­dBavAH . romaSA romamUrdDAnaH sapucCAH SyAvamaRqalAH . mUQaDAnyANgurAkArAH SuklAste tanavastaTA . majjAdA 1 netraleQAra 2 stAluSrotaBuja 3 staTA . SirohfdrogavamaTuprati­SyAyakarAScate . keSaromanaKAdASca 4 dantAdAH 5 kikki­SA 6 staTA . kuzWajASra parImarppA <lb/><b>7</b> jYeyAH SoRitasamBa­vAH . te saraktASra kfzRAya srigDASca pfTayastaTA . raktA­DizWAnajAn prAyovikArAn janayanti te . mAzapizwAnna­lavaRaguqaSAkEH purIzajAH . mAMsamAzaguqakzIradaDiSuktEH kaPodBavAH . virudDAjIrRaSAkAdyeH SoRitotTA Bavanti hi . jvaro vivarRatA SUlaM hfdrogaH madasaMBramaH . Baktadvezo'tisAraSca saYjAtakfmilakzaRam . dfSyAstrayo­daSAdyAstu kfmIRAM parikIrttitAH . keSAdAdyAstva­dfSyAste dvAvAdyO parivarjayet . ezAmanyatamaM jYAtvA jiGAMsuH mnigvamAturam</q> . <q>tudantyAmatvacaM rdaSA maSa­kAmatkuRAdayaH . rudantaM vigatajYAnaM krimayaH krimilaM yaTA</q> BAga°, 3, 31, 28, svArTe ka tatrArTe <q>tato Bakzayatastasya PalAt kfmiraBU­daRuH . satyavAgastu sa muniH kfmirmAM daSatAmayam</q> . <q>evamuktvA sa rAjendro grIvAyAM sanniveSya tam . kfmikaM prAhasattUrRRaM mumUrzurnazwacetanaH</q> BA° A° 43 a° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "कृमि",
+            "content": "<H1><h><key1>kfmi</key1><key2>kf/mi</key2></h><body><s>kf/mi</s>   <lex>m.</lex> or <s>kri/mi</s> (<ab>fr.</ab> √ <s>kram</s>, <ls>Uṇ.</ls>), a worm, insect, <ls>VS.</ls>; <ls>TS.</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls>; <ls>Mn.</ls> &amp;c.<info lex=\"m\" /></body><tail><L>54931</L><pc>305,2</pc></tail></H1>\n <H1A><h><key1>kfmi</key1><key2>kf/mi</key2></h><body>  ‘a spider’ (See <s>-tantu-jAla</s>)<info lex=\"inh\" /></body><tail><L>54931.05</L><pc>305,2</pc></tail></H1A>\n <H1A><h><key1>kfmi</key1><key2>kf/mi</key2></h><body>  a silk-worm, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>54931.10</L><pc>305,2</pc></tail></H1A>\n <H1A><h><key1>kfmi</key1><key2>kf/mi</key2></h><body>  a shield-louse, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>54931.15</L><pc>305,2</pc></tail></H1A>\n <H1A><h><key1>kfmi</key1><key2>kf/mi</key2></h><body>  an ant, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>54931.20</L><pc>305,2</pc></tail></H1A>\n <H1A><h><key1>kfmi</key1><key2>kf/mi</key2></h><body>  lac (red dye caused by insects), <ls>L.</ls><info lex=\"inh\" /></body><tail><L>54931.25</L><pc>305,2</pc></tail></H1A>\n <H1A><h><key1>kfmi</key1><key2>kf/mi</key2></h><body>  <ab>N.</ab> of a son (of <s1 slp1=\"uSInara\">Uśīnara</s1>, <ls>Hariv. 1676 ff.</ls>; of <s1 slp1=\"BajamAna\">Bhajamāna</s1>, <ls>Hariv. 2002</ls>)<info lex=\"inh\" /></body><tail><L>54931.30</L><pc>305,2</pc></tail></H1A>\n <H1A><h><key1>kfmi</key1><key2>kf/mi</key2></h><body>  of an <s1 slp1=\"asura\">Asura</s1> (brother of <s1 slp1=\"rAvaRa\">Rāvaṇa</s1>), <ls>L.</ls><info lex=\"inh\" /></body><tail><L>54931.35</L><pc>305,2</pc></tail></H1A>\n <H1A><h><key1>kfmi</key1><key2>kf/mi</key2></h><body>  of a <s1 slp1=\"nAga-rAja\">Nāga-rāja</s1>, <ls>Buddh.</ls>; <ls>L.</ls><info lex=\"inh\" /></body><tail><L>54931.40</L><pc>305,2</pc></tail></H1A>\n <H1B><h><key1>kfmi</key1><key2>kf/mi</key2></h><body><s>kf/mi</s>   <lex>f.</lex> (<s>is</s>) <ab>N.</ab> of the wife of <s1 slp1=\"uSInara\">Uśīnara</s1> and mother of <s1 slp1=\"kfmi\">Kṛmi</s1>, <ls>Hariv. 1675</ls> &amp; <ls>VP.</ls> (<ab>v.l.</ab> <s>kfmI</s>)<info lex=\"f\" /></body><tail><L>54931.45</L><pc>305,2</pc></tail></H1B>\n <H1B><h><key1>kfmi</key1><key2>kf/mi</key2></h><body>  <ab>N.</ab> of a river, <ls>MBh. vi, 9, 17</ls>; <info lex=\"inh\" /></body><tail><L>54931.50</L><pc>305,2</pc></tail></H1B>\n <H1E><h><key1>kfmi</key1><key2>kfmi</key2></h><body><s>kfmi</s>   [<ab>cf.</ab> <lang>Lith.</lang> <etym>kirminis</etym>, <etym>kirmele</etym>; <lang>Russ.</lang> <etym>červj</etym>; <lang>Hib.</lang> <etym>cruimh</etym>; <lang>Cambro-Brit.</lang> <etym>pryv</etym>; <lang>Goth.</lang> <etym>vaurms</etym>; <lang>Lat.</lang> <etym>vermi-s</etym> for <etym>quermi-s</etym>.]</body><tail><L>54931.75</L><pc>305,2</pc></tail></H1E>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "कृमि",
+            "content": "<H1><h><key1>kfmi</key1><key2>kfmi</key2></h><body><s>kfmi</s>  <div n=\"1\">m. (<s>-miH</s>) </div><div n=\"2\"> 1. A worm, an insect in general. </div><div n=\"2\"> 2. Lac. the red dye, <lb />which is in fact an insect. </div><div n=\"2\"> 3. An Asur or demon. </div><div n=\"2\"> 4. One subject to <lb />worms.</div><div n=\"E\"> E. <s>kram</s> to go, <s>in</s> Unadi affix, and the corresponding vowel <lb />substituted for <s>ra;</s> also <s>krimi</s>.</div></body><tail><L>11422</L><pc>201-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कृमि",
+            "content": "<span lang=\"sa\">कृमि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹುಳು /ಜಂತು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>क्रमु (पादविक्षेपे) - \"इत्\" (उ० ४-१२१)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>क्रामति<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"कृमिकीटपतङ्गाश्च यूकामक्षिकमत्कुणम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० १-४०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृमि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅರಗು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृमि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗರ್ದಭ /ಕತ್ತೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृमि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹುಳುಗಳಿಂದ ಕೂಡಿದ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"कृमिर्ना क्रिमिवत् कीटे लाक्षायां कृमिले खरे\" - मेदि० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-
-function logPostpone(request, reason) {
-  var onPostpone = request.onPostpone;
-  onPostpone(reason);
-}
-
-function logRecoverableError(request, error) {
-  var onError = request.onError;
-  var errorDigest = onError(error);
-
-  if (errorDigest != null && typeof errorDigest !== 'string') {
-    // eslint-disable-next-line react-internal/prod-error-codes
-    throw new Error("onError returned something with a type other than \"string\". onError should return a string and may return null or undefined but must not return anything else. It received something of type \"" + typeof errorDigest + "\" instead");
-  }
-
-  return errorDigest || '';
-}
-
-function fatalError(request, error) {
-
-
-  if (request.destination !== null) {
-    request.status = CLOSED;
-    closeWithError(request.destination, error);
-  } else {
-    request.status = CLOSING;
-    request.fatalError = error;
-  }
-}
-
-function emitPostponeChunk(request, id, postponeInstance) {
-  var row;
-
-  {
-    var reason = '';
-    var stack = '';
-
-    try {
-      // eslint-disable-next-line react-internal/safe-string-coercion
-      reason = String(postponeInstance.message); // eslint-disable-next-line react-internal/safe-string-coercion
-
-      stack = String(postponeInstance.stack);
-    } catch (x) {}
-
-    row = serializeRowHeader('P', id) + stringify({
-      reason: reason,
-      stack: stack
-    }) + '\n';
-  }
-
-  var processedChunk = stringToChunk(row);
-  request.completedErrorChunks.push(processedChunk);
-}
-
-function emitErrorChunk(request, id, digest, error) {
-  var errorInfo;
-
-  {
-    var message;
-    var stack = '';
-
-    try {
-      if (error instanceof Error) {
-        // eslint-disable-next-line react-internal/safe-string-coercion
-        message = String(error.message); // eslint-disable-next-line react-internal/safe-string-coercion
-
-        stack = String(error.stack);
-      } else {
-        message = 'Error: ' + error;
-      }
-    } catch (x) {
-      message = 'An error occurred but serializing the error message failed.';
-    }
-
-    errorInfo = {
-      digest: digest,
-      message: message,
-      stack: stack
-    };
-  }
-
-  var row = serializeRowHeader('E', id) + stringify(errorInfo) + '\n';
-  var processedChunk = stringToChunk(row);
-  request.completedErrorChunks.push(processedChunk);
-}
-
-function emitImportChunk(request, id, clientReferenceMetadata) {
-  // $FlowFixMe[incompatible-type] stringify can return null
-  var json = stringify(clientReferenceMetadata);
-  var row = serializeRowHeader('I', id) + json + '\n';
-  var processedChunk = stringToChunk(row);
-  request.completedImportChunks.push(processedChunk);
-}
-
-function emitHintChunk(request, code, model) {
-  var json = stringify(model);
-  var id = request.nextChunkId++;
-  var row = serializeRowHeader('H' + code, id) + json + '\n';
-  var processedChunk = stringToChunk(row);
-  request.completedHintChunks.push(processedChunk);
-}
-
-function emitSymbolChunk(

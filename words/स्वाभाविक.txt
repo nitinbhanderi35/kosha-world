@@ -1,1 +1,216 @@
-D_ALIAS_KEYS){return(0,i.default)(t.expectedNode,e)}return false}if(typeof r==="undefined"){return true}else{return(0,n.default)(t,r)}}},7527:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isBinding;var n=r(6332);function isBinding(e,t,r){if(r&&e.type==="Identifier"&&t.type==="ObjectProperty"&&r.type==="ObjectExpression"){return false}const s=n.default.keys[t.type];if(s){for(let r=0;r<s.length;r++){const n=s[r];const i=t[n];if(Array.isArray(i)){if(i.indexOf(e)>=0)return true}else{if(i===e)return true}}}return false}},5127:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isBlockScoped;var n=r(601);var s=r(775);function isBlockScoped(e){return(0,n.isFunctionDeclaration)(e)||(0,n.isClassDeclaration)(e)||(0,s.default)(e)}},9803:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isImmutable;var n=r(9810);var s=r(601);function isImmutable(e){if((0,n.default)(e.type,"Immutable"))return true;if((0,s.isIdentifier)(e)){if(e.name==="undefined"){return true}else{return false}}return false}},775:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isLet;var n=r(601);var s=r(4152);function isLet(e){return(0,n.isVariableDeclaration)(e)&&(e.kind!=="var"||e[s.BLOCK_SCOPED_SYMBOL])}},4955:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isNode;var n=r(7940);function isNode(e){return!!(e&&n.VISITOR_KEYS[e.type])}},598:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isNodesEquivalent;var n=r(7940);function isNodesEquivalent(e,t){if(typeof e!=="object"||typeof t!=="object"||e==null||t==null){return e===t}if(e.type!==t.type){return false}const r=Object.keys(n.NODE_FIELDS[e.type]||e.type);const s=n.VISITOR_KEYS[e.type];for(const n of r){const r=e[n];const i=t[n];if(typeof r!==typeof i){return false}if(r==null&&i==null){continue}else if(r==null||i==null){return false}if(Array.isArray(r)){if(!Array.isArray(i)){return false}if(r.length!==i.length){return false}for(let e=0;e<r.length;e++){if(!isNodesEquivalent(r[e],i[e])){return false}}continue}if(typeof r==="object"&&!(s!=null&&s.includes(n))){for(const e of Object.keys(r)){if(r[e]!==i[e]){return false}}continue}if(!isNodesEquivalent(r,i)){return false}}return true}},4576:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isPlaceholderType;var n=r(7940);function isPlaceholderType(e,t){if(e===t)return true;const r=n.PLACEHOLDERS_ALIAS[e];if(r){for(const e of r){if(t===e)return true}}return false}},8103:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isReferenced;function isReferenced(e,t,r){switch(t.type){case"MemberExpression":case"OptionalMemberExpression":if(t.property===e){return!!t.computed}return t.object===e;case"JSXMemberExpression":return t.object===e;case"VariableDeclarator":return t.init===e;case"ArrowFunctionExpression":return t.body===e;case"PrivateName":return false;case"ClassMethod":case"ClassPrivateMethod":case"ObjectMethod":if(t.key===e){return!!t.computed}return false;case"ObjectProperty":if(t.key===e){return!!t.computed}return!r||r.type!=="ObjectPattern";case"ClassProperty":case"ClassAccessorProperty":if(t.key===e){return!!t.computed}return true;case"ClassPrivateProperty":return t.key!==e;case"ClassDeclaration":case"ClassExpression":return t.superClass===e;case"AssignmentExpression":return t.right===e;case"AssignmentPattern":return t.right===e;case"LabeledStatement":return false;case"CatchClause":return false;case"RestElement":return false;case"BreakStatement":case"ContinueStatement":return false;case"FunctionDeclaration":case"FunctionExpression":return false;case"ExportNamespaceSpecifier":case"ExportDefaultSpecifier":return false;case"ExportSpecifier":if(r!=null&&r.source){return false}return t.local===e;case"ImportDefaultSpecifier":case"ImportNamespaceSpecifier":case"ImportSpecifier":return false;case"ImportAttribute":return false;case"JSXAttribute":return false;case"ObjectPattern":case"ArrayPattern":return false;case"MetaProperty":return false;case"ObjectTypeProperty":return t.key!==e;case"TSEnumMember":return t.id!==e;case"TSPropertySignature":if(t.key===e){return!!t.computed}return true}return true}},8498:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isScope;var n=r(601);function isScope(e,t){if((0,n.isBlockStatement)(e)&&((0,n.isFunction)(t)||(0,n.isCatchClause)(t))){return false}if((0,n.isPattern)(e)&&((0,n.isFunction)(t)||(0,n.isCatchClause)(t))){return true}return(0,n.isScopable)(e)}},2424:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isSpecifierDefault;var n=r(601);function isSpecifierDefault(e){return(0,n.isImportDefaultSpecifier)(e)||(0,n.isIdentifier)(e.imported||e.exported,{name:"default"})}},9810:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isType;var n=r(7940);function isType(e,t){if(e===t)return true;if(n.ALIAS_KEYS[t])return false;const r=n.FLIPPED_ALIAS_KEYS[t];if(r){if(r[0]===e)return true;for(const t of r){if(e===t)return true}}return false}},2042:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isValidES3Identifier;var n=r(6488);const s=new Set(["abstract","boolean","byte","char","double","enum","final","float","goto","implements","int","interface","long","native","package","private","protected","public","short","static","synchronized","throws","transient","volatile"]);function isValidES3Identifier(e){return(0,n.default)(e)&&!s.has(e)}},6488:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isValidIdentifier;var n=r(4975);function isValidIdentifier(e,t=true){if(typeof e!=="string")return false;if(t){if((0,n.isKeyword)(e)||(0,n.isStrictReservedWord)(e,true)){return false}}return(0,n.isIdentifierName)(e)}},6205:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isVar;var n=r(601);var s=r(4152);function isVar(e){return(0,n.isVariableDeclaration)(e,{kind:"var"})&&!e[s.BLOCK_SCOPED_SYMBOL]}},8877:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=matchesPattern;var n=r(601);function matchesPattern(e,t,r){if(!(0,n.isMemberExpression)(e))return false;const s=Array.isArray(t)?t:t.split(".");const i=[];let a;for(a=e;(0,n.isMemberExpression)(a);a=a.object){i.push(a.property)}i.push(a);if(i.length<s.length)return false;if(!r&&i.length>s.length)return false;for(let e=0,t=i.length-1;e<s.length;e++,t--){const r=i[t];let a;if((0,n.isIdentifier)(r)){a=r.name}else if((0,n.isStringLiteral)(r)){a=r.value}else if((0,n.isThisExpression)(r)){a="this"}else{return false}if(s[e]!==a)return false}return true}},5454:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=isCompatTag;function isCompatTag(e){return!!e&&/^[a-z]/.test(e)}},7922:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=void 0;var n=r(2049);const s=(0,n.default)("React.Component");var i=s;t["default"]=i},4439:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=validate;t.validateChild=validateChild;t.validateField=validateField;var n=r(7940);function validate(e,t,r){if(!e)return;const s=n.NODE_FIELDS[e.type];if(!s)return;const i=s[t];validateField(e,t,r,i);validateChild(e,t,r)}function validateField(e,t,r,n){if(!(n!=null&&n.validate))return;if(n.optional&&r==null)return;n.validate(e,t,r)}function validateChild(e,t,r){if(r==null)return;const s=n.NODE_PARENT_VALIDATIONS[r.type];if(!s)return;s(e,t,r)}},8204:(e,t,r)=>{e.exports=function import_(e){return r(5179)(e)};0&&0},212:e=>{"use strict";e.exports=JSON.parse('{"es6.module":{"chrome":"61","and_chr":"61","edge":"16","firefox":"60","and_ff":"60","node":"13.2.0","opera":"48","op_mob":"45","safari":"10.1","ios":"10.3","samsung":"8.2","android":"61","electron":"2.0","ios_saf":"10.3"}}')},2735:e=>{"use strict";e.exports=JSON.parse('{"transform-unicode-sets-regex":{"chrome":"112","opera":"98","edge":"112","firefox":"116","safari":"tp","node":"20","deno":"1.32","opera_mobile":"75","electron":"24.0"},"transform-class-static-block":{"chrome":"94","opera":"80","edge":"94","firefox":"93","safari":"16.4","node":"16.11","deno":"1.14","ios":"16.4","samsung":"17","opera_mobile":"66","electron":"15.0"},"proposal-class-static-block":{"chrome":"94","opera":"80","edge":"94","firefox":"93","safari":"16.4","node":"16.11","deno":"1.14","ios":"16.4","samsung":"17","opera_mobile":"66","electron":"15.0"},"transform-private-property-in-object":{"chrome":"91","opera":"77","edge":"91","firefox":"90","safari":"15","node":"16.9","deno":"1.9","ios":"15","samsung":"16","opera_mobile":"64","electron":"13.0"},"proposal-private-property-in-object":{"chrome":"91","opera":"77","edge":"91","firefox":"90","safari":"15","node":"16.9","deno":"1.9","ios":"15","samsung":"16","opera_mobile":"64","electron":"13.0"},"transform-class-properties":{"chrome":"74","opera":"62","edge":"79","firefox":"90","safari":"14.1","node":"12","deno":"1","ios":"14.5","samsung":"11","opera_mobile":"53","electron":"6.0"},"proposal-class-properties":{"chrome":"74","opera":"62","edge":"79","firefox":"90","safari":"14.1","node":"12","deno":"1","ios":"14.5","samsung":"11","opera_mobile":"53","electron":"6.0"},"transform-private-methods":{"chrome":"84","opera":"70","edge":"84","firefox":"90","safari":"15","node":"14.6","deno":"1","ios":"15","samsung":"14","opera_mobile":"60","electron":"10.0"},"proposal-private-methods":{"chrome":"84","opera":"70","edge":"84","firefox":"90","safari":"15","node":"14.6","deno":"1","ios":"15","samsung":"14","opera_mobile":"60","electron":"10.0"},"transform-numeric-separator":{"chrome":"75","opera":"62","edge":"79","firefox":"70","safari":"13","node":"12.5","deno":"1","ios":"13","samsung":"11","rhino":"1.7.14","opera_mobile":"54","electron":"6.0"},"proposal-numeric-separator":{"chrome":"75","opera":"62","edge":"79","firefox":"70","safari":"13","node":"12.5","deno":"1","ios":"13","samsung":"11","rhino":"1.7.14","opera_mobile":"54","electron":"6.0"},"transform-logical-assignment-operators":{"chrome":"85","opera":"71","edge":"85","firefox":"79","safari":"14","node":"15","deno":"1.2","ios":"14","samsung":"14","opera_mobile":"60","electron":"10.0"},"proposal-logical-assignment-operators":{"chrome":"85","opera":"71","edge":"85","firefox":"79","safari":"14","node":"15","deno":"1.2","ios":"14","samsung":"14","opera_mobile":"60","electron":"10.0"},"transform-nullish-coalescing-operator":{"chrome":"80","opera":"67","edge":"80","firefox":"72","safari":"13.1","node":"14","deno":"1","ios":"13.4","samsung":"13","opera_mobile":"57","electron":"8.0"},"proposal-nullish-coalescing-operator":{"chrome":"80","opera":"67","edge":"80","firefox":"72","safari":"13.1","node":"14","deno":"1","ios":"13.4","samsung":"13","opera_mobile":"57","electron":"8.0"},"transform-optional-chaining":{"chrome":"91","opera":"77","edge":"91","firefox":"74","safari":"13.1","node":"16.9","deno":"1.9","ios":"13.4","samsung":"16","opera_mobile":"64","electron":"13.0"},"proposal-optional-chaining":{"chrome":"91","opera":"77","edge":"91","firefox":"74","safari":"13.1","node":"16.9","deno":"1.9","ios":"13.4","samsung":"16","opera_mobile":"64","electron":"13.0"},"transform-json-strings":{"chrome":"66","opera":"53","edge":"79","firefox":"62","safari":"12","node":"10","deno":"1","ios":"12","samsung":"9","rhino":"1.7.14","opera_mobile":"47","electron":"3.0"},"proposal-json-strings":{"chrome":"66","opera":"53","edge":"79","firefox":"62","safari":"12","node":"10","deno":"1","ios":"12","samsung":"9","rhino":"1.7.14","opera_mobile":"47","electron":"3.0"},"transform-optional-catch-binding":{"chrome":"66","opera":"53","edge":"79","firefox":"58","safari":"11.1","node":"10","deno":"1","ios":"11.3","samsung":"9","opera_mobile":"47","electron":"3.0"},"proposal-optional-catch-binding":{"chrome":"66","opera":"53","edge":"79","firefox":"58","safari":"11.1","node":"10","deno":"1","ios":"11.3","samsung":"9","opera_mobile":"47","electron":"3.0"},"transform-parameters":{"chrome":"49","opera":"36","edge":"18","firefox":"53","safari":"16.3","node":"6","deno":"1","ios":"16.3","samsung":"5","opera_mobile":"36","electron":"0.37"},"transform-async-generator-functions":{"chrome":"63","opera":"50","edge":"79","firefox":"57","safari":"12","node":"10","deno":"1","ios":"12","samsung":"8","opera_mobile":"46","electron":"3.0"},"proposal-async-generator-functions":{"chrome":"63","opera":"50","edge":"79","firefox":"57","safari":"12","node":"10","deno":"1","ios":"12","samsung":"8","opera_mobile":"46","electron":"3.0"},"transform-object-rest-spread":{"chrome":"60","opera":"47","edge":"79","firefox":"55","safari":"11.1","node":"8.3","deno":"1","ios":"11.3","samsung":"8","opera_mobile":"44","electron":"2.0"},"proposal-object-rest-spread":{"chrome":"60","opera":"47","edge":"79","firefox":"55","safari":"11.1","node":"8.3","deno":"1","ios":"11.3","samsung":"8","opera_mobile":"44","electron":"2.0"},"transform-dotall-regex":{"chrome":"62","opera":"49","edge":"79","firefox":"78","safari":"11.1","node":"8.10","deno":"1","ios":"11.3","samsung":"8","opera_mobile":"46","electron":"3.0"},"transform-unicode-property-regex":{"chrome":"64","opera":"51","edge":"79","firefox":"78","safari":"11.1","
+{
+    "word": "स्वाभाविक",
+    "AP90": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "31193",
+            "pagenum": 1162,
+            "content": "स्वाभाविक¦ <i><ab>a.</ab></i> (की <i><ab>f.</ab></i>) [ <lbinfo n='svaBAvA#dAgataH'/> स्वभावादागतः ढञ्] Belonging to one's own nature, innate, inherent, peculiar, natural; स्वाभाविकं विनीतत्वं तेषां <lbinfo n='vina#yakarmaRA'/> विनयकर्मणा । मुमूर्च्छ सहजं तेजो हविषेव <lbinfo n='ha#virBujAM'/> हविर्भुजां <ls>R. 10. 79</ls>, <ls n='R.'>5. 69</ls>, <ls>Ku. 6. 71.</ls> --काः <i><ab>m.</ab></i> <ab>pl.</ab> A sect of Buddhists who accounted for all things by the laws of nature."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "16914",
+            "pagenum": 1099,
+            "content": "स्वाभाविक¦ <i>svābhāvika,</i> <ab>i. e.</ab> <i>sva-bhāva</i> <i>+ ika,</i> <ab>adj.</ab> Being by one's own nature, inherent, natural, <ls>Man.</ls> 3, 46; <ls>Pañc.</ls> 66, 10; 110, 21."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "19460",
+            "pagenum": 746,
+            "content": "स्वाभाविक¦ <i>svābhāvika</i> <ab>a.</ab> <i>(svabhāva)</i> naturel, <lbinfo n='6'/> qui tient à la nature individuelle. || Au <ab>pl.</ab> les naturalistes [secte philosophique des buddhistes du Népâl]."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "39186",
+            "pagenum": 654,
+            "content": "स्वाभाविक¦ <lex>f.</lex> ई belonging to one's own nature, natural, peculiar, inherent."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "29095",
+            "pagenum": 524,
+            "content": "स्वाभाविक,¦ <i>f.</i> ई eigenartig, ursprünglich, angeboren, natürlich. <i>Abstr.</i> °भाव्य <i>n.</i>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "42813",
+            "pagenum": 823,
+            "content": "svABAvika¦ <i>(I) a. (f. की)</i> Belonging to one’s own nature, inherent, natural, peculiar, स्वाभाविकं परगुणेन विभातवायुः सौरभ्यमीप्सुरिव <ls>R.</ls>v.69, <ls>K.S.</ls>vi.71."
+        },
+        {
+            "word": "स्वाभाविक",
+            "eid": "42814",
+            "pagenum": 823,
+            "content": "svABAvika¦ <i>(II) m. pl.</i> A sect of <i>Buddhists</i> who accounted for all things by the law of nature."
+        }
+    ],
+    "MD": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "20313",
+            "pagenum": 373,
+            "content": "स्वाभाविक¦ svābhāv-ika, <lex>a.</lex> (<b>ī</b>) belonging to 🞄<i>oneʼs</i> own nature, natural, original, peculiar, 🞄innate, inherent: <b>-itara,</b> <lex>a.</lex> not innate."
+        }
+    ],
+    "MW": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "259648",
+            "pagenum": "1283,3",
+            "content": "स्वाभाविक ¦ <lex>mf(ई)n.</lex> (<ab>fr.</ab> स्वभाव) belonging to or arising from one's own nature, natural, native, spontaneous, original, peculiar, inherent (-त्व <lex type='phw'>n.</lex>), <ls>Up.</ls>; <ls>MBh.</ls> &c.<info phwchild='259649.1'/><info lex='m:f#I:n'/>"
+        },
+        {
+            "word": "स्वाभाविक",
+            "eid": "259649",
+            "pagenum": "1283,3",
+            "content": "स्वाभाविक ¦ <lex>m. <ab>pl.</ab></lex> <ab>N.</ab> of a <ns>Buddhistic</ns> school (<ab>cf.</ab> <ls>Buddhac. ix, 48</ls>; <ls n='Buddhac. ix,'>51</ls>). <info lex='m'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "53783",
+            "pagenum": 1162,
+            "content": "स्वाभाविक¦ <i>svābhāvika, as, ī, am</i> (fr. <i>sva-</i> <i>bhāva</i>), belonging to one's own nature, natural, native, peculiar, inherent; (<i>ās</i>), m. pl. a sect of Buddhist philosophers who accounted for all things by the laws of nature."
+        }
+    ],
+    "PW": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "133063",
+            "pagenum": 7,
+            "content": "स्वाभाविक¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> (<lex>f.</lex> ई) <dvsn n='2'>— a〉 <i>dem eigenen Wesen angehörig, — entsprungen, von Natur eigen, ursprünglich, natürlich, angeboren, inhärent</i>. कृष्णं [Page7-245-c] °कम् <i>von Natur schwarz</i> <ls>ĀPAST.</ls> <ab>Nom. abstr.</ab> °त्व <lex>n.</lex> <dvsn n='2'>— b〉 <lex>Adj.</lex> zu 2〉. <dvsn n='1'>— 2〉 <lex>m.</lex> <ab>Pl.</ab> <i>eine <ab>best.</ab> buddhistische Schule</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "115679",
+            "pagenum": 7,
+            "content": "स्वाभाविक¦ (von स्वभाव) <dvsn n='1'> 1) <lex>adj.</lex> (f. ई) <i>dem eigenen Wesen angehörig, - entsprungen, von Natur eigen, ursprünglich, natürlich, angeboren, inhärent</i> <ls>ĀPAST. 1, 30, 11.</ls> <ls>MAITRYUP. 5, 1.</ls> <ls>ŚVETĀŚV. UP. 6, 8.</ls> ऋतुः स्त्रीणाम् <ls n='ŚVETĀŚV. UP.'>3, 46.</ls> <ls>MBH. 1, 267.</ls> <ls>RAGH. 5, 69.</ls> <ls n='RAGH.'>10, 80.</ls> <ls>KUMĀRAS. 6, 71.</ls> <ls>Spr. (II) 5896.</ls> <ls n='Spr. (II)'>6522.</ls> <ls n='Spr. (II)'>7290, v. l.</ls> <ls>ŚAṂK.</ls> zu <ls>CHĀND. UP. S. 6. 26.</ls> zu <ls>BṚH. ĀR. UP. S. 11. 51.</ls> <ls>WINDISCHMANN, Sancara 98.</ls> <ls>NĪLAK. 66. 259.</ls> <ls>MĀRK. P. 49,14. 53,31. 56,23. fg.</ls> <ls>BHĀG. P. 3,25,32. 5,16,14. 6,1,53.</ls> <ls>Verz. d. Oxf. H. 89,b,39</ls> (wohl स्वाभाविकं zu lesen). <ls>H. 508.</ls> <ls>PAÑCAT. 66, 10.</ls> <ls n='PAÑCAT.'>110, 21.</ls> <ls>SARVADARŚANAS. 57, 18. 89, 9. 96, 6. 130, 16. fgg.</ls> <ls>Schol.</ls> zu <ls>KAP. 1, 5.</ls> <ls>WILSON, SĀṂKHYAK. S. 142.</ls> <ls>KULL.</ls> zu <ls>M. 1, 64.</ls> <ls>KUSUM. 13, 19. 21.</ls> <ls>SIDDH. K.</ls> zu <ls>P. 7, 4, 71.</ls> <i>angeboren</i> von Krankheiten <ls>CARAKA 1, 30. 3, 1.</ls> <ls>SUŚR. 1, 1, 9. 4, 7. 11.</ls> <ls>ŚĀRṄG. SAṂH. 1, 1, 5.</ls> स्वाभाविकेतर <ls>SĀH. D. 11, 16.</ls> स्वाभाविकत्व <lex>n.</lex> nom. abstr. <ls>KUSUM. 17, 20. fg.</ls> <ls>NĪLAK. 66.</ls> <dvsn n='1'>— 2) <lex>m.</lex> pl. Bez. einer buddhistischen Schule, die keinen Gott annimmt, sondern <i>Alles aus sich selbst entstehen lässt</i>, <ls>BURNOUF, Intr. 118. 441. fg.</ls> <ls>WILSON, Sel. Works 2, 12. fg. 21. fg. 24. fgg. 363.</ls> <dvsn n='1'>— 3) <lex>adj.</lex> von 2): समाधि <ls>JVĀLĀVALĪT. 28.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "46374",
+            "pagenum": 824,
+            "content": "स्वाभाविक¦ mfn. (-कः-की-कं) Natural, peculiar, inherent. m. Plu. (-काः) A sect of Buddhists who accounted for all things by the law of nature. E. स्वभाव natural property or nature, ठक् aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "24287",
+            "pagenum": 881,
+            "content": "<b>svā-bhāvika-</b>¦ <i>-ī-</i> <ab>a.</ab> relatif à (sa) nature, à (son) caractère ; naturel, spontané, inhérent, particulier."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "43788",
+            "pagenum": 965,
+            "content": "स्वाभाविक¦ mfn. (-कः-की-कं) Natural, peculiar, inherent. .E. स्वभाव natural property or nature, ठक् aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "43594",
+            "pagenum": 889,
+            "content": "स्वाभाविक¦ (कः-की-कं) <i>a.</i> Natural, peculiar, inherent."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "41256",
+            "pagenum": "5-492-a",
+            "content": "स्वाभाविकः¦, त्रि, (स्वभावे भवः । स्वभाव + ठक् । स्वभावसिद्धः । स्वभावत उत्पन्नः । यथा, “शैत्यं नाम गुणस्तवैव सहजः स्वभाविकी स्वच्छता किं व्रूमः शुचितां भवन्ति शुचयः स्पर्शेन यस्यापरे । किञ्चान्यत् कथयामि ते स्तुतिपदं त्वं जीविनां जीवनं त्वञ्चेन्नीचपथेन गच्छसि पयः कस्त्वां निषेद्धं क्षमः ॥” इति वल्लाल्लसेनं प्रति लक्ष्मणसेनप्रेरितश्लोकः ॥ (व्याधिप्रकारभेदः । यथा, “तद्दुःखसंयोगा व्याधय इत्युच्यन्ते । चतुर्व्विधाः आगन्तवः शारीरा मानसाः स्वाभाविका श्चेति । स्वाभाविकाः क्षुत्पिपासाजरामृत्युनिद्राप्रभृतयः ॥” इति सुश्रुते सूत्रस्थामे प्रथमेऽध्याये ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "स्वाभाविक",
+            "eid": "47685",
+            "pagenum": "5388,a",
+            "content": "स्वाभाविक¦ त्रि० स्वभावादागतः ठञ् । स्वभावसिद्धे स्त्रियां ङीप् (स्वाभाविको स्वच्छतेत्युद्भटः) ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "स्वाभाविक",
+            "content": "स्वाभाविक वि. -  स्वभावादागतः - ठञ् 'अपनी निजी प्रकृति से संबद्ध, अन्तर्जात, अन्तर्हित, विशेष, प्राकृतिक'"
+        },
+        {
+            "word": "स्वाभाविक",
+            "content": "स्वाभाविकः पुं.ब.व. - बौद्धों का एक सम्प्रदाय जो सभी वस्तुओं को प्रकृति के नियमानुसार बनी मानते हैं"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "स्वाभाविक",
+            "content": "natural, unartificial; the word is used frequently in connection with the capacity of denotation which words naturally possess; cf. अभिधानं पुनः स्वाभाविकम् P. I. 2.64 Vrt. 36."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "स्वाभाविक",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಸ್ವಭಾವ ಸಿದ್ಧವಾದ \\/ತಾನಾಗಿಯೇ ಹುಟ್ಟಿದ \\/ಹುಟ್ಟಿನಿಂದಲೇ ಬಂದಿರುವ",
+            "निष्पत्तिः": "'ठक्' (४-३-५३)",
+            "व्युत्पत्तिः": "स्वभावे भवः",
+            "विस्तारः": "ವ್ಯಾಧಿಯು ಆಗಂತವ, ಶಾರೀರ, ಮಾನಸ, ಸ್ವಾಭಾವಿಕ ಎಂದು ೪ ವಿಧ. 'स्वाभाविकानवधिकातिशयेशितृत्वम्'स्तो० र०",
+            "content": ""
+        },
+        {
+            "word": "स्वाभाविक",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಒಂದು ವಿಧ ವ್ಯಾಧಿ",
+            "प्रयोगाः": "'स्वाभाविकाः क्षुत्पिपासाजरामृत्युनिद्राप्रभृतयः'",
+            "उल्लेखाः": "सुश्रुत० सूत्र०",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "स्वाभाविक",
+            "content": "<lexhead no=\"2645\">\n<dentry>स्वाभाविक</dentry>\n<prAwipaxikam>स्वाभाविक</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">स्वाभाविक</prAwipaxikam>\n<etymology>[स्वभावादागतः - ठञ्]</etymology>\n<sense no=\"1\">अपनी निजी प्रकृति से संबद्ध, अन्तर्जात, अन्तर्हित, विशेष, प्राकृतिक, स्वाभाविकं विनीतत्वं तेषां विनयकर्मणा । मुमूर्च्छ सहजं तेजो हविषेव हविर्भुजाम्<citation>रघु* १०।७९</citation>५।६९<citation>कु* ६।३१</citation>स्त्री - स्वाभाविकी</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "स्वाभाविक",
+            "content": "<body><s>svABAvika tri° svaBAvAdAgataH WaY . svaBAvasidDe striyAM NIp (svABAviko svacCatetyudBawaH) .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "स्वाभाविक",
+            "content": "<H1><h><key1>svABAvika</key1><key2>svABAvika</key2></h><body><s>svABAvika</s>   <lex>mf(<s>I</s>)n.</lex> (<ab>fr.</ab> <s>svaBAva</s>) belonging to or arising from one's own nature, natural, native, spontaneous, original, peculiar, inherent (<s>-tva</s> <lex type=\"phw\">n.</lex>), <ls>Up.</ls>; <ls>MBh.</ls> &amp;c.<info phwchild=\"259649.1\" /><info lex=\"m:f#I:n\" /></body><tail><L>259648</L><pc>1283,3</pc></tail></H1>\n <H1B><h><key1>svABAvika</key1><key2>svABAvika</key2></h><body><s>svABAvika</s>   <lex>m. <ab>pl.</ab></lex> <ab>N.</ab> of a <ns>Buddhistic</ns> school (<ab>cf.</ab> <ls>Buddhac. ix, 48</ls>; <ls n=\"Buddhac. ix,\">51</ls>). <info lex=\"m\" /></body><tail><L>259649</L><pc>1283,3</pc></tail></H1B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "स्वाभाविक",
+            "content": "<H1><h><key1>svABAvika</key1><key2>svABAvika</key2></h><body><s>svABAvika</s>  <div n=\"1\">mfn. (<s>-kaH-kI-kaM</s>) Natural, peculiar, inherent. m. Plu. (<s>-kAH</s>) <lb />A sect of Buddhists who accounted for all things by the law of <lb />nature.</div><div n=\"E\"> E. <s>svaBAva</s> natural property or nature, <s>Wak</s> aff.</div></body><tail><L>46374</L><pc>824-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "स्वाभाविक",
+            "content": "<span lang=\"sa\">स्वाभाविक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸ್ವಭಾವ ಸಿದ್ಧವಾದ /ತಾನಾಗಿಯೇ ಹುಟ್ಟಿದ /ಹುಟ್ಟಿನಿಂದಲೇ ಬಂದಿರುವ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"ठक्\" (४-३-५३)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>स्वभावे भवः<div class=\"h-2\"> </div><b>विस्तारः - </b>ವ್ಯಾಧಿಯು ಆಗಂತವ, ಶಾರೀರ, ಮಾನಸ, ಸ್ವಾಭಾವಿಕ ಎಂದು ೪ ವಿಧ। \"स्वाभाविकानवधिकातिशयेशितृत्वम्\" - स्तो० र०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>स्वाभाविक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಒಂದು ವಿಧ ವ್ಯಾಧಿ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"स्वाभाविकाः क्षुत्पिपासाजरामृत्युनिद्राप्रभृतयः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>सुश्रुत० सूत्र०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

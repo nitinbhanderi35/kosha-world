@@ -1,1 +1,79 @@
-C,wDAWD,CATC,6DACC,WAAY,CACZ,UACD,CAGA,4EACC,kBACD,CAKA,0DACC,kDACD,CAGD,iGAIC,eAAgB,CADhB,kCAAmC,CADnC,kCAmBD,CAfC,yHACC,gDACD,CARD,0OAeE,aAMF,CAJE,+IACC,kDACD,CDpEH",sourcesContent:['/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";\n\n.ck-vertical-form .ck-button {\n\t&::after {\n\t\tcontent: "";\n\t\twidth: 0;\n\t\tposition: absolute;\n\t\tright: -1px;\n\t\ttop: -1px;\n\t\tbottom: -1px;\n\t\tz-index: 1;\n\t}\n\n\t&:focus::after {\n\t\tdisplay: none;\n\t}\n}\n\n.ck.ck-responsive-form {\n\t@mixin ck-media-phone {\n\t\t& .ck-button {\n\t\t\t&::after {\n\t\t\t\tcontent: "";\n\t\t\t\twidth: 0;\n\t\t\t\tposition: absolute;\n\t\t\t\tright: -1px;\n\t\t\t\ttop: -1px;\n\t\t\t\tbottom: -1px;\n\t\t\t\tz-index: 1;\n\t\t\t}\n\n\t\t\t&:focus::after {\n\t\t\t\tdisplay: none;\n\t\t\t}\n\t\t}\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@define-mixin ck-media-phone {\n\t@media screen and (max-width: 600px) {\n\t\t@mixin-content;\n\t}\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n\n.ck-vertical-form > .ck-button:nth-last-child(2)::after {\n\tborder-right: 1px solid var(--ck-color-base-border);\n}\n\n.ck.ck-responsive-form {\n\tpadding: var(--ck-spacing-large);\n\n\t&:focus {\n\t\t/* See: https://github.com/ckeditor/ckeditor5/issues/4773 */\n\t\toutline: none;\n\t}\n\n\t@mixin ck-dir ltr {\n\t\t& > :not(:first-child) {\n\t\t\tmargin-left: var(--ck-spacing-standard);\n\t\t}\n\t}\n\n\t@mixin ck-dir rtl {\n\t\t& > :not(:last-child) {\n\t\t\tmargin-left: var(--ck-spacing-standard);\n\t\t}\n\t}\n\n\t@mixin ck-media-phone {\n\t\tpadding: 0;\n\t\twidth: calc(.8 * var(--ck-input-width));\n\n\t\t& .ck-labeled-field-view {\n\t\t\tmargin: var(--ck-spacing-large) var(--ck-spacing-large) 0;\n\n\t\t\t& .ck-input-text {\n\t\t\t\tmin-width: 0;\n\t\t\t\twidth: 100%;\n\t\t\t}\n\n\t\t\t/* Let the long error messages wrap in the narrow form. */\n\t\t\t& .ck-labeled-field-view__error {\n\t\t\t\twhite-space: normal;\n\t\t\t}\n\t\t}\n\n\t\t/* Styles for two last buttons in the form (save&cancel, edit&unlink, etc.). */\n\t\t& > .ck-button:nth-last-child(2) {\n\t\t\t&::after {\n\t\t\t\tborder-right: 1px solid var(--ck-color-base-border);\n\t\t\t}\n\t\t}\n\n\t\t& > .ck-button:nth-last-child(1),\n\t\t& > .ck-button:nth-last-child(2) {\n\t\t\tpadding: var(--ck-spacing-standard);\n\t\t\tmargin-top: var(--ck-spacing-large);\n\t\t\tborder-radius: 0;\n\n\t\t\t&:not(:focus) {\n\t\t\t\tborder-top: 1px solid var(--ck-color-base-border);\n\t\t\t}\n\n\t\t\t@mixin ck-dir ltr {\n\t\t\t\tmargin-left: 0;\n\t\t\t}\n\n\t\t\t@mixin ck-dir rtl {\n\t\t\t\tmargin-left: 0;\n\n\t\t\t\t&:last-of-type {\n\t\t\t\t\tborder-right: 1px solid var(--ck-color-base-border);\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n}\n'],sourceRoot:""}]);const a=s},9381:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-search>.ck-labeled-field-view>.ck-labeled-field-view__input-wrapper>.ck-icon{position:absolute;top:50%;transform:translateY(-50%)}[dir=ltr] .ck.ck-search>.ck-labeled-field-view>.ck-labeled-field-view__input-wrapper>.ck-icon{left:var(--ck-spacing-medium)}[dir=rtl] .ck.ck-search>.ck-labeled-field-view>.ck-labeled-field-view__input-wrapper>.ck-icon{right:var(--ck-spacing-medium)}.ck.ck-search>.ck-labeled-field-view .ck-search__reset{position:absolute;top:50%;transform:translateY(-50%)}.ck.ck-search>.ck-search__results>.ck-search__info>span:first-child{display:block}.ck.ck-search>.ck-search__results>.ck-search__info:not(.ck-hidden)~*{display:none}:root{--ck-search-field-view-horizontal-spacing:calc(var(--ck-icon-size) + var(--ck-spacing-medium))}.ck.ck-search>.ck-labeled-field-view .ck-input{width:100%}.ck.ck-search>.ck-labeled-field-view.ck-search__query_with-icon{--ck-labeled-field-label-default-position-x:var(--ck-search-field-view-horizontal-spacing)}.ck.ck-search>.ck-labeled-field-view.ck-search__query_with-icon>.ck-labeled-field-view__input-wrapper>.ck-icon{opacity:.5;pointer-events:none}.ck.ck-search>.ck-labeled-field-view.ck-search__query_with-icon .ck-input{width:100%}[dir=ltr] .ck.ck-search>.ck-labeled-field-view.ck-search__query_with-icon .ck-input,[dir=rtl] .ck.ck-search>.ck-labeled-field-view.ck-search__query_with-icon .ck-input:not(.ck-input-text_empty){padding-left:var(--ck-search-field-view-horizontal-spacing)}.ck.ck-search>.ck-labeled-field-view.ck-search__query_with-reset{--ck-labeled-field-empty-unfocused-max-width:100% - 2
+{
+    "word": "त्रिदोषज",
+    "MW": [
+        {
+            "word": "त्रिदोषज",
+            "eid": "87811.4",
+            "pagenum": "458,3",
+            "content": "त्रि—दोष—ज ¦ <lex>mfn.</lex> resulting from the <ab n='Tri-doṣa' slp1='tri-doza'>T°</ab>, <ls>L.</ls><info lex='m:f:n'/>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिदोषज",
+            "eid": "18072",
+            "pagenum": 324,
+            "content": "त्रिदोषज¦ m. (-जः) Disease, &c. proceeding from disorder of the three humours of the body. E. त्रिदोष, and ज produced."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिदोषज",
+            "eid": "18089",
+            "pagenum": 389,
+            "content": "त्रिदोषज¦ m. (-जः) Disease, &c. proceeding from disorder of the three humours of the body .E. त्रिदोष, and ज produced."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिदोषज",
+            "eid": "17565",
+            "pagenum": 345,
+            "content": "त्रि-दोष-ज¦ (जः) 1. <i>m.</i> Disease arising from the three humours."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिदोषज",
+            "eid": "15542",
+            "pagenum": "2-657-b",
+            "content": "त्रिदोषजः¦, त्रि, (त्रिदोषाज्जायते इति । जन + “पञ्चम्यामजातौ ।” ३ । २ । ९८ । इति डः ।) त्रिदोषजनितः । सन्निपातरोगः । यथा, “चिरज्वरे वातकफोल्वणे वा त्रिदोषजे वा दशमूलमिश्रः । किराततिक्तादिगणः प्रयोज्यः शुद्ध्यर्थिने वा त्रिवृता विमिश्रः ॥” इति चक्रपाणिदत्तः ॥ (“दृष्ट्वा त्रिदोषजं घोरं ज्वरं प्राणापहारकम् । तस्मादादौ कफस्यास्य शोधनं परिकीर्त्तितम् ॥ न कुर्य्यात् पित्तशमनं यदीच्छेदात्मनो यशः । कफो वातो बलीयांस्तु सद्यो हन्ति रुजातुरम् ॥ लङ्घनं वमनं वारि ष्ठीवनं स्यात्त्रिदोषजे । त्रिरात्रं पञ्चरात्रं वा सप्तरात्रमथापि वा ॥ लङ्घनञ्च समुद्दिष्टं ज्ञात्वा दोषबलाबलम् । कफं विशोधितं ज्ञात्वा ततो वातनिवारणम् ॥ पित्तसंशमनं कार्य्यं ज्ञात्वा पित्तस्य कोपनम् । शोधनीयौ वातकफौ न तु पित्तं विनाशयेत् ॥” इति हारीते चिकित्सितस्थाने द्बितीयेऽध्याये ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिदोषज",
+            "eid": "23659",
+            "pagenum": "3367,a",
+            "content": "त्रिदोषज¦ त्रि० त्रिदोषात् जायते जन--ड । दोषत्रयजाते वातादिसन्निपातजे रोगभेदे “चिरज्वरे बातकफोल्वणे वा त्रिदे षजे वा दशमूलमिश्रः । किराततिक्तादिगणः प्रयोज्यः शुद्ध्यर्थिने वा त्रिवृताविमिश्रः” चक्रद० । अस्य पूर्वरूपं “सर्वलिङ्गसमवायः” भावप्र० । ज्वरशब्दे दृश्यम् ।"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिदोषज",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ವಾತ ಪಿತ್ತ ಕಫಗಳಿಂದ ಉಂಟಾದ",
+            "प्रयोगाः": "'चिरज्वरे वातकफोल्बणे वा त्रिदोषजे वा दशमूलमिश्रः'",
+            "उल्लेखाः": "चक्रद०",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिदोषज",
+            "content": "<body><s>tridozaja tri° tridozAt jAyate jana—qa . dozatrayajAte vAtAdisannipAtaje rogaBede <q>cirajvare bAtakaPolvaRe vA tride zaje vA daSamUlamiSraH . kirAtatiktAdigaRaH prayojyaH SudDyarTine vA trivftAvimiSraH</q> cakrada° . asya pUrvarUpaM <q>sarvaliNgasamavAyaH</q> BAvapra° . jvaraSabde dfSyam .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिदोषज",
+            "content": "<H1><h><key1>tridozaja</key1><key2>tridozaja</key2></h><body><s>tridozaja</s>  <div n=\"1\">m. (<s>-jaH</s>) Disease, &amp;c. proceeding from disorder of the three hu- <lb />mours of the body.</div><div n=\"E\"> E. <s>tridoza,</s> and <s>ja</s> produced.</div></body><tail><L>18072</L><pc>324-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिदोषज",
+            "content": "<span lang=\"sa\">त्रिदोषज<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಾತ ಪಿತ್ತ ಕಫಗಳಿಂದ ಉಂಟಾದ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"चिरज्वरे वातकफोल्बणे वा त्रिदोषजे वा दशमूलमिश्रः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>चक्रद०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

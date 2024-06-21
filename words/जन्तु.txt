@@ -1,912 +1,394 @@
-ed or not.
-    node.memoizedProps.revealOrder !== undefined) {
-      const didSuspend = (node.flags & DidCapture) !== NoFlags$1;
-
-      if (didSuspend) {
-        return node;
-      }
-    } else if (node.child !== null) {
-      node.child.return = node;
-      node = node.child;
-      continue;
-    }
-
-    if (node === row) {
-      return null;
-    }
-
-    while (node.sibling === null) {
-      if (node.return === null || node.return === row) {
-        return null;
-      }
-
-      node = node.return;
-    }
-
-    node.sibling.return = node.return;
-    node = node.sibling;
-  }
-
-  return null;
-}
-
-const NoFlags =
-/*   */
-0b0000; // Represents whether effect should fire.
-
-const HasEffect =
-/* */
-0b0001; // Represents the phase in which the effect (not the clean-up) fires.
-
-const Insertion =
-/* */
-0b0010;
-const Layout =
-/*    */
-0b0100;
-const Passive =
-/*   */
-0b1000;
-
-// there's only a single root, but we do support multi root apps, hence this
-// extra complexity. But this module is optimized for the single root case.
-
-let firstScheduledRoot = null;
-let lastScheduledRoot = null; // Used to prevent redundant mircotasks from being scheduled.
-
-let didScheduleMicrotask = false; // `act` "microtasks" are scheduled on the `act` queue instead of an actual
-
-let mightHavePendingSyncWork = false;
-let isFlushingWork = false;
-let currentEventTransitionLane = NoLane;
-function ensureRootIsScheduled(root) {
-  // This function is called whenever a root receives an update. It does two
-  // things 1) it ensures the root is in the root schedule, and 2) it ensures
-  // there's a pending microtask to process the root schedule.
-  //
-  // Most of the actual scheduling logic does not happen until
-  // `scheduleTaskForRootDuringMicrotask` runs.
-  // Add the root to the schedule
-  if (root === lastScheduledRoot || root.next !== null) ; else {
-    if (lastScheduledRoot === null) {
-      firstScheduledRoot = lastScheduledRoot = root;
-    } else {
-      lastScheduledRoot.next = root;
-      lastScheduledRoot = root;
-    }
-  } // Any time a root received an update, we set this to true until the next time
-  // we process the schedule. If it's false, then we can quickly exit flushSync
-  // without consulting the schedule.
-
-
-  mightHavePendingSyncWork = true; // At the end of the current event, go through each of the roots and ensure
-  // there's a task scheduled for each one at the correct priority.
-
-  {
-    if (!didScheduleMicrotask) {
-      didScheduleMicrotask = true;
-      scheduleImmediateTask(processRootScheduleInMicrotask);
-    }
-  }
-}
-function flushSyncWorkOnAllRoots() {
-  // This is allowed to be called synchronously, but the caller should check
-  // the execution context first.
-  flushSyncWorkAcrossRoots_impl(false);
-}
-function flushSyncWorkOnLegacyRootsOnly() {
-  // This is allowed to be called synchronously, but the caller should check
-  // the execution context first.
-  flushSyncWorkAcrossRoots_impl(true);
-}
-
-function flushSyncWorkAcrossRoots_impl(onlyLegacy) {
-  if (isFlushingWork) {
-    // Prevent reentrancy.
-    // TODO: Is this overly defensive? The callers must check the execution
-    // context first regardless.
-    return;
-  }
-
-  if (!mightHavePendingSyncWork) {
-    // Fast path. There's no sync work to do.
-    return;
-  } // There may or may not be synchronous work scheduled. Let's check.
-
-
-  let didPerformSomeWork;
-  let errors = null;
-  isFlushingWork = true;
-
-  do {
-    didPerformSomeWork = false;
-    let root = firstScheduledRoot;
-
-    while (root !== null) {
-      if (onlyLegacy && root.tag !== LegacyRoot) ; else {
-        const workInProgressRoot = getWorkInProgressRoot();
-        const workInProgressRootRenderLanes = getWorkInProgressRootRenderLanes();
-        const nextLanes = getNextLanes(root, root === workInProgressRoot ? workInProgressRootRenderLanes : NoLanes);
-
-        if (includesSyncLane(nextLanes)) {
-          // This root has pending sync work. Flush it now.
-          try {
-            didPerformSomeWork = true;
-            performSyncWorkOnRoot(root, nextLanes);
-          } catch (error) {
-            // Collect errors so we can rethrow them at the end
-            if (errors === null) {
-              errors = [error];
-            } else {
-              errors.push(error);
-            }
-          }
-        }
-      }
-
-      root = root.next;
-    }
-  } while (didPerformSomeWork);
-
-  isFlushingWork = false; // If any errors were thrown, rethrow them right before exiting.
-  // TODO: Consider returning these to the caller, to allow them to decide
-  // how/when to rethrow.
-
-  if (errors !== null) {
-    if (errors.length > 1) {
-      if (typeof AggregateError === 'function') {
-        // eslint-disable-next-line no-undef
-        throw new AggregateError(errors);
-      } else {
-        for (let i = 1; i < errors.length; i++) {
-          scheduleImmediateTask(throwError.bind(null, errors[i]));
-        }
-
-        const firstError = errors[0];
-        throw firstError;
-      }
-    } else {
-      const error = errors[0];
-      throw error;
-    }
-  }
-}
-
-function throwError(error) {
-  throw error;
-}
-
-function processRootScheduleInMicrotask() {
-  // This function is always called inside a microtask. It should never be
-  // called synchronously.
-  didScheduleMicrotask = false;
-
-
-  mightHavePendingSyncWork = false;
-  const currentTime = now();
-  let prev = null;
-  let root = firstScheduledRoot;
-
-  while (root !== null) {
-    const next = root.next;
-
-    if (currentEventTransitionLane !== NoLane && shouldAttemptEagerTransition()) {
-      // A transition was scheduled during an event, but we're going to try to
-      // render it synchronously anyway. We do this during a popstate event to
-      // preserve the scroll position of the previous page.
-      upgradePendingLaneToSync(root, currentEventTransitionLane);
-    }
-
-    const nextLanes = scheduleTaskForRootDuringMicrotask(root, currentTime);
-
-    if (nextLanes === NoLane) {
-      // This root has no more pending work. Remove it from the schedule. To
-      // guard against subtle reentrancy bugs, this microtask is the only place
-      // we do this — you can add roots to the schedule whenever, but you can
-      // only remove them here.
-      // Null this out so we know it's been removed from the schedule.
-      root.next = null;
-
-      if (prev === null) {
-        // This is the new head of the list
-        firstScheduledRoot = next;
-      } else {
-        prev.next = next;
-      }
-
-      if (next === null) {
-        // This is the new tail of the list
-        lastScheduledRoot = prev;
-      }
-    } else {
-      // This root still has work. Keep it in the list.
-      prev = root;
-
-      if (includesSyncLane(nextLanes)) {
-        mightHavePendingSyncWork = true;
-      }
-    }
-
-    root = next;
-  }
-
-  currentEventTransitionLane = NoLane; // At the end of the microtask, flush any pending synchronous work. This has
-  // to come at the end, because it does actual rendering work that might throw.
-
-  flushSyncWorkOnAllRoots();
-}
-
-function scheduleTaskForRootDuringMicrotask(root, currentTime) {
-  // This function is always called inside a microtask, or at the very end of a
-  // rendering task right before we yield to the main thread. It should never be
-  // called synchronously.
-  //
-  // TODO: Unless enableDeferRootSchedulingToMicrotask is off. We need to land
-  // that ASAP to unblock additional features we have planned.
-  //
-  // This function also never performs React work synchronously; it should
-  // only schedule work to be performed later, in a separate task or microtask.
-  // Check if any lanes are being starved by other work. If so, mark them as
-  // expired so we know to work on those next.
-  markStarvedLanesAsExpired(root, currentTime); // Determine the next lanes to work on, and their priority.
-
-  const workInProgressRoot = getWorkInProgressRoot();
-  const workInProgressRootRenderLanes = getWorkInProgressRootRenderLanes();
-  const nextLanes = getNextLanes(root, root === workInProgressRoot ? workInProgressRootRenderLanes : NoLanes);
-  const existingCallbackNode = root.callbackNode;
-
-  if ( // Check if there's nothing to work on
-  nextLanes === NoLanes || // If this root is currently suspended and waiting for data to resolve, don't
-  // schedule a task to render it. We'll either wait for a ping, or wait to
-  // receive an update.
-  //
-  // Suspended render phase
-  root === workInProgressRoot && isWorkLoopSuspendedOnData() || // Suspended commit phase
-  root.cancelPendingCommit !== null) {
-    // Fast path: There's nothing to work on.
-    if (existingCallbackNode !== null) {
-      cancelCallback(existingCallbackNode);
-    }
-
-    root.callbackNode = null;
-    root.callbackPriority = NoLane;
-    return NoLane;
-  } // Schedule a new callback in the host environment.
-
-
-  if (includesSyncLane(nextLanes)) {
-    // Synchronous work is always flushed at the end of the microtask, so we
-    // don't need to schedule an additional task.
-    if (existingCallbackNode !== null) {
-      cancelCallback(existingCallbackNode);
-    }
-
-    root.callbackPriority = SyncLane;
-    root.callbackNode = null;
-    return SyncLane;
-  } else {
-    // We use the highest priority lane to represent the priority of the callback.
-    const existingCallbackPriority = root.callbackPriority;
-    const newCallbackPriority = getHighestPriorityLane(nextLanes);
-
-    if (newCallbackPriority === existingCallbackPriority && // Special case related to `act`. If the currently scheduled task is a
-    // Scheduler task, rather than an `act` task, cancel it and re-schedule
-    // on the `act` queue.
-    !(false  )) {
-      // The priority hasn't changed. We can reuse the existing task.
-      return newCallbackPriority;
-    } else {
-      // Cancel the existing callback. We'll schedule a new one below.
-      cancelCallback(existingCallbackNode);
-    }
-
-    let schedulerPriorityLevel;
-
-    switch (lanesToEventPriority(nextLanes)) {
-      case DiscreteEventPriority:
-        schedulerPriorityLevel = ImmediatePriority;
-        break;
-
-      case ContinuousEventPriority:
-        schedulerPriorityLevel = UserBlockingPriority;
-        break;
-
-      case DefaultEventPriority:
-        schedulerPriorityLevel = NormalPriority$1;
-        break;
-
-      case IdleEventPriority:
-        schedulerPriorityLevel = IdlePriority;
-        break;
-
-      default:
-        schedulerPriorityLevel = NormalPriority$1;
-        break;
-    }
-
-    const newCallbackNode = scheduleCallback$2(schedulerPriorityLevel, performConcurrentWorkOnRoot.bind(null, root));
-    root.callbackPriority = newCallbackPriority;
-    root.callbackNode = newCallbackNode;
-    return newCallbackPriority;
-  }
-}
-
-function getContinuationForRoot(root, originalCallbackNode) {
-  // This is called at the end of `performConcurrentWorkOnRoot` to determine
-  // if we need to schedule a continuation task.
-  //
-  // Usually `scheduleTaskForRootDuringMicrotask` only runs inside a microtask;
-  // however, since most of the logic for determining if we need a continuation
-  // versus a new task is the same, we cheat a bit and call it here. This is
-  // only safe to do because we know we're at the end of the browser task.
-  // So although it's not an actual microtask, it might as well be.
-  scheduleTaskForRootDuringMicrotask(root, now());
-
-  if (root.callbackNode === originalCallbackNode) {
-    // The task node scheduled for this root is the same one that's
-    // currently executed. Need to return a continuation.
-    return performConcurrentWorkOnRoot.bind(null, root);
-  }
-
-  return null;
-}
-
-function scheduleCallback$2(priorityLevel, callback) {
-  {
-    return scheduleCallback$3(priorityLevel, callback);
-  }
-}
-
-function cancelCallback(callbackNode) {
-  if (callbackNode !== null) {
-    cancelCallback$1(callbackNode);
-  }
-}
-
-function scheduleImmediateTask(cb) {
-  // Alternatively, can we move this check to the host config?
-
-
-  {
-    scheduleMicrotask(() => {
-      // In Safari, appending an iframe forces microtasks to run.
-      // https://github.com/facebook/react/issues/22459
-      // We don't support running callbacks in the middle of render
-      // or commit so we need to check against that.
-      const executionContext = getExecutionContext();
-
-      if ((executionContext & (RenderContext | CommitContext)) !== NoContext) {
-        // Note that this would still prematurely flush the callbacks
-        // if this happens outside render or commit phase (e.g. in an event).
-        // Intentionally using a macrotask instead of a microtask here. This is
-        // wrong semantically but it prevents an infinite loop. The bug is
-        // Safari's, not ours, so we just do our best to not crash even though
-        // the behavior isn't completely correct.
-        scheduleCallback$3(ImmediatePriority, cb);
-        return;
-      }
-
-      cb();
-    });
-  }
-}
-
-function requestTransitionLane() {
-  // The algorithm for assigning an update to a lane should be stable for all
-  // updates at the same priority within the same event. To do this, the
-  // inputs to the algorithm must be the same.
-  //
-  // The trick we use is to cache the first of each of these inputs within an
-  // event. Then reset the cached values once we can be sure the event is
-  // over. Our heuristic for that is whenever we enter a concurrent work loop.
-  if (currentEventTransitionLane === NoLane) {
-    // All transitions within the same event are assigned the same lane.
-    currentEventTransitionLane = claimNextTransitionLane();
-  }
-
-  return currentEventTransitionLane;
-}
-
-// transition updates that occur while the async action is still in progress
-// are treated as part of the action.
-//
-// The ideal behavior would be to treat each async function as an independent
-// action. However, without a mechanism like AsyncContext, we can't tell which
-// action an update corresponds to. So instead, we entangle them all into one.
-// The listeners to notify once the entangled scope completes.
-
-let currentEntangledListeners = null; // The number of pending async actions in the entangled scope.
-
-let currentEntangledPendingCount = 0; // The transition lane shared by all updates in the entangled scope.
-
-let currentEntangledLane = NoLane;
-function requestAsyncActionContext(actionReturnValue, // If this is provided, this resulting thenable resolves to this value instead
-// of the return value of the action. This is a perf trick to avoid composing
-// an extra async function.
-overrideReturnValue) {
-  // This is an async action.
-  //
-  // Return a thenable that resolves once the action scope (i.e. the async
-  // function passed to startTransition) has finished running.
-  const thenable = actionReturnValue;
-  let entangledListeners;
-
-  if (currentEntangledListeners === null) {
-    // There's no outer async action scope. Create a new one.
-    entangledListeners = currentEntangledListeners = [];
-    currentEntangledPendingCount = 0;
-    currentEntangledLane = requestTransitionLane();
-  } else {
-    entangledListeners = currentEntangledListeners;
-  }
-
-  currentEntangledPendingCount++; // Create a thenable that represents the result of this action, but doesn't
-  // resolve until the entire entangled scope has finished.
-  //
-  // Expressed using promises:
-  //   const [thisResult] = await Promise.all([thisAction, entangledAction]);
-  //   return thisResult;
-
-  const resultThenable = createResultThenable(entangledListeners);
-  let resultStatus = 'pending';
-  let resultValue;
-  let rejectedReason;
-  thenable.then(value => {
-    resultStatus = 'fulfilled';
-    resultValue = overrideReturnValue !== null ? overrideReturnValue : value;
-    pingEngtangledActionScope();
-  }, error => {
-    resultStatus = 'rejected';
-    rejectedReason = error;
-    pingEngtangledActionScope();
-  }); // Attach a listener to fill in the result.
-
-  entangledListeners.push(() => {
-    switch (resultStatus) {
-      case 'fulfilled':
+{
+    "word": "जन्तु",
+    "ABCH": [
         {
-          const fulfilledThenable = resultThenable;
-          fulfilledThenable.status = 'fulfilled';
-          fulfilledThenable.value = resultValue;
-          break;
+            "word": "जन्तु",
+            "linga": "पुंक्ली",
+            "pagenum": "52",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4088",
+            "group": "1734",
+            "synonyms": [
+                "पुनर्भविन्",
+                "जीव",
+                "असुमत्",
+                "सत्त्व",
+                "देहभृत्",
+                "जन्यु"
+            ],
+            "content": "क्षेत्रज्ञ आत्मा पुरुषश्चेतनः स पुनर्भवी ।\nजीवः स्यादसुमान्सत्वं देहभृज्जन्युजन्तवः ॥ १३६६ ॥"
         }
-
-      case 'rejected':
+    ],
+    "ACPH": [
         {
-          const rejectedThenable = resultThenable;
-          rejectedThenable.status = 'rejected';
-          rejectedThenable.reason = rejectedReason;
-          break;
+            "word": "जन्तु",
+            "linga": "पुं",
+            "pagenum": "7",
+            "kanda": "तिर्यक्काण्डः",
+            "varga": "वनस्पतिकायः",
+            "eid": "3333",
+            "group": "130",
+            "synonyms": [
+                "आरोहक",
+                "स्कन्धिन्",
+                "सीमिक",
+                "हरितच्छद",
+                "ऊरु",
+                "वह्निभू"
+            ],
+            "content": "वृक्षे त्वारोहकः स्कन्धी सीमिको हरितच्छदः ।\nऊरुर्जन्तुर्वह्रिभूश्च"
         }
-
-      case 'pending':
-      default:
+    ],
+    "BEN": [
         {
-          // The listener above should have been called first, so `resultStatus`
-          // should already be set to the correct value.
-          throw Error(formatProdErrorMessage(478));
+            "word": "जन्तु",
+            "eid": "5263",
+            "pagenum": 323,
+            "content": "जन्तु¦ <i>jan + tu,</i> <ab>m.</ab> <b>1.</b> A creature, <ls>Man.</ls> 3, 77. <b>2.</b> A man, <ls>Man.</ls> 4, 240. <b>3.</b> A proper name, <ls>Bhāg. P.</ls> 9, 22, 1. <b> --</b> <b><ab>Comp.</ab></b> <i>Karkaṭī-,</i> <ab>m.</ab> the offspring of a crab, <ls>Cāṇ.</ls> 56 in Berl. Monatsb. <i>Jala-,</i> <ab>m.</ab> an aquatic animal, <ls>Hit.</ls> i. <ab>d.</ab> 187."
         }
-    }
-  });
-  return resultThenable;
+    ],
+    "BHS": [
+        {
+            "word": "जन्तु",
+            "eid": "6471",
+            "pagenum": 238,
+            "content": "<b>jantu-</b>¦, in <ls>Divy</ls> 〔418.1〕 jantu-gṛhaṃ praveśayitvā dagdhā (Tiṣyarakṣitā); note conjectures jatu-, <i>lac</i>. But <ab>cf.</ab> <lang>Pali</lang> jantu, <ls>Vin.</ls> 〔i.196.6〕, a kind of grass used for making coverlets (corresponds to <ls>Divy</ls> 〔19.22〕 <b>janduraka</b>; see <ab>s.v.</ab> <b>eraka</b>); <i>a house made of jantu-grass</i> would make possible sense."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "जन्तु",
+            "eid": "3368",
+            "pagenum": 135,
+            "content": "जन्तु¦ <i>m.</i> (r. जन् s. तु) animal, animans, creatura. RAGH. 8. 86. BHAR. 2. 9. 3. 45. BH. 5. 15."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "जन्तु",
+            "eid": "7025",
+            "pagenum": 259,
+            "content": "जन्तु¦ <i>jantu</i> <ab>m.</ab> (<ab>sfx.</ab> <i>tu)</i> produit vivant, créature, en <ab>gén.</ab>; animal, bête.  <P><i>jantughna</i> <ab>n.</ab> et <i>jantughnī</i> <ab>f.</ab> <i>(han)</i> plante vermifuge; toute drogue tuant les animaux.  <P><i>jantuphala</i> <ab>m.</ab> ficus glomerata, <ab>bot.</ab>  <P><i>jantulā</i> <ab>f.</ab> (<ab>sfx.</ab> <i>la</i>) saccharum spontaneum, <ab>esp.</ab> de canne à sucre, <ab>bot.</ab>"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "जन्तु",
+            "eid": "11007",
+            "pagenum": 181,
+            "content": "जन्तु/¦ <lex>m.</lex> creature, being, any animal, <ab>esp.</ab> worms, insects, <ab>etc.</ab>; man, person (sgl. also coll.); attendant, servant; child, descendant."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "जन्तु",
+            "eid": "7419",
+            "pagenum": 132,
+            "content": "जन्तु¦ <i>m.</i> Nachkomme, Geschöpf, Mensch <i>(Sgl. auch collect.)</i>; Angehöriger, Diener; Gewürm, Ungeziefer."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "जन्तु",
+            "eid": "3414",
+            "pagenum": 476,
+            "content": "<b>jantú,</b>¦ <ab>m.</ab>, <i>Erzeugtes</i> [von jan], <i>Kind, Nachkomme;</i> 2〉 <i>Angehörige, Diener;</i> 3〉 <i>lebende Wesen, Menschen, Leute,</i> im <ab>Sing.</ab> meist collectiv; 4〉 <i>Geschlecht, Stamm</i> (der Götter und Menschen). <dvsn n='TS'>-ús 1〉 bildlich vācás {779,13} (sómas). <dvsn n='TS'>-úm 3〉 {574,3}. <dvsn n='TS'>-áve 3〉 {236,12}. <dvsn n='TS'>-ós 3〉 víśvasya {386,7}; {620,16}. — 4〉 ubháyasya {525,1}; víṣuṇasya {537,5}. <dvsn n='TS'>-ávas 1〉 {874,1} (pitáram ná); śvaitreyásya {373,3}. — 2〉 asya (índrasya) {94,5}; te (índrasya) {81,9} (die Frommen). — 3〉 {45,6}; {74,3}; {361,2}; divás, gmás, apā́m {875,2}. <dvsn n='TS'>-úbhis 1〉 mánuṣas {237,6}. — 2〉 {966,4}."
+        }
+    ],
+    "INM": [
+        {
+            "word": "जन्तु",
+            "eid": "4800",
+            "pagenum": 353,
+            "content": "<b>Jantu</b>,¦ son of king Somaka. § 408 (Jantūp.): III, <b>127</b>, 10473, 10475, 10476, 10483, 10488, 10490; <b>128</b>, 10492, 10498."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "जन्तु",
+            "eid": "1576",
+            "pagenum": 158,
+            "content": "<b>jantú,</b>¦ <i><ab>m.</ab></i> creature; man. [<b>√jan.</b>]"
+        }
+    ],
+    "MD": [
+        {
+            "word": "जन्तु",
+            "eid": "7869",
+            "pagenum": 99,
+            "content": "जन्तु¦ jan-tú, <lex>m.</lex> offspring; creature, being; 🞄man (<ab>sg.</ab> <i>also</i> <ab>coll.</ab>); person; attendant; vermin: 🞄<ab>—°</ab>, worm of = tiny; <b>sarvo jantuḥ,</b> every one."
+        }
+    ],
+    "MW": [
+        {
+            "word": "जन्तु",
+            "eid": "77001",
+            "pagenum": "411,2",
+            "content": "जन्तु/ ¦ <lex>m.</lex> a child, offspring, <ls>RV.</ls>; <ls>Kathās. iic, 58</ls><info lex='m'/>"
+        },
+        {
+            "word": "जन्तु",
+            "eid": "77002",
+            "pagenum": "411,2",
+            "content": "¦ a creature, living being, man, person (the <ab>sg.</ab> also used collectively, <ab>e.g.</ab> सर्व ज्°, ‘everybody’, <ls>Śak. v, 5/6</ls>; अयं जन्तुः, ‘the man’, <ls>KaṭhUp. ii, 20</ls>; <ls>ŚvetUp. iii, 20</ls>; <ls>Mn. xii, 99</ls>), <ls>RV.</ls>; <ls>Mn.</ls> &c.<info lex='inh'/>"
+        },
+        {
+            "word": "जन्तु",
+            "eid": "77003",
+            "pagenum": "411,2",
+            "content": "¦ a kinsman, servant, <ls>RV. i, 81, 9</ls> and <ls n='RV. i,'>94, 5</ls>; <ls n='RV.'>x, 140, 4</ls><info lex='inh'/>"
+        },
+        {
+            "word": "जन्तु",
+            "eid": "77004",
+            "pagenum": "411,2",
+            "content": "¦ any animal of the lowest organisation, worms, insects, <ls>Mn. vi, 68 f.</ls>; <ls>MBh. xiv, 1136</ls>; <ls>Suśr.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "जन्तु",
+            "eid": "77005",
+            "pagenum": "411,2",
+            "content": "¦ (<lex>n.</lex>), <ls>HYog. iii, 53</ls> and <ls>Subh.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "जन्तु",
+            "eid": "77006",
+            "pagenum": "411,2",
+            "content": "¦ a tree, <ls>Gal.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "जन्तु",
+            "eid": "77007",
+            "pagenum": "411,2",
+            "content": "¦ <ab>N.</ab> of a son of <s1 slp1='somaka'>Somaka</s1>, <ls>MBh. iii, 10473 ff.</ls>; <ls>Hariv. 1793</ls>; <ls>BhP. ix, 22, 1</ls>; <ls>Kathās. xiii, 58 ff.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "जन्तु",
+            "eid": "77008",
+            "pagenum": "411,2",
+            "content": "¦ <ab>cf.</ab> क्षिति-, क्षुद्र-, जल-.<info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "जन्तु",
+            "eid": "19288",
+            "pagenum": 338,
+            "content": "<i>Jantu, us,</i>¦ m. a creature, a living being, man, person; people, mankind; any animal, (usually beings of the lowest organization, such as worms, insects, &c.); N. of a son of Somaka; [cf. <i>kṣiti-jantu,</i> <i>kṣudra-j°, jala-j°.</i>] <i>—Jantu-kambu, u,</i> n. any animal living in a shell, as a snail; a snail's shell. <i>—Jantu-ghna, as, ī, am,</i> killing worms; N. of several vermifuge plants; (<i>as</i>), m. the citron; (<i>ī</i>), f., N. of a plant, <i>= viḍaṅga; (am),</i> n. <i>= viḍaṅga;</i> Asa Fœtida. <i>—Jantu-nāśana, as, ī, am,</i> destroying worms; (<i>am</i>), n. Asa Fœtida. <i>—Jantu-pādapa,</i> <i>as,</i> m., N. of a tree, <i>= kośāmra</i>. <i>—Jantu-phala,</i> <i>as,</i> m. the glomerous fig-tree, Ficus Glomerata; [cf. <i>udumbara.</i>] <i>—Jantu-mat, ān, atī, at,</i> containing worms or insects. <i>—Jantu-mārin, ī,</i> m. or (<i>ī</i>), f. ‘destroying worms,’ the citron. <i>—Jantu-hantrī,</i> f., N. of a vermifuge, <i>= viḍaṅga.</i>"
+        },
+        {
+            "word": "जन्तु",
+            "eid": "19303",
+            "pagenum": 338,
+            "content": "जन्तु¦ <i>jantu, janman.</i> See col. 1."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "जन्तु",
+            "eid": "4971",
+            "pagenum": 1,
+            "content": "<i>Jantu</i> (I)¦ — a son of Purudvat and Bhadrasenā, the Vaidarbhi. Wife of Aikṣvākī, and son Sātvata. <dvsn n='P'/>M. 44. 45-6."
+        },
+        {
+            "word": "जन्तु",
+            "eid": "4972",
+            "pagenum": 1,
+            "content": "<i>Jantu</i> (II)¦ — a son of Somaka; was killed (before he got an heir? Ajamīḍha and Dhūmini had to start the line again). <dvsn n='P'/>M. 50. 16-19; Vā. 99. 209."
+        }
+    ],
+    "PW": [
+        {
+            "word": "जन्तु",
+            "eid": "41602",
+            "pagenum": 2,
+            "content": "जन्तु/¦ <lex>m.</lex> <dvsn n='1'>— 1〉 <i>Kind, Nachkomme</i> <ls n='Chr.'>135,26</ls>. <dvsn n='1'>— 2〉 <i>Geschöpf, [Page2-252-b] Wesen, Mensch, Person</i>. <ab>Sg.</ab> auch in collectiver <ab>Bed.</ab> सर्वो जन्तुः <i>jedermann</i>. अयं जन्तुः so <ab>v. a.</ab> <i>der Mensch</i>. <dvsn n='1'>— 3〉 <i>Angehöriger, Diener</i>. <dvsn n='1'>— 4〉 <i>Gewürm, Ungeziefer, Eingeweidethier</i>. कर्कटी° so <ab>v. a.</ab> <i>ein winziges Krebsweibchen</i>. Ausnahmsweise <lex>n.</lex> <dvsn n='1'>— 5〉 *<i>Baum</i> <ls>GAL.</ls> <dvsn n='1'>— 6〉 <ab>N. pr.</ab> verschiedener Männer <ls>VP.²</ls>"
+        }
+    ],
+    "PWG": [
+        {
+            "word": "जन्तु",
+            "eid": "26584",
+            "pagenum": 3,
+            "content": "जन्तु/¦ (von जन्) <lex>m.</lex> <ls>Uṇ. 1, 72.</ls> <dvsn n='1'> 1) <i>Geschöpf, Wesen, Mensch</i> <ls>NAIGH. 2, 2.</ls> <ls>AK. 1, 1, 4, 8.</ls> <ls n='AK.'>3, 4, 27, 215.</ls> <ls>H. 1366.</ls> त्वां हव^न्ते वि\\क्षु ज\\न्तव^ः <ls>ṚV. 1, 45, 6.</ls> <ls n='ṚV. 1,'>74, 3.</ls> <ls n='ṚV. 1,'>81, 9.</ls> <ls n='ṚV.'>10, 48, 1.</ls> ज\\नय^ं ज\\न्तवे\\ धन^म् <ls n='ṚV.'>3, 2, 12.</ls> <ls n='ṚV.'>5, 7, 2.</ls> विश्व^स्य ज\\न्तोर^ध\\मं च^कार <ls n='ṚV. 5,'>32, 7.</ls> <ls n='ṚV.'>7, 21, 5.</ls> <ls n='ṚV. 7,'>104, 16.</ls> उ\\भय^स्य ज\\न्तोः <i>Götter und Menschen</i> <ls n='ṚV. 7,'>9, 1.</ls> <ls n='ṚV. 7,'>58, 3.</ls> दि\\वश्च\\ ग्मश्चा\\पां च^ ज\\न्तव^ः <ls n='ṚV.'>10, 49, 2.</ls> यथा वायुमाश्रित्य वर्तन्ते सर्वजन्तवः <ls>M. 3, 77.</ls> एतेषामेव जन्तूनां भार्यात्वमुपयान्ति ताः <ls n='M.'>12, 69.</ls> एकः प्रजायते जन्तुरेक एव प्रलीयते <ls n='M.'>4, 240.</ls> क्षत्रशूद्रवपुर्जन्तुरुग्रो नाम प्रजायते <ls n='M.'>10, 9.</ls> <ls>BHAG. 5, 15.</ls> <ls>R. 1, 1, 89.</ls> <ls n='R.'>2, 108, 3</ls> <ls n='R.'>5, 15, 6.</ls> <ls>PAÑCAT. 124, 4.</ls> <ls>HIT. I, 140. 170.</ls> <ls>BHĀG.P. 1, 3, 37.</ls> <i>Person</i> <ls>SUŚR. 1, 18, 15. 117, 8. 130, 17. 239, 18.</ls> <ls>ŚĀK. 99.</ls> सर्वः <i>Jedermann</i> <ls n='ŚĀK.'>61, 18.</ls> अस्य जन्तोः <i>dieses Geschöpfes</i> <ab>d. i.</ab> <i>des Menschen</i> <ls>KAṬHOP. 2, 20.</ls> <ls>ŚVETĀŚV. UP. 3, 20.</ls> <ls>M. 12, 99.</ls> क्षुद्रो जन्तुः <ls>BHARTṚ. 2, 9.</ls> <dvsn n='1'>— 2) <i>Leute, ein Angehöriger</i> (Sohn, Diener): वि\\शां गो\\पा अ^स्य चरन्ति ज\\न्तव^ः <ls>ṚV. 1, 94, 5.</ls> दे\\वेभि\\र्मनु^षश्च ज\\न्तुभि^ः <i>Menschenkinder</i> <ls n='ṚV.'>3, 3, 6.</ls> श्वै\\त्रे\\यस्य^ <ls n='ṚV.'>5, 19, 3.</ls> इ\\र\\ज्यन्न^ग्ने प्रथयस्व ज\\न्तुभि^ः <ls n='ṚV.'>10, 140, 4.</ls> वा\\चो ज\\न्तुः क^वी\\नाम् (सोमः) <ls n='ṚV.'>9, 67, 13.</ls> <dvsn n='1'>— 3) <i>Geschöpf</i>, verächtlich für <i>Gewürm, Ungeziefer, Eingeweidethiere u.s.w.</i>: स्वेदजाः क्रिमयः प्रोक्ता जन्तवश्च यथाक्रमम् <ls>MBH. 14, 1136.</ls> अह्ना रात्र्या च याञ्जन्तून्हिनस्त्यज्ञानतो यतिः <ls>M. 6, 69. 68.</ls> जन्तुप्रमेहनुद् <ls>SUŚR. 1, 214, 17. 219, 12. 2, 238, 5. 380, 1.</ls> <dvsn n='1'>— 4) N. pr. eines Sohnes des <is>Somaka</is> <ls>MBH. 3, 10473. fgg.</ls> <ls>KATHĀS. 13, 58. fgg.</ls> <ls>HARIV. 1793.</ls> <ls>VP. 455.</ls> <ls>BHĀG. P. 9, 22, 1.</ls> <dvsn n='v'>— Vgl. क्षितिजन्तु, क्षुद्र°, जल° ."
+        },
+        {
+            "word": "जन्तु",
+            "eid": "74157",
+            "pagenum": 5,
+            "content": "जन्तु¦ <dvsn n='1'> 1) कर्कटी° = कर्कटी (जन्तु als Genusbegriff hinzugefügt, weil कर्कटी mehrere Bedeutungen hat) <ls>Spr. 3832.</ls>"
+        },
+        {
+            "word": "जन्तु",
+            "eid": "119996",
+            "pagenum": 7,
+            "content": "जन्तु¦ <dvsn n='1'> 3) <lex>n.</lex> <ls>Spr. (II) 7156.</ls> <ls>HEM.</ls> <ls>YOGAŚ. 3, 53.</ls>"
+        }
+    ],
+    "SCH": [
+        {
+            "word": "जन्तु",
+            "eid": "13676",
+            "pagenum": 189,
+            "content": "<i>jantu</i>¦ m. ° = <i>udumbara</i>, <ls>S</ls> II, 66, 12 (Ko.). {part=,seq=13894,type=,n=2}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "जन्तु",
+            "eid": "15812",
+            "pagenum": 281,
+            "content": "जन्तु¦ m. (-न्तुः) Any animal, any being endowed with animal life; it is more usually applied however to beings of the lowest organization. E. जन् to be born, तुन् Unadi aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "जन्तु",
+            "eid": "9480",
+            "pagenum": 258,
+            "content": "<b>jantu-</b>¦ <ab>m.</ab> progéniture, créature, enfant, être humain ; <ab>coll.</ab> gens, animaux (d'espèce inférieure), insectes, etc. ; <ab>n.</ab> d'hommes."
+        }
+    ],
+    "VEI": [
+        {
+            "word": "जन्तु",
+            "eid": "1014",
+            "pagenum": 1,
+            "content": "<b>Jantu,</b>¦ besides the general sense of ‘man,’ has also in a few passages<sup>1</sup> the more restricted sense of ‘follower’ or ‘subject.’ The ‘followers of <b>Śvaitreya</b>’<sup>2</sup> may be compared with the ‘subjects (<i>viśaḥ</i>) of <b>Tṛṇaskanda.</b>’<sup>3</sup> <F>1) Rv. 1. 94, 5; x. 140, 4.</F> <F>2) Rv. v. 19, 3.</F> <F>3) Rv. i. 172, 3.</F>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "जन्तु",
+            "eid": "15841",
+            "pagenum": 339,
+            "content": "जन्तु¦ m. (-न्तुः) Any animal, any being endowed with animal life; it is more usually applied however to beings of the lowest organization. .E. जन to be born, तु Uṇādi aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "जन्तु",
+            "eid": "15303",
+            "pagenum": 298,
+            "content": "जन्तु¦ (न्तुः) 2. <i>m.</i> Any animal."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "जन्तु",
+            "eid": "13186",
+            "pagenum": "2-508-b",
+            "content": "जन्तुः¦, पुं, (जायते उद्भवतीति । जन + “कमिमनिजनीति ।” उणां । १ । ७२ । इति तुः ।) प्राणी । इत्यमरः । १ । ४ । ३० ॥ (यथा, मनौ । ४ । २४० । “एकः प्रजायते जन्तुरेक एव प्रलीयते । एकोऽनुभुङ्क्ते सुकृतमेक एव च दुष्कृतम् ॥” मनुष्ये बहुवचनान्तः । इति निघण्टुः ॥ यथा, ऋग्वेदे । १ । ९४ । ५ । “विशां गोपा अस्य चरन्ति जन्तवो द्बिपच्च यदुत चतुष्पदक्तुभिः ॥” सोमकस्य राज्ञः पुत्त्रविशेषः । अस्य विवरणमुक्तं यथा, महाभारते । ३ । १२७ -- १२८ अध्याययोः । “युधिष्ठिरासीन्नृपतिः सोमको नाम धार्म्मिकः । तस्य भार्य्याशतं राजन् ! सदृशीनामभूत्तदा ॥ स वै यत्नेन महता तासु पुत्त्रं महीपतिः । कञ्चिन्नासादयामास कालेन महता ह्यपि ॥ कदाचित्तस्य वृद्धस्य घटमानस्य यत्नतः । जन्तुर्नाम सुतस्तस्मिन् स्त्रीशते समजायत ॥ तं जातं मातरः सर्व्वाः परिवार्य्य समासते । सततं पृष्ठतः कृत्वा कामभोगान् विशाम्पते ! ॥ ततः पिपीलिका जन्तुं कदाचिददशत् स्फिचि । स दष्टो व्यनदन्नादं तेन दुःखेन बालकः ॥ ततस्ता मातरः सर्व्वाः प्राक्रोशन् भृशदुःखिताः । प्रावार्य्य जन्तुं सहिताः स शब्दस्तुमुलोऽभवत् ॥ तमार्त्तनादं सहसा शुश्राव स महीपतिः । अमात्यपर्षदो मध्ये उपविष्टः सहर्त्विजा ॥ ततः प्रस्थापयामास किमेतदिति पार्थिवः । तस्मै क्षत्ता यथावृत्तमाचचत्ते सुतं प्रति ॥ त्वरमाणः स चोत्थाय सोमकः सह मन्त्रिभिः । प्रविश्यान्तःपुरं पुत्त्रमाश्वासयदरिन्दमः ॥ सान्त्वयित्वा तु तं पुत्त्र निष्क्रम्यान्तःपुरान्नृपः । ऋत्विजा सहितो राजन् ! सहामात्य उपाविशत् ॥ सोमक उवाच । धिगस्त्विहैकपुत्त्रत्वमपुत्त्रत्वं वरं भवेत् । नित्यातुरत्वाद्भूतानां शोक एवैकपुत्त्रता ॥ इदं भार्य्याशतं ब्रह्मन् ! परीक्ष्य सदृशं प्रभो ! । पुत्त्रार्थिना मया चोढं न तासां विद्यते प्रजा ॥ एकः कथञ्चिदुत्पन्नः पुत्त्रो जन्तुरयं मम । यतमानासु सर्व्वासु किन्नु दुःखमतः परम् ॥ वयश्च समतीतं मे सभार्य्यस्य द्बिजोत्तम ! । आसां प्राणाः समायत्ता मम चात्रैकपुत्त्रके ॥ स्यात्तु कर्म्म तथा युक्तं येन पुत्त्रशतं भवेत् । महता लघुना वापि कर्म्मणा दुंष्करेण वा ॥ ऋत्विगुवाच । अस्ति चैतादृशं कर्म्म येन पुत्त्रशतं भवेत् । यदि शक्नोषि तत् कर्त्तुमथ वक्ष्यामि सोमक ! ॥ सोमक उवाच । कार्य्यं वा यदि वाकार्य्यं येन पुत्त्रशतं भवेत् । कृतमेवेति तद्विद्धि भगवन् ! प्रब्रवीतु मे ॥ ऋत्विगुवाच । यजस्व जन्तुना राजंस्त्वं मया वितते क्रतौ । ततः पुत्त्रशतं श्रीमद्भविष्यत्यचिरेण ते ॥ वपायां हूयमानायां धूममाघ्राय मातरः । ततस्ताः सुमहावीर्य्यान् जनयिष्यन्ति ते सुतान् । तस्यामेव तु ते जन्तुर्भविता पुनरात्मजः । उत्तरे चास्य सौवर्णं लक्ष्म पार्श्वे भविष्यति ॥ ततः स याजयामास सोमकं तेन जन्तुना । मातरस्तु वलात् पुत्त्रमपाकार्षुः कृपान्विताः ॥ हा हताः स्मेति वाशन्त्यस्तीव्रशोकसमाहताः । रुदत्यः करुणञ्चापि गृहीत्वा दक्षिणे करे ॥ सव्ये पाणौ गृहीत्वा तु याजकोऽपि स्म कर्षति । कुररीणामिवार्त्तानां समाकृष्य तु तं सुतम् ॥ विशस्य चैनं विधिना वपामस्य जुहाव सः । वपायां हूयमानायां गन्धमाघ्राय मातरः ॥ आर्त्ता निपेतुः सहसा पृथिव्यां कुरुनन्दन ! ॥ सर्व्वाश्च गर्भानलभंस्ततस्ताः परमाङ्गनाः ॥ ततो दशसु मासेषु सोमकस्य विशाम्पतेः । जज्ञे पुत्त्रशतं पूर्णं तासु सर्व्वासु भारत ! ॥ जन्तुर्ज्येष्ठः समभवत् जनित्र्यामेव पार्थिव ! । स तासामिष्ट एवासीत् न तथा ते निजाः सुताः ॥ तच्च लक्षणमस्यासीत् सौवर्णं पार्श्व उत्तरे । तस्मित् पुत्त्रशते चाग्र्यः स बभूव गुणैरपि ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "जन्तु",
+            "eid": "20598",
+            "pagenum": "3026,a",
+            "content": "जन्तु¦ पु० जन--तुन् । १ जननशीले प्राणिनि अमरः अविद्यादोषात् देहात्माभिमानिनि २ जीवे । “एतेषामेव जन्तूनां भार्य्यात्वमुपयान्ति ताः” मनुः । “ज्ञानमस्ति समस्तस्य जन्तोर्विषयगोचरे” देवीमा० “स्वेदजाः कृमयः प्रोक्ता जन्तवश्च यथाक्रमम्” भा० आश्व० ११३६ श्लो० । सोमकस्य नृपस्य भार्य्याशते जायमाने पुत्रभेदे “युधिष्ठिरासीन् नृपतिः सोमको नाम धार्म्मिकः” इत्युपक्रमे “कदाचित्तस्य वृद्धस्य घटमानस्य यत्नतः! जन्तुर्नाम सुतस्तस्मिन् स्त्रीशते समजायन” इत्युक्त्वा “तस्य राज्ञ एकपुत्रत्वदुःखनिवारणाय लोमशेन वह्नौ जन्तुवपाया हवने कृते जन्तुपूर्वकं पुत्रशतं स्त्रीशते तस्याजायत इत्युक्तम् भा० व० १२७ । २२८ अ० । जन्तूपाख्याने दृश्यम् । ४ मनुष्ये ब० व०” निघण्टुः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "जन्तु",
+            "content": "जन्तुः पुं. -  जन् +  तृन् 'जानवर, जीवित प्राणी, मनुष्य'"
+        },
+        {
+            "word": "जन्तु",
+            "content": "जन्तुः पुं. - 'आत्मा, व्यक्ति'"
+        },
+        {
+            "word": "जन्तु",
+            "content": "जन्तुः पुं. - निम्न जाति का जानवर"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "जन्तु",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಹುಟ್ಟುವ ಸ್ವಭಾವದ ಪ್ರಾಣಿ",
+            "निष्पत्तिः": "जनी (प्रादुर्भावे)'तुः' (उ० १-७२)",
+            "व्युत्पत्तिः": "जायते",
+            "प्रयोगाः": "'एकः प्रजायते जन्तुः एक एव प्रलीयते । एकोऽनुभुङ्क्ते सुकृतमेक एव च दुष्कृतम् ॥' 'अमर्षशून्येन जनस्य जन्तुना न जातहार्देन न विद्विषादरः' ।",
+            "उल्लेखाः": "मनु० ४-२४०, किरा० १-३३",
+            "content": ""
+        },
+        {
+            "word": "जन्तु",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಮನುಷ್ಯ \\/ಪುರುಷ",
+            "प्रयोगाः": "'बिभर्ति सर्वभूतानि वेदशास्त्रं सनातनम् । तस्मादेतत् परं मन्ये यज्जन्तोरस्य साधनम् ॥'",
+            "उल्लेखाः": "मनु० १२-९९",
+            "content": ""
+        },
+        {
+            "word": "जन्तु",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಜೀವ",
+            "प्रयोगाः": "'एतेषामेव जन्तूनां भार्यात्वमुपयान्ति ताः'",
+            "उल्लेखाः": "मनु० १२-६९",
+            "content": ""
+        },
+        {
+            "word": "जन्तु",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಇರುವೆ ಮೊದಲಾದಸಣ್ಣ ಪ್ರಾಣಿ",
+            "प्रयोगाः": "'संरक्षणार्थं जन्तूनां रात्रावहनि वा सदा । शरीरस्यात्यये चैव समीक्ष्य वसुधां चरेत् ॥'",
+            "उल्लेखाः": "मनु० ६-६८",
+            "content": ""
+        },
+        {
+            "word": "जन्तु",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸೋಮನಕವೆಂಬ ಒಬ್ಬ ರಾಜನ ಮಗ",
+            "प्रयोगाः": "'जन्तुर्ज्येष्ठः समभवज्जनित्र्यामेव पार्थिव'",
+            "उल्लेखाः": "भा० वन० १२८",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "जन्तु",
+            "linga": "P",
+            "artha": "प्राणी",
+            "synonyms": [
+                "प्राणिन्",
+                "चेतन",
+                "जन्मिन्",
+                "जन्तु",
+                "जन्यु",
+                "शरीरिन्",
+                "भूत"
+            ],
+            "num": "1.4.32",
+            "text": "प्राणी तु चेतनो जन्मी जन्तुजन्युशरीरिणः । जातिर्जातं च सामान्यं व्यक्तिस्तु पृथगात्मता ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "जन्तु",
+            "content": "<body><s>jantu pu° jana—tun . <lb/><b>1</b> jananaSIle prARini amaraH avidyA­dozAt dehAtmABimAnini <lb/><b>2</b> jIve . <q>etezAmeva jantUnAM BAryyAtvamupayAnti tAH</q> manuH . <q>jYAnamasti samastasya jantorvizayagocare</q> devImA° <q>svedajAH kfmayaH proktA jantavaSca yaTAkramam</q> BA° ASva° 1136 Slo° . somakasya nfpasya BAryyASate jAyamAne putraBede <q>yuDizWirAsIn nfpatiH somako nAma DArmmikaH</q> ityupakrame <q>kadAcittasya vfdDasya GawamAnasya yatnataH! janturnAma sutastasmin strISate samajAyana</q> ityuktvA <q>tasya rAjYa ekaputratvaduHKanivAra­RAya lomaSena vahnO jantuvapAyA havane kfte jantupUrvakaM putraSataM strISate tasyAjAyata ityuktam BA° va° 127 . 228 a° . jantUpAKyAne dfSyam . 4 manuzye ba° va°</q> niGaRwuH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "जन्तु",
+            "content": "<H2><h><key1>jantu</key1><key2>jantu/</key2></h><body><s>jantu/</s>   <lex>m.</lex> a child, offspring, <ls>RV.</ls>; <ls>Kathās. iic, 58</ls><info lex=\"m\" /></body><tail><L>77001</L><pc>411,2</pc></tail></H2>\n <H2A><h><key1>jantu</key1><key2>jantu/</key2></h><body>  a creature, living being, man, person (the <ab>sg.</ab> also used collectively, <ab>e.g.</ab> <s>sarva j°</s>, ‘everybody’, <ls>Śak. v, 5/6</ls>; <s>ayaM jantuH</s>, ‘the man’, <ls>KaṭhUp. ii, 20</ls>; <ls>ŚvetUp. iii, 20</ls>; <ls>Mn. xii, 99</ls>), <ls>RV.</ls>; <ls>Mn.</ls> &amp;c.<info lex=\"inh\" /></body><tail><L>77002</L><pc>411,2</pc></tail></H2A>\n <H2A><h><key1>jantu</key1><key2>jantu/</key2></h><body>  a kinsman, servant, <ls>RV. i, 81, 9</ls> and <ls n=\"RV. i,\">94, 5</ls>; <ls n=\"RV.\">x, 140, 4</ls><info lex=\"inh\" /></body><tail><L>77003</L><pc>411,2</pc></tail></H2A>\n <H2A><h><key1>jantu</key1><key2>jantu/</key2></h><body>  any animal of the lowest organisation, worms, insects, <ls>Mn. vi, 68 f.</ls>; <ls>MBh. xiv, 1136</ls>; <ls>Suśr.</ls><info lex=\"inh\" /></body><tail><L>77004</L><pc>411,2</pc></tail></H2A>\n <H2A><h><key1>jantu</key1><key2>jantu/</key2></h><body>  (<lex>n.</lex>), <ls>HYog. iii, 53</ls> and <ls>Subh.</ls><info lex=\"inh\" /></body><tail><L>77005</L><pc>411,2</pc></tail></H2A>\n <H2A><h><key1>jantu</key1><key2>jantu/</key2></h><body>  a tree, <ls>Gal.</ls><info lex=\"inh\" /></body><tail><L>77006</L><pc>411,2</pc></tail></H2A>\n <H2A><h><key1>jantu</key1><key2>jantu/</key2></h><body>  <ab>N.</ab> of a son of <s1 slp1=\"somaka\">Somaka</s1>, <ls>MBh. iii, 10473 ff.</ls>; <ls>Hariv. 1793</ls>; <ls>BhP. ix, 22, 1</ls>; <ls>Kathās. xiii, 58 ff.</ls><info lex=\"inh\" /></body><tail><L>77007</L><pc>411,2</pc></tail></H2A>\n <H2A><h><key1>jantu</key1><key2>jantu/</key2></h><body>  <ab>cf.</ab> <s>kziti-</s>, <s>kzudra-</s>, <s>jala-</s>.<info lex=\"inh\" /></body><tail><L>77008</L><pc>411,2</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "जन्तु",
+            "content": "<H1><h><key1>jantu</key1><key2>jantu</key2></h><body><s>jantu</s>  <div n=\"1\">m. (<s>-ntuH</s>) Any animal, any being endowed with animal life; it <lb />is more usually applied however to beings of the lowest organiza- <lb />tion.</div><div n=\"E\"> E. <s>jan</s> to be born, <s>tun</s> Unadi aff.</div></body><tail><L>15812</L><pc>281-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "जन्तु",
+            "content": "<span lang=\"sa\">जन्तु<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹುಟ್ಟುವ ಸ್ವಭಾವದ ಪ್ರಾಣಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>जनी (प्रादुर्भावे) - \"तुः\" (उ० १-७२)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>जायते<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"एकः प्रजायते जन्तुः एक एव प्रलीयते । एकोऽनुभुङ्क्ते सुकृतमेक एव च दुष्कृतम् ॥\" \"अमर्षशून्येन जनस्य जन्तुना न जातहार्देन न विद्विषादरः\" ।<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० ४-२४०, किरा० १-३३<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जन्तु<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮನುಷ್ಯ /ಪುರುಷ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"बिभर्ति सर्वभूतानि वेदशास्त्रं सनातनम् । तस्मादेतत् परं मन्ये यज्जन्तोरस्य साधनम् ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० १२-९९<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जन्तु<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಜೀವ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"एतेषामेव जन्तूनां भार्यात्वमुपयान्ति ताः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० १२-६९<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जन्तु<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಇರುವೆ ಮೊದಲಾದಸಣ್ಣ ಪ್ರಾಣಿ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"संरक्षणार्थं जन्तूनां रात्रावहनि वा सदा । शरीरस्यात्यये चैव समीक्ष्य वसुधां चरेत् ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० ६-६८<div class=\"h-2\"> </div><div class=\"h-2\"> </div>जन्तु<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸೋಮನಕವೆಂಬ ಒಬ್ಬ ರಾಜನ ಮಗ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"जन्तुर्ज्येष्ठः समभवज्जनित्र्यामेव पार्थिव\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भा० वन० १२८<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-function requestSyncActionContext(actionReturnValue, // If this is provided, this resulting thenable resolves to this value instead
-// of the return value of the action. This is a perf trick to avoid composing
-// an extra async function.
-overrideReturnValue) {
-  const resultValue = overrideReturnValue !== null ? overrideReturnValue : actionReturnValue; // This is not an async action, but it may be part of an outer async action.
-
-  if (currentEntangledListeners === null) {
-    return resultValue;
-  } else {
-    // Return a thenable that does not resolve until the entangled actions
-    // have finished.
-    const entangledListeners = currentEntangledListeners;
-    const resultThenable = createResultThenable(entangledListeners);
-    entangledListeners.push(() => {
-      const fulfilledThenable = resultThenable;
-      fulfilledThenable.status = 'fulfilled';
-      fulfilledThenable.value = resultValue;
-    });
-    return resultThenable;
-  }
-}
-
-function pingEngtangledActionScope() {
-  if (currentEntangledListeners !== null && --currentEntangledPendingCount === 0) {
-    // All the actions have finished. Close the entangled async action scope
-    // and notify all the listeners.
-    const listeners = currentEntangledListeners;
-    currentEntangledListeners = null;
-    currentEntangledLane = NoLane;
-
-    for (let i = 0; i < listeners.length; i++) {
-      const listener = listeners[i];
-      listener();
-    }
-  }
-}
-
-function createResultThenable(entangledListeners) {
-  // Waits for the entangled async action to complete, then resolves to the
-  // result of an individual action.
-  const resultThenable = {
-    status: 'pending',
-    value: null,
-    reason: null,
-
-    then(resolve) {
-      // This is a bit of a cheat. `resolve` expects a value of type `S` to be
-      // passed, but because we're instrumenting the `status` field ourselves,
-      // and we know this thenable will only be used by React, we also know
-      // the value isn't actually needed. So we add the resolve function
-      // directly to the entangled listeners.
-      //
-      // This is also why we don't need to check if the thenable is still
-      // pending; the Suspense implementation already performs that check.
-      const ping = resolve;
-      entangledListeners.push(ping);
-    }
-
-  };
-  return resultThenable;
-}
-
-function peekEntangledActionLane() {
-  return currentEntangledLane;
-}
-
-const ReactCurrentDispatcher$1 = ReactSharedInternals.ReactCurrentDispatcher,
-      ReactCurrentBatchConfig$3 = ReactSharedInternals.ReactCurrentBatchConfig;
-// lifetime of an effect. In Rust terms, a RefCell. We use it to store the
-// "destroy" function that is returned from an effect, because that is stateful.
-// The field is `undefined` if the effect is unmounted, or if the effect ran
-// but is not stateful. We don't explicitly track whether the effect is mounted
-// or unmounted because that can be inferred by the hiddenness of the fiber in
-// the tree, i.e. whether there is a hidden Offscreen fiber above it.
-//
-// It's unfortunate that this is stored on a separate object, because it adds
-// more memory per effect instance, but it's conceptually sound. I think there's
-// likely a better data structure we could use for effects; perhaps just one
-// array of effect instances per fiber. But I think this is OK for now despite
-// the additional memory and we can follow up with performance
-// optimizations later.
-// These are set right before calling the component.
-
-
-let renderLanes = NoLanes; // The work-in-progress fiber. I've named it differently to distinguish it from
-// the work-in-progress hook.
-
-let currentlyRenderingFiber$1 = null; // Hooks are stored as a linked list on the fiber's memoizedState field. The
-// current hook list is the list that belongs to the current fiber. The
-// work-in-progress hook list is a new list that will be added to the
-// work-in-progress fiber.
-
-let currentHook = null;
-let workInProgressHook = null; // Whether an update was scheduled at any point during the render phase. This
-// does not get reset if we do another render pass; only when we're completely
-// finished evaluating this component. This is an optimization so we know
-// whether we need to clear render phase updates after a throw.
-
-let didScheduleRenderPhaseUpdate = false; // Where an update was scheduled only during the current render pass. This
-// gets reset after each attempt.
-// TODO: Maybe there's some way to consolidate this with
-// `didScheduleRenderPhaseUpdate`. Or with `numberOfReRenders`.
-
-let didScheduleRenderPhaseUpdateDuringThisPass = false;
-let shouldDoubleInvokeUserFnsInHooksDEV = false; // Counts the number of useId hooks in this component.
-
-let localIdCounter = 0; // Counts number of `use`-d thenables
-
-let thenableIndexCounter = 0;
-let thenableState = null; // Used for ids that are generated completely client-side (i.e. not during
-// hydration). This counter is global, so client ids are not stable across
-// render attempts.
-
-let globalClientIdCounter = 0;
-const RE_RENDER_LIMIT = 25; // In DEV, this is the name of the currently executing primitive hook
-
-function throwInvalidHookError() {
-  throw Error(formatProdErrorMessage(321));
-}
-
-function areHookInputsEqual(nextDeps, prevDeps) {
-
-  if (prevDeps === null) {
-
-    return false;
-  }
-
-
-  for (let i = 0; i < prevDeps.length && i < nextDeps.length; i++) {
-    // $FlowFixMe[incompatible-use] found when upgrading Flow
-    if (objectIs(nextDeps[i], prevDeps[i])) {
-      continue;
-    }
-
-    return false;
-  }
-
-  return true;
-}
-
-function renderWithHooks(current, workInProgress, Component, props, secondArg, nextRenderLanes) {
-  renderLanes = nextRenderLanes;
-  currentlyRenderingFiber$1 = workInProgress;
-
-  workInProgress.memoizedState = null;
-  workInProgress.updateQueue = null;
-  workInProgress.lanes = NoLanes; // The following should have already been reset
-  // currentHook = null;
-  // workInProgressHook = null;
-  // didScheduleRenderPhaseUpdate = false;
-  // localIdCounter = 0;
-  // thenableIndexCounter = 0;
-  // thenableState = null;
-  // TODO Warn if no hooks are used at all during mount, then some are used during update.
-  // Currently we will identify the update render as a mount because memoizedState === null.
-  // This is tricky because it's valid for certain types of components (e.g. React.lazy)
-  // Using memoizedState to differentiate between mount/update only works if at least one stateful hook is used.
-  // Non-stateful hooks (e.g. context) don't get added to memoizedState,
-  // so memoizedState would be null during updates and mounts.
-
-  {
-    ReactCurrentDispatcher$1.current = current === null || current.memoizedState === null ? HooksDispatcherOnMount : HooksDispatcherOnUpdate;
-  } // In Strict Mode, during development, user functions are double invoked to
-  // help detect side effects. The logic for how this is implemented for in
-  // hook components is a bit complex so let's break it down.
-  //
-  // We will invoke the entire component function twice. However, during the
-  // second invocation of the component, the hook state from the first
-  // invocation will be reused. That means things like `useMemo` functions won't
-  // run again, because the deps will match and the memoized result will
-  // be reused.
-  //
-  // We want memoized functions to run twice, too, so account for this, user
-  // functions are double invoked during the *first* invocation of the component
-  // function, and are *not* double invoked during the second incovation:
-  //
-  // - First execution of component function: user functions are double invoked
-  // - Second execution of component function (in Strict Mode, during
-  //   development): user functions are not double invoked.
-  //
-  // This is intentional for a few reasons; most importantly, it's because of
-  // how `use` works when something suspends: it reuses the promise that was
-  // passed during the first attempt. This is itself a form of memoization.
-  // We need to be able to memoize the reactive inputs to the `use` call using
-  // a hook (i.e. `useMemo`), which means, the reactive inputs to `use` must
-  // come from the same component invocation as the output.
-  //
-  // There are plenty of tests to ensure this behavior is correct.
-
-
-  const shouldDoubleRenderDEV = false  ;
-  shouldDoubleInvokeUserFnsInHooksDEV = shouldDoubleRenderDEV;
-  let children = Component(props, secondArg);
-  shouldDoubleInvokeUserFnsInHooksDEV = false; // Check if there was a render phase update
-
-  if (didScheduleRenderPhaseUpdateDuringThisPass) {
-    // Keep rendering until the component stabilizes (there are no more render
-    // phase updates).
-    children = renderWithHooksAgain(workInProgress, Component, props, secondArg);
-  }
-
-  finishRenderingHooks();
-  return children;
-}
-
-function finishRenderingHooks(current, workInProgress, Component) {
-  // at the beginning of the render phase and there's no re-entrance.
-
-
-  ReactCurrentDispatcher$1.current = ContextOnlyDispatcher; // This check uses currentHook so that it works the same in DEV and prod bundles.
-  // hookTypesDev could catch more cases (e.g. context) but only in DEV bundles.
-
-  const didRenderTooFewHooks = currentHook !== null && currentHook.next !== null;
-  renderLanes = NoLanes;
-  currentlyRenderingFiber$1 = null;
-  currentHook = null;
-  workInProgressHook = null;
-
-  didScheduleRenderPhaseUpdate = false; // This is reset by checkDidRenderIdHook
-  // localIdCounter = 0;
-
-  thenableIndexCounter = 0;
-  thenableState = null;
-
-  if (didRenderTooFewHooks) {
-    throw Error(formatProdErrorMessage(300));
-  }
-}
-
-function replaySuspendedComponentWithHooks(current, workInProgress, Component, props, secondArg) {
-
-  const children = renderWithHooksAgain(workInProgress, Component, props, secondArg);
-  finishRenderingHooks();
-  return children;
-}
-
-function renderWithHooksAgain(workInProgress, Component, props, secondArg) {
-  // This is used to perform another render pass. It's used when setState is
-  // called during render, and for double invoking components in Strict Mode
-  // during development.
-  //
-  // The state from the previous pass is reused whenever possible. So, state
-  // updates that were already processed are not processed again, and memoized
-  // functions (`useMemo`) are not invoked again.
-  //
-  // Keep rendering in a loop for as long as render phase updates continue to
-  // be scheduled. Use a counter to prevent infinite loops.
-  currentlyRenderingFiber$1 = workInProgress;
-  let numberOfReRenders = 0;
-  let children;
-
-  do {
-    if (didScheduleRenderPhaseUpdateDuringThisPass) {
-      // It's possible that a use() value depended on a state that was updated in
-      // this rerender, so we need to watch for different thenables this time.
-      thenableState = null;
-    }
-
-    thenableIndexCounter = 0;
-    didScheduleRenderPhaseUpdateDuringThisPass = false;
-
-    if (numberOfReRenders >= RE_RENDER_LIMIT) {
-      throw Error(formatProdErrorMessage(301));
-    }
-
-    numberOfReRenders += 1;
-
-
-    currentHook = null;
-    workInProgressHook = null;
-    workInProgress.updateQueue = null;
-
-    ReactCurrentDispatcher$1.current = HooksDispatcherOnRerender;
-    children = Component(props, secondArg);
-  } while (didScheduleRenderPhaseUpdateDuringThisPass);
-
-  return children;
-}
-
-function renderTransitionAwareHostComponentWithHooks(current, workInProgress, lanes) {
-
-  return renderWithHooks(current, workInProgress, TransitionAwareHostComponent, null, null, lanes);
-}
-function TransitionAwareHostComponent() {
-
-  const dispatcher = ReactCurrentDispatcher$1.current;
-
-  const _dispatcher$useState = dispatcher.useState(),
-        maybeThenable = _dispatcher$useState[0];
-
-  if (typeof maybeThenable.then === 'function') {
-    const thenable = maybeThenable;
-    return useThenable(thenable);
-  } else {
-    const status = maybeThenable;
-    return status;
-  }
-}
-function checkDidRenderIdHook() {
-  // This should be called immediately after every renderWithHooks call.
-  // Conceptually, it's part of the return value of renderWithHooks; it's only a
-  // separate function to avoid using an array tuple.
-  const didRenderIdHook = localIdCounter !== 0;
-  localIdCounter = 0;
-  return didRenderIdHook;
-}
-function bailoutHooks(current, workInProgress, lanes) {
-  workInProgress.updateQueue = current.updateQueue; // TODO: Don't need to reset the flags here, because they're reset in the
-  // complete phase (bubbleProperties).
-
-  {
-    workInProgress.flags &= ~(Passive$1 | Update);
-  }
-
-  current.lanes = removeLanes(current.lanes, lanes);
-}
-function resetHooksAfterThrow() {
-  // This is called immediaetly after a throw. It shouldn't reset the entire
-  // module state, because the work loop might decide to replay the component
-  // again without rewinding.
-  //
-  // It should only reset things like the current dispatcher, to prevent hooks
-  // from being called outside of a component.
-  currentlyRenderingFiber$1 = null; // We can assume the previous dispatcher is always this one, since we set it
-  // at the beginning of the render phase and there's no re-entrance.
-
-  ReactCurrentDispatcher$1.current = ContextOnlyDispatcher;
-}
-function resetHooksOnUnwind(workInProgress) {
-  if (didScheduleRenderPhaseUpdate) {
-    // There were render phase updates. These are only valid for this render
-    // phase, which we are now aborting. Remove the updates from the queues so
-    // they do not persist to the next render. Do not remove updates from hooks
-    // that weren't processed.
-    //
-    // Only reset the updates from the queue if it has a clone. If it does
-    // not have a clone, that means it wasn't processed, and the updates were
-    // scheduled before we entered the render phase.
-    let hook = workInProgress.memoizedState;
-
-    while (hook !== null) {
-      const queue = hook.queue;
-
-      if (queue !== null) {
-        queue.pending = null;
-      }
-
-      hook = hook.next;
-    }
-
-    didScheduleRenderPhaseUpdate = false;
-  }
-
-  renderLanes = NoLanes;
-  currentlyRenderingFiber$1 = null;
-  currentHook = null;
-  workInProgressHook = null;
-
-  didScheduleRenderPhaseUpdateDuringThisPass = false;
-  localIdCounter = 0;
-  thenableIndexCounter = 0;
-  thenableState = null;
-}
-
-function mountWorkInProgressHook() {
-  const hook = {
-    memoizedState: null,
-    baseState: null,
-    baseQueue: null,
-    queue: null,
-    next: null
-  };
-
-  if (workInProgressHook === null) {
-    // This is the first hook in the list
-    currentlyRenderingFiber$1.memoizedState = workInProgressHook = hook;
-  } else {
-    // Append to the end of the list
-    workInProgressHook = workInProgressHook.next = hook;
-  }
-
-  return workInProgressHook;
-}
-
-function updateWorkInProgressHook() {
-  // This function is used both for updates and for re-renders triggered by a
-  // render phase update. It assumes there is either a current hook we can
-  // clone, or a work-in-progress hook from a previous render pass that we can
-  // use as a base.
-  let nextCurrentHook;
-
-  if (currentHook === null) {
-    const current = currentlyRenderingFiber$1.alternate;
-
-    if (current !== null) {
-      nextCurrentHook = current.memoizedState;
-    } else {
-      nextCurrentHook = null;
-    }
-  } else {
-    nextCurrentHook = currentHook.next;
-  }
-
-  let nextWorkInProgressHook;
-
-  if (workInProgressHook === null) {
-    nextWorkInProgressHook = currentlyRenderingFiber$1.memoizedState;
-  } else {
-    nextWorkInProgressHook = workInProgressHook.next;
-  }
-
-  if (nextWorkInProgressHook !== null) {
-    // There's already a work-in-progress. Reuse it.
-    workInProgressHook = nextWorkInProgressHook;
-    nextWorkInProgressHook = workInProgressHook.next;
-    currentHook = nextCurrentHook;
-  } else {
-    // Clone from the current hook.
-    if (nextCurrentHook === null) {
-      const currentFiber = currentlyRend

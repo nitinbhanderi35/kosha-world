@@ -1,1 +1,130 @@
-25zZTtcblxuICBpZiAodHlwZW9mIGRhdGEgIT09IFwic3RyaW5nXCIpIHtcbiAgICByZXR1cm4gZGF0YTtcbiAgfVxuXG4gIGNvbnN0IGFycmF5ID0gKDAsIF91dGlsLnN0cmluZ1RvQnl0ZXMpKGRhdGEpO1xuICByZXR1cm4gYXJyYXkuYnVmZmVyO1xufVxuXG5jbGFzcyBOZXR3b3JrTWFuYWdlciB7XG4gIGNvbnN0cnVjdG9yKHVybCwgYXJncyA9IHt9KSB7XG4gICAgdGhpcy51cmwgPSB1cmw7XG4gICAgdGhpcy5pc0h0dHAgPSAvXmh0dHBzPzovaS50ZXN0KHVybCk7XG4gICAgdGhpcy5odHRwSGVhZGVycyA9IHRoaXMuaXNIdHRwICYmIGFyZ3MuaHR0cEhlYWRlcnMgfHwgT2JqZWN0LmNyZWF0ZShudWxsKTtcbiAgICB0aGlzLndpdGhDcmVkZW50aWFscyA9IGFyZ3Mud2l0aENyZWRlbnRpYWxzIHx8IGZhbHNlO1xuXG4gICAgdGhpcy5nZXRYaHIgPSBhcmdzLmdldFhociB8fCBmdW5jdGlvbiBOZXR3b3JrTWFuYWdlcl9nZXRYaHIoKSB7XG4gICAgICByZXR1cm4gbmV3IFhNTEh0dHBSZXF1ZXN0KCk7XG4gICAgfTtcblxuICAgIHRoaXMuY3VyclhocklkID0gMDtcbiAgICB0aGlzLnBlbmRpbmdSZXF1ZXN0cyA9IE9iamVjdC5jcmVhdGUobnVsbCk7XG4gIH1cblxuICByZXF1ZXN0UmFuZ2UoYmVnaW4sIGVuZCwgbGlzdGVuZXJzKSB7XG4gICAgY29uc3QgYXJncyA9IHtcbiAgICAgIGJlZ2luLFxuICAgICAgZW5kXG4gICAgfTtcblxuICAgIGZvciAoY29uc3QgcHJvcCBpbiBsaXN0ZW5lcnMpIHtcbiAgICAgIGFyZ3NbcHJvcF0gPSBsaXN0ZW5lcnNbcHJvcF07XG4gICAgfVxuXG4gICAgcmV0dXJuIHRoaXMucmVxdWVzdChhcmdzKTtcbiAgfVxuXG4gIHJlcXVlc3RGdWxsKGxpc3RlbmVycykge1xuICAgIHJldHVybiB0aGlzLnJlcXVlc3QobGlzdGVuZXJzKTtcbiAgfVxuXG4gIHJlcXVlc3QoYXJncykge1xuICAgIGNvbnN0IHhociA9IHRoaXMuZ2V0WGhyKCk7XG4gICAgY29uc3QgeGhySWQgPSB0aGlzLmN1cnJYaHJJZCsrO1xuICAgIGNvbnN0IHBlbmRpbmdSZXF1ZXN0ID0gdGhpcy5wZW5kaW5nUmVxdWVzdHNbeGhySWRdID0ge1xuICAgICAgeGhyXG4gICAgfTtcbiAgICB4aHIub3BlbihcIkdFVFwiLCB0aGlzLnVybCk7XG4gICAgeGhyLndpdGhDcmVkZW50aWFscyA9IHRoaXMud2l0aENyZWRlbnRpYWxzO1xuXG4gICAgZm9yIChjb25zdCBwcm9wZXJ0eSBpbiB0aGlzLmh0dHBIZWFkZXJzKSB7XG4gICAgICBjb25zdCB2YWx1ZSA9IHRoaXMuaHR0cEhlYWRlcnNbcHJvcGVydHldO1xuXG4gICAgICBpZiAodHlwZW9mIHZhbHVlID09PSBcInVuZGVmaW5lZFwiKSB7XG4gICAgICAgIGNvbnRpbnVlO1xuICAgICAgfVxuXG4gICAgICB4aHIuc2V0UmVxdWVzdEhlYWRlcihwcm9wZXJ0eSwgdmFsdWUpO1xuICAgIH1cblxuICAgIGlmICh0aGlzLmlzSHR0cCAmJiBcImJlZ2luXCIgaW4gYXJncyAmJiBcImVuZFwiIGluIGFyZ3MpIHtcbiAgICAgIHhoci5zZXRSZXF1ZXN0SGVhZGVyKFwiUmFuZ2VcIiwgYGJ5dGVzPSR7YXJncy5iZWdpbn0tJHthcmdzLmVuZCAtIDF9YCk7XG4gICAgICBwZW5kaW5nUmVxdWVzdC5leHBlY3RlZFN0YXR1cyA9IFBBUlRJQUxfQ09OVEVOVF9SRVNQT05TRTtcbiAgICB9IGVsc2Uge1xuICAgICAgcGVuZGluZ1JlcXVlc3QuZXhwZWN0ZWRTdGF0dXMgPSBPS19SRVNQT05TRTtcbiAgICB9XG5cbiAgICB4aHIucmVzcG9uc2VUeXBlID0gXCJhcnJheWJ1ZmZlclwiO1xuXG4gICAgaWYgKGFyZ3Mub25FcnJvcikge1xuICAgICAgeGhyLm9uZXJyb3IgPSBmdW5jdGlvbiAoZXZ0KSB7XG4gICAgICAgIGFyZ3Mub25FcnJvcih4aHIuc3RhdHVzKTtcbiAgICAgIH07XG4gICAgfVxuXG4gICAgeGhyLm9ucmVhZHlzdGF0ZWNoYW5nZSA9IHRoaXMub25TdGF0ZUNoYW5nZS5iaW5kKHRoaXMsIHhocklkKTtcbiAgICB4aHIub25wcm9ncmVzcyA9IHRoaXMub25Qcm9ncmVzcy5iaW5kKHRoaXMsIHhocklkKTtcbiAgICBwZW5kaW5nUmVxdWVzdC5vbkhlYWRlcnNSZWNlaXZlZCA9IGFyZ3Mub25IZWFkZXJzUmVjZWl2ZWQ7XG4gICAgcGVuZGluZ1JlcXVlc3Qub25Eb25lID0gYXJncy5vbkRvbmU7XG4gICAgcGVuZGluZ1JlcXVlc3Qub25FcnJvciA9IGFyZ3Mub25FcnJvcjtcbiAgICBwZW5kaW5nUmVxdWVzdC5vblByb2dyZXNzID0gYXJncy5vblByb2dyZXNzO1xuICAgIHhoci5zZW5kKG51bGwpO1xuICAgIHJldHVybiB4aHJJZDtcbiAgfVxuXG4gIG9uUHJvZ3Jlc3MoeGhySWQsIGV2dCkge1xuICAgIGNvbnN0IHBlbmRpbmdSZXF1ZXN0ID0gdGhpcy5wZW5kaW5nUmVxdWVzdHNbeGhySWRdO1xuXG4gICAgaWYgKCFwZW5kaW5nUmVxdWVzdCkge1xuICAgICAgcmV0dXJuO1xuICAgIH1cblxuICAgIHBlbmRpbmdSZXF1ZXN0Lm9uUHJvZ3Jlc3M/LihldnQpO1xuICB9XG5cbiAgb25TdGF0ZUNoYW5nZSh4aHJJZCwgZXZ0KSB7XG4gICAgY29uc3QgcGVuZGluZ1JlcXVlc3QgPSB0aGlzLnBlbmRpbmdSZXF1ZXN0c1t4aHJJZF07XG5cbiAgICBpZiAoIXBlbmRpbmdSZXF1ZXN0KSB7XG4gICAgICByZXR1cm47XG4gICAgfVxuXG4gICAgY29uc3QgeGhyID0gcGVuZGluZ1JlcXVlc3QueGhyO1xuXG4gICAgaWYgKHhoci5yZWFkeVN0YXRlID49IDIgJiYgcGVuZGluZ1JlcXVlc3Qub25IZWFkZXJzUmVjZWl2ZWQpIHtcbiAgICAgIHBlbmRpbmdSZXF1ZXN0Lm9uSGVhZGVyc1JlY2VpdmVkKCk7XG4gICAgICBkZWxldGUgcGVuZGluZ1JlcXVlc3Qub25IZWFkZXJzUmVjZWl2ZWQ7XG4gICAgfVxuXG4gICAgaWYgKHhoci5yZWFkeVN0YXRlICE9PSA0KSB7XG4gICAgICByZXR1cm47XG4gICAgfVxuXG4gICAgaWYgKCEoeGhySWQgaW4gdGhpcy5wZW5kaW5nUmVxdWVzdHMpKSB7XG4gICAgICByZXR1cm47XG4gICAgfVxuXG4gICAgZGVsZXRlIHRoaXMucGVuZGluZ1JlcXVlc3RzW3hocklkXTtcblxuICAgIGlmICh4aHIuc3RhdHVzID09PSAwICYmIHRoaXMuaXNIdHRwKSB7XG4gICAgICBwZW5kaW5nUmVxdWVzdC5vbkVycm9yPy4oeGhyLnN0YXR1cyk7XG4gICAgICByZXR1cm47XG4gICAgfVxuXG4gICAgY29uc3QgeGhyU3RhdHVzID0geGhyLnN0YXR1cyB8fCBPS19SRVNQT05TRTtcbiAgICBjb25zdCBva19yZXNwb25zZV9vbl9yYW5nZV9yZXF1ZXN0ID0geGhyU3R
+{
+    "word": "इन्द्रारि",
+    "LRV": [
+        {
+            "word": "इन्द्रारि",
+            "eid": "05806",
+            "pagenum": 118,
+            "content": "indra-ari¦ <i>m.</i> a demon."
+        }
+    ],
+    "MW": [
+        {
+            "word": "इन्द्रारि",
+            "eid": "29182",
+            "pagenum": "167,1",
+            "content": "indrA<srs/>ri ¦ <lex>m.</lex> <s1 slp1='indra'>Indra</s1>'s enemy, an <s1 slp1='asura'>Asura</s1> or demon, <ls>L.</ls><info lex='m'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "इन्द्रारि",
+            "eid": "17124",
+            "pagenum": 1,
+            "content": "*इन्द्रारि¦ <lex>m.</lex> <is>Indra</is>ʼs Feind, ein <is>Asura</is>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "इन्द्रारि",
+            "eid": "10254",
+            "pagenum": 1,
+            "content": "इन्द्रारि¦ (इ° + अरि) <lex>m.</lex> <is>Indra's</is> <i>Feind, ein</i> <is>Asura</is> <ls>AK. 1, 1, 1, 7.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "इन्द्रारि",
+            "eid": "6334",
+            "pagenum": 108,
+            "content": "इन्द्रारि¦ m. (-रिः) An Asura or demon. E. इन्द्र and अरि an enemy."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "इन्द्रारि",
+            "eid": "6336",
+            "pagenum": 132,
+            "content": "इन्द्रारि¦ m. (-रिः) An <i>Asura</i> or demon. .E. इन्द्र and अरि an enemy."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "इन्द्रारि",
+            "eid": "5724",
+            "pagenum": 107,
+            "content": "इन्द्रा_रि¦ (रिः) 2. <i>m.</i> An Asura, demon."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "इन्द्रारि",
+            "eid": "4186",
+            "pagenum": "1-212-b",
+            "content": "इन्द्रारिः¦, पुं, (इन्द्रस्य अरिः शत्रुः ।) असुरः । इत्यमरः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "इन्द्रारि",
+            "eid": "8307",
+            "pagenum": "0954,b",
+            "content": "इन्द्रारि¦ पु० ६ त० । असुरे ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "इन्द्रारि",
+            "content": "इन्द्रारिः पुं. इन्द्रः-अरिः  - एक राक्षस"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "इन्द्रारि",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಅಸುರ \\/ರಾಕ್ಷಸ",
+            "व्युत्पत्तिः": "इन्द्रस्यारिः",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "इन्द्रारि",
+            "linga": "P",
+            "artha": "असुरः",
+            "synonyms": [
+                "असुर",
+                "दैत्य",
+                "दैतेय",
+                "दनुज",
+                "इन्द्रारि",
+                "दानव",
+                "शुक्रशिष्य",
+                "दितिसुत",
+                "पूर्वदेव",
+                "सुरद्विष्"
+            ],
+            "num": "1.1.12",
+            "text": "असुरा दैत्यदैतेयदनुजेन्द्रारिदानवाः । शुक्रशिष्या दितिसुताः पूर्वदेवाः सुरद्विषः ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "इन्द्रारि",
+            "content": "<body><s>indrAri pu° 6 ta° . asure .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "इन्द्रारि",
+            "content": "<H1><h><key1>indrAri</key1><key2>indrAri</key2></h><body><s>indrAri</s>  <div n=\"1\">m. (<s>-riH</s>) An Asura or demon.</div><div n=\"E\"> E. <s>indra</s> and <s>ari</s> an enemy.</div></body><tail><L>6334</L><pc>108-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "इन्द्रारि",
+            "content": "<span lang=\"sa\">इन्द्रारि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಸುರ /ರಾಕ್ಷಸ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>इन्द्रस्यारिः<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

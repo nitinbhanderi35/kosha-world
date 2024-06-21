@@ -1,187 +1,39 @@
-henticate(request, (err, client) => {
-    if (err || !client) {
-      socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-      socket.destroy();
-      return;
-    }
-
-    wss.handleUpgrade(request, socket, head, function done(ws) {
-      wss.emit('connection', ws, request, client);
-    });
-  });
-});
-
-server.listen(8080);
-```
-
-Also see the provided [example][session-parse-example] using `express-session`.
-
-### Server broadcast
-
-A client WebSocket broadcasting to all connected WebSocket clients, including
-itself.
-
-```js
-const WebSocket = require('ws');
-
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(data) {
-    wss.clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(data);
-      }
-    });
-  });
-});
-```
-
-A client WebSocket broadcasting to every other connected WebSocket clients,
-excluding itself.
-
-```js
-const WebSocket = require('ws');
-
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(data) {
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(data);
-      }
-    });
-  });
-});
-```
-
-### echo.websocket.org demo
-
-```js
-const WebSocket = require('ws');
-
-const ws = new WebSocket('wss://echo.websocket.org/', {
-  origin: 'https://websocket.org'
-});
-
-ws.on('open', function open() {
-  console.log('connected');
-  ws.send(Date.now());
-});
-
-ws.on('close', function close() {
-  console.log('disconnected');
-});
-
-ws.on('message', function incoming(data) {
-  console.log(`Roundtrip time: ${Date.now() - data} ms`);
-
-  setTimeout(function timeout() {
-    ws.send(Date.now());
-  }, 500);
-});
-```
-
-### Use the Node.js streams API
-
-```js
-const WebSocket = require('ws');
-
-const ws = new WebSocket('wss://echo.websocket.org/', {
-  origin: 'https://websocket.org'
-});
-
-const duplex = WebSocket.createWebSocketStream(ws, { encoding: 'utf8' });
-
-duplex.pipe(process.stdout);
-process.stdin.pipe(duplex);
-```
-
-### Other examples
-
-For a full example with a browser client communicating with a ws server, see the
-examples folder.
-
-Otherwise, see the test cases.
-
-## FAQ
-
-### How to get the IP address of the client?
-
-The remote IP address can be obtained from the raw socket.
-
-```js
-const WebSocket = require('ws');
-
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', function connection(ws, req) {
-  const ip = req.socket.remoteAddress;
-});
-```
-
-When the server runs behind a proxy like NGINX, the de-facto standard is to use
-the `X-Forwarded-For` header.
-
-```js
-wss.on('connection', function connection(ws, req) {
-  const ip = req.headers['x-forwarded-for'].split(',')[0].trim();
-});
-```
-
-### How to detect and close broken connections?
-
-Sometimes the link between the server and the client can be interrupted in a way
-that keeps both the server and the client unaware of the broken state of the
-connection (e.g. when pulling the cord).
-
-In these cases ping messages can be used as a means to verify that the remote
-endpoint is still responsive.
-
-```js
-const WebSocket = require('ws');
-
-function noop() {}
-
-function heartbeat() {
-  this.isAlive = true;
+{
+    "word": "lapse",
+    "AE": [
+        {
+            "word": "lapse",
+            "eid": "6047",
+            "pagenum": 251,
+            "content": "<b>Lapse,</b>¦ <i>s.</i> क्रमः, गति <i>f.,</i> प्रवाहः, प्रवृत्ति <i>f.,</i> अ- -त्ययः, अतिक्रमः; ‘after a l. of time’ अथ दिनेषु गच्छत्सु, कालक्रमेण, गच्छता का- -लेन. <b>2</b> स्खलितं, प्रमादः, भ्रमः. <b>3</b> स्खलनं, पातः, भ्रंशः, च्युति <i>f.,</i> पतनं. <i>-v. i.</i> क्रमशः या 2 P or गम् 1 P or सृप् 1 P; शनैः शनैः अति-इ 2 P or अतिक्रम् 1 U, 4 P. <b>2</b> भ्रंश् 1 A, 4 P, च्यु 1 A, पत् 1 P, विचल् 1 P, व्युत्क्रम्. <b>3</b> स्खल् 1 P, प्रमद् 4 P, भ्रम् 1, 4 P. <b>4</b> संक्रम्, अपवृत् 1 A. <b>-ed,</b> <i>a.</i> पतित, भ्रष्ट, &c. <b>2</b> परहस्तगत, संक्रांत, अपवृत्त; ‘a l. suit’ नियतवेलातीतं कार्यं."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "lapse",
+            "eid": "13200",
+            "pagenum": 407,
+            "content": "<b>LAPSE</b>¦ (subs.): <dvsn n='I'>I Flow, motion: q. v.: गतिः।</dvsn> <dvsn n='I'>II A failing: स्खलितम्। </dvsn><dvsn n='I'>III Fall: q. v.: पातः।</dvsn>"
+        },
+        {
+            "word": "lapse",
+            "eid": "13201",
+            "pagenum": 407,
+            "content": "<b>LAPSE</b>¦ (v.): <dvsn n='I'>I To pass: q. v.: याति (या, c. 2.).</dvsn> <dvsn n='I'>II To err.: स्खलति (स्खल्, c. 1.). </dvsn><dvsn n='I'>III To fall: q. v.: पतति।</dvsn>"
+        }
+    ],
+    "MWE": [
+        {
+            "word": "lapse",
+            "eid": "17406",
+            "pagenum": 437,
+            "content": "LAPSE¦, <i>s.</i> (Flow, course) गतिः <i>f.,</i> प्रवाहः, प्रवृत्तिः <i>f.;</i> ‘lapse of time,’ कालगतिः <i>f.</i> — (Passing away) अत्ययः, अतिक्रमः, प्रतीतिः <i>f.</i> — (Falling) पातः, पतनं, च्युतिः <i>f.,</i> च्यवनं, भ्रंशः, प्रभंशः, ध्वंसः. — (Error) भ्रमः, प्रमादः, स्खलनं, स्खलितं."
+        },
+        {
+            "word": "lapse",
+            "eid": "17407",
+            "pagenum": 437,
+            "content": "<i>To</i> LAPSE¦, <i>v. n.</i> (Pass slowly away) शनैः शनैः or क्रमे क्रमे अती (c. 2. अत्येति -तुं, rt. इ) or व्यती or अतिकम् (c. 4. -क्राम्यति, c. 1. -क्रामति -क्रमितुं) or अतिवृत् (c. 1. -वर्त्तते -र्त्तितुं) or प्रवृत् or वृत्. — (Pass on by degrees) क्रमेण गम् (c. 1. गच्छति, गन्तुं) or प्रगम् or या (c. 2. याति -तुं) or प्रया or सृप् (c. 1. सर्पति, स्रप्तुं) or प्रसृप्, — (Fall in moral conduct) भ्रंश् (c. 4. -भ्रश्यति, भ्रंशितुं), विभ्रंश्, च्यु (c. 1. च्यवते, च्योतुं), विच्यु, विचल् (c. 1. -चलति -लितुं), उत्क्रम्, व्युत्क्रम्. — (Slip, make a mistake) स्खल् (c. 1. स्खलति -लितुं), प्रस्खल्, भ्रम् (c. 4. भ्राम्यति, भ्रमितुं), प्रमादं कृ, दोषं कृ. — (Pass from one proprietor to another) सङ्क्रम्, उपसङ्क्रम्, अपवृत्."
+        }
+    ]
 }
-
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', function connection(ws) {
-  ws.isAlive = true;
-  ws.on('pong', heartbeat);
-});
-
-const interval = setInterval(function ping() {
-  wss.clients.forEach(function each(ws) {
-    if (ws.isAlive === false) return ws.terminate();
-
-    ws.isAlive = false;
-    ws.ping(noop);
-  });
-}, 30000);
-
-wss.on('close', function close() {
-  clearInterval(interval);
-});
-```
-
-Pong messages are automatically sent in response to ping messages as required by
-the spec.
-
-Just like the server example above your clients might as well lose connection
-without knowing it. You might want to add a ping listener on your clients to
-prevent that. A simple implementation would be:
-
-```js
-const WebSocket = require('ws');
-
-function heartbeat() {
-  clearTimeout(this.pingTimeout);
-
-  // Use `WebSocket#terminate()`, which immediately destroys the connection,
-  // instead of `WebSocket#close()`, which waits for the close timer.
-  // Delay should be e

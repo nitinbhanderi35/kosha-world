@@ -1,489 +1,79 @@
-mRole.default], ['log', _logRole.default], ['main', _mainRole.default], ['marquee', _marqueeRole.default], ['math', _mathRole.default], ['menu', _menuRole.default], ['menubar', _menubarRole.default], ['menuitem', _menuitemRole.default], ['menuitemcheckbox', _menuitemcheckboxRole.default], ['menuitemradio', _menuitemradioRole.default], ['meter', _meterRole.default], ['navigation', _navigationRole.default], ['none', _noneRole.default], ['note', _noteRole.default], ['option', _optionRole.default], ['paragraph', _paragraphRole.default], ['presentation', _presentationRole.default], ['progressbar', _progressbarRole.default], ['radio', _radioRole.default], ['radiogroup', _radiogroupRole.default], ['region', _regionRole.default], ['row', _rowRole.default], ['rowgroup', _rowgroupRole.default], ['rowheader', _rowheaderRole.default], ['scrollbar', _scrollbarRole.default], ['search', _searchRole.default], ['searchbox', _searchboxRole.default], ['separator', _separatorRole.default], ['slider', _sliderRole.default], ['spinbutton', _spinbuttonRole.default], ['status', _statusRole.default], ['strong', _strongRole.default], ['subscript', _subscriptRole.default], ['superscript', _superscriptRole.default], ['switch', _switchRole.default], ['tab', _tabRole.default], ['table', _tableRole.default], ['tablist', _tablistRole.default], ['tabpanel', _tabpanelRole.default], ['term', _termRole.default], ['textbox', _textboxRole.default], ['time', _timeRole.default], ['timer', _timerRole.default], ['toolbar', _toolbarRole.default], ['tooltip', _tooltipRole.default], ['tree', _treeRole.default], ['treegrid', _treegridRole.default], ['treeitem', _treeitemRole.default]];
-	var _default$L = ariaLiteralRoles;
-	ariaLiteralRoles$1.default = _default$L;
-
-	var ariaDpubRoles$1 = {};
-
-	var docAbstractRole$1 = {};
-
-	Object.defineProperty(docAbstractRole$1, "__esModule", {
-	  value: true
-	});
-	docAbstractRole$1.default = void 0;
-	var docAbstractRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'abstract [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$K = docAbstractRole;
-	docAbstractRole$1.default = _default$K;
-
-	var docAcknowledgmentsRole$1 = {};
-
-	Object.defineProperty(docAcknowledgmentsRole$1, "__esModule", {
-	  value: true
-	});
-	docAcknowledgmentsRole$1.default = void 0;
-	var docAcknowledgmentsRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'acknowledgments [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$J = docAcknowledgmentsRole;
-	docAcknowledgmentsRole$1.default = _default$J;
-
-	var docAfterwordRole$1 = {};
-
-	Object.defineProperty(docAfterwordRole$1, "__esModule", {
-	  value: true
-	});
-	docAfterwordRole$1.default = void 0;
-	var docAfterwordRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'afterword [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$I = docAfterwordRole;
-	docAfterwordRole$1.default = _default$I;
-
-	var docAppendixRole$1 = {};
-
-	Object.defineProperty(docAppendixRole$1, "__esModule", {
-	  value: true
-	});
-	docAppendixRole$1.default = void 0;
-	var docAppendixRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'appendix [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$H = docAppendixRole;
-	docAppendixRole$1.default = _default$H;
-
-	var docBacklinkRole$1 = {};
-
-	Object.defineProperty(docBacklinkRole$1, "__esModule", {
-	  value: true
-	});
-	docBacklinkRole$1.default = void 0;
-	var docBacklinkRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'content'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'referrer [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command', 'link']]
-	};
-	var _default$G = docBacklinkRole;
-	docBacklinkRole$1.default = _default$G;
-
-	var docBiblioentryRole$1 = {};
-
-	Object.defineProperty(docBiblioentryRole$1, "__esModule", {
-	  value: true
-	});
-	docBiblioentryRole$1.default = void 0;
-	var docBiblioentryRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'EPUB biblioentry [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: ['doc-bibliography'],
-	  requiredContextRole: ['doc-bibliography'],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'listitem']]
-	};
-	var _default$F = docBiblioentryRole;
-	docBiblioentryRole$1.default = _default$F;
-
-	var docBibliographyRole$1 = {};
-
-	Object.defineProperty(docBibliographyRole$1, "__esModule", {
-	  value: true
-	});
-	docBibliographyRole$1.default = void 0;
-	var docBibliographyRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'bibliography [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [['doc-biblioentry']],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$E = docBibliographyRole;
-	docBibliographyRole$1.default = _default$E;
-
-	var docBibliorefRole$1 = {};
-
-	Object.defineProperty(docBibliorefRole$1, "__esModule", {
-	  value: true
-	});
-	docBibliorefRole$1.default = void 0;
-	var docBibliorefRole = {
-	  abstract: false,
-	  accessibleNameRequired: true,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author', 'contents'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-errormessage': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'biblioref [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'widget', 'command', 'link']]
-	};
-	var _default$D = docBibliorefRole;
-	docBibliorefRole$1.default = _default$D;
-
-	var docChapterRole$1 = {};
-
-	Object.defineProperty(docChapterRole$1, "__esModule", {
-	  value: true
-	});
-	docChapterRole$1.default = void 0;
-	var docChapterRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'chapter [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$C = docChapterRole;
-	docChapterRole$1.default = _default$C;
-
-	var docColophonRole$1 = {};
-
-	Object.defineProperty(docColophonRole$1, "__esModule", {
-	  value: true
-	});
-	docColophonRole$1.default = void 0;
-	var docColophonRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'colophon [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$B = docColophonRole;
-	docColophonRole$1.default = _default$B;
-
-	var docConclusionRole$1 = {};
-
-	Object.defineProperty(docConclusionRole$1, "__esModule", {
-	  value: true
-	});
-	docConclusionRole$1.default = void 0;
-	var docConclusionRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'conclusion [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$A = docConclusionRole;
-	docConclusionRole$1.default = _default$A;
-
-	var docCoverRole$1 = {};
-
-	Object.defineProperty(docCoverRole$1, "__esModule", {
-	  value: true
-	});
-	docCoverRole$1.default = void 0;
-	var docCoverRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'cover [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'img']]
-	};
-	var _default$z = docCoverRole;
-	docCoverRole$1.default = _default$z;
-
-	var docCreditRole$1 = {};
-
-	Object.defineProperty(docCreditRole$1, "__esModule", {
-	  value: true
-	});
-	docCreditRole$1.default = void 0;
-	var docCreditRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'credit [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section']]
-	};
-	var _default$y = docCreditRole;
-	docCreditRole$1.default = _default$y;
-
-	var docCreditsRole$1 = {};
-
-	Object.defineProperty(docCreditsRole$1, "__esModule", {
-	  value: true
-	});
-	docCreditsRole$1.default = void 0;
-	var docCreditsRole = {
-	  abstract: false,
-	  accessibleNameRequired: false,
-	  baseConcepts: [],
-	  childrenPresentational: false,
-	  nameFrom: ['author'],
-	  prohibitedProps: [],
-	  props: {
-	    'aria-disabled': null,
-	    'aria-errormessage': null,
-	    'aria-expanded': null,
-	    'aria-haspopup': null,
-	    'aria-invalid': null
-	  },
-	  relatedConcepts: [{
-	    concept: {
-	      name: 'credits [EPUB-SSV]'
-	    },
-	    module: 'EPUB'
-	  }],
-	  requireContextRole: [],
-	  requiredContextRole: [],
-	  requiredOwnedElements: [],
-	  requiredProps: {},
-	  superClass: [['roletype', 'structure', 'section', 'landmark']]
-	};
-	var _default$x = docCreditsRole;
-	
+{
+    "word": "श्रुतिः",
+    "AP90": [
+        {
+            "word": "श्रुतिः",
+            "eid": "28405",
+            "pagenum": 1061,
+            "content": "श्रुतिः¦ <i><ab>f.</ab></i> [श्रु-क्तिन्] <b>1</b> Hearing;  <lbinfo n='caMdra#sya'/> चंद्रस्य ग्रहणमिति श्रुतेः <ls>Mu. 1. 7</ls>;  <lbinfo n='ls:R. 1.+ 27.'/> <ls>R. 1. 27.</ls> <b>--2</b> The ear;  <lbinfo n='SrutisuKaBramarasvanagI#tayaH'/> श्रुतिसुखभ्रमरस्वनगीतयः <ls>R. 9. 35</ls>; <ls>Śi. 1. 1</ls>; <ls>Ve. 3. 23.</ls> <b>--3</b> Report, rumour, news, oral <lbinfo n='in+telligence'/> intelligence. <b>--4</b> A sound in general. <b>--5</b> The Veda (known by revelation, opp स्मृति; see under वेद). <b>--6</b> A Vedic or sacred text; इति श्रुतेः or इति श्रुतिः ‘so says a sacred text’ <b>--7</b> Vedic or sacred knowledge, holy learning. <b>--8</b> (In music) A division of the octavo, a quarter tone or <lbinfo n='in+terval'/> interval; <ls>Śi. 1. 10</ls>, <ls n='Śi.'>11. 1</ls>; (see <ls>Malli.</ls> <i>ad loc.</i>). <b>--9</b> The constellation Śravaṇa. <b>--10</b> The diagonal of a tetragon, the hypothenuse of a triangle; <ab>cf.</ab> कर्ण. <b>--Comp.</b> --अनुप्रासः a kind of alliteration; see <ls>K. P. 9</ls> --उक्त, --उदित <i><ab>a.</ab></i> enjoined by the Vedas. --कटः {1} a snake. {2} <lbinfo n='pen+ance'/> penance, expiation. --कटु <i><ab>a.</ab></i> harsh to hear. (--दुः) a harsh or <lbinfo n='unmelodi+ous'/> unmelodious sound, regarded as a fault of composition. --कथित <i><ab>a.</ab></i> enjoined or prescribed by the Vedas. --चोदनं, --ना a scriptural injunction, Vedic precept. --जीविका a law-book or code of laws. --द्वैधं disagreement or contradiction of Vedas or Vedic precepts. --धर <i><ab>a.</ab></i> hearing. --निदर्शनं evidence of the Vedas. --पथः the range of the ear; <ls>M. 4. 1.</ls> --प्रसादन <i><ab>a.</ab></i> grateful to the ear. --प्रामाण्यं authority or sanction of the Vedas. --मंडलं the outer ear. --महत् <i><ab>a.</ab></i> rich in scriptural lore; सरस्वती श्रुतिमहतां महीयतां <ls>Ś. 7. 35.</ls> --मूलं {1} the root of the ear; लपितुं किमपि श्रुतिमूले <lbinfo n='ls:Gīt.+1'/> <ls>Gīt. 1.</ls> {2} a Vedic text. --मूलक <i><ab>a.</ab></i> <lbinfo n='found+ed'/> founded on the Veda. --वर्जित <i><ab>a.</ab></i> {1} deaf. {2} not knowing the Vedas.  <lbinfo n='--viprati#panna'/> --विप्रतिपन्न <i><ab>a.</ab></i> {1} not recognizing the <lbinfo n='autho+rity'/> authority of the scriptures, disregarding the Vedas. {2} contrary to the Vedas. --विषयः {1} the object of the sense of hearing. <i><ab>i. e.</ab></i> sound;  <lbinfo n='Sruti#vizayaguRA'/> श्रुतिविषयगुणा या स्थिता व्याण्य विश्वं  <lbinfo n='ls:Ś. 1.+ 1.'/> <ls>Ś. 1. 1.</ls> {2} the reach or range of the ear; एतत्प्रायेण <lbinfo n='SrutivizayamApatitame#va'/> श्रुतिविषयमापतितमेव <ls>K.</ls> {3} the subject-matter of the Veda. {4} any sacred ordinance. --वेधः boring the ear. --सुख, <lbinfo n='manoha#ra'/> --मनोहर <i><ab>a.</ab></i> agreeable to the ear, melodious. --स्मृति <i><ab>f.</ab></i> (dual) revelation and legal institutes, Veda and law."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "श्रुतिः",
+            "eid": "36678",
+            "pagenum": "5-170-b",
+            "content": "श्रुतिः¦, स्त्री, (श्रूयतेऽनयेति । श्रु + “श्रुयजिस्तुभ्यः करणे ।” ३ । ३ । ९४ । इत्यस्य वार्त्तिकोक्त्या करणे ।” क्तिन् ।) वेदः । (यथा, मनुः । २ । १० । “श्रुतिस्तु वेदो विज्ञेयो धर्म्मशास्त्रन्तु वै स्मृतिः ॥”) कर्णः । इत्यमरः ॥ (यथा, भागवते । ९ । ४ । १८ । “करौ हरेर्मन्दिरमार्ज्जनादिषु श्रुतिं चकाराच्यु तसत्कथोदये ॥”) गर्भस्थस्य पञ्चमासैः श्रुतिर्भवति । इति सुखबोधः ॥ श्रुतोन्द्रियग्राह्यः शब्दः शब्दत्वादिः । यथा, “घ्राणस्य नोचरो गन्धो गन्धत्वादिरपि स्मृतः । तथा रसो रसज्ञायास्तथा शब्दोऽपि च श्रुतेः ॥” इति भाषापरिच्छेद ॥ कर्णस्य शुभाशुभलक्षणमाह । “रक्ताल्पपरुषश्मश्रुकर्णाः स्युः पापमृत्यवः । निर्म्मांसैश्चिपिटैर्भोगाः कृपणा ह्रस्वकर्णका । शङ्कुकर्णाश्च राजानो रोमकर्णाः शतायुषः । बृहत्कर्णाश्च राजानो धनिनः परिकीर्त्तिताः ॥” इति गारुडे ६६ अध्यायः ॥ (श्रु + भावे क्तिन् ।) श्रोत्रकर्म्म । (यथा, भागवते । ९ । ५ । १६ । “यन्नामश्रुतिमात्रेण पुमान् भवति निर्म्मलः तस्य तीर्थपदः किंवा दासानामवशिष्यते ॥”) वार्त्ता । इति मेदिनी ॥ (यथा, रघुः । १ । २७ । “व्यावृत्ता यत्परस्वे भ्यः श्रुतौ तस्करता स्थिता ॥”) श्रवणानक्षत्रम् । इति शब्दरत्नावली ॥ षड्जाद्यारम्भिका । इति हेमचन्द्रः ॥ शोरत् इति भाषा । (यथा, शिशुपालवधे । १ । १० । “रणद्भिराघट्टनया नभस्वतः पृथक्विभिन्नश्रुतिमण्डलैः स्वरैः ॥) सा च द्वाविंशतिप्रकारा यथा, “नान्दी चालनिका रसा च सुमुखी चित्रा विचित्रा घना मातङ्गी सरसामृता मधुकरी मैत्री शिवा माधवी । बाला शार्ङ्गरवी कला कलरवा माला विशाला जया मात्रेति श्रुतयः पुराणकविभिर्द्वाविंशतिः कीर्त्तिताः ॥ नान्दी-विशाला-सुमुखी-विचित्रासम्भवः सदा । षड्जो मतो मुनीन्द्रेण भरतेन शिवेन च ॥ चित्रा घना चालनिका निवेशात् संजायतेऽसौ ऋषभस्तथैव । स्वरोऽपि माला सरसानिवेशात् गान्धारनामा प्रथितः पृथिव्याम् ॥ मातङ्गी माधवी मैत्री शिवाजातस्तु पञ्चमः । कला कलरवा बाला शार्ङ्गरव्यास्तु पञ्चमः ॥ जायामृतारसानान्तु संयोगाद्धैवतस्वरः । मात्रा मधुकरी योगात् निषादः संप्रजायते ॥ श्रुतिस्थाने स्वरान् वक्तुं नालं ब्रह्मापि तत्त्वतः जले च सुतरां मार्गो मीनानां नोपलक्ष्यते ॥ गगने पक्षिणां यद्वत् तद्वत् स्वरगता श्रुतिः । श्रुतिर्नादवशा प्रोक्ता तथाढ्या च कला मता । यथा तैलगतं सर्पिर्यथा काष्ठगतोऽनलः । ज्ञायतेऽत्रोपदेशेन यथा स्वरगता श्रुतिः ॥ वीणादेस्तु श्रुतिज्ञानं स्वरज्ञानन्तु वंशजम् । अश्विनौ वसवो रुद्राः सहैणाङ्केन शुश्रुवुः । प्रशशंसुर्हरेर्नादमतो द्वाविंशतिः श्रुतिः ॥” इति सङ्गीतदामोदरः । अन्यच्च । “तीव्राकुमुद्वतीमन्दाछन्दोवत्यस्तु षड्जगाः । दयावती रञ्जनी च रतिका ऋषभे स्थिताः ॥ रीद्री क्रोधा च गान्धारे वज्जिकाथ प्रसारिणी । प्रोतिश्च मार्ज्जनीत्येताः श्रुतयो मध्यमाश्रिताः ॥ क्षिती रक्ता च सन्दीपन्यालापिन्यपि पञ्चमे । मदन्ती रोहिणी रम्येत्येता धैवतसंश्रयाः । उग्रा च क्षोभिणीति द्वे निषादे वसतः श्रुती ॥” इति सङ्गीतरत्नाकरः ॥"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु + क्तिन् सुनना"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु + क्तिन् कान"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु + क्तिन् 'विवरण, अफ़वाह, समाचार, मौखिक संवाद'"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु + क्तिन् ध्वनि"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु + क्तिन् वेद"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु + क्तिन् वैदिकपाठ वेदमंत्र"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु + क्तिन् 'वेदज्ञान, पुनीतज्ञान, पुण्य अधिगम'"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु + क्तिन् '(संगीत में) सप्तक का प्रभाव, स्वर का चतुर्थाश या अन्तराल '"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु + क्तिन् श्रवण नक्षत्र"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु+क्तिन् वाणी"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु+क्तिन् कीर्ति"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु+क्तिन् 'उपयोग,लाभ'"
+        },
+        {
+            "word": "श्रुतिः",
+            "content": "श्रुतिः स्त्री. -  श्रु+क्तिन् 'विद्वता,पांडित्य'"
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "श्रुतिः",
+            "content": "<lexhead no=\"1073\">\n<dentry>श्रुतिः</dentry>\n<prAwipaxikam>श्रुति</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[श्रु+क्तिन्]</etymology>\n<kind_of>वेदः</kind_of>\n<jAwi>अपौरुषेयम्</jAwi>\n<jAwi>शब्दः</jAwi>\n<is_a_part>देहः</is_a_part>\n<kind_of>चक्षुरादीन्द्रियम्</kind_of>\n<upAXi>अवयवः</upAXi>\n<jAwi>अपौरुषेयम्</jAwi>\n<sense no=\"1\">सुनना, चन्द्रस्य ग्रहणमिति श्रुतेः<citation>मुद्रा* १/७</citation><citation>रघु* १/२७</citation></sense>\n<sense n=\"2\">कानश्रुतिसुखभ्रमरस्वनगीतयः<citation>रघु* ९/३५</citation><citation>श* १/१</citation><citation>वेणी* ३/२३</citation></sense>\n<sense n=\"3\">विवरण, अफ़वाह, समाचार, मौखिक संवाद</sense>\n<sense n=\"4\">ध्वनि</sense>\n<sense n=\"5\">वेद दिव्य संदेश होने के कारण विप* स्मृति-दे* ‘वेद के अन्तर्गत</sense>\n<sense n=\"6\">वैदिकपाठ वेदमंत्रइतिश्रुतेः या इति श्रुतिः<vform>H</vform>ऐसा वेद कहता है<vform>/H</vform></sense>\n<sense n=\"7\">वेदज्ञान, पुनीतज्ञान, पुण्य अधिगम</sense>\n<sense n=\"8\">(संगीत में) सप्तक का प्रभाव, स्वर का चतुर्थाश या अन्तराल<citation>शि* १/१०</citation>११/१ दे* तत्स्थानीय मल्लि*</sense>\n<sense n=\"9\">श्रवण नक्षत्र</sense>\n</lexhead>\n\n"
+        }
+    ]
+}

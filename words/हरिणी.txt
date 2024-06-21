@@ -1,1 +1,322 @@
-ert("TSImportEqualsDeclaration",e,t)}function assertTSExternalModuleReference(e,t){assert("TSExternalModuleReference",e,t)}function assertTSNonNullExpression(e,t){assert("TSNonNullExpression",e,t)}function assertTSExportAssignment(e,t){assert("TSExportAssignment",e,t)}function assertTSNamespaceExportDeclaration(e,t){assert("TSNamespaceExportDeclaration",e,t)}function assertTSTypeAnnotation(e,t){assert("TSTypeAnnotation",e,t)}function assertTSTypeParameterInstantiation(e,t){assert("TSTypeParameterInstantiation",e,t)}function assertTSTypeParameterDeclaration(e,t){assert("TSTypeParameterDeclaration",e,t)}function assertTSTypeParameter(e,t){assert("TSTypeParameter",e,t)}function assertStandardized(e,t){assert("Standardized",e,t)}function assertExpression(e,t){assert("Expression",e,t)}function assertBinary(e,t){assert("Binary",e,t)}function assertScopable(e,t){assert("Scopable",e,t)}function assertBlockParent(e,t){assert("BlockParent",e,t)}function assertBlock(e,t){assert("Block",e,t)}function assertStatement(e,t){assert("Statement",e,t)}function assertTerminatorless(e,t){assert("Terminatorless",e,t)}function assertCompletionStatement(e,t){assert("CompletionStatement",e,t)}function assertConditional(e,t){assert("Conditional",e,t)}function assertLoop(e,t){assert("Loop",e,t)}function assertWhile(e,t){assert("While",e,t)}function assertExpressionWrapper(e,t){assert("ExpressionWrapper",e,t)}function assertFor(e,t){assert("For",e,t)}function assertForXStatement(e,t){assert("ForXStatement",e,t)}function assertFunction(e,t){assert("Function",e,t)}function assertFunctionParent(e,t){assert("FunctionParent",e,t)}function assertPureish(e,t){assert("Pureish",e,t)}function assertDeclaration(e,t){assert("Declaration",e,t)}function assertPatternLike(e,t){assert("PatternLike",e,t)}function assertLVal(e,t){assert("LVal",e,t)}function assertTSEntityName(e,t){assert("TSEntityName",e,t)}function assertLiteral(e,t){assert("Literal",e,t)}function assertImmutable(e,t){assert("Immutable",e,t)}function assertUserWhitespacable(e,t){assert("UserWhitespacable",e,t)}function assertMethod(e,t){assert("Method",e,t)}function assertObjectMember(e,t){assert("ObjectMember",e,t)}function assertProperty(e,t){assert("Property",e,t)}function assertUnaryLike(e,t){assert("UnaryLike",e,t)}function assertPattern(e,t){assert("Pattern",e,t)}function assertClass(e,t){assert("Class",e,t)}function assertImportOrExportDeclaration(e,t){assert("ImportOrExportDeclaration",e,t)}function assertExportDeclaration(e,t){assert("ExportDeclaration",e,t)}function assertModuleSpecifier(e,t){assert("ModuleSpecifier",e,t)}function assertAccessor(e,t){assert("Accessor",e,t)}function assertPrivate(e,t){assert("Private",e,t)}function assertFlow(e,t){assert("Flow",e,t)}function assertFlowType(e,t){assert("FlowType",e,t)}function assertFlowBaseAnnotation(e,t){assert("FlowBaseAnnotation",e,t)}function assertFlowDeclaration(e,t){assert("FlowDeclaration",e,t)}function assertFlowPredicate(e,t){assert("FlowPredicate",e,t)}function assertEnumBody(e,t){assert("EnumBody",e,t)}function assertEnumMember(e,t){assert("EnumMember",e,t)}function assertJSX(e,t){assert("JSX",e,t)}function assertMiscellaneous(e,t){assert("Miscellaneous",e,t)}function assertTypeScript(e,t){assert("TypeScript",e,t)}function assertTSTypeElement(e,t){assert("TSTypeElement",e,t)}function assertTSType(e,t){assert("TSType",e,t)}function assertTSBaseType(e,t){assert("TSBaseType",e,t)}function assertNumberLiteral(e,t){(0,s.default)("assertNumberLiteral","assertNumericLiteral");assert("NumberLiteral",e,t)}function assertRegexLiteral(e,t){(0,s.default)("assertRegexLiteral","assertRegExpLiteral");assert("RegexLiteral",e,t)}function assertRestProperty(e,t){(0,s.default)("assertRestProperty","assertRestElement");assert("RestProperty",e,t)}function assertSpreadProperty(e,t){(0,s.default)("assertSpreadProperty","assertSpreadElement");assert("SpreadProperty",e,t)}function assertModuleDeclaration(e,t){(0,s.default)("assertModuleDeclaration","assertImportOrExportDeclaration");assert("ModuleDeclaration",e,t)}},3103:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=createFlowUnionType;var n=r(7453);var s=r(6627);function createFlowUnionType(e){const t=(0,s.default)(e);if(t.length===1){return t[0]}else{return(0,n.unionTypeAnnotation)(t)}}},785:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=void 0;var n=r(7453);var s=createTypeAnnotationBasedOnTypeof;t["default"]=s;function createTypeAnnotationBasedOnTypeof(e){switch(e){case"string":return(0,n.stringTypeAnnotation)();case"number":return(0,n.numberTypeAnnotation)();case"undefined":return(0,n.voidTypeAnnotation)();case"boolean":return(0,n.booleanTypeAnnotation)();case"function":return(0,n.genericTypeAnnotation)((0,n.identifier)("Function"));case"object":return(0,n.genericTypeAnnotation)((0,n.identifier)("Object"));case"symbol":return(0,n.genericTypeAnnotation)((0,n.identifier)("Symbol"));case"bigint":return(0,n.anyTypeAnnotation)()}throw new Error("Invalid typeof value: "+e)}},7453:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t.anyTypeAnnotation=anyTypeAnnotation;t.argumentPlaceholder=argumentPlaceholder;t.arrayExpression=arrayExpression;t.arrayPattern=arrayPattern;t.arrayTypeAnnotation=arrayTypeAnnotation;t.arrowFunctionExpression=arrowFunctionExpression;t.assignmentExpression=assignmentExpression;t.assignmentPattern=assignmentPattern;t.awaitExpression=awaitExpression;t.bigIntLiteral=bigIntLiteral;t.binaryExpression=binaryExpression;t.bindExpression=bindExpression;t.blockStatement=blockStatement;t.booleanLiteral=booleanLiteral;t.booleanLiteralTypeAnnotation=booleanLiteralTypeAnnotation;t.booleanTypeAnnotation=booleanTypeAnnotation;t.breakStatement=breakStatement;t.callExpression=callExpression;t.catchClause=catchClause;t.classAccessorProperty=classAccessorProperty;t.classBody=classBody;t.classDeclaration=classDeclaration;t.classExpression=classExpression;t.classImplements=classImplements;t.classMethod=classMethod;t.classPrivateMethod=classPrivateMethod;t.classPrivateProperty=classPrivateProperty;t.classProperty=classProperty;t.conditionalExpression=conditionalExpression;t.continueStatement=continueStatement;t.debuggerStatement=debuggerStatement;t.decimalLiteral=decimalLiteral;t.declareClass=declareClass;t.declareExportAllDeclaration=declareExportAllDeclaration;t.declareExportDeclaration=declareExportDeclaration;t.declareFunction=declareFunction;t.declareInterface=declareInterface;t.declareModule=declareModule;t.declareModuleExports=declareModuleExports;t.declareOpaqueType=declareOpaqueType;t.declareTypeAlias=declareTypeAlias;t.declareVariable=declareVariable;t.declaredPredicate=declaredPredicate;t.decorator=decorator;t.directive=directive;t.directiveLiteral=directiveLiteral;t.doExpression=doExpression;t.doWhileStatement=doWhileStatement;t.emptyStatement=emptyStatement;t.emptyTypeAnnotation=emptyTypeAnnotation;t.enumBooleanBody=enumBooleanBody;t.enumBooleanMember=enumBooleanMember;t.enumDeclaration=enumDeclaration;t.enumDefaultedMember=enumDefaultedMember;t.enumNumberBody=enumNumberBody;t.enumNumberMember=enumNumberMember;t.enumStringBody=enumStringBody;t.enumStringMember=enumStringMember;t.enumSymbolBody=enumSymbolBody;t.existsTypeAnnotation=existsTypeAnnotation;t.exportAllDeclaration=exportAllDeclaration;t.exportDefaultDeclaration=exportDefaultDeclaration;t.exportDefaultSpecifier=exportDefaultSpecifier;t.exportNamedDeclaration=exportNamedDeclaration;t.exportNamespaceSpecifier=exportNamespaceSpecifier;t.exportSpecifier=exportSpecifier;t.expressionStatement=expressionStatement;t.file=file;t.forInStatement=forInStatement;t.forOfStatement=forOfStatement;t.forStatement=forStatement;t.functionDeclaration=functionDeclaration;t.functionExpression=functionExpression;t.functionTypeAnnotation=functionTypeAnnotation;t.functionTypeParam=functionTypeParam;t.genericTypeAnnotation=genericTypeAnnotation;t.identifier=identifier;t.ifStatement=ifStatement;t["import"]=_import;t.importAttribute=importAttribute;t.importDeclaration=importDeclaration;t.importDefaultSpecifier=importDefaultSpecifier;t.importNamespaceSpecifier=importNamespaceSpecifier;t.importSpecifier=importSpecifier;t.indexedAccessType=indexedAccessType;t.inferredPredicate=inferredPredicate;t.interfaceDeclaration=interfaceDeclaration;t.interfaceExtends=interfaceExtends;t.interfaceTypeAnnotation=interfaceTypeAnnotation;t.interpreterDirective=interpreterDirective;t.intersectionTypeAnnotation=intersectionTypeAnnotation;t.jSXAttribute=t.jsxAttribute=jsxAttribute;t.jSXClosingElement=t.jsxClosingElement=jsxClosingElement;t.jSXClosingFragment=t.jsxClosingFragment=jsxClosingFragment;t.jSXElement=t.jsxElement=jsxElement;t.jSXEmptyExpression=t.jsxEmptyExpression=jsxEmptyExpression;t.jSXExpressionContainer=t.jsxExpressionContainer=jsxExpressionContainer;t.jSXFragment=t.jsxFragment=jsxFragment;t.jSXIdentifier=t.jsxIdentifier=jsxIdentifier;t.jSXMemberExpression=t.jsxMemberExpression=jsxMemberExpression;t.jSXNamespacedName=t.jsxNamespacedName=jsxNamespacedName;t.jSXOpeningElement=t.jsxOpeningElement=jsxOpeningElement;t.jSXOpeningFragment=t.jsxOpeningFragment=jsxOpeningFragment;t.jSXSpreadAttribute=t.jsxSpreadAttribute=jsxSpreadAttribute;t.jSXSpreadChild=t.jsxSpreadChild=jsxSpreadChild;t.jSXText=t.jsxText=jsxText;t.labeledStatement=labeledStatement;t.logicalExpression=logicalExpression;t.memberExpression=memberExpression;t.metaProperty=metaProperty;t.mixedTypeAnnotation=mixedTypeAnnotation;t.moduleExpression=moduleExpression;t.newExpression=newExpression;t.noop=noop;t.nullLiteral=nullLiteral;t.nullLiteralTypeAnnotation=nullLiteralTypeAnnotation;t.nullableTypeAnnotation=nullableTypeAnnotation;t.numberLiteral=NumberLiteral;t.numberLiteralTypeAnnotation=numberLiteralTypeAnnotation;t.numberTypeAnnotation=numberTypeAnnotation;t.numericLiteral=numericLiteral;t.objectExpression=objectExpression;t.objectMethod=objectMethod;t.objectPattern=objectPattern;t.objectProperty=objectProperty;t.objectTypeAnnotation=objectTypeAnnotation;t.objectTypeCallProperty=objectTypeCallProperty;t.objectTypeIndexer=objectTypeIndexer;t.objectTypeInternalSlot=objectTypeInternalSlot;t.objectTypeProperty=objectTypeProperty;t.objectTypeSpreadProperty=objectTypeSpreadProperty;t.opaqueType=opaqueType;t.optionalCallExpression=optionalCallExpression;t.optionalIndexedAccessType=optionalIndexedAccessType;t.optionalMemberExpression=optionalMemberExpression;t.parenthesizedExpression=parenthesizedExpression;t.pipelineBareFunction=pipelineBareFunction;t.pipelinePrimaryTopicReference=pipelinePrimaryTopicReference;t.pipelineTopicExpression=pipelineTopicExpression;t.placeholder=placeholder;t.privateName=privateName;t.program=program;t.qualifiedTypeIdentifier=qualifiedTypeIdentifier;t.recordExpression=recordExpression;t.regExpLiteral=regExpLiteral;t.regexLiteral=RegexLiteral;t.restElement=restElement;t.restProperty=RestProperty;t.returnStatement=returnStatement;t.sequenceExpression=sequenceExpression;t.spreadElement=spreadElement;t.spreadProperty=SpreadProperty;t.staticBlock=staticBlock;t.stringLiteral=stringLiteral;t.stringLiteralTypeAnnotation=stringLiteralTypeAnnotation;t.stringTypeAnnotation=stringTypeAnnotation;t["super"]=_super;t.switchCase=switchCase;t.switchStatement=switchStatement;t.symbolTypeAnnotation=symbolTypeAnnotation;t.taggedTemplateExpression=taggedTemplateExpression;t.templateElement=templateElement;t.templateLiteral=templateLiteral;t.thisExpression=thisExpression;t.thisTypeAnnotation=thisTypeAnnotation;t.throwStatement=throwStatement;t.topicReference=topicReference;t.tryStatement=tryStatement;t.tSAnyKeyword=t.tsAnyKeyword=tsAnyKeyword;t.tSArrayType=t.tsArrayType=tsArrayType;t.tSAsExpression=t.tsAsExpression=tsAsExpression;t.tSBigIntKeyword=t.tsBigIntKeyword=tsBigIntKeyword;t.tSBooleanKeyword=t.tsBooleanKeyword=tsBooleanKeyword;t.tSCallSignatureDeclaration=t.tsCallSignatureDeclaration=tsCallSignatureDeclaration;t.tSConditionalType=t.tsConditionalType=tsConditionalType;t.tSConstructSignatureDeclaration=t.tsConstructSignatureDeclaration=tsConstructSignatureDeclaration;t.tSConstructorType=t.tsConstructorType=tsConstructorType;t.tSDeclareFunction=t.tsDeclareFunction=tsDeclareFunction;t.tSDeclareMethod=t.tsDeclareMethod=tsDeclareMethod;t.tSEnumDeclaration=t.tsEnumDeclaration=tsEnumDeclaration;t.tSEnumMember=t.tsEnumMember=tsEnumMember;t.tSExportAssignment=t.tsExportAssignment=tsExportAssignment;t.tSExpressionWithTypeArguments=t.tsExpressionWithTypeArguments=tsExpressionWithTypeArguments;t.tSExternalModuleReference=t.tsExternalModuleReference=tsExternalModuleReference;t.tSFunctionType=t.tsFunctionType=tsFunctionType;t.tSImportEqualsDeclaration=t.tsImportEqualsDeclaration=tsImportEqualsDeclaration;t.tSImportType=t.tsImportType=tsImportType;t.tSIndexSignature=t.tsIndexSignature=tsIndexSignature;t.tSIndexedAccessType=t.tsIndexedAccessType=tsIndexedAccessType;t.tSInferType=t.tsInferType=tsInferType;t.tSInstantiationExpression=t.tsInstantiationExpression=tsInstantiationExpression;t.tSInterfaceBody=t.tsInterfaceBody=tsInterfaceBody;t.tSInterfaceDeclaration=t.tsInterfaceDeclaration=tsInterfaceDeclaration;t.tSIntersectionType=t.tsIntersectionType=tsIntersectionType;t.tSIntrinsicKeyword=t.tsIntrinsicKeyword=tsIntrinsicKeyword;t.tSLiteralType=t.tsLiteralType=tsLiteralType;t.tSMappedType=t.tsMappedType=tsMappedType;t.tSMethodSignature=t.tsMethodSignature=tsMethodSignature;t.tSModuleBlock=t.tsModuleBlock=tsModuleBlock;t.tSModuleDeclaration=t.tsModuleDeclaration=tsModuleDeclaration;t.tSNamedTupleMember=t.tsNamedTupleMember=tsNamedTupleMember;t.tSNamespaceExportDeclaration=t.tsNamespaceExportDeclaration=tsNamespaceExportDeclaration;t.tSNeverKeyword=t.tsNeverKeyword=tsNeverKeyword;t.tSNonNullExpression=t.tsNonNullExpression=tsNonNullExpression;t.tSNullKeyword=t.tsNullKeyword=tsNullKeyword;t.tSNumberKeyword=t.tsNumberKeyword=tsNumberKeyword;t.tSObjectKeyword=t.tsObjectKeyword=tsObjectKeyword;t.tSOptionalType=t.tsOptionalType=tsOptionalType;t.tSParameterProperty=t.tsParameterProperty=tsParameterProperty;t.tSParenthesizedType=t.tsParenthesizedType=tsParenthesizedType;t.tSPropertySignature=t.tsPropertySignature=tsPropertySignature;t.tSQualifiedName=t.tsQualifiedName=tsQualifiedName;t.tSRestType=t.tsRestType=tsRestType;t.tSSatisfiesExpression=t.tsSatisfiesExpression=tsSatisfiesExpression;t.tSStringKeyword=t.tsStringKeyword=tsStringKeyword;t.tSSymbolKeyword=t.tsSymbolKeyword=tsSymbolKeyword;t.tSThisType=t.tsThisType=tsThisType;t.tSTupleType=t.tsTupleType=tsTupleType;t.tSTypeAliasDeclaration=t.tsTypeAliasDeclaration=tsTypeAliasDeclaration;t.tSTypeAnnotation=t.tsTypeAnnotation=tsTypeAnnotation;t.tSTypeAssertion=t.tsTypeAssertion=tsTypeAssertion;t.tSTypeLiteral=t.tsTypeLiteral=tsTypeLiteral;t.tSTypeOperator=t.tsTypeOperator=tsTypeOperator;t.tSTypeParameter=t.tsTypeParameter=tsTypeParameter;t.tSTypeParameterDeclaration=t.tsTypeParameterDeclaration=tsTypeParameterDeclaration;t.tSTypeParameterInstantiation=t.tsTypeParameterInstantiation=tsTypeParameterInstantiation;t.tSTypePredicate=t.tsTypePredicate=tsTypePredicate;t.tSTypeQuery=t.tsTypeQuery=tsTypeQuery;t.tSTypeReference=t.tsTypeReference=tsTypeReference;t.tSUndefinedKeyword=t.tsUndefinedKeyword=tsUndefinedKeyword;t.tSUnionType=t.tsUnionType=tsUnionType;t.tSUnknownKeyword=t.tsUnknownKeyword=tsUnknownKeyword;t.tSVoidKeyword=t.tsVoidKeyword=tsVoidKeyword;t.tupleExpression=tupleExpression;t.tupleTypeAnnotation=tupleTypeAnnotation;t.typeAlias=typeAlias;t.typeAnnotation=typeAnnotation;t.typeCastExpression=typeCastExpression;t.typeParameter=typeParameter;t.typeParameterDeclaration=typeParameterDeclaration;t.typeParameterInstantiation=typeParameterInstantiation;t.typeofTypeAnnotation=typeofTypeAnnotation;t.unaryExpression=unaryExpression;t.unionTypeAnnotation=unionTypeAnnotation;t.updateExpression=updateExpression;t.v8IntrinsicIdentifier=v8IntrinsicIdentifier;t.variableDeclaration=variableDeclaration;t.variableDeclarator=variableDeclarator;t.variance=variance;t.voidTypeAnnotation=voidTyp
+{
+    "word": "हरिणी",
+    "ABCH": [
+        {
+            "word": "हरिणी",
+            "linga": "स्त्री",
+            "pagenum": "55",
+            "kanda": "सामान्यकाण्डः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4362",
+            "group": "1847",
+            "synonyms": [
+                "हिरण्मयी"
+            ],
+            "content": "सूर्मी स्थूणायःप्रतिमा हरिणी स्याद्धिरण्मयी ॥ १४६४ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "हरिणी",
+            "eid": "31280",
+            "pagenum": 1166,
+            "content": "हरिणी¦ <b>1</b> A female deer, doe;  <lbinfo n='ca#kitahariRIprekzaRA'/> चकितहरिणीप्रेक्षणा <ls>Me. 82</ls>, <ls>R. 9. 55</ls>, <ls n='R.'>14. 69.</ls> <b>--2</b> One of the four classes of women (also called चित्रिणी <ab>q. v.</ab>) <b>--3</b> Yellow jasmine. <b>--4</b> A good <lbinfo n='gold+en'/> golden image. <b>--5</b> <ab>N.</ab> of a metre. <b>--6</b> The green colour. <b>--7</b> Turmeric. <b>--8</b> <lbinfo n='Mad+der'/> Madder. <b>--Comp.</b> --दृश् <i><ab>a.</ab></i> deer-eyed. (<i>--<ab>f.</ab></i>) a deer-eyed woman;  <lbinfo n='kimaBava#dvipine'/> किमभवद्विपिने हरिणीदृशः <ls>U. 3. 27.</ls>"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "हरिणी",
+            "eid": "39354",
+            "pagenum": 658,
+            "content": "हरिणी¦ <ab>v.</ab> हरिण/ & ह/रित."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "हरिणी",
+            "eid": "29212",
+            "pagenum": 528,
+            "content": "हरिणी¦ <i>s.</i> हरिण <i>u.</i> हरित."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "हरिणी",
+            "eid": "43012",
+            "pagenum": 828,
+            "content": "hariRI¦ <i>f.</i> 1. A female deer, <ls>R.</ls>ii.11, <ls>Megh.</ls>ii.19, 41; 2. a golden image; 3. one of the four classes of women, otherwise called चित्रिणी; 4. yellow jasmine; 5. name of a metre. (See App. I.)"
+        }
+    ],
+    "MD": [
+        {
+            "word": "हरिणी",
+            "eid": "20404",
+            "pagenum": 375,
+            "content": "हरिणी¦ hariṇī́, <lex>f.</lex> (<i>of</i> hariṇá) <ab>V.</ab>, <ab>C.</ab>: female 🞄deer, gazelle; <ab>C.</ab>: golden image; <ab>N.</ab> <i>of an 🞄Apsaras</i>: <b>-dṛś,</b> <lex>f.</lex> gazelle-eyed woman; <b>-nayanā,</b> <lex>f.</lex> <ab>id.</ab>; <b>-rūpā-ya,</b> <ab>den.</ab> <lex>Ā.</lex> resemble a 🞄gazelle."
+        }
+    ],
+    "MW": [
+        {
+            "word": "हरिणी",
+            "eid": "261336",
+            "pagenum": "1291,2",
+            "content": "हरिणी/ <hom>a</hom> ¦ (ई/), <lex>f.</lex>, see below.<info lex='f'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261367",
+            "pagenum": "1291,2",
+            "content": "हरिणी/ <hom>b</hom> ¦ <lex>f.</lex> a female deer, doe, <ls>TS.</ls> &c. &c.<info lex='f'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261368",
+            "pagenum": "1291,2",
+            "content": "¦ <bot>Rubia Munjista</bot>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261369",
+            "pagenum": "1291,2",
+            "content": "¦ yellow jasmine, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261370",
+            "pagenum": "1291,2",
+            "content": "¦ one of the four kinds of beautiful women (corresponding to the kind of man termed मृग), <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261371",
+            "pagenum": "1291,2",
+            "content": "¦ a golden image, <ls>Rājat.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261372",
+            "pagenum": "1291,2",
+            "content": "¦ a kind of metre (four times -,), <ls>Piṅg.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261373",
+            "pagenum": "1291,2",
+            "content": "¦ a kind of <s1 slp1='svara-Bakti'>Svara-bhakti</s1> (<ab>q.v.</ab>), <ls>TPrāt.</ls>, <ab>Sch.</ab><info lex='inh'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261374",
+            "pagenum": "1291,2",
+            "content": "¦ <ab>N.</ab> of an <s1 slp1='apsaras'>Apsaras</s1>, <ls>Ragh.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261375",
+            "pagenum": "1291,2",
+            "content": "¦ of a <s1 slp1='yakziRI'>Yakṣiṇī</s1>, <ls>Buddh.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "हरिणी",
+            "eid": "261376",
+            "pagenum": "1291,2",
+            "content": "¦ of the mother of <s1 slp1='hari'>Hari</s1> (<s1 slp1='vizRu'>Viṣṇu</s1>), <ls>BhP.</ls> <ab>pl.</ab> <ab>N.</ab> of the verses, <ls>AV. xviii, 2, 11</ls>-<ls n='AV. xviii, 2,'>18</ls>; <ls>Kauś.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "हरिणी",
+            "eid": "53937",
+            "pagenum": 1167,
+            "content": "<i>Hariṇī,</i>¦ see under <i>hariṇa</i>. <i>—Hariṇī-vṛtta, am,</i> n. the Hariṇī metre."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "हरिणी",
+            "eid": "17214",
+            "pagenum": 3,
+            "content": "<i>Hariṇī</i>¦ — mother of Hari, in the Tāmasa epoch. <dvsn n='P'/>Bhā. VIII. 1. 30; Br. III. 3. 116."
+        }
+    ],
+    "PW": [
+        {
+            "word": "हरिणी",
+            "eid": "133681",
+            "pagenum": 7,
+            "content": "ह/रिणी¦ <ab>s. u.</ab> हरिण/ und ह/रित."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "हरिणी",
+            "eid": "116177",
+            "pagenum": 7,
+            "content": "हरिणी¦ s. u. हरिण und हरित ."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "हरिणी",
+            "eid": "27450",
+            "pagenum": 376,
+            "content": "<i>hariṇī</i>¦ *eine Art <i>nāyikā</i>, E 211, 345 (R). 346 (A). 570 (R). 578 (A). 876, 877 (R). {part=,seq=27816,type=,n=3}"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "हरिणी",
+            "eid": "41454",
+            "pagenum": "5-514-c",
+            "content": "हरिणी¦, स्त्री, (हरिण + ङीष् ।) मृगी । (यथा, रघुः । २ । ११ । “धनुर्भृतोऽप्यस्य दयार्द्रभावमाख्यातमन्तःकरणैर्विशङ्कैः । विलोकयन्त्यो वपुरापुरक्ष्णांप्रकामविस्तारफलं हरिण्यः ॥”) स्वर्णप्रतिमा । इत्यमरः । ३ । ४ । ५० ॥ (हरित + ङीष् । तस्य नः ।) हरिता । नारीभेदः । वृत्तभेदः । इति मेदिनी ॥ (तल्लक्षणं यथा, “नसमरला गः षड्वेदैर्हयैर्हरिणी मता ॥” विस्तारस्तु छन्दःशब्दे द्रष्टव्यः ॥) मञ्जिष्ठा स्वर्णयूथी । इति राजनिर्घण्टः ॥ तरुणी । वरस्त्री । इति शब्दरत्नावली ॥ (सुराङ्गनाभेदः । यथा, रघुः । ८ । ७९ । “चरतः किल दुश्चरं तपस्तृणविन्दोः परिशङ्कितः पुरा । प्रजिघाय समाधिभेदिनीं हरिरस्मै हरिणीं सुराङ्गनाम् ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "हरिणी",
+            "eid": "47831",
+            "pagenum": "5417,b",
+            "content": "हरिणी¦ स्त्री हरितवर्णा स्त्री ङीष् तस्य नः । १ हरितद्वणांयां स्त्रियां मेदि० २ स्वर्णप्रतिमायाम् अमरः । ३ स्वर्णयुथ्यां ४ मञ्जिष्ठायां राजनि० । ५ तरुण्यां ६ वरस्त्रियां शब्दर० “वसुयुगहयैनर्सौ म्नौ म्लो गो यदा हरिणी तदा” वृ० र० उक्तलक्षणके ७ सप्तदशाक्षरपादके छन्दोमेदे हरिणस्य स्त्री ङीष् । ८ मृग्याञ्च ९ अप्सरोगेदे । “चरतः किल दुश्चरं तपः पृणविन्दीः परिशङ्कितः पुरा । प्रजिघाय समाधिभेदिगीं हरिरस्मै हरिणीं सुराङ्गनाम्” रघुः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "हरिणी",
+            "content": "हरिणी स्त्री. -  हरिण + ङीष् 'मृगी, मादा हरिण'"
+        },
+        {
+            "word": "हरिणी",
+            "content": "हरिणी स्त्री. - स्त्रियों के चार भेदों में से एक"
+        },
+        {
+            "word": "हरिणी",
+            "content": "हरिणी स्त्री. - पीले फूल की चमेली"
+        },
+        {
+            "word": "हरिणी",
+            "content": "हरिणी स्त्री. - सुन्दर स्वर्णमूर्ति"
+        },
+        {
+            "word": "हरिणी",
+            "content": "हरिणी स्त्री. - एक छन्द का नाम"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "हरिणी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಹೆಣ್ಣು ಜಿಂಕೆ",
+            "निष्पत्तिः": "'ङीष्' (४-१-४८)",
+            "व्युत्पत्तिः": "हरिणस्य स्त्री",
+            "प्रयोगाः": "'नृत्यं मयूराः कुसुमानि वृक्षाः दर्भानुपात्तान् विजहुर्हरिण्यः'",
+            "उल्लेखाः": "रघु० १४-६९",
+            "content": ""
+        },
+        {
+            "word": "हरिणी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಸುವರ್ಣದ ಪ್ರತಿಮೆ \\/ಚಿನ್ನದ ವಿಗ್ರಹ",
+            "content": ""
+        },
+        {
+            "word": "हरिणी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಚಿತ್ರಿಣೀ ಜಾತಿಯ ಹೆಂಗಸು",
+            "content": ""
+        },
+        {
+            "word": "हरिणी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಹಳದಿ ಜಾಜಿಯ ಹೂವು",
+            "content": ""
+        },
+        {
+            "word": "हरिणी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಗರಿಕೆ ಹುಲ್ಲು",
+            "content": ""
+        },
+        {
+            "word": "हरिणी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಚಿನ್ನದ ಬಣ್ಣದ ಹೆಂಗಸು",
+            "विस्तारः": "'हरिणी चारुयोषिति। सुवर्णप्रतिमायां च' हेम०",
+            "content": ""
+        },
+        {
+            "word": "हरिणी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "೭ನೆಯ ಛಂದಸ್ಸಿನ ಒಂದು ವೃತ್ತ",
+            "प्रयोगाः": "'रसयुगहयैर्न्सौ भ्रौ स्लौ गो यदा हरिणी तदा'",
+            "उल्लेखाः": "वृ० र०",
+            "विस्तारः": "'हरिणी हरितायां च नारिभिद्वृत्तभेदयोः' मेदि०",
+            "content": ""
+        },
+        {
+            "word": "हरिणी",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "हरित ಪದದ ಅರ್ಥ",
+            "निष्पत्तिः": "स्त्रियां वा 'ङीप्' नकारादेशश्च (४-१-३९)",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "हरिणी",
+            "linga": "S",
+            "artha": "हरितवलयः",
+            "synonyms": [
+                "हरिणी"
+            ],
+            "num": "3.3.57",
+            "text": "हरिणी स्यान्मृगी हेमप्रतिमा हरिता च या । त्रिषु पाण्डौ च हरिणः स्थूणा स्तम्भेऽपि वेश्मनः ॥",
+            "content": ""
+        },
+        {
+            "word": "हरिणी",
+            "linga": "S",
+            "artha": "हेमप्रतिमा",
+            "synonyms": [
+                "हरिणी"
+            ],
+            "num": "3.3.57",
+            "text": "हरिणी स्यान्मृगी हेमप्रतिमा हरिता च या । त्रिषु पाण्डौ च हरिणः स्थूणा स्तम्भेऽपि वेश्मनः ॥",
+            "content": ""
+        },
+        {
+            "word": "हरिणी",
+            "linga": "S",
+            "artha": "मृगी",
+            "synonyms": [
+                "हरिणी"
+            ],
+            "num": "3.3.57",
+            "text": "हरिणी स्यान्मृगी हेमप्रतिमा हरिता च या । त्रिषु पाण्डौ च हरिणः स्थूणा स्तम्भेऽपि वेश्मनः ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "हरिणी",
+            "content": "<lexhead no=\"60\">\n<dentry>हरिणी</dentry>\n<prAwipaxikam>हरिणी</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[हरिण+ङीष्]</etymology>\n<jAwi>स्तनपायी</jAwi>\n<jAwi>अचलनिर्जीववस्तु</jAwi>\n<jAwi>अचलनिर्जीववस्तु</jAwi>\n<sense no=\"1\">मृगी, मादा हरिण, चकितहरिणीप्रेक्षणा<citation>मेघ* ८२</citation>रघु* ९/५५, १४/६९</sense>\n<sense n=\"2\">स्त्रियों के चार भेदों में से एक F‘चित्रिणी’ भी कहते हैं</sense>\n<sense n=\"3\">पीले फूल की चमेली</sense>\n<sense n=\"4\">सुन्दर स्वर्णमूर्ति</sense>\n<sense n=\"5\">एक छन्द का नाम</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "हरिणी",
+            "content": "<body><s>hariRI strI haritavarRA strI NIz tasya naH . <lb/><b>1</b> haritadva­RAMyAM striyAM medi° <lb/><b>2</b> svarRapratimAyAm amaraH . <lb/><b>3</b> svarRa­yuTyAM <lb/><b>4</b> maYjizWAyAM rAjani° . <lb/><b>5</b> taruRyAM <lb/><b>6</b> varastriyAM Sabdara° <q>vasuyugahayEnarsO mnO mlo go yadA hariRI tadA</q> vf° ra° uktalakzaRake <lb/><b>7</b> saptadaSAkzarapAdake Cando­mede hariRasya strI NIz . <lb/><b>8</b> mfgyAYca <lb/><b>9</b> apsarogede . <q>carataH kila duScaraM tapaH pfRavindIH pariSaNkitaH purA . prajiGAya samADiBedigIM harirasmE hariRIM surANganAm</q> raGuH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "हरिणी",
+            "content": "<H2B><h><key1>hariRI</key1><key2>hariRI/</key2><hom>a</hom></h><body><s>hariRI/</s> <hom>a</hom>   (<s>I/</s>), <lex>f.</lex>, see below.<info lex=\"f\" /></body><tail><L>261336</L><pc>1291,2</pc></tail></H2B>\n <H2><h><key1>hariRI</key1><key2>hariRI/</key2><hom>b</hom></h><body><s>hariRI/</s> <hom>b</hom>   <lex>f.</lex> a female deer, doe, <ls>TS.</ls> &amp;c. &amp;c.<info lex=\"f\" /></body><tail><L>261367</L><pc>1291,2</pc></tail></H2>\n <H2A><h><key1>hariRI</key1><key2>hariRI/</key2></h><body>  <bot>Rubia Munjista</bot>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>261368</L><pc>1291,2</pc></tail></H2A>\n <H2A><h><key1>hariRI</key1><key2>hariRI/</key2></h><body>  yellow jasmine, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>261369</L><pc>1291,2</pc></tail></H2A>\n <H2A><h><key1>hariRI</key1><key2>hariRI/</key2></h><body>  one of the four kinds of beautiful women (corresponding to the kind of man termed <s>mfga</s>), <ls>L.</ls><info lex=\"inh\" /></body><tail><L>261370</L><pc>1291,2</pc></tail></H2A>\n <H2A><h><key1>hariRI</key1><key2>hariRI/</key2></h><body>  a golden image, <ls>Rājat.</ls><info lex=\"inh\" /></body><tail><L>261371</L><pc>1291,2</pc></tail></H2A>\n <H2A><h><key1>hariRI</key1><key2>hariRI/</key2></h><body>  a kind of metre (four times -,), <ls>Piṅg.</ls><info lex=\"inh\" /></body><tail><L>261372</L><pc>1291,2</pc></tail></H2A>\n <H2A><h><key1>hariRI</key1><key2>hariRI/</key2></h><body>  a kind of <s1 slp1=\"svara-Bakti\">Svara-bhakti</s1> (<ab>q.v.</ab>), <ls>TPrāt.</ls>, <ab>Sch.</ab><info lex=\"inh\" /></body><tail><L>261373</L><pc>1291,2</pc></tail></H2A>\n <H2A><h><key1>hariRI</key1><key2>hariRI/</key2></h><body>  <ab>N.</ab> of an <s1 slp1=\"apsaras\">Apsaras</s1>, <ls>Ragh.</ls><info lex=\"inh\" /></body><tail><L>261374</L><pc>1291,2</pc></tail></H2A>\n <H2A><h><key1>hariRI</key1><key2>hariRI/</key2></h><body>  of a <s1 slp1=\"yakziRI\">Yakṣiṇī</s1>, <ls>Buddh.</ls><info lex=\"inh\" /></body><tail><L>261375</L><pc>1291,2</pc></tail></H2A>\n <H2A><h><key1>hariRI</key1><key2>hariRI/</key2></h><body>  of the mother of <s1 slp1=\"hari\">Hari</s1> (<s1 slp1=\"vizRu\">Viṣṇu</s1>), <ls>BhP.</ls> <ab>pl.</ab> <ab>N.</ab> of the verses, <ls>AV. xviii, 2, 11</ls>-<ls n=\"AV. xviii, 2,\">18</ls>; <ls>Kauś.</ls><info lex=\"inh\" /></body><tail><L>261376</L><pc>1291,2</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "हरिणी",
+            "content": "<span lang=\"sa\">हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹೆಣ್ಣು ಜಿಂಕೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"ङीष्\" (४-१-४८)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>हरिणस्य स्त्री<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"नृत्यं मयूराः कुसुमानि वृक्षाः दर्भानुपात्तान् विजहुर्हरिण्यः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० १४-६९<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>                  <span lang=\"sa\">हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸುವರ್ಣದ ಪ್ರತಿಮೆ /ಚಿನ್ನದ ವಿಗ್ರಹ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚಿತ್ರಿಣೀ ಜಾತಿಯ ಹೆಂಗಸು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹಳದಿ ಜಾಜಿಯ ಹೂವು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗರಿಕೆ ಹುಲ್ಲು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚಿನ್ನದ ಬಣ್ಣದ ಹೆಂಗಸು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"हरिणी चारुयोषिति। सुवर्णप्रतिमायां च\" हेम०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>೭ನೆಯ ಛಂದಸ್ಸಿನ ಒಂದು ವೃತ್ತ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"रसयुगहयैर्न्सौ भ्रौ स्लौ गो यदा हरिणी तदा\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>वृ० र०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"हरिणी हरितायां च नारिभिद्वृत्तभेदयोः\" मेदि०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>हरित ಪದದ ಅರ್ಥ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>स्त्रियां वा \"ङीप्\" नकारादेशश्च (४-१-३९)<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span> <span lang=\"sa\">हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹೆಣ್ಣು ಜಿಂಕೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"ङीष्\" (४-१-४८)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>हरिणस्य स्त्री<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"नृत्यं मयूराः कुसुमानि वृक्षाः दर्भानुपात्तान् विजहुर्हरिण्यः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० १४-६९<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>                  <span lang=\"sa\">हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸುವರ್ಣದ ಪ್ರತಿಮೆ /ಚಿನ್ನದ ವಿಗ್ರಹ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚಿತ್ರಿಣೀ ಜಾತಿಯ ಹೆಂಗಸು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹಳದಿ ಜಾಜಿಯ ಹೂವು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗರಿಕೆ ಹುಲ್ಲು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚಿನ್ನದ ಬಣ್ಣದ ಹೆಂಗಸು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"हरिणी चारुयोषिति। सुवर्णप्रतिमायां च\" हेम०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>೭ನೆಯ ಛಂದಸ್ಸಿನ ಒಂದು ವೃತ್ತ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"रसयुगहयैर्न्सौ भ्रौ स्लौ गो यदा हरिणी तदा\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>वृ० र०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"हरिणी हरितायां च नारिभिद्वृत्तभेदयोः\" मेदि०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>हरिणी<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>हरित ಪದದ ಅರ್ಥ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>स्त्रियां वा \"ङीप्\" नकारादेशश्च (४-१-३९)<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

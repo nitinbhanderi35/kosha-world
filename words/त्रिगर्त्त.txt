@@ -1,1 +1,55 @@
-bute(t){return this._fireChange("attributes",this),"class"==t?this._classes.size>0&&(this._classes.clear(),!0):"style"==t?!this._styles.isEmpty&&(this._styles.clear(),!0):this._attrs.delete(t)}_addClass(t){this._fireChange("attributes",this);for(const e of vi(t))this._classes.add(e)}_removeClass(t){this._fireChange("attributes",this);for(const e of vi(t))this._classes.delete(e)}_setStyle(t,e){this._fireChange("attributes",this),"string"!=typeof t?this._styles.set(t):this._styles.set(t,e)}_removeStyle(t){this._fireChange("attributes",this);for(const e of vi(t))this._styles.remove(e)}_setCustomProperty(t,e){this._customProperties.set(t,e)}_removeCustomProperty(t){return this._customProperties.delete(t)}}function hs(t,e){const n=e.split(/\s+/);t.clear(),n.forEach((e=>t.add(e)))}ds.prototype.is=function(t,e){return e?e===this.name&&("element"===t||"view:element"===t):"element"===t||"view:element"===t||"node"===t||"view:node"===t};class us extends ds{constructor(t,e,n,o){super(t,e,n,o),this.getFillerOffset=ps}}function ps(){const t=[...this.getChildren()],e=t[this.childCount-1];if(e&&e.is("element","br"))return this.childCount;for(const e of t)if(!e.is("uiElement"))return null;return this.childCount}us.prototype.is=function(t,e){return e?e===this.name&&("containerElement"===t||"view:containerElement"===t||"element"===t||"view:element"===t):"containerElement"===t||"view:containerElement"===t||"element"===t||"view:element"===t||"node"===t||"view:node"===t};class gs extends(K(us)){constructor(t,e,n,o){super(t,e,n,o),this.set("isReadOnly",!1),this.set("isFocused",!1),this.set("placeholder",void 0),this.bind("isReadOnly").to(t),this.bind("isFocused").to(t,"isFocused",(e=>e&&t.selection.editableElement==this)),this.listenTo(t.selection,"change",(()=>{this.isFocused=t.isFocused&&t.selection.editableElement==this}))}destroy(){this.stopListening()}}gs.prototype.is=function(t,e){return e?e===this.name&&("editableElement"===t||"view:editableElement"===t||"containerElement"===t||"view:containerElement"===t||"element"===t||"view:element"===t):"editableElement"===t||"view:editableElement"===t||"containerElement"===t||"view:containerElement"===t||"element"===t||"view:element"===t||"node"===t||"view:node"===t};const ms=Symbol("rootName");class ks extends gs{constructor(t,e){super(t,e),this.rootName="main"}get rootName(){return this.getCustomProperty(ms)}set rootName(t){this._setCustomProperty(ms,t)}set _name(t){this.name=t}}ks.prototype.is=function(t,e){return e?e===this.name&&("rootElement"===t||"view:rootElement"===t||"editableElement"===t||"view:editableElement"===t||"containerElement"===t||"view:containerElement"===t||"element"===t||"view:element"===t):"rootElement"===t||"view:rootElement"===t||"editableElement"===t||"view:editableElement"===t||"containerElement"===t||"view:containerElement"===t||"element"===t||"view:element"===t||"node"===t||"view:node"===t};class fs{constructor(t={}){if(!t.boundaries&&!t.startPosition)throw new A("view-tree-walker-no-start-position",null);if(t.direction&&"forward"!=t.direction&&"backward"!=t.direction)throw new A("view-tree-walker-unknown-direction",t.startPosition,{direction:t.direction});this.boundaries=t.boundaries||null,t.startPosition?this._position=bs._createAt(t.startPosition):this._position=bs._createAt(t.boundaries["backward"==t.direction?"end":"start"]),this.direction=t.direction||"forward",this.singleCharacters=!!t.singleCharacters,this.shallow=!!t.shallow,this.ignoreElementEnd=!!t.ignoreElementEnd,this._boundaryStartParent=this.boundaries?this.boundaries.start.parent:null,this._boundaryEndParent=this.boundaries?this.boundaries.end.parent:null}[Symbol.iterator](){return this}get position(){return this._position}skip(t){let e,n;do{n=this.position,e=this.next()}while(!e.done&&t(e.value));e.done||(this._position=n)}next(){return"forward"==this.direction?this._next():this._previous()}_next(){let t=this.position.clone();const e=this.position,n=t.parent;if(null===n.parent&&t.offset===n.childCount)return{done:!0,value:void 0};if(n===this._boundaryEndParent&&t.offset==this.boundaries.end.offset)return{done:!0,value:void 0};let o;if(n instanceof Dr){if(t.isAtEnd)return this._position=bs._createAfter(n),this._next();o=n.data[t.offset]}else o=n.getChild(t.offset);if(o instanceof ds){if(this.shallow){if(this.boundaries&&this.boundaries.end.isBefore(t))return{done:!0,value:void 0};t.offset++}else t=new bs(o,0);return this._position=t,this._formatReturnValue("elementStart",o,e,t,1)}if(o instanceof Dr){if(this.singleCharacters)return t=new bs(o,0),this._position=t,this._next();let n,i=o.data.length;return o==this._boundaryEndParent?(i=this.boundaries.end.offset,n=new Sr(o,0,i),t=bs._createAfter(n)):(n=new Sr(o,0,o.data.length),t.offset++),this._position=t,this._formatReturnValue("text",n,e,t,i)}if("string"==typeof o){let o;if(this.singleCharacters)o=1;else{o=(n===this._boundaryEndParent?this.boundaries.end.offset:n.data.length)-t.offset}const i=new Sr(n,t.offset,o);return
+{
+    "word": "त्रिगर्त्त",
+    "SHS": [
+        {
+            "word": "त्रिगर्त्त",
+            "eid": "18031",
+            "pagenum": 323,
+            "content": "त्रिगर्त्त¦ m. (-र्त्तः) 1. A country in the north-west division of India, or m. plu. (-र्त्ताः) Its inhabitants: apparently part of Lahore, said, by Mr. WILFORD, to be the modern Tahora, but differently described in the Koshas: see जालन्धर and वालहीक. 2. A form of calculation, (गणितान्तरे.) f. (-र्त्ता) 1. A small worm. 2. A lascivious woman, a wanton. 3. A woman in general. 4. A pearl. E. त्रि three, and गर्त्त a hole, &c."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिगर्त्त",
+            "eid": "18048",
+            "pagenum": 389,
+            "content": "त्रिगर्त्त¦ m. (-र्त्तः) .²1 A country in the north-west division of <i>India,</i> or m. <i>plu.</i> (-र्त्तः) Its inhabitants: apparently part of <i>Lahore,</i> said, by Mr. WILFORD, to be the modern <i>Tahora,</i> but differently described in the <i>Koṣas:</i> see जालन्धर and वाह्लीक. .²2 A form of calculation, (गणितान्तरे.) f. (-र्त्ता) .²1 A small worm. .²2 A lascivious woman, a wanton. .²3 A woman in general. .²4 A pearl. .E. त्रि three, and गर्त्त a hole, &c."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिगर्त्त",
+            "eid": "17523",
+            "pagenum": 344,
+            "content": "त्रि-गर्त्त¦ (र्त्तः) 1. <i>m.</i> A country; part of <i>Lahore. f.</i> A small worm; wanton woman; a pearl."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिगर्त्त",
+            "eid": "15508",
+            "pagenum": "2-656-a",
+            "content": "त्रिगर्त्तः¦, पुं, (त्रयो गर्त्ता यत्र ।) देशविशेषः । लाहोराख्यदेशैकभागः । तत्पर्य्यायः । जालन्धरः २ । इति हेमचन्द्रः । ४ । २४ ॥ (देशोऽयं कूर्म्मविभागे उत्तरस्यामुक्तः । यथा, बृहत्संहितायाम् । १४ । २५ । “उत्तरतः कैलासः” इत्युपक्रम्य, “त्रिगर्त्ततुरगाननाश्वमुखाः ॥” इत्युक्तवान् ॥) तद्देशस्थे पुं भूम्नि । (यथा, महाभारते । २ । २७ । १८ । “ततस्त्रिगर्त्ताः कौन्तेयं दार्व्वाः कोकनदास्तथा । क्षत्त्रिया बहवो राजन्नुपावर्त्तन्त सर्व्वशः ॥”) गणितान्तरम् । इति मेदिनी । ते, ११३ ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिगर्त्त",
+            "eid": "23602",
+            "pagenum": "3364,a",
+            "content": "त्रिगर्त्त¦ पु० त्रीणि गर्त्तानि यत्र । १ जालन्धरे देशे हेमच० । स च देशः वृ० स० १४ अ० कूर्मविभागे उत्तरस्यामुक्तः “उत्तरतः कैलास” इत्युपक्रमे “आदर्शान्तद्वीपित्रिगर्ततुरगाननाश्वमुखाः” सोऽस्याभिजनः, तस्य राजा वा अण् । त्रैगर्त्त पित्रादिक्रमेण तद्देशवासिनि तन्नृपे च बहुषु अणो लुक् । २ तत्रार्थे ब० व० । “द्रविडाम्बष्ठत्रिगर्तसौराष्ट्रान्” वृ० स० ९ अ० । “सुशर्मा च नरव्याघ्र! त्रिगर्तः प्रस्थलाधिपः” भा० द्रो० १७ अ० । आर्षत्वात् एकत्वेऽपि अणोलुक् । “मद्रराजश्च बलवान् त्रिगर्त्तानाधीश्वरः” हरिवं० ९१ अ० । स्वार्थे क । तत्रार्थे त्रिका० ।"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिगर्त्त",
+            "content": "<body><s>trigartta pu° trIRi garttAni yatra . <lb/><b>1</b> jAlanDare deSe hemaca° . sa ca deSaH vf° sa° 14 a° kUrmaviBAge uttarasyAmuktaH <q>utta­rataH kElAsa</q> ityupakrame <q>AdarSAntadvIpitrigartaturagA­nanASvamuKAH</q> so'syABijanaH, tasya rAjA vA aR . trEgartta pitrAdikrameRa taddeSavAsini tannfpe ca bahuzu aRo luk . <lb/><b>2</b> tatrArTe ba° va° . <q>draviqAmbazWatrigarta­sOrAzwrAn</q> vf° sa° 9 a° . <q>suSarmA ca naravyAGra! trigartaH prasTalADipaH</q> BA° dro° 17 a° . ArzatvAt ekatve'pi aRoluk . <q>madrarAjaSca balavAn trigarttAnA­DISvaraH</q> harivaM° 91 a° . svArTe ka . tatrArTe trikA° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिगर्त्त",
+            "content": "<H1><h><key1>trigartta</key1><key2>trigartta</key2></h><body><s>trigartta</s>  <div n=\"1\">m. (<s>-rttaH</s>) </div><div n=\"2\"> 1. A country in the north-west division of India, or </div><div n=\"1\">m. <lb />plu. (<s>-rttAH</s>) Its inhabitants: apparently part of Lahore, said, by <lb />Mr. WILFORD, to be the modern Tahora, but differently described <lb />in the Koshas: see <s>jAlanDara</s> and <s>vAlahIka</s>. </div><div n=\"2\"> 2. A form of calculation, <lb />(<s>gaRitAntare</s>.) </div><div n=\"1\">f. (<s>-rttA</s>) </div><div n=\"2\"> 1. A small worm. </div><div n=\"2\"> 2. A lascivious woman, a <lb />wanton. </div><div n=\"2\"> 3. A woman in general. </div><div n=\"2\"> 4. A pearl.</div><div n=\"E\"> E. <s>tri</s> three, and <s>gartta</s> <lb />a hole, &amp;c.</div></body><tail><L>18031</L><pc>323-b</pc></tail></H1>\n"
+        }
+    ]
+}

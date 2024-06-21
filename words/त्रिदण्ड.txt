@@ -1,1 +1,152 @@
- * nested editable (e.g. mulit-cell table selection).\n *\n * See https://github.com/ckeditor/ckeditor5/issues/7263.\n */\n.ck-editor__nested-editable.ck-editor__editable_selected {\n\t& .ck-widget {\n\t\t&.ck-widget_selected,\n\t\t&:hover {\n\t\t\t& > .ck-widget__type-around > .ck-widget__type-around__button {\n\t\t\t\t@mixin ck-widget-type-around-button-hidden;\n\t\t\t}\n\t\t}\n\t}\n}\n\n/*\n * Styles for the buttons when the widget is selected but the user clicked outside of the editor (blurred the editor).\n */\n.ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button:not(:hover) {\n\tbackground: var(--ck-color-widget-type-around-button-blurred-editable);\n\n\t& svg * {\n\t\tstroke: hsl(0,0%,60%);\n\t}\n}\n\n@keyframes ck-widget-type-around-arrow-dash {\n\t0% {\n\t\tstroke-dashoffset: 10;\n\t}\n\t20%, 100% {\n\t\tstroke-dashoffset: 0;\n\t}\n}\n\n@keyframes ck-widget-type-around-arrow-tip-dash {\n\t0%, 20% {\n\t\tstroke-dashoffset: 7;\n\t}\n\t40%, 100% {\n\t\tstroke-dashoffset: 0;\n\t}\n}\n\n@keyframes ck-widget-type-around-button-sonar {\n\t0% {\n\t\tbox-shadow: 0 0 0 0 hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));\n\t}\n\t50% {\n\t\tbox-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-end-alpha));\n\t}\n\t100% {\n\t\tbox-shadow: 0 0 0 5px hsla(var(--ck-color-focus-border-coordinates), var(--ck-color-widget-type-around-button-radar-start-alpha));\n\t}\n}\n\n@keyframes ck-widget-type-around-fake-caret-pulse {\n\t0% {\n\t\topacity: 1;\n\t}\n\t49% {\n\t\topacity: 1;\n\t}\n\t50% {\n\t\topacity: 0;\n\t}\n\t99% {\n\t\topacity: 0;\n\t}\n\t100% {\n\t\topacity: 1;\n\t}\n}\n'],sourceRoot:""}]);const a=s},6314:t=>{"use strict";t.exports=function(t){var e=[];return e.toString=function(){return this.map((function(e){var n=t(e);return e[2]?"@media ".concat(e[2]," {").concat(n,"}"):n})).join("")},e.i=function(t,n,o){"string"==typeof t&&(t=[[null,t,""]]);var i={};if(o)for(var r=0;r<this.length;r++){var s=this[r][0];null!=s&&(i[s]=!0)}for(var a=0;a<t.length;a++){var c=[].concat(t[a]);o&&i[c[0]]||(n&&(c[2]?c[2]="".concat(n," and ").concat(c[2]):c[2]=n),e.push(c))}},e}},4991:t=>{"use strict";function e(t,e){return function(t){if(Array.isArray(t))return t}(t)||function(t,e){var n=t&&("undefined"!=typeof Symbol&&t[Symbol.iterator]||t["@@iterator"]);if(null==n)return;var o,i,r=[],s=!0,a=!1;try{for(n=n.call(t);!(s=(o=n.next()).done)&&(r.push(o.value),!e||r.length!==e);s=!0);}catch(t){a=!0,i=t}finally{try{s||null==n.return||n.return()}finally{if(a)throw i}}return r}(t,e)||function(t,e){if(!t)return;if("string"==typeof t)return n(t,e);var o=Object.prototype.toString.call(t).slice(8,-1);"Object"===o&&t.constructor&&(o=t.constructor.name);if("Map"===o||"Set"===o)return Array.from(t);if("Arguments"===o||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(o))return n(t,e)}(t,e)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function n(t,e){(null==e||e>t.length)&&(e=t.length);for(var n=0,o=new Array(e);n<e;n++)o[n]=t[n];return o}t.exports=function(t){var n=e(t,4),o=n[1],i=n[3];if(!i)return o;if("function"==typeof btoa){var r=btoa(unescape(encodeURIComponent(JSON.stringify(i)))),s="sourceMappingURL=data:application/json;charset=utf-8;base64,".concat(r),a="/*# ".concat(s," */"),c=i.sources.map((function(t){return"/*# sourceURL=".concat(i.sourceRoot||"").concat(t," */")}));return[o].concat(c).concat([a]).join("\n")}return[o].join("\n")}},5072:(t,e,n)=>{"use strict";var o,i=function(){return void 0===o&&(o=Boolean(window&&document&&document.all&&!window.atob)),o},r=function(){var t={};return function(e){if(void 0===t[e]){var n=document.querySelector(e);if(window.HTMLIFrameElement&&n instanceof window.HTMLIFrameElement)try{n=n.contentDocument.head}catch(t){n=null}t[e]=n}return t[e]}}(),s=[];function a(t){for(var e=-1,n=0;n<s.length;n++)if(s[n].identifier===t){e=n;break}return e}function c(t,e){for(var n={},o=[],i=0;i<t.length;i++){var r=t[i],c=e.base?r[0]+e.base:r[0],l=n[c]||0,d="".concat(c," ").concat(l);n[c]=l+1;var h=a(d),u={css:r[1],media:r[2],sourceMap:r[3]};-1!==h?(s[h].references++,s[h].updater(u)):s.push({identifier:d,updater:k(u,e),references:1}),o.push(d)}return o}function l(t){var e=document.createElement("style"),o=t.attributes||{};if(void 0===o.nonce){var i=n.nc;i&&(o.nonce=i)}if(Object.keys(o).forEach((function(t){e.setAttribute(t,o[t])})),"function"==typeof t.insert)t.insert(e);else{var s=r(t.insert||"head");if(!s)throw new Error("Couldn't find a style target. This probably means that the value for the 'insert' parameter is invalid.");s.appendChild(e)}return e}var d,h=(d=[],function(t,e){return d[t]=e,d.filter(Boolean).join("\n")});function u(t,e,n,o){var i=n?"":o.media?"@media ".concat(o.media," {").concat(o.css,"}"):o.css;if(t.styleSheet)t.styleSheet.cssText=h(e,i);else{var r=document.createTextNode(i),s=t.childNodes;s[e]&&t.removeChild(s[e]),s.length?t.insertBefore(r,s[e]):t.appendChild(r)}}function p(t,e,n){var o=n.css,i=n.media,r=n.sourceMap;if(i?t.setAttribute("media",i):t.removeAttribute("media"),r&&"undefined"!=typeof btoa&&(o+="\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(r))))," */")),t.styleSheet)t.styleSheet.cssText=o;else{for(;t.firstChild;)t.removeChild(t.firstChild);t.appendChild(document.createTextNode(o))}}var g=null,m=0;function k(t,e){var n,o,i;if(e.singleton){var r=m++;n=g||(g=l(e)),o=u.bind(null,n,r,!1),i=u.bind(null,n,r,!0)}else n=l(e),o=p.bind(null,n,e),i=function(){!function(t){if(null===t.parentNode)return!1;t.parentNode.removeChild(t)}(n)};return o(t),function(e){if(e){if(e.css===t.css&&e.media===t.media&&e.sourceMap===t.sourceMap)return;o(t=e)}else i()}}t.exports=function(t,e){(e=e||{}).singleton||"boolean"==typeof e.singleton||(e.singleton=i());var n=c(t=t||[],e);return function(t){if(t=t||[],"[object Array]"===Object.prototype.toString.call(t)){for(var o=0;o<n.length;o++){var i=a(n[o]);s[i].references--}for(var r=c(t,e),l=0;l<n.length;l++){var d=a(n[l]);0===s[d].references&&(s[d].updater(),s.splice(d,1))}n=r}}}},5235:()=>{}},o={};function i(t){var e=o[t];if(void 0!==e)return e.exports;var r=o[t]={id:t,exports:{}};return n[t](r,r.exports,i),r.exports}i.n=t=>{var e=t&&t.__esModule?()=>t.default:()=>t;return i.d(e,{a:e}),e},e=Object.getPrototypeOf?t=>Object.getPrototypeOf(t):t=>t.__proto__,i.t=function(n,o){if(1&o&&(n=this(n)),8&o)return n;if("object"==typeof n&&n){if(4&o&&n.__esModule)return n;if(16&o&&"function"==typeof n.then)return n}var r=Object.create(null);i.r(r);var s={};t=t||[null,e({}),e([]),e(e)];for(var a=2&o&&n;"object"==typeof a&&!~t.indexOf(a);a=e(a))Object.getOwnPropertyNames(a).forEach((t=>s[t]=()=>n[t]));return s.default=()=>n,i.d(r,s),r},i.d=(t,e)=>{for(var n in e)i.o(e,n)&&!i.o(t,n)&&Object.defineProperty(t,n,{enumerable:!0,get:e[n]})},i.o=(t,e)=>Object.prototype.hasOwnProperty.call(t,e),i.r=t=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},i.nc=void 0;var r={};return(()=>{"use strict";function t({emitter:t,activator:e,callback:n,contextElements:o}){t.listenTo(document,"mousedown",((t,i)=>{if(!e())return;const r="function"==typeof i.composedPath?i.composedPath():[],s="function"==typeof o?o():o;for(const t of s)if(t.contains(i.target)||r.includes(t))return;n()}))}function e(t){return class extends t{disableCssTransitions(){this._isCssTransitionsDisabled=!0}enableCssTransitions(){this._isCssTransitionsDisabled=!1}constructor(...t){super(...t),this.set("_isCssTransitionsDisabled",!1),this.initializeCssTransitionDisablerMixin()}initializeCssTransitionDisablerMixin(){this.extendTemplate({attributes:{class:[this.bindTemplate.if("_isCssTransitionsDisabled","ck-transitions-disabled")]}})}}}function n({view:t}){t.listenTo(t.element,"submit",((e,n)=>{n.preventDefault(),t.fire("submit")}),{useCapture:!0})}function o({keystrokeHandler:t,focusTracker:e,gridItems:n,numberOfColumns:o,uiLanguageDirection:i}){const r="number"==typeof o?()=>o:o;function s(t){return o=>{const i=n.find((t=>t.element===e.focusedElement)),r=n.getIndex(i),s=t(r,n);n.get(s).focus(),o.stopPropagation(),o.preventDefault()}}function a(t,e){return t===e-1?0:t+1}function c(t,e){return 0===t?e-1:t-1}t.set("arrowright",s(((t,e)=>"rtl"===i?c(t,e.length):a(t,e.length)))),t.set("arrowleft",s(((t,e)=>"rtl"===i?a(t,e.length):c(t,e.length)))),t.set("arrowup",s(((t,e)=>{let n=t-r();return n<0&&(n=t+r()*Math.floor(e.length/r()),n>e.length-1&&(n-=r())),n}))),t.set("arrowdown",s(((t,e)=>{let n=t+r();return n>e.length-1&&(n=t%r()),n})))}i.d(r,{default:()=>LB});const s=function(){try{return navigator.userAgent.toLowerCase()}catch(t){return""}}(),a={isMac:l(s),isWindows:function(t){return t.indexOf("windows")>-1}(s),isGecko:function(t){return!!t.match(/gecko\/\d+/)}(s),isSafari:function(t){return t.indexOf(" applewebkit/")>-1&&-1===t.indexOf("chrome")}(s),isiOS:function(t){return!!t.match(/iphone|ipad/i)||l(t)&&navigator.maxTouchPoints>0}(s),isAndroid:function(t){return t.indexOf("android")>-1}(s),isBlink:function(t){return t.indexOf("chrome/")>-1&&t.indexOf("edge/")<0}(s),features:{isRegExpUnicodePropertySupported:function(){let t=!1;try{t=0==="ć".search(new RegExp("[\\p{L}]","u"))}catch(t){}return t}()}},c=a;function l(t){return t.indexOf("macint
+{
+    "word": "त्रिदण्ड",
+    "CAE": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "12843",
+            "pagenum": 212,
+            "content": "त्रिदण्ड¦ <lex>n.</lex> the three staves (of a mendicant Brahman) or the triple subjection (of words, thoughts, & acts); <ab>poss.</ab> °ण्डिन्, as <lex>m.</lex> a religious mendicant."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "9006",
+            "pagenum": 160,
+            "content": "त्रिदण्ड¦ <i>n.</i> der Dreistab <i>(des brahmanischen</i> <i>Bettlers).</i> °एडिन् einen D. tragend; <i>m.</i> ein brahmanischer Bettler."
+        }
+    ],
+    "IEG": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "6022",
+            "pagenum": 343,
+            "content": "<i>tri-daṇḍa,</i>¦ cf. <i>Tridaṇḍin</i> (IA 10); tree staves tied together as borne by Brāhmaṇa mendicants."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "87740",
+            "pagenum": "458,3",
+            "content": "त्रि—दण्ड ¦ <lex>n.</lex> = °ण्डक, <ls>Mn.</ls> &c.<info lex='n'/>"
+        },
+        {
+            "word": "त्रिदण्ड",
+            "eid": "87741",
+            "pagenum": "458,3",
+            "content": "¦ triple control (<ab>i.e.</ab> of thoughts, words, and acts), <ls n='Mn.'>xii, 11.</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "47455",
+            "pagenum": 3,
+            "content": "त्रिदण्ड¦ <dvsn n='1'>— 1〉 <lex>n.</lex> <dvsn n='2'>— a〉 <i>die drei in Eins verbundenen Stäbe eines Brahmanen, aer der Welt entsagt hat</i>. <dvsn n='2'>— b〉 <i>die dreifache macht; die Beherrschung der Rede, der Gedanken und der Handlungen</i>. <dvsn n='1'>— 2〉 [Page3-050-a] *<lex>f.</lex> ई Titel eines Werkes."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "30939",
+            "pagenum": 3,
+            "content": "त्रिदण्ड¦ (त्रि + दण्ड) <dvsn n='1'> 1) <lex>n.</lex> <dvsn n='2'> a) <i>die drei in Eins verbundenen Stäbe eines brahmanischen Bettlers, der der Welt entsagt hat</i>: सप्ताङ्गस्येह राज्यस्य विष्टब्धस्य त्रिदण्डवत् <ls>M. 9, 296.</ls> सप्ताङ्गस्यास्य राज्यस्य त्रिदण्डस्येव तिष्ठतः <ls>MBH. 12, 12007.</ls> °धृक् <ls n='MBH.'>3, 16016.</ls> <ls n='MBH. 3,'>13445.</ls> <ls n='MBH.'>4, 1400.</ls> <ls n='MBH.'>13, 2786.</ls> <ls n='MBH. 13,'>4505.</ls> <ls n='MBH. 13,'>4507.</ls> <ls n='MBH. 13,'>6471.</ls> <ls>R. 3, 52, 9.</ls> <ls>PAÑCAT. III, 238.</ls> <ls>GAUḌAP.</ls> zu <ls>SĀṂKHYAK. 50.</ls> <ls>PRAB. 30, 17.</ls> <dvsn n='2'>— b) <i>die dreifache Macht: die Beherrschung der Rede, der Gedanken und der Handlungen</i> <ls>M. 12, 11.</ls> <dvsn n='1'>— 2) <lex>f.</lex> ई Titel einer Schrift <ls>Verz. d. B. H. No. 1170.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "18044",
+            "pagenum": 324,
+            "content": "त्रिदण्ड¦ n. (-ण्डं) 1. Three staves collectively. 2. Triple subjection of words, thoughts, and acts; the state of a religious ascetic. E. त्रि three, दण्ड a staff, &c."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "18061",
+            "pagenum": 389,
+            "content": "त्रिदण्ड¦ n. (-ण्डं) .²1 Three staves collectively. .²2 Triple subjection of words, thoughts, and acts; the state of a religious ascetic. .E. त्रि three, दण्ड a staff, &c."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "17537",
+            "pagenum": 344,
+            "content": "त्रि-दण्ड¦ (ण्डं) 1. <i>n.</i> Three staves collectively; triple subjection, of thoughts, words, and actions."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "15522",
+            "pagenum": "2-656-c",
+            "content": "त्रिदण्डः¦, पुं, (त्रिदण्डं चतुरङ्गुलगोबालवेष्टनादन्योन्यसम्बन्धं अस्त्यस्येति । अर्शआदित्वादच् ।) सन्न्यासाश्रमः । यथा, “यस्त्वसंयतषड्वर्गः प्रचण्डेन्द्रियसारथिः । ज्ञानवैराग्यरहितस्त्रिदण्डमुपजीवति ॥” इति श्रीभागवतम् ॥ (त्रयाणां दण्डानां समाहारः । यतित्रिदण्डे, क्ली । यथा, महाभारते । १२ । ३२० । १५५ । “सप्ताङ्गस्यास्य राज्यस्य त्रिदण्डस्येव तिष्ठतः । अन्योन्यगुणयुक्तस्य कः केन गुणतोऽधिकः ॥” कायवाङ्मनोदण्डत्रये । यथा, मनुः । १२ । ११ । “त्रिदण्डमेतन्निक्षिप्य सर्व्वभूतेषु मानवः । कामक्रोधौ तु संयम्य ततः सिद्धिं नियच्छति ॥ “सत्त्वमात्मा शरीरञ्च त्रयमेतत्त्रिदण्डवत् । लोकास्तिष्ठति संयोगात्तत्र सर्व्वं प्रतिष्ठितम् ॥” इति चरके सूत्रस्थाने प्रथमेऽध्याये ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिदण्ड",
+            "eid": "23627",
+            "pagenum": "3366,a",
+            "content": "त्रिदण्ड¦ न० त्रयाणां दण्डानां समाहारः । १ चतुरङ्गुलगोबालवेष्टनादन्योन्यसंबद्धे यतेर्दण्डत्रये । २ वाङ्मनःकायदण्डत्रये च । तदस्यास्त्रीति अच् । ३ संन्यासाश्रमे पु० । त्रिदण्डिशब्दे दृश्यम् । “यस्त्वसंहतषड्वर्गः प्रचण्डेन्द्रियसारथिः । ज्ञानवैराग्यरहितस्त्रिदण्डमुपजीवति” भाग"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिदण्ड",
+            "content": "त्रिदण्डम् नपुं. त्रि-दण्डम्  - संन्यासी के तीन डंडों को बांधकर एक किया हुआ"
+        },
+        {
+            "word": "त्रिदण्ड",
+            "content": "त्रिदण्डम् नपुं. त्रि-दण्डम्  - तिगुणा संयम"
+        },
+        {
+            "word": "त्रिदण्ड",
+            "content": "त्रिदण्डः पुं. त्रि-दण्डः  - एक धर्मनिष्ठ संन्यासी की अवस्था"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिदण्ड",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಯತಿಗಳು ಹಿಡಿಯುವ ತ್ರಿದಂಡ \\/ಒಟ್ಟಾಗಿ ಸೇರಿಸಿ ಕಟ್ಟಿದ ಸಂನ್ಯಾಸಿಗಳ ೩ ದಂಡಗಳು",
+            "व्युत्पत्तिः": "त्रयाणां दण्डानां समाहारः",
+            "content": ""
+        },
+        {
+            "word": "त्रिदण्ड",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವಾಕ್ಕು ಮನಸ್ಸು ಮತ್ತು ಶರೀರ ಇವುಗಳದಮನ",
+            "content": ""
+        },
+        {
+            "word": "त्रिदण्ड",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಈ ಮೂರು ವಿಧವಾದ ದಂಡಗಳೂ ಇರುವ ಸಂನ್ಯಾಸಾಶ್ರಮ",
+            "निष्पत्तिः": "'अच्' (५-२-१२७)",
+            "व्युत्पत्तिः": "त्रिदण्डमस्यास्ति",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिदण्ड",
+            "content": "<body><s>tridaRqa na° trayARAM daRqAnAM samAhAraH . <lb/><b>1</b> caturaNgulago­bAlavezwanAdanyonyasaMbadDe yaterdaRqatraye . <lb/><b>2</b> vANmanaHkAya­daRqatraye ca . tadasyAstrIti ac . <lb/><b>3</b> saMnyAsASrame pu° . tridaRqiSabde dfSyam . <q>yastvasaMhatazaqvargaH pracaRqendri­yasAraTiH . jYAnavErAgyarahitastridaRqamupajIvati</q> BAga°</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिदण्ड",
+            "content": "<H1><h><key1>tridaRqa</key1><key2>tridaRqa</key2></h><body><s>tridaRqa</s>  <div n=\"1\">n. (<s>-RqaM</s>) </div><div n=\"2\"> 1. Three staves collectively. </div><div n=\"2\"> 2. Triple subjection of <lb />words, thoughts, and acts; the state of a religious ascetic.</div><div n=\"E\"> E. <s>tri</s> <lb />three, <s>daRqa</s> a staff, &amp;c.</div></body><tail><L>18044</L><pc>324-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिदण्ड",
+            "content": "<span lang=\"sa\">त्रिदण्ड<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಯತಿಗಳು ಹಿಡಿಯುವ ತ್ರಿದಂಡ /ಒಟ್ಟಾಗಿ ಸೇರಿಸಿ ಕಟ್ಟಿದ ಸಂನ್ಯಾಸಿಗಳ ೩ ದಂಡಗಳು<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रयाणां दण्डानां समाहारः<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिदण्ड<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಾಕ್ಕು ಮನಸ್ಸು ಮತ್ತು ಶರೀರ ಇವುಗಳದಮನ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिदण्ड<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಈ ಮೂರು ವಿಧವಾದ ದಂಡಗಳೂ ಇರುವ ಸಂನ್ಯಾಸಾಶ್ರಮ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"अच्\" (५-२-१२७)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिदण्डमस्यास्ति<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

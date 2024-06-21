@@ -1,116 +1,94 @@
-         var invokerFunction = new_(Function, args1).apply(null, args2);
-            return invokerFunction;
+{
+    "word": "त्रिशोक",
+    "CAE": [
+        {
+            "word": "त्रिशोक",
+            "eid": "12952",
+            "pagenum": 213,
+            "content": "त्रिशो/क¦ <lex>a.</lex> = त्रिशु/च्; <lex>m.</lex> <ab>N.</ab> of a Ṛṣi."
         }
-        function ensureOverloadTable(proto, methodName, humanName) {
-            if (undefined === proto[methodName].overloadTable) {
-                var prevFunc = proto[methodName];
-                proto[methodName] = function() {
-                    if (!proto[methodName].overloadTable.hasOwnProperty(arguments.length)) {
-                        throwBindingError("Function '" + humanName + "' called with an invalid number of arguments (" + arguments.length + ") - expects one of (" + proto[methodName].overloadTable + ")!");
-                    }
-                    return proto[methodName].overloadTable[arguments.length].apply(this, arguments);
-                };
-                proto[methodName].overloadTable = [];
-                proto[methodName].overloadTable[prevFunc.argCount] = prevFunc;
-            }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिशोक",
+            "eid": "9101",
+            "pagenum": 162,
+            "content": "त्रिशो/क¦ = त्रिशु/च् <i>m. N. eines Rischi.</i>"
         }
-        function exposePublicSymbol(name, value, numArguments) {
-            if (Module.hasOwnProperty(name)) {
-                if (undefined === numArguments || undefined !== Module[name].overloadTable && undefined !== Module[name].overloadTable[numArguments]) {
-                    throwBindingError("Cannot register public name '" + name + "' twice");
-                }
-                ensureOverloadTable(Module, name, name);
-                if (Module.hasOwnProperty(numArguments)) {
-                    throwBindingError("Cannot register multiple overloads of a function with the same number of arguments (" + numArguments + ")!");
-                }
-                Module[name].overloadTable[numArguments] = value;
-            } else {
-                Module[name] = value;
-                if (undefined !== numArguments) {
-                    Module[name].numArguments = numArguments;
-                }
-            }
+    ],
+    "GRA": [
+        {
+            "word": "त्रिशोक",
+            "eid": "3962",
+            "pagenum": 560,
+            "content": "<b>tri-śóka,</b>¦ <ab>a.</ab>, <ab>m.</ab>, 1〉 <ab>a.</ab>, <i>dreifaches Licht</i> [śóka] <i>habend, stark glänzend;</i> 2〉 <ab>m.</ab>, Eigenname eines Sängers. <dvsn n='TS'>-as 1〉 ráthas {855,2}. — 2〉 {112,12}. <dvsn n='TS'>-āya 2〉 {665,30}."
         }
-        function heap32VectorToArray(count, firstElement) {
-            var array = [];
-            for(var i = 0; i < count; i++){
-                array.push(HEAP32[(firstElement >> 2) + i]);
-            }
-            return array;
+    ],
+    "MW": [
+        {
+            "word": "त्रिशोक",
+            "eid": "88404",
+            "pagenum": "461,1",
+            "content": "त्रि—शो/क ¦ <lex>mfn.</lex> = -शु/च्, <ls>RV. x, 29, 2</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिशोक",
+            "eid": "88405",
+            "pagenum": "461,1",
+            "content": "त्रि—शो/क ¦ <lex>m.</lex> <ab>N.</ab> of a <s1 slp1='fzi'>Ṛṣi</s1> (author of <ls n='RV.'>viii, 45</ls>), <ls n='RV.'>i, 112, 12</ls>; <ls n='RV.'>viii, 45, 30</ls>; <ls>AV. iv, 29, 6.</ls><info lex='m'/>"
         }
-        function replacePublicSymbol(name, value, numArguments) {
-            if (!Module.hasOwnProperty(name)) {
-                throwInternalError("Replacing nonexistent public symbol");
-            }
-            if (undefined !== Module[name].overloadTable && undefined !== numArguments) {
-                Module[name].overloadTable[numArguments] = value;
-            } else {
-                Module[name] = value;
-                Module[name].argCount = numArguments;
-            }
+    ],
+    "PW": [
+        {
+            "word": "त्रिशोक",
+            "eid": "47875",
+            "pagenum": 3,
+            "content": "त्रिशो/क¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>dreifach leuchtend</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <ab>N. pr.</ab> eines <is>Ṛṣi</is>."
         }
-        function dynCallLegacy(sig, ptr, args) {
-            var f = Module["dynCall_" + sig];
-            return args && args.length ? f.apply(null, [
-                ptr
-            ].concat(args)) : f.call(null, ptr);
+    ],
+    "PWG": [
+        {
+            "word": "त्रिशोक",
+            "eid": "31197",
+            "pagenum": 3,
+            "content": "त्रिशो/क¦ (त्रि + शोक) <dvsn n='1'> 1) wohl <lex>adj.</lex> und = त्रिशुच्ः अनु^ त्रि\\शोक^ः श\\तमा   व^ह\\न्नॄन्कुत्से^न\\ रथो\\ यो अ^सत्सस\\वान् <ls>ṚV. 10, 29, 2.</ls> <dvsn n='1'>— 2) <lex>m.</lex> N. pr. eines <is>Ṛṣi</is>: याभि^स्त्रि\\शोक^ उ\\स्रिया^ उ\\दाज^त् <ls>ṚV. 1, 112, 13.</ls> कृ\\न्तदिद्वि यो\\न्यं त्रि\\शोका^य गि\\रिं पृ\\थुम् । गोभ्यो^ गा\\तुं निरे^तवे <ls n='ṚV.'>8, 45, 30.</ls> <ls>AV. 4, 29, 6.</ls> Nach <ls>ṚV. ANUKR.</ls> ein <is>Kāṇva</is> und Verfasser von <ls n='ṚV.'>8, 45</ls>; vgl. <ls>Ind. St. 3, 218.</ls> <dvsn n='v'>— Vgl. त्रैशोक ."
         }
-        function dynCall(sig, ptr, args) {
-            if (sig.includes("j")) {
-                return dynCallLegacy(sig, ptr, args);
-            }
-            return wasmTable.get(ptr).apply(null, args);
+    ],
+    "VEI": [
+        {
+            "word": "त्रिशोक",
+            "eid": "1222",
+            "pagenum": 1,
+            "content": "<b>Tri-śoka</b>¦ is the name of an ancient mythical seer who is mentioned both in the Rigveda<sup>1</sup> and the Atharvaveda.<sup>2</sup> A Sāman, or chant, named after him is referred to in the Pañcaviṃśa Brāhmaṇa.<sup>3</sup> <F>1) i. 112, 13; viii. 45, 30. In x. 29, 2, the word seems merely to be an adjective, meaning ‘with triple splendour.’</F> <F>2) iv. 29, 6.</F> <F>3) viii. 1. <dvsn n='P'/><i>Cf.</i> Ludwig, Translation of the Rigveda, 3, 107, 162; Hopkins, <i>Transac-</i> <i>tions of the Connecticut Academy of Arts</i> <i>and Sciences,</i> 15, 33.</F>"
         }
-        function getDynCaller(sig, ptr) {
-            var argCache = [];
-            return function() {
-                argCache.length = arguments.length;
-                for(var i = 0; i < arguments.length; i++){
-                    argCache[i] = arguments[i];
-                }
-                return dynCall(sig, ptr, argCache);
-            };
+    ],
+    "VCP": [
+        {
+            "word": "त्रिशोक",
+            "eid": "23828",
+            "pagenum": "3387,a",
+            "content": "त्रिशोक¦ पु० त्रयः आध्यात्मिका दयः शोका अस्य । १ जीवे २ कण्वपुत्रे ऋषिभेदे च । “अनु त्रिशोकः शतमावहन्नॄन्” ऋ० १० । २९ । २ । त्रिशोको नामर्षिः” भा० । “याभिस्त्रिशोक उस्रिया” ऋ० १ । ११२ । १२ “कण्वपुत्रस्त्रिशोक ऋषिः” भा० ।"
         }
-        function embind__requireFunction(signature, rawFunction) {
-            signature = readLatin1String(signature);
-            function makeDynCaller() {
-                if (signature.includes("j")) {
-                    return getDynCaller(signature, rawFunction);
-                }
-                return wasmTable.get(rawFunction);
-            }
-            var fp = makeDynCaller();
-            if (typeof fp !== "function") {
-                throwBindingError("unknown function pointer with signature " + signature + ": " + rawFunction);
-            }
-            return fp;
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिशोक",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಜೀವ \\/ಜೀವಾತ್ಮ",
+            "व्युत्पत्तिः": "त्रयः शोका यस्य",
+            "content": ""
         }
-        var UnboundTypeError = undefined;
-        function getTypeName(type) {
-            var ptr = ___getTypeName(type);
-            var rv = readLatin1String(ptr);
-            _free(ptr);
-            return rv;
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिशोक",
+            "content": "<body><s>triSoka pu° trayaH ADyAtmikA dayaH SokA asya . <lb/><b>1</b> jIve <lb/><b>2</b> kaRvaputre fziBede ca . <q>anu triSokaH SatamAvaha­nnFn</q> f° 1° . 29 . 2 . triSoko nAmarziH” BA° . <q>yA­BistriSoka usriyA</q> f° 1 . 112 . 12 <q>kaRvaputrastriSoka fziH</q> BA° .</s></body>"
         }
-        function throwUnboundTypeError(message, types) {
-            var unboundTypes = [];
-            var seen = {};
-            function visit(type) {
-                if (seen[type]) {
-                    return;
-                }
-                if (registeredTypes[type]) {
-                    return;
-                }
-                if (typeDependencies[type]) {
-                    typeDependencies[type].forEach(visit);
-                    return;
-                }
-                unboundTypes.push(type);
-                seen[type] = true;
-            }
-            types.forEach(visit);
-            throw new UnboundTypeError(message + ": " + unboundTypes.map(getTypeName).join([
-                ", "
-            ]));
-  
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिशोक",
+            "content": "<span lang=\"sa\">त्रिशोक<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಜೀವ /ಜೀವಾತ್ಮ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रयः शोका यस्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

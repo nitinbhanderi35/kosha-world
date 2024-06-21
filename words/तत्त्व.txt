@@ -1,1471 +1,385 @@
-ur fallback mode does not work well with IE's Korean IME,
- * so just use native composition events when Korean IME is used.
- * Although CompositionEvent.locale property is deprecated,
- * it is available in IE, where our fallback mode is enabled.
- *
- * @param {object} nativeEvent
- * @return {boolean}
- */
-
-
-function isUsingKoreanIME(nativeEvent) {
-  return nativeEvent.locale === 'ko';
-} // Track the current IME composition status, if any.
-
-
-let isComposing = false;
-/**
- * @return {?object} A SyntheticCompositionEvent.
- */
-
-function extractCompositionEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget) {
-  let eventType;
-  let fallbackData;
-
-  if (canUseCompositionEvent) {
-    eventType = getCompositionEventType(domEventName);
-  } else if (!isComposing) {
-    if (isFallbackCompositionStart(domEventName, nativeEvent)) {
-      eventType = 'onCompositionStart';
-    }
-  } else if (isFallbackCompositionEnd(domEventName, nativeEvent)) {
-    eventType = 'onCompositionEnd';
-  }
-
-  if (!eventType) {
-    return null;
-  }
-
-  if (useFallbackCompositionData && !isUsingKoreanIME(nativeEvent)) {
-    // The current composition is stored statically and must not be
-    // overwritten while composition continues.
-    if (!isComposing && eventType === 'onCompositionStart') {
-      isComposing = initialize(nativeEventTarget);
-    } else if (eventType === 'onCompositionEnd') {
-      if (isComposing) {
-        fallbackData = getData();
-      }
-    }
-  }
-
-  const listeners = accumulateTwoPhaseListeners(targetInst, eventType);
-
-  if (listeners.length > 0) {
-    const event = new SyntheticCompositionEvent(eventType, domEventName, null, nativeEvent, nativeEventTarget);
-    dispatchQueue.push({
-      event,
-      listeners
-    });
-
-    if (fallbackData) {
-      // Inject data generated from fallback path into the synthetic event.
-      // This matches the property of native CompositionEventInterface.
-      // $FlowFixMe[incompatible-use]
-      event.data = fallbackData;
-    } else {
-      const customData = getDataFromCustomEvent(nativeEvent);
-
-      if (customData !== null) {
-        // $FlowFixMe[incompatible-use]
-        event.data = customData;
-      }
-    }
-  }
-}
-
-function getNativeBeforeInputChars(domEventName, nativeEvent) {
-  switch (domEventName) {
-    case 'compositionend':
-      return getDataFromCustomEvent(nativeEvent);
-
-    case 'keypress':
-      /**
-       * If native `textInput` events are available, our goal is to make
-       * use of them. However, there is a special case: the spacebar key.
-       * In Webkit, preventing default on a spacebar `textInput` event
-       * cancels character insertion, but it *also* causes the browser
-       * to fall back to its default spacebar behavior of scrolling the
-       * page.
-       *
-       * Tracking at:
-       * https://code.google.com/p/chromium/issues/detail?id=355103
-       *
-       * To avoid this issue, use the keypress event as if no `textInput`
-       * event is available.
-       */
-      const which = nativeEvent.which;
-
-      if (which !== SPACEBAR_CODE) {
-        return null;
-      }
-
-      hasSpaceKeypress = true;
-      return SPACEBAR_CHAR;
-
-    case 'textInput':
-      // Record the characters to be added to the DOM.
-      const chars = nativeEvent.data; // If it's a spacebar character, assume that we have already handled
-      // it at the keypress level and bail immediately. Android Chrome
-      // doesn't give us keycodes, so we need to ignore it.
-
-      if (chars === SPACEBAR_CHAR && hasSpaceKeypress) {
-        return null;
-      }
-
-      return chars;
-
-    default:
-      // For other native event types, do nothing.
-      return null;
-  }
-}
-/**
- * For browsers that do not provide the `textInput` event, extract the
- * appropriate string to use for SyntheticInputEvent.
- */
-
-
-function getFallbackBeforeInputChars(domEventName, nativeEvent) {
-  // If we are currently composing (IME) and using a fallback to do so,
-  // try to extract the composed characters from the fallback object.
-  // If composition event is available, we extract a string only at
-  // compositionevent, otherwise extract it at fallback events.
-  if (isComposing) {
-    if (domEventName === 'compositionend' || !canUseCompositionEvent && isFallbackCompositionEnd(domEventName, nativeEvent)) {
-      const chars = getData();
-      reset();
-      isComposing = false;
-      return chars;
-    }
-
-    return null;
-  }
-
-  switch (domEventName) {
-    case 'paste':
-      // If a paste event occurs after a keypress, throw out the input
-      // chars. Paste events should not lead to BeforeInput events.
-      return null;
-
-    case 'keypress':
-      /**
-       * As of v27, Firefox may fire keypress events even when no character
-       * will be inserted. A few possibilities:
-       *
-       * - `which` is `0`. Arrow keys, Esc key, etc.
-       *
-       * - `which` is the pressed key code, but no char is available.
-       *   Ex: 'AltGr + d` in Polish. There is no modified character for
-       *   this key combination and no character is inserted into the
-       *   document, but FF fires the keypress for char code `100` anyway.
-       *   No `input` event will occur.
-       *
-       * - `which` is the pressed key code, but a command combination is
-       *   being used. Ex: `Cmd+C`. No character is inserted, and no
-       *   `input` event will occur.
-       */
-      if (!isKeypressCommand(nativeEvent)) {
-        // IE fires the `keypress` event when a user types an emoji via
-        // Touch keyboard of Windows.  In such a case, the `char` property
-        // holds an emoji character like `\uD83D\uDE0A`.  Because its length
-        // is 2, the property `which` does not represent an emoji correctly.
-        // In such a case, we directly return the `char` property instead of
-        // using `which`.
-        if (nativeEvent.char && nativeEvent.char.length > 1) {
-          return nativeEvent.char;
-        } else if (nativeEvent.which) {
-          return String.fromCharCode(nativeEvent.which);
+{
+    "word": "तत्त्व",
+    "ABCH": [
+        {
+            "word": "तत्त्व",
+            "linga": "क्ली",
+            "pagenum": "16",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "970",
+            "group": "261",
+            "synonyms": [
+                "विलम्बित"
+            ],
+            "content": "द्रुतं विलम्बितं मध्यमोघस्तत्त्वं घनं क्रमात् ॥ २९२ ॥"
         }
-      }
-
-      return null;
-
-    case 'compositionend':
-      return useFallbackCompositionData && !isUsingKoreanIME(nativeEvent) ? null : nativeEvent.data;
-
-    default:
-      return null;
-  }
+    ],
+    "AP90": [
+        {
+            "word": "तत्त्व",
+            "eid": "14333",
+            "pagenum": 526,
+            "content": "तत्त्वं¦ (Sometimes written as तत्वं) <b>1</b> True state or condition, fact; वयं तत्त्वान्वेषान्मधुकर हतास्त्वं खलु कृती <ls>Ś. 1. 24.</ls> <b>--2</b> Truth, reality; न तु मामाभिजानंति तत्त्वेनातश्च्यवंति ते <ls>Bg. 9. 24.</ls> <b>--3</b> True or essential nature; संन्यासस्य महाबाहो <lbinfo n='tatvamicCA#mi'/> तत्वमिच्छामि वेदितुं <ls>Bg. 18. 1</ls>, <ls n='Bg.'>3. 28</ls>;  <lbinfo n='ls:Ms. 1.+ 3'/> <ls>Ms. 1. 3</ls>, <ls n='Ms.'>3. 96</ls>, <ls n='Ms.'>5. 42.</ls> <b>--4</b> The real nature of the human soul or the material world as being identical with the Supreme Spirit pervading the <lbinfo n='uni+verse'/> universe. <b>--5</b> A true or first principle. <b>--6</b> An element, a primary substance. <b>--7</b> The mind. <b>--8</b> Sum and substance. <b>--9</b> Slow time in music. <b>--10</b> An element or elementary property. <b>--11</b> The Supreme Being. <b>--12</b> A kind of dance. <b>--13</b> The three qualities or constituents of every thing in nature (सत्त्व, रजस् and तमस्). <b>--Comp.</b> --अभियोगः a <lbinfo n='posi+tive'/> positive charge or declaration. --अर्थः truth, reality, the exact truth, real nature. --ज्ञ, --विद् <i><ab>a.</ab></i> {1} a <lbinfo n='philoso+pher'/> philosopher. {2} knowing the true nature of Brahman. {3} knowing the true nature of anything. {4} acquainted with the true principles of science. (--ज्ञः) a Brāhmaṇa. --ज्ञानं {1} knowledge of the truth. {2} a thorough knowledge of the <lbinfo n='prin+ciples'/> principles of a science. {3} philosophy. --न्यासः <ab>N.</ab> of a ceremony <lbinfo n='perform+ed'/> performed in honour of Viṣṇu consisting in the application of mystical <lbinfo n='let+ters'/> letters or other marks to different parts of the body while certain prayers are repeated."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "तत्त्व",
+            "eid": "5657",
+            "pagenum": 348,
+            "content": "तत्त्व¦ <i>tattva</i> (often <i>tatva</i>), <ab>i. e.</ab> <i>tad +</i> <i>tva,</i> <b>1.</b> The very essence, <ls>Man.</ls> 4, 92;  <ls>Bhag.</ls> 18, 1. <b>2.</b> Truth, <ls>Śāk.</ls> <ab>d.</ab> 22. <b>3.</b> A principle (especially the 25 of the Sānkhya philosophy), <ls>Rām.</ls> 3, 53, 42. <ab>Instr.</ab> <i>tvena,</i> <b>1.</b> Truly, <ls>Rām.</ls> 1, 48, 13. <b>2.</b> Thoroughly, <ls>Man.</ls> 7, 68. <b> -- <ab>Comp.</ab></b> <i>Nis-,</i> <ab>adj.</ab> not contained in the principles, <ls>MBh.</ls> 12, 11480. <i>Yathā-tattva</i> + <i>m.</i> <ab>adv.</ab> truly, <ls>Chr.</ls> 17, 22. <i>Sa-,</i> <b>I.</b> <ab>adj.</ab> knowing the real essence, <ls>Vedāntas.</ls> in <ls>Chr.</ls> 219, 3. <b>II.</b> <ab>n.</ab> natural property, nature."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "तत्त्व",
+            "eid": "3620",
+            "pagenum": 148,
+            "content": "तत्त्व¦ vel तत्व <i>n.</i> cf. gr. 633. (a pronom. <i>neut.</i> तत् id, hoc, illud, s. त्व) 1) veritas. DR. 2. 5. N. 16. 38. BH. 3. 28. 2) natura, vera natura. N. 19. 2. 28. A. 4. 37. BH. 18. 1."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "तत्त्व",
+            "eid": "7655",
+            "pagenum": 282,
+            "content": "तत्त्व¦ <i>tattva</i> ou <i>tatva</i> <ab>n.</ab> <i>(tat;</i> <ab>sfx.</ab> <i>tva)</i> essence, réalité, nature d'une <ab>ch.</ab> || Vérité. || L'essence suprême, la réalité absolue, Brahme. || L'intelligence, l'esprit [dans sa réalité opposée aux illusions des sens]. || Temps long [en musique] <i>(tan ?)</i> || instrument <lbinfo n='4'/> de musique.  <P><i>tattvatas</i> <ab>adv.</ab> selon la réalité, selon la nature vraie; || selon la vérité.  <P><i>tattvajñāna</i> <ab>n.</ab> <i>(jñā)</i> connaissance de la véritable nature des êtres.  <P><i>tattvadarśin</i> <ab>a.</ab> <i>(dṛś)</i> qui voit la réalité et la vraie nature des choses."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "तत्त्व",
+            "eid": "11793",
+            "pagenum": 194,
+            "content": "तत्त्व¦ <lex>n.</lex> the state of being that, <ab>i.e.</ab> the true state or real nature; truth, reality, first principle (ph.). °—, <ab>instr.</ab>, & <ab>adv.</ab> in तस् in truth, really, exactly."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "तत्त्व",
+            "eid": "8093",
+            "pagenum": 144,
+            "content": "तत्त्व¦ <i>n.</i> das wahre Wesen <i>(eig.</i> die Dasheit); <lbinfo n='6'/> Wahrheit, Realität, Grundprinzip <i>(ph.)</i> °—, तत्त्वेन <i>u.</i> तत्त्वतस् der Wahrheit <lbinfo n='4'/> nach, wirklich, genau."
+        }
+    ],
+    "IEG": [
+        {
+            "word": "तत्त्व",
+            "eid": "5946",
+            "pagenum": 339,
+            "content": "<i>tattva</i>¦ (IE 7-1-2; EI 8), ‘twentyfive’; rarely also used to indicate ‘five.’"
+        }
+    ],
+    "INM": [
+        {
+            "word": "तत्त्व",
+            "eid": "10818",
+            "pagenum": 676,
+            "content": "<b>Tattva, Tattvavid</b>¦ = Viṣṇu (1000 names)."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "तत्त्व",
+            "eid": "1673",
+            "pagenum": 161,
+            "content": "<b>tattva,</b>¦ <i><ab>n.</ab></i> (that-ness, <i><ab>i. e.</ab></i>) essence, real condition <i>or</i> state of a thing. [<b>tad.</b>]"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "तत्त्व",
+            "eid": "15086.1",
+            "pagenum": 300,
+            "content": "tattva¦ <i>n.</i> 1. True state, real condition, वयं तत्वान्वेषान्मधुकर हताः <ls>Sak.</ls>i.; 2. truth, reality; 3. essential nature, संन्यासस्य महाबाहो तत्वमिच्छामि वेदितुम् <ls>Bg.</ls>xviii.1, <ls>M.</ls>iv.92; 4. the real nature of the human soul or the world as being identical with the supreme spirit pervading the universe; 5. a first principle; 6. an element, a primary substance; 7. the mind; 8. a kind of dance."
+        }
+    ],
+    "MD": [
+        {
+            "word": "तत्त्व",
+            "eid": "8321",
+            "pagenum": 105,
+            "content": "तत्त्व¦ tat-tva, <lex>n.</lex> (that-ness), very essence, 🞄true nature, truth, reality; principle (<ab>esp.</ab> <i>one 🞄of the ¤25¤ in the Sāṅkhya philosophy</i>); <i>in the 🞄Vedānta philosophy the word is artificially 🞄analysed into</i> ‘tat tvam,’ <i>that (art) thou, as 🞄expressing the identity of the multiform phenomenal 🞄world</i> (tvam) <i>with the one undifferentiated 🞄invisible Brahma</i> (tad): <ab>in.</ab>, <b>-tas,</b> 🞄<ab>°—</ab>, in reality; truly; exactly; thoroughly."
+        }
+    ],
+    "MW": [
+        {
+            "word": "तत्त्व",
+            "eid": "81839",
+            "pagenum": "432,3",
+            "content": "तत्—त्व ¦ <lex>n.</lex> true or real state, truth, reality, <ls>ŚvetUp.</ls>; <ls>Mn.</ls>; <ls>Bhag.</ls> &c.<info lex='n'/>"
+        },
+        {
+            "word": "तत्त्व",
+            "eid": "81840",
+            "pagenum": "432,3",
+            "content": "¦ (in <ab>phil.</ab>) a true principle (in <s1 slp1='sAMKya'>Sāṃkhya</s1> <ab>phil.</ab> 25 in number, <ab>viz.</ab> अ-व्यक्त, बुद्धि, अहं-कार, the 5 <s1 slp1='tan-mAtra'>Tan-mātra</s1>s, the 5 <s1 slp1='mahA-BUta'>Mahā-bhūta</s1>s, the 11 organs including मनस्, and, lastly, पुरुष, <ab>qq.vv.</ab>), <ls>MBh. xii, 11840</ls>; <ls n='MBh.'>xiv, 984</ls>; <ls>R. iii, 53, 42</ls>; <ls>Tattvas.</ls>; 24 in number, <ls>MBh. xii, 11242</ls>; <ls>Hariv. 14840</ls> (<ab>m.</ab>); 23 in number, <ls>BhP. iii, 6, 2 ff.</ls>; for other numbers <ab>cf.</ab> <ls n='BhP.'>xi, 22, 1 ff.</ls>; <ls>RāmatUp.</ls>; with <s1 slp1='mAheSvara'>Māheśvara</s1>s and <s1 slp1='lokAyatika'>Lokāyatika</s1>s only 5 [<ab>viz.</ab> the 5 elements] are admitted, <ls>Prab. ii, 18/19</ls>; with, <ls>Buddh.</ls> 4, with <s1 slp1='jEna'>Jaina</s1>s 2 or 5 or 7 or 9 <ls>Sarvad. ii f.</ls>; in <s1 slp1='vedAnta'>Vedānta</s1> <ab>phil.</ab> तत्त्व is regarded as made up of तद् and त्वम्, ‘that [art] thou’, and called महा-वाक्य, the great word by which the identity of the whole world with the one eternal <s1 slp1='brahma'>Brahma</s1> [तद्] is expressed)<info lex='inh'/>"
+        },
+        {
+            "word": "तत्त्व",
+            "eid": "81842",
+            "pagenum": "432,3",
+            "content": "¦ the number 25 <ls>Sūryas. ii</ls><info lex='inh'/>"
+        },
+        {
+            "word": "तत्त्व",
+            "eid": "81843",
+            "pagenum": "432,3",
+            "content": "¦ the number 24 <ls>DevībhP.</ls>; <ls>ŚBr. vii, 3, 1, 43</ls>; <ls>Sāy.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "तत्त्व",
+            "eid": "81844",
+            "pagenum": "432,3",
+            "content": "¦ an element or elementary property, <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "तत्त्व",
+            "eid": "81845",
+            "pagenum": "433,1",
+            "content": "¦ the essence or substance of anything, <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "तत्त्व",
+            "eid": "81846",
+            "pagenum": "433,1",
+            "content": "¦ the being that, <ls>Jaim. i, 3, 24</ls>, <ab>Sch.</ab><info lex='inh'/>"
+        },
+        {
+            "word": "तत्त्व",
+            "eid": "81847",
+            "pagenum": "433,1",
+            "content": "¦ = तत-त्व, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "तत्त्व",
+            "eid": "81848",
+            "pagenum": "433,1",
+            "content": "¦ <ab>N.</ab> of a musical instrument, <ls>L.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "तत्त्व",
+            "eid": "20330",
+            "pagenum": 359,
+            "content": "तत्त्व¦ <i>tattva, am,</i> n. (fr. <i>tad</i>), the state of being that, true state, real state, truth, reality, opposed to what is illusory or fallacious; essential nature; the real nature of the human soul as being one and the same with the supreme spirit pervading the universe; (in philosophy) truth, reality, a true principle, first principle, (the number of these first principles varies according to the different systems; the Sāṅkhya phil. has twenty-five Tattvas, viz. A-vyakta or ‘the undiscrete;’ Buddhi, ‘intellect;’ Ahaṅkāra, ‘individuality;’ the five Tan-mātras or ‘subtile elements;’ the five Mahā-bhūtas or ‘gross elements;’ the eleven organs, including Manas or ‘mind;’ and, lastly, Puruṣa or ‘soul:’ hence <i>tattva</i> is sometimes a term for ‘twenty-five.’ The Māheśvaras admit only five Tattvas, viz. the five elements. In the Vedānta phil. <i>tattva</i> is regarded as made up of <i>tad</i> and <i>tvam,</i> ‘this — thou,’ and called <i>mahā-vākya,</i> ‘the great word,’ by which the identity of the whole world with the one eternal Brahma is expressed); an element or elementary property; the essence or substance of anything, sum and substance; slow time in music, a musical instrument; (<i>ena</i>), ind. according to the true state or nature of anything, in truth, truly, really, accurately. <i>—Tattva-kaumudī,</i> f. ‘moonlight of the Tattvas,’ or <i>sāṅkhya-tattvakaumudī,</i> title of a commentary on the Sāṅkhya-kārikā. <i>—Tattva-</i> <i>candra, as,</i> m. ‘the moon of truth,’ title of a commentary on the grammar Prakriyā-kaumudī. <i>—Tattva-cintāmaṇi, is,</i> m. title of a philosophical work by Gaṅgeśa. <i>—Tattva-jña, as, ā, am,</i> or <i>tattva-jñānin, ī, inī, i,</i> knowing the truth or true nature of anything; acquainted with the true principles of philosophy, understanding the principles of a science thoroughly; (<i>as</i>), m. a Brāhman. <i>—Tattva-</i> <i>jñāna, am,</i> n. knowledge of the truth; a thorough knowledge of the principles of a science, insight into the true principles of philosophy. <i>—Tattva-tas,</i> ind. truly, really, actually, accurately, according to the truth, fully. <i>—Tattva-tā,</i> f. truth, reality. <i>—Tattva-darśa,</i> <i>as,</i> m. ‘perceiving truth,’ N. of one of the seven Ṛṣis under Manu Deva-sāvarṇi. <i>—Tattva-darśin, ī,</i> m. ‘perceiving truth,’ N. of one of the sons of Manu Raivata; N. of a Brāhman. <i>—Tattva-dīpana, am,</i> n. ‘light of the Tattvas,’ title of a work. <i>—Tattva-</i> <i>nikaṣa-grāvan, ā,</i> m. the touchstone of principle. <i>—Tattva-nyāsa, as,</i> m. ‘the imposition of truth or of the true principles,’ N. of a ceremony performed in honour of Viṣṇu; it consists in the application of mystical letters and other marks to the different parts of the body while certain prayers are recited. <i>—Tattva-prakāśa, as,</i> m. ‘light of the true principles,’ title of a philosophical commentary. <i>—Tattva-</i> <i>bodhinī,</i> f. ‘revealing truth,’ title of a commentary on the Siddhānta-kaumudī by Jñānendra-sarasvatī. <i>—Tattva-bhāva, as,</i> m. true being or nature. <i>—Tattva-vat, ān, atī, at,</i> possessing truth or the reality of things. <i>—Tattva-vid, t, t, t,</i> knowing the truth or first principles, knowing things as they are. <i>—Tattva-vindu, us,</i> m. ‘drop of truth,’ title of a philosophical treatise. <i>—Tattva-vivitsā,</i> f. desire of knowing the truth or God. <i>—Tattva-viveka, as,</i> m. or <i>siddhānta-tattvaviveka,</i> ‘sifting of established truths,’ title of an astronomical work. <i>—Tattvavi-</i> <i>veka-dīpana, am,</i> n. ‘light of the investigation of truth,’ title of a philosophical work. <i>—Tattva-</i> <i>sañcaya, as,</i> m. ‘collection of truths,’ title of a Buddhist work. <i>—Tattva-satya-śāstra, am,</i> n. title of a work by Guṇa-prabha. <i>—Tattva-samāsa, as,</i> m. ‘compendium of the Tattvas or principles,’ the title of the Sāṅkhya-sūtras ascribed to Kapila. <i>—Tattvābhiyoga (°va-abh°), as,</i> m. a positive charge or declaration. <i>—Tattvārtha (°va-ar°), as,</i> m. the exact truth, reality, truth. <i>—Tattvārtha-</i> <i>kaumudī (°va-ar°),</i> f. the title of a commentary by Govindānanda on the Prāyaścitta-viveka. <i>—Tattvār-</i> <i>tha-vid, t, t, t,</i> knowing the exact truth, knowing the reality. <i>—Tattvārtha-sūtra (°va-ar°), am,</i> n. title of a Jaina work. <i>—Tattvāvabodha (°va-av°),</i> <i>as,</i> m. perception of truth."
+        }
+    ],
+    "PW": [
+        {
+            "word": "तत्त्व",
+            "eid": "44198",
+            "pagenum": 3,
+            "content": "तत्त्व¦ <lex>n.</lex> (<ab>adj. Comp.</ab> <lex>f.</lex> आ) <dvsn n='1'>— 1〉 <i>das Verhältniss wie es ist, das wahre <ab n='Verhältniss'>V.</ab>, — Wesen, die wahre Natur, Wahrheit</i>. तत्त्वेन, तत्त्वतस् und तत्त्व° <i>dem wahren Verhältniss entsprechend, wie es sich in Wahrheit verhält, in <ab n='Wahrheit'>W.</ab>, der <ab n='Wahrheit'>W.</ab> gemäss, genau, sorgfältig</i>. Im philosophischen Sinne <i>Wahrheit,</i> so <ab>v. a.</ab> <i>Realität, Grundprincip,</i> deren nach den verschiedenen Systemen eine verschiedene Anzahl (gewöhnlich 25 oder 24) angenommen wird. Einmal <lex>m.</lex> <dvsn n='1'>— 2〉 <ab>Bez.</ab> <i>der Zahlen 25 und 24</i>. <dvsn n='1'>— 3〉 <i>das Dassein</i>. <dvsn n='1'>— 4〉 *<i>der langsame Tact</i>. <dvsn n='1'>— 5〉 *<i>ein <ab>best.</ab> musikalisches Instrument</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "तत्त्व",
+            "eid": "28451",
+            "pagenum": 3,
+            "content": "तत्त्व¦ (von तद्) <lex>n.</lex> <dvsn n='1'> 1) <i>das Verhältniss wie es ist, das wahre Verhältniss. - Wesen, die wahre Natur, Wahrheit</i>, = स्वरूप <ls>TRIK. 3, 3, 415.</ls> <ls>H. an. 2, 522. fgg.</ls> <ls>MED. v. 9.</ls> संन्यासस्य - तत्त्वमिच्छामि वेदितुम् <ls>BHAG. 18, 1.</ls> तत्त्ववित् - गुणकर्मविभागयोः <ls n='BHAG.'>3, 28.</ls> आत्म°, ब्रह्म° <ls>ŚVETĀŚV. UP. 2, 14. 15.</ls> कार्यतत्त्वार्थविद् <ls>M. 1, 3.</ls> वेदतत्त्वार्थविद् <ls n='M.'>3, 96. 5, 42.</ls> वेदतत्त्वार्थम् <ls n='M.'>4, 92.</ls> वेदशास्त्रार्थतत्त्वज्ञ <ls n='M.'>12, 102.</ls> <ls>R. 1, 1, 16.</ls> गान्धर्वतत्त्वज्ञ <ls n='R. 1,'>4, 11.</ls> <ls n='R. 1,'>7, 11.</ls> <ls>HIT. 7, 20.</ls> हयतत्त्वज्ञ <ls>ARJ. 4, 37.</ls> <ls>N. 19, 2.</ls> रत्नतत्त्वज्ञ <ls>KATHĀS. 24, 177.</ls> अवेक्षितुं तत्त्वम् <ls>VID. 126.</ls> तत्त्वान्वेष <ls>ŚĀK. 22.</ls> विदिततत्त्वा तच्छक्तेः <ls>PAÑCAT. 75, 14.</ls> तत्त्वनिष्ठता (वाचः) <ls>H. 67.</ls> तत्त्वेन <i>dem wahren Verhältniss entsprechend, wie es sich in Wahrheit verhält, in Wahrheit, genau</i>: न चैनां वेद तत्रान्यस्तत्त्वेन <ls>MBH. 4, 279.</ls> <ls>BHAG. 9, 24.</ls> <ls>M. 7, 68.</ls> आचक्ष्व बन्धूंश्च च पतिं कुलं च तत्त्वेन <ls>DRAUP. 2, 5.</ls> <ls>N. 16, 34.</ls> <ls>R. 1, 48, 13.</ls> <ls n='R.'>3, 77, 18.</ls> तत्त्वतस् dass.: प्रोवाच तां तत्त्वतो ब्रह्मविद्याम् <ls>MUṆḌ. UP. 1, 2, 13.</ls> कार्यं सो ऽवेक्ष्य शक्तिं च देशकालौ च तत्त्वतः <ls>M. 7, 10. 16. 154. 178. 8, 32</ls> u.s.w. <ls>BHAG. 4, 9.</ls> <ls>MBH. 4, 234.</ls> <ls>R. 1, 18, 10.</ls> <ls n='R.'>2, 21, 16.</ls> <ls>ŚĀK. 11, 16.</ls> <ls>PRAB. 27, 11.</ls> तं चाहं तत्त्वतो ऽन्विष्य <i>genau, sorgfältig</i> <ls>MĀRK. P. 21, 37.</ls> धर्मतत्त्वतः <ls>M. 8, 229.</ls> तत्त्वाधिगतशास्त्रार्थ <ls>SUŚR. 1, 123, 15.</ls> In philos. Sinne <i>Wahrheit, Realität, Grundprincip</i>, deren nach den verschiedenen Systemen eine verschiedene Anzahl angenommen wird; = भाव, पदार्थ, धर्म, सत्त्व, वस्तु <ls>TRIK. 3, 2, 21.</ls> शून्यं तत्त्वम् <ls>KAP. 1, 44.</ls> <i>die 25</i> <is>Tattva</is> <i>des</i> <is>Sāṃkhya</is> (als Bez. der <i>Zahl 25</i> <ls>SŪRYAS. 2, 17. 31</ls>) <ls>TATTVAS. 1.</ls> <ls>MBH. 12, 11840.</ls> <ls n='MBH.'>14, 984.</ls> पञ्चपञ्चकतत्त्वज्ञ <ls>R. 3, 53, 42.</ls> यस्यापि देवस्य (शिवस्य) गुणान्समग्रांस्तत्त्वांश्चतुर्विंशतिमाहुरेके (m.! Als Bez. der <i>Zahl 24</i> <ls>Verz. d. Oxf. H. 79,b,24.</ls> <ls>SĀY.</ls> zu <ls>ŚAT. BR. 7, 3, 1, 43</ls>) <ls>HARIV. 14840.</ls> <ls>PURĀṆATANTRA</ls> im <ls>ŚKDR.</ls> त्रयोविंशतितत्त्वानां गणम् <ls>BHĀG. P. 3, 6, 2. 4.</ls> <i>5</i> <is>Tattva</is>, näml. <i>die fünf Elemente</i>, bei den <is>Māheśvara</is> <ls>COLEBR. Misc. Ess. I, 409.</ls> पृथिव्यप्तेजोवायवस्तत्त्वानि (लोकायते शास्त्रे) <ls>PRAB. 27, 19.</ls> महत्तत्त्व <ls>BHĀG. P. 3, 5, 27. 29.</ls> एकतत्त्वाभ्यास <ls>YOGAS. 1, 32.</ls> वदन्ति तत्तत्त्वविदस्तत्त्वं यज्ज्ञानमद्वयम् । ब्रह्मेति परमात्मेति भगवानिति शब्द्यते <ls>BHĀG. P. 1, 2, 11.</ls> तत्त्वज्ञान <ls>H. 311.</ls> <ls>TATTVAS. 39.</ls> Titel eines Werkes <ls>Ind. St. 2, 132.</ls> तत्त्व = परमात्मन् <ls>TRIK. 3, 3, 415.</ls> <ls>H. an.</ls> <ls>MED.</ls> = ब्रह्मन् <ls>AK. 3, 4, 18, 117.</ls> = चेतस् <ls>DHAR.</ls> im <ls>ŚKDR.</ls> Im <is>Vedānta</is> wird das Wort künstlich in तत् त्वम् <i>dieses - du</i> zerlegt, und durch diese Verbindung महावाक्य <i>das grosse Wort</i> genannt, <i>die Identität der Welt</i> (त्वम्), <i>des nur in Folge einer Täuschung vielfach erscheinenden</i> <is>Brahman's</is>, <i>mit dem in Wahrheit einheitlichen</i> <is>Brahman</is> (तद्) ausgedrückt; vgl. <ls>MADHUS.</ls> in <ls>Ind. St. 1, 20, 6.</ls> <ls>Verz. d. B. H. No. 614. 621. 624.</ls> <ls>PRAB. 114, 18. fgg.</ls> und die Scholien dazu. <dvsn n='1'>— 2) <i>das das-Sein</i>; so erklärt z. B. der Schol. zu <ls>JAIM. 1, 3, 24</ls> अर्थस्यानिमित्तत्वात् durch अर्थस्य वाक्यार्थज्ञानस्य अतत् पदार्थज्ञानभिन्नम् निमित्तं कारणं यस्य तत्त्वात्; vgl. ebend. <ls n='JAIM. 1, 3,'>25.</ls> <dvsn n='1'>— 3) <i>der langsame Tact</i> <ls>AK. 1, 1, 7, 9.</ls> <ls>TRIK. 3, 3, 415.</ls> <ls>H. 292.</ls> <ls>MED.</ls> <i>ein best. musikalisches Instrument</i> (वाद्यभेद) <ls>H. an.</ls> <ls>VIŚVA</ls> im <ls>ŚKDR.</ls>"
+        },
+        {
+            "word": "तत्त्व",
+            "eid": "74740",
+            "pagenum": 5,
+            "content": "तत्त्व¦ <dvsn n='1'> 1) deren vierundzwanzig <ls>MBH. 12, 11242.</ls> vier <ls>WEBER, RĀMAT. UP. 325. fg.</ls> neun <ls n='WEBER, RĀMAT. UP.'>325.</ls> drei, vier, fünf, sechs, sieben, neun, eilf, dreizehn, sechszehn, siebenzehn, fünfundzwanzig und sechsundzwanzig <ls>BHĀG. P. 11, 22, 1. fgg.</ls> vier bei den Buddhisten <ls>SARVADARŚANAS. 20, 20. 23, 18.</ls> zwei, fünf, sieben und neun bei den <is>Jaina</is> <ls n='SARVADARŚANAS.'>33, 19. 35, 4. 36, 14. 41, 5.</ls> <ls>WILSON, Sel. Works 1, 306. fgg.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "तत्त्व",
+            "eid": "16889",
+            "pagenum": 302,
+            "content": "तत्त्व¦ n. (-त्त्वं) 1. Essential nature, the real nature of the human soul, considered as one and the same with the divine spirit animating the universe: the philosophical etymology of this word best explains its meaning, तद् that, that divine being, and त्व thou, that very God art thou. 2. The Supreme being, or BRAMHA. 3. Truth, reality, substance, opposed to what is illusory or fallacious. 4. An element or elementary property, differently enumerated in different system from the three which are the same with the three Gunas, to twenty-seven, which include the elements, organs, faculties, matter, spirit, life, and God. 5. A first principle, an axiom. 6. Mind, intellect. 7. Slow time in music. 8. A musical instrument. E. As above, or तद् that, then &c. affix त्व; the word is properly, therefore, written तत्त्व, but in books one त is commonly rejected."
+        }
+    ],
+    "STC": [
+        {
+            "word": "तत्त्व",
+            "eid": "9823",
+            "pagenum": 274,
+            "content": "<b>tattva-</b>¦ <ab>nt.</ab> réalité, vérité, vraie nature, essence d'une chose, principe essentiel, vrai ; Être suprême ; élément ou substance primaire (<ab>ord.</ab> au nombre de 24) ; <i>-ena -tas</i> conformément <lbinfo n='4'/> à la réalité, en vérité, justement, exactement <lbinfo n='6'/> ; <i>-vant-</i> <ab>a.</ab> = <i>°jña-.</i>  <P><i>°jña-</i> <ab>ag.</ab> <ab>ifc.</ab> qui connaît la nature réelle, l'essence, le vrai sens de <ab>qqch.</ab>  <P><i>°jñāna-</i> <ab>nt.</ab> connaissance de la vérité.  <P><i>°darśa-</i> <ab>m.</ab> <ab>n.</ab> d'un Ṛṣi ; <i>-in-</i> <ab>a.</ab> qui perçoit la vérité.  <P><i>°nikaṣa-grāvan-</i> <ab>m.</ab> pierre de touche pour reconnaître la vérité.  <P><i>°bhāva-</i> <ab>m.</ab> vraie nature, état réel.  <P><i>°bhūta-</i> <ab>a.</ab> vrai.  <P><i>°śuddhi-</i> <ab>f.</ab> connaissance exacte de la vérité.  <P><i>°vid-</i> <ab>ag.</ab> = <i>°jña-.</i>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "तत्त्व",
+            "eid": "16906",
+            "pagenum": 363,
+            "content": "तत्त्व¦ n. (-त्त्वं) .²1 Essential nature, the real nature of the human soul, considered as one and the same with the divine spirit animating the universe: the philosophical etymology of this word best explains its meaning, तद् that, <i>that divine</i> <i>being,</i> and त्व thou, that <i>very God</i> art <i>thou.</i> .²2 The Supreme Being, or BRAHMA. .²3 Truth, reality, substance, opposed to what is illusory or fallacious. .²4 An element or elementary property, differently enumerated in different systems, from the three which are the same with the three <i>Guṇas,</i> to twenty-seven, which include the elements, organs, faculties, matter, spirit, life, and God. .²5 A first principle, an axiom. .²6 Mind, intellect. .²7 Slow time in music. .²8 A musical instrument. .E. as above, or तद that, thence, &c. affix त्व; the word is properly, therefore, written तत्त्व, but in books one त is commonly rejected."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "तत्त्व",
+            "eid": "16373",
+            "pagenum": 320,
+            "content": "तत्त्व¦ (त्त्वं) 1. <i>n.</i> Essential nature of the soul as one with God: <i>Brahmā;</i> reality; essence; mind; an element; an axiom; slow time in music; instrument of music."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "तत्त्व",
+            "eid": "14268",
+            "pagenum": "2-581-c",
+            "content": "त(त्व)त्त्वं¦, क्ली, (तनोति सर्व्वमिदमिति । तन् + क्विप् तुक् च । पृषोदरादित्वात् साधुः । यद्बा, “सर्व्वं खल्विदं ब्रह्म ।” “ब्रह्मैवेदं सर्व्वम् ।” इति श्रुतेस्तस्य ब्रह्मणो भावः इति । तत् + त्व ।) स्वरूपम् । परमात्मा । विलम्बितनृत्यम् । इति मेदिनी । वे, ९ ॥ वाद्यप्रभेदः । इति विश्वः ॥ वस्तु । इति त्रिकाण्डशेषः ॥ चेतः । इति धरणिः ॥ * ॥ चतुर्व्विंशतितत्त्वानि यथा । क्षितिः १ आपः २ तेजः ३ मरुत् ४ व्योम ५ गन्धः ६ रसः ७ रूपम् ८ स्पर्शः ९ शब्दः १० नेत्रम् ११ नासिका १२ जिह्वा १३ कर्णः १४ त्वक् १५ हस्तः १६ पादः १७ मुखम् १८ पायुः १९ लिङ्गम् २० प्रकृतिः २१ मनः २२ बुद्धिः २३ अहङ्कारः २४ । इति पुराणतन्त्रे ॥ तत्तु नानामुनिभिर्न्नानाविधमुक्तम् । तत्र त्रीणि तत्त्वानि यथा । सत्वम् १ रजः २ तमः ३ । चतुर्व्विधानि यथा । तेजः १ आपः २ पृथ्वी ३ आत्मा ४ । पञ्चविधानि यथा । शब्दः १ स्पर्शः २ रसः ३ गन्धः ४ रूपम् ५ । षड्विधानि यथा । क्षितिः १ आपः २ तेजः ३ वायुः ४ आकाशम् ५ परमात्मा ६ । सप्तविधानि यथा । क्षितिः १ आपः २ तेजः ३ वायुः ४ आकाशम् ५ जीवः ६ आत्मा ७ । नवविधानि यथा । पुरुषः १ प्रकृतिः २ महत्तत्त्वम् ३ अहङ्कारः ४ नभः ५ वायुः ६ ज्योतिः ७ आपः ८ क्षितिः ९ । एकादशविधानि यथा । श्रोत्रम् १ त्वक् २ चक्षुः ३ घ्राणम् ४ जिह्वा ५ वाक् ६ पाणिः ७ उपस्थः ८ पायुः ९ अङ्घ्रिः १० मनः ११ । त्रयोदशविधानि यथा । नभः १ वायुः २ ज्योतिः ३ आपः ४ क्षितिः ५ श्रोत्रम् ६ त्वक् ७ चक्षुः ८ घ्राणम् ९ जिह्वा १० मनः ११ जीवात्मा १२ परमात्मा १३ । षोडशविधानि यथा । नभः १ वायुः २ ज्योतिः ३ आपः ४ पृथ्वी ५ शब्दः ६ स्पर्शः ७ रूपम् ८ रसः ९ गन्धः १० श्रोत्रम् ११ त्वक् १२ चक्षुः १३ जिह्वा १४ घ्नाणम् १५ मनः १६ । सप्तदशविधानि यथा । पूर्व्वोक्तानि षोडश १६ आत्मा च १७ । पञ्चविंशतितत्त्वाति यथा । पूर्व्वोक्तानि सप्तदश १७ पुरुषः १८ प्रकृतिः १९ महान् २० अहङ्कारः २१ मुखम् २२ पाणिः २३ उपस्थः २४ पायुः २५ । षड्विंशतिविधानि यथा । पूर्व्वोक्तानि पञ्चविंशतिः २५ जीवः २६ । सप्तविंशतिविधानि यथा । पूर्व्वोक्तानि षड्विंशतिः २६ ईश्वरः २७ । इति श्रीभागवतम् ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "तत्त्व",
+            "eid": "21953",
+            "pagenum": "3210,a",
+            "content": "तत्त्व(त्व)¦ न० तस्य भावः, तन--क्विप् तुक् ततो भावो वा त्व वा तलोपः । १ याथार्थ्ये, २ स्वरूपे, ३ ब्रह्मणि च अमरः ४ अनारोपितस्वरूपे, परमात्मनि, “तदिति सर्वनाम सर्वं च ब्रह्म तस्य नाम सर्वनाम तस्य भावः । सर्वस्मिन् दृश्ये बाध्यमानेऽपि तद्बाधाधिष्ठानत्वेन स्वयमबाध्यमानमनारोपितं स्वरूपं तत्त्वमिति विवरणकाराः । ५ विलम्बिते नृत्यवाद्यादौ, ६ चेतसि, ७ वस्तुनि, ८ साङ्ख्योक्तेषु प्रकृत्यादिषु पञ्चविंशतौ पदार्थेषु त्रिका० । “वेदान्ता बहुतर्ककर्कशमतिग्रस्ताः परं मायया भाट्टाः कर्मफलाकुला हतधियो ह्येते हि वैशेषिकाः । अन्ये भेदरता विवादकलहास्ते तत्त्वतो वञ्चितास्तस्मात् सिद्धमतं स्वभावकसृतं धीरः परं संश्रयेत्” । ९ सत्त्वरजस्तमःसु । तत्र याथार्थ्ये इत्यष्टाविंशतिस्थाने तत्त्वं वक्ष्यामि यत्नतः” रघु० । श्रीतत्त्वचिन्तामणिः तत्त्वविवेकः । तत्त्वचूडामणिः तत्त्वदीपिका । प्रमाणप्रमेयेत्याद्युपक्रमे “तत्त्वज्ञानान्निःश्रेयसाधिगमः” गौ० सू० “कार्य्यं सोऽवेक्ष्य शक्तिञ्च देशकालौ च तत्त्वतः” मनुः । “सतश्च सद्भावोऽसतश्चासद्भावः । सत् ‘सत्’ इति गृह्यमाणं यथाभूतमविपरीतं तत्त्वं भवति । असच्च ‘असत्’ इति गृह्यमाणं यथाभूतमविपरीतं तत्त्वं भवति” । वात्स्या० प्रस्तावना । प्रकृत्यादिपदार्थे । “एवं तत्त्वाभ्यासान्नास्मि न मे नाहमित्यपरिशेषम्” सां० कौ० । “तत्प्रतिषेधार्थं तत्त्वाभ्यासात्” पात० सू० । १० स्वभावे निस्तत्त्वाः निःस्वभावा इत्यर्थः प्रकृत्यादी पुंन० केचित् । “यस्यापि देवस्य गुणान् समग्रांस्तत्त्वांश्चतुर्विंशतिमाहुरेके” हरिवं० २७६ अ० । ब्रह्मणि “वदन्ति तत्तत्त्वविदस्तत्त्वं यज्ज्ञानमद्वयम् । ब्रह्मेति परमात्मेति भगवानिति शब्द्यते” भाग० १ । ३ । ११ अनारोपितं तत्त्वमिति वेदान्तिनो वदन्ति । पदार्थे । <P>“शून्यं तत्त्वं भावो विनश्यति वस्तुधर्मत्वाद्विनाशस्य” सा० सू० । मतभेदे पदार्थभेदा यथा “सदसदुभयानुभयात्मकचतुष्कोटिविनिर्मुक्तं शून्यमेव तत्त्वमिति शून्यवादिनो बौद्धाः । पृथिव्यादीनि चत्वारि भूतानि तत्त्वानीति चार्वाका आहुः । जीवा जीवाख्ये द्वे तत्त्वे इत्यार्हताः । जीवाकाशधर्माधर्म पुद्गलास्तिकायाः पञ्चतत्त्वानीत्यार्हतैकदेशिनः । जीवा जीवास्रवबन्धसंवरनिर्जरमोक्षाः सप्त तत्त्वानीत्यपरे आर्हतैकदेशिनः । स्वतन्त्रास्वतन्त्रभेदेन द्विविधं तत्त्वमिति द्वैतवादिनः श्रीपूर्णप्रज्ञाचार्य्याः । चिदचिदीश्वरभेदेन त्रिविधं तत्त्वमिति रामानुजीयाः पतिपशु पाशभेदेन त्रिबिधं तत्त्वमिति पाशुपतशास्त्रकोविदाः नकुलीशाचार्य्याः शैवाश्च । महदादीनि पञ्चविंशतिस्तत्त्वानीति सांख्याः । ईश्वराधिकानि तानि चेति, षड्विंशतिस्तत्वानीति पातञ्जलाः । ब्रह्मैकमेव परमार्थतत्त्वं तद्भिन्नाः मायाकल्पिता इति मायावादिनो वेदान्तिनः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. -  'तन्+क्विप्, तुक्, पृषो . तत्+त्व' वास्तविक स्थिति या दशा"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - तथ्य"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - यथार्थ या मूलप्रकृति"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - मानव आत्मा की वास्तविक प्रकृति या विश्वव्यापी परमात्मा के समनुरूप विराट् सृष्टि या भौतिक संसार"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - प्रथम या यथार्थ सिद्धान्त"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - मूलतत्त्व या प्रकृति"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - मन"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - सूर्य"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - 'वाद्य का भेद विशेष, विलम्बित'"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - एक प्रकार का नृत्य"
+        },
+        {
+            "word": "तत्त्व",
+            "content": "तत्त्वम् नपुं. - शरीर"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "तत्त्व",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವಸ್ತುವಿನ ಸ್ವಭಾವ \\/ಯಾಥಾರ್ಥ್ಯ \\/ಅನುಗತವಾದ ಅರ್ಥ",
+            "निष्पत्तिः": "तद्'त्वः' (५-१-११९)",
+            "व्युत्पत्तिः": "तस्य भावः",
+            "प्रयोगाः": "'करौ व्याधुन्वत्याः पिबसि रतिसर्वस्वमधरं वयं तत्त्वान्वेषान्मधुकर हतास्त्वं खलु कृती'",
+            "उल्लेखाः": "शाकु० १-२०",
+            "content": ""
+        },
+        {
+            "word": "तत्त्व",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಬ್ರಹ್ಮ \\/ಆರೋಪಿತವಲ್ಲದ ಸ್ವರೂಪವುಳ್ಳ ಪರಬ್ರಹ್ಮ \\/ಪರಮಾತ್ಮ",
+            "प्रयोगाः": "'वदन्ति तत्तत्त्वविदस्तत्त्वं यज्ज्ञानमद्वयम् । ब्रह्मेति परमात्मेति भगवानिति शब्द्यते ॥'",
+            "उल्लेखाः": "भाग० १०-२-११",
+            "content": ""
+        },
+        {
+            "word": "तत्त्व",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಚಿತ್ ಮತ್ತುಅಚಿತ್ತುಗಳ ವ್ಯಾಪ್ತಿ ಮತ್ತು ಪ್ರಯೋಜನಗಳಿಂದ ಜಗತ್ತಿನ ಸರ್ವಸಾರಭೂತವಾದ ಪರಮಾತ್ಮ",
+            "प्रयोगाः": "'तत्त्वं तत्त्वविदेकात्मा जन्ममृत्युजरातिगः'",
+            "उल्लेखाः": "वि० स०",
+            "विस्तारः": "'सारांशभुतो जगतो योऽसौ तत्त्वमिति स्मृतः'निरुक्तिः ।",
+            "content": ""
+        },
+        {
+            "word": "तत्त्व",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವಸ್ತುವಿನ ಆರೋಪಿತವಲ್ಲದ ಸ್ವರೂಪ",
+            "प्रयोगाः": "'सन्न्यासस्य महाबाहो तत्त्वमिच्छामि वेदितुम् । त्यागस्य च हृषिकेश पृथक्केशिनिषूदन ॥'",
+            "उल्लेखाः": "गीता० १८-१",
+            "content": ""
+        },
+        {
+            "word": "तत्त्व",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸತ್ತ್ವ ರಜಸ್ಸು ಮತ್ತು ತಮಸ್ಸುಗಳೆಂಬ ೩ ತತ್ತ್ವಗಳು",
+            "content": ""
+        },
+        {
+            "word": "तत्त्व",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಸ್ವಭಾವ",
+            "content": ""
+        },
+        {
+            "word": "तत्त्व",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವಿಲಂಬಿತ ನೃತ್ಯ \\/ನೃತ್ಯದ ಪ್ರಾರಂಭದ ಅವಸ್ಥೆ",
+            "विस्तारः": "'तत्त्वं स्वरूपे परमात्मनि । स्याद् विलम्बितनृत्ये च ।'मेदि० । 'विलम्बितं द्रुतं मध्यं तत्त्वमोघोघनं क्रमात्'अम० ।",
+            "content": ""
+        },
+        {
+            "word": "तत्त्व",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಚೇತಸ್ಸು \\/ಮನಸ್ಸು",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "तत्त्व",
+            "linga": "N",
+            "artha": "विलम्बितनृत्यगीतवाद्यम्",
+            "synonyms": [
+                "तत्त्व"
+            ],
+            "num": "1.7.10",
+            "text": "विलम्बितं द्रुतं मध्यं तत्त्वमोघो घनं क्रमात् । तालः कालक्रियामानं लयः साम्यमथास्त्रियाम् ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "तत्त्व",
+            "content": "<body><s>tattva(tva) na° tasya BAvaH, tana—kvip tuk tato BAvo vA tva vA talopaH . <lb/><b>1</b> yATArTye, <lb/><b>2</b> svarUpe, <lb/><b>3</b> brahmaRi ca amaraH <lb/><b>4</b> anA­ropitasvarUpe, paramAtmani, <q>taditi sarvanAma sarvaM ca brahma tasya nAma sarvanAma tasya BAvaH . sarvasmin dfSye bADyamAne­'pi tadbADADizWAnatvena svayamabADyamAnamanAropitaM svarUpaM tattvamiti vivaraRakArAH . <lb/><b>5</b> vilambite nftyavAdyAdO, <lb/><b>6</b> cetasi, <lb/><b>7</b> vastuni, <lb/><b>8</b> sANKyoktezu prakftyAdizu paYcaviMSatO padArTezu trikA° . “vedAntA bahutarkakarkaSamatigrastAH paraM mAyayA BAwwAH karmaPalAkulA hataDiyo hyete hi vESezikAH . anye BedaratA vivAdakalahAste tattvato vaYcitAstasmAt sidDamataM svaBAvakasftaM DIraH paraM saMSrayet</q> . <lb/><b>9</b> sattvarajastamaHsu . tatra yATArTye ityazwA­viMSatisTAne tattvaM vakzyAmi yatnataH” raGu° . SrItattva­cintAmaRiH tattvavivekaH . tattvacUqAmaRiH tattvadIpikA . pramARaprameyetyAdyupakrame <q>tattvajYAnAnniHSreyasADigamaH</q> gO° sU° <q>kAryyaM so'vekzya SaktiYca deSakAlO ca tattvataH</q> manuH . <q>sataSca sadBAvo'sataScAsadBAvaH . sat ‘sat’ iti gfhyamARaM yaTABUtamaviparItaM tattvaM Bavati . asacca ‘asat’ iti gfhyamARaM yaTABUtamaviparItaM tattvaM Bavati</q> . vAtsyA° prastAvanA . prakftyAdipa­dArTe . <q>evaM tattvAByAsAnnAsmi na me nAhamitya­pariSezam</q> sAM° kO° . <q>tatpratizeDArTaM tattvA­ByAsAt</q> pAta° sU° . <lb/><b>1°</b> svaBAve nistattvAH niHsvaBAvA ityarTaH prakftyAdI puMna° kecit . <q>yasyApi devasya guRAn samagrAMstattvAMScaturviMSatimAhureke</q> harivaM° 276 a° . brahmaRi <q>vadanti tattattvavidastattvaM yajjYAnamadvayam . brahmeti paramAtmeti BagavAniti Sabdyate</q> BAga° 1 . 3 . <lb/><b>11</b> anAropitaM tattvamiti vedAntino vadanti . padArTe . <q>SUnyaM tattvaM BAvo vinaSyati vastuDarmatvAdvinASasya</q> sA° sU° . mataBede padArTaBedA yaTA “sadasaduBayAnuBayAtmakacatuzkowivinirmuktaM SUnyameva tattvamiti SUnyavAdino bOdDAH . pfTivyAdIni catvAri BUtAni tattvAnIti cArvAkA AhuH . jIvA jIvAKye dve tattve ityArhatAH . jIvAkASaDarmADarma pudgalAstikAyAH paYcatattvAnItyArhatEkadeSinaH . jIvA jIvAsravabanDasaMvaranirjaramokzAH sapta tattvAnItyapare ArhatEkadeSinaH . svatantrAsvatantraBedena dviviDaM tattva­miti dvEtavAdinaH SrIpUrRaprajYAcAryyAH . cidacidI­SvaraBedena triviDaM tattvamiti rAmAnujIyAH patipaSu pASaBedena tribiDaM tattvamiti pASupataSAstrakovidAH nakulISAcAryyAH SEvASca . mahadAdIni paYcaviMSatistattvA­nIti sAMKyAH . ISvarADikAni tAni ceti, zaqviM­SatistatvAnIti pAtaYjalAH . brahmEkameva paramArTa­tattvaM tadBinnAH mAyAkalpitA iti mAyAvAdino vedAntinaH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "तत्त्व",
+            "content": "<H3><h><key1>tattva</key1><key2>tat—tva</key2></h><body><s>tat—tva</s>   <lex>n.</lex> true or real state, truth, reality, <ls>ŚvetUp.</ls>; <ls>Mn.</ls>; <ls>Bhag.</ls> &amp;c.<info lex=\"n\" /></body><tail><L>81839</L><pc>432,3</pc></tail></H3>\n <H3A><h><key1>tattva</key1><key2>tat—tva</key2></h><body>  (in <ab>phil.</ab>) a true principle (in <s1 slp1=\"sAMKya\">Sāṃkhya</s1> <ab>phil.</ab> 25 in number, <ab>viz.</ab> <s>a-vyakta</s>, <s>budDi</s>, <s>ahaM-kAra</s>, the 5 <s1 slp1=\"tan-mAtra\">Tan-mātra</s1>s, the 5 <s1 slp1=\"mahA-BUta\">Mahā-bhūta</s1>s, the 11 organs including <s>manas</s>, and, lastly, <s>puruza</s>, <ab>qq.vv.</ab>), <ls>MBh. xii, 11840</ls>; <ls n=\"MBh.\">xiv, 984</ls>; <ls>R. iii, 53, 42</ls>; <ls>Tattvas.</ls>; 24 in number, <ls>MBh. xii, 11242</ls>; <ls>Hariv. 14840</ls> (<ab>m.</ab>); 23 in number, <ls>BhP. iii, 6, 2 ff.</ls>; for other numbers <ab>cf.</ab> <ls n=\"BhP.\">xi, 22, 1 ff.</ls>; <ls>RāmatUp.</ls>; with <s1 slp1=\"mAheSvara\">Māheśvara</s1>s and <s1 slp1=\"lokAyatika\">Lokāyatika</s1>s only 5 [<ab>viz.</ab> the 5 elements] are admitted, <ls>Prab. ii, 18/19</ls>; with, <ls>Buddh.</ls> 4, with <s1 slp1=\"jEna\">Jaina</s1>s 2 or 5 or 7 or 9 <ls>Sarvad. ii f.</ls>; in <s1 slp1=\"vedAnta\">Vedānta</s1> <ab>phil.</ab> <s>tattva</s> is regarded as made up of <s>tad</s> and <s>tvam</s>, ‘that [art] thou’, and called <s>mahA-vAkya</s>, the great word by which the identity of the whole world with the one eternal <s1 slp1=\"brahma\">Brahma</s1> [<s>tad</s>] is expressed)<info lex=\"inh\" /></body><tail><L>81840</L><pc>432,3</pc></tail></H3A>\n <H3A><h><key1>tattva</key1><key2>tat—tva</key2></h><body>  the number 25 <ls>Sūryas. ii</ls><info lex=\"inh\" /></body><tail><L>81842</L><pc>432,3</pc></tail></H3A>\n <H3A><h><key1>tattva</key1><key2>tat—tva</key2></h><body>  the number 24 <ls>DevībhP.</ls>; <ls>ŚBr. vii, 3, 1, 43</ls>; <ls>Sāy.</ls><info lex=\"inh\" /></body><tail><L>81843</L><pc>432,3</pc></tail></H3A>\n <H3A><h><key1>tattva</key1><key2>tat—tva</key2></h><body>  an element or elementary property, <ls>W.</ls><info lex=\"inh\" /></body><tail><L>81844</L><pc>432,3</pc></tail></H3A>\n <H3A><h><key1>tattva</key1><key2>tat—tva</key2></h><body>  the essence or substance of anything, <ls>W.</ls><info lex=\"inh\" /></body><tail><L>81845</L><pc>433,1</pc></tail></H3A>\n <H3A><h><key1>tattva</key1><key2>tat—tva</key2></h><body>  the being that, <ls>Jaim. i, 3, 24</ls>, <ab>Sch.</ab><info lex=\"inh\" /></body><tail><L>81846</L><pc>433,1</pc></tail></H3A>\n <H3A><h><key1>tattva</key1><key2>tat—tva</key2></h><body>  = <s>tata-tva</s>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>81847</L><pc>433,1</pc></tail></H3A>\n <H3A><h><key1>tattva</key1><key2>tat—tva</key2></h><body>  <ab>N.</ab> of a musical instrument, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>81848</L><pc>433,1</pc></tail></H3A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "तत्त्व",
+            "content": "<H1><h><key1>tattva</key1><key2>tattva</key2></h><body><s>tattva</s>  <div n=\"1\">n. (<s>-ttvaM</s>) </div><div n=\"2\"> 1. Essential nature, the real nature of the human soul, <lb />considered as one and the same with the divine spirit <lb />animating the universe: the philosophical etymology of this <lb />word best explains its meaning, <s>tad</s> that, that divine being, and <s>tva</s> <lb />thou, that very God art thou. </div><div n=\"2\"> 2. The Supreme being, or BRAMHA. <lb />3. Truth, reality, substance, opposed to what is illusory or <lb />fallacious. </div><div n=\"2\"> 4. An element or elementary property, differently <lb />enumerated in different system from the three which are <lb />the same with the three Gunas, to twenty-seven, which in- <lb />clude the elements, organs, faculties, matter, spirit, life, and God. <lb />5. A first principle, an axiom. </div><div n=\"2\"> 6. Mind, intellect. </div><div n=\"2\"> 7. Slow time in <lb />music. </div><div n=\"2\"> 8. A musical instrument.</div><div n=\"E\"> E. As above, or <s>tad</s> that, then &amp;c. <lb />affix <s>tva;</s> the word is properly, therefore, written <s>tattva,</s> but in books <lb />one <s>ta</s> is commonly rejected.</div></body><tail><L>16889</L><pc>302-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "तत्त्व",
+            "content": "<span lang=\"sa\">तत्त्व<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಸ್ತುವಿನ ಸ್ವಭಾವ /ಯಾಥಾರ್ಥ್ಯ /ಅನುಗತವಾದ ಅರ್ಥ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>तद् - \"त्वः\" (५-१-११९)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>तस्य भावः<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"करौ व्याधुन्वत्याः पिबसि रतिसर्वस्वमधरं वयं तत्त्वान्वेषान्मधुकर हतास्त्वं खलु कृती\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>शाकु० १-२०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तत्त्व<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬ್ರಹ್ಮ /ಆರೋಪಿತವಲ್ಲದ ಸ್ವರೂಪವುಳ್ಳ ಪರಬ್ರಹ್ಮ /ಪರಮಾತ್ಮ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"वदन्ति तत्तत्त्वविदस्तत्त्वं यज्ज्ञानमद्वयम् । ब्रह्मेति परमात्मेति भगवानिति शब्द्यते ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भाग० १०-२-११<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तत्त्व<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚಿತ್ ಮತ್ತುಅಚಿತ್ತುಗಳ ವ್ಯಾಪ್ತಿ ಮತ್ತು ಪ್ರಯೋಜನಗಳಿಂದ ಜಗತ್ತಿನ ಸರ್ವಸಾರಭೂತವಾದ ಪರಮಾತ್ಮ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"तत्त्वं तत्त्वविदेकात्मा जन्ममृत्युजरातिगः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>वि० स०<div class=\"h-2\"> </div><b>विस्तारः - </b>\"सारांशभुतो जगतो योऽसौ तत्त्वमिति स्मृतः\" - निरुक्तिः ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तत्त्व<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಸ್ತುವಿನ ಆರೋಪಿತವಲ್ಲದ ಸ್ವರೂಪ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"सन्न्यासस्य महाबाहो तत्त्वमिच्छामि वेदितुम् । त्यागस्य च हृषिकेश पृथक्केशिनिषूदन ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>गीता० १८-१<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तत्त्व<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸತ್ತ್ವ ರಜಸ್ಸು ಮತ್ತು ತಮಸ್ಸುಗಳೆಂಬ ೩ ತತ್ತ್ವಗಳು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तत्त्व<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸ್ವಭಾವ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तत्त्व<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಿಲಂಬಿತ ನೃತ್ಯ /ನೃತ್ಯದ ಪ್ರಾರಂಭದ ಅವಸ್ಥೆ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"तत्त्वं स्वरूपे परमात्मनि । स्याद् विलम्बितनृत्ये च ।\" - मेदि० । \"विलम्बितं द्रुतं मध्यं तत्त्वमोघोघनं क्रमात्\" - अम० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>तत्त्व<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚೇತಸ್ಸು /ಮನಸ್ಸು<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-/**
- * Extract a SyntheticInputEvent for `beforeInput`, based on either native
- * `textInput` or fallback behavior.
- *
- * @return {?object} A SyntheticInputEvent.
- */
-
-
-function extractBeforeInputEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget) {
-  let chars;
-
-  if (canUseTextInputEvent) {
-    chars = getNativeBeforeInputChars(domEventName, nativeEvent);
-  } else {
-    chars = getFallbackBeforeInputChars(domEventName, nativeEvent);
-  } // If no characters are being inserted, no BeforeInput event should
-  // be fired.
-
-
-  if (!chars) {
-    return null;
-  }
-
-  const listeners = accumulateTwoPhaseListeners(targetInst, 'onBeforeInput');
-
-  if (listeners.length > 0) {
-    const event = new SyntheticInputEvent('onBeforeInput', 'beforeinput', null, nativeEvent, nativeEventTarget);
-    dispatchQueue.push({
-      event,
-      listeners
-    }); // $FlowFixMe[incompatible-use]
-
-    event.data = chars;
-  }
-}
-/**
- * Create an `onBeforeInput` event to match
- * http://www.w3.org/TR/2013/WD-DOM-Level-3-Events-20131105/#events-inputevents.
- *
- * This event plugin is based on the native `textInput` event
- * available in Chrome, Safari, Opera, and IE. This event fires after
- * `onKeyPress` and `onCompositionEnd`, but before `onInput`.
- *
- * `beforeInput` is spec'd but not implemented in any browsers, and
- * the `input` event does not provide any useful information about what has
- * actually been added, contrary to the spec. Thus, `textInput` is the best
- * available event to identify the characters that have actually been inserted
- * into the target node.
- *
- * This plugin is also responsible for emitting `composition` events, thus
- * allowing us to share composition fallback code for both `beforeInput` and
- * `composition` event types.
- */
-
-
-function extractEvents$5(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
-  extractCompositionEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
-  extractBeforeInputEvent(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
-}
-
-/**
- * @see http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#input-type-attr-summary
- */
-const supportedInputTypes = {
-  color: true,
-  date: true,
-  datetime: true,
-  'datetime-local': true,
-  email: true,
-  month: true,
-  number: true,
-  password: true,
-  range: true,
-  search: true,
-  tel: true,
-  text: true,
-  time: true,
-  url: true,
-  week: true
-};
-
-function isTextInputElement(elem) {
-  const nodeName = elem && elem.nodeName && elem.nodeName.toLowerCase();
-
-  if (nodeName === 'input') {
-    return !!supportedInputTypes[elem.type];
-  }
-
-  if (nodeName === 'textarea') {
-    return true;
-  }
-
-  return false;
-}
-
-/**
- * Checks if an event is supported in the current execution environment.
- *
- * NOTE: This will not work correctly for non-generic events such as `change`,
- * `reset`, `load`, `error`, and `select`.
- *
- * Borrows from Modernizr.
- *
- * @param {string} eventNameSuffix Event name, e.g. "click".
- * @return {boolean} True if the event is supported.
- * @internal
- * @license Modernizr 3.0.0pre (Custom Build) | MIT
- */
-
-function isEventSupported(eventNameSuffix) {
-  if (!canUseDOM) {
-    return false;
-  }
-
-  const eventName = 'on' + eventNameSuffix;
-  let isSupported = (eventName in document);
-
-  if (!isSupported) {
-    const element = document.createElement('div');
-    element.setAttribute(eventName, 'return;');
-    isSupported = typeof element[eventName] === 'function';
-  }
-
-  return isSupported;
-}
-
-function registerEvents$2() {
-  registerTwoPhaseEvent('onChange', ['change', 'click', 'focusin', 'focusout', 'input', 'keydown', 'keyup', 'selectionchange']);
-}
-
-function createAndAccumulateChangeEvent(dispatchQueue, inst, nativeEvent, target) {
-  // Flag this event loop as needing state restore.
-  enqueueStateRestore(target);
-  const listeners = accumulateTwoPhaseListeners(inst, 'onChange');
-
-  if (listeners.length > 0) {
-    const event = new SyntheticEvent('onChange', 'change', null, nativeEvent, target);
-    dispatchQueue.push({
-      event,
-      listeners
-    });
-  }
-}
-/**
- * For IE shims
- */
-
-
-let activeElement$1 = null;
-let activeElementInst$1 = null;
-/**
- * SECTION: handle `change` event
- */
-
-function shouldUseChangeEvent(elem) {
-  const nodeName = elem.nodeName && elem.nodeName.toLowerCase();
-  return nodeName === 'select' || nodeName === 'input' && elem.type === 'file';
-}
-
-function manualDispatchChangeEvent(nativeEvent) {
-  const dispatchQueue = [];
-  createAndAccumulateChangeEvent(dispatchQueue, activeElementInst$1, nativeEvent, getEventTarget(nativeEvent)); // If change and propertychange bubbled, we'd just bind to it like all the
-  // other events and have it go through ReactBrowserEventEmitter. Since it
-  // doesn't, we manually listen for the events and so we have to enqueue and
-  // process the abstract event manually.
-  //
-  // Batching is necessary here in order to ensure that all event handlers run
-  // before the next rerender (including event handlers attached to ancestor
-  // elements instead of directly on the input). Without this, controlled
-  // components don't work properly in conjunction with event bubbling because
-  // the component is rerendered and the value reverted before all the event
-  // handlers can run. See https://github.com/facebook/react/issues/708.
-
-  batchedUpdates(runEventInBatch, dispatchQueue);
-}
-
-function runEventInBatch(dispatchQueue) {
-  processDispatchQueue(dispatchQueue, 0);
-}
-
-function getInstIfValueChanged(targetInst) {
-  const targetNode = getNodeFromInstance(targetInst);
-
-  if (updateValueIfChanged(targetNode)) {
-    return targetInst;
-  }
-}
-
-function getTargetInstForChangeEvent(domEventName, targetInst) {
-  if (domEventName === 'change') {
-    return targetInst;
-  }
-}
-/**
- * SECTION: handle `input` event
- */
-
-
-let isInputEventSupported = false;
-
-if (canUseDOM) {
-  // IE9 claims to support the input event but fails to trigger it when
-  // deleting text, so we ignore its input events.
-  isInputEventSupported = isEventSupported('input') && (!document.documentMode || document.documentMode > 9);
-}
-/**
- * (For IE <=9) Starts tracking propertychange events on the passed-in element
- * and override the value property so that we can distinguish user events from
- * value changes in JS.
- */
-
-
-function startWatchingForValueChange(target, targetInst) {
-  activeElement$1 = target;
-  activeElementInst$1 = targetInst;
-  activeElement$1.attachEvent('onpropertychange', handlePropertyChange);
-}
-/**
- * (For IE <=9) Removes the event listeners from the currently-tracked element,
- * if any exists.
- */
-
-
-function stopWatchingForValueChange() {
-  if (!activeElement$1) {
-    return;
-  }
-
-  activeElement$1.detachEvent('onpropertychange', handlePropertyChange);
-  activeElement$1 = null;
-  activeElementInst$1 = null;
-}
-/**
- * (For IE <=9) Handles a propertychange event, sending a `change` event if
- * the value of the active element has changed.
- */
-// $FlowFixMe[missing-local-annot]
-
-
-function handlePropertyChange(nativeEvent) {
-  if (nativeEvent.propertyName !== 'value') {
-    return;
-  }
-
-  if (getInstIfValueChanged(activeElementInst$1)) {
-    manualDispatchChangeEvent(nativeEvent);
-  }
-}
-
-function handleEventsForInputEventPolyfill(domEventName, target, targetInst) {
-  if (domEventName === 'focusin') {
-    // In IE9, propertychange fires for most input events but is buggy and
-    // doesn't fire when text is deleted, but conveniently, selectionchange
-    // appears to fire in all of the remaining cases so we catch those and
-    // forward the event if the value has changed
-    // In either case, we don't want to call the event handler if the value
-    // is changed from JS so we redefine a setter for `.value` that updates
-    // our activeElementValue variable, allowing us to ignore those changes
-    //
-    // stopWatching() should be a noop here but we call it just in case we
-    // missed a blur event somehow.
-    stopWatchingForValueChange();
-    startWatchingForValueChange(target, targetInst);
-  } else if (domEventName === 'focusout') {
-    stopWatchingForValueChange();
-  }
-} // For IE8 and IE9.
-
-
-function getTargetInstForInputEventPolyfill(domEventName, targetInst) {
-  if (domEventName === 'selectionchange' || domEventName === 'keyup' || domEventName === 'keydown') {
-    // On the selectionchange event, the target is just document which isn't
-    // helpful for us so just check activeElement instead.
-    //
-    // 99% of the time, keydown and keyup aren't necessary. IE8 fails to fire
-    // propertychange on the first input event after setting `value` from a
-    // script and fires only keydown, keypress, keyup. Catching keyup usually
-    // gets it and catching keydown lets us fire an event for the first
-    // keystroke if user does a key repeat (it'll be a little delayed: right
-    // before the second keystroke). Other input methods (e.g., paste) seem to
-    // fire selectionchange normally.
-    return getInstIfValueChanged(activeElementInst$1);
-  }
-}
-/**
- * SECTION: handle `click` event
- */
-
-
-function shouldUseClickEvent(elem) {
-  // Use the `click` event to detect changes to checkbox and radio inputs.
-  // This approach works across all browsers, whereas `change` does not fire
-  // until `blur` in IE8.
-  const nodeName = elem.nodeName;
-  return nodeName && nodeName.toLowerCase() === 'input' && (elem.type === 'checkbox' || elem.type === 'radio');
-}
-
-function getTargetInstForClickEvent(domEventName, targetInst) {
-  if (domEventName === 'click') {
-    return getInstIfValueChanged(targetInst);
-  }
-}
-
-function getTargetInstForInputOrChangeEvent(domEventName, targetInst) {
-  if (domEventName === 'input' || domEventName === 'change') {
-    return getInstIfValueChanged(targetInst);
-  }
-}
-
-function handleControlledInputBlur(node, props) {
-  if (node.type !== 'number') {
-    return;
-  }
-
-  {
-    const isControlled = props.value != null;
-
-    if (isControlled) {
-      // If controlled, assign the value attribute to the current value on blur
-      setDefaultValue(node, 'number', node.value);
-    }
-  }
-}
-/**
- * This plugin creates an `onChange` event that normalizes change events
- * across form elements. This event fires at a time when it's possible to
- * change the element's value without seeing a flicker.
- *
- * Supported elements are:
- * - input (see `isTextInputElement`)
- * - textarea
- * - select
- */
-
-
-function extractEvents$4(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
-  const targetNode = targetInst ? getNodeFromInstance(targetInst) : window;
-  let getTargetInstFunc, handleEventFunc;
-
-  if (shouldUseChangeEvent(targetNode)) {
-    getTargetInstFunc = getTargetInstForChangeEvent;
-  } else if (isTextInputElement(targetNode)) {
-    if (isInputEventSupported) {
-      getTargetInstFunc = getTargetInstForInputOrChangeEvent;
-    } else {
-      getTargetInstFunc = getTargetInstForInputEventPolyfill;
-      handleEventFunc = handleEventsForInputEventPolyfill;
-    }
-  } else if (shouldUseClickEvent(targetNode)) {
-    getTargetInstFunc = getTargetInstForClickEvent;
-  } else if (targetInst && isCustomElement(targetInst.elementType)) {
-    getTargetInstFunc = getTargetInstForChangeEvent;
-  }
-
-  if (getTargetInstFunc) {
-    const inst = getTargetInstFunc(domEventName, targetInst);
-
-    if (inst) {
-      createAndAccumulateChangeEvent(dispatchQueue, inst, nativeEvent, nativeEventTarget);
-      return;
-    }
-  }
-
-  if (handleEventFunc) {
-    handleEventFunc(domEventName, targetNode, targetInst);
-  } // When blurring, set the value attribute for number inputs
-
-
-  if (domEventName === 'focusout' && targetInst) {
-    // These props aren't necessarily the most current but we warn for changing
-    // between controlled and uncontrolled, so it doesn't matter and the previous
-    // code was also broken for changes.
-    const props = targetInst.memoizedProps;
-    handleControlledInputBlur(targetNode, props);
-  }
-}
-
-function registerEvents$1() {
-  registerDirectEvent('onMouseEnter', ['mouseout', 'mouseover']);
-  registerDirectEvent('onMouseLeave', ['mouseout', 'mouseover']);
-  registerDirectEvent('onPointerEnter', ['pointerout', 'pointerover']);
-  registerDirectEvent('onPointerLeave', ['pointerout', 'pointerover']);
-}
-/**
- * For almost every interaction we care about, there will be both a top-level
- * `mouseover` and `mouseout` event that occurs. Only use `mouseout` so that
- * we do not extract duplicate events. However, moving the mouse into the
- * browser from outside will not fire a `mouseout` event. In this case, we use
- * the `mouseover` top-level event.
- */
-
-
-function extractEvents$3(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
-  const isOverEvent = domEventName === 'mouseover' || domEventName === 'pointerover';
-  const isOutEvent = domEventName === 'mouseout' || domEventName === 'pointerout';
-
-  if (isOverEvent && !isReplayingEvent(nativeEvent)) {
-    // If this is an over event with a target, we might have already dispatched
-    // the event in the out event of the other target. If this is replayed,
-    // then it's because we couldn't dispatch against this target previously
-    // so we have to do it now instead.
-    const related = nativeEvent.relatedTarget || nativeEvent.fromElement;
-
-    if (related) {
-      // If the related node is managed by React, we can assume that we have
-      // already dispatched the corresponding events during its mouseout.
-      if (getClosestInstanceFromNode(related) || isContainerMarkedAsRoot(related)) {
-        return;
-      }
-    }
-  }
-
-  if (!isOutEvent && !isOverEvent) {
-    // Must not be a mouse or pointer in or out - ignoring.
-    return;
-  }
-
-  let win; // TODO: why is this nullable in the types but we read from it?
-
-  if (nativeEventTarget.window === nativeEventTarget) {
-    // `nativeEventTarget` is probably a window object.
-    win = nativeEventTarget;
-  } else {
-    // TODO: Figure out why `ownerDocument` is sometimes undefined in IE8.
-    const doc = nativeEventTarget.ownerDocument;
-
-    if (doc) {
-      win = doc.defaultView || doc.parentWindow;
-    } else {
-      win = window;
-    }
-  }
-
-  let from;
-  let to;
-
-  if (isOutEvent) {
-    const related = nativeEvent.relatedTarget || nativeEvent.toElement;
-    from = targetInst;
-    to = related ? getClosestInstanceFromNode(related) : null;
-
-    if (to !== null) {
-      const nearestMounted = getNearestMountedFiber(to);
-      const tag = to.tag;
-
-      if (to !== nearestMounted || tag !== HostComponent && tag !== HostSingleton && tag !== HostText) {
-        to = null;
-      }
-    }
-  } else {
-    // Moving to a node from outside the window.
-    from = null;
-    to = targetInst;
-  }
-
-  if (from === to) {
-    // Nothing pertains to our managed components.
-    return;
-  }
-
-  let SyntheticEventCtor = SyntheticMouseEvent;
-  let leaveEventType = 'onMouseLeave';
-  let enterEventType = 'onMouseEnter';
-  let eventTypePrefix = 'mouse';
-
-  if (domEventName === 'pointerout' || domEventName === 'pointerover') {
-    SyntheticEventCtor = SyntheticPointerEvent;
-    leaveEventType = 'onPointerLeave';
-    enterEventType = 'onPointerEnter';
-    eventTypePrefix = 'pointer';
-  }
-
-  const fromNode = from == null ? win : getNodeFromInstance(from);
-  const toNode = to == null ? win : getNodeFromInstance(to);
-  const leave = new SyntheticEventCtor(leaveEventType, eventTypePrefix + 'leave', from, nativeEvent, nativeEventTarget);
-  leave.target = fromNode;
-  leave.relatedTarget = toNode;
-  let enter = null; // We should only process this nativeEvent if we are processing
-  // the first ancestor. Next time, we will ignore the event.
-
-  const nativeTargetInst = getClosestInstanceFromNode(nativeEventTarget);
-
-  if (nativeTargetInst === targetInst) {
-    const enterEvent = new SyntheticEventCtor(enterEventType, eventTypePrefix + 'enter', to, nativeEvent, nativeEventTarget);
-    enterEvent.target = toNode;
-    enterEvent.relatedTarget = fromNode;
-    enter = enterEvent;
-  }
-
-  accumulateEnterLeaveTwoPhaseListeners(dispatchQueue, leave, enter, from, to);
-}
-
-/**
- * Given any node return the first leaf node without children.
- *
- * @param {DOMElement|DOMTextNode} node
- * @return {DOMElement|DOMTextNode}
- */
-
-function getLeafNode(node) {
-  while (node && node.firstChild) {
-    node = node.firstChild;
-  }
-
-  return node;
-}
-/**
- * Get the next sibling within a container. This will walk up the
- * DOM if a node's siblings have been exhausted.
- *
- * @param {DOMElement|DOMTextNode} node
- * @return {?DOMElement|DOMTextNode}
- */
-
-
-function getSiblingNode(node) {
-  while (node) {
-    if (node.nextSibling) {
-      return node.nextSibling;
-    }
-
-    node = node.parentNode;
-  }
-}
-/**
- * Get object describing the nodes which contain characters at offset.
- *
- * @param {DOMElement|DOMTextNode} root
- * @param {number} offset
- * @return {?object}
- */
-
-
-function getNodeForCharacterOffset(root, offset) {
-  let node = getLeafNode(root);
-  let nodeStart = 0;
-  let nodeEnd = 0;
-
-  while (node) {
-    if (node.nodeType === TEXT_NODE) {
-      nodeEnd = nodeStart + node.textContent.length;
-
-      if (nodeStart <= offset && nodeEnd >= offset) {
-        return {
-          node: node,
-          offset: offset - nodeStart
-        };
-      }
-
-      nodeStart = nodeEnd;
-    }
-
-    node = getLeafNode(getSiblingNode(node));
-  }
-}
-
-/**
- * @param {DOMElement} outerNode
- * @return {?object}
- */
-
-function getOffsets(outerNode) {
-  const ownerDocument = outerNode.ownerDocument;
-  const win = ownerDocument && ownerDocument.defaultView || window;
-  const selection = win.getSelection && win.getSelection();
-
-  if (!selection || selection.rangeCount === 0) {
-    return null;
-  }
-
-  const anchorNode = selection.anchorNode,
-        anchorOffset = selection.anchorOffset,
-        focusNode = selection.focusNode,
-        focusOffset = selection.focusOffset; // In Firefox, anchorNode and focusNode can be "anonymous divs", e.g. the
-  // up/down buttons on an <input type="number">. Anonymous divs do not seem to
-  // expose properties, triggering a "Permission denied error" if any of its
-  // properties are accessed. The only seemingly possible way to avoid erroring
-  // is to access a property that typically works for non-anonymous divs and
-  // catch any error that may otherwise arise. See
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=208427
-
-  try {
-    /* eslint-disable ft-flow/no-unused-expressions */
-    anchorNode.nodeType;
-    focusNode.nodeType;
-    /* eslint-enable ft-flow/no-unused-expressions */
-  } catch (e) {
-    return null;
-  }
-
-  return getModernOffsetsFromPoints(outerNode, anchorNode, anchorOffset, focusNode, focusOffset);
-}
-/**
- * Returns {start, end} where `start` is the character/codepoint index of
- * (anchorNode, anchorOffset) within the textContent of `outerNode`, and
- * `end` is the index of (focusNode, focusOffset).
- *
- * Returns null if you pass in garbage input but we should probably just crash.
- *
- * Exported only for testing.
- */
-
-function getModernOffsetsFromPoints(outerNode, anchorNode, anchorOffset, focusNode, focusOffset) {
-  let length = 0;
-  let start = -1;
-  let end = -1;
-  let indexWithinAnchor = 0;
-  let indexWithinFocus = 0;
-  let node = outerNode;
-  let parentNode = null;
-
-  outer: while (true) {
-    let next = null;
-
-    while (true) {
-      if (node === anchorNode && (anchorOffset === 0 || node.nodeType === TEXT_NODE)) {
-        start = length + anchorOffset;
-      }
-
-      if (node === focusNode && (focusOffset === 0 || node.nodeType === TEXT_NODE)) {
-        end = length + focusOffset;
-      }
-
-      if (node.nodeType === TEXT_NODE) {
-        length += node.nodeValue.length;
-      }
-
-      if ((next = node.firstChild) === null) {
-        break;
-      } // Moving from `node` to its first child `next`.
-
-
-      parentNode = node;
-      node = next;
-    }
-
-    while (true) {
-      if (node === outerNode) {
-        // If `outerNode` has children, this is always the second time visiting
-        // it. If it has no children, this is still the first loop, and the only
-        // valid selection is anchorNode and focusNode both equal to this node
-        // and both offsets 0, in which case we will have handled above.
-        break outer;
-      }
-
-      if (parentNode === anchorNode && ++indexWithinAnchor === anchorOffset) {
-        start = length;
-      }
-
-      if (parentNode === focusNode && ++indexWithinFocus === focusOffset) {
-        end = length;
-      }
-
-      if ((next = node.nextSibling) !== null) {
-        break;
-      }
-
-      node = parentNode;
-      parentNode = node.parentNode;
-    } // Moving from `node` to its next sibling `next`.
-
-
-    node = next;
-  }
-
-  if (start === -1 || end === -1) {
-    // This should never happen. (Would happen if the anchor/focus nodes aren't
-    // actually inside the passed-in node.)
-    return null;
-  }
-
-  return {
-    start: start,
-    end: end
-  };
-}
-/**
- * In modern non-IE browsers, we can support both forward and backward
- * selections.
- *
- * Note: IE10+ supports the Selection object, but it does not support
- * the `extend` method, which means that even in modern IE, it's not possible
- * to programmatically create a backward selection. Thus, for all IE
- * versions, we use the old IE API to create our selections.
- *
- * @param {DOMElement|DOMTextNode} node
- * @param {object} offsets
- */
-
-function setOffsets(node, offsets) {
-  const doc = node.ownerDocument || document;
-  const win = doc && doc.defaultView || window; // Edge fails with "Object expected" in some scenarios.
-  // (For instance: TinyMCE editor used in a list component that supports pasting to add more,
-  // fails when pasting 100+ items)
-
-  if (!win.getSelection) {
-    return;
-  }
-
-  const selection = win.getSelection();
-  const length = node.textContent.length;
-  let start = Math.min(offsets.start, length);
-  let end = offsets.end === undefined ? start : Math.min(offsets.end, length); // IE 11 uses modern selection, but doesn't support the extend method.
-  // Flip backward selections, so we can set with a single range.
-
-  if (!selection.extend && start > end) {
-    const temp = end;
-    end = start;
-    start = temp;
-  }
-
-  const startMarker = getNodeForCharacterOffset(node, start);
-  const endMarker = getNodeForCharacterOffset(node, end);
-
-  if (startMarker && endMarker) {
-    if (selection.rangeCount === 1 && selection.anchorNode === startMarker.node && selection.anchorOffset === startMarker.offset && selection.focusNode === endMarker.node && selection.focusOffset === endMarker.offset) {
-      return;
-    }
-
-    const range = doc.createRange();
-    range.setStart(startMarker.node, startMarker.offset);
-    selection.removeAllRanges();
-
-    if (start > end) {
-      selection.addRange(range);
-      selection.extend(endMarker.node, endMarker.offset);
-    } else {
-      range.setEnd(endMarker.node, endMarker.offset);
-      selection.addRange(range);
-    }
-  }
-}
-
-function isTextNode(node) {
-  return node && node.nodeType === TEXT_NODE;
-}
-
-function containsNode(outerNode, innerNode) {
-  if (!outerNode || !innerNode) {
-    return false;
-  } else if (outerNode === innerNode) {
-    return true;
-  } else if (isTextNode(outerNode)) {
-    return false;
-  } else if (isTextNode(innerNode)) {
-    return containsNode(outerNode, innerNode.parentNode);
-  } else if ('contains' in outerNode) {
-    return outerNode.contains(innerNode);
-  } else if (outerNode.compareDocumentPosition) {
-    return !!(outerNode.compareDocumentPosition(innerNode) & 16);
-  } else {
-    return false;
-  }
-}
-
-function isInDocument(node) {
-  return node && node.ownerDocument && containsNode(node.ownerDocument.documentElement, node);
-}
-
-function isSameOriginFrame(iframe) {
-  try {
-    // Accessing the contentDocument of a HTMLIframeElement can cause the browser
-    // to throw, e.g. if it has a cross-origin src attribute.
-    // Safari will show an error in the console when the access results in "Blocked a frame with origin". e.g:
-    // iframe.contentDocument.defaultView;
-    // A safety way is to access one of the cross origin properties: Window or Location
-    // Which might result in "SecurityError" DOM Exception and it is compatible to Safari.
-    // https://html.spec.whatwg.org/multipage/browsers.html#integration-with-idl
-    return typeof iframe.contentWindow.location.href === 'string';
-  } catch (err) {
-    return false;
-  }
-}
-
-function getActiveElementDeep() {
-  let win = window;
-  let element = getActiveElement();
-
-  while (element instanceof win.HTMLIFrameElement) {
-    if (isSameOriginFrame(element)) {
-      win = element.contentWindow;
-    } else {
-      return element;
-    }
-
-    element = getActiveElement(win.document);
-  }
-
-  return element;
-}
-/**
- * @ReactInputSelection: React input selection module. Based on Selection.js,
- * but modified to be suitable for react and has a couple of bug fixes (doesn't
- * assume buttons have range selections allowed).
- * Input selection module for React.
- */
-
-/**
- * @hasSelectionCapabilities: we get the element types that support selection
- * from https://html.spec.whatwg.org/#do-not-apply, looking at `selectionStart`
- * and `selectionEnd` rows.
- */
-
-
-function hasSelectionCapabilities(elem) {
-  const nodeName = elem && elem.nodeName && elem.nodeName.toLowerCase();
-  return nodeName && (nodeName === 'input' && (elem.type === 'text' || elem.type === 'search' || elem.type === 'tel' || elem.type === 'url' || elem.type === 'password') || nodeName === 'textarea' || elem.contentEditable === 'true');
-}
-function getSelectionInformation() {
-  const focusedElem = getActiveElementDeep();
-  return {
-    focusedElem: focusedElem,
-    selectionRange: hasSelectionCapabilities(focusedElem) ? getSelection$1(focusedElem) : null
-  };
-}
-/**
- * @restoreSelection: If any selection information was potentially lost,
- * restore it. This is useful when performing operations that could remove dom
- * nodes and place them back in, resulting in focus being lost.
- */
-
-function restoreSelection(priorSelectionInformation) {
-  const curFocusedElem = getActiveElementDeep();
-  const priorFocusedElem = priorSelectionInformation.focusedElem;
-  const priorSelectionRange = priorSelectionInformation.selectionRange;
-
-  if (curFocusedElem !== priorFocusedElem && isInDocument(priorFocusedElem)) {
-    if (priorSelectionRange !== null && hasSelectionCapabilities(priorFocusedElem)) {
-      setSelection(priorFocusedElem, priorSelectionRange);
-    } // Focusing a node can change the scroll position, which is undesirable
-
-
-    const ancestors = [];
-    let ancestor = priorFocusedElem;
-
-    while (ancestor = ancestor.parentNode) {
-      if (ancestor.nodeType === ELEMENT_NODE) {
-        ancestors.push({
-          element: ancestor,
-          left: ancestor.scrollLeft,
-          top: ancestor.scrollTop
-        });
-      }
-    }
-
-    if (typeof priorFocusedElem.focus === 'function') {
-      priorFocusedElem.focus();
-    }
-
-    for (let i = 0; i < ancestors.length; i++) {
-      const info = ancestors[i];
-      info.element.scrollLeft = info.left;
-      info.element.scrollTop = info.top;
-    }
-  }
-}
-/**
- * @getSelection: Gets the selection bounds of a focused textarea, input or
- * contentEditable node.
- * -@input: Look up selection bounds of this input
- * -@return {start: selectionStart, end: selectionEnd}
- */
-
-function getSelection$1(input) {
-  let selection;
-
-  if ('selectionStart' in input) {
-    // Modern browser with input or textarea.
-    selection = {
-      start: input.selectionStart,
-      end: input.selectionEnd
-    };
-  } else {
-    // Content editable or old IE textarea.
-    selection = getOffsets(input);
-  }
-
-  return selection || {
-    start: 0,
-    end: 0
-  };
-}
-/**
- * @setSelection: Sets the selection bounds of a textarea or input and focuses
- * the input.
- * -@input     Set selection bounds of this input or textarea
- * -@offsets   Object of same form that is returned from get*
- */
-
-function setSelection(input, offsets) {
-  const start = offsets.start;
-  let end = offsets.end;
-
-  if (end === undefined) {
-    end = start;
-  }
-
-  if ('selectionStart' in input) {
-    input.selectionStart = start;
-    input.selectionEnd = Math.min(end, input.value.length);
-  } else {
-    setOffsets(input, offsets);
-  }
-}
-
-const skipSelectionChangeEvent = canUseDOM && 'documentMode' in document && document.documentMode <= 11;
-
-function registerEvents() {
-  registerTwoPhaseEvent('onSelect', ['focusout', 'contextmenu', 'dragend', 'focusin', 'keydown', 'keyup', 'mousedown', 'mouseup', 'selectionchange']);
-}
-
-let activeElement = null;
-let activeElementInst = null;
-let lastSelection = null;
-let mouseDown = false;
-/**
- * Get an object which is a unique representation of the current selection.
- *
- * The return value will not be consistent across nodes or browsers, but
- * two identical selections on the same node will return identical objects.
- */
-
-function getSelection(node) {
-  if ('selectionStart' in node && hasSelectionCapabilities(node)) {
-    return {
-      start: node.selectionStart,
-      end: node.selectionEnd
-    };
-  } else {
-    const win = node.ownerDocument && node.ownerDocument.defaultView || window;
-    const selection = win.getSelection();
-    return {
-      anchorNode: selection.anchorNode,
-      anchorOffset: selection.anchorOffset,
-      focusNode: selection.focusNode,
-      focusOffset: selection.focusOffset
-    };
-  }
-}
-/**
- * Get document associated with the event target.
- */
-
-
-function getEventTargetDocument(eventTarget) {
-  return eventTarget.window === eventTarget ? eventTarget.document : eventTarget.nodeType === DOCUMENT_NODE ? eventTarget : eventTarget.ownerDocument;
-}
-/**
- * Poll selection to see whether it's changed.
- *
- * @param {object} nativeEvent
- * @param {object} nativeEventTarget
- * @return {?SyntheticEvent}
- */
-
-
-function constructSelectEvent(dispatchQueue, nativeEvent, nativeEventTarget) {
-  // Ensure we have the right element, and that the user is not dragging a
-  // selection (this matches native `select` event behavior). In HTML5, select
-  // fires only on input and textarea thus if there's no focused element we
-  // won't dispatch.
-  const doc = getEventTargetDocument(nativeEventTarget);
-
-  if (mouseDown || activeElement == null || activeElement !== getActiveElement(doc)) {
-    return;
-  } // Only fire when selection has actually changed.
-
-
-  const currentSelection = getSelection(activeElement);
-
-  if (!lastSelection || !shallowEqual(lastSelection, currentSelection)) {
-    lastSelection = currentSelection;
-    const listeners = accumulateTwoPhaseListeners(activeElementInst, 'onSelect');
-
-    if (listeners.length > 0) {
-      const event = new SyntheticEvent('onSelect', 'select', null, nativeEvent, nativeEventTarget);
-      dispatchQueue.push({
-        event,
-        listeners
-      });
-      event.target = activeElement;
-    }
-  }
-}
-/**
- * This plugin creates an `onSelect` event that normalizes select events
- * across form elements.
- *
- * Supported elements are:
- * - input (see `isTextInputElement`)
- * - textarea
- * - contentEditable
- *
- * This differs from native browser implementations in the following ways:
- * - Fires on contentEditable fields as well as inputs.
- * - Fires for collapsed selection.
- * - Fires after user input.
- */
-
-
-function extractEvents$2(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
-  const targetNode = targetInst ? getNodeFromInstance(targetInst) : window;
-
-  switch (domEventName) {
-    // Track the input node that has focus.
-    case 'focusin':
-      if (isTextInputElement(targetNode) || targetNode.contentEditable === 'true') {
-        activeElement = targetNode;
-        activeElementInst = targetInst;
-        lastSelection = null;
-      }
-
-      break;
-
-    case 'focusout':
-      activeElement = null;
-      activeElementInst = null;
-      lastSelection = null;
-      break;
-    // Don't fire the event while the user is dragging. This matches the
-    // semantics of the native select event.
-
-    case 'mousedown':
-      mouseDown = true;
-      break;
-
-    case 'contextmenu':
-    case 'mouseup':
-    case 'dragend':
-      mouseDown = false;
-      constructSelectEvent(dispatchQueue, nativeEvent, nativeEventTarget);
-      break;
-    // Chrome and IE fire non-standard event when selection is changed (and
-    // sometimes when it hasn't). IE's event fires out of order with respect
-    // to key and input events on deletion, so we discard it.
-    //
-    // Firefox doesn't support selectionchange, so check selection status
-    // after each key entry. The selection changes after keydown and before
-    // keyup, but we check on keydown as well in the case of holding down a
-    // key, when multiple keydown events are fired but only one keyup is.
-    // This is also our approach for IE handling, for the reason above.
-
-    case 'selectionchange':
-      if (skipSelectionChangeEvent) {
-        break;
-      }
-
-    // falls through
-
-    case 'keydown':
-    case 'keyup':
-      constructSelectEvent(dispatchQueue, nativeEvent, nativeEventTarget);
-  }
-}
-
-/**
- * Generate a mapping of standard vendor prefixes using the defined style property and event name.
- *
- * @param {string} styleProp
- * @param {string} eventName
- * @returns {object}
- */
-
-function makePrefixMap(styleProp, eventName) {
-  const prefixes = {};
-  prefixes[styleProp.toLowerCase()] = eventName.toLowerCase();
-  prefixes['Webkit' + styleProp] = 'webkit' + eventName;
-  prefixes['Moz' + styleProp] = 'moz' + eventName;
-  return prefixes;
-}
-/**
- * A list of event names to a configurable list of vendor prefixes.
- */
-
-
-const vendorPrefixes = {
-  animationend: makePrefixMap('Animation', 'AnimationEnd'),
-  animationiteration: makePrefixMap('Animation', 'AnimationIteration'),
-  animationstart: makePrefixMap('Animation', 'AnimationStart'),
-  transitionend: makePrefixMap('Transition', 'TransitionEnd')
-};
-/**
- * Event names that have already been detected and prefixed (if applicable).
- */
-
-const prefixedEventNames = {};
-/**
- * Element to check for prefixes on.
- */
-
-let style = {};
-/**
- * Bootstrap if a DOM exists.
- */
-
-if (canUseDOM) {
-  style = document.createElement('div').style; // On some platforms, in particular some releases of Android 4.x,
-  // the un-prefixed "animation" and "transition" properties are defined on the
-  // style object but the events that fire will still be prefixed, so we need
-  // to check if the un-prefixed events are usable, and if not remove them from the map.
-
-  if (!('AnimationEvent' in window)) {
-    delete vendorPrefixes.animationend.animation;
-    delete vendorPrefixes.animationiteration.animation;
-    delete vendorPrefixes.animationstart.animation;
-  } // Same as above
-
-
-  if (!('TransitionEvent' in window)) {
-    delete vendorPrefixes.transitionend.transition;
-  }
-}
-/**
- * Attempts to determine the correct vendor prefixed event name.
- *
- * @param {string} eventName
- * @returns {string}
- */
-
-
-function getVendorPrefixedEventName(eventName) {
-  if (prefixedEventNames[eventName]) {
-    return prefixedEventNames[eventName];
-  } else if (!vendorPrefixes[eventName]) {
-    return eventName;
-  }
-
-  const prefixMap = vendorPrefixes[eventName];
-
-  for (const styleProp in prefixMap) {
-    if (prefixMap.hasOwnProperty(styleProp) && styleProp in style) {
-      return prefixedEventNames[eventName] = prefixMap[styleProp];
-    }
-  }
-
-  return eventName;
-}
-
-const ANIMATION_END = getVendorPrefixedEventName('animationend');
-const ANIMATION_ITERATION = getVendorPrefixedEventName('animationiteration');
-const ANIMATION_START = getVendorPrefixedEventName('animationstart');
-const TRANSITION_END = getVendorPrefixedEventName('transitionend');
-
-const topLevelEventsToReactNames = new Map(); // NOTE: Capitalization is important in this list!
-//
-// E.g. it needs "pointerDown", not "pointerdown".
-// This is because we derive both React name ("onPointerDown")
-// and DOM name ("pointerdown") from the same list.
-//
-// Exceptions that don't match this convention are listed separately.
-//
-// prettier-ignore
-
-const simpleEventPluginEvents = ['abort', 'auxClick', 'cancel', 'canPlay', 'canPlayThrough', 'click', 'close', 'contextMenu', 'copy', 'cut', 'drag', 'dragEnd', 'dragEnter', 'dragExit', 'dragLeave', 'dragOver', 'dragStart', 'drop', 'durationChange', 'emptied', 'encrypted', 'ended', 'error', 'gotPointerCapture', 'input', 'invalid', 'keyDown', 'keyPress', 'keyUp', 'load', 'loadedData', 'loadedMetadata', 'loadStart', 'lostPointerCapture', 'mouseDown', 'mouseMove', 'mouseOut', 'mouseOver', 'mouseUp', 'paste', 'pause', 'play', 'playing', 'pointerCancel', 'pointerDown', 'pointerMove', 'pointerOut', 'pointerOver', 'pointerUp', 'progress', 'rateChange', 'reset', 'resize', 'seeked', 'seeking', 'stalled', 'submit', 'suspend', 'timeUpdate', 'touchCancel', 'touchEnd', 'touchStart', 'volumeChange', 'scroll', 'scrollEnd', 'toggle', 'touchMove', 'waiting', 'wheel'];
-
-function registerSimpleEvent(domEventName, reactName) {
-  topLevelEventsToReactNames.set(domEventName, reactName);
-  registerTwoPhaseEvent(reactName, [domEventName]);
-}
-
-function registerSimpleEvents() {
-  for (let i = 0; i < simpleEventPluginEvents.length; i++) {
-    const eventName = simpleEventPluginEvents[i];
-    const domEventName = eventName.toLowerCase();
-    const capitalizedEvent = eventName[0].toUpperCase() + eventName.slice(1);
-    registerSimpleEvent(domEventName, 'on' + capitalizedEvent);
-  } // Special cases where event names don't match.
-
-
-  registerSimpleEvent(ANIMATION_END, 'onAnimationEnd');
-  registerSimpleEvent(ANIMATION_ITERATION, 'onAnimationIteration');
-  registerSimpleEvent(ANIMATION_START, 'onAnimationStart');
-  registerSimpleEvent('dblclick', 'onDoubleClick');
-  registerSimpleEvent('focusin', 'onFocus');
-  registerSimpleEvent('focusout', 'onBlur');
-  registerSimpleEvent(TRANSITION_END, 'onTransitionEnd');
-}
-
-function extractEvents$1(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags, targetContainer) {
-  const reactName = topLevelEventsToReactNames.get(domEventName);
-
-  if (reactName === undefined) {
-    return;
-  }
-
-  let SyntheticEventCtor = SyntheticEvent;
-  let reactEventType = domEventName;
-
-  switch (domEventName) {
-    case 'keypress':
-      // Firefox creates a keypress event for function keys too. This removes
-      // the unwanted keypress events. Enter is however both printable and
-      // non-printable. One would expect Tab to be as well (but it isn't).
-      // TODO: Fixed in https://bugzilla.mozilla.org/show_bug.cgi?id=968056. Can
-      // probably remove.
-      if (getEventCharCode(nativeEvent) === 0) {
-        return;
-      }
-
-    /* falls through */
-
-    case 'keydown':
-    case 'keyup':
-      SyntheticEventCtor = SyntheticKeyboardEvent;
-      break;
-
-    case 'focusin':
-      reactEventType = 'focus';
-      SyntheticEventCtor = SyntheticFocusEvent;
-      break;
-
-    case 'focusout':
-      reactEventType = 'blur';
-      SyntheticEventCtor = SyntheticFocusEvent;
-      break;
-
-    case 'beforeblur':
-    case 'afterblur':
-      SyntheticEventCtor = SyntheticFocusEvent;
-      break;
-
-    case 'click':
-      // Firefox creates a click event on right mouse clicks. This removes the
-      // unwanted click events.
-      // TODO: Fixed in https://phabricator.services.mozilla.com/D26793. Can
-      // probably remove.
-      if (nativeEvent.button === 2) {
-        return;
-      }
-
-    /* falls through */
-
-    case 'auxclick':
-    case 'dblclick':
-    case 'mousedown':
-    case 'mousemove':
-    case 'mouseup': // TODO: Disabled elements should not respond to mouse events
-
-    /* falls through */
-
-    case 'mouseout':
-    case 'mouseover':
-    case 'contextmenu':
-      SyntheticEventCtor = SyntheticMouseEvent;
-      break;
-
-    case 'drag':
-    case 'dragend':
-    case 'dragenter':
-    case 'dragexit':
-    case 'dragleave':
-    case 'dragover':
-    case 'dragstart':
-    case 'drop':
-      SyntheticEventCtor = SyntheticDragEvent;
-      break;
-
-    case 'touchcancel':
-    case 'touchend':
-    case 'touchmove':
-    case 'touchstart':
-      SyntheticEventCtor = SyntheticTouchEvent;
-      break;
-
-    case ANIMATION_END:
-    case ANIMATION_ITERATION:
-    case ANIMATION_START:
-      SyntheticEventCtor = SyntheticAnimationEvent;
-      break;
-
-    case TRANSITION_END:
-      SyntheticEventCtor = SyntheticTransitionEvent;
-      break;
-
-    case 'scroll':
-    case 'scrollend':
-      SyntheticEventCtor = SyntheticUIEvent;
-      break;
-
-    case 'wheel':
-      SyntheticEventCtor = SyntheticWheelEvent;
-      b

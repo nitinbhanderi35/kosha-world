@@ -1,87 +1,11 @@
-ck_require__(7087);
-/* harmony import */ var _utils_ashtadhyayi_Function__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6420);
-/* harmony import */ var _utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2361);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1664);
-/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1853);
-/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6689);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(6290);
-/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(react_icons_fa__WEBPACK_IMPORTED_MODULE_12__);
-var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_pages_api_api__WEBPACK_IMPORTED_MODULE_6__, _utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_8__]);
-([_pages_api_api__WEBPACK_IMPORTED_MODULE_6__, _utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_8__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
-
-
-
-
-
-
-
-
-
-
-
-
-
-const Praudhamanorama = ({ praudhamanorama_id  })=>{
-    const { sutraani , formetString , kaumudiListArray , allKaumudi  } = (0,react__WEBPACK_IMPORTED_MODULE_11__.useContext)(_utils_ashtadhyayi_SutraaniContext__WEBPACK_IMPORTED_MODULE_8__/* .SutraaniContext */ .i);
-    const router = (0,next_router__WEBPACK_IMPORTED_MODULE_10__.useRouter)();
-    const [praudhamanorama, setPraudhamanorama] = (0,react__WEBPACK_IMPORTED_MODULE_11__.useState)();
-    const listRef = (0,react__WEBPACK_IMPORTED_MODULE_11__.useRef)(null);
-    (0,react__WEBPACK_IMPORTED_MODULE_11__.useEffect)(()=>{
-        (0,_pages_api_api__WEBPACK_IMPORTED_MODULE_6__/* .getDataFromIndexDB */ .aD)("praudhamanorama").then((data)=>{
-            setPraudhamanorama(data?.data);
-        });
-    }, []);
-    (0,react__WEBPACK_IMPORTED_MODULE_11__.useEffect)(()=>{
-        setTimeout(()=>{
-            if (listRef.current && router.query.id) {
-                const item = listRef.current.querySelector(`[data-id="${router.query.id}"]`);
-                item.scrollIntoView({
-                    block: "center"
-                });
-            }
-        }, 500);
-    }, [
-        listRef.current,
-        router.query.id
-    ]);
-    let keyArray = [];
-    let dataArray = [];
-    sutraani?.data?.map((s)=>{
-        kaumudiListArray.map((e)=>{
-            if (s.sk_chapter == praudhamanorama_id && e.sk_chapter == s.sk_chapter) {
-                keyArray.push({
-                    i: s.i,
-                    a: s.a,
-                    p: s.p,
-                    n: s.n,
-                    skn: s.skn,
-                    s: s.s,
-                    title: e.title,
-                    sk_chapter: e.sk_chapter
-                });
-            }
-        });
-    });
-    if (keyArray && praudhamanorama && allKaumudi) {
-        keyArray.sort((a, b)=>a.skn - b.skn).map((k)=>{
-            dataArray.push({
-                i: k.i,
-                a: k.a,
-                p: k.p,
-                n: k.n,
-                skn: k.skn,
-                s: k.s,
-                title: k.title,
-                sk_chapter: k.sk_chapter,
-                d: praudhamanorama[k.i],
-                k: allKaumudi[k.i]
-            });
-        });
-    }
-    const handlePage = (page)=>{
-        const currentObject = kaumudiListArray?.find((obj)=>obj.sk_chapter === router.query.praudhamanorama_id);
-        const currentIndexInArray = kaumudiListArray?.indexOf(currentObject);
-        if (page == "NEXT
+{
+    "word": "kAlindI",
+    "PE": [
+        {
+            "word": "kAlindI",
+            "eid": "3152",
+            "pagenum": 375,
+            "content": "KĀLINDĪ¦ (YAMUNĀ). <dvsn n='NI'/>1) <i>General.</i> Kālindī alias Yamunā is one of the holy rivers in India. The presiding deity of the river is Kālindīdevī. Kālindī, the daughter of the sun has her source in Kalinda mountaiṇ, and hence the name Kālindī for the river. Kālindī joins the Gaṅgā at Prayāga, and this confluence of the two rivers is called Saṅgama, which is a sacred place. <dvsn n='NI'/>2) <i>Gave way for Śrī Kṛṣṇa.</i> As soon as Kṛṣṇa was born Vasudeva stealthily removed the child to Ambāḍi. Due to heavy rains the Kālindī was overflowing, and Vasudeva begged Kālindī for a passage, and the river gave way for Vasudeva to take Kṛṣṇa to Ambāḍi. (Bhāgavata 10th Skandha). <dvsn n='NI'/>3) <i>Balabhadra dragged Kālindī.</i> Balabhadrarāma once stayed in Ambāḍi for two months. One day he was picnicking on the banks of Kālindī with the Gopīs. Under the influence of liquor he desired to play with his companions in the waters of Kālindī. He called Kālindī to his side, but the chaste Kālindī refused to oblige him. So he dragged her by his plough hooking her to it. In great fear Kālindī saluted him, and he enjoyed with the gopīs for some time on its waters. (Bhāgavata, 10th Skandha). <dvsn n='NI'/>4) <i>Kālindī, Śrī Kṛṣṇa's wife.</i> After Maya had built Indraprastha for the Pāṇḍavas, Śrī Kṛṣṇa spent a few days there with them. And, one day while Kṛṣṇa and Arjuna were strolling on the banks of Kālindī the latter saw there a beautiful woman performing penance and he approached her. She told Arjuna that the object of her penance was to get Kṛṣṇa as husband, and when Arjuna passed on the information to Kṛṣṇa he took her in his chariot to Dvārakā and duly married her. (Bhāgavata, 10th Skandha). <dvsn n='NI'/>5) <i>Soṅs of Kālindī.</i> Ten sons, were born to Kālindī by Kṛṣṇa. (Bhāgavata, 10th Skandha). <dvsn n='NI'/>6) <i>Haṃsa and his son in Kālindī.</i> Once Kṛṣṇa attacked Jarāsandha and the son of his minister, Haṃsa, being told that his father had been killed, committed suicide by jumping into Kālindī. But, Haṃsa had not been killed, and when he returned from the battlefield and knew about the death of his son, he too jumped into Kālindī and committed suicide. (Sabhā Parva, Chapter 14). <dvsn n='NI'/>7). <i>Other information.</i> <dvsn n='NI'/>(i) Kālindī is one of the seven tributaries of the Gaṅgā. One who drinks its water will be released from all sins. (Ādi Parva, Chapter 139, Verse 19). <dvsn n='NI'/>(ii) The Pāṇḍavas, during their life in exile in the forest drank Yamunā water, got over their weariness and continued their sojourn. (Vana Parva, Chapter 5, Verse 2). <dvsn n='NI'/>(iii) Sahadeva, son of Sṛñjaya, gave Agni Deva 1000 golden emblems on the banks of the Yamunā. (Vana Parva Chapter 90, Verse 7). <dvsn n='NI'/>(iv) Bharata performed thirty-three Aśvamedhas on the banks of the Yamunā (Vana Parva, Chapter 90, Verse 8). On another occasion he conducted six Aśvamedhas at the same spot. (Droṇa Parva, Chapter 68). On yet another occasion he conducted three hundred Aśvamedhas. (Śānti Parva, Chapter 29). <dvsn n='NI'/>(v) Ambarīṣa, the son of Nābhāga conducted a yajña on the planes of Kālindī. (Vana Parva, Chapter 129). <dvsn n='NI'/>(vi) Agastya the great sage performed penance on the planes of Kālindī. (Vana Parva, Chapter 161). <dvsn n='NI'/>(vii) King Śantanu conducted seven yajñas on the banks of the Kālindī. (Vana Parva, Chapter 162). <dvsn n='NI'/>(viii) The colour of Kālindī is black. Kāma (Cupid) shot arrows of flower at Śiva, who was lamenting over the death of Satī, and he (Śiva) thus excited to a condition of insanity jumped into Kālindī with the result that its water turned black in colour. (Vāmana Purāṇa, Chapter 6 and also see under Yamunā)."
+        }
+    ]
+}

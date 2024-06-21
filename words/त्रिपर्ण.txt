@@ -1,1 +1,114 @@
-,CAHC,0DACC,WACD,CAVF,mEAcE,kBAEF,CC7BA,MACC,mDAA2D,CAC3D,uDAA8D,CAC9D,2BAA4B,CAC5B,2BAA4B,CAC5B,4DAA6D,CAC7D,gEACD,CAEA,sBACC,+BAAgC,CAChC,oDAAqD,CACrD,0BACD,CAEA,cCbC,eD2BD,CAdA,mECTE,qCDuBF,CAdA,cAIC,6CAA8C,CAE9C,4CAA6C,CAG7C,4CAA6C,CExB7C,oCAA8B,CFsB9B,sCAAuC,CACvC,oCAMD,CAHC,kCACC,iEACD,CAGD,6BACC,GACC,sBACD,CAEA,GACC,oDACD,CACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-dialog-overlay {\n\tuser-select: none;\n\toverscroll-behavior: none;\n\n\tposition: fixed;\n\tbottom: 0;\n\tleft: 0;\n\tright: 0;\n\ttop: 0;\n\n\t&.ck-dialog-overlay__transparent {\n\t\tpointer-events: none;\n\t\tanimation: none;\n\t\tbackground: none;\n\t}\n}\n\n.ck.ck-dialog {\n\toverscroll-behavior: none;\n\twidth: fit-content;\n\tposition: absolute;\n\n\t& .ck.ck-form__header  {\n\t\tflex-shrink: 0;\n\n\t\t& .ck-form__header__label {\n\t\t\tcursor: grab;\n\t\t}\n\t}\n\n\t@nest .ck.ck-dialog-overlay.ck-dialog-overlay__transparent & {\n\t\tpointer-events: all;\n\t}\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_rounded.css";\n@import "../../../mixins/_shadow.css";\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";\n\n:root {\n\t--ck-dialog-overlay-background-color: hsla( 0, 0%, 0%, .5 );\n\t--ck-dialog-drop-shadow: 0px 0px 6px 2px hsl(0deg 0% 0% / 15%);\n\t--ck-dialog-max-width: 100vw;\n\t--ck-dialog-max-height: 90vh;\n\t--ck-color-dialog-background: var(--ck-color-base-background);\n\t--ck-color-dialog-form-header-border: var(--ck-color-base-border);\n}\n\n.ck.ck-dialog-overlay {\n\tanimation: ck-dialog-fade-in .3s;\n\tbackground: var(--ck-dialog-overlay-background-color);\n\tz-index: var(--ck-z-dialog);\n}\n\n.ck.ck-dialog {\n\t@mixin ck-rounded-corners;\n\t@mixin ck-drop-shadow;\n\n\t--ck-drop-shadow: var(--ck-dialog-drop-shadow);\n\n\tbackground: var(--ck-color-dialog-background);\n\tmax-height: var(--ck-dialog-max-height);\n\tmax-width: var(--ck-dialog-max-width);\n\tborder: 1px solid var(--ck-color-base-border);\n\n\t& .ck.ck-form__header {\n\t\tborder-bottom: 1px solid var(--ck-color-dialog-form-header-border);\n\t}\n}\n\n@keyframes ck-dialog-fade-in {\n\t0% {\n\t\tbackground: hsla( 0, 0%, 0%, 0 );\n\t}\n\n\t100% {\n\t\tbackground: var(--ck-dialog-overlay-background-color);\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * Implements rounded corner interface for .ck-rounded-corners class.\n *\n * @see $ck-border-radius\n */\n@define-mixin ck-rounded-corners {\n\tborder-radius: 0;\n\n\t@nest .ck-rounded-corners &,\n\t&.ck-rounded-corners {\n\t\tborder-radius: var(--ck-border-radius);\n\t\t@mixin-content;\n\t}\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A helper to combine multiple shadows.\n */\n@define-mixin ck-box-shadow $shadowA, $shadowB: 0 0 {\n\tbox-shadow: $shadowA, $shadowB;\n}\n\n/**\n * Gives an element a drop shadow so it looks like a floating panel.\n */\n@define-mixin ck-drop-shadow {\n\t@mixin ck-box-shadow var(--ck-drop-shadow);\n}\n"],sourceRoot:""}]);const a=s},7748:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-dialog .ck.ck-dialog__actions{display:flex;justify-content:flex-end;padding:var(--ck-spacing-large)}.ck.ck-dialog .ck.ck-dialog__actions>*+*{margin-left:var(--ck-spacing-large)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/dialog/dialogactions.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/dialog/dialogactions.css"],names:[],mappings:"AAMC,qCACC,YAAa,CACb,wBAAyB,CCDzB,+BDED,CCAC,yCACC,mCACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-dialog {\n\t& .ck.ck-dialog__actions {\n\t\tdisplay: flex;\n\t\tjustify-content: flex-end;\n\t}\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-dialog {\n\t& .ck.ck-dialog__actions {\n\t\tpadding: var(--ck-spacing-large);\n\n\t\t& > * + * {\n\t\t\tmargin-left: var(--ck-spacing-large);\n\t\t}\n\t}\n}\n"],sourceRoot:""}]);const a=s},1887:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,":root{--ck-dropdown-max-width:75vw}.ck.ck-dropdown{display:inline-block;position:relative}.ck.ck-dropdown .ck-dropdown__arrow{pointer-events:none;z-index:var(--ck-z-default)}.ck.ck-dropdown .ck-button.ck-dropdown__button{width:100%}.ck.ck-dropdown .ck-dropdown__panel{display:none;max-width:var(--ck-dropdown-max-width);position:absolute;z-index:var(--ck-z-panel)}.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel-visible{display:inline-block}.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_n,.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_ne,.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_nme,.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_nmw,.ck.ck-dropdown .ck-dropdown__panel.ck-dropdown__panel_nw{bottom:100%}.ck.ck-dropdown .ck-dropdown__panel
+{
+    "word": "त्रिपर्ण",
+    "LRV": [
+        {
+            "word": "त्रिपर्ण",
+            "eid": "16137",
+            "pagenum": 318,
+            "content": "tri-parRa¦ <i>m.</i> the <i>kinśuka</i> tree."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिपर्ण",
+            "eid": "87912",
+            "pagenum": "459,1",
+            "content": "त्रि—पर्ण ¦ <lex>m.</lex> = -पक्षक, <ls>L.</ls><info lex='m'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिपर्ण",
+            "eid": "47557",
+            "pagenum": 3,
+            "content": "त्रिपर्ण¦ <dvsn n='1'>— 1〉 *<lex>m.</lex> <i><bot>Butea frondosa</bot></i> <ls>RĀJAN. 10,36</ls>. <dvsn n='1'>— 2〉 *<lex>f.</lex> आ <i>wilder Hanf</i>. <dvsn n='1'>— 3〉 <lex>f.</lex> ई <dvsn n='2'>— a〉 <i><bot>Desmodium gangeticum</bot></i> <ls>BHĀVAPR. 3,52</ls>. <dvsn n='2'>— b〉 <i>die wilde Baumwollenstaude</i> <ls>BHĀVAPR. 1,195</ls>. <dvsn n='2'>— c〉 *<i>wilder Hanf</i>. <dvsn n='2'>— d〉 *<i><bot>Sanseviera zeylanica</bot></i> <ls>RĀJAN. 3,7</ls>. <dvsn n='2'>— e〉 *<i>ein <ab>best.</ab> Knollengewächs</i> <ls>RĀJAN. 7,112</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिपर्ण",
+            "eid": "31012",
+            "pagenum": 3,
+            "content": "त्रिपर्ण¦ (त्रि + पर्ण) <dvsn n='1'> 1) <lex>m.</lex> <i>Butea frondosa</i> <ls>RĀJAN.</ls> im <ls>ŚKDR.</ls> <ls>NIGH. PR.</ls> <dvsn n='1'>— 2) <lex>f.</lex> आ <i>wilder Hanf</i> (रानगांजा) <ls>NIGH. PR.</ls> <dvsn n='1'>— 3) <lex>f.</lex> ई N. verschiedener Pflanzen: = शालपर्णी <i>Desmodium gangeticum Dec.</i> <ls>BHĀVAPR.</ls> im <ls>ŚKDR.</ls> <ls>NIGH. PR.</ls> = पृश्निपर्णीभेद und वनकार्पासी <i>die wilde Baumwollenstaude</i> <ls>RATNAM.</ls> im <ls>ŚKDR.</ls> <i>wilder Hanf; Sanseviera ceylanica</i> <ls>NIGH. PR.</ls> <i>ein best. Knollengewächs</i>, = त्रिपर्णिका <ls>RĀJAN.</ls> im <ls>ŚKDR.</ls> u. dem letzten <ab n='?'>W.</ab>"
+        },
+        {
+            "word": "त्रिपर्ण",
+            "eid": "75298",
+            "pagenum": 5,
+            "content": "त्रिपर्ण¦ <dvsn n='1'> 1) <ls>H. an. 2, 147.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिपर्ण",
+            "eid": "18086",
+            "pagenum": 324,
+            "content": "त्रिपर्ण¦ mfn. (-र्णः-र्णी-र्णं) Three leaved trefoil. f. (-र्णी) Wild cotton. E. त्रि three, and पर्ण a leaf."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिपर्ण",
+            "eid": "18103",
+            "pagenum": 390,
+            "content": "त्रिपर्ण¦ mfn. (-र्णः-र्णी-र्णं) Three-leaved trefoil. f. (-र्णी) Wild cotton. .E. त्रि three, and पर्ण a leaf."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिपर्ण",
+            "eid": "17579",
+            "pagenum": 345,
+            "content": "त्रि-पर्ण¦ (र्णः-र्णी-र्णं) 1. <i>m. f. n.</i> Threeleaved, trefoil. 3. <i>f.</i> Wild cotton."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिपर्ण",
+            "eid": "15562",
+            "pagenum": "2-658-b",
+            "content": "त्रिपर्णः¦, पुं, (त्रीणि त्रीणि पर्णानि यस्या ।) पलाशः । इति राजनिर्घण्टः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिपर्ण",
+            "eid": "23688",
+            "pagenum": "3370,a",
+            "content": "त्रिपर्ण¦ पु० त्रीणि त्रीणि प्रतिपत्रं पर्णान्यस्याः । १ किंशुके । २ वनकार्पास्यां स्त्री राजनि० टाप् ङीप् वा । ३ शालपर्ण्याम्, लतायां ४ पृश्निपर्णीभेदे च स्त्री ङीप् भावप्र० । संज्ञायां कन् । त्रिपर्ण्णिका कन्दालौ “त्रिपर्णी मधुरा शीता श्वासकासविषव्रणान् । विनाशयति सा नित्यं पित्तकोपप्रशान्तिकृत्” राजनि० । समा० द्विगुः । ५ पर्णत्रये स्त्री ङीप् ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिपर्ण",
+            "content": "त्रिपर्णः पुं. त्रि-पर्णः  - ढाक का पेड़"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिपर्ण",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಪಲಾಶವೃಕ್ಷ",
+            "व्युत्पत्तिः": "त्रीणि त्रीणि प्रति पत्रं पर्णान्यस्याः",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिपर्ण",
+            "content": "<body><s>triparRa pu° trIRi trIRi pratipatraM parRAnyasyAH . <lb/><b>1</b> kiMSuke . <lb/><b>2</b> vanakArpAsyAM strI rAjani° wAp NIp vA . <lb/><b>3</b> SAlaparRyAm, latAyAM <lb/><b>4</b> pfSniparRIBede ca strI NIp BAvapra° . saMjYAyAM kan . triparRRikA kandAlO <q>tri­parRI maDurA SItA SvAsakAsavizavraRAn . vinASayati sA nityaM pittakopapraSAntikft</q> rAjani° . samA° dviguH . <lb/><b>5</b> parRatraye strI NIp .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिपर्ण",
+            "content": "<H1><h><key1>triparRa</key1><key2>triparRa</key2></h><body><s>triparRa</s>  <div n=\"1\">mfn. (<s>-rRaH-rRI-rRaM</s>) Three leaved trefoil. </div><div n=\"1\">f. (<s>-rRI</s>) Wild cotton.</div><div n=\"E\"> E. <s>tri</s> <lb />three, and <s>parRa</s> a leaf.</div></body><tail><L>18086</L><pc>324-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिपर्ण",
+            "content": "<span lang=\"sa\">त्रिपर्ण<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪಲಾಶವೃಕ್ಷ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीणि त्रीणि प्रति पत्रं पर्णान्यस्याः<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

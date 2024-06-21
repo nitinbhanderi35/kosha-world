@@ -1,1 +1,212 @@
-nt"];t.Statement=i;const a=["Expression"];t.Expression=a;const o=["Scopable","Pattern"];t.Scope=o;const l=null;t.Referenced=l;const c=null;t.BlockScoped=c;const u=["VariableDeclaration"];t.Var=u;const p=null;t.User=p;const f=null;t.Generated=f;const d=null;t.Pure=d;const h=["Flow","ImportDeclaration","ExportDeclaration","ImportSpecifier"];t.Flow=h;const m=["RestElement"];t.RestProperty=m;const y=["RestElement"];t.SpreadProperty=y;const g=["ExistsTypeAnnotation"];t.ExistentialTypeParam=g;const b=["NumberLiteralTypeAnnotation"];t.NumericLiteralTypeAnnotation=b;const T=["ForOfStatement"];t.ForAwaitStatement=T},6799:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t._containerInsert=_containerInsert;t._containerInsertAfter=_containerInsertAfter;t._containerInsertBefore=_containerInsertBefore;t._verifyNodeList=_verifyNodeList;t.hoist=hoist;t.insertAfter=insertAfter;t.insertBefore=insertBefore;t.pushContainer=pushContainer;t.unshiftContainer=unshiftContainer;t.updateSiblingKeys=updateSiblingKeys;var n=r(6419);var s=r(2350);var i=r(8485);var a=r(776);const{arrowFunctionExpression:o,assertExpression:l,assignmentExpression:c,blockStatement:u,callExpression:p,cloneNode:f,expressionStatement:d,isAssignmentExpression:h,isCallExpression:m,isExportNamedDeclaration:y,isExpression:g,isIdentifier:b,isSequenceExpression:T,isSuper:S,thisExpression:E}=a;function insertBefore(e){this._assertUnremoved();const t=this._verifyNodeList(e);const{parentPath:r,parent:n}=this;if(r.isExpressionStatement()||r.isLabeledStatement()||y(n)||r.isExportDefaultDeclaration()&&this.isDeclaration()){return r.insertBefore(t)}else if(this.isNodeType("Expression")&&!this.isJSXElement()||r.isForStatement()&&this.key==="init"){if(this.node)t.push(this.node);return this.replaceExpressionWithStatements(t)}else if(Array.isArray(this.container)){return this._containerInsertBefore(t)}else if(this.isStatementOrBlock()){const e=this.node;const r=e&&(!this.isExpressionStatement()||e.expression!=null);this.replaceWith(u(r?[e]:[]));return this.unshiftContainer("body",t)}else{throw new Error("We don't know what to do with this node type. "+"We were previously a Statement but we can't fit in here?")}}function _containerInsert(e,t){this.updateSiblingKeys(e,t.length);const r=[];this.container.splice(e,0,...t);for(let n=0;n<t.length;n++){const t=e+n;const s=this.getSibling(t);r.push(s);if(this.context&&this.context.queue){s.pushContext(this.context)}}const n=this._getQueueContexts();for(const e of r){e.setScope();e.debug("Inserted.");for(const t of n){t.maybeQueue(e,true)}}return r}function _containerInsertBefore(e){return this._containerInsert(this.key,e)}function _containerInsertAfter(e){return this._containerInsert(this.key+1,e)}const last=e=>e[e.length-1];function isHiddenInSequenceExpression(e){return T(e.parent)&&(last(e.parent.expressions)!==e.node||isHiddenInSequenceExpression(e.parentPath))}function isAlmostConstantAssignment(e,t){if(!h(e)||!b(e.left)){return false}const r=t.getBlockParent();return r.hasOwnBinding(e.left.name)&&r.getOwnBinding(e.left.name).constantViolations.length<=1}function insertAfter(e){this._assertUnremoved();if(this.isSequenceExpression()){return last(this.get("expressions")).insertAfter(e)}const t=this._verifyNodeList(e);const{parentPath:r,parent:n}=this;if(r.isExpressionStatement()||r.isLabeledStatement()||y(n)||r.isExportDefaultDeclaration()&&this.isDeclaration()){return r.insertAfter(t.map((e=>g(e)?d(e):e)))}else if(this.isNodeType("Expression")&&!this.isJSXElement()&&!r.isJSXElement()||r.isForStatement()&&this.key==="init"){if(this.node){const e=this.node;let{scope:n}=this;if(n.path.isPattern()){l(e);this.replaceWith(p(o([],e),[]));this.get("callee.body").insertAfter(t);return[this]}if(isHiddenInSequenceExpression(this)){t.unshift(e)}else if(m(e)&&S(e.callee)){t.unshift(e);t.push(E())}else if(isAlmostConstantAssignment(e,n)){t.unshift(e);t.push(f(e.left))}else if(n.isPure(e,true)){t.push(e)}else{if(r.isMethod({computed:true,key:e})){n=n.parent}const s=n.generateDeclaredUidIdentifier();t.unshift(d(c("=",f(s),e)));t.push(d(f(s)))}}return this.replaceExpressionWithStatements(t)}else if(Array.isArray(this.container)){return this._containerInsertAfter(t)}else if(this.isStatementOrBlock()){const e=this.node;const r=e&&(!this.isExpressionStatement()||e.expression!=null);this.replaceWith(u(r?[e]:[]));return this.pushContainer("body",t)}else{throw new Error("We don't know what to do with this node type. "+"We were previously a Statement but we can't fit in here?")}}function updateSiblingKeys(e,t){if(!this.parent)return;const r=n.path.get(this.parent);for(const[,n]of r){if(typeof n.key==="number"&&n.key>=e){n.key+=t}}}function _verifyNodeList(e){if(!e){return[]}if(!Array.isArray(e)){e=[e]}for(let t=0;t<e.length;t++){const r=e[t];let n;if(!r){n="has falsy node"}else if(typeof r!=="object"){n="contains a non-object node"}else if(!r.type){n="without a type"}else if(r instanceof i.default){n="has a NodePath when it expected a raw object"}if(n){const e=Array.isArray(r)?"array":typeof r;throw new Error(`Node list ${n} with the index of ${t} and type of ${e}`)}}return e}function unshiftContainer(e,t){this._assertUnremoved();t=this._verifyNodeList(t);const r=i.default.get({parentPath:this,parent:this.node,container:this.node[e],listKey:e,key:0}).setContext(this.context);return r._containerInsertBefore(t)}function pushContainer(e,t){this._assertUnremoved();const r=this._verifyNodeList(t);const n=this.node[e];const s=i.default.get({parentPath:this,parent:this.node,container:n,listKey:e,key:n.length}).setContext(this.context);return s.replaceWithMultiple(r)}function hoist(e=this.scope){const t=new s.default(this,e);return t.run()}},4565:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t._assertUnremoved=_assertUnremoved;t._callRemovalHooks=_callRemovalHooks;t._markRemoved=_markRemoved;t._remove=_remove;t._removeFromScope=_removeFromScope;t.remove=remove;var n=r(3857);var s=r(6419);var i=r(8485);function remove(){var e;this._assertUnremoved();this.resync();if(!((e=this.opts)!=null&&e.noScope)){this._removeFromScope()}if(this._callRemovalHooks()){this._markRemoved();return}this.shareCommentsWithSiblings();this._remove();this._markRemoved()}function _removeFromScope(){const e=this.getBindingIdentifiers();Object.keys(e).forEach((e=>this.scope.removeBinding(e)))}function _callRemovalHooks(){for(const e of n.hooks){if(e(this,this.parentPath))return true}}function _remove(){if(Array.isArray(this.container)){this.container.splice(this.key,1);this.updateSiblingKeys(this.key,-1)}else{this._replaceWith(null)}}function _markRemoved(){this._traverseFlags|=i.SHOULD_SKIP|i.REMOVED;if(this.parent)s.path.get(this.parent).delete(this.node);this.node=null}function _assertUnremoved(){if(this.removed){throw this.buildCodeFrameError("NodePath has been removed so is read-only.")}}},9554:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t._replaceWith=_replaceWith;t.replaceExpressionWithStatements=replaceExpressionWithStatements;t.replaceInline=replaceInline;t.replaceWith=replaceWith;t.replaceWithMultiple=replaceWithMultiple;t.replaceWithSourceString=replaceWithSourceString;var n=r(2430);var s=r(2297);var i=r(8485);var a=r(6419);var o=r(7383);var l=r(776);var c=r(405);const{FUNCTION_TYPES:u,arrowFunctionExpression:p,assignmentExpression:f,awaitExpression:d,blockStatement:h,callExpression:m,cloneNode:y,expressionStatement:g,identifier:b,inheritLeadingComments:T,inheritTrailingComments:S,inheritsComments:E,isExpression:x,isProgram:v,isStatement:P,removeComments:A,returnStatement:w,toSequenceExpression:C,validate:I,yieldExpression:O}=l;function replaceWithMultiple(e){var t;this.resync();e=this._verifyNodeList(e);T(e[0],this.node);S(e[e.length-1],this.node);(t=a.path.get(this.parent))==null?void 0:t.delete(this.node);this.node=this.container[this.key]=null;const r=this.insertAfter(e);if(this.node){this.requeue()}else{this.remove()}return r}function replaceWithSourceString(e){this.resync();let t;try{e=`(${e})`;t=(0,o.parse)(e)}catch(t){const r=t.loc;if(r){t.message+=" - make sure this is an expression.\n"+(0,n.codeFrameColumns)(e,{start:{line:r.line,column:r.column+1}});t.code="BABEL_REPLACE_SOURCE_ERROR"}throw t}const r=t.program.body[0].expression;s.default.removeProperties(r);return this.replaceWith(r)}function replaceWith(e){this.resync();if(this.removed){throw new Error("You can't replace this node, we've already removed it")}let t=e instanceof i.default?e.node:e;if(!t){throw new Error("You passed `path.replaceWith()` a falsy node, use `path.remove()` instead")}if(this.node===t){return[this]}if(this.isProgram()&&!v(t)){throw new Error("You can only replace a Program root node with another Program node")}if(Array.isArray(t)){throw new Error("Don't use `path.replaceWith()` with an array of nodes, use `path.replaceWithMultiple()`")}if(typeof t==="string"){throw new Error("Don't use `path.replaceWith()` with a source string, use `path.replaceWithSourceString()`")}let r="";if(this.isNodeType("Statement")&&x(t)){if(!this.canHaveVariableDeclarationOrExpression()&&!this.canSwapBetweenExpressionAndStatement(t)&&!this.parentPath.isExportDefaultDeclaration()){t=g(t);r="expression"}}if(this.isNodeType("Expression")&&P(t)){if(!this.canHaveVariableDeclarationOrExpression()&&!this.canSwapBetweenExpressionAndStatement(t)){return this.replaceExpressionWithStatements([t])}}const n=this.node;if(n){E(t,n);A(n)}this._replaceWith(t);this.type=t.type;this.setScope();this.requeue();return[r?this.get(r):this]}function _replaceWith(e){var t;if(!this.container){throw new ReferenceError("Container is falsy")}if(this.inList){I(this.parent,this.key,[e])}else{I(this.parent,this.key,e)}this.debug(`Replace with ${e==null?void 0:e.type}`);(t=a.path.get(this.parent))==null?void 0:t.set(e,this).delete(this.node);this.node=this.container[this.key]=e}function replaceExpressionWithStatements(e){this.resync();const t=C(e,this.scope);if(t){return this.replaceWith(t)[0].get("expressions")}const r=this.getFunctionParent();const n=r==null?void 0:r.is("async");const i=r==null?void 0:r.is("generator");const a=p([],h(e));this.replaceWith(m(a,[]));const o=this.get("callee");(0,c.default)(o.get("body"),(e=>{this.scope.push({id:e})}),"var");const l=this.get("callee").getCompletionRecords();for(const e of l){if(!e.isExpressionStatement())continue;const t=e.findParent((e=>e.isLoop()));if(t){let r=t.getData("expressionReplacementReturnUid");if(!r){r=o.scope.generateDeclaredUidIdentifier("ret");o.get("body").pushContainer("body",w(y(r)));t.setData("expressionReplacementReturnUid",r)}else{r=b(r.name)}e.get("expression").replaceWith(f("=",y(r),e.node.expression))}else{e.replaceWith(w(e.node.expression))}}o.arrowFunctionToExpression();const g=o;const T=n&&s.default.hasType(this.get("callee.body").node,"AwaitExpression",u);const S=i&&s.default.hasType(this.get("callee.body").node,"YieldExpression",u);if(T){g.set("async",true);if(!S){this.replaceWith(d(this.node))}}if(S){g.set("generator",true);this.replaceWith(O(this.node,true))}return g.get("body.body")}function replaceInline(e){this.resync();if(Array.isArray(e)){if(Array.isArray(this.container)){e=this._verifyNodeList(e);const t=this._containerInsertAfter(e);this.remove();return t}else{return this.replaceWithMultiple(e)}}else{return this.replaceWith(e)}}},9307:(e,t)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=void 0;class Binding{constructor({identifier:e,scope:t,path:r,kind:n}){this.identifier=void 0;this.scope=void 0;this.path=void 0;this.kind=void 0;this.constantViolations=[];this.constant=true;this.referencePaths=[];this.referenced=false;this.references=0;this.identifier=e;this.scope=t;this.path=r;this.kind=n;if((n==="var"||n==="hoisted")&&isDeclaredInLoop(r||(()=>{throw new Error("Internal Babel error: unreachable ")})())){this.reassign(r)}this.clearValue()}deoptValue(){this.clearValue();this.hasDeoptedValue=true}setValue(e){if(this.hasDeoptedValue)return;this.hasValue=true;this.value=e}clearValue(){this.hasDeoptedValue=false;this.hasValue=false;this.value=null}reassign(e){this.constant=false;if(this.constantViolations.indexOf(e)!==-1){return}this.constantViolations.push(e)}reference(e){if(this.referencePaths.indexOf(e)!==-1){return}this.referenced=true;this.references++;this.referencePaths.push(e)}dereference(){this.references--;this.referenced=!!this.references}}t["default"]=Binding;function isDeclaredInLoop(e){for(let{parentPath:t,key:r}=e;t;({parentPath:t,key:r}=t)){if(t.isFunctionParent())return false;if(t.isWhile()||t.isForXStatement()||t.isForStatement()&&r==="body"){return true}}return false}},9632:(e,t,r)=>{"use strict";Object.defineProperty(t,"__esModule",{value:true});t["default"]=void 0;var n=r(5391);var s=r(2297);var i=r(9307);var a=r(6929);var o=r(776);var l=r(6419);var c=r(5399);const{NOT_LOCAL_BINDING:u,callExpression:p,cloneNode:f,getBindingIdentifiers:d,identifier:h,isArrayExpression:m,isBinary:y,isClass:g,isClassBody:b,isClassDeclaration:T,isExportAllDeclaration:S,isExportDefaultDeclaration:E,isExportNamedDeclaration:x,isFunctionDeclaration:v,isIdentifier:P,isImportDeclaration:A,isLiteral:w,isMethod:C,isModuleSpecifier:I,isNullLiteral:O,isObjectExpression:k,isProperty:N,isPureish:_,isRegExpLiteral:D,isSuper:M,isTaggedTemplateExpression:L,isTemplateLiteral:j,isThisExpression:F,isUnaryExpression:B,isVariableDeclaration:R,matchesPattern:U,memberExpression:V,numericLiteral:K,toIdentifier:W,unaryExpression:$,variableDeclaration:q,variableDeclarator:H,isRecordExpression:J,isTupleExpression:G,isObjectProperty:X,isTopicReference:z,isMetaProperty:Y,isPrivateName:Q,isExportDeclaration:Z}=o;function gatherNodeParts(e,t){switch(e==null?void 0:e.type){default:if(A(e)||Z(e)){if((S(e)||x(e)||A(e))&&e.source){gatherNodeParts(e.source,t)}else if((x(e)||A(e))&&e.specifiers&&e.specifiers.length){f
+{
+    "word": "हरिद्रा",
+    "ABCH": [
+        {
+            "word": "हरिद्रा",
+            "linga": "स्त्री",
+            "pagenum": "20",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1300",
+            "group": "406",
+            "synonyms": [
+                "काञ्चनी",
+                "पीता",
+                "निशा",
+                "वरवर्णिनी"
+            ],
+            "content": "हरिद्रा काञ्चनी पीता निशाख्या वरवर्णिनी ।"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "हरिद्रा",
+            "eid": "31286",
+            "pagenum": 1166,
+            "content": "हरिद्रा¦ [हरिं पीतवर्णं द्रवति द्रु-गतौ-ड] <b>1</b> Turmeric. <b>--2</b> The root of <lbinfo n='turme+ric'/> turmeric powdered; see <ls>Malli.</ls> on  <lbinfo n='ls:N. 22.+49.'/> <ls>N. 22. 49.</ls> <b>--Comp.</b> --आन <i><ab>a.</ab></i> of a <lbinfo n='yel+low'/> yellow colour. (--भः) {1} the yellow colour. {2} Zedoary.  <lbinfo n='--gaRapa#tiH'/> --गणपतिः, --गणेशः a particular form of the god Gaṇeśa. --राग, --रागक <i><ab>a.</ab></i> {1} turmeric-coloured. {2} <lbinfo n='un+steady'/> unsteady in attachment or affection, fickle-minded (as a lover); (thus defined by Halāyudha:  <lbinfo n='--kzaRamAtrAnurA#gaSca'/> --क्षणमात्रानुरागश्च हरिद्राराग उच्यते)."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "हरिद्रा",
+            "eid": "17001",
+            "pagenum": 1107,
+            "content": "हरिद्रा¦ <i>haridrā,</i> <ab>f.</ab> Turmeric, Sch. ad <ls>Vikr.</ls> <ab>d.</ab> 53; <ls>MBh.</ls> 3, 12880; <ls>Rājat.</ls> 5, 381."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "हरिद्रा",
+            "eid": "43027",
+            "pagenum": 828,
+            "content": "haridrA¦ <i>f.</i> 1. Turmeric; 2. the root of turmeric powdered, <ls>Mall.</ls> on <ls>Na.</ls>xxii.49."
+        }
+    ],
+    "MD": [
+        {
+            "word": "हरिद्रा",
+            "eid": "20417",
+            "pagenum": 375,
+            "content": "हरिद्रा¦ haridrā, <lex>f.</lex> turmeric: <b>-rāga,</b> <lex>a.</lex> whose 🞄affection <i>lasts only as long</i> as <i>the colour of</i> 🞄turmeric."
+        }
+    ],
+    "MW": [
+        {
+            "word": "हरिद्रा",
+            "eid": "261490",
+            "pagenum": "1291,3",
+            "content": "हरिद्रा <hom>a</hom> ¦ (आ), <lex>f.</lex>, see below.<info lex='f'/>"
+        },
+        {
+            "word": "हरिद्रा",
+            "eid": "261493",
+            "pagenum": "1291,3",
+            "content": "हरिद्रा <hom>b</hom> ¦ <lex>f.</lex> <bot>Curcuma Longa</bot>, turmeric or its root ground to powder (46 synonyms of this plant are given), <ls>Kauś.</ls>; <ls>MBh.</ls>; <ls>Suśr.</ls> &c.<info lex='f'/>"
+        },
+        {
+            "word": "हरिद्रा",
+            "eid": "261494",
+            "pagenum": "1291,3",
+            "content": "¦ <ab>N.</ab> of a river, <ls>Col.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "हरिद्रा",
+            "eid": "53946",
+            "pagenum": 1167,
+            "content": "<i>Haridrā,</i>¦ f. turmeric; the root of turmeric powdered, (forty-six synonyms of this plant are given.) <i>—Haridrākta (°rā-ak°), as, ā, am,</i> smeared or stained with turmeric. <i>—Haridrā-gaṇapati, is,</i> or <i>haridrā-gaṇeśa, as,</i> m. a particular form of the god Gaṇesa (in whose honour a Mantra is repeated, accompanied with offerings mixed with turmeric). <i>—Haridrāṅga (°rā-aṅ°), as,</i> m. ‘yellow-bodied,’ a kind of yellow bird <i>(= haritāla)</i>. <i>—Haridrābha</i> <i>(°rā-ābha), as, ā, am,</i> resembling turmeric, of a yellow colour; (<i>as</i>), m. the plant Pīta-śāla, q. v.; zedoary <i>(= karpūraka)</i>. <i>—Haridrā-rāga</i> or <i>hari-</i> <i>drā-rāgaka, as, ā, am,</i> turmeric-coloured; unsteady in affection or attachment, fickle, capricious (like the colour of turmeric which does not last)."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "हरिद्रा",
+            "eid": "27464",
+            "pagenum": 376,
+            "content": "<i>haridrā</i>¦ °eine best. Göttin, <ls>Mgs.</ls> {part=,seq=27830,type=,n=1}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "हरिद्रा",
+            "eid": "46624",
+            "pagenum": 828,
+            "content": "हरिद्रा¦ f. (-द्रा) Turmeric, (either the plant or the powdered root) E. हरित् green, द्रु to flow or ooze, aff. ड; or हरि VISHṆU, &c., दृ to be regarded, aff. क."
+        }
+    ],
+    "SNP": [
+        {
+            "word": "हरिद्रा",
+            "eid": "263",
+            "pagenum": 610,
+            "content": "<i>haridrā</i>¦ <dvsn n='P'/>(1) <bot>CURCUMA LONGA LINN.</bot> (AFM 1, p. 59-60; Ainslie 1, p. 454-455; Bpn, p. 114; Chopra; DWH 3, p. 407-414; IRM 2, p. 402-405; KB 4, p. 2423-2426; Nadk. 1, nr. 750; PW; Watt CP, p. 445-449) [= <bot>C. LONGA ROXB.</bot>] (Dutt; Dy, p. 764-768; Gul; HK; Roxb., p. 11) = <bot>C. LONGA</bot> (Avk; Dgv, nr. 304; MW; V 10, p. 58; Vśs); <dvsn n='P'/>(2) <bot>C. AROMATICA SALISB.</bot> (<i>vanaharidrā</i>) (Avk; Bpn, p. 117; Chopra; Dgv, nr. 310; Dutt; DWH 3, p. 396-398; KB 4, p. 2419-2420; Nadk. 1, nr. 748; Vśs) = <bot>C. ZEDOARIA ROXB.</bot> (Dutt; Vśs); <dvsn n='P'/>(3) <bot>C. AMADA ROXB.</bot> (Avk: <i>āmraharidrā; karpūraharidrā:</i> Chopra; IRM 2, p. 401; KB 4, p. 2422-2423; Nadk. 1, nr. 746) [= <bot>C. MATICO</bot>] (Nadk. 1, nr. 746); <dvsn n='P'/>(4) <bot>ZINGIBER ZERUMBET ROSC. EX SM.</bot> (KB 4, p. 2438-2439: <i>karpūra-</i> <i>haridrā</i>); <dvsn n='P'/>(5) <bot>HEDYCHIUM SPICATUM SM.</bot> (Avk; KB 4, p. 2430-2431: <i>amla-</i> <i>haridrā</i>); <dvsn n='P'/>(6) = <i>dāruharidrā.</i>"
+        }
+    ],
+    "STC": [
+        {
+            "word": "हरिद्रा",
+            "eid": "24361",
+            "pagenum": 885,
+            "content": "<b>haridrā-</b>¦ <ab>f.</ab> sorte de gingembre (Curcuma longa) ou sa racine pulvérisée."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "हरिद्रा",
+            "eid": "43993",
+            "pagenum": 970,
+            "content": "हरिद्रा¦ f. (-द्रा) Turmeric, (either the plant or the powdered root.) .E. हरित् green, द्रु to flow or ooze, aff. ड, or हरि VIṢṆU, &c., दृ to be regarded, aff. क."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "हरिद्रा",
+            "eid": "43812",
+            "pagenum": 894,
+            "content": "हरिद्रा¦ (द्रा) 1. <i>f.</i> Turmeric."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "हरिद्रा",
+            "eid": "41475",
+            "pagenum": "5-516-a",
+            "content": "हरिद्रा¦, स्त्री, (हरितं पीतवर्णं रातीति । हरित् + रा + कः । टाप् ।) ओषधिविशेषः । हलुद इति भाषा । तत्पर्य्यायः । निशाह्वा २ काञ्चनी ३ पीता ४ वरवर्णिनी ५ । इत्यमरः । २ । ९ । ४१ ॥ कावेरी ६ उमा ७ वर्णवती ८ गौरी ९ पीञ्जा १० । इति जटाधरः ॥ पीतवालुका ११ हेमनाशा १२ भङ्गवासा १३ घर्षिणी १४ । इति शब्दरत्नावली ॥ पीतिका १५ रजनी १६ निशा १७ मेहघ्नी १८ बहुला १९ वर्णिनी २० रात्रिनामिका २१ । इति रत्नमाला ॥ हरित् २२ रञ्जनी २३ स्वर्णवर्णा २४ सुवर्णा २५ शिवा २६ दीर्घरागा २७ हलद्दी २८ वराङ्गी २९ जनेष्टा ३० वरा ३१ वर्णदात्री ३२ पवित्रा ३३ हरिता ३४ विषघ्नी ३५ पिङ्गा ३६ मङ्गल्या ३७ मङ्गला ३८ लक्ष्मीः ३९ भद्रा ४० शिफा ४१ शोभा ४२ शोभना ४३ सुभगाह्वया ४४ श्यामा ४५ जयन्तिका ४६ । अस्य गुणाः । कटुत्वम् । तिक्तत्वम् । उष्णत्वम् । कफवातास्रकुष्ठमेहकण्डुव्रणनाशित्वम् । देहवर्णविधायित्वञ्च । इति राजनिर्घण्टः ॥ * ॥ अन्यच्च । “हरिद्रा कफपित्तास्नशोथकण्डुव्रणापहा ।” इति राजवल्लभः ॥ अपि च । “हरिद्रा काञ्जनी पीता निशाख्या वरवर्णिनी । कृमिघ्ना हलदी योषित्प्रिया हरिविलासिनी ॥ हरिद्रा कटुका तिक्ता रूक्षोष्णा कफपित्तनुत् । वर्ण्यात्वग्दोषमेहास्रशोथपाण्डुव्रणापहा ॥” * ॥ अथ वनहरिद्रा । “अरण्यहलदीकन्दः कुष्ठवातास्रनाशनः ।” * । अथ कर्पूरहरिद्रा । “दार्व्वी भेदाम्रगन्धा च सुरभिश्चारु दारु च । कर्पूरा पद्मपत्रा स्यात् सुरभिः सुरनायिका ॥ आम्रगन्धिहरिद्रा या सा शीता वातला मता । पित्तहृन्मधुरा तिक्ता सर्व्वकण्डविनाशिनी ॥” इति भावप्रकाशः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "हरिद्रा",
+            "eid": "47846",
+            "pagenum": "5418,b",
+            "content": "हरिद्रा¦ स्त्री हरिं पीतवर्णं द्रवति द्रु--गतौ ड । स्वनामख्याते ओपधिभेदे । “हरिद्रा कटुका तिक्ता रूक्षोष्णा कफपित्तनुत् । वर्ण्या त्वग्दोषमे हास्रशोथपाण्डुव्रणापहा” । (वनहरिद्रा) “अरण्यहलद्दीकन्दः कुष्ठवातास्रनाशनः” । (कर्पूरहरिद्रा) “दार्वी भेदाम्रगन्धा च सुरभिश्चारुदारु च । कर्पूरा पद्मपत्रा स्यात् सुरभिः सुरनायिका आम्रगन्धिर्हरिद्रा या सा शीता वातला मता । पित्तहृन्मधुरातिक्ता सर्वकण्डूविनाशिनी” भावप्र० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "हरिद्रा",
+            "content": "हरिद्रा स्त्री. -  हरि + द्रु + ड + टाप् हल्दी"
+        },
+        {
+            "word": "हरिद्रा",
+            "content": "हरिद्रा स्त्री. - पिसी हुई हल्दी"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "हरिद्रा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಅರಿಶಿನ",
+            "निष्पत्तिः": "रा (दाने) 'कः' (३-२-३)",
+            "व्युत्पत्तिः": "हरितं पीतवर्णं राति",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "हरिद्रा",
+            "linga": "S",
+            "artha": "हरिद्रा",
+            "synonyms": [
+                "निशाह्वा",
+                "काञ्चनी",
+                "पीता",
+                "हरिद्रा",
+                "वरवर्णिनी"
+            ],
+            "num": "2.9.41",
+            "text": "तत्पत्री कारवी पृथ्वी बाष्पिका कबरी पृथुः । निशाख्या काञ्चनी पीता हरिद्रा वरवर्णिनी ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "हरिद्रा",
+            "content": "<lexhead no=\"66\">\n<dentry>हरिद्रा</dentry>\n<prAwipaxikam>हरिद्रा</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[हरि+द्रु+ड+टाप्]</etymology>\n<is_a_part>हरिद्रासर्षपमरीचादिचूर्णम्</is_a_part>\n<upAXi>प्राकृतिकखाद्यम्</upAXi>\n<sense no=\"1\">हल्दी</sense>\n<sense n=\"2\">पिसी हुई हल्दी F<citation>दे* नै* २२/४९ पर मल्लि*</citation></sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "हरिद्रा",
+            "content": "<body><s>haridrA strI hariM pItavarRaM dravati dru—gatO qa . svanAma­KyAte opaDiBede . <q>haridrA kawukA tiktA rUkzozRA kaPapittanut . varRyA tvagdozame hAsraSoTapARquvraRApahA</q> . (vanaharidrA) <q>araRyahaladdIkandaH kuzWavAtAsranASanaH</q> . (karpUra­haridrA) <q>dArvI BedAmraganDA ca suraBiScArudAru ca . karpUrA padmapatrA syAt suraBiH suranAyikA AmraganDi­rharidrA yA sA SItA vAtalA matA . pittahfnmaDurA­tiktA sarvakaRqUvinASinI</q> BAvapra° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "हरिद्रा",
+            "content": "<H2B><h><key1>haridrA</key1><key2>haridrA</key2><hom>a</hom></h><body><s>haridrA</s> <hom>a</hom>   (<s>A</s>), <lex>f.</lex>, see below.<info lex=\"f\" /></body><tail><L>261490</L><pc>1291,3</pc></tail></H2B>\n <H2><h><key1>haridrA</key1><key2>haridrA</key2><hom>b</hom></h><body><s>haridrA</s> <hom>b</hom>   <lex>f.</lex> <bot>Curcuma Longa</bot>, turmeric or its root ground to powder (46 synonyms of this plant are given), <ls>Kauś.</ls>; <ls>MBh.</ls>; <ls>Suśr.</ls> &amp;c.<info lex=\"f\" /></body><tail><L>261493</L><pc>1291,3</pc></tail></H2>\n <H2A><h><key1>haridrA</key1><key2>haridrA</key2></h><body>  <ab>N.</ab> of a river, <ls>Col.</ls><info lex=\"inh\" /></body><tail><L>261494</L><pc>1291,3</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "हरिद्रा",
+            "content": "<H1><h><key1>haridrA</key1><key2>haridrA</key2></h><body><s>haridrA</s>  <div n=\"1\">f. (<s>-drA</s>) Turmeric, (either the plant or the powdered root)</div><div n=\"E\"> E. <lb /><s>harit</s> green, <s>dru</s> to flow or ooze, aff. <s>qa;</s> or <s>hari</s> VISHṆU, &amp;c., <s>df</s> to be <lb />regarded, aff. <s>ka</s>.</div></body><tail><L>46624</L><pc>828-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "हरिद्रा",
+            "content": "<span lang=\"sa\">हरिद्रा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅರಿಶಿನ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>रा (दाने) \"कः\" (३-२-३)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>हरितं पीतवर्णं राति<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

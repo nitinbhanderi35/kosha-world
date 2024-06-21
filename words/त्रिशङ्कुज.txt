@@ -1,114 +1,116 @@
-            } else {
-                    str += String.fromCharCode(utf32);
-                }
-            }
-            return str;
+{
+    "word": "त्रिशङ्कुज",
+    "ABCH": [
+        {
+            "word": "त्रिशङ्कुज",
+            "linga": "पुं",
+            "pagenum": "29",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "2132",
+            "group": "782",
+            "synonyms": [
+                "हरिश्चन्द्र"
+            ],
+            "content": "धुन्धुमारः कुवलाश्वो हरिश्चन्द्रस्त्रिशङ्कुजः ।"
         }
-        function stringToUTF32(str, outPtr, maxBytesToWrite) {
-            if (maxBytesToWrite === undefined) {
-                maxBytesToWrite = 2147483647;
-            }
-            if (maxBytesToWrite < 4) return 0;
-            var startPtr = outPtr;
-            var endPtr = startPtr + maxBytesToWrite - 4;
-            for(var i = 0; i < str.length; ++i){
-                var codeUnit = str.charCodeAt(i);
-                if (codeUnit >= 55296 && codeUnit <= 57343) {
-                    var trailSurrogate = str.charCodeAt(++i);
-                    codeUnit = 65536 + ((codeUnit & 1023) << 10) | trailSurrogate & 1023;
-                }
-                HEAP32[outPtr >> 2] = codeUnit;
-                outPtr += 4;
-                if (outPtr + 4 > endPtr) break;
-            }
-            HEAP32[outPtr >> 2] = 0;
-            return outPtr - startPtr;
+    ],
+    "MW": [
+        {
+            "word": "त्रिशङ्कुज",
+            "eid": "88324",
+            "pagenum": "460,3",
+            "content": "त्रि—शङ्कु—ज ¦ <lex>m.</lex> ‘<ab n='Triśaṃku' slp1='triSaNku'>T°</ab>'s son’, <s1 slp1='hari-Scandra'>Hari-ścandra</s1>, <ls>L.</ls><info lex='m'/>"
         }
-        function lengthBytesUTF32(str) {
-            var len = 0;
-            for(var i = 0; i < str.length; ++i){
-                var codeUnit = str.charCodeAt(i);
-                if (codeUnit >= 55296 && codeUnit <= 57343) ++i;
-                len += 4;
-            }
-            return len;
+    ],
+    "PW": [
+        {
+            "word": "त्रिशङ्कुज",
+            "eid": "47823",
+            "pagenum": 3,
+            "content": "*त्रिशङ्कुज¦ <lex>m.</lex> <ab>Patron.</ab> <is>Hariścandra</is>ʼs."
         }
-        function writeAsciiToMemory(str, buffer, dontAddNull) {
-            for(var i = 0; i < str.length; ++i){
-                HEAP8[buffer++ >> 0] = str.charCodeAt(i);
-            }
-            if (!dontAddNull) HEAP8[buffer >> 0] = 0;
+    ],
+    "PWG": [
+        {
+            "word": "त्रिशङ्कुज",
+            "eid": "31163",
+            "pagenum": 3,
+            "content": "त्रिशङ्कुज¦ (त्रि° + ज) <lex>m.</lex> der Sohn des <is>Triśaṅku</is>, Bein. <is>Hariścandra's</is> <ls>H. 701.</ls>"
         }
-        function alignUp(x, multiple) {
-            if (x % multiple > 0) {
-                x += multiple - x % multiple;
-            }
-            return x;
+    ],
+    "SHS": [
+        {
+            "word": "त्रिशङ्कुज",
+            "eid": "18146",
+            "pagenum": 326,
+            "content": "त्रिशङ्कुज¦ m. (-जः) A name of HARISCHANDRA, a prince. E. त्रिशङ्कु, and ज born, descended from TRISANKU."
         }
-        var buffer, HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64;
-        function updateGlobalBufferAndViews(buf) {
-            buffer = buf;
-            Module["HEAP8"] = HEAP8 = new Int8Array(buf);
-            Module["HEAP16"] = HEAP16 = new Int16Array(buf);
-            Module["HEAP32"] = HEAP32 = new Int32Array(buf);
-            Module["HEAPU8"] = HEAPU8 = new Uint8Array(buf);
-            Module["HEAPU16"] = HEAPU16 = new Uint16Array(buf);
-            Module["HEAPU32"] = HEAPU32 = new Uint32Array(buf);
-            Module["HEAPF32"] = HEAPF32 = new Float32Array(buf);
-            Module["HEAPF64"] = HEAPF64 = new Float64Array(buf);
+    ],
+    "WIL": [
+        {
+            "word": "त्रिशङ्कुज",
+            "eid": "18163",
+            "pagenum": 391,
+            "content": "त्रिशङ्कुज¦ m. (-जः) A name of HARIŚCANDRA, a prince. .E. त्रिशङ्कु, and ज born, descended from TRIŚAṄKU."
         }
-        var INITIAL_MEMORY = Module["INITIAL_MEMORY"] || 16777216;
-        var wasmTable;
-        var __ATPRERUN__ = [];
-        var __ATINIT__ = [];
-        var __ATPOSTRUN__ = [];
-        var runtimeInitialized = false;
-        var runtimeExited = false;
-        function preRun() {
-            if (Module["preRun"]) {
-                if (typeof Module["preRun"] == "function") Module["preRun"] = [
-                    Module["preRun"]
-                ];
-                while(Module["preRun"].length){
-                    addOnPreRun(Module["preRun"].shift());
-                }
-            }
-            callRuntimeCallbacks(__ATPRERUN__);
+    ],
+    "YAT": [
+        {
+            "word": "त्रिशङ्कुज",
+            "eid": "17639",
+            "pagenum": 347,
+            "content": "त्रिशङ्कु-ज¦ (जः) 1. <i>m.</i> A name of <i>Ha-</i> <i>rischandra,</i> a prince."
         }
-        function initRuntime() {
-            runtimeInitialized = true;
-            callRuntimeCallbacks(__ATINIT__);
+    ],
+    "SKD": [
+        {
+            "word": "त्रिशङ्कुज",
+            "eid": "15630",
+            "pagenum": "2-663-a",
+            "content": "त्रिशङ्कुजः¦, पुं, (त्रिशङ्कोर्जायते इति । जन + डः ।) हरिश्चन्द्रराजः । इति हेमचन्द्रः । ३ । ३६५ ॥"
         }
-        function exitRuntime() {
-            runtimeExited = true;
+    ],
+    "VCP": [
+        {
+            "word": "त्रिशङ्कुज",
+            "eid": "23808",
+            "pagenum": "3386,a",
+            "content": "त्रिशङ्कुज¦ पु० त्रिशङ्कोर्जायते जन--ड । हरिश्चन्द्रे नृपे हेमच० त्रिशङ्कुशब्दे दृश्यम् ।"
         }
-        function postRun() {
-            if (Module["postRun"]) {
-                if (typeof Module["postRun"] == "function") Module["postRun"] = [
-                    Module["postRun"]
-                ];
-                while(Module["postRun"].length){
-                    addOnPostRun(Module["postRun"].shift());
-                }
-            }
-            callRuntimeCallbacks(__ATPOSTRUN__);
+    ],
+    "APHI": [
+        {
+            "word": "त्रिशङ्कुज",
+            "content": "त्रिशङ्कुजः पुं. त्रि-शङ्कु-जः  - हरिश्चन्द्र का विशेषण"
         }
-        function addOnPreRun(cb) {
-            __ATPRERUN__.unshift(cb);
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिशङ्कुज",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ತ್ರಿಶಂಕುರಾಜನ ಮಗ \\/ಹರಿಶ್ಚಂದ್ರ",
+            "निष्पत्तिः": "जनी (प्रादुर्भावे) -'डः' (३-२-९८)",
+            "व्युत्पत्तिः": "त्रिशङ्कोः जायते",
+            "content": ""
         }
-        function addOnInit(cb) {
-            __ATINIT__.unshift(cb);
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिशङ्कुज",
+            "content": "<body><s>triSaNkuja pu° triSaNkorjAyate jana—qa . hariScandre nfpe hemaca° triSaNkuSabde dfSyam .</s></body>"
         }
-        function addOnPostRun(cb) {
-            __ATPOSTRUN__.unshift(cb);
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिशङ्कुज",
+            "content": "<H1><h><key1>triSaNkuja</key1><key2>triSaNkuja</key2></h><body><s>triSaNkuja</s>  <div n=\"1\">m. (<s>-jaH</s>) A name of HARISCHANDRA, a prince.</div><div n=\"E\"> E. <s>triSaNku,</s> and <s>ja</s> <lb />born, descended from TRISANKU.</div></body><tail><L>18146</L><pc>326-a</pc></tail></H1>\n"
         }
-        var runDependencies = 0;
-        var runDependencyWatcher = null;
-        var dependenciesFulfilled = null;
-        function addRunDependency(id) {
-            runDependencies++;
-            if (Module["monitorRunDependencies"]) {
-                Module["monitorRunDependencies"](runDependencies);
-            }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिशङ्कुज",
+            "content": "<span lang=\"sa\">त्रिशङ्कुज<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತ್ರಿಶಂಕುರಾಜನ ಮಗ /ಹರಿಶ್ಚಂದ್ರ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>जनी (प्रादुर्भावे) -\"डः\" (३-२-९८)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिशङ्कोः जायते<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
         }
-       
+    ]
+}

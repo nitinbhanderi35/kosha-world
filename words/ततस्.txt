@@ -1,1540 +1,440 @@
-LL_EVENT_PLUGINS) === 0; // We don't process these events unless we are in the
-  // event's native "bubble" phase, which means that we're
-  // not in the capture phase. That's because we emulate
-  // the capture phase here still. This is a trade-off,
-  // because in an ideal world we would not emulate and use
-  // the phases properly, like we do with the SimpleEvent
-  // plugin. However, the plugins below either expect
-  // emulation (EnterLeave) or use state localized to that
-  // plugin (BeforeInput, Change, Select). The state in
-  // these modules complicates things, as you'll essentially
-  // get the case where the capture phase event might change
-  // state, only for the following bubble event to come in
-  // later and not trigger anything as the state now
-  // invalidates the heuristics of the event plugin. We
-  // could alter all these plugins to work in such ways, but
-  // that might cause other unknown side-effects that we
-  // can't foresee right now.
-
-  if (shouldProcessPolyfillPlugins) {
-    extractEvents$3(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
-    extractEvents$4(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
-    extractEvents$2(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
-    extractEvents$5(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
-
-    {
-      extractEvents$6(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget);
-    }
-  }
-} // List of events that need to be individually attached to media elements.
-
-
-const mediaEventTypes = ['abort', 'canplay', 'canplaythrough', 'durationchange', 'emptied', 'encrypted', 'ended', 'error', 'loadeddata', 'loadedmetadata', 'loadstart', 'pause', 'play', 'playing', 'progress', 'ratechange', 'resize', 'seeked', 'seeking', 'stalled', 'suspend', 'timeupdate', 'volumechange', 'waiting']; // We should not delegate these events to the container, but rather
-// set them on the actual target element itself. This is primarily
-// because these events do not consistently bubble in the DOM.
-
-const nonDelegatedEvents = new Set(['cancel', 'close', 'invalid', 'load', 'scroll', 'scrollend', 'toggle'].concat(mediaEventTypes));
-
-function executeDispatch(event, listener, currentTarget) {
-  const type = event.type || 'unknown-event';
-  event.currentTarget = currentTarget;
-  invokeGuardedCallbackAndCatchFirstError(type, listener, undefined, event);
-  event.currentTarget = null;
-}
-
-function processDispatchQueueItemsInOrder(event, dispatchListeners, inCapturePhase) {
-  let previousInstance;
-
-  if (inCapturePhase) {
-    for (let i = dispatchListeners.length - 1; i >= 0; i--) {
-      const _dispatchListeners$i = dispatchListeners[i],
-            instance = _dispatchListeners$i.instance,
-            currentTarget = _dispatchListeners$i.currentTarget,
-            listener = _dispatchListeners$i.listener;
-
-      if (instance !== previousInstance && event.isPropagationStopped()) {
-        return;
-      }
-
-      executeDispatch(event, listener, currentTarget);
-      previousInstance = instance;
-    }
-  } else {
-    for (let i = 0; i < dispatchListeners.length; i++) {
-      const _dispatchListeners$i2 = dispatchListeners[i],
-            instance = _dispatchListeners$i2.instance,
-            currentTarget = _dispatchListeners$i2.currentTarget,
-            listener = _dispatchListeners$i2.listener;
-
-      if (instance !== previousInstance && event.isPropagationStopped()) {
-        return;
-      }
-
-      executeDispatch(event, listener, currentTarget);
-      previousInstance = instance;
-    }
-  }
-}
-
-function processDispatchQueue(dispatchQueue, eventSystemFlags) {
-  const inCapturePhase = (eventSystemFlags & IS_CAPTURE_PHASE) !== 0;
-
-  for (let i = 0; i < dispatchQueue.length; i++) {
-    const _dispatchQueue$i = dispatchQueue[i],
-          event = _dispatchQueue$i.event,
-          listeners = _dispatchQueue$i.listeners;
-    processDispatchQueueItemsInOrder(event, listeners, inCapturePhase); //  event system doesn't use pooling.
-  } // This would be a good time to rethrow if any of the event handlers threw.
-
-
-  rethrowCaughtError();
-}
-
-function dispatchEventsForPlugins(domEventName, eventSystemFlags, nativeEvent, targetInst, targetContainer) {
-  const nativeEventTarget = getEventTarget(nativeEvent);
-  const dispatchQueue = [];
-  extractEvents(dispatchQueue, domEventName, targetInst, nativeEvent, nativeEventTarget, eventSystemFlags);
-  processDispatchQueue(dispatchQueue, eventSystemFlags);
-}
-
-function listenToNonDelegatedEvent(domEventName, targetElement) {
-
-  const isCapturePhaseListener = false;
-  const listenerSet = getEventListenerSet(targetElement);
-  const listenerSetKey = getListenerSetKey(domEventName, isCapturePhaseListener);
-
-  if (!listenerSet.has(listenerSetKey)) {
-    addTrappedEventListener(targetElement, domEventName, IS_NON_DELEGATED, isCapturePhaseListener);
-    listenerSet.add(listenerSetKey);
-  }
-}
-function listenToNativeEvent(domEventName, isCapturePhaseListener, target) {
-
-  let eventSystemFlags = 0;
-
-  if (isCapturePhaseListener) {
-    eventSystemFlags |= IS_CAPTURE_PHASE;
-  }
-
-  addTrappedEventListener(target, domEventName, eventSystemFlags, isCapturePhaseListener);
-} // This is only used by createEventHandle when the
-const listeningMarker = '_reactListening' + Math.random().toString(36).slice(2);
-function listenToAllSupportedEvents(rootContainerElement) {
-  if (!rootContainerElement[listeningMarker]) {
-    rootContainerElement[listeningMarker] = true;
-    allNativeEvents.forEach(domEventName => {
-      // We handle selectionchange separately because it
-      // doesn't bubble and needs to be on the document.
-      if (domEventName !== 'selectionchange') {
-        if (!nonDelegatedEvents.has(domEventName)) {
-          listenToNativeEvent(domEventName, false, rootContainerElement);
-        }
-
-        listenToNativeEvent(domEventName, true, rootContainerElement);
-      }
-    });
-    const ownerDocument = rootContainerElement.nodeType === DOCUMENT_NODE ? rootContainerElement : rootContainerElement.ownerDocument;
-
-    if (ownerDocument !== null) {
-      // The selectionchange event also needs deduplication
-      // but it is attached to the document.
-      if (!ownerDocument[listeningMarker]) {
-        ownerDocument[listeningMarker] = true;
-        listenToNativeEvent('selectionchange', false, ownerDocument);
-      }
-    }
-  }
-}
-
-function addTrappedEventListener(targetContainer, domEventName, eventSystemFlags, isCapturePhaseListener, isDeferredListenerForLegacyFBSupport) {
-  let listener = createEventListenerWrapperWithPriority(targetContainer, domEventName, eventSystemFlags); // If passive option is not supported, then the event will be
-  // active and not passive.
-
-  let isPassiveListener = undefined;
-
-  if (passiveBrowserEventsSupported) {
-    // Browsers introduced an intervention, making these events
-    // passive by default on document. React doesn't bind them
-    // to document anymore, but changing this now would undo
-    // the performance wins from the change. So we emulate
-    // the existing behavior manually on the roots now.
-    // https://github.com/facebook/react/issues/19651
-    if (domEventName === 'touchstart' || domEventName === 'touchmove' || domEventName === 'wheel') {
-      isPassiveListener = true;
-    }
-  }
-
-  targetContainer = targetContainer;
-
-
-  if (isCapturePhaseListener) {
-    if (isPassiveListener !== undefined) {
-      addEventCaptureListenerWithPassiveFlag(targetContainer, domEventName, listener, isPassiveListener);
-    } else {
-      addEventCaptureListener(targetContainer, domEventName, listener);
-    }
-  } else {
-    if (isPassiveListener !== undefined) {
-      addEventBubbleListenerWithPassiveFlag(targetContainer, domEventName, listener, isPassiveListener);
-    } else {
-      addEventBubbleListener(targetContainer, domEventName, listener);
-    }
-  }
-}
-
-function isMatchingRootContainer(grandContainer, targetContainer) {
-  return grandContainer === targetContainer || grandContainer.nodeType === COMMENT_NODE && grandContainer.parentNode === targetContainer;
-}
-
-function dispatchEventForPluginEventSystem(domEventName, eventSystemFlags, nativeEvent, targetInst, targetContainer) {
-  let ancestorInst = targetInst;
-
-  if ((eventSystemFlags & IS_EVENT_HANDLE_NON_MANAGED_NODE) === 0 && (eventSystemFlags & IS_NON_DELEGATED) === 0) {
-    const targetContainerNode = targetContainer; // If we are using the legacy FB support flag, we
-
-    if (targetInst !== null) {
-      // The below logic attempts to work out if we need to change
-      // the target fiber to a different ancestor. We had similar logic
-      // in the legacy event system, except the big difference between
-      // systems is that the modern event system now has an event listener
-      // attached to each React Root and React Portal Root. Together,
-      // the DOM nodes representing these roots are the "rootContainer".
-      // To figure out which ancestor instance we should use, we traverse
-      // up the fiber tree from the target instance and attempt to find
-      // root boundaries that match that of our current "rootContainer".
-      // If we find that "rootContainer", we find the parent fiber
-      // sub-tree for that root and make that our ancestor instance.
-      let node = targetInst;
-
-      mainLoop: while (true) {
-        if (node === null) {
-          return;
-        }
-
-        const nodeTag = node.tag;
-
-        if (nodeTag === HostRoot || nodeTag === HostPortal) {
-          let container = node.stateNode.containerInfo;
-
-          if (isMatchingRootContainer(container, targetContainerNode)) {
-            break;
-          }
-
-          if (nodeTag === HostPortal) {
-            // The target is a portal, but it's not the rootContainer we're looking for.
-            // Normally portals handle their own events all the way down to the root.
-            // So we should be able to stop now. However, we don't know if this portal
-            // was part of *our* root.
-            let grandNode = node.return;
-
-            while (grandNode !== null) {
-              const grandTag = grandNode.tag;
-
-              if (grandTag === HostRoot || grandTag === HostPortal) {
-                const grandContainer = grandNode.stateNode.containerInfo;
-
-                if (isMatchingRootContainer(grandContainer, targetContainerNode)) {
-                  // This is the rootContainer we're looking for and we found it as
-                  // a parent of the Portal. That means we can ignore it because the
-                  // Portal will bubble through to us.
-                  return;
-                }
-              }
-
-              grandNode = grandNode.return;
-            }
-          } // Now we need to find it's corresponding host fiber in the other
-          // tree. To do this we can use getClosestInstanceFromNode, but we
-          // need to validate that the fiber is a host instance, otherwise
-          // we need to traverse up through the DOM till we find the correct
-          // node that is from the other tree.
-
-
-          while (container !== null) {
-            const parentNode = getClosestInstanceFromNode(container);
-
-            if (parentNode === null) {
-              return;
-            }
-
-            const parentTag = parentNode.tag;
-
-            if (parentTag === HostComponent || parentTag === HostText || (parentTag === HostHoistable ) || parentTag === HostSingleton) {
-              node = ancestorInst = parentNode;
-              continue mainLoop;
-            }
-
-            container = container.parentNode;
-          }
-        }
-
-        node = node.return;
-      }
-    }
-  }
-
-  batchedUpdates(() => dispatchEventsForPlugins(domEventName, eventSystemFlags, nativeEvent, ancestorInst));
-}
-
-function createDispatchListener(instance, listener, currentTarget) {
-  return {
-    instance,
-    listener,
-    currentTarget
-  };
-}
-
-function accumulateSinglePhaseListeners(targetFiber, reactName, nativeEventType, inCapturePhase, accumulateTargetOnly, nativeEvent) {
-  const captureName = reactName !== null ? reactName + 'Capture' : null;
-  const reactEventName = inCapturePhase ? captureName : reactName;
-  let listeners = [];
-  let instance = targetFiber;
-  let lastHostComponent = null; // Accumulate all instances and listeners via the target -> root path.
-
-  while (instance !== null) {
-    const _instance = instance,
-          stateNode = _instance.stateNode,
-          tag = _instance.tag; // Handle listeners that are on HostComponents (i.e. <div>)
-
-    if ((tag === HostComponent || (tag === HostHoistable ) || tag === HostSingleton) && stateNode !== null) {
-      lastHostComponent = stateNode; // createEventHandle listeners
-
-
-      if (reactEventName !== null) {
-        const listener = getListener(instance, reactEventName);
-
-        if (listener != null) {
-          listeners.push(createDispatchListener(instance, listener, lastHostComponent));
-        }
-      }
-    } // If we are only accumulating events for the target, then we don't
-    // continue to propagate through the React fiber tree to find other
-    // listeners.
-
-
-    if (accumulateTargetOnly) {
-      break;
-    } // If we are processing the onBeforeBlur event, then we need to take
-
-    instance = instance.return;
-  }
-
-  return listeners;
-} // We should only use this function for:
-// - BeforeInputEventPlugin
-// - ChangeEventPlugin
-// - SelectEventPlugin
-// This is because we only process these plugins
-// in the bubble phase, so we need to accumulate two
-// phase event listeners (via emulation).
-
-function accumulateTwoPhaseListeners(targetFiber, reactName) {
-  const captureName = reactName + 'Capture';
-  const listeners = [];
-  let instance = targetFiber; // Accumulate all instances and listeners via the target -> root path.
-
-  while (instance !== null) {
-    const _instance2 = instance,
-          stateNode = _instance2.stateNode,
-          tag = _instance2.tag; // Handle listeners that are on HostComponents (i.e. <div>)
-
-    if ((tag === HostComponent || (tag === HostHoistable ) || tag === HostSingleton) && stateNode !== null) {
-      const currentTarget = stateNode;
-      const captureListener = getListener(instance, captureName);
-
-      if (captureListener != null) {
-        listeners.unshift(createDispatchListener(instance, captureListener, currentTarget));
-      }
-
-      const bubbleListener = getListener(instance, reactName);
-
-      if (bubbleListener != null) {
-        listeners.push(createDispatchListener(instance, bubbleListener, currentTarget));
-      }
-    }
-
-    instance = instance.return;
-  }
-
-  return listeners;
-}
-
-function getParent(inst) {
-  if (inst === null) {
-    return null;
-  }
-
-  do {
-    // $FlowFixMe[incompatible-use] found when upgrading Flow
-    inst = inst.return; // TODO: If this is a HostRoot we might want to bail out.
-    // That is depending on if we want nested subtrees (layers) to bubble
-    // events to their parent. We could also go through parentNode on the
-    // host node but that wouldn't work for React Native and doesn't let us
-    // do the portal feature.
-  } while (inst && inst.tag !== HostComponent && inst.tag !== HostSingleton);
-
-  if (inst) {
-    return inst;
-  }
-
-  return null;
-}
-/**
- * Return the lowest common ancestor of A and B, or null if they are in
- * different trees.
- */
-
-
-function getLowestCommonAncestor(instA, instB) {
-  let nodeA = instA;
-  let nodeB = instB;
-  let depthA = 0;
-
-  for (let tempA = nodeA; tempA; tempA = getParent(tempA)) {
-    depthA++;
-  }
-
-  let depthB = 0;
-
-  for (let tempB = nodeB; tempB; tempB = getParent(tempB)) {
-    depthB++;
-  } // If A is deeper, crawl up.
-
-
-  while (depthA - depthB > 0) {
-    nodeA = getParent(nodeA);
-    depthA--;
-  } // If B is deeper, crawl up.
-
-
-  while (depthB - depthA > 0) {
-    nodeB = getParent(nodeB);
-    depthB--;
-  } // Walk in lockstep until we find a match.
-
-
-  let depth = depthA;
-
-  while (depth--) {
-    if (nodeA === nodeB || nodeB !== null && nodeA === nodeB.alternate) {
-      return nodeA;
-    }
-
-    nodeA = getParent(nodeA);
-    nodeB = getParent(nodeB);
-  }
-
-  return null;
-}
-
-function accumulateEnterLeaveListenersForEvent(dispatchQueue, event, target, common, inCapturePhase) {
-  const registrationName = event._reactName;
-  const listeners = [];
-  let instance = target;
-
-  while (instance !== null) {
-    if (instance === common) {
-      break;
-    }
-
-    const _instance3 = instance,
-          alternate = _instance3.alternate,
-          stateNode = _instance3.stateNode,
-          tag = _instance3.tag;
-
-    if (alternate !== null && alternate === common) {
-      break;
-    }
-
-    if ((tag === HostComponent || (tag === HostHoistable ) || tag === HostSingleton) && stateNode !== null) {
-      const currentTarget = stateNode;
-
-      if (inCapturePhase) {
-        const captureListener = getListener(instance, registrationName);
-
-        if (captureListener != null) {
-          listeners.unshift(createDispatchListener(instance, captureListener, currentTarget));
-        }
-      } else if (!inCapturePhase) {
-        const bubbleListener = getListener(instance, registrationName);
-
-        if (bubbleListener != null) {
-          listeners.push(createDispatchListener(instance, bubbleListener, currentTarget));
-        }
-      }
-    }
-
-    instance = instance.return;
-  }
-
-  if (listeners.length !== 0) {
-    dispatchQueue.push({
-      event,
-      listeners
-    });
-  }
-} // We should only use this function for:
-// - EnterLeaveEventPlugin
-// This is because we only process this plugin
-// in the bubble phase, so we need to accumulate two
-// phase event listeners.
-
-
-function accumulateEnterLeaveTwoPhaseListeners(dispatchQueue, leaveEvent, enterEvent, from, to) {
-  const common = from && to ? getLowestCommonAncestor(from, to) : null;
-
-  if (from !== null) {
-    accumulateEnterLeaveListenersForEvent(dispatchQueue, leaveEvent, from, common, false);
-  }
-
-  if (to !== null && enterEvent !== null) {
-    accumulateEnterLeaveListenersForEvent(dispatchQueue, enterEvent, to, common, true);
-  }
-}
-function getListenerSetKey(domEventName, capture) {
-  return domEventName + "__" + (capture ? 'capture' : 'bubble');
-}
-
-// It also can turn \u0000 into \uFFFD inside attributes.
-// https://www.w3.org/TR/html5/single-page.html#preprocessing-the-input-stream
-// If we have a mismatch, it might be caused by that.
-// We will still patch up in this case but not fire the warning.
-
-
-const NORMALIZE_NEWLINES_REGEX = /\r\n?/g;
-const NORMALIZE_NULL_AND_REPLACEMENT_REGEX = /\u0000|\uFFFD/g;
-
-function normalizeMarkupForTextOrAttribute(markup) {
-
-  const markupString = typeof markup === 'string' ? markup : '' + markup;
-  return markupString.replace(NORMALIZE_NEWLINES_REGEX, '\n').replace(NORMALIZE_NULL_AND_REPLACEMENT_REGEX, '');
-}
-
-function checkForUnmatchedText(serverText, clientText, isConcurrentMode, shouldWarnDev) {
-  const normalizedClientText = normalizeMarkupForTextOrAttribute(clientText);
-  const normalizedServerText = normalizeMarkupForTextOrAttribute(serverText);
-
-  if (normalizedServerText === normalizedClientText) {
-    return;
-  }
-
-  if (isConcurrentMode && enableClientRenderFallbackOnTextMismatch) {
-    // In concurrent roots, we throw when there's a text mismatch and revert to
-    // client rendering, up to the nearest Suspense boundary.
-    throw Error(formatProdErrorMessage(425));
-  }
-}
-
-function noop$1() {}
-
-function trapClickOnNonInteractiveElement(node) {
-  // Mobile Safari does not fire properly bubble click events on
-  // non-interactive elements, which means delegated click listeners do not
-  // fire. The workaround for this bug involves attaching an empty click
-  // listener on the target node.
-  // https://www.quirksmode.org/blog/archives/2010/09/click_event_del.html
-  // Just set it using the onclick property so that we don't have to manage any
-  // bookkeeping for it. Not sure if we need to clear it when the listener is
-  // removed.
-  // TODO: Only do this for the relevant Safaris maybe?
-  node.onclick = noop$1;
-}
-const xlinkNamespace = 'http://www.w3.org/1999/xlink';
-const xmlNamespace = 'http://www.w3.org/XML/1998/namespace';
-
-function setProp(domElement, tag, key, value, props, prevValue) {
-  switch (key) {
-    case 'children':
-      {
-        if (typeof value === 'string') {
-          // textContent on a <textarea> will cause the placeholder to not
-          // show within the <textarea> until it has been focused and blurred again.
-          // https://github.com/facebook/react/issues/6731#issuecomment-254874553
-
-
-          const canSetTextContent = tag !== 'body' && (tag !== 'textarea' || value !== '');
-
-          if (canSetTextContent) {
-            setTextContent(domElement, value);
-          }
-        } else if (typeof value === 'number') {
-
-          const canSetTextContent = tag !== 'body';
-
-          if (canSetTextContent) {
-            setTextContent(domElement, '' + value);
-          }
-        }
-
-        break;
-      }
-    // These are very common props and therefore are in the beginning of the switch.
-    // TODO: aria-label is a very common prop but allows booleans so is not like the others
-    // but should ideally go in this list too.
-
-    case 'className':
-      setValueForKnownAttribute(domElement, 'class', value);
-      break;
-
-    case 'tabIndex':
-      // This has to be case sensitive in SVG.
-      setValueForKnownAttribute(domElement, 'tabindex', value);
-      break;
-
-    case 'dir':
-    case 'role':
-    case 'viewBox':
-    case 'width':
-    case 'height':
-      {
-        setValueForKnownAttribute(domElement, key, value);
-        break;
-      }
-
-    case 'style':
-      {
-        setValueForStyles(domElement, value, prevValue);
-        break;
-      }
-    // These attributes accept URLs. These must not allow javascript: URLS.
-
-    case 'src':
-    case 'href':
-      {
+{
+    "word": "ततस्",
+    "ABCH": [
         {
-          if (value === '') {
-
-            domElement.removeAttribute(key);
-            break;
-          }
+            "word": "ततस्",
+            "linga": "अ",
+            "pagenum": "57",
+            "kanda": "अव्ययवर्गः",
+            "varga": ";vv{जलचरपञ्चेन्द्रियाः",
+            "eid": "4572",
+            "group": "1954",
+            "synonyms": [
+                "हेतु",
+                "यत्",
+                "तत्",
+                "यतस्"
+            ],
+            "content": "इतिह स्यात्संप्रदाये हेतौ यत्तद्यतस्ततः ।"
         }
-
-        if (value == null || typeof value === 'function' || typeof value === 'symbol' || typeof value === 'boolean') {
-          domElement.removeAttribute(key);
-          break;
-        } // `setAttribute` with objects becomes only `[object]` in IE8/9,
-
-        const sanitizedValue = sanitizeURL('' + value);
-        domElement.setAttribute(key, sanitizedValue);
-        break;
-      }
-
-    case 'action':
-    case 'formAction':
-      {
-
+    ],
+    "AP90": [
         {
-          if (typeof value === 'function') {
-            // Set a javascript URL that doesn't do anything. We don't expect this to be invoked
-            // because we'll preventDefault, but it can happen if a form is manually submitted or
-            // if someone calls stopPropagation before React gets the event.
-            // If CSP is used to block javascript: URLs that's fine too. It just won't show this
-            // error message but the URL will be logged.
-            domElement.setAttribute(key, // eslint-disable-next-line no-script-url
-            "javascript:throw new Error('" + 'A React form was unexpectedly submitted. If you called form.submit() manually, ' + "consider using form.requestSubmit() instead. If you\\'re trying to use " + 'event.stopPropagation() in a submit event handler, consider also calling ' + 'event.preventDefault().' + "')");
-            break;
-          } else if (typeof prevValue === 'function') {
-            // When we're switching off a Server Action that was originally hydrated.
-            // The server control these fields during SSR that are now trailing.
-            // The regular diffing doesn't apply since we compare against the previous props.
-            // Instead, we need to force them to be set to whatever they should be now.
-            // This would be a lot cleaner if we did this whole fork in the per-tag approach.
-            if (key === 'formAction') {
-              if (tag !== 'input') {
-                // Setting the name here isn't completely safe for inputs if this is switching
-                // to become a radio button. In that case we let the tag based override take
-                // control.
-                setProp(domElement, tag, 'name', props.name, props, null);
-              }
-
-              setProp(domElement, tag, 'formEncType', props.formEncType, props, null);
-              setProp(domElement, tag, 'formMethod', props.formMethod, props, null);
-              setProp(domElement, tag, 'formTarget', props.formTarget, props, null);
-            } else {
-              setProp(domElement, tag, 'encType', props.encType, props, null);
-              setProp(domElement, tag, 'method', props.method, props, null);
-              setProp(domElement, tag, 'target', props.target, props, null);
-            }
-          }
+            "word": "ततस्",
+            "eid": "14328",
+            "pagenum": 526,
+            "content": "ततस्¦ (ततः) <i><ab>ind.</ab></i> <b>1</b> From that (person or place &c.), thence; न च निम्नदिव हृदयं निवर्तते मे ततो हृदयं <ls>Ś. 3. 1</ls>; <ls>Māl. 2. 10</ls>; <ls>Ms. 6. 7</ls>;  <lbinfo n='ls:12.+85'/> <ls n='Ms.'>12. 85.</ls> <b>--2</b> There, thither. <b>--3</b> Then, <lbinfo n='there+upon'/> thereupon, afterwards; ततः <lbinfo n='katipayadivasA#pagame'/> कतिपयदिवसापगमे <ls>K. 110</ls>, <ls>Amaru. 66</ls>; <ls>Ki. 1. 27</ls>; <ls>Ms. 2. 93</ls>, <ls n='Ms.'>7. 59.</ls> <b>--4</b> Therefore, <lbinfo n='con+sequently'/> consequently, for that reason. <b>--5</b> Then, in that case (as a corr. of यदि); यदि गृहीतमिदं ततः किं <ls>K. 120</ls>;  <lbinfo n='amo#cyamaSvaM'/> अमोच्यमश्वं यदि मन्यसे प्रभो ततः समाप्ते &c. <ls>R. 3. 65.</ls> <b>--6</b> Beyond that (in place), further, further more, moreover; ततः परतो निर्मानुषमरण्यं <ls>K. 121.</ls> <b>--7</b> Than that, other than that; यं लब्ध्वा चापरं लाभं मन्यते नाधिकं ततः  <lbinfo n='ls:Bg. 6.+ 22'/> <ls>Bg. 6. 22</ls>, <ls n='Bg.'>2. 36.</ls> <b>--8</b> Sometimes used for the ablative forms of तद् such as  <lbinfo n='tasmAd#tasyAH'/> तस्माद्तस्याः; ततोऽन्यत्रापि दृश्यते <ls>Sk.</ls>;  <lbinfo n='yataH#tataH'/> यतःततः means (<i>a</i>) where-there; यतः कृष्णस्ततः सर्वे यतः कृष्णस्ततो जयः <ls>Mb.</ls>, <ls>Ms. 7</ls>, <ls n='Ms.'>188.</ls> (<i>b</i>) since-therefore. यतो यतः --ततस्ततः wherever-there; यतोयतः षट्चरणोभिवर्तते ततस्ततः प्रेरि तवामलोचना <ls>Ś. 1. 23.</ls> ततः किं ‘what then’, ‘of what use is it’, ‘what avails it’; प्राप्ताः श्रियः स <lbinfo n='kalakAmaduGA#stataH'/> कलकामदुघास्ततः किं <ls>Bh. 3. 73</ls>, <ls n='Bh. 3.'>74</ls>; <ls>Śānti. 4. 2</ls>, ततस्ततः (<i>a</i>) ‘here and there’, ‘to and fro’; ततो दिव्यानि माल्यानि <lbinfo n='prAdurA#saMstatastataH'/> प्रादुरासंस्ततस्ततः <ls>Mb.</ls> (<i>b</i>) ‘what next’, ‘what further,’ well proceed <lbinfo n='(oc+curring'/> (occurring in dramas); ततः प्रभृति thence-forward, (corr. of यतः प्रभृति); तृष्णाततः प्रभृति मे द्विगुणत्वमेति  <lbinfo n='ls:Amaru.+ 68'/> <ls>Amaru. 68</ls>; <ls>Ms. 9. 68.</ls>"
         }
-
-        if (value == null || !enableFormActions  || typeof value === 'symbol' || typeof value === 'boolean') {
-          domElement.removeAttribute(key);
-          break;
-        } // `setAttribute` with objects becomes only `[object]` in IE8/9,
-
-        const sanitizedValue = sanitizeURL('' + value);
-        domElement.setAttribute(key, sanitizedValue);
-        break;
-      }
-
-    case 'onClick':
-      {
-        // TODO: This cast may not be sound for SVG, MathML or custom elements.
-        if (value != null) {
-
-          trapClickOnNonInteractiveElement(domElement);
+    ],
+    "BEN": [
+        {
+            "word": "ततस्",
+            "eid": "5654",
+            "pagenum": 348,
+            "content": "ततस्¦ <i>ta + tas</i> (<ab>cf.</ab> <i>tad</i>), <ab>adv.</ab> <b>1.</b> = the <ab>abl.</ab> of <i>tad,</i> <ls>Man.</ls> 4, 82; with preceding <i>yatas,</i> Indiscriminately (literally, From whomsoever), <ls>Man.</ls> 4, 15. <b>2.</b> From that place, <ls>Sāv.</ls> 5, 78. <i>yatas</i> <i>-yatas -- tatas-tatas,</i> Wherever -- from that place, <ls>Bhāg. P.</ls> 7, 15, 13. <b>3.</b> Thither, <ls>Rām.</ls> 1, 44, 34. <i>yatas-yatas --</i> <i>tatas-tatas,</i> Wherever -- thither, <ls>Śāk.</ls> <ab>d.</ab> 23. <b>4.</b> <i>tatas-tatas,</i> Everywhere, <ls>Rām.</ls> 1, 35, 18. <b>5.</b> <i>itas-tatas„</i> From here and there, <ls>Rām.</ls> 6, 96, 2; here and there, 3, 61, 16. <b>6.</b> <i>yatas-tatas,</i> From wherever, <ls>Pañc.</ls> i. <ab>d.</ab> 6. <b>7.</b> Afterwards, then, <ls>Man.</ls> 2, 60. <b>8.</b> Therefore, <ls>MBh.</ls> 12, 13626."
         }
-
-        break;
-      }
-
-    case 'onScroll':
-      {
-        if (value != null) {
-
-          listenToNonDelegatedEvent('scroll', domElement);
+    ],
+    "BOP": [
+        {
+            "word": "ततस्",
+            "eid": "3618",
+            "pagenum": 147,
+            "content": "ततस्¦ <i>Adv.</i> (a stirpe त, gr. 267., s. तस्) 1) inde, ab hoc tempore. N. 20. 34., <i>sequente</i> पश्चात् postea, H. 4. 16. <i>Hinc frequentissime</i> tum, deinde. H. 4. 26. N. 1. 20. 2) <i>in</i> <i>constructione cum comparativo ablativi</i> तस्मात् <i>substan-</i> <i>tive positi locum tenet.</i> H. 1. 37. BR. 1. 8. 18. 3) <i>cum vi</i> <i>accusat.</i> illuc. BR. 1. 20. -- <i>Post</i> इतस् <i>q. v. vel accu-</i> <i>sativi vel locativi vim habet</i>, illuc, illic. N. 10. 4. DR. 8. 25. 4) <i>repetitum</i>, iterum iterumque. N. 11. 19. 5) in apodosi respondet ad यदि. Lass. 45. 2. 77. 14. (Gr. <lang n='greek'>τόϑεν</lang>, slav. <i>ot-tûdû</i>; v. gr. comp. §. 421.)"
         }
-
-        break;
-      }
-
-    case 'onScrollEnd':
-      {
-        if (value != null) {
-
-          listenToNonDelegatedEvent('scrollend', domElement);
+    ],
+    "BUR": [
+        {
+            "word": "ततस्",
+            "eid": "7649",
+            "pagenum": 282,
+            "content": "ततस्¦ <i>tatas</i> <ab>adv.</ab> <i>(ta;</i> <ab>sfx.</ab> <i>tas)</i> d'ici; || à partir d'à présent, désormais; || ensuite, après. || <ab>Qqf.</ab> ici [sans mouvement]. || <i>tatas</i> marque l'apodose des phrases commençant par <i>yadi</i> si. || <ab>Gr.</ab> <lang n='greek'>τότε</lang>.  <P><i>tatastatas</i> <ab>adv.</ab> tantôt...tantôt; plusieurs fois de suite."
         }
-
-        break;
-      }
-
-    case 'dangerouslySetInnerHTML':
-      {
-        if (value != null) {
-          if (typeof value !== 'object' || !('__html' in value)) {
-            throw Error(formatProdErrorMessage(61));
-          }
-
-          const nextHtml = value.__html;
-
-          if (nextHtml != null) {
-            if (props.children != null) {
-              throw Error(formatProdErrorMessage(60));
-            }
-
-            {
-              domElement.innerHTML = nextHtml;
-            }
-          }
+    ],
+    "CAE": [
+        {
+            "word": "ततस्",
+            "eid": "11774",
+            "pagenum": 194,
+            "content": "त/तस्¦ (<ab>adv.</ab> <ab>abl.</ab> of त/) thence, there, thither; then, therefore. —ततस्ततम् & इतस्ततस् (from) here and there, (from) everywhere; the former also <ab>interr.</ab> = ततः किम् what then? ततः परम् moreover, further, also = ततः पश्चात् thereupon, afterwards. ततःप्रभृति (or तत आरभ्य*) thenceforth, since. ततोऽन्यतस् elsewhere. ततोऽपरम् later, afterwards. यतस्ततस् from what (person or place) soever, (from) wherever. यतोयतस् (from) wheresoever; <ab>correl.</ab> ततस्ततस्."
         }
-
-        break;
-      }
-    // Note: `option.selected` is not updated if `select.multiple` is
-    // disabled with `removeAttribute`. We have special logic for handling this.
-
-    case 'multiple':
-      {
-        domElement.multiple = value && typeof value !== 'function' && typeof value !== 'symbol';
-        break;
-      }
-
-    case 'muted':
-      {
-        domElement.muted = value && typeof value !== 'function' && typeof value !== 'symbol';
-        break;
-      }
-
-    case 'suppressContentEditableWarning':
-    case 'suppressHydrationWarning':
-    case 'defaultValue': // Reserved
-
-    case 'defaultChecked':
-    case 'innerHTML':
-      {
-        // Noop
-        break;
-      }
-
-    case 'autoFocus':
-      {
-        // We polyfill it separately on the client during commit.
-        // We could have excluded it in the property list instead of
-        // adding a special case here, but then it wouldn't be emitted
-        // on server rendering (but we *do* want to emit it in SSR).
-        break;
-      }
-
-    case 'xlinkHref':
-      {
-        if (value == null || typeof value === 'function' || typeof value === 'boolean' || typeof value === 'symbol') {
-          domElement.removeAttribute('xlink:href');
-          break;
-        } // `setAttribute` with objects becomes only `[object]` in IE8/9,
-
-        const sanitizedValue = sanitizeURL('' + value);
-        domElement.setAttributeNS(xlinkNamespace, 'xlink:href', sanitizedValue);
-        break;
-      }
-
-    case 'contentEditable':
-    case 'spellCheck':
-    case 'draggable':
-    case 'value':
-    case 'autoReverse':
-    case 'externalResourcesRequired':
-    case 'focusable':
-    case 'preserveAlpha':
-      {
-        // Booleanish String
-        // These are "enumerated" attributes that accept "true" and "false".
-        // In React, we let users pass `true` and `false` even though technically
-        // these aren't boolean attributes (they are coerced to strings).
-        // The SVG attributes are case-sensitive. Since the HTML attributes are
-        // insensitive they also work even though we canonically use lower case.
-        if (value != null && typeof value !== 'function' && typeof value !== 'symbol') {
-
-          domElement.setAttribute(key, '' + value);
-        } else {
-          domElement.removeAttribute(key);
+    ],
+    "CCS": [
+        {
+            "word": "ततस्",
+            "eid": "8077",
+            "pagenum": 144,
+            "content": "त/तस्¦ <i>Adv. = Abl. des Pron.-St.</i> त, von dort, dort, dorthin; dann, darauf; daher, <lbinfo n='4'/> darum. ततस्ततस् von hier und dort, hier(hin) und dort(hin), <i>vgl.</i> ज्ञत स्ततस् <i>auch fragend</i> = ततः किम् was dann, was weiter? ततः परम् außerdem, <lbinfo n='4'/> ferner; °प्रभृति <i>(u.</i> तत आरभ्य*) von da an, seitdem; ततो ऽपरम् später, ein andermal यतस्ततस् woher o. wohin es auch sei, vom ersten Besten, irgend woher, irgend wohin. यतस्—ततस् woher o. wo(hin)—daher o. da(hin); यतो यतस्—ततस्ततस् woher o. wo(hin) <lbinfo n='5'/> auch immer—daher o. da(hin) auch immer."
         }
-
-        break;
-      }
-    // Boolean
-
-    case 'allowFullScreen':
-    case 'async':
-    case 'autoPlay':
-    case 'controls':
-    case 'default':
-    case 'defer':
-    case 'disabled':
-    case 'disablePictureInPicture':
-    case 'disableRemotePlayback':
-    case 'formNoValidate':
-    case 'hidden':
-    case 'loop':
-    case 'noModule':
-    case 'noValidate':
-    case 'open':
-    case 'playsInline':
-    case 'readOnly':
-    case 'required':
-    case 'reversed':
-    case 'scoped':
-    case 'seamless':
-    case 'itemScope':
-      {
-        if (value && typeof value !== 'function' && typeof value !== 'symbol') {
-          domElement.setAttribute(key, '');
-        } else {
-          domElement.removeAttribute(key);
+    ],
+    "GRA": [
+        {
+            "word": "ततस्",
+            "eid": "3622",
+            "pagenum": 512,
+            "content": "<b>tátas</b>¦ vertritt den <ab>Abl.</ab> von tá in den drei Zahlen, so namentlich 1〉 {164,25} (síndhos <ab>u. s. w.</ab>) [Page513] nach prá-ric; {625,19} (dṛ́tes) nach pā (trinken); {1012,3} (amṛ́tāt) nach dā (geben); besonders nach jan (geboren werden): {914,6}; {549,13} (kumbhā́t); {961,6}; {1016,1}; ferner 2〉 nach Verben der Bewegung: <i>von da her, von dem</i> Gegenstande <i>her:</i> úd-i {549,13} mádhyāt (kumbhā́t); ā́-gam {271,11}; {274,9}; kṣar {164,42}; právṛt {191,15}; ví-ṣṭhā {951,7} (samudrā́t); prá-pat {853,22} (vṛkṣā́t); ví-bādh {923,12} (áṅgāt <ab>u. s. w.</ab>); sanutár dhā {706,3} (avratā́t); ferner 3〉 <i>von dieser Seite her,</i> dem yátas entsprechend: {670,13} yátas indra bháyāmahe, tátas nas ábhayam kṛdhi; 4〉 zeitlich: <i>dann, darauf</i> {83,5} (im vorhergehenden Satze prathamás); so auch einem yád (wann) des Vordersatzes entsprechend in {911,5}; {947,7}."
+        },
+        {
+            "word": "ततस्",
+            "eid": "12369",
+            "pagenum": 1761,
+            "content": "<b>tátas</b>¦<info vn='add 334 gra'/> <dvsn n='P'>1〉 nach dā (geben) {543,3}; 2〉 nach víkram {916,4}."
         }
-
-        break;
-      }
-    // Overloaded Boolean
-
-    case 'capture':
-    case 'download':
-      {
-        // An attribute that can be used as a flag as well as with a value.
-        // When true, it should be present (set either to an empty string or its name).
-        // When false, it should be omitted.
-        // For any other value, should be present with that value.
-        if (value === true) {
-          domElement.setAttribute(key, '');
-        } else if (value !== false && value != null && typeof value !== 'function' && typeof value !== 'symbol') {
-
-          domElement.setAttribute(key, value);
-        } else {
-          domElement.removeAttribute(key);
+    ],
+    "LAN": [
+        {
+            "word": "ततस्",
+            "eid": "1671",
+            "pagenum": 161,
+            "content": "<b>tátas,</b>¦ <i><ab>adv.</ab></i> <dvsn n='2'/><b>—1.</b> (<i>as <ab>abl.</ab> of <ab>pron.</ab> root</i> <b>ta</b> [<ls n='wg,1098'>1098]</ls>, <i>and synonymous <ab>w.</ab></i> <b>tasmāt</b>) out of it, <ls n='lan,36,13'>36<sup>13</sup></ls>; <dvsn n='2'/><b>—2.</b> from that (place), from there, <ls n='lan,103,15'>103<sup>15</sup></ls>; thence; there; <b>itas tatas,</b> here and there, hither and thither, <ls n='lan,25,11'>25<sup>11</sup></ls>, <ls n='lan,29,15, 17'>29<sup>15, 17</sup></ls>; <dvsn n='2'/><b>—3.</b> from that (time), thereupon, <ls n='lan,2,22'>2<sup>22</sup></ls>; then, <i>very often, <ab>e. g.</ab></i> <ls n='lan,11,11'>11<sup>11</sup></ls>, <ls n='lan,20,11'>20<sup>11</sup></ls>, <ls n='lan,56,17'>56<sup>17</sup></ls>; <i><ab>correl.</ab> <ab>w.</ab></i> <b>yad,</b> <ls n='lan,92,13'>92<sup>13</sup></ls>; <i><ab>w.</ab></i> <b>yadā,</b> <ls n='lan,37,9'>37<sup>9</sup></ls>; <i><ab>w.</ab></i> <b>ced,</b> <ls n='lan,52,5'>52<sup>5</sup></ls>; <b>tataḥ, prabhṛti,</b> from then on, <ls n='lan,4,7'>4<sup>7</sup></ls>, <ls n='lan,32,17'>32<sup>17</sup></ls>; <dvsn n='2'/><b>—4.</b> therefore; <dvsn n='2'/><b>—5.</b> <i>otiose,</i> <ls n='lan,47,11'>47<sup>11</sup></ls>; <ls n='lan,5,2, 11'>5<sup>2, 11</sup></ls>, <ls n='lan,11,16'>11<sup>16</sup></ls>; then, <i><ab>w.</ab> otiose</i> <b>tadā,</b> <ls n='lan,3,1'>3<sup>1</sup></ls>, <ls n='lan,4,8'>4<sup>8</sup></ls>. [<ab>pron.</ab> root <b>ta,</b> <ls n='wg,497'>497,</ls> <ls n='wg,1098'>1098.</ls>]"
         }
-
-        break;
-      }
-
-    case 'cols':
-    case 'rows':
-    case 'size':
-    case 'span':
-      {
-        // These are HTML attributes that must be positive numbers.
-        if (value != null && typeof value !== 'function' && typeof value !== 'symbol' && !isNaN(value) && value >= 1) {
-
-          domElement.setAttribute(key, value);
-        } else {
-          domElement.removeAttribute(key);
+    ],
+    "LRV": [
+        {
+            "word": "ततस्",
+            "eid": "15082",
+            "pagenum": 300,
+            "content": "tatas¦ <i>ind. (sometimes used for the abl. forms of तद्)</i> 1. Thence, from that, प्राप्यते ह्यमृतं ततः <ls>M.</ls>xii.85; 2. there, thither; 3. thereupon, then, afterwards, ततस्ततस्त्या विनियंतुमक्षमा <ls>Kir.</ls>i.27, ततो नु त्वं प्रेयान् वयमपि हताशाः प्रियतमाः <ls>Am.S.</ls>66; 4. in consequence of that, therefore; 5. beyond that, other than that, more than that, ततो दुःखतरं नु किम् <ls>Bg.</ls>ii.36, vi.22; 6. further, moreover; 7. then (as a correlative of यदि), अमोच्यमश्वं यदि मन्यसे प्रभो ततः समाप्ते विधिनैव कर्माणि &c. <ls>R.</ls>iii.65.<P>ततस्ततस् 1. ‘here and there,’ e.g. नैशानि सर्वभूतानि प्रचरंति ततस्ततः; 2. ‘what next,’ ‘what further’; (in this sense it often occurs in plays).<P>ततःप्रभृति (correlatire of यतःप्रभृति) ‘from that time forward,’ तृष्णा ततःप्रभृति मे द्विगुणत्वमेति <ls>Am.S.</ls>68.<P>ततःकिम् ‘what then,’ ‘what matters it,’ ‘what use is it,’ कल्पं स्थितं तनुभृतां तनुभिस्ततःकिम् <ls>Sant.S.</ls>iv.2, <ls>Bhartr.</ls>iii.73, 74.<P>यतः-ततः 1. ‘where-there,’ यतश्च भयमाशंकेत्ततो विस्तारयेद्बलम् <ls>M.</ls>vii.188; 2. ‘since-then.’<P>यतोयतः-ततस्ततः ‘wher-ever-there,’ यतोयतः षट्चरणोऽभिवर्तते ततस्ततः प्रेरितवामलोचना <ls>Sak.</ls>i."
         }
-
-        break;
-      }
-
-    case 'rowSpan':
-    case 'start':
-      {
-        // These are HTML attributes that must be numbers.
-        if (value != null && typeof value !== 'function' && typeof value !== 'symbol' && !isNaN(value)) {
-
-          domElement.setAttribute(key, value);
-        } else {
-          domElement.removeAttribute(key);
+    ],
+    "MD": [
+        {
+            "word": "ततस्",
+            "eid": "8313",
+            "pagenum": 105,
+            "content": "ततस्¦ tá-tas, <lex>ad.</lex> = <ab>ab.</ab> <ab>sg.</ab> <ab>du.</ab> <ab>pl.</ab> <i>of <ab>prn.</ab></i> ta, 🞄thence; there; thither; thereupon, then; 🞄therefore; <b>itas tatas,</b> (from) here and there, 🞄hither and thither; <b>tataḥ katham,</b> how is it 🞄then that —? <b>tataḥ kim,</b> what next? = pray 🞄go on; what would be the use of it? what can 🞄be the harm of it? does it not come to the same 🞄thing? <b>tataḥ kṣaṇāt, -kṣaṇam,</b> immediately 🞄after; <b>tataḥ param,</b> besides this, moreover; 🞄thereupon, afterwards; <b>tataḥ paścāt,</b> 🞄after that, then; <b>tataḥ prabhṛti,</b> thenceforward; 🞄<b>tatas tataḥ,</b> (from) here and there, 🞄hither and thither, everywhere; what next? 🞄= pray go on; <b>tato'nyataḥ,</b> to some other 🞄place; <b>tato'nyatra</b> = tasmād anyasmin; <b>tato'param,</b> later afterwards, another time; 🞄<b>yatas tataḥ,</b> from whomsoever = indiscriminately; 🞄(from) wherever; <b>yato yataḥ -tatas tataḥ</b> 🞄(from) wherever — there (thence); 🞄whithersoever — thither."
         }
-
-        break;
-      }
-
-    case 'xlinkActuate':
-      setValueForNamespacedAttribute(domElement, xlinkNamespace, 'xlink:actuate', value);
-      break;
-
-    case 'xlinkArcrole':
-      setValueForNamespacedAttribute(domElement, xlinkNamespace, 'xlink:arcrole', value);
-      break;
-
-    case 'xlinkRole':
-      setValueForNamespacedAttribute(domElement, xlinkNamespace, 'xlink:role', value);
-      break;
-
-    case 'xlinkShow':
-      setValueForNamespacedAttribute(domElement, xlinkNamespace, 'xlink:show', value);
-      break;
-
-    case 'xlinkTitle':
-      setValueForNamespacedAttribute(domElement, xlinkNamespace, 'xlink:title', value);
-      break;
-
-    case 'xlinkType':
-      setValueForNamespacedAttribute(domElement, xlinkNamespace, 'xlink:type', value);
-      break;
-
-    case 'xmlBase':
-      setValueForNamespacedAttribute(domElement, xmlNamespace, 'xml:base', value);
-      break;
-
-    case 'xmlLang':
-      setValueForNamespacedAttribute(domElement, xmlNamespace, 'xml:lang', value);
-      break;
-
-    case 'xmlSpace':
-      setValueForNamespacedAttribute(domElement, xmlNamespace, 'xml:space', value);
-      break;
-    // Properties that should not be allowed on custom elements.
-
-    case 'is':
-      {
-        // passed it to createElement. We don't also need the attribute.
-        // However, our tests currently query for it so it's plausible someone
-        // else does too so it's break.
-
-
-        setValueForAttribute(domElement, 'is', value);
-        break;
-      }
-
-    case 'innerText':
-    case 'textContent':
-      {
-        break;
-      }
-
-    // Fall through
-
-    default:
-      {
-        if (key.length > 2 && (key[0] === 'o' || key[0] === 'O') && (key[1] === 'n' || key[1] === 'N')) ; else {
-          const attributeName = getAttributeAlias(key);
-          setValueForAttribute(domElement, attributeName, value);
+    ],
+    "MW": [
+        {
+            "word": "ततस्",
+            "eid": "81551",
+            "pagenum": "431,2",
+            "content": "त/—तस् <hom>a</hom> ¦ (त/-), see <ab>s.v.</ab>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81788",
+            "pagenum": "432,2",
+            "content": "त/तस् <hom>b</hom> ¦ <lex>ind.</lex> (tA<srs/>-tas, correlative of य/-तस्) used for the <ab>abl.</ab> (<ab>sg.</ab> <ab>du.</ab> and <ab>pl.</ab>) of त/द् (<ab>q.v.</ab>, <ls>Pāṇ. v, 3, 7 f.</ls>; <ls n='Pāṇ.'>vi, 3, 35</ls>), <ls>RV.</ls>; <ls>AV.</ls>; <ls>ĪśUp.</ls>; <ls>Mn.</ls> &c.<info lex='ind'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81788.1",
+            "pagenum": "432,2",
+            "content": "¦ from that place, thence, <ls>RV.</ls>; <ls>AV.</ls> &c.,<info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81788.2",
+            "pagenum": "432,2",
+            "content": "¦ in that place, there, <ls>MBh.</ls> &c.<info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81788.3",
+            "pagenum": "432,2",
+            "content": "¦ thither, <ls>Mn. vii, 188</ls>; <ls>R. i, 44, 34</ls>; <ls>Kathās.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81788.4",
+            "pagenum": "432,2",
+            "content": "¦ thereupon, then, after that, afterwards (sometimes corresponding to preceding particles like अ/ग्रे, पुरस्, पूर्वम्, प्रथमम्, प्राक्, <ls>ŚBr. xiv</ls>; <ls>Mn. ii, 60</ls>; <ls>Śak.</ls>; <ls>Pañcat.</ls> &c.; corresponding to प्रथम/, <ls>RV. i, 83, 5</ls>; also correlative of य/द् [<ls n='RV.'>x, 85, 5</ls> and <ls n='RV. x,'>121, 7</ls>; <ls>AV. xii, 4, 7 ff.</ls>], य/त्र <pb n='432,3'/>[<ls>ŚBr. i</ls>], यदा [<ls>Nal. xx</ls>; <ls>R.</ls>], यदि [<ls>ChUp.</ls>; <ls>Nal.</ls> &c.], ce<srs/>d [<ls>TUp. ii, 6</ls>; <ls>Śak. v, 28/29</ls> <ab>v.l.</ab>]; often superfluous after an <ab>ind.p.</ab> or after तदा or अथ, <ls>Mn.</ls> &c.)<info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81788.5",
+            "pagenum": "432,3",
+            "content": "¦ from that, in consequence of that, for that reason, consequently, <ls>AV.</ls>; <ls>MBh. xii, 13626</ls>; <ls>R. vi</ls>; <ls>Hit.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81789",
+            "pagenum": "432,3",
+            "content": "¦ त/°तः कथम् but, how is it then that? <ls>Sāh. iii, 200/210</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81790",
+            "pagenum": "432,3",
+            "content": "¦ °तः क्षणम् or °णात्, immediately afterwards, <ls>Kathās.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81792",
+            "pagenum": "432,3",
+            "content": "¦ त/°तः प/र <lex type='nhw'>mfn.</lex> beyond that, <ls>AV. xviii, 2, 32</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81793",
+            "pagenum": "432,3",
+            "content": "¦ त/°तः प/रं <lex type='nhw'>ind.</lex> besides that, further, <ls>Pāṇ. vii, 2, 10</ls>; <ls>Kār.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81794",
+            "pagenum": "432,3",
+            "content": "¦ त/°तः प/रं <lex type='nhw'>ind.</lex> thereupon, afterwards, <ls>MBh.</ls> &c. (°तश् च परम्, <ls>VP. iv</ls>)<info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81795",
+            "pagenum": "432,3",
+            "content": "¦ त/°तः पश्चात् <ab>id.</ab>, <ls>Mn. iii, 116 f.</ls>; <ls>MBh.</ls> &c.<info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81795.1",
+            "pagenum": "432,3",
+            "content": "¦ त/°तः-प्रभृति thenceforth, <ls>Nal. ii</ls>, <ls n='Nal.'>i</ls>; <ls>Pañcat.</ls> &c.<info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81796",
+            "pagenum": "432,3",
+            "content": "¦ त/°तस् ततः (in <ab>dram.</ab>) what then? what took place after that? <ls>Ratnāv.</ls>; <ls>Hit.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81796.1",
+            "pagenum": "432,3",
+            "content": "¦ त/°तस् ततः, from that and that place, here and there, hither and thither, from all sides, to everyplace, everywhere, <ls>PārGṛ. iii, 13, 6</ls>; <ls>MBh.</ls>; <ls>R.</ls>; <ls>BhP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81796.2",
+            "pagenum": "432,3",
+            "content": "¦ त/°तस् ततः (correlative of यतो-यतः, from whatever place, wherever) to that place, <ls>Śak. i, 23</ls>; <ls>BhP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81796.3",
+            "pagenum": "432,3",
+            "content": "¦ त°तो ऽन्यतस्, ‘to another place than that’, to some other place, <ls>Mn. ii, 200</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81796.4",
+            "pagenum": "432,3",
+            "content": "¦ त°तो ऽन्यत्र = तस्माद् अन्यस्मिन्, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81797",
+            "pagenum": "432,3",
+            "content": "¦ त/°तो ऽपरम् afterwards, at another time, <ls>AitBr. vii, 17, 4</ls><info lex='inh'/>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "81797.1",
+            "pagenum": "432,3",
+            "content": "¦ [<ab>cf.</ab> <lang n='greek'>τότε</lang>, <lang n='greek'>τόθεν</lang>], <info lex='inh'/>"
         }
-      }
-  }
+    ],
+    "MW72": [
+        {
+            "word": "ततस्",
+            "eid": "20322",
+            "pagenum": 359,
+            "content": "ततस्¦ <i>tatas,</i> ind. (fr. the pronom. base 2. <i>ta;</i> correlative of <i>yatas,</i> and often used for the abl. cases <i>tasmāt, tasyāḥ,</i> &c., of the pronoun <i>tad,</i> but oftener as an adverb), from that place, thence; in that place, there, thither (e. g. <i>tata ā-yāhi,</i> come from that place); thereupon, then, after that, afterwards (e. g. <i>tataḥ kim,</i> what happened then ?); from that, in consequence of that; for that reason, therefore, consequently; beyond that, besides that, further, moreover. <i>Tatas-tatas,</i> from that and that place, here and there, hither and thither, from all sides, to every place, everywhere. <i>Tatas tatas,</i> (in dramatic poetry) what then? what took place after that? <i>yato-yatas — tatas-tatas,</i> from whatever place — to that place; wherever — there; <i>itas-tatas,</i> from this place and that, here and there, hither and thither, see, s. v.; <i>yatas-tatas,</i> from which place soever, from any one whatever; <i>tataḥ kṣaṇāt,</i> immediately afterwards; <i>tataḥ param,</i> thereupon, afterwards; <i>tataḥ paścāt,</i> after that; <i>tataḥ-pra-</i> <i>bhṛti,</i> thenceforth, thenceforward, from that time forward; <i>tato 'nyatas,</i> to some other place, i. e. to another place than that; [cf. Gr. <lang n='greek'>τότε, τόθεν;</lang> Slav. <nsi>ot-tûdû.</nsi>] <i>—Tato-bhavat, ān,</i> m. His Highness from there, His Highness there, Your Honour there; [cf. <i>tatra-bhavat</i> and <i>atra-bhavat.</i>]"
+        }
+    ],
+    "PW": [
+        {
+            "word": "ततस्",
+            "eid": "44171",
+            "pagenum": 3,
+            "content": "त/तस्¦ <lex>Adv.</lex> <dvsn n='1'>— 1〉 in der <ab>Bed.</ab> des <ab>Abl.</ab> <ab>Sg.</ab> (<ls>Spr. 5276</ls>), <ab>Du.</ab> und <ab>Pl.</ab> von <hom>1.</hom> त. <dvsn n='1'>— 2〉 <i>von da her, — aus</i>. <dvsn n='1'>— 3〉 <i>an der Stelle, dort</i>. <dvsn n='1'>— 4〉 <i>dahin</i>. <dvsn n='1'>— 5〉 <i>darauf, alsdann, dann</i>. Liegt auf dem <i>zuerst</i> irgend ein Nachdruck, so wird dieses durch अ/ग्रे, पुरस्, पूर्वम्, प्रथमम् (auch प्रथमम् — ततस् — ततस् <ls n='Chr.'>147,16</ls>) oder [Page3-003-b] प्राक् (auch प्राक् — ततस् — ततस् — अतः परम्) ausgedrückt. Auch in Correlation mit य/द्, य/त्र, यदा, यदि und चेद्. Häufig müssig, indem die Folge schon auf andere Weise (<ab>insbes.</ab> durch einen vorangehenden <ab>Absol.</ab>, durch तदा oder अथ) angedeutet ist. Fragend so <ab>v. a.</ab> ततः किम् und ततस्ततः <i>was dann? erzähle weiter</i>. <dvsn n='1'>— 6〉 <i>daher, darum, deshalb</i>. <dvsn n='1'>— 7〉 ततः कथम् so <ab>v. a.</ab> <i>wie kommt es aber dann, dass</i> <ls n='Chr.'>183,10</ls>. <dvsn n='1'>— 8〉 ततः किम् <dvsn n='2'>— a〉 <i>was dann?</i> so <ab>v. a.</ab> <i>erzähle weiter</i>. <dvsn n='2'>— b〉 <i>was hätte man davon?</i> <ls>Spr. 4327</ls>. Zwei Gegensätzen nachgesetzt so <ab>v. a.</ab> <i>ist es nicht gleich, ob — oder</i> <ls n='Spr.'>2426</ls>. <dvsn n='2'>— c〉 <i>was kann daraus entstehen</i> ? so <ab>v. a.</ab> <i>was kann es schaden?</i> <dvsn n='1'>— 9〉 ततः क्षणात् und ततः क्षणम् <i>sogleich darauf</i>. <dvsn n='1'>— 10〉 त/तः प/रुरः <i>darüber hinausliegend</i>. ततः परम् <lex>Adv.</lex> <i>ausser diesen, ausserdem, ferner; darnach, alsdann, nachher, später</i>. ततश्च परम् <ab>dass.</ab> <ls n='Chr.'>108,6</ls>. <dvsn n='1'>— 11〉 ततः पश्चात् <i>darauf, alsdann</i>. <dvsn n='1'>— 12〉 ततः प्रभृति <i>von dann an</i>. <dvsn n='1'>— 13〉 ततस्ततः <dvsn n='2'>— a〉 <i>von hier und von dort, hier und da, hierhin und dorthin, von allen Seilen, allerwärts, überallhin</i>. <dvsn n='2'>— b〉 <i>fragend was dann? was dann?</i> so <ab>v. a.</ab> <i>erzähle weiter</i> <ls n='Chr.'>320,29</ls>. <ab>Vgl.</ab> auch 20〉. <dvsn n='1'>— 14〉 ततोऽनु <i>darauf</i>. <ls>Spr. 4142</ls> (könnte auch ततोनु sein). <dvsn n='1'>— 15〉 ततोऽन्यतः <i>anderswohin</i> <ls n='Chr.'>173,18</ls>. <dvsn n='1'>— 16〉 ततोऽन्यत्र = तस्मादन्यस्मिन् <ls n='Chr.'>227,4</ls>. <dvsn n='1'>— 17〉 ततोऽपरम् <i>später, nachher, ein anderes Mal</i> <ls n='Chr.'>25,17</ls>. <dvsn n='1'>— 18〉 इतस्ततः <i>von hier und von da, hier und dort, hierhin und dorthin, hin und her</i>. <dvsn n='1'>— 19〉 यतस्ततः <dvsn n='2'>— a〉 <i>von wem es auch sei, vom ersten Besten</i>. <dvsn n='2'>— b〉 <i>von wo es auch sei, wo immer</i>. <dvsn n='1'>— 20〉 यतो यतः — ततस्ततः <i>woher immer, wohin <ab n='immer'>i.</ab>, wo <ab n='immer'>i.</ab> — von dorther, dahin, dort</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "ततस्",
+            "eid": "28434",
+            "pagenum": 3,
+            "content": "त/तस्¦ (wie eben) adv. correl. mit यतस् . <dvsn n='1'> 1) = abl. von त (तद्) <ls>P. 5, 3, 7.</ls> <ls n='P. 5, 3,'>8.</ls> <ls n='P.'>6, 3, 35.</ls> <ls>H. an. 7, 50.</ls> यो दृति^ः, तत^ः पिबतम् <ls>ṚV. 8, 5, 19.</ls> <ls n='ṚV.'>1, 164, 25.</ls> <ls n='ṚV.'>10, 97, 12.</ls> प्राप्यते ह्यमृतं ततः <ls>M. 12, 85.</ls> यद्भक्ष्यं स्यात्ततो दद्याद्बलिम् <ls n='M.'>6, 7.</ls> न तु तृप्येत्स्वयं ततः <ls n='M.'>4, 251.</ls> ततो ऽर्धम् <ls n='M.'>9, 112.</ls> विना ततः <ls n='M.'>4, 82.</ls> <ls>SUŚR. 2, 159, 5.</ls> ततो (= तस्याः)हृदयम् - निवर्तयितुम् <ls>ŚĀK. 53.</ls> धनाद्धर्मं ततः सुखम् (आप्नोति) ad <ls>HIT. Pr. 5. 6.</ls> <ls>PAÑCAT. Pr. 10.</ls> ततः स्थानात् <ls n='PAÑCAT.'>246, 2.</ls> तत\\ः परि^ष्वजीयसी दे\\वता\\ सा मम^ प्रि\\या <ls>AV. 10, 8, 25.</ls> <ls n='AV.'>4, 4, 3.</ls> ततो भूयः <ls>ĪŚOP. 9.</ls> ततो दुःखतरं नु किम् <ls>BHAG. 2, 36.</ls> <ls>HIḌ. 1, 37.</ls> अभ्यधिकं ततः <ls>BRĀHMAṆ. 1, 8. 18.</ls> <ls>BHAG. 6, 22.</ls> <ls>M. 1, 95.</ls> <ls n='M.'>2, 65.</ls> ततो द्विगुणविशालेन <ls>BHĀG. P. 5, 20, 2.</ls> ततो नास्तीह पुण्यवान् ad <ls>HIT. 14, 22.</ls> ततो ऽन्यो नास्त्यपुण्यकृत् <ls>M. 5, 52.</ls> ततो ऽन्यत्र = तस्मादन्यस्मिन् <ls>AK. 2, 1, 13.</ls> ततो ऽन्यतः <i>anderswohin</i> <ls>M. 2, 200.</ls> तत\\ः पर^म् <i>über ihn</i> oder <i>darüber hinausliegend</i> <ls>AV. 18, 2, 32.</ls> adv. <i>ausser diesen, ausserdem, ferner</i> <is>Kār.</is> 7 aus der <ls>KĀŚ.</ls> zu <ls>P. 7, 2, 10.</ls> <ls>H. 39.</ls> यतस्ततः <i>von wem es auch sei, vom ersten Besten</i>: ने हेतार्थान् - यतस्ततः <ls>M. 4, 15.</ls> यो ऽन्नमत्ति यतस्ततः <ls n='M.'>10, 104. 11, 261.</ls> <ls>YĀJÑ. 1,129.</ls> = तस्मिन् <i>zu dem hin</i>: यद्यदेव हि वाञ्छेत ततो वाञ्छा प्रवर्तते <ls>HIT. I, 179.</ls> <dvsn n='1'>— 2) <i>von daher, von da aus; an der Stelle, dort</i>: तत\\ आ ग^हि <ls>ṚV. 3, 37, 11.</ls> <ls n='ṚV. 3,'>40, 9.</ls> <ls n='ṚV.'>8, 50, 12.</ls> <ls>AV. 1, 10, 1.</ls> <ls n='AV.'>3, 4, 2.</ls> <ls n='AV.'>4, 19, 6.</ls> यतो^ द\\ष्टं यतो^ धी\\तं तत^स्ते\\ निर्ह्व^यामसि वि\\षम् <ls n='AV.'>7, 56, 3.</ls> यत्र^ य\\त्रासि\\ निहि^ता\\ तत\\स्त्वोत्था^पयामसि <ls n='AV.'>10, 1, 29.</ls> ततो ऽग्निमानयित्वेह <ls>SĀV. 5, 78.</ls> एकदा च निशि स्वैरं ततः प्रायात् <ls>VID. 278.</ls> यतो घृतेनानक्तं स्यात्ततः पुरोळाशस्य प्राश्नीयात् <ls>AIT. BR. 2, 23.</ls> <ls n='AIT. BR.'>8, 10.</ls> विबुधाः सहिताः सर्वे यतः पुच्छं ततः स्थिताः <ls>MBH. 1, 1126.</ls> यतः कृष्णस्ततः सर्वे यतः कृष्णस्ततो जयः <ls n='MBH. 1,'>7513.</ls> <ls n='MBH.'>6, 1588.</ls> <ls n='MBH.'>8, 4434.</ls> <i>dahin</i>: यतः क्षेमं ततो गन्तुम् <ls>BRĀHMAṆ. 1, 20.</ls> यतो भगीरथो राजा ततो गङ्गा - जगाम <ls>R. 1, 44, 34.</ls> यतश्च भयमाशङ्केत्ततो विस्तारयेद्बलम् <ls>M. 7, 188.</ls> यतो यतो - ततस्ततः <i>woher —, wohin —, wo immer - von dorther, dahin, dort</i>: यतो यतो निःसरति मनः कामहतं भ्रमत् । ततस्तत उपाहृत्य हृदि रुन्ध्याच्छनैर्बुधः ॥ <ls>BHĀG. P. 7, 15, 33. 9, 15, 31.</ls> यतो यतो षट्चरणो ऽधिवर्तते ततस्ततः प्रेषितवामलोचना <ls>ŚĀK. 23.</ls> ततस्ततः <i>von hier und von dort, hier und da, hierhin und dorthin, von allen Seiten, allerwärts, überallhin</i>: ततो दिव्यानि माल्यानि प्रादुरासंस्ततस्ततः <ls>MBH. 5, 7111.</ls> नैशानि सर्वभूतानि प्रचरन्ति ततस्ततः <ls>R. 1, 35, 18.</ls> ततो दशरथस्त्रीणां प्रासादेभ्यस्ततस्ततः - मन्दं शुश्राव जल्पितम् <ls n='R.'>2, 57, 18.</ls> <ls n='R.'>3, 62, 37.</ls> <ls>BHĀG. P. 3, 17. 10.</ls> फलानि च सुगन्धीनि भक्षितानि ततस्ततः <ls>INDR. 1, 26.</ls> यथा वायुर्जलधरान्विकर्षति ततस्ततः <ls>MBH. 13, 51.</ls> इतस्ततः <i>von hier und von da</i>: चन्दनागुरुकाष्ठानि समाजह्रुरितस्ततः <ls>R. 6, 96, 2.</ls> <ls n='R.'>1, 31, 17.</ls> <i>hier und dort</i> <ls n='R.'>3, 61, 16.</ls> <ls>HIT. 20, 13.</ls> <ls n='HIT.'>22, 2.</ls> <i>hierhin und dorthin, hin und her</i> <ls>DRAUP. 8, 25.</ls> <ls>N. 10, 4.</ls> <ls n='N.'>13, 40.</ls> यतस्ततः <i>von wo es auch sei, wo immer</i>: अर्थेभ्यो हि विवृद्धेभ्यः संवृत्तेभ्यो यतस्ततः <ls>PAÑCAT. I, 6.</ls> शिलोञ्छमप्याददीत विप्रो ऽजीवन्यतस्ततः <ls>M. 10, 112.</ls> <dvsn n='1'>— 3) <i>darauf, in Folge dessen, dann</i> (कथान्तरे und आनन्तर्ये <ls>H. an.</ls> und <ls>VIŚVA</ls> im <ls>ŚKDR.</ls>) <ls>ŚAT. BR. 5, 1, 1, 1.</ls> <ls>M. 1, 6.</ls> <ls n='M.'>3, 253.</ls> <ls>N. 1, 18.</ls> <ls n='N.'>4, 21.</ls> <ls>HIT. 10, 1. 10.</ls> <ls>RAGH. 2, 30.</ls> <ls>VID. 95. 183.</ls> ततः oder ततः किम् <i>was</i> (geschah) <i>dann?</i> (dieses ist das ततः परिप्रश्ने <ls>H. an.</ls> <ls>VIŚVA</ls>) <ls>ŚĀK. 72, 4</ls>, v.l. ततस्ततः dass. <ls>HIT. 81, 2.</ls> पूर्वम् - ततः <ls>M. 2, 60.</ls> <ls>ŚĀK. 189</ls> (v. l. प्रथमम् - ततः). अग्रे - ततः <ls>ŚAT. BR. 14, 4, 2, 1.</ls> <ls>P. 3, 4, 24</ls>, <ls>Sch.</ls> प्राक् - ततः - ततः - अतः परम् <ls>PAÑCAT. 241, 25.</ls> Häufig müssig. indem die <i>Folge</i> schon auf andere Weise (namentlich durch einen vorangehenden absol.) angedeutet ist: संनियम्य तु तान्येव ततः सिद्धिं नियच्छति <ls>M. 2, 93. 3, 251. 7, 59. 12, 11.</ls> <ls>N. 2, 9. 14. 4, 23. 7, 1.</ls> <ls>R. 1, 2, 29.</ls> <ls n='R. 1,'>8, 24.</ls> <ls>VID. 221. 324.</ls> तया स काये निर्दग्धे मुच्यते किल्विषात्ततः <ls>M. 11, 90.</ls> एवमुक्तस्तथा तेन - आजुहाव ततो धेनुम् <ls>R. 1, 52, 20.</ls> in Verbind. mit तदाः ततस्ता विद्रुता नार्यः सहदैत्यगणास्तदा <ls>SUND. 4, 20.</ls> <ls>N. 1, 19. 2, 2. 8, 24. 17, 34.</ls> <ls>DAŚ. 2, 16.</ls> <ls>VID. 328.</ls> mit अथ <ls>R. 1, 65, 9.</ls> <ls>VID. 176.</ls> ततः पश्चात् <ls>M. 3, 116. 117.</ls> <ls>HIḌ. 4, 16.</ls> <ls>R. 6, 1, 5.</ls> <ls n='R. 6,'>16, 19.</ls> <ls n='R. 6,'>96, 15.</ls> <ls>PAÑCAT. 21, 25.</ls> <ls>HIT. 17, 20, v. l.</ls> पुरस् - ततो ऽनु - इदानीम् <ls>AMAR. 66.</ls> ततः प्रभृति <i>von dann an</i> <ls>M. 9, 68.</ls> <ls>N. 2, 1.</ls> <ls>PAÑCAT. 5, 12.</ls> <ls>HIT. 25, 15.</ls> <ls>AMAR. 68.</ls> तत एतर्हि <ls>ŚAT. BR. 1, 4, 1, 15.</ls> तत इदानीम् <ls>ŚĀK. 50, 8.</ls> ततः क्षणात् <i>sogleich darauf</i> <ls>KATHĀS. 4, 76.</ls> <ls n='KATHĀS.'>5, 75.</ls> ततः क्षणम् <ls n='KATHĀS.'>12, 161.</ls> ततः परम् <i>darnach, nachher, später</i>: सरस्तदासाद्य वनं च पुण्यं ततः परं किमकुर्वन्त <ls>MBH. 3, 14741.</ls> <ls n='MBH.'>1, 7414.</ls> <ls>RAGH. 3, 39.</ls> In Correl. mit यद्: यत्त्वा^ दे\\वाः प्र\\पिब^न्ति\\ तत\\ आ प्या^यसे\\ पुन^ः <ls>ṚV. 10, 85, 5.</ls> <ls>AV. 12, 4, 7.</ls> <ls n='AV. 12, 4,'>8.</ls> <ls n='AV. 12, 4,'>9.</ls> mit यत्र <ls>ŚAT. BR. 1, 1. 4, 16.</ls> mit यदा <ls>N. 20, 27.</ls> <ls>R. 1, 60, 11.</ls> mit यदि <ls>CHĀND. UP. 6. 16, 1. 2.</ls> <ls>BHAG. 11, 4.</ls> <ls>N. 4, 17.</ls> <ls>HARIV. 6527.</ls> <ls>PAT.</ls> zu <ls>P. 6, 4, 159.</ls> <ls>BHARTṚ. 1, 80.</ls> <ls>RAGH. 3, 65.</ls> <ls>ŚĀK. 3,7, v. l.</ls> <ls>ŚUK. 45, 2.</ls> <ls>DHŪRTAS. 77, 14.</ls> <ls>P. 3, 3, 140</ls>, <ls>Sch.</ls> mit चेद् <ls>TAITT. UP. 2, 6.</ls> <ls>ŚĀK. 71, 13</ls>, v.l. mit zu ergänzender Conditionalpartikel: प्राप्ताः श्रियः सकलकामदुघास्ततः किम् <ls>BHARTṚ. 3, 68.</ls> <dvsn n='1'>— 4) <i>daher, darum, deshalb</i> <ls>AK. 3, 5, 3.</ls> <ls>H. 1537.</ls> <ls>H. an.</ls> <ls>AV. 9, 2, 19.</ls> <ls n='AV.'>6, 113, 1.</ls> <ls n='AV.'>12, 4, 31.</ls> <ls>MBH. 12, 13626.</ls> <ls>HIT. 26, 22. 19, 2, v. l.</ls> <ls>H. 11.</ls> ततो ऽनुसंगृहीतो ऽस्मि यत्प्रीतो मे भवान् <ls>R. 6, 104, 31.</ls> - <ls>H. an.</ls> und <ls>VIŚVA</ls> geben dem Worte noch die Bedeutung von आदि (!)."
+        },
+        {
+            "word": "ततस्",
+            "eid": "74734",
+            "pagenum": 5,
+            "content": "ततस्¦ <dvsn n='1'> 2) <ls>Z. 10</ls> lies यतो यतः . <dvsn n='1'>— 3) ततः किम् - ततः किम् <i>was dann? - was dann?</i> als Ausdruck des Gleichheitsverhältnisses: जीर्णा कन्था ततः किं सितममलपटं पट्टवस्त्रं ततः किमेका भार्या ततः किं बहुगुणगुणिता कोटिरेका ततः किम् u.s.w. <ls>Spr. 4079.</ls>"
+        },
+        {
+            "word": "ततस्",
+            "eid": "120079",
+            "pagenum": 7,
+            "content": "ततस्¦ <dvsn n='1'> 3) ततः किम् <i>was kann daraus entstehen?</i> so v. a. <i>was kann es schaden?</i> <ls>Spr. (II) 7497.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "ततस्",
+            "eid": "16879",
+            "pagenum": 301,
+            "content": "ततस्¦ ind. 1. Therefore, thence, consequently. 2. From that, then. 3. Then, how, (asking.) 4. Then, further, after that (continuation.) 5. Afterwards, subsequently. 6. Thither, there. E. तद् that, affix तसि."
+        }
+    ],
+    "STC": [
+        {
+            "word": "ततस्",
+            "eid": "9819",
+            "pagenum": 274,
+            "content": "<b>tatas-</b>¦ <ab>adv.</ab> (corrél. de <i>yatas</i>) = <ab>abl.</ab> de <i>tad- ;</i> de là, d'ici, à partir de cet endroit-là, de ce moment-là ; ensuite, là-dessus ; par suite, par conséquent, c'est pourquoi, alors, en ce cas (<ab>qqf.</ab> corrél. de <i>yadā yadi ced</i>) ; <ab>qqf.</ab> double emploi avec <i>atha tadā ; tataḥ kṣaṇam</i> <i>-āt</i> à l'instant, aussitôt après ; <i>tataḥ param, tataḥ paścāt</i> là-dessus, ensuite ; <i>tataḥ prabhṛti</i> à partir de là, dès lors ; <i>tatas tatas</i> de ci de là, de tous côtés, partout ; interrog. et après ? <i>tato 'nyatas</i> ailleurs ; <ab>v.</ab> <i>yatas.</i>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "ततस्",
+            "eid": "16896",
+            "pagenum": 363,
+            "content": "ततस्¦ <i>ind.</i> .²1 Therefore, thence, consequently. .²2 From that or then. .²3 Then, how, (asking.) .²4 Then, further, after that, (in continuation.) .²5 Afterwards, subsequently. .²6 Thither, there. .E. तद् that, affix तसि."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "ततस्",
+            "eid": "16363",
+            "pagenum": 320,
+            "content": "ततस्¦ <i>conj.</i> Therefore, thence, then."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "ततस्",
+            "eid": "21942",
+            "pagenum": "3209,a",
+            "content": "ततस्¦ अव्य० तद् + सार्वविभक्तिस्तसिल् । तस्मादित्याद्यर्थे “ततस्ततस्त्या विनियन्तुमक्षमाः” माघः । प्रथमार्थे ततो भवान् । द्वितीयार्थे तत्रभवन्तम् । सप्तम्यर्थे ततस्त्या तृतीयार्थे “यतोयतः षट्चरणोऽभिवर्त्तते ततस्ततः प्रेरितवामलोचना” शकु० । हेतुभूतयो र्द्वयोर्मध्ये एकस्यातिशये आमु तरप् च । ततस्तराम् विग्रहोक्तार्थे हेतुभूतानां बहूनां मध्ये एकस्यातिशये आमु तमप्च” ततस्तमाम् विग्रहोक्तार्थे अव्य० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "ततस्",
+            "content": "ततस् अव्य. -  तद्+तसिल् 'से, वहाँ से'"
+        },
+        {
+            "word": "ततस्",
+            "content": "ततस् अव्य. - 'वहाँ, उधर'"
+        },
+        {
+            "word": "ततस्",
+            "content": "ततस् अव्य. - 'तब, तो, उसके बाद'"
+        },
+        {
+            "word": "ततस्",
+            "content": "ततस् अव्य. - 'इसलिए, फलतः, इसी कारण'"
+        },
+        {
+            "word": "ततस्",
+            "content": "ततस् अव्य. - 'तब, उस अवस्था में, तो'"
+        },
+        {
+            "word": "ततस्",
+            "content": "ततस् अव्य. - 'उससे परे उससे आगे, और आगे, इसके अतिरिक्त'"
+        },
+        {
+            "word": "ततस्",
+            "content": "ततस् अव्य. - 'उससे, उसकी अपेक्षा, उसके अतिरिक्त'"
+        },
+        {
+            "word": "ततस्",
+            "content": "ततस् अव्य. - कई बार 'तत्' शब्द के सम्प्र.के रूप की भाँति प्रयुक्त होता है"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "ततस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಅಲ್ಲಿಂದ \\/ಆ ಪ್ರದೇಶದಿಂದ",
+            "निष्पत्तिः": "तत्'तसिल्'(५-३-७)",
+            "प्रयोगाः": "'यतो यतो यादवसैन्यमासीत् ततस्ततो दैत्यचमूरपायात्'",
+            "उल्लेखाः": "याद० २०-४९",
+            "content": ""
+        },
+        {
+            "word": "ततस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಅವನಿಂದ \\/ಅವಳಿಂದ \\/ಅದರಿಂದ",
+            "प्रयोगाः": "'न च निम्नादिव सलिलं निवर्तते ततो हृदयम्'",
+            "उल्लेखाः": "शाकु० ३-२",
+            "content": ""
+        },
+        {
+            "word": "ततस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಆ ಪ್ರದೇಶದಲ್ಲಿ \\/ಆ ಜಾಗದಲ್ಲಿ",
+            "content": ""
+        },
+        {
+            "word": "ततस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಅವನಲ್ಲಿ \\/ಅವಳಲ್ಲಿ \\/ಅದರಲ್ಲಿ",
+            "प्रयोगाः": "'न विद्यमानेष्वर्थेषु नार्त्यामपि यतस्ततः'",
+            "उल्लेखाः": "मनु० ४-१५",
+            "content": ""
+        },
+        {
+            "word": "ततस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಅನಂತರ \\/ಬಳಿಕ \\/ಆಮೇಲೆ",
+            "प्रयोगाः": "'ततः ससम्मदास्तत्र निरैक्षन्त पतत्रिणः'",
+            "उल्लेखाः": "भट्टि० ७-५९",
+            "content": ""
+        },
+        {
+            "word": "ततस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಆ ಕಾರಣದಿಂದ",
+            "प्रयोगाः": "'हीनाःसत्त्वेन सूक्ष्मेण ततो वैकारिकाः स्मृताः'",
+            "उल्लेखाः": "भा० शान्ति० ३५८-७८",
+            "content": ""
+        },
+        {
+            "word": "ततस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಆದರೆ",
+            "प्रयोगाः": "'अमोच्यमश्वं यदि मन्यसे प्रभो ततः समाप्ते विधिनैव कर्मणि'",
+            "उल्लेखाः": "रघु० ३-६५",
+            "content": ""
+        },
+        {
+            "word": "ततस्",
+            "पदविभागः": "अव्ययम्",
+            "कन्नडार्थः": "ಅದಕ್ಕಿಂತಲೂ",
+            "प्रयोगाः": "'यं लब्ध्वा चापरं लाभं मन्यसे नाधिकं ततः'",
+            "उल्लेखाः": "गीता० ६-२२",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "ततस्",
+            "content": "<lexhead no=\"31\">\n<dentry>ततस्</dentry>\n<prAwipaxikam>ततस्</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<etymology>तद्+तसिल्</etymology>\n<sense no=\"1\">से, वहाँ से</sense>\n<sense n=\"2\">वहाँ, उधर</sense>\n<sense n=\"3\">तब, तो, उसके बादततः कतिपयदिवसापगमे<citation>का* ११०</citation><citation>अमरु*६६</citation><citation>कि*१/२७</citation><citation>मनु*२/९३</citation>७/५९</sense>\n<sense n=\"4\">इसलिए, फलतः, इसी कारण</sense>\n<sense n=\"5\">तब, उस अवस्था में, तोयदि गृहीतमिदं ततः किम्<citation>का*१२०</citation>अमोच्यमश्वं यदि मन्यसे प्रभो ततः समाप्ते<citation>रघु* ३/६५ ’यदि’ का सह सम्बन्धी</citation></sense>\n<sense n=\"6\">उससे परे उससे आगे, और आगे, इसके अतिरिक्तततःपरतो निर्मानुषमरण्यम्<citation>का*१२१</citation></sense>\n<sense n=\"7\">उससे, उसकी अपेक्षा, उसके अतिरिक्तयं लब्ध्वा चापरे लाभं मन्यते नाधिकं ततः<citation>भग*६/२२</citation>२/३६</sense>\n<sense n=\"8\">कई बार ’तत्’ शब्द के सम्प्र* के रूप की भाँति प्रयुक्त होता हैयथा तस्मात्, तस्याः, ततोऽन्यत्रापि दृश्यते<citation>सिद्धा*</citation></sense>\n<compound>\n<dentry>यतस्ततः</dentry>\n<prAwipaxikam>यतस्ततः</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<sense no=\"1\">जहाँ-वहाँयतःकृष्णस्ततः सर्वे यतः कृष्णस्ततो जयः<citation>महा*</citation><citation>मनु*७/१८८</citation></sense></compound>\n<compound>\n<dentry>यतस्ततः</dentry>\n<prAwipaxikam>यतस्ततः</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<sense no=\"1\">क्योंकि, इसलिए</sense></compound>\n<compound>\n<dentry>यतोयतः ततस्ततः</dentry>\n<prAwipaxikam>यतोयतः ततस्ततः</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<sense no=\"1\">जहाँ कहीं-वहींयतो यतः षट्चरणोऽभिवर्तते ततस्ततः प्रेरितवामलोचना<citation>श*१/२३</citation></sense></compound>\n<compound>\n<dentry>ततःकिम्</dentry>\n<prAwipaxikam>ततःकिम्</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<sense no=\"1\">तो फिर क्या, इससे क्या लाभ, क्या कामप्राप्ताः श्रियः सकलकामदुघास्ततःकिम्<citation>भर्तृ*३/७३</citation>७४<citation>शा*४/२</citation></sense></compound>\n<compound>\n<dentry>ततस्ततः</dentry>\n<prAwipaxikam>ततस्ततः</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<sense no=\"1\">यहाँ-वहाँ, इधर-उधरततो दिव्यानि माल्यानि प्रादुरासंस्ततस्ततः<citation>महा*</citation></sense></compound>\n<compound>\n<dentry>ततस्ततः</dentry>\n<prAwipaxikam>ततस्ततः</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<sense no=\"1\">फिर क्या’ ’इसके आगे’ ’अच्छा तो फिर’नाटकों में प्रयुक्त</sense></compound>\n<compound>\n<dentry>ततःप्रभृति</dentry>\n<prAwipaxikam>ततःप्रभृति</prAwipaxikam>\n<grammar>अव्य*</grammar>\n<sense no=\"1\">तब से लेकरतृष्णा ततः प्रभृति मे त्रिगुणत्वमेति<citation>अमरु ६८</citation><citation>मनु*९/६८ यतः प्रभृति का सह सम्बन्धी</citation></sense></compound>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "ततस्",
+            "content": "<body><s>tatas avya° tad + sArvaviBaktistasil . tasmAdityAdyarTe <q>tatastatastyA viniyantumakzamAH</q> mAGaH . praTamArTe tato BavAn . dvitIyArTe tatraBavantam . saptamyarTe tatastyA tftIyArTe <q>yatoyataH zawcaraRo'Bivarttate tatastataH preritavAmalocanA</q> Saku° . hetuBUtayo rdvayormaDye eka­syAtiSaye Amu tarap ca . tatastarAm vigrahoktArTe hetu­BUtAnAM bahUnAM maDye ekasyAtiSaye Amu tamapca” tatasta­mAm vigrahoktArTe avya° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "ततस्",
+            "content": "<H3><h><key1>tatas</key1><key2>ta/—tas</key2><hom>a</hom></h><body><s>ta/—tas</s> <hom>a</hom>   (<s>ta/-</s>), see <ab>s.v.</ab></body><tail><L>81551</L><pc>431,2</pc></tail></H3>\n <H2><h><key1>tatas</key1><key2>ta/tas</key2><hom>b</hom></h><body><s>ta/tas</s> <hom>b</hom>   <lex>ind.</lex> (<s>tA<srs />-tas</s>, correlative of <s>ya/-tas</s>) used for the <ab>abl.</ab> (<ab>sg.</ab> <ab>du.</ab> and <ab>pl.</ab>) of <s>ta/d</s> (<ab>q.v.</ab>, <ls>Pāṇ. v, 3, 7 f.</ls>; <ls n=\"Pāṇ.\">vi, 3, 35</ls>), <ls>RV.</ls>; <ls>AV.</ls>; <ls>ĪśUp.</ls>; <ls>Mn.</ls> &amp;c.<info lex=\"ind\" /></body><tail><L>81788</L><pc>432,2</pc></tail></H2>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  from that place, thence, <ls>RV.</ls>; <ls>AV.</ls> &amp;c.,<info lex=\"inh\" /></body><tail><L>81788.1</L><pc>432,2</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  in that place, there, <ls>MBh.</ls> &amp;c.<info lex=\"inh\" /></body><tail><L>81788.2</L><pc>432,2</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  thither, <ls>Mn. vii, 188</ls>; <ls>R. i, 44, 34</ls>; <ls>Kathās.</ls><info lex=\"inh\" /></body><tail><L>81788.3</L><pc>432,2</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  thereupon, then, after that, afterwards (sometimes corresponding to preceding particles like <s>a/gre</s>, <s>puras</s>, <s>pUrvam</s>, <s>praTamam</s>, <s>prAk</s>, <ls>ŚBr. xiv</ls>; <ls>Mn. ii, 60</ls>; <ls>Śak.</ls>; <ls>Pañcat.</ls> &amp;c.; corresponding to <s>praTama/</s>, <ls>RV. i, 83, 5</ls>; also correlative of <s>ya/d</s> [<ls n=\"RV.\">x, 85, 5</ls> and <ls n=\"RV. x,\">121, 7</ls>; <ls>AV. xii, 4, 7 ff.</ls>], <s>ya/tra</s> <pb n=\"432,3\" />[<ls>ŚBr. i</ls>], <s>yadA</s> [<ls>Nal. xx</ls>; <ls>R.</ls>], <s>yadi</s> [<ls>ChUp.</ls>; <ls>Nal.</ls> &amp;c.], <s>ce<srs />d</s> [<ls>TUp. ii, 6</ls>; <ls>Śak. v, 28/29</ls> <ab>v.l.</ab>]; often superfluous after an <ab>ind.p.</ab> or after <s>tadA</s> or <s>aTa</s>, <ls>Mn.</ls> &amp;c.)<info lex=\"inh\" /></body><tail><L>81788.4</L><pc>432,2</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  from that, in consequence of that, for that reason, consequently, <ls>AV.</ls>; <ls>MBh. xii, 13626</ls>; <ls>R. vi</ls>; <ls>Hit.</ls><info lex=\"inh\" /></body><tail><L>81788.5</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°taH kaTam</s> but, how is it then that? <ls>Sāh. iii, 200/210</ls><info lex=\"inh\" /></body><tail><L>81789</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>°taH kzaRam</s> or <s>°RAt</s>, immediately afterwards, <ls>Kathās.</ls><info lex=\"inh\" /></body><tail><L>81790</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°taH pa/ra</s> <lex type=\"nhw\">mfn.</lex> beyond that, <ls>AV. xviii, 2, 32</ls><info lex=\"inh\" /></body><tail><L>81792</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°taH pa/raM</s> <lex type=\"nhw\">ind.</lex> besides that, further, <ls>Pāṇ. vii, 2, 10</ls>; <ls>Kār.</ls><info lex=\"inh\" /></body><tail><L>81793</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°taH pa/raM</s> <lex type=\"nhw\">ind.</lex> thereupon, afterwards, <ls>MBh.</ls> &amp;c. (<s>°taS ca param</s>, <ls>VP. iv</ls>)<info lex=\"inh\" /></body><tail><L>81794</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°taH paScAt</s> <ab>id.</ab>, <ls>Mn. iii, 116 f.</ls>; <ls>MBh.</ls> &amp;c.<info lex=\"inh\" /></body><tail><L>81795</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°taH-praBfti</s> thenceforth, <ls>Nal. ii</ls>, <ls n=\"Nal.\">i</ls>; <ls>Pañcat.</ls> &amp;c.<info lex=\"inh\" /></body><tail><L>81795.1</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°tas tataH</s> (in <ab>dram.</ab>) what then? what took place after that? <ls>Ratnāv.</ls>; <ls>Hit.</ls><info lex=\"inh\" /></body><tail><L>81796</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°tas tataH</s>, from that and that place, here and there, hither and thither, from all sides, to everyplace, everywhere, <ls>PārGṛ. iii, 13, 6</ls>; <ls>MBh.</ls>; <ls>R.</ls>; <ls>BhP.</ls><info lex=\"inh\" /></body><tail><L>81796.1</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°tas tataH</s> (correlative of <s>yato-yataH</s>, from whatever place, wherever) to that place, <ls>Śak. i, 23</ls>; <ls>BhP.</ls><info lex=\"inh\" /></body><tail><L>81796.2</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta°to 'nyatas</s>, ‘to another place than that’, to some other place, <ls>Mn. ii, 200</ls><info lex=\"inh\" /></body><tail><L>81796.3</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta°to 'nyatra</s> = <s>tasmAd anyasmin</s>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>81796.4</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  <s>ta/°to 'param</s> afterwards, at another time, <ls>AitBr. vii, 17, 4</ls><info lex=\"inh\" /></body><tail><L>81797</L><pc>432,3</pc></tail></H2A>\n <H2A><h><key1>tatas</key1><key2>ta/tas</key2></h><body>  [<ab>cf.</ab> <gk>τότε</gk>, <gk>τόθεν</gk>], <info lex=\"inh\" /></body><tail><L>81797.1</L><pc>432,3</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "ततस्",
+            "content": "<H1><h><key1>tatas</key1><key2>tatas</key2></h><body><s>tatas</s>  ind. <div n=\"2\"> 1. Therefore, thence, consequently. </div><div n=\"2\"> 2. From that, then. <lb />3. Then, how, (asking.) </div><div n=\"2\"> 4. Then, further, after that (continuation.) <lb />5. Afterwards, subsequently. </div><div n=\"2\"> 6. Thither, there.</div><div n=\"E\"> E. <s>tad</s> that, affix <lb /><s>tasi</s>.</div></body><tail><L>16879</L><pc>301-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "ततस्",
+            "content": "<span lang=\"sa\">ततस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಲ್ಲಿಂದ /ಆ ಪ್ರದೇಶದಿಂದ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>तत् - \"तसिल्\"(५-३-७)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"यतो यतो यादवसैन्यमासीत् ततस्ततो दैत्यचमूरपायात्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>याद० २०-४९<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ततस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅವನಿಂದ /ಅವಳಿಂದ /ಅದರಿಂದ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"न च निम्नादिव सलिलं निवर्तते ततो हृदयम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>शाकु० ३-२<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ततस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಆ ಪ್ರದೇಶದಲ್ಲಿ /ಆ ಜಾಗದಲ್ಲಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ततस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅವನಲ್ಲಿ /ಅವಳಲ್ಲಿ /ಅದರಲ್ಲಿ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"न विद्यमानेष्वर्थेषु नार्त्यामपि यतस्ततः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० ४-१५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ततस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅನಂತರ /ಬಳಿಕ /ಆಮೇಲೆ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"ततः ससम्मदास्तत्र निरैक्षन्त पतत्रिणः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भट्टि० ७-५९<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ततस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಆ ಕಾರಣದಿಂದ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"हीनाःसत्त्वेन सूक्ष्मेण ततो वैकारिकाः स्मृताः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भा० शान्ति० ३५८-७८<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ततस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಆದರೆ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"अमोच्यमश्वं यदि मन्यसे प्रभो ततः समाप्ते विधिनैव कर्मणि\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रघु० ३-६५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>ततस्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>अव्ययम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅದಕ್ಕಿಂತಲೂ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"यं लब्ध्वा चापरं लाभं मन्यसे नाधिकं ततः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>गीता० ६-२२<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-
-function setPropOnCustomElement(domElement, tag, key, value, props, prevValue) {
-  switch (key) {
-    case 'style':
-      {
-        setValueForStyles(domElement, value, prevValue);
-        break;
-      }
-
-    case 'dangerouslySetInnerHTML':
-      {
-        if (value != null) {
-          if (typeof value !== 'object' || !('__html' in value)) {
-            throw Error(formatProdErrorMessage(61));
-          }
-
-          const nextHtml = value.__html;
-
-          if (nextHtml != null) {
-            if (props.children != null) {
-              throw Error(formatProdErrorMessage(60));
-            }
-
-            {
-              domElement.innerHTML = nextHtml;
-            }
-          }
-        }
-
-        break;
-      }
-
-    case 'children':
-      {
-        if (typeof value === 'string') {
-          setTextContent(domElement, value);
-        } else if (typeof value === 'number') {
-          setTextContent(domElement, '' + value);
-        }
-
-        break;
-      }
-
-    case 'onScroll':
-      {
-        if (value != null) {
-
-          listenToNonDelegatedEvent('scroll', domElement);
-        }
-
-        break;
-      }
-
-    case 'onScrollEnd':
-      {
-        if (value != null) {
-
-          listenToNonDelegatedEvent('scrollend', domElement);
-        }
-
-        break;
-      }
-
-    case 'onClick':
-      {
-        // TODO: This cast may not be sound for SVG, MathML or custom elements.
-        if (value != null) {
-
-          trapClickOnNonInteractiveElement(domElement);
-        }
-
-        break;
-      }
-
-    case 'suppressContentEditableWarning':
-    case 'suppressHydrationWarning':
-    case 'innerHTML':
-      {
-        // Noop
-        break;
-      }
-
-    case 'innerText': // Properties
-
-    case 'textContent':
-      {
-        break;
-      }
-
-    // Fall through
-
-    default:
-      {
-        if (registrationNameDependencies.hasOwnProperty(key)) ; else {
-          {
-            setValueForPropertyOnCustomComponent(domElement, key, value);
-          }
-        }
-      }
-  }
-}
-
-function setInitialProperties(domElement, tag, props) {
-
-
-  switch (tag) {
-    case 'div':
-    case 'span':
-    case 'svg':
-    case 'path':
-    case 'a':
-    case 'g':
-    case 'p':
-    case 'li':
-      {
-        // Fast track the most common tag types
-        break;
-      }
-
-    case 'input':
-      {
-        // listeners still fire for the invalid event.
-
-
-        listenToNonDelegatedEvent('invalid', domElement);
-        let name = null;
-        let type = null;
-        let value = null;
-        let defaultValue = null;
-        let checked = null;
-        let defaultChecked = null;
-
-        for (const propKey in props) {
-          if (!props.hasOwnProperty(propKey)) {
-            continue;
-          }
-
-          const propValue = props[propKey];
-
-          if (propValue == null) {
-            continue;
-          }
-
-          switch (propKey) {
-            case 'name':
-              {
-                name = propValue;
-                break;
-              }
-
-            case 'type':
-              {
-                type = propValue;
-                break;
-              }
-
-            case 'checked':
-              {
-                checked = propValue;
-                break;
-              }
-
-            case 'defaultChecked':
-              {
-                defaultChecked = propValue;
-                break;
-              }
-
-            case 'value':
-              {
-                value = propValue;
-                break;
-              }
-
-            case 'defaultValue':
-              {
-                defaultValue = propValue;
-                break;
-              }
-
-            case 'children':
-            case 'dangerouslySetInnerHTML':
-              {
-                if (propValue != null) {
-                  throw Error(formatProdErrorMessage(137, tag));
-                }
-
-                break;
-              }
-
-            default:
-              {
-                setProp(domElement, tag, propKey, propValue, props, null);
-              }
-          }
-        } // TODO: Make sure we check if this is still unmounted or do any clean
-        initInput(domElement, value, defaultValue, checked, defaultChecked, type, name, false);
-        track(domElement);
-        return;
-      }
-
-    case 'select':
-      {
-        // listeners still fire for the invalid event.
-
-
-        listenToNonDelegatedEvent('invalid', domElement);
-        let value = null;
-        let defaultValue = null;
-        let multiple = null;
-
-        for (const propKey in props) {
-          if (!props.hasOwnProperty(propKey)) {
-            continue;
-          }
-
-          const propValue = props[propKey];
-
-          if (propValue == null) {
-            continue;
-          }
-
-          switch (propKey) {
-            case 'value':
-              {
-                value = propValue; // This is handled by initSelect below.
-
-                break;
-              }
-
-            case 'defaultValue':
-              {
-                defaultValue = propValue; // This is handled by initSelect below.
-
-                break;
-              }
-
-            case 'multiple':
-              {
-                multiple = propValue; // TODO: We don't actually have to fall through here because we set it
-                // in initSelect anyway. We can remove the special case in setProp.
-              }
-            // Fallthrough
-
-            default:
-              {
-                setProp(domElement, tag, propKey, propValue, props, null);
-              }
-          }
-        }
-        initSelect(domElement, value, defaultValue, multiple);
-        return;
-      }
-
-    case 'textarea':
-      {
-        // listeners still fire for the invalid event.
-
-
-        listenToNonDelegatedEvent('invalid', domElement);
-        let value = null;
-        let defaultValue = null;
-        let children = null;
-
-        for (const propKey in props) {
-          if (!props.hasOwnProperty(propKey)) {
-            continue;
-          }
-
-          const propValue = props[propKey];
-
-          if (propValue == null) {
-            continue;
-          }
-
-          switch (propKey) {
-            case 'value':
-              {
-                value = propValue; // This is handled by initTextarea below.
-
-                break;
-              }
-
-            case 'defaultValue':
-              {
-                defaultValue = propValue;
-                break;
-              }
-
-            case 'children':
-              {
-                children = propValue; // Handled by initTextarea above.
-
-                break;
-              }
-
-            case 'dangerouslySetInnerHTML':
-              {
-                if (propValue != null) {
-                  // TODO: Do we really need a special error message for this. It's also pretty blunt.
-                  throw Error(formatProdErrorMessage(91));
-                }
-
-                break;
-              }
-
-            default:
-              {
-                setProp(domElement, tag, propKey, propValue, props, null);
-              }
-          }
-        } // TODO: Make sure we check if this is still unmounted or do any clean
-        initTextarea(domElement, value, defaultValue, children);
-        track(domElement);
-        return;
-      }
-
-    case 'option':
-      {
-
-        for (const propKey in props) {
-          if (!props.hasOwnProperty(propKey)) {
-            continue;
-          }
-
-          const propValue = props[propKey];
-
-          if (propValue == null) {
-            continue;
-          }
-
-          switch (propKey) {
-            case 'selected':
-              {
-                // TODO: Remove support for selected on option.
-                domElement.selected = propValue && typeof propValue !== 'function' && typeof propValue !== 'symbol';
-                break;
-              }
-
-            default:
-              {
-                setProp(domElement, tag, propKey, propValue, props, null);
-              }
-          }
-        }
-
-        return;
-      }
-
-    case 'dialog':
-      {
-        listenToNonDelegatedEvent('cancel', domElement);
-        listenToNonDelegatedEvent('close', domElement);
-        break;
-      }
-
-    case 'iframe':
-    case 'object':
-      {
-        // We listen to this event in case to ensure emulated bubble
-        // listeners still fire for the load event.
-        listenToNonDelegatedEvent('load', domElement);
-        break;
-      }
-
-    case 'video':
-    case 'audio':
-      {
-        // We listen to these events in case to ensure emulated bubble
-        // listeners still fire for all the media events.
-        for (let i = 0; i < mediaEventTypes.length; i++) {
-          listenToNonDelegatedEvent(mediaEventTypes[i], domElement);
-        }
-
-        break;
-      }
-
-    case 'image':
-      {
-        // We listen to these events in case to ensure emulated bubble
-        // listeners still fire for error and load events.
-        listenToNonDelegatedEvent('error', domElement);
-        listenToNonDelegatedEvent('load', domElement);
-        break;
-      }
-
-    case 'details':
-      {
-        // We listen to this event in case to ensure emulated bubble
-        // listeners still fire for the toggle event.
-        listenToNonDelegatedEvent('toggle', domElement);
-        break;
-      }
-
-    case 'embed':
-    case 'source':
-    case 'img':
-    case 'link':
-      {
-        // These are void elements that also need delegated events.
-        listenToNonDelegatedEvent('error', domElement);
-        listenToNonDelegatedEvent('load', domElement); // We fallthrough to the return of the void elements
-      }
-
-    case 'area':
-    case 'base':
-    case 'br':
-    case 'col':
-    case 'hr':
-    case 'keygen':
-    case 'meta':
-    case 'param':
-    case 'track':
-    case 'wbr':
-    case 'menuitem':
-      {
-        // Void elements
-        for (const propKey in props) {
-          if (!props.hasOwnProperty(propKey)) {
-            continue;
-          }
-
-          const propValue = props[propKey];
-
-          if (propValue == null) {
-            continue;
-          }
-
-          switch (propKey) {
-            case 'children':
-            case 'dangerouslySetInnerHTML':
-              {
-                // TODO: Can we make this a DEV warning to avoid this deny list?
-                throw Error(formatProdErrorMessage(137, tag));
-              }
-            // defaultChecked and defaultValue are ignored by setProp
-
-            default:
-              {
-                setProp(domElement, tag, propKey, propValue, props, null);
-              }
-          }
-        }
-
-        return;
-      }
-
-    default:
-      {
-        if (isCustomElement(tag)) {
-          for (const propKey in props) {
-            if (!props.hasOwnProperty(propKey)) {
-              continue;
-            }
-
-            const propValue = props[propKey];
-
-            if (propValue == null) {
-              continue;
-            }
-
-            setPropOnCustomElement(domElement, tag, propKey, propValue, props, null);
-          }
-
-          return;
-        }
-      }
-  }
-
-  for (const propKey in props) {
-    if (!props.hasOwnProperty(propKey)) {
-      continue;
-    }
-
-    const propValue = props[propKey];
-
-    if (propValue == null) {
-      continue;
-    }
-
-    setProp(domElement, tag, propKey, propValue, props, null);
-  }
-}
-function updateProperties(domElement, tag, lastProps, nextProps) {
-
-  switch (tag) {
-    case 'div':
-    case 'span':
-    case 'svg':
-    case 'path':
-    case 'a':
-    case 'g':
-    case 'p':
-    case 'li':
-      {
-        // Fast track the most common tag types
-        break;
-      }
-
-    case 'input':
-      {
-        let name = null;
-        let type = null;
-        let value = null;
-        let defaultValue = null;
-        let lastDefaultValue = null;
-        let checked = null;
-        let defaultChecked = null;
-
-        for (const propKey in lastProps) {
-          const lastProp = lastProps[propKey];
-
-          if (lastProps.hasOwnProperty(propKey) && lastProp != null) {
-            switch (propKey) {
-              case 'checked':
-                {
-                  break;
-                }
-
-              case 'value':
-                {
-                  // This is handled by updateWrapper below.
-                  break;
-                }
-
-              case 'defaultValue':
-                {
-                  lastDefaultValue = lastProp;
-                }
-              // defaultChecked and defaultValue are ignored by setProp
-              // Fallthrough
-
-              default:
-                {
-                  if (!nextProps.hasOwnProperty(propKey)) setProp(domElement, tag, propKey, null, nextProps, lastProp);
-                }
-            }
-          }
-        }
-
-        for (const propKey in nextProps) {
-          const nextProp = nextProps[propKey];
-          const lastProp = lastProps[propKey];
-
-          if (nextProps.hasOwnProperty(propKey) && (nextProp != null || lastProp != null)) {
-            switch (propKey) {
-              case 'type':
-                {
-                  type = nextProp;
-                  break;
-                }
-
-              case 'name':
-                {
-                  name = nextProp;
-                  break;
-                }
-
-              case 'checked':
-                {
-                  checked = nextProp;
-                  break;
-                }
-
-              case 'defaultChecked':
-                {
-                  defaultChecked = nextProp;
-                  break;
-                }
-
-              case 'value':
-                {
-                  value = nextProp;
-                  break;
-                }
-
-              case 'defaultValue':
-                {
-                  defaultValue = nextProp;
-                  break;
-                }
-
-              case 'children':
-              case 'dangerouslySetInnerHTML':
-                {
-                  if (nextProp != null) {
-                    throw Error(formatProdErrorMessage(137, tag));
-                  }
-
-                  break;
-                }
-
-              default:
-                {
-                  if (nextProp !== lastProp) setProp(domElement, tag, propKey, nextProp, nextProps, lastProp);
-                }
-   

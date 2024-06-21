@@ -1,1 +1,127 @@
-t\tmargin-left: 0;\n\t\t\t}\n\t\t}\n\t}\n}\n'],sourceRoot:""}]);const a=s},2375:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-link-form{display:flex}.ck.ck-link-form .ck-label{display:none}@media screen and (max-width:600px){.ck.ck-link-form{flex-wrap:wrap}.ck.ck-link-form .ck-labeled-field-view{flex-basis:100%}.ck.ck-link-form .ck-button{flex-basis:50%}}.ck.ck-link-form_layout-vertical{display:block}.ck.ck-link-form_layout-vertical .ck-button.ck-button-cancel,.ck.ck-link-form_layout-vertical .ck-button.ck-button-save{margin-top:var(--ck-spacing-medium)}.ck.ck-link-form_layout-vertical{min-width:var(--ck-input-width);padding:0}.ck.ck-link-form_layout-vertical .ck-labeled-field-view{margin:var(--ck-spacing-large) var(--ck-spacing-large) var(--ck-spacing-small)}.ck.ck-link-form_layout-vertical .ck-labeled-field-view .ck-input-text{min-width:0;width:100%}.ck.ck-link-form_layout-vertical>.ck-button{border-radius:0;margin:0;padding:var(--ck-spacing-standard);width:50%}.ck.ck-link-form_layout-vertical>.ck-button:not(:focus){border-top:1px solid var(--ck-color-base-border)}[dir=ltr] .ck.ck-link-form_layout-vertical>.ck-button,[dir=rtl] .ck.ck-link-form_layout-vertical>.ck-button{margin-left:0}[dir=rtl] .ck.ck-link-form_layout-vertical>.ck-button:last-of-type{border-right:1px solid var(--ck-color-base-border)}.ck.ck-link-form_layout-vertical .ck.ck-list{margin:var(--ck-spacing-standard) var(--ck-spacing-large)}.ck.ck-link-form_layout-vertical .ck.ck-list .ck-button.ck-switchbutton{padding:0;width:100%}.ck.ck-link-form_layout-vertical .ck.ck-list .ck-button.ck-switchbutton:hover{background:none}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-link/theme/linkform.css","webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-link/linkform.css"],names:[],mappings:"AAOA,iBACC,YAiBD,CAfC,2BACC,YACD,CCNA,oCDCD,iBAQE,cAUF,CARE,wCACC,eACD,CAEA,4BACC,cACD,CCfD,CDuBD,iCACC,aAYD,CALE,wHAEC,mCACD,CE/BF,iCAEC,+BAAgC,CADhC,SAgDD,CA7CC,wDACC,8EAMD,CAJC,uEACC,WAAY,CACZ,UACD,CAGD,4CAIC,eAAgB,CAFhB,QAAS,CADT,kCAAmC,CAEnC,SAkBD,CAfC,wDACC,gDACD,CARD,4GAeE,aAMF,CAJE,mEACC,kDACD,CAKF,6CACC,yDAUD,CARC,wEACC,SAAU,CACV,UAKD,CAHC,8EACC,eACD",sourcesContent:['/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";\n\n.ck.ck-link-form {\n\tdisplay: flex;\n\n\t& .ck-label {\n\t\tdisplay: none;\n\t}\n\n\t@mixin ck-media-phone {\n\t\tflex-wrap: wrap;\n\n\t\t& .ck-labeled-field-view {\n\t\t\tflex-basis: 100%;\n\t\t}\n\n\t\t& .ck-button {\n\t\t\tflex-basis: 50%;\n\t\t}\n\t}\n}\n\n/*\n * Style link form differently when manual decorators are available.\n * See: https://github.com/ckeditor/ckeditor5-link/issues/186.\n */\n.ck.ck-link-form_layout-vertical {\n\tdisplay: block;\n\n\t/*\n\t * Whether the form is in the responsive mode or not, if there are decorator buttons\n\t * keep the top margin of action buttons medium.\n\t */\n\t& .ck-button {\n\t\t&.ck-button-save,\n\t\t&.ck-button-cancel {\n\t\t\tmargin-top: var(--ck-spacing-medium);\n\t\t}\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@define-mixin ck-media-phone {\n\t@media screen and (max-width: 600px) {\n\t\t@mixin-content;\n\t}\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n\n/*\n * Style link form differently when manual decorators are available.\n * See: https://github.com/ckeditor/ckeditor5-link/issues/186.\n */\n.ck.ck-link-form_layout-vertical {\n\tpadding: 0;\n\tmin-width: var(--ck-input-width);\n\n\t& .ck-labeled-field-view {\n\t\tmargin: var(--ck-spacing-large) var(--ck-spacing-large) var(--ck-spacing-small);\n\n\t\t& .ck-input-text {\n\t\t\tmin-width: 0;\n\t\t\twidth: 100%;\n\t\t}\n\t}\n\n\t& > .ck-button {\n\t\tpadding: var(--ck-spacing-standard);\n\t\tmargin: 0;\n\t\twidth: 50%;\n\t\tborder-radius: 0;\n\n\t\t&:not(:focus) {\n\t\t\tborder-top: 1px solid var(--ck-color-base-border);\n\t\t}\n\n\t\t@mixin ck-dir ltr {\n\t\t\tmargin-left: 0;\n\t\t}\n\n\t\t@mixin ck-dir rtl {\n\t\t\tmargin-left: 0;\n\n\t\t\t&:last-of-type {\n\t\t\t\tborder-right: 1px solid var(--ck-color-base-border);\n\t\t\t}\n\t\t}\n\t}\n\n\t/* Using additional `.ck` class for stronger CSS specificity than `.ck.ck-link-form > :not(:first-child)`. */\n\t& .ck.ck-list {\n\t\tmargin: var(--ck-spacing-standard) var(--ck-spacing-large);\n\n\t\t& .ck-button.ck-switchbutton {\n\t\t\tpadding: 0;\n\t\t\twidth: 100%;\n\n\t\t\t&:hover {\n\t\t\t\tbackground: none;\n\t\t\t}\n\t\t}\n\t}\n}\n'],sourceRoot:""}]);const a=s},1634:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,'.ck.ck-editor__editable a span.image-inline:after,.ck.ck-editor__editable figure.image>a:after{display:block;position:absolute}:root{--ck-link-image-indicator-icon-size:20;--ck-link-image-indicator-icon-is-visible:clamp(0px,100% - 50px,1px)}.ck.ck-editor__editable a span.image-inline:after,.ck.ck-editor__editable figure.image>a:after{background-color:rgba(0,0,0,.4);background-image:url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAgMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iI2ZmZiIgZD0ibTExLjA3NyAxNSAuOTkxLTEuNDE2YS43NS43NSAwIDEgMSAxLjIyOS44NmwtMS4xNDggMS42NGEuNzQ4Ljc0OCAwIDAgMS0uMjE3LjIwNiA1LjI1MSA1LjI1MSAwIDAgMS04LjUwMy01Ljk1NS43NDEuNzQxIDAgMCAxIC4xMi0uMjc0bDEuMTQ3LTEuNjM5YS43NS43NSAwIDEgMSAxLjIyOC44Nkw0LjkzMyAxMC43bC4wMDYuMDAzYTMuNzUgMy43NSAwIDAgMCA2LjEzMiA0LjI5NGwuMDA2LjAwNHptNS40OTQtNS4zMzVhLjc0OC43NDggMCAwIDEtLjEyLjI3NGwtMS4xNDcgMS42MzlhLjc1Ljc1IDAgMSAxLTEuMjI4LS44NmwuODYtMS4yM2EzLjc1IDMuNzUgMCAwIDAtNi4xNDQtNC4zMDFsLS44NiAxLjIyOWEuNzUuNzUgMCAwIDEtMS4yMjktLjg2bDEuMTQ4LTEuNjRhLjc0OC43NDggMCAwIDEgLjIxNy0uMjA2IDUuMjUxIDUuMjUxIDAgMCAxIDguNTAzIDUuOTU1em0tNC41NjMtMi41MzJhLjc1Ljc1IDAgMCAxIC4xODQgMS4wNDVsLTMuMTU1IDQuNTA1YS43NS43NSAwIDEgMS0xLjIyOS0uODZsMy4xNTUtNC41MDZhLjc1Ljc1IDAgMCAxIDEuMDQ1LS4xODR6Ii8+PC9zdmc+");background-position:50%;background-repeat:no-repeat;background-size:14px;border-radius:100%;content:"";height:calc(var(--ck-link-image-
+{
+    "word": "त्रिमुख",
+    "ABCH": [
+        {
+            "word": "त्रिमुख",
+            "linga": "पुं",
+            "pagenum": "5",
+            "kanda": "",
+            "varga": "",
+            "eid": "115",
+            "group": "12",
+            "synonyms": [],
+            "content": "स्याद्गोमुखो महायक्षस्त्रिमुखो यक्षनायकः ॥ ४१ ॥\nतुम्बरुः कुसुमश्चापि मातङ्गो विजयोऽजितः ।\nब्रह्मा यक्षेट् कुमारः षण्मुखपातालकिंनराः ॥ ४२ ॥\nगरुडो गन्धर्वो यक्षेट् कुबेरो वरुणोऽपि च ।\nभृकुटिर्गोमेधः पार्श्वो मातङ्गोऽर्हदुपासकाः ॥ ४३ ॥"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिमुख",
+            "eid": "16161",
+            "pagenum": 318,
+            "content": "tri-muKa¦ <i>m.</i> an epithet of Buddha."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिमुख",
+            "eid": "88115",
+            "pagenum": "460,1",
+            "content": "त्रि—मुख ¦ <lex>m.</lex> ‘three-faced’, the 3rd <s1 slp1='arhat'>Arhat</s1> of the present <s1 slp1='avasarpiRI'>Avasarpiṇī</s1>, <ls>L.</ls><info lex='m'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिमुख",
+            "eid": "47681",
+            "pagenum": 3,
+            "content": "*त्रिमुख¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <ab>N. pr.</ab> des 3ten <is>Arhant</is>ʼs der gegenwärtigen <is>Avasarpiṇī</is>. <dvsn n='1'>— 2〉 <lex>f.</lex> आ <ab>Bein.</ab> der Mutter <is>Śākyamuni</is>ʼs."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिमुख",
+            "eid": "31079",
+            "pagenum": 3,
+            "content": "त्रिमुख¦ (त्रि + मुख) <dvsn n='1'> 1) <lex>m.</lex> N. pr. des Dieners des 3ten <is>Arhant's</is> der gegenwärtigen <is>Avasarpiṇī</is> <ls>H. 41.</ls> <dvsn n='1'>— 2) <lex>f.</lex> आ Bein. der <is>Māyā</is>, der Mutter <is>Śākyamuni's</is>, <ls>TRIK. 1, 1, 13.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिमुख",
+            "eid": "18115",
+            "pagenum": 325,
+            "content": "त्रिमुख¦ mfn. (-खः-खी-खं) Having three faces. m. (-खः) A divine attendant upon a Jaina saint. f. (-खा) A female deity of the Jaina sect. E. त्रि three, and मुख a face, three-faced, or त्रि three (worlds,) and मुख principal."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिमुख",
+            "eid": "18132",
+            "pagenum": 390,
+            "content": "त्रिमुख¦ mfn. (-खः-खी-खं) Having three faces. m. (-खः) A divine attendant upon a <i>Jaina</i> saint. f. (-खा) A female deity of the <i>Jaina</i> sect. .E. त्रि three, and मुख a face, three-faced, or त्रि three (worlds), and मुख principal."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिमुख",
+            "eid": "17608",
+            "pagenum": 346,
+            "content": "त्रि-मुख¦ (खः) 1. <i>m.</i> An attendant upon a <i>Jaina</i> sage. <i>f.</i> (खा) Female deity of that sect. <i>a.</i> Three-faced."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिमुख",
+            "eid": "15596",
+            "pagenum": "2-661-a",
+            "content": "त्रिमुखः¦, पुं, (त्रीणि मुखानि यस्य ।) बुद्धविशेषः । इति हेमचन्द्रः । १ । ४१ ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिमुख",
+            "eid": "23751",
+            "pagenum": "3377,a",
+            "content": "त्रिमुख¦ पु० त्रीणि मुखानि अस्य । १ शाक्यमुनौ त्रिका० । गायत्रीजपाङ्गे चतुर्विंशतिमुद्रान्तर्गते मुद्राभेदे तल्लक्षर्ण विधानपारिजाते उक्तं यथा “संमुखासक्तयोः पाण्योः कनिष्ठाद्वययोगतः । शेषाङ्गुलीनां वैरल्यात् मुद्राः स्युर्द्विमुखादयः” “संमुखासक्तपाण्योः कनिष्ठाद्वययोगेन शेषाङ्गुलीनां विरलत्वेनाङ्गुष्ठद्वयमारभ्यानामिकान्तं यावत् द्विमुखत्रिमुखचतुर्मुखपञ्चमुखाः मुद्राः स्युः” तद्व्याख्या । तथा चाङ्गुष्ठतर्ज्जनीनां वैरल्ये त्रिमुखमुद्रा । २ बुद्धदेवीभेदे मायादेव्यां स्त्री त्रिका० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिमुख",
+            "content": "त्रिमुखः पुं. त्रि-मुखः  - बुद्ध का एक विशेषण"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिमुख",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಶಾಕ್ಯಮುನಿ",
+            "व्युत्पत्तिः": "त्रीणि मुखानि यस्य",
+            "content": ""
+        },
+        {
+            "word": "त्रिमुख",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಗಾಯತ್ರೀಜಪದ ಅಂಗವಾದ ಒಂದು ಮುದ್ರೆ",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिमुख",
+            "content": "<body><s>trimuKa pu° trIRi muKAni asya . <lb/><b>1</b> SAkyamunO trikA° . gAyatrIjapANge caturviMSatimudrAntargate mudrABede tallakzarRa viDAnapArijAte uktaM yaTA <q>saMmuKAsaktayoH pARyoH kanizWAdvayayogataH . SezANgulInAM vEralyAt mudrAH syurdvimuKAdayaH</q> <q>saMmuKAsaktapARyoH kanizWAdvaya­yogena SezANgulInAM viralatvenANguzWadvayamAraByAnAmi­kAntaM yAvat dvimuKatrimuKacaturmuKapaYcamuKAH mudrAH syuH</q> tadvyAKyA . taTA cANguzWatarjjanInAM vEralye tri­muKamudrA . <lb/><b>2</b> budDadevIBede mAyAdevyAM strI trikA° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिमुख",
+            "content": "<H1><h><key1>trimuKa</key1><key2>trimuKa</key2></h><body><s>trimuKa</s>  <div n=\"1\">mfn. (<s>-KaH-KI-KaM</s>) Having three faces. </div><div n=\"1\">m. (<s>-KaH</s>) A divine attendant <lb />upon a Jaina saint. </div><div n=\"1\">f. (<s>-KA</s>) A female deity of the Jaina sect.</div><div n=\"E\"> E. <s>tri</s> <lb />three, and <s>muKa</s> a face, three-faced, or <s>tri</s> three (worlds,) and <lb /><s>muKa</s> principal.</div></body><tail><L>18115</L><pc>325-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिमुख",
+            "content": "<span lang=\"sa\">त्रिमुख<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶಾಕ್ಯಮುನಿ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीणि मुखानि यस्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिमुख<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗಾಯತ್ರೀಜಪದ ಅಂಗವಾದ ಒಂದು ಮುದ್ರೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

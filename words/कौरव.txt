@@ -1,1231 +1,385 @@
-se.resolve().then(()=>/*#__PURE__*/ _interop_require_wildcard._(require("../pages/_error"))).then((errorModule)=>{
-            return Promise.resolve().then(()=>/*#__PURE__*/ _interop_require_wildcard._(require("../pages/_app"))).then((appModule)=>{
-                App = appModule.default;
-                renderErrorProps.App = App;
-                return errorModule;
-            });
-        }).then((m)=>({
-                ErrorComponent: m.default,
-                styleSheets: []
-            })) : {
-            ErrorComponent,
-            styleSheets
-        };
-    }).then((param)=>{
-        let { ErrorComponent, styleSheets } = param;
-        var _renderErrorProps_props;
-        // In production we do a normal render with the `ErrorComponent` as component.
-        // If we've gotten here upon initial render, we can use the props from the server.
-        // Otherwise, we need to call `getInitialProps` on `App` before mounting.
-        const AppTree = wrapApp(App);
-        const appCtx = {
-            Component: ErrorComponent,
-            AppTree,
-            router,
-            ctx: {
-                err,
-                pathname: initialData.page,
-                query: initialData.query,
-                asPath,
-                AppTree
-            }
-        };
-        return Promise.resolve(((_renderErrorProps_props = renderErrorProps.props) == null ? void 0 : _renderErrorProps_props.err) ? renderErrorProps.props : (0, _utils.loadGetInitialProps)(App, appCtx)).then((initProps)=>// eslint-disable-next-line @typescript-eslint/no-use-before-define
-            doRender({
-                ...renderErrorProps,
-                err,
-                Component: ErrorComponent,
-                styleSheets,
-                props: initProps
-            }));
-    });
-}
-// Dummy component that we render as a child of Root so that we can
-// toggle the correct styles before the page is rendered.
-function Head(param) {
-    let { callback } = param;
-    // We use `useLayoutEffect` to guarantee the callback is executed
-    // as soon as React flushes the update.
-    _react.default.useLayoutEffect(()=>callback(), [
-        callback
-    ]);
-    return null;
-}
-const performanceMarks = {
-    navigationStart: "navigationStart",
-    beforeRender: "beforeRender",
-    afterRender: "afterRender",
-    afterHydrate: "afterHydrate",
-    routeChange: "routeChange"
-};
-const performanceMeasures = {
-    hydration: "Next.js-hydration",
-    beforeHydration: "Next.js-before-hydration",
-    routeChangeToRender: "Next.js-route-change-to-render",
-    render: "Next.js-render"
-};
-let reactRoot = null;
-// On initial render a hydrate should always happen
-let shouldHydrate = true;
-function clearMarks() {
-    [
-        performanceMarks.beforeRender,
-        performanceMarks.afterHydrate,
-        performanceMarks.afterRender,
-        performanceMarks.routeChange
-    ].forEach((mark)=>performance.clearMarks(mark));
-}
-function markHydrateComplete() {
-    if (!_utils.ST) return;
-    performance.mark(performanceMarks.afterHydrate) // mark end of hydration
-    ;
-    const hasBeforeRenderMark = performance.getEntriesByName(performanceMarks.beforeRender, "mark").length;
-    if (hasBeforeRenderMark) {
-        const beforeHydrationMeasure = performance.measure(performanceMeasures.beforeHydration, performanceMarks.navigationStart, performanceMarks.beforeRender);
-        const hydrationMeasure = performance.measure(performanceMeasures.hydration, performanceMarks.beforeRender, performanceMarks.afterHydrate);
-        if ("production" === "development" && // Old versions of Safari don't return `PerformanceMeasure`s from `performance.measure()`
-        beforeHydrationMeasure !== undefined && hydrationMeasure !== undefined) {
-            _tracer.default.startSpan("navigation-to-hydration", {
-                startTime: performance.timeOrigin + beforeHydrationMeasure.startTime,
-                attributes: {
-                    pathname: location.pathname,
-                    query: location.search
-                }
-            }).end(performance.timeOrigin + hydrationMeasure.startTime + hydrationMeasure.duration);
+{
+    "word": "कौरव",
+    "AP90": [
+        {
+            "word": "कौरव",
+            "eid": "11641",
+            "pagenum": 428,
+            "content": "कौरव¦ <i><ab>a.</ab></i> (वी <i><ab>f.</ab></i>) [कुरोरपत्यं, <lbinfo n='taddeSa#sya'/> तद्देशस्य राजा तेषु भवो वा, कुरु-अण्] <b>1</b> <lbinfo n='Relat+ing'/> Relating to the Kurus; क्षेत्रं क्षत्रप्रधानपिशुनं कौरवं तद्भजेथाः <ls>Me. 48.</ls> --वः A <lbinfo n='de+scendant'/> descendant of Kuru; मथ्नामि कौरवशतं <lbinfo n='sa#mare'/> समरे न कोपात् <ls>Ve. 1. 15</ls>; <ls>Chāṇ. 50.</ls> <b>--2</b> A ruler of the Kurus. (so कौरवक, कौरवायणि and कौरवेय)."
         }
-    }
-    if (onPerfEntry) {
-        performance.getEntriesByName(performanceMeasures.hydration).forEach(onPerfEntry);
-    }
-    clearMarks();
-}
-function markRenderComplete() {
-    if (!_utils.ST) return;
-    performance.mark(performanceMarks.afterRender) // mark end of render
-    ;
-    const navStartEntries = performance.getEntriesByName(performanceMarks.routeChange, "mark");
-    if (!navStartEntries.length) return;
-    const hasBeforeRenderMark = performance.getEntriesByName(performanceMarks.beforeRender, "mark").length;
-    if (hasBeforeRenderMark) {
-        performance.measure(performanceMeasures.routeChangeToRender, navStartEntries[0].name, performanceMarks.beforeRender);
-        performance.measure(performanceMeasures.render, performanceMarks.beforeRender, performanceMarks.afterRender);
-        if (onPerfEntry) {
-            performance.getEntriesByName(performanceMeasures.render).forEach(onPerfEntry);
-            performance.getEntriesByName(performanceMeasures.routeChangeToRender).forEach(onPerfEntry);
+    ],
+    "BEN": [
+        {
+            "word": "कौरव",
+            "eid": "3880",
+            "pagenum": 223,
+            "content": "कौरव¦ <i>kaurava,</i> <ab>i. e.</ab> <i>kuru + a,</i> <ab>adj.</ab>, <ab>f.</ab> <i>vī</i> <b>1.</b> Belonging to the Kurus, <ls>Megh.</ls> 49; consisting of Kurus, <ls>MBh.</ls> 1, 5457. <b>2.</b> patron. A descendant of Kuru, <ls>Nal.</ls> 14, 26; <ls>MBh.</ls> 1, 5457. <b> -- <ab>Comp.</ab></b> When latter part of an <ab>adj.</ab> the <ab>fem.</ab> ends in <i>vā, Niṣkaurava,</i> <ab>i. e.</ab> <i>nis-,</i> <ab>adj.</ab>, <ab>f.</ab> <i>vā,</i> deprived of Kauravas, <ls>MBh.</ls> 1, 7961."
         }
-    }
-    clearMarks();
-    [
-        performanceMeasures.routeChangeToRender,
-        performanceMeasures.render
-    ].forEach((measure)=>performance.clearMeasures(measure));
-}
-function renderReactElement(domEl, fn) {
-    // mark start of hydrate/render
-    if (_utils.ST) {
-        performance.mark(performanceMarks.beforeRender);
-    }
-    const reactEl = fn(shouldHydrate ? markHydrateComplete : markRenderComplete);
-    if (!reactRoot) {
-        // Unlike with createRoot, you don't need a separate root.render() call here
-        reactRoot = _client.default.hydrateRoot(domEl, reactEl, {
-            onRecoverableError: _onrecoverableerror.default
-        });
-        // TODO: Remove shouldHydrate variable when React 18 is stable as it can depend on `reactRoot` existing
-        shouldHydrate = false;
-    } else {
-        const startTransition = _react.default.startTransition;
-        startTransition(()=>{
-            reactRoot.render(reactEl);
-        });
-    }
-}
-function Root(param) {
-    let { callbacks, children } = param;
-    // We use `useLayoutEffect` to guarantee the callbacks are executed
-    // as soon as React flushes the update
-    _react.default.useLayoutEffect(()=>callbacks.forEach((callback)=>callback()), [
-        callbacks
-    ]);
-    // We should ask to measure the Web Vitals after rendering completes so we
-    // don't cause any hydration delay:
-    _react.default.useEffect(()=>{
-        (0, _performancerelayer.default)(onPerfEntry);
-    }, []);
-    if (process.env.__NEXT_TEST_MODE) {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        _react.default.useEffect(()=>{
-            window.__NEXT_HYDRATED = true;
-            if (window.__NEXT_HYDRATED_CB) {
-                window.__NEXT_HYDRATED_CB();
-            }
-        }, []);
-    }
-    return children;
-}
-function doRender(input) {
-    let { App, Component, props, err } = input;
-    let styleSheets = "initial" in input ? undefined : input.styleSheets;
-    Component = Component || lastAppProps.Component;
-    props = props || lastAppProps.props;
-    const appProps = {
-        ...props,
-        Component,
-        err,
-        router
-    };
-    // lastAppProps has to be set before ReactDom.render to account for ReactDom throwing an error.
-    lastAppProps = appProps;
-    let canceled = false;
-    let resolvePromise;
-    const renderPromise = new Promise((resolve, reject)=>{
-        if (lastRenderReject) {
-            lastRenderReject();
+    ],
+    "BUR": [
+        {
+            "word": "कौरव",
+            "eid": "5191",
+            "pagenum": 189,
+            "content": "कौरव¦ <i>kaurava</i> <ab>m.</ab> descendant de <s1 slp1='kuru'>Kuru</s1>.  <P><i>kauravya</i> <ab>m.</ab> <ab>mms.</ab> -- <ab>N.</ab> descendance de <s1 slp1='kuru'>Kuru</s1>."
         }
-        resolvePromise = ()=>{
-            lastRenderReject = null;
-            resolve();
-        };
-        lastRenderReject = ()=>{
-            canceled = true;
-            lastRenderReject = null;
-            const error = new Error("Cancel rendering route");
-            error.cancelled = true;
-            reject(error);
-        };
-    });
-    // This function has a return type to ensure it doesn't start returning a
-    // Promise. It should remain synchronous.
-    function onStart() {
-        if (!styleSheets || // We use `style-loader` in development, so we don't need to do anything
-        // unless we're in production:
-        "production" !== "production") {
-            return false;
+    ],
+    "CAE": [
+        {
+            "word": "कौरव",
+            "eid": "8556",
+            "pagenum": 135,
+            "content": "कौरव¦ <lex>f.</lex> ई belonging to the Kurus; <lex>m.</lex> a descendant of Kuru."
         }
-        const currentStyleTags = looseToArray(document.querySelectorAll("style[data-n-href]"));
-        const currentHrefs = new Set(currentStyleTags.map((tag)=>tag.getAttribute("data-n-href")));
-        const noscript = document.querySelector("noscript[data-n-css]");
-        const nonce = noscript == null ? void 0 : noscript.getAttribute("data-n-css");
-        styleSheets.forEach((param)=>{
-            let { href, text } = param;
-            if (!currentHrefs.has(href)) {
-                const styleTag = document.createElement("style");
-                styleTag.setAttribute("data-n-href", href);
-                styleTag.setAttribute("media", "x");
-                if (nonce) {
-                    styleTag.setAttribute("nonce", nonce);
-                }
-                document.head.appendChild(styleTag);
-                styleTag.appendChild(document.createTextNode(text));
-            }
-        });
-        return true;
-    }
-    function onHeadCommit() {
-        if (// unless we're in production:
-        "production" === "production" && // We can skip this during hydration. Running it wont cause any harm, but
-        // we may as well save the CPU cycles:
-        styleSheets && // Ensure this render was not canceled
-        !canceled) {
-            const desiredHrefs = new Set(styleSheets.map((s)=>s.href));
-            const currentStyleTags = looseToArray(document.querySelectorAll("style[data-n-href]"));
-            const currentHrefs = currentStyleTags.map((tag)=>tag.getAttribute("data-n-href"));
-            // Toggle `<style>` tags on or off depending on if they're needed:
-            for(let idx = 0; idx < currentHrefs.length; ++idx){
-                if (desiredHrefs.has(currentHrefs[idx])) {
-                    currentStyleTags[idx].removeAttribute("media");
-                } else {
-                    currentStyleTags[idx].setAttribute("media", "x");
-                }
-            }
-            // Reorder styles into intended order:
-            let referenceNode = document.querySelector("noscript[data-n-css]");
-            if (referenceNode) {
-                styleSheets.forEach((param)=>{
-                    let { href } = param;
-                    const targetTag = document.querySelector('style[data-n-href="' + href + '"]');
-                    if (targetTag) {
-                        referenceNode.parentNode.insertBefore(targetTag, referenceNode.nextSibling);
-                        referenceNode = targetTag;
-                    }
-                });
-            }
-            // Finally, clean up server rendered stylesheets:
-            looseToArray(document.querySelectorAll("link[data-n-p]")).forEach((el)=>{
-                el.parentNode.removeChild(el);
-            });
+    ],
+    "CCS": [
+        {
+            "word": "कौरव",
+            "eid": "5477",
+            "pagenum": 93,
+            "content": "कौरव¦ <i>f.</i> ई zu den Kuru gehörig; <i>m.</i> ein Kuruide."
         }
-        if (input.scroll) {
-            const { x, y } = input.scroll;
-            (0, _handlesmoothscroll.handleSmoothScroll)(()=>{
-                window.scrollTo(x, y);
-            });
-        }
-    }
-    function onRootCommit() {
-        resolvePromise();
-    }
-    onStart();
-    const elem = /*#__PURE__*/ _react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/ _react.default.createElement(Head, {
-        callback: onHeadCommit
-    }), /*#__PURE__*/ _react.default.createElement(AppContainer, null, renderApp(App, appProps), /*#__PURE__*/ _react.default.createElement(_portal.Portal, {
-        type: "next-route-announcer"
-    }, /*#__PURE__*/ _react.default.createElement(_routeannouncer.RouteAnnouncer, null))));
-    // We catch runtime errors using componentDidCatch which will trigger renderError
-    renderReactElement(appElement, (callback)=>/*#__PURE__*/ _react.default.createElement(Root, {
-            callbacks: [
-                callback,
-                onRootCommit
-            ]
-        }, process.env.__NEXT_STRICT_MODE ? /*#__PURE__*/ _react.default.createElement(_react.default.StrictMode, null, elem) : elem));
-    return renderPromise;
-}
-async function render(renderingProps) {
-    if (renderingProps.err) {
-        await renderError(renderingProps);
-        return;
-    }
-    try {
-        await doRender(renderingProps);
-    } catch (err) {
-        const renderErr = (0, _iserror.getProperError)(err);
-        // bubble up cancelation errors
-        if (renderErr.cancelled) {
-            throw renderErr;
-        }
-        if ("production" === "development") {
-            // Ensure this error is displayed in the overlay in development
-            setTimeout(()=>{
-                throw renderErr;
-            });
-        }
-        await renderError({
-            ...renderingProps,
-            err: renderErr
-        });
-    }
-}
-async function hydrate(opts) {
-    let initialErr = initialData.err;
-    try {
-        const appEntrypoint = await pageLoader.routeLoader.whenEntrypoint("/_app");
-        if ("error" in appEntrypoint) {
-            throw appEntrypoint.error;
-        }
-        const { component: app, exports: mod } = appEntrypoint;
-        CachedApp = app;
-        if (mod && mod.reportWebVitals) {
-            onPerfEntry = (param)=>{
-                let { id, name, startTime, value, duration, entryType, entries, attribution } = param;
-                // Combines timestamp with random number for unique ID
-                const uniqueID = Date.now() + "-" + (Math.floor(Math.random() * (9e12 - 1)) + 1e12);
-                let perfStartEntry;
-                if (entries && entries.length) {
-                    perfStartEntry = entries[0].startTime;
-                }
-                const webVitals = {
-                    id: id || uniqueID,
-                    name,
-                    startTime: startTime || perfStartEntry,
-                    value: value == null ? duration : value,
-                    label: entryType === "mark" || entryType === "measure" ? "custom" : "web-vital"
-                };
-                if (attribution) {
-                    webVitals.attribution = attribution;
-                }
-                mod.reportWebVitals(webVitals);
-            };
-        }
-        const pageEntrypoint = // error, so we need to skip waiting for the entrypoint.
-        "production" === "development" && initialData.err ? {
-            error: initialData.err
-        } : await pageLoader.routeLoader.whenEntrypoint(initialData.page);
-        if ("error" in pageEntrypoint) {
-            throw pageEntrypoint.error;
-        }
-        CachedComponent = pageEntrypoint.component;
-        if ("production" !== "production") {
-            const { isValidElementType } = require("next/dist/compiled/react-is");
-            if (!isValidElementType(CachedComponent)) {
-                throw new Error('The default export is not a React Component in page: "' + initialData.page + '"');
-            }
-        }
-    } catch (error) {
-        // This catches errors like throwing in the top level of a module
-        initialErr = (0, _iserror.getProperError)(error);
-    }
-    if ("production" === "development") {
-        const { getServerError } = require("next/dist/compiled/@next/react-dev-overlay/dist/client");
-        // Server-side runtime errors need to be re-thrown on the client-side so
-        // that the overlay is rendered.
-        if (initialErr) {
-            if (initialErr === initialData.err) {
-                setTimeout(()=>{
-                    let error;
-                    try {
-                        // Generate a new error object. We `throw` it because some browsers
-                        // will set the `stack` when thrown, and we want to ensure ours is
-                        // not overridden when we re-throw it below.
-                        throw new Error(initialErr.message);
-                    } catch (e) {
-                        error = e;
-                    }
-                    error.name = initialErr.name;
-                    error.stack = initialErr.stack;
-                    throw getServerError(error, initialErr.source);
-                });
-            } else {
-                setTimeout(()=>{
-                    throw initialErr;
-                });
-            }
-        }
-    }
-    if (window.__NEXT_PRELOADREADY) {
-        await window.__NEXT_PRELOADREADY(initialData.dynamicIds);
-    }
-    router = (0, _router.createRouter)(initialData.page, initialData.query, asPath, {
-        initialProps: initialData.props,
-        pageLoader,
-        App: CachedApp,
-        Component: CachedComponent,
-        wrapApp,
-        err: initialErr,
-        isFallback: Boolean(initialData.isFallback),
-        subscription: (info, App, scroll)=>render(Object.assign({}, info, {
-                App,
-                scroll
-            })),
-        locale: initialData.locale,
-        locales: initialData.locales,
-        defaultLocale,
-        domainLocales: initialData.domainLocales,
-        isPreview: initialData.isPreview
-    });
-    initialMatchesMiddleware = await router._initialMatchesMiddlewarePromise;
-    const renderCtx = {
-        App: CachedApp,
-        initial: true,
-        Component: CachedComponent,
-        props: initialData.props,
-        err: initialErr
-    };
-    if (opts == null ? void 0 : opts.beforeRender) {
-        await opts.beforeRender();
-    }
-    render(renderCtx);
-}
-if ((typeof exports.default === "function" || typeof exports.default === "object" && exports.default !== null) && typeof exports.default.__esModule === "undefined") {
-    Object.defineProperty(exports.default, "__esModule", {
-        value: true
-    });
-    Object.assign(exports.default, exports);
-    module.exports = exports.default;
-} //# sourceMappingURL=index.js.map
-
-���� 8���@���������
-�������������webpack/DefinePlugin process.env.__NEXT_HAS_REWRITES�webpack/DefinePlugin process.env.__NEXT_I18N_SUPPORT�webpack/DefinePlugin process.env.__NEXT_IMAGE_OPTS�webpack/DefinePlugin process.env.__NEXT_TEST_MODE�webpack/DefinePlugin process.env.__NEXT_STRICT_MODE|������������   {"deviceSizes":[640,750,828,1080,1200,1920,2048,3840],"imageSizes":[16,32,48,64,96,128,256,384],"path":"/_next/image","loader":"default","dangerouslyAllowSVG":false,"unoptimized":false}�undefined/����bbe8f14f38f218b2`A����initialize�renderApp�AppContainer�renderError�Head�clearMarks�markHydrateComplete�markRenderComplete�renderReactElement�Root�doRender�render�hydrate�_interop_require_wildcard���������_client�_headmanagercontextsharedruntime�_mitt�����_handlesmoothscroll�_isdynamic�_querystring�_runtimeconfigexternal�_utils�_portal�_headmanager�_pageloader�_performancerelayer�_routeannouncer���������_imageconfigcontextsharedruntime�_removebasepath�_hasbasepath�_approutercontextsharedruntime�_adapters�_hooksclientcontextsharedruntime�_onrecoverableerror�_tracer�_reporttosocket�version�router�emitter�looseToArray�initialData�defaultLocale�asPath�pageLoader�appElement�headManager�initialMatchesMiddleware�lastAppProps�lastRenderReject�devClient�CachedApp�onPerfEntry�CachedComponent�Container�wrapApp�performanceMarks�performanceMeasures�reactRoot�shouldHydrate@    ����xB���������H:\DHRUVIK\sanskritam-admin\node_modules\next\dist\client\index.js����	`<�	a#b#	A�   �   b"U�0	A  {  	 a	Ao  v  c'!'S	A�  �  c( (-	A
-    c)8)H	AV  ]  c*9*T	A�  �  c+)+e	A    c,7,T	AV  ]  c-$-Z	A�  �  c..V	A�     c//C	A@  G  c00F	A�  �  c11O	A�  �  c22-	A  
-  c33#	AV  ]  c4>4W	A�  �  c5=5U	A    c6E6e	AJ  Q  c774	Ax    c88#	A�  �  c99+	A�  �  c:):e	A9	  @	  c;;5	Am	  t	  c<</	A�	  �	  c='=a	A�	  
-  c>>:	AQ
-  X
-  c?)?e	A�
-  �
-  c@E@f	A1  8  cA9AT	A�  �  cBABf���	A<  [  `_@�   `_@�   ����	A�  �  `_@  `_@=  ����	A�  �  a@�   	����	A�  �  @�   `@�   	����	A�  �  @�   @�   ����	A�  �  @�   `(@�   ����	A�  �  @�   @�   ����	A�  s!  @�   `)@�   	A�!  �!  @�   `%@�   `8k���	Aa,  ~,  @�   `@�   `,����	Au/  �/  @  @  ����	A�/  �1  @  `'@  	A�3  �3  C  �     �   	Ax4  4  @  `X@  `p����	AsA  =B  @k  @t  	����	A?B  �C  @l  `P@t  	����	A�M  �M  @�  @�  ����	A�M  �N  @�  `&@�  � true	AIX  fX  @�  @�  `�	Ac  $c  @-  `A-  �   �0	A{c  c  C-  �   -  �   ����	A'e  Ee  @=  @B  	����	AGe  �e  @=  `,@B  	� false	Al  Nl  @i  @k  `I�0	AQl  l  @i  `<@k  	����	A\m  ym  @p  @u  	����	A{m  �n  @p  `+@u  	����	A<o  Zo  @z  @�  ����	A\o  �s  @z  `(@�  	`,	a$e	aQd���	��� �@swc/helpers/_/_interop_require_wildcard�	A�   �   b"U	A�   �   	A�   �   ���	��� 	A  &  ���	 cn���n���	Aw  �  c'!'S�../build/polyfills/polyfill-module�	A�  �  c( (-l���l���	A    c)8)H�react-dom/client�	A^  p  c*9*T�../shared/lib/head-manager-context.shared-runtime�	A�  �  c+)+e�../shared/lib/mitt�	A  .  c,7,Tg���g���	A^  �  c-$-Z�../shared/lib/router/utils/handle-smooth-scroll�	A�  �  c..V�../shared/lib/router/utils/is-dynamic�	A  (  c//C�../shared/lib/router/utils/querystring�	AH  p  c00F�../shared/lib/runtime-config.external�	A�  �  c11O�../shared/lib/utils�	A�  �  c22-�./portal�	A    c33#�./head-manager�	A^  n  c4>4W�./page-loader�	A�  �  c5=5U�./performance-relayer�	A  .  c6E6e�./route-announcer�	AR  e  c774�./router�	A�  �  c88#G���G���	A�  �  c99+�../shared/lib/image-config-context.shared-runtime�	A�  	  c:):e�./remove-base-path�	AA	  U	  c;;5�./has-base-path�	Au	  �	  c<</�../shared/lib/app-router-context.shared-runtime�	A�	  �	  c='=a�../shared/lib/router/adapters�	A
-  %
-  c>>:�../shared/lib/hooks-client-context.shared-runtime�	AY
-  �
-  c?)?e�./on-recoverable-error�	A�
-  �
-  c@E@f�./tracing/tracer�	A9  K  cA9AT�./tracing/report-to-socket�	A�  �  cBABf�./script�	A�!  �!  @�   `%@�   `8�../pages/_error�	A�3  4  C  �     �   �../pages/_app�	A�4  �4  @  `X@  `p	A*x  9x  ����	����@�  `@�  `	ASx  bx  ����	����@�  `5@�  `D	Asx  �x  ����	����@�  `U@�  `d	A�x  �x  ����	��������@�  `yA�  �   	A�x  �x  ����	����@�  `@�  `)	A.y  =y  ����	����@�  `@�  `!	A?y  Fy  ����	 @�  `#@�  `*	AMy  [y  ����	 @�  @�  `	A^y  my  ����	����@�  `@�  `$	 9A // tslint:disable:no-console
-"use strict";
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-0 && (module.exports = {
-    default: null,
-    matchesMiddleware: null,
-    createKey: null
-});
-function _export(target, all) {
-    for(var name in all)Object.defineProperty(target, name, {
-        enumerable: true,
-        get: all[name]
-    });
-}
-_export(exports, {
-    default: function() {
-        return Router;
-    },
-    matchesMiddleware: function() {
-        return matchesMiddleware;
-    },
-    createKey: function() {
-        return createKey;
-    }
-});
-const _interop_require_default = require("@swc/helpers/_/_interop_require_default");
-const _interop_require_wildcard = require("@swc/helpers/_/_interop_require_wildcard");
-const _removetrailingslash = require("./utils/remove-trailing-slash");
-const _routeloader = require("../../../client/route-loader");
-const _script = require("../../../client/script");
-const _iserror = /*#__PURE__*/ _interop_require_wildcard._(require("../../../lib/is-error"));
-const _denormalizepagepath = require("../page-path/denormalize-page-path");
-const _normalizelocalepath = require("../i18n/normalize-locale-path");
-const _mitt = /*#__PURE__*/ _interop_require_default._(require("../mitt"));
-const _utils = require("../utils");
-const _isdynamic = require("./utils/is-dynamic");
-const _parserelativeurl = require("./utils/parse-relative-url");
-const _resolverewrites = /*#__PURE__*/ _interop_require_default._(require("./utils/resolve-rewrites"));
-const _routematcher = require("./utils/route-matcher");
-const _routeregex = require("./utils/route-regex");
-const _formaturl = require("./utils/format-url");
-const _detectdomainlocale = require("../../../client/detect-domain-locale");
-const _parsepath = require("./utils/parse-path");
-const _addlocale = require("../../../client/add-locale");
-const _removelocale = require("../../../client/remove-locale");
-const _removebasepath = require("../../../client/remove-base-path");
-const _addbasepath = require("../../../client/add-base-path");
-const _hasbasepath = require("../../../client/has-base-path");
-const _resolvehref = require("../../../client/resolve-href");
-const _isapiroute = require("../../../lib/is-api-route");
-const _getnextpathnameinfo = require("./utils/get-next-pathname-info");
-const _formatnextpathnameinfo = require("./utils/format-next-pathname-info");
-const _comparestates = require("./utils/compare-states");
-const _islocalurl = require("./utils/is-local-url");
-const _isbot = require("./utils/is-bot");
-const _omit = require("./utils/omit");
-const _interpolateas = require("./utils/interpolate-as");
-const _handlesmoothscroll = require("./utils/handle-smooth-scroll");
-function buildCancellationError() {
-    return Object.assign(new Error("Route Cancelled"), {
-        cancelled: true
-    });
-}
-async function matchesMiddleware(options) {
-    const matchers = await Promise.resolve(options.router.pageLoader.getMiddleware());
-    if (!matchers) return false;
-    const { pathname: asPathname } = (0, _parsepath.parsePath)(options.asPath);
-    // remove basePath first since path prefix has to be in the order of `/${basePath}/${locale}`
-    const cleanedAs = (0, _hasbasepath.hasBasePath)(asPathname) ? (0, _removebasepath.removeBasePath)(asPathname) : asPathname;
-    const asWithBasePathAndLocale = (0, _addbasepath.addBasePath)((0, _addlocale.addLocale)(cleanedAs, options.locale));
-    // Check only path match on client. Matching "has" should be done on server
-    // where we can access more info such as headers, HttpOnly cookie, etc.
-    return matchers.some((m)=>new RegExp(m.regexp).test(asWithBasePathAndLocale));
-}
-function stripOrigin(url) {
-    const origin = (0, _utils.getLocationOrigin)();
-    return url.startsWith(origin) ? url.substring(origin.length) : url;
-}
-function prepareUrlAs(router, url, as) {
-    // If url and as provided as an object representation,
-    // we'll format them into the string version here.
-    let [resolvedHref, resolvedAs] = (0, _resolvehref.resolveHref)(router, url, true);
-    const origin = (0, _utils.getLocationOrigin)();
-    const hrefWasAbsolute = resolvedHref.startsWith(origin);
-    const asWasAbsolute = resolvedAs && resolvedAs.startsWith(origin);
-    resolvedHref = stripOrigin(resolvedHref);
-    resolvedAs = resolvedAs ? stripOrigin(resolvedAs) : resolvedAs;
-    const preparedUrl = hrefWasAbsolute ? resolvedHref : (0, _addbasepath.addBasePath)(resolvedHref);
-    const preparedAs = as ? stripOrigin((0, _resolvehref.resolveHref)(router, as)) : resolvedAs || resolvedHref;
-    return {
-        url: preparedUrl,
-        as: asWasAbsolute ? preparedAs : (0, _addbasepath.addBasePath)(preparedAs)
-    };
-}
-function resolveDynamicRoute(pathname, pages) {
-    const cleanPathname = (0, _removetrailingslash.removeTrailingSlash)((0, _denormalizepagepath.denormalizePagePath)(pathname));
-    if (cleanPathname === "/404" || cleanPathname === "/_error") {
-        return pathname;
-    }
-    // handle resolving href for dynamic routes
-    if (!pages.includes(cleanPathname)) {
-        // eslint-disable-next-line array-callback-return
-        pages.some((page)=>{
-            if ((0, _isdynamic.isDynamicRoute)(page) && (0, _routeregex.getRouteRegex)(page).re.test(cleanPathname)) {
-                pathname = page;
-                return true;
-            }
-        });
-    }
-    return (0, _removetrailingslash.removeTrailingSlash)(pathname);
-}
-function getMiddlewareData(source, response, options) {
-    const nextConfig = {
-        basePath: options.router.basePath,
-        i18n: {
-            locales: options.router.locales
+    ],
+    "INM": [
+        {
+            "word": "कौरव",
+            "eid": "5542",
+            "pagenum": 400,
+            "content": "<b>Kaurava</b>,¦ adj. (“belonging to Kuru or to the Kurus (Kauravas)”): I, 5457 (<i>°īṃ camūṃ</i>); III, 1421 (<i>°aṃ-</i> <i>pakṣaṃ</i>, i.e. the party of Duryodhana); V, 4992 (<i>vaṃśaṃ</i>), 5020 (<i>vaṃśaḥ</i>), 5072 (<i>kulasya</i>); VI, 1558 (<i>sainyaṃ</i>, i.e. the army of Duryodhana), 2480 (<i>°īṃ senāṃ</i>, do.), 2488 (<i>sainyaṃ</i>, do.); VII, 5677 (<i>sainyaṃ Sindhu-Sauvīra-K°aṃ</i>, do.), 7147 (<i>°īṃ senāṃ</i>, do.), 7350 (<i>sainyaṃ</i>, do.), 7728 (<i>°īṃ senāṃ</i>, do.); VIII, 914 (<i>°ī senā</i>, do.), 2562 (<i>°ī senā</i>, do.), 2694 (<i>sainyaṃ</i>, do.), 3641 (<i>balaṃ</i>, do.), 3845 (<i>°ī senā</i>, do.); IX, 521 (<i>°īṃ</i> <i>senāṃ</i>, do.), 525 (<i>°ī…camūḥ</i>, do.), 537 (<i>°ī…pṛtanā</i>, do.), 1009 (<i>sainyaṃ</i>, do.), 1764 (<i>vaṃśe</i>)."
         },
-        trailingSlash: Boolean(process.env.__NEXT_TRAILING_SLASH)
-    };
-    const rewriteHeader = response.headers.get("x-nextjs-rewrite");
-    let rewriteTarget = rewriteHeader || response.headers.get("x-nextjs-matched-path");
-    const matchedPath = response.headers.get("x-matched-path");
-    if (matchedPath && !rewriteTarget && !matchedPath.includes("__next_data_catchall") && !matchedPath.includes("/_error") && !matchedPath.includes("/404")) {
-        // leverage x-matched-path to detect next.config.js rewrites
-        rewriteTarget = matchedPath;
-    }
-    if (rewriteTarget) {
-        if (rewriteTarget.startsWith("/") || process.env.__NEXT_EXTERNAL_MIDDLEWARE_REWRITE_RESOLVE) {
-            const parsedRewriteTarget = (0, _parserelativeurl.parseRelativeUrl)(rewriteTarget);
-            const pathnameInfo = (0, _getnextpathnameinfo.getNextPathnameInfo)(parsedRewriteTarget.pathname, {
-                nextConfig,
-                parseData: true
-            });
-            let fsPathname = (0, _removetrailingslash.removeTrailingSlash)(pathnameInfo.pathname);
-            return Promise.all([
-                options.router.pageLoader.getPageList(),
-                (0, _routeloader.getClientBuildManifest)()
-            ]).then((param)=>{
-                let [pages, { __rewrites: rewrites }] = param;
-                let as = (0, _addlocale.addLocale)(pathnameInfo.pathname, pathnameInfo.locale);
-                if ((0, _isdynamic.isDynamicRoute)(as) || !rewriteHeader && pages.includes((0, _normalizelocalepath.normalizeLocalePath)((0, _removebasepath.removeBasePath)(as), options.router.locales).pathname)) {
-                    const parsedSource = (0, _getnextpathnameinfo.getNextPathnameInfo)((0, _parserelativeurl.parseRelativeUrl)(source).pathname, {
-                        nextConfig: process.env.__NEXT_HAS_REWRITES ? undefined : nextConfig,
-                        parseData: true
-                    });
-                    as = (0, _addbasepath.addBasePath)(parsedSource.pathname);
-                    parsedRewriteTarget.pathname = as;
-                }
-                if (process.env.__NEXT_HAS_REWRITES) {
-                    const result = (0, _resolverewrites.default)(as, pages, rewrites, parsedRewriteTarget.query, (path)=>resolveDynamicRoute(path, pages), options.router.locales);
-                    if (result.matchedPage) {
-                        parsedRewriteTarget.pathname = result.parsedAs.pathname;
-                        as = parsedRewriteTarget.pathname;
-                        Object.assign(parsedRewriteTarget.query, result.parsedAs.query);
-                    }
-                } else if (!pages.includes(fsPathname)) {
-                    const resolvedPathname = resolveDynamicRoute(fsPathname, pages);
-                    if (resolvedPathname !== fsPathname) {
-                        fsPathname = resolvedPathname;
-                    }
-                }
-                const resolvedHref = !pages.includes(fsPathname) ? resolveDynamicRoute((0, _normalizelocalepath.normalizeLocalePath)((0, _removebasepath.removeBasePath)(parsedRewriteTarget.pathname), options.router.locales).pathname, pages) : fsPathname;
-                if ((0, _isdynamic.isDynamicRoute)(resolvedHref)) {
-                    const matches = (0, _routematcher.getRouteMatcher)((0, _routeregex.getRouteRegex)(resolvedHref))(as);
-                    Object.assign(parsedRewriteTarget.query, matches || {});
-                }
-                return {
-                    type: "rewrite",
-                    parsedAs: parsedRewriteTarget,
-                    resolvedHref
-                };
-            });
+        {
+            "word": "कौरव",
+            "eid": "5543",
+            "pagenum": 400,
+            "content": "<b>Kaurava</b>,¦ pl. (<i>°āḥ</i>) (the descendants of Kuru or name of a people (= Kuru, pl.); very often it designs only the sons of Dhṛtarāṣṭra and their adherents, in opposition to the sons of Pāṇḍu and their adherents): I, 116, 299, 499, 561 (<i>muninā K°āṇāṃ yaśobhṛtā</i>, i.e. Vyāsa), 584 (<i>°āyodhanaṃ</i>), 1664 (<i>°vaṃśajaḥ</i>), 3126, 4378, 4449 (<i>°āṇāṃ yaśobhṛtā…</i> <i>Pāṇḍunā</i>), 4466, 4958, 5034, 5097, 5099, 5212 (the sons of Dhṛtarāṣṭra and the sons of Pāṇḍu), 5214 (do.), 5239 (do.), 5452, 5453, 5457, 5458, 5465, 5524 (<i>°saṃsadi</i>), 5712, 5790, 5860, †7084 (<i>°āgraiḥ</i>, i.e. the sons of Pāṇḍu), †7337 (<i>°rāja-</i> <i>putrāḥ</i>, = do.), †7341 (<i>°vaṃśavardhanāḥ</i> = do.), 7531, 7535, 7537, 7556, 7776 (<i>°āṇāṃ yaśaskaraṃ</i>, i.e. Arjuna), 7961; II, 2022, 2062 (<i>°āṇāṃ kulakaraṃ jyeṣṭhaṃ Pāṇḍavaṃ</i> <i>acyutaṃ</i>, i.e. Yudhiṣṭhira), †2117 (<i>saṃsadi K°āṇāṃ</i>), 2211, 2212, †2213, 2255, 2269, 2292, 2293 (<i>°ārṇavamagnāṃ māṃ</i>, sc. Draupadī), 2306, 2350, 2351, 2352, †2368, †2379 (<i>°aṇāṃ</i> <i>guruḥ</i>, i.e. Droṇa?), 2538, 2653, 2666; III, †220, †252, †255, 311, 598, †962, 1423 (<i>°sainyasya</i>), 8513 (i.e. the Pāṇḍavas), 13006 (<i>°arṣabhāḥ</i>, i.e. the Pāṇḍavas), 14880, 14887, 14889, 14935, 14952, 14954, 14956, 14961, 15011, 15027, 15318 (<i>°sarva°</i>), 15338; IV, 206 (<i>°vāhinīṃ</i>), 887, 977, 981, 992, 999, 1297, 1428, 1528, 1626 (<i>°āṇāṃ rājā</i>, i.e. Duryodhana), 1630, 1708, 1998, 2234; V, †39, 128, 602, †701, †765, 825, 827, 843, 948 (<i>°āṇāṃ rājā</i>, i.e. Yūdhiṣṭhira), †1332 (<i>meḍhībhūtaḥ K°āṇāṃ tvaṃ</i>, sc. Dhṛtarāṣṭra), †1333, 1806, †1835, †1847 (<i>°āṇāṃ pravīre</i>, i.e. Bhīṣma), 2284, †2411 (<i>saṃsadi K°āṇāṃ</i>), †2505, 2525, †2577, 2623, 2670, 2711, 3273, 3331, 4181, 4281, 4443, 4851, 4953, 4966 (<i>°mukhyayoḥ</i>, i.e. Bhīṣma and Dhṛtarāṣṭra), 5081, 5230, 5269 (the army of Duryodhana consisting of eleven akṣauhiṇīs), 5376, 5717 (<i>°āṇāṃ saināpatyaṃ prāpya</i> <i>Gāṅgeyaḥ</i>, i.e. Bhīṣma), 5938 (<i>Citrāṅgadaṃ K°āṇām</i> <i>ādhipatye 'bhyaṣecayaṃ</i>, sc. Bhīṣma); VI, 4, 26, 28, 126, 635, 1556, 1568, 1584, 1599, 1610, 1613, 2067, 2139 (<i>°ānīkaṃ</i>), 2143 (<i>°āṇāṃ pitāmahaḥ</i>, i.e. Bhīṣma), 2179, 2432, 2577, 2593, 2620 (<i>°āṇām adhipaḥ</i>, i.e. Duryodhana), 2883, 2890, 3290, 3299, 3313, 3850, 3921, 3942, 3950, 3951, 4206, 4225, 4319, 4326, 4430 (<i>°āṇāṃ rājā</i>, i.e. Duryodhana), 4727, 5310, 5330, 5710 (<i>°āṇāṃ pitāmahaḥ</i>, i.e. Bhīṣma); VII, 23, 50 (<i>Bhīṣme K°āṇām upāśraye</i>), 118, 124, 210, 416, 436, 928, 1330, 2000, 2645, 2654, 3078, 3082, 3085, 3735, 3737 (<i>°endrāṇāṃ</i>), 4133, 4173, 4192, 4202, 4481, 4729, 4730 (<i>°sainyasya</i>), 4734, 4738, 4988, 5259, 5461, 5657, 5856, 5862, 6021, 6104 (<i>°śreṣṭhāḥ</i>), 6160, 6477, 6481, 6606, 6659, 6986, 7180, 7274, 7296, 7325 (<i>°āṇām anīkinīṃ</i>), 7350, 7352, 7655, 7747 (<i>°saṃkrande</i>), 7755, 7773, 8358, 8541, 8841, 8900, 8958, 9053 (only in B), 9054, 9170, 9188, 9204, 9234, 9273 (<i>°nandanāḥ</i>), 9392 (only in B., C. has <i>Pauravaiḥ</i>), 9492, 9495; VIII, 244 (<i>Yādava-K°ār</i>), 342, 345, 349, 411, 412, 1077, 1129, 1244, 1255, 1712, 1714, 1947, 2518, 2650, 2685, 2696, 2780, 2903, 3014, 3034, 3079, 3107, †3342, †3348 (<i>samāgame</i> <i>Sṛñjaya-K°āṇāṃ</i>), †3352, †3360, †3510, 3637, 3640, 3660, 3749, 3792, 3798, †3846, †3859, †4070, 4121, 4259, 4607, 4893, 4956; IX, 182, 288, 378, 548, 932, 1060, †1076, 1687 (<i>Pāṇḍu-K°sammardāt</i>), 1700 (<i>°āṇāṃ mahārathān</i>, i.e. Aśvatthāman, Kṛpa, and Kṛtavarman), 3504, 3626 (<i>°āṇāṃ mahārathāḥ</i>, i.e. Aśvatthāman, Kṛpa, and Kṛtavarman); X, 714; XI, 230, 234 (<i>avigrahe K°āṇāṃ</i>), 824 (<i>vaiśasaṃ…K°āntakaraṃ</i>); XII, 1495, 1575 (<i>Bhīṣme K°āṇāṃ dhurandhare</i>), 1816, 1875 (<i>°āṇāṃ dhurandhare</i>, i.e. Bhīṣma), 1928 (<i>Bhīṣme K°āṇāṃ</i> <i>dhurandhare</i>); XIII, 6275 (<i>āṇāṃ dhurandhara</i>, sc. Yudhiṣṭhira), 7689 (<i>Bhīṣme K°āṇāṃ dhurandhare</i>), 7781; XIV, 1548, 1550, 1780 (<i>°endrāṇāṃ</i>), 2203 (<i>°āṇāṃ mahārathaṃ</i>, i.e. Arjuna), 2336 (<i>°āṇāṃ dhurandhare</i>, i.e. Arjuna), 2590 (do.); XV, 76, 77 (<i>°āṇām ādhipatye</i>), †431 (<i>striyaḥ K°-Pāṇḍa-</i> <i>vānāṃ…K°rājavaṃśyāḥ</i>), †439, 872, 1007 (<i>°yoṣitaḥ</i>)."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5544",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>1</sup>¦ = Arjuna: I, 5409, 6535; III, 1709; VII, 6087."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5545",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>2</sup>¦ = Babhruvāhana: XIV, 2386."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5546",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>3</sup>¦ = Bhīmasena: III, 11169 (<i>Somavaṃśīyaḥ</i>), 15782; VII, 5660 (only C., B. has <i>Pāṇḍavaḥ</i>)."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5547",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>4</sup>¦ = Bhīṣma: I, 4120, 4121; II, 1373; III, 8046; V, 5485 (<i>Gāṅgeyaḥ</i>), 5728, 5823, 5849, 5972, 7139, 7261; VI, 2495, 3799, 3808, 4933, 5843; VII, 39; XII, 1581, 1949, 1990, 8478, 11178; XIII, 196, 3313, 7741, 7770."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5548",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>5</sup>¦ = Bhūri: VII, 7361 (<i>Bh°</i>), 7399, 7403."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5549",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>6</sup>¦ = Bhūriśravas: VI. 2814; VII, 5896, 5947, 5953, 6055."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5550",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>7</sup>¦ = Śatānīka<sup>3</sup>: 1, 8044 (<i>rājarṣeḥ</i>)."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5551",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>8</sup>¦ = Śāntanu: XIII, 2443."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5552",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>9</sup>¦ = Dhṛtarāṣṭra: I, 2744, 7371 (<i>Dh°</i>); II, 1971; III, 454, 600, 14823; V, 112, 4122; VI, 2926; VII, 7; VIII, 80; IX, 235, 3574; XI, 347; XII, 1447 (<i>Dh°</i>); XV, 61, 89, 122, 365, 373, 385, 734, 801 (<i>°sya vadhūnāṃ</i>), 969, 1079 (<i>rājarṣeḥ</i>)."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5553",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>10</sup>¦ = Duḥśāsana: VI, 5714; VII, 4877, 4938; VIII, 901."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5554",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>11</sup>¦ = Durmukha: V, 2503 (<i>D°</i>); VII, 4036."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5555",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>12</sup>¦ = Duryodhana: I, 5416, 5732, 7451; III, 14878 (<i>rājā</i>), 15125, 15180, 15223 (<i>D°</i>), 15274, 15308, 15338, 15517; IV, 1617; V, †1835, 2832, 3037 (<i>rājā</i>), 3245(?), 3248, 3510, 4678, 5228, 5311, 5632, 5671, 5860, 7189, 7198, 7400, 7488, 7621 (<i>rājā</i>); VI, 1570, 1585, 1586, 2932, 4117, 4195, 4204, 4241; VII, 1587, 3485, 6535, 6983, 7120, 7123, 7144, 7151, 7445, 7451, 8432, 8923, 8995; VIII, 1387; IX, 2, 340, 812(?), 1277, 1699, 1740, 3062, 3100, †3242, †3244, 3265 (<i>rājā Dhārtarāṣṭraḥ</i>), 3336, 3663."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5556",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>13</sup>¦ = Janamejaya: I, 4081, 5076; II, 513; III, 14865; XIV, 2514; XV, 12."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5557",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>14</sup>¦ = Pāṇḍu; I, 4445 (<i>rājā</i>), 4787 (do.), 4943, †7191."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5558",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>15</sup>¦ = Somadatta: I, 5707 (<i>S°</i>); VII, 6740, 6744, 6926, 7249."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5559",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>16</sup>¦ = Suhotra: III, 13251."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5560",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>17</sup>¦ = Vicitravīrya: I, 4125 (<i>rājā</i>)."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5561",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>18</sup>¦ = Vidura: V, 3046."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5562",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>19</sup>¦ = Yudhiṣṭhira: I, 7581 (<i>°sya niveśanaṃ</i>); III, 600, 631, 655, 667, 892, 972 (<i>Kaunteya</i>), 2633, 13491, 13600; IV, 1364 (<i>Dharmarājasya</i>); V, 7602; VII, 4316; XI, 2 (<i>rājā Dharmaputraḥ</i>), 247 (do.); XII, 1496 (<i>rājā</i>); XIV, 2092, 2532; XV, 292 (<i>rājā Kuntīputraḥ</i>), 734 (<i>rājā</i>); XVII, 2 (<i>rājā</i>); XVIII, 102."
+        },
+        {
+            "word": "कौरव",
+            "eid": "5563",
+            "pagenum": 401,
+            "content": "<b>Kaurava</b><sup>20</sup>¦ = Yuyutsu: XI, 780 (<i>Y°</i>)."
         }
-        const src = (0, _parsepath.parsePath)(source);
-        const pathname = (0, _formatnextpathnameinfo.formatNextPathnameInfo)({
-            ...(0, _getnextpathnameinfo.getNextPathnameInfo)(src.pathname, {
-                nextConfig,
-                parseData: true
-            }),
-            defaultLocale: options.router.defaultLocale,
-            buildId: ""
-        });
-        return Promise.resolve({
-            type: "redirect-external",
-            destination: "" + pathname + src.query + src.hash
-        });
-    }
-    const redirectTarget = response.headers.get("x-nextjs-redirect");
-    if (redirectTarget) {
-        if (redirectTarget.startsWith("/")) {
-            const src = (0, _parsepath.parsePath)(redirectTarget);
-            const pathname = (0, _formatnextpathnameinfo.formatNextPathnameInfo)({
-                ...(0, _getnextpathnameinfo.getNextPathnameInfo)(src.pathname, {
-                    nextConfig,
-                    parseData: true
-                }),
-                defaultLocale: options.router.defaultLocale,
-                buildId: ""
-            });
-            return Promise.resolve({
-                type: "redirect-internal",
-                newAs: "" + pathname + src.query + src.hash,
-                newUrl: "" + pathname + src.query + src.hash
-            });
+    ],
+    "LRV": [
+        {
+            "word": "कौरव",
+            "eid": "10570",
+            "pagenum": 212,
+            "content": "kOrava¦ <i>(I) a. (f. वी)</i> Relating to the Kurus, क्षेत्रं क्षत्रपधनपिशुनं कौरवं तद्गजेथाः <ls>Megh.</ls>i.48."
+        },
+        {
+            "word": "कौरव",
+            "eid": "10571",
+            "pagenum": 212,
+            "content": "kOrava¦ <i>(II) m.</i> 1. A descendant of Kuru, सोऽयं मद्गजपंजरे निपतितः संरक्षयतां कौरवाः <ls>Ve.</ls>iii.; 2. a ruler of the Kurus."
         }
-        return Promise.resolve({
-            type: "redirect-external",
-            destination: redirectTarget
-        });
-    }
-    return Promise.resolve({
-        type: "next"
-    });
+    ],
+    "MCI": [
+        {
+            "word": "कौरव",
+            "eid": "2256",
+            "pagenum": 709,
+            "content": "<b>Kaurava, Kauraveya, Kauravya</b>¦ (pl.): Name of a people; like the word Kuru, these words also have various significances (the choice of the word depending on metrical requirements). <b>A.</b> People of the Kuru country: Duryodhana, the king of the Kauravas (<i>kauravāṇām adhipaḥ</i>) 6. 55. 106; Yudhiṣṭhira, the king of the Kauravas (<i>sa rājā</i> <i> … kauravāṇām</i>) 5. 32. 9; he was the protector and the ruler of Kaurava people 5. 147. 31; Karṇa, while praising the people of certain countries as opposed to the Bāhlīkas, said that Kauraveyas were the religion incarnate (i. e. they practised <i>dharma</i> scrupulously) (<i>kauraveyāḥ svadharmaḥ</i>) 8. 30. 73 (Nī. on Bom. Ed. 8. 45. 28 reads <i>kauraveyās tu dharmyam</i> which he explains as <i>dharmyaṃ dharmād anapetaṃ</i> <i>karma mānayantīti śeṣaḥ</i>). <b>B.</b> Those born in the lineage of Kuru and living at Hāstinapura; the term may occasionally include also those like Droṇa, Kṛpa and others not born in Kuru's line but who sided with Dhārtarāṣṭras; the term may also refer not only to the sons of Dhṛtarāṣṭra but also the sons of Pāṇḍu; occasionally the word <i>kauravavaṃśa</i> or <i>kaurava vaṃśa</i> is used instead of simple <i>kaurava:</i> All Kauravyas sat near the sages who brought with them Kuntī and the five Pāṇḍavas 1. 117. 16; Kauravas and others delighted to hear the arrival of the Pāṇḍavas 1. 1. 73; the sage (Vyāsa) composed in the ninth <i>parvan</i> three thousand two hundred and twenty stanzas to describe the events of the famous Kauravas (<i>kauravāṇāṃ yaśobhṛ-</i> <i>tām</i>) 1. 2. 177; Parikṣit was born in the lineage of the Kauravas (<i>kauravavaṃśa-</i> <i>bhṛt</i>) 1. 36. 8; Śakuni took his sister to the Kauravas 1. 103. 14; Pāṇḍu described as the bearer of the fame of the Kauravas; he procured for them fame and kingdom (<i>kauravāṇāṃ yaśobhṛtā</i>) 1. 105. 8; (<i>pāṇḍunāvarjitaṃ rājyaṃ kauravāṇāṃ</i> <i>yaśas tathā</i>) 7. 62. 15; Bhīṣma and other Kauravas did not see the end of the riches brought by Pāṇḍu 1. 105. 24; Bhīṣma, Vidura and other Kauravas grieved at the funeral of Pāṇḍu and Mādrī 1. 118. 26; Droṇa accepted Kauravas (i. e. also the Pāṇḍavas) as his pupils 1. 122. 40; Dhṛtarāṣṭra told Duryodhana that they (i. e. Dhṛtarāṣṭra himself and his sons) and the Pāṇḍavas were the same to Kauraveyas (i. e. to Bhīṣma and other Kauraveyas); if they acted contrary to the wishes of the Kauraveyas they may be killed by them (<i>samā hi kauraveyāṇāṃ vayam ete ca … /</i> <i> … te vayaṃ kauraveyāṇāṃ … kathaṃ na</i> <i>vadhyatāṃ tāta gacchema</i>) 1. 130. 14, 15; Vidura gave to Drupada and others gifts given to them by Kauravas (<i>yathā dattāni</i> <i>kauravaiḥ</i>) 1. 198. 13; Bhīṣma and all other Kauravas enquired through Vidura about the well-being of Drupada in all respects 1. 198. 17; Dhṛtarāṣṭra asked Kauravas to receive the sons of Pāṇḍu 1. 199. 12; Arjuna was one who brought fame to Kauravas (includes the Pāṇḍavas) (<i>kauravāṇāṃ yaśas-</i> <i>karam</i>) 1. 206. 1; Balarāma willing to kill all Kauravas (includes the Pāṇḍavas) (<i>adya niṣkauravām ekaḥ kariṣyāmi vasun-</i> <i>dharām</i>) 1. 212. 31; Bhīṣma was the leader of the Kauravas (includes Pāṇḍavas) 2. 38. 3; Kauravas delighted to see Pāṇḍavas in Hāstinapura 2. 52. 30; asking Draupadī to come to the Sabhā meant that the doom of the Kauravas was imminent (<i>manye prāptaḥ saṃkṣayaḥ kauravāṇām</i>) 2. 60. 12; forcing virtuous women to appear in the Sabhā meant that the Kauraveyas were acting against their ancient, eternal <i>dharma (sa naṣṭaḥ kauraveyeṣu</i> <i>pūrvo dharmaḥ sanātanaḥ)</i> 2. 62. 9; Duḥśāsana defiled the good name of Kauravas (<i>kauravāṇāṃ yaśoharaḥ</i>) 2. 62. 12; Vidura was impartial, hence was respected by the Kauravas (includes Pāṇḍavas) (<i>samaś ca tvaṃ saṃmataḥ kauravāṇāṃ</i>) 3. 5. 2; Vidura spoke what was proper for Kauravas (<i>yat kṣamaṃ kauravāṇām</i>) 3. 6. 13; destruction of Kauravas was certain 3. 6. 16; Vyāsa wanted to tell what was beneficial to the Kauravas 3. 9. 1; if Kauravyas wished to remain alive (<i>kaura-</i> <i>vyāñ jīvamānān</i>) conciliation with the Pāṇḍavas was necessary 3. 10. 23; Kṛṣṇa would have come to Hāstinapura at the time of the game of dice even if not invited by the Kauravas 3. 14. 2; Dhṛtarāṣṭra surrounded by all Kauravas 3. 242. 19; Duryodhana expressed his desire to the Kauravas to perform Rājasūya 3. 243. 14; Dhṛtarāṣṭra was the central figure among Kauravas (including Pāṇḍavas) (<i>meḍhībhūtaḥ kauravāṇām</i>) 5. 36. 71; Kṛṣṇa to approach the Kauravas for peace 5. 70. 89; Kṛṣṇa to find out the view of the Kauravas towards war 5. 71. 33; 9. 62. 2; Kṛṣṇa did not deserve to be arrested by the Kauraveyas 5. 86. 18; Kṛṣṇa dismissed Kauravas 5. 89. 37; Kṛṣṇa advised Duryodhana to see that the Kauravas were not destroyed without any one to survive and that the (Kaurava) family did not perish (<i>astu śeṣaṃ kauravāṇāṃ</i> <i>mā parābhūd idaṃ kulam</i>) 5. 122. 58; bad omens for Kauravas 5. 141. 18; Kauravas destined to be destroyed 5. 144. 24; Bhīṣma carried forward the line of the Kauravas (<i>kauravaṃ vaṃśam udvahan</i>) 5. 145. 32; Bhīṣma had saved the race of the Kauravas which had (almost) perished (<i>pranaṣṭaḥ kauravo vaṃśas tvayāyaṃ punar</i> <i>uddhṛtaḥ</i>) 5. 146. 18; Arjuna born in the family of Kauravas 5. 155. 31; Balarāma could not be a witness to the destruction of the Kauravyas 5. 154. 33; Citrāṅgada was installed on the throne of the Kauravas 5. 169. 18; Kauravas, who had assembled to witness Bhīṣma battle with Paraśurāma and who stood by him, were distressed to see Bhīṣma fall on the ground 5. 183. 11; Bhīṣma, the foremost among the Kauravas (<i>kauravāṇāṃ ṛṣabhāt</i>) 7. 11. 3; (<i>kauravāṇāṃ dhuraṃdhare</i>) 12. 46. 23; 12. 52. 14; 12. 54. 4; (<i>kauravāgrya</i>) 13. 153. 5; Duryodhana prided himself on his birth in the Kuru lineage (<i>kaurave vaṃśe</i>) 9. 30. 21; the jewel held by Aśvatthāman on his head more valuable than the riches collected by Kauravas and the Pāṇḍavas 10. 15. 28; attempts were made by Yudhiṣṭhira to avoid conflict among the Kauravas (i. e. those siding with Duryodhana and with Pāṇḍavas (<i>avigrahe</i> <i>kauravāṇām</i>) 11. 8. 37; Kauravyas, while fighting amongst themselves got killed (<i>yudhyamānā hi kauravyāḥ kṛntamānāḥ</i> <i>parasparam</i>) 11. 13. 16; the battle led to the annihilation of Kauravas (<i>vaiśasaṃ</i> <i>ghoraṃ kauravāntakaram</i>) 11. 27. 20; Gaṅgā spoke to Kauravas (i. e. to Dhṛtarāṣṭra, Yuyutsu and the Pāṇḍavas) (<i>kauravān abhyabhāṣata</i>) 13. 154. 19; Arjuna called the foremost among Kauravas (<i>kauravāṇāṃ dhuraṃdhare</i>) 14. 78. 36; Dhṛtarāṣṭra admitted his fault to Kauravas that he installed Duryodhana as their chief (<i>mamāparādhāt tat sarvam iti jñeyaṃ</i> <i>tu kauravāḥ … duryodhanam kauravāṇām</i> <i>ādhipatye 'bhyaṣecayam</i>) 15. 5. 1-2; when Dhṛtarāṣṭra left for the forest, women of the royal family of Kauravas (<i>kaurava-</i> <i>rājavaṃśyāḥ</i>) uttered loud cry 15. 21. 4; all Kaurava women made a round of Dhṛtarāṣṭra, Gāndhārī and Kuntī (<i>prajagmus</i> <i>te pradakṣiṇam / … sarvāḥ kauravayoṣitaḥ</i>) 15. 44. 49. <b>C.</b> Those present in the Sabhā of Hāstinapura: 1. The <i>dyūta-</i> <i>sabhā:</i> Vikarṇa exhorted the Kauravas to reply to Draupadī's question (<i>vibrūta...</i> <i>tad dhi vakṣyāmi kauravāḥ</i>) 2. 61. 19; none of the Kauravyas present in the Sabhā replied to the question (<i>na vibruvanti</i> <i>kauravyāḥ praśnam etam</i>) 2. 61. 50; Draupadī exhorted the Kauravas present in the Sabhā to reply to her question 2. 62. 1113; Bhīma spoke in the assembly of the Kauravas (<i>saṃsadi kauravāṇām</i>) 2. 68. 25; Nārada prophesied that the Kauravas seated in the assembly would perish in the coming fourteenth year 2. 71. 30; Karṇa abused Draupadī (in the Sabhā) in the presence of all Kauravas 7. 112. 39; citizens of Hāstinapura grieved when at the end of the <i>dyūta</i> in the assembly hall of Kauravas, Pāṇḍavas went out of Hāstinapura (<i>dyūte rājan kauravāṇāṃ sabhāyām</i>) 15. 21. 12; 2. The <i>rājasabhā</i> of the Kauravas: 1. Saṃjaya reminded the Kauravas (present in the assembly) of their ancient <i>dharmas</i> <i>(etān dharmān kauravāṇāṃ purāṇān)</i> 5. 29. 29; Saṃjaya addressed the Kauravas seated in the Sabhā (5. 46. 2, <i>rājasabhā</i> 5. 46. 3) after his return from the Pāṇḍavas (<i>tad</i> <i>vijānīta kauravāḥ</i>) 5. 46. 15 (those present in the Sabhā included Bhīṣma, Dhṛtarāṣṭra, Vidura, Somadatta, Duryodhana and other sons of Dhṛtarāṣṭra, and also Droṇa, Kṛpa, Śalya, Kṛtavarman, Jayadratha, Aśvatthāman, Śakuni, Karṇa, Ulūka (5. 46. 3-9); Karṇa spoke to Duryodhana in the assembly of Kauravas (<i>saṃsadi kauravāṇāṃ</i>) 5. 61. 1; Duḥśāsana feared that the Kauravas might tie up Duryodhana and hand him over to Yudhiṣṭhira (<i>baddhvā</i> <i>kila tvāṃ dāsyanti kuntīputrāya kauravāḥ</i>) 5. 126. 22; Karṇa always boasted in the <i>saṃsad</i> of the Kauravas 8. 46. 35. <b>D.</b> Although it is difficult always to distinguish between those born in Kuru family in general and the sons of Dhṛtarāṣṭra in particular, in the following references the terms Kaurava, Kauraveya and Kauravya (pl.) seem to refer to the sons of Dhṛtarāṣṭra: 1. 1. 73; 1. 122. 43; 2. 61. 5; 3. 9. 3; 3. 26, 17; 3. 225. 4; 3. 230. 8; 3. 232. 17, 19; 3. 233. 5; 3. 235. 2, 17; 4. 25. 5; 5. 6. 17; 5. 26. 27; 5. 29. 15, 17; 5. 36. 72; 5. 47. 59; 5. 64. 8; 5. 70. 43; 5. 151. 15; 6. 1. 25; 6. 4. 9; 6. 16. 39; 6. 41. 25, 53, 80; 6. 48. 23; 6. 53. 4; 6. 84. 34; 6. 85. 12, 18; 6. 93. 26; 6. 107. 15; 6. 110. 42; 7. 135. 32; 7. 167. 24; 8. 5. 22; 8. 6. 2; 8. 58. 28; 9. 15. 16; 12. 42. 9; 14. 52. 13; 15. 21. 4(a); (<i>pāṇḍavānāṃ ca ye yodhāḥ kauravā-</i> <i>ṇāṃ ca sarvaśaḥ</i>) 15. 40. 5. <b>E.</b> In the following references the term Kaurava or Kauravya refers to the Pāṇḍavas: 1. 138. 8; 3. 1. 2; 3. 93. 3; 3. 222. 55; 3. 244. 16; 4. 4. 8; 4. 32. 40; 12. 50. 10-11; 14. 88. 15. <b>F.</b> The term Kaurava sometimes refers to the warriors born in the Kuru family and even others not born in that family but who joined the Kauravas; (sometimes it is used as an adj. (fem. <i>-ī</i>) to refer to the Kaurava army in general: <i>kauravaṃ sainyam</i> 6. 41. 27; 6. 54. 25; 7. 113. 11 (<i>sindhusauvī rakauravam</i>); 7. 139. 30; 8. 40. 3; 9. 18. 13; <i>kauravaṃ</i> <i>balam</i> 8. 51. 8; <i>kauravī senā</i> 6. 54. 18; 7. 135. 4; 7. 146. 45; 8. 17. 47; 8. 36. 40; 8. 54. 23; 9. 9. 59; (<i>kauravī camū</i> 9. 9. 62 <i>kauravī pṛtanā</i> 9. 10. 9): (a) In the great battle with the Pāṇḍavas: Bhīṣma, Droṇa, Karṇa and many others, as well as many kings had joined the side of the Kauravas and, together with their sons, counsellors and soldiers they formed the army of the Kauravas; they were apportioned money and all enjoyments (<i>saṃśritāḥ</i> <i>kauravaṃ pakṣaṃ … sarve kauravasainya-</i> <i>sya saputrāmātyasainikāḥ / saṃvibhaktā hi</i> <i>mātrābhir bhogair api ca sarvaśaḥ</i>) 3. 37. 9, 11 (Nī. on Bom. Ed. 3. 36. 13 <i>mātrābhiḥ</i> <i>aṃśaparicchedaiḥ</i>); the very spacious land became very crowded with the army of the Kauraveyas 5. 19. 31; Bhīṣma, the chief warrior of the Kauravas (<i>kauravāṇāṃ</i> <i>pravīre</i>) 5. 47. 35; Kauravas eager to fight with the Pāṇḍavas (<i>kauravāṇāṃ yuyutsa-</i> <i>tām</i>) 5. 56. 52; Kaurava army of eleven <i>akṣauhiṇīs</i> 5. 152. 23; Bhīṣma became the general of the Kauravas 5. 162. 4; Pāṇḍavas and Somakas faced Kauravas on the Kurukṣetra 6. 1. 3; the Kṣatriyas praised the Kaurava heroes 6. 41. 25; Dhṛṣṭadyumna was to kill the Kauravas 6. 46. 34; Arjuna killing the Kaurava army (<i>vinighnan kauravānīkam</i>) 6. 48. 19; Kauravas recognized Bhīṣma by the mark on (his banner) (<i>cihnamātreṇa</i>) 6. 48. 58; the <i>vyūha</i> of the Kaurava army impregnable 6. 53. 7; no one could save the chariot (i. e. the chariot-fighter Bhīṣma) of the Kauravas from enraged Kṛṣṇa (<i>nāsau rathaḥ sātvata kauravāṇāṃ kru-</i> <i>ddhasya mucyeta raṇe 'dya kaścit</i>) 6. 55. 83; Kauraveyas dejected to see Arjuna (6. 56. 9); Kauravas acted as advised by Bhīṣma and left for their camp 6. 60. 70, 73; Pāṇḍavas attacked the Kauravas and the latter fought with them 6. 71. 13, 22, 36; the large armies of Kauravas were arranged in a <i>vyūha</i> by Bhīṣma, Droṇa and others (<i>kauravāṇāṃ mahācamūḥ</i>) 6. 83. 4; Bhīmasena killed Kauraveyas 6. 85. 24; the princīpal Kaurava heroes (<i>kauravāṇāṃ</i> <i>mahārathāḥ</i>) faced Bhīma's attack 6. 90. 24; Droṇa, Duryodhana, Śalya and Aśvatthāman named among the principal heroes of Kauravas 6. 90. 41; Arjuna faced the attack of the Kaurava army 6. 91. 78; many Pāṇḍava warriors, difficult to be killed in battle, were put to death in battle by Kauravas (<i>avadhyā bahavo vīrāh saṃ-</i> <i>grāme … /nihatāḥ kauravaiḥ saṃkhye</i>) 6. 92. 4; Kauravas would not try to save their lives 6. 99. 46; Dhṛtarāṣṭra asked: Did Karṇa fill up the gap of Kauravas caused by the fall of Bhīṣma ? (<i>api tat pūrayāṃ</i> <i>cakre … yat … kauravāṇām apāvṛtam</i>) 7. 1. 48; after Bhīṣma, Karṇa to be the refuge of Kauravas 7. 4. 8; Pāṇḍavas and Kauravyas struck one another with arrows 7. 6. 31; if Pāṇḍavas were defeated, Kṛṣṇa would kill Kauravas 7. 10. 35; Kauravas surrounded Pāñcālas on all sides; they were obstructed by Droṇa and Kauravyas 7. 21. 9, 14; Arjuna killed Kauravyas with arrows 7. 27. 12; he showered arrows on the army of Kauravas 7. 29. 28; all Kauravas, led by Droṇa, turned towards Abhimanyu 7. 35. 11; Duryodhana's army feared that Arjuna might dry up Kauravas (<i>kauravāñ śoṣayiṣyati</i>) 7. 49. 19; a loud cry went up from Kauravas when they heard a loud roar from the side of the Pāṇḍavas 7. 53. 7; none but Kauravas could fight the army protected by Kṛṣṇa and Arjuna 7. 62. 19, 21 (Kauraveyas); Kauravas true to the <i>dharma</i> of Kṣatriyas (<i>kṣatra-</i> <i>dharmarataiḥ</i>), did everything possible 7. 62. 22; Kaurava army appeared like an ocean (<i>samudram iva kauravam</i>) 7. 69. 75; Pāṇḍavas rushed towards Kauraveyas divided into three groups (<i>kauraveyāṃs tri-</i> <i>dhābhūtān</i>) 7. 72. 1; Kauravas respected the highly wonderful and bold feat of Kṛṣṇa and Arjuna (viz. producing water on the battlefield to refresh the horses) (<i>apūjayan … kauravāḥ paramādbhutam /</i> <i>tat tu pārthasya vikrāntaṃ vāsudevasya</i> <i>cobhayoḥ</i>) 7. 75. 9; seeing Kṛṣṇa and Arjuna delighted, Kauraveyas lost all hope about Duryodhana's remaining alive 7. 77. 31; Kauravas raised loud sound in response to the one raised by their opponents 7. 84. 30; delighted, Kauravas raised loud sound repeatedly 7. 85. 38; Yudhiṣṭhira said that Sātyaki would kill Kauravas 7. 85. 57; the great warriors among Kauravas had already left to protect Jayadratha (<i>kauravāṇāṃ mahārathāḥ</i>) 7. 85. 67; Dhṛtarāṣṭra felt that the Kauravas were as good as overpowered by death; he wished to know how Kauravas fared against Sātyaki (<i>grastān hi kauravān</i> <i>manye mṛtyunā</i>) 7. 89. 19, 39; Kauravas would witness the heroism of Sātyaki when he destroyed the army of Kāmbojas; Duryodhana would be enraged when he heard the destruction of the Kaurava army in battle (<i>kauravasainyasya dīryamāṇasya saṃ-</i> <i>yuge</i>) 7. 95. 21-22; Kauravas would see Sātyaki's skill in the use of bow and arrows 7. 95. 25; the army of the Pāṇḍavas killed Kauravas in battle 7. 100. 6; Arjuna pierced through Kauraveyas all around (with his arrows) 7. 102. 102; Dhṛtarāṣṭra considered Kauravas as good as dead (<i>vinaṣṭān kauravān manye</i>) 7. 108. 7; Sātyaki caused severe damage to Kaurava army (<i>kauravayodhānām kṛtvā ghoram</i> <i>upadravam</i>) 7. 116. 15; no warrior equal to Sātyaki among the Kauravas 7. 116. 21; Sātyaki scattered Kauravyas like blades of grass (<i>tṛṇavan nyasya kauravyān</i>) 7. 116. 25; no one from Kauravas or Pāṇḍavas uttered a word when Sātyaki justified the way he killed Bhūriśravas 7. 118. 49; the foremost Kauravas (which term includes not only Duryodhana but also Karṇa, Vṛṣasena, Śalya, Aśvatthāman and Kṛpa 7. 120. 40) surrounded Arjuna in order to protect Jayadratha 7. 120. 48; Kauravas were killed due to the wrath of Yudhiṣṭhira (<i>tava krodha-</i> <i>hatā hy ete kauravāḥ</i>) 7. 124. 21; the large army of Kauravas was as good as killed 7. 125. 4; bad omens specially for the army of Kauravas 7. 129. 25; Karṇa blamed Kṛpa for his speech which would frighten the armies of Kauraveyas 7. 133. 53; Pāṇḍavas could destroy the army of Kauravas in half a moment (<i>kauravīṃ</i> <i>senām</i>) if Aśvatthāman, Karṇa and others were not present 7. 135. 4; Aśvatthāman honoured by Kauraveyas when he killed the enemies by thousands 7. 135. 54; Yudhiṣṭhira advised to go where Bhīma fought with Kauravas 7. 137. 47; Arjuna blew away (<i>vyadhamat</i>) the army of Kauravas 7. 139. 8; Arjuna and the Kaurava army afflicted each other by different weapons (<i>arjunaḥ kauravaṃ sainyam arjunaṃ cāpi</i> <i>kauravāḥ</i>) 7. 139. 30; there was a loud sound when the Pāṇḍus (i. e. Pāṇḍavas) and Pāñcāla armies (<i>pāṇḍupāñcālasenānām</i>) and those of Kauravas clashed with each other 7. 139. 32; Bhīma, thinking Duryodhana dead, made a loud roar fighting Kauravas 7. 141. 56; during the night war, when the Pāṇḍava army began to flee throwing away torches, they could be seen running away only by the light on the side of Kauravas (<i>kauravāṇāṃ prakāśena dṛśyante</i> <i>tu drutāḥ pare</i>) 7. 147. 20; as the battle advanced, the night became very dark for Pāṇḍavas and Kauravas 7. 147. 38; Ghaṭotkaca, while falling down, assumed huge form and killed many Kauravas; seeing Ghaṭotkaca dead, Kauravas, delighted, uttered loud roar and blew <i>bherīs,</i> conches, <i>murajas</i> and <i>ānakas</i> 7. 154. 61-62; Kṛṣṇa pointed out to Arjuna that Kauravyas, hitting their target, were scattering away the army of Pāṇḍavas (<i>labdhalakṣyā hi</i> <i>kauravyā vidhamanti camūṃ tava</i>) 7. 156. 33; Kauravas put to flight their opponents; Kauravas showed their valour disregarding the strength of Bhīma's arms and the skill of Arjuna in the use of missiles 7. 158. 33, 35; Vyāsa advised agitated Yudhiṣṭhira to fight with Kauravas (with fortitude) 7. 158. 60; the large army of the Kauravas became confused (<i>āvignam abhavat sarvaṃ kauravā-</i> <i>ṇāṃ mahad balam</i>) 7. 162. 22; in the confusion of the war that took place on the morning of the fifteenth day, it could not be ascertained who were Kauraveyas and who Pāñcālas or Pāṇḍavas 7. 162. 28; Arjuna suddenly attacked the Kauraveyas 7. 164. 57; Dhṛṣṭadyumna, undaunted, scattered Vasātis, Śibis, Bāhlīkas and even Kauravas who were protecting Droṇa 7. 165. 24; Kauravas, afraid and more shaken, ran away at the death of Droṇa 7. 165. 74; Droṇa was killed although Kauravas and Arjuna tried to forbid Dhṛṣṭadyumna 7. 165. 123; Yudhiṣṭhira wondered whether it was Indra who came to help Kauravas (<i>kauravārthaṃ</i>) after the death of Droṇa and put the scattered army into order; Kauravas mustered courage for dreadful act and blew their conches 7. 167. 9, 18, 22, 24-25; Dhṛṣṭadyumna felt that Aśvatthāman would not be able to protect Kauravyas and would only lead them to death (<i>ghātayiṣyati kauravyān</i>) 7. 168. 27; Dhṛṣṭadyumna asked Sātyaki to fight with Kauravas 7. 169. 39; Dhṛṣṭadyumna drew Bhīma's attention to the advancing Kauravas 7. 169. 57; Aśvatthāman steadied Kauravas agitated after the death of Droṇa (<i>saṃrabdhā hi sthirībhūtā droṇaputreṇa</i> <i>kauravāḥ</i>) 7. 170. 10; as the Pāṇḍava warriors tried to resist the Nārāyaṇāstra, the Kauravas became more and more strong (<i>kauravā balavattarāḥ</i>) 7. 170. 40; Arjuna alone, aided by some others, faced Kauravas 7. 172. 3; Kauravas and Pāṇḍavas stopped fighting after the fall of Droṇa 7. 172. 93; when Kauravas were dispersed, Arjuna met Vyāsa who providentially arrived there 7. 173. 2-3; Dhṛtarāṣṭra was not to grieve over what had happened to Kauraveyas at the hands of Pāṇḍavas (<i>pāṇḍaveyair hi yad vṛttaṃ</i> <i>kauraveyeṣu</i>) 8. 1. 47; 8. 5. 109 (<i>kauravā-</i> <i>ṇāṃ</i>); Kauravas held consultations in their camp to decide on the course that would be in their interest 8. 6. 6; seeing Karṇa ready for battle, Kauravas did not mind the loss of Bhīṣma, Droṇa and others 8. 7. 12; Karṇa drove the army of Kauravas to the battlefield 8. 7. 13; Trigartas and others, along with Kauravas, marched against Arjuna 8. 19. 2; there arose different kinds of sounds when Pāñcālas clashed with Kauravas 8. 19. 45; the way Saṃjaya described the battle, Dhṛtarāṣṭra was convinced that Kauravyas would be no more (<i>na santi sūta kauravyā … </i>) 8. 20. 2; at the end of the (sixteenth) day, Kauravas returned to their camp 8. 21. 38; Kauravas held consultations in their camp; their condition described as that of serpents whose fangs were broken, poison destroyed, and who were held under feet (<i>bhagnadaṃṣṭrā hataviṣāḥ padā-</i> <i>krāntā ivoragāḥ</i>) 8. 22. 6; bad omens for Kauravas 8. 26. 38; when started for the battlefield (on the seventeenth day) Kauravas thought Pāṇḍavas as good as defeated 8. 26. 39; Pāṇḍavas and Kauravas chopped off (<i>tatakṣuḥ</i>) one another with sharp arrows 8. 35. 60; Dhṛṣṭadyumna quickly halted Kauravas with arrows 8. 38. 41; Yudhiṣṭhira boasted that in spite of Aśvatthāman he would win Kauravas in battle 8. 39. 33; Bhīma brought about destruction of Kauravas 8. 40. 5; Kṛṣṇa asked Arjuna to quickly kill Kauravas 8. 40. 85; Kauravyas shouted seeing Karṇa's valour 8. 43. 34; Kauravas to hasten and attack Sṛñjayas so that none of them escaped alive 8. 43. 36; Kauravas getting killed by Bhīma and Pāñcālas 8. 43. 53; Bhīma engaged Kauravas 8. 44. 13; Nakula engaged Kauravas 8. 44. 38; battle between Sṛñjayas and Kauravas in which Yudhiṣṭhira was humiliated 8. 46. 41; Kauravas, although they had large number of elephants and horses, were destroyed since they opposed Arjuna 8. 51. 4; none but Pāṇḍavas, aided by Arjuna, could defeat Kauravas 8. 51. 7; Kauravas having clashed with Bhīma and Arjuna in battle met with death 8. 51. 25; only Arjuna could defeat Kauravas along with Karṇa 8. 51. 109; all would see Arjuna fight with Kauravas and kill Karṇa 8. 52. 29; the army of Kauravas was being replenished again and again when severely thrashed (<i>āpūr-</i> <i>yate kauravī cāpy abhīkṣṇaṃ senā hy</i> <i>asau subhṛśaṃ hanyamānā</i>) 8. 54. 23; all Kauravas were confused and put to flight 8. 54. 24; Kauravas could not look at Arjuna 8. 57. 55; Bhīma would crush under his foot the head of Duryodhana in the presence of Kauravas 8. 61. 16; Kauravas refreshed their horses, went at a distance of little less than two <i>yojanas</i> and reached Sarasvatī at the foot of Himavant 9. 4. 48-49; Pāṇḍavas arranged their army and attacked Kauravas 9. 7. 11; Kauravas attacked the army of Pāṇḍavas 9. 10. 17; Sātyaki turned towards Kauravas who, terrified at the death of Śalya's brother, ran in different directions 9. 16. 67; Duryodhana reminded Kauravas (who included Kṣatriya kings and their army 9. 18. 55, 59, 62) that there was no better way to reach heaven than observe the <i>dharma</i> of battle (<i>na yuddhadharmāc chreyān vai</i> <i>panthāḥ svargasya kauravāḥ</i>) 9. 18. 61; Kauravas made a loud roar by blowing conches 9. 19. 10; when their army had almost dwindled, Pāṇḍavas put Kauraveyas to death (<i>alpāvaślṣṭe sainye tu</i> <i>kauraveyān</i>) 9. 27. 14; Duryodhana, glad to see Aśvatthāman, Kṛpa and Kṛtavarman who remained alive in the battle between Pāṇḍus (i. e. Pāṇḍavas) and Kauravas 9. 29. 14; the three surviving heroes called the great warriors of Kauravas (<i>kauravā-</i> <i>ṇāṃ mahārathān</i>) 9. 29. 26; 9. 64. 1; Nārada had warned Dhṛtarāṣṭra that Pāṇḍavas and Kauravas fighting each other would perish 11. 8. 33; Bhīṣma, a Kauravya, became the general of the army of Kauraveyas, eleven <i>akṣauhiṇīs</i> strong <i>(bhīṣmaḥ)</i> <i> … ekādaśacamūpatiḥ / kauravyaḥ kaura-</i> <i>veyāṇām</i>) 14. 59. 8; when Karṇa was killed, Kauravyas, whose army was reduced to three <i>akṣauhiṇīs,</i> dejected and with their vigour diminished, gathered around Śalya (<i>kauravyā nirutsāhā hataujasaḥ</i>) 14. 59. 22; (<b>b</b>) In the battle at the time of the raid on Virāṭa's cows: Suśarman suggested to Duryodhana marching against the Matsya country with all Kauravas and Karṇa (<i>tatra yātrā mama</i> <i>matā yadi te rocate … /kauravāṇāṃ</i> <i>ca sarveṣām karṇasya ca … </i>) 4. 29. 7; Suśarman suggested a cow-raid jointly by Kauravas and Trigartas 4. 29. 11; all Kauravas together were to attack in the manner decided before 4. 29. 22; accordingly, all Kauravas together raided and captured the cows of Virāṭa by thousands on the eighth day of the hot season (<i>sarve … saṃbhūya kauravāḥ / aṣṭamyāṃ</i> (<i>gharmapakṣaṣya</i> 4. 29. 27) <i>tāny agṛhṇanta</i> <i>gokulāni sahasraśaḥ //</i>) 4. 29. 28; according to Droṇa there was no one among Kauravas who could be a match for Arjuna 4. 37. 12; Karṇa assured Kauravas that they would witness Arjuna thoroughly humiliated by him 4. 43. 20; Arjuna attacked Kauraveyas whose chief heroes had arranged their army in different formations (<i>tathā vyūḍheṣv anīkeṣu kauraveyair mahā-</i> <i>rathaiḥ</i>) 4. 48. 1; all Kaurava principal heroes together faced Arjuna's attack 4. 57. 1; defeat of all Kauravas and Karṇa referred to later in the Droṇaparvan 7. 103. 38; 7. 133. 17; in the Karṇaparvan, Śalya asked Karṇa why he, aided by Droṇa, Aśvatthāman, Kṛpa, Bhīṣma and Kauravas, did not kill Arjuna fighting alone in the Virāṭanagara 8. 28. 56; (c) Battle with Citrasena Gandharva: Kauravyas were deluded by the <i>māyās</i> of the army of Citrasena 3. 230. 22; the Kauravas (their <i>amātyas</i> and the rest of their army) took heart listening to the vow of Arjuna (<i>kauravāṇāṃ tadā rājan punaḥ pratyā-</i> <i>gataṃ manaḥ</i>) 3. 232. 21. <b>G.</b> Different persons on the side of Kauravas and Pāṇḍavas are referred to simply as a descendant or kinsman of Kuru, or the chief, the best (or rarely the lowest), the famous, the delighter etc. of those born in the line of Kuru; only once (15. 17. 17) we have the expression <i>kauravaka</i> in a derogatory sense. <i>kaurava, kauraveya,</i> <i>kauravya:</i> (1) Arjuna: <i>kaurava</i> 1. 126. 31; 1. 160. 20; 3. 42. 38; 7. 120. 31; <i>kauraveya</i> 7. 118. 12; <i>kauravya</i> 1. 159. 10; 1. 160. 16; 7. 122. 24; 8. 41. 1; 14. 15. 20, 27; 14. 77. 6; 14. 82. 7; 16. 6. 7; 16. 8. 29, 66; (2) Janamejaya: <i>kaurava</i> 1. 120. 6; 2. 11. 73; 3. 229. 15; <i>kauravya</i> 1. 61. 37, 56; 1. 224. 1; 2. 19. 37; 3. 172. 24; 3. 229. 22; 8. 1. 5; 9. 38. 31; 9. 41. 24; 9. 45. 9, 20; 13. 153. 18; 14. 57. 38; 14. 63. 8; 14. 70. 17; 14. 75. 5; 14. 76. 11; 14. 81. 3; 14. 83. 16; 14. 84. 18; 15. 15. 1; 15. 30. 17; 17. 1. 25, 27; 18. 3. 1; 18. 5. 8; (3) Jayatsena: <i>kauravya</i> 9. 25. 9; (4) Duḥśāsana: <i>kaurava</i> 6. 115. 24; 7. 98. 12; 8. 17. 38; <i>kauravya</i> 3. 238. 34; 7. 39. 8; (5) Durmukha: <i>kaurava</i> 5. 64. 6; (6) Duryodhana; <i>kaurava</i> 1. 126. 37; 1. 132. 18; 1. 195. 11; 3. 229. 28; 3. 239. 2; 3. 240. 23; 3. 241. 15; 3. 242. 10; 3. 243. 13; 4. 47. 12; 5. 47. 23; 5. 77. 11; 5. 83. 16; 5. 89. 9, 12; 5. 95. 10; 5. 136. 3; 5. 151. 13; 5. 153. 34; 5. 166. 23; 5. 181. 26, 34; 5. 193. 1; 5. 196. 19; 6. 41. 38, 52, 53; 6. 61. 30; 6. 88. 20; 6. 90. 13, 22; 6. 91. 10; 7. 36. 3; 7. 69. 75; 7. 126, 7; 7. 134. 63; 7. 135. 1, 8; 7. 141. 46, 52; 7. 160. 13; 7. 165. 93; 7. 166. 29; 8. 23. 51; 9. 1. 2; 9. 6. 17; 9. 15. 16; 9. 23. 5; 9. 29. 25, 65; 9. 53. 25; 9. 54. 19; 9. 56. 64, 66; 9. 57. 17; 9. 64. 36; <i>kauraveya:</i> 3. 235. 24; 3. 240. 36; 5. 152. 22; 7. 133. 57; 9. 23. 31; 9. 30. 20; <i>kauravya</i> 3. 229. 17; 3. 231. 19; 3. 238. 34, 39; 4. 24. 7, 21; 4. 27. 28, 5. 19. 21, 22, 25, 5. 20. 1; 5. 62. 20; 5. 151. 7; 5. 152. 15; 5. 172. 21; 5. 181. 18; 5. 187. 27; 5. 193. 66; 5. 196. 14; 6. 75. 18; 6. 110. 30; 7. 69. 33; 7. 78. 18; 7. 120. 28; 7. 126. 21, 30; 7. 133. 10; 7. 134. 69; 7. 160. 11; 7. 166. 42; 8. 23. 25; 9. 23. 3; 9. 25. 3; 9. 31. 23; 9. 33. 4; 9. 56. 39; 10. 9. 27; 12. 4. 12; 14. 51. 18; (7) Dhṛtarāṣṭra: <i>kaurava</i> 1. 192. 7; 2. 51. 6; 3. 12. 69; 3. 14. 4; 3. 228. 4; 4. 64. 14; 5. 6. 4; 6. 61. 25; 7. 112. 42; 8. 3. 7; 9. 62. 67; 11. 12. 3; 12. 40. 5; 15. 4. 2; 15. 5. 13; 15. 17. 10, 17 (<i>kauravaka</i>); 15. 18. 3; 15. 34. 20. 15. 37. 2; 15. 44. 13; 15. 46. 14; <i>kauravya:</i> 2. 48. 24; 3. 5. 6; 3. 10. 17; 5. 21. 21; 5. 62. 10; 5. 81. 46; 5. 93. 9, 11, 13; 6. 10. 12; 6. 12. 15, 22, 25, 30; 6. 13. 1, 10, 31, 33, 47; 6. 105. 7; 7. 1. 4, 5; 7. 103. 17; 7. 107. 13; 7. 110. 24; 7. 148. 53; 8. 1. 20; 8. 33. 44; 9. 2. 14; 9. 14. 26; 9. 22. 61; 10. 1. 35; 10. 8. 42; 11. 11. 27; 15. 2. 6; 15. 16. 19; 15. 20. 16; 15. 34. 23; 15. 44. 47; (8) Dhṛtarāṣṭra, Pāṇḍu, Vidura: <i>kauravya</i> 1. 1. 54; 1. 117. 16: (9) Nakula: <i>kaura-</i> <i>vya</i> 1. 213. 77; (10) Pāṇḍu: <i>kaurava</i> 1. 114. 24; 1. 118. 12; 1. 185. 18; <i>kauravya</i> 1. 109. 20; 1. 110. 42; 1. 114. 19; 1. 116. 10; 5. 142. 29; 5. 146. 5; (11) Babhruvāhana; Kaurava 14. 81. 6; (12) Bhīmasena; <i>kaurava</i> 3. 147. 3; 3. 256. 6; <i>kauravya</i> 7. 117. 2; 7. 122. 56; (13) Bhīṣma; <i>kaurava</i> 1. 96. 37, 38; 2. 35. 5; 5. 162. 15; 5. 165. 14; 5. 166. 13; 5. 171. 7; 5. 180. 16; 6. 54. 32; 6. 82. 18; 6. 103. 46; 7. 1. 37; 12. 46. 29; 12. 54. 25; 12. 56. 4; 12. 224. 1; 12. 290. 77; 13. 3. 16; 13. 65. 4; 13. 153. 36; 13. 154. 9; <i>kauravya</i> 1. 96. 13; 1. 122. 27; 2. 39. 5; 3. 83. 90. 92; 5. 23. 8; 5. 178. 17; 5. 179. 2, 6; 5. 184. 16; 5. 186. 3; 5. 187. 38; 6. 55. 53; 6. 102. 44; 6. 110. 30; 6. 111. 5; 7. 1. 36; 12. 27. 8; 12. 158. 3; 12. 309. 1; 13. 154. 1; 14. 59. 8; (14) Bhūri; <i>kaurava</i> 7. 140. 6; 7. 141. 3; (15) Bhūriśravas: <i>kaurava</i> 6. 60. 2; 7. 117. 17, 60; 7. 118. 3; 7. 120. 1; <i>kauraveya</i> 7. 117. 14; 7. 119. 2; <i>kauravya</i> 7. 117. 2; 7. 122. 56; (16) Yudhiṣṭhira: <i>kaurava</i> 3. 14. 4; 3. 15. 18; 3. 16. 20; 3. 17. 9; 3. 23. 42; 3. 27. 9; 3. 63. 24; 3. 192. 8; 4. 38. 56; 5. 195. 20; 7. 87. 26; 11. 1. 2; 14. 86. 5; <i>kaura-</i> <i>vya</i> 2. 7. 1; 2. 32. 11; 2. 34. 1; 3. 14. 10, 14; 3. 15. 16, 17; 3. 16. 15; 3. 17. 7; 3. 18. 13, 20; 3. 19. 11; 3. 48. 24; 3. 85. 11, 16; 3. 88. 19; 3. 96. 1; 3. 97. 2; 3. 195. 18; 3. 213. 1; 3. 219. 30; 3. 251. 10; 4. 15. 31; 4. 18. 23; 4. 39. 2; 4. 64. 11; 4. 66. 1; 6. 1. 12; 6. 82. 4, 46; 6. 115. 61; 7. 19. 24; 7. 86. 37; 12. 16. 16; 12. 23. 1; 12. 56. 23; 12. 59. 42; 12. 66. 15; 12. 69. 53; 12. 70. 32; 12. 121. 8, 32; 12. 140. 5; 12. 152. 14, 19; 12. 154. 17; 12. 159. 57; 12. 258. 69; 12. 272. 12; 12. 273. 10, 17, 60; 12. 311. 11, 13; 13. 40. 1; 13. 42. 3, 28, 32; 13. 58. 15; 13. 67. 33; 13. 82. 8; 13. 86. 33; 13. 91. 4; 13. 153. 10, 32; 14. 5. 20; 14. 14. 6; 14. 51. 49; 14. 71. 20; 15. 3. 4; 15. 12. 10; 15. 36. 4; 17. 1. 18; 18. 2. 35; (17) Yuyutsu: <i>kaurava</i> 11. 26. 25; <i>kauravya</i> 7. 59. 4; 13. 154. 8; 14. 59. 33; 14. 62. 23; (18) Vicitravīrya: <i>kaurava</i> 1. 96. 41; <i>kauravya</i> 1. 96. 58; (19) Śantanu: <i>kaurava</i> 13. 44. 38; <i>kauravya</i> 1. 97. 3; (20) Sahadeva: <i>kauravya</i> 2. 28. 2, 33; (21) Somadatta: <i>kaurava</i> 1. 131. 12; 7. 131. 11; 7. 132. 5; 7. 137. 26; <i>kauravya</i> 1. 177. 14; 2. 31. 8; <i>kauravadāyāda:</i> Bhūriśravas 6. 70. 13; 8. 4. 17; <i>kauravyadāyāda:</i> Pāṇḍu 1. 117. 20; <i>kauravāṇāṃ dhurandharaḥ:</i> (1) Arjuna 14. 78. 36; (2) Bhīṣma 5. 162. 4; 6. 115. 20; 12. 46. 23; 12. 52. 14; 12. 54. 4; <i>kauravanandana:</i> (1) Arjuna 6. 116. 29; 14. 73. 33; 14. 76. 26; (2) Janamejaya 3. 89. 1; (3) Duryodhana 5. 186. 1; 5. 193. 63; 9. 30. 58; (4) Dhārtarāṣṭras 7. 171. 16; (5) Dhṛtarāṣṭra 12. 124. 62; 15. 25. 12; 15. 36. 19; 15. 44. 6; (6) Pāṇḍavas 2. 52. 29; 3. 141. 29; 4. 47. 8; (7) Bhīmasena 3. 149. 6; (8) Bhīṣma 12. 55. 1; (9) Yudhiṣṭhira 2. 11. 65; 3. 94. 4; 12. 90. 9; 12. 119. 19; 13. 43. 25; 13. 117. 9, 20; 16. 1. 1; <i>kauravanātha:</i> Yudhiṣṭhira 13. 154. 11; <i>kauravāṇāṃ pravīraḥ:</i> Bhīṣma 5. 47. 35; <i>kauravyapatnī:</i> Kuntī 5. 142. 29; <i>kauravāṇāṃ mahārathaḥ</i> or <i>mahārathāḥ:</i> (1) Arjuna 14. 75. 9; (2) Duryodhana 6. 93. 26; (3) Aśvatthāman, Kṛpa and Kṛtavarman 9. 29. 26; 9. 64. 1; (4) Bhīṣma, Droṇa and others 4. 57. 1; 4. 48. 1 (<i>kauraveyair mahārathaiḥ</i>); (5) Droṇa and others 6. 90. 24; (6) Unspecified 6. 71. 36; 7. 85. 67; 8. 35. 60; <i>kauravamukhya:</i> Bhūriśravas 7. 116. 34; <i>meḍhībhūtaḥ kauravāṇāṃ:</i> Dhṛtarāṣṭra 5. 36. 71; <i>kauravāṇāṃ yaśaskaraḥ:</i> Arjuna 1. 206. 1; <i>kauravāṇāṃ yaśobhṛt:</i> Pāṇḍu 1. 105. 8; <i>kauravāṇāṃ yaśoharaḥ:</i> Duḥśāsana 2. 62. 11; <i>kāuravarāja:</i> Dhṛtarāṣṭra 15. 21. 4; <i>rājā kauravāṇāṃ:</i> Yudhiṣṭhira 5. 32. 9; <i>kauravarājapatnī:</i> Draupadī 1. 186. 9; <i>kauravarājaputra:</i> (1) Arjuna 8. 57, 38; (2) Pāṇḍavas 1. 190. 9; <i>kauravarṣabha:</i> (1) Arjuna 3. 46. 24; (2) Dhṛtarāṣṭra 15. 34. 19; (3) Pāṇḍavas 3. 187. 55; (4) Bhīṣma (<i>kauravāṇāṃ ṛṣabhaḥ</i>) 7. 11. 3; <i>kauravavaṃśabhṛt:</i> (1) Dhṛtarāṣṭra 15. 31. 5; (2) Parikṣit 1. 36. 8; <i>kuuravavaṃśa-</i> <i>vardhana:</i> (1) Pāṇḍavas 1. 190. 13; (2) Yudhiṣṭhira 4. 6. 2; <i>kauravaśārdūla:</i> Janamejaya 3. 39. 8; <i>kauravaśreṣṭha:</i> (1) Arjuna 14. 76. 32; (2) Duryodhana 3. 241. 26; 5. 168. 25; 7. 141. 44; (3) Dhṛtarāṣṭra 6. 13. 39; (4) Bhīmasena 3. 176. 17; (5) Yudhiṣṭhira 3. 18. 24; 3. 47. 9; 3. 94. 1; (6) Duryodhana, Karṇa, Vṛṣasena Śalya, Aśvatthāman, Kṛpa 7. 120. 48 (cf. 7. 120. 40); <i>kauravasattama:</i> Arjuna 6. 55. 101; <i>kauravāgrya:</i> (1) Bhīṣma 13. 153. 5; (2) Pāṇḍavas 1. 180. 22; (3) Yudhiṣṭhira 10. 10. 30; <i>kauravāṇāṃ addhipaḥ:</i> Duryodhana 6. 55. 106; <i>kauravāṇāṃ adhipatiḥ:</i> Duryodhana (<i>kauravāṇāṃ ādhipatye</i>) 15. 5. 2; <i>kauravācāryamukhya:</i> Droṇa 1. 155. 23; <i>kauravādhama:</i> Bāhlīka (Somadatta) 7. 137. 2; <i>kauravendra:</i> (1) Duryodhana 5. 169. 14; 5. 183. 16; 5. 193. 26; 6. 108. 11; 6. 116. 36, 48; 9. 55. 16; 9. 58. 3; 9. 60. 7; 14. 59. 13, 34; (2) Dhṛtarāṣṭra: 6. 12. 21; 7. 7. 29; 7. 154. 25; 15. 1. 20; 15. 7. 13; 15. 21. 13; 15. 26. 21; 15. 28. 1; (3) Bhūriśravas 7. 118. 36; (4) Yudhiṣṭhira 3. 181. 41; 6. 82. 11; 12. 296. 45; 13. 96. 42; 13. 143. 6; 18. 3. 28; (5) Unspecified 7. 80. 11."
+        }
+    ],
+    "MD": [
+        {
+            "word": "कौरव",
+            "eid": "6391",
+            "pagenum": 75,
+            "content": "कौरव¦ kaurav-a, <lex>a.</lex> (<b>ī</b>) belonging to the 🞄Kurus; <lex>m.</lex> <ab>pat.</ab> descendant of Kuru; <b>-eya,</b> 🞄<lex>m.</lex> <ab>pl.</ab> descendants of Kuru; <b>-yá (+ kaúravya),</b> <lex>m.</lex> <ab>pl.</ab> <ab>id.</ab> = Pāṇḍavas; <ab>N.</ab> <i>of a people</i>."
+        }
+    ],
+    "MW": [
+        {
+            "word": "कौरव",
+            "eid": "57278",
+            "pagenum": "317,1",
+            "content": "कौरव ¦ <lex>mf(ई)n.</lex> (= °वक, <ls>Pāṇ. iv, 2, 130</ls>; <ab>g.</ab> utsA<srs/>di and kacCA<srs/>di) relating or belonging to the <s1 slp1='kuru'>Kuru</s1>s, <ls>MBh.</ls>; <ls>VarBṛS.</ls><info lex='m:f#I:n'/>"
+        },
+        {
+            "word": "कौरव",
+            "eid": "57279",
+            "pagenum": "317,1",
+            "content": "¦ (क्षेत्र = कुरु-क्ष्°), <ls>Megh.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कौरव",
+            "eid": "57280",
+            "pagenum": "317,1",
+            "content": "कौरव ¦ <lex>m.</lex> <ab>patr.</ab> <ab>fr.</ab> <s1 slp1='kuru'>Kuru</s1>, descendant of <s1 slp1='kuru'>Kuru</s1> (generally used in <ab>pl.</ab>), <ls>MBh.</ls>; <ls>Hariv.</ls> &c. (<ab>ifc.</ab> <lex type='hwifc'>f(आ). </lex>, <ls>MBh. i, 7961</ls>)<info lex='m:f#A'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "कौरव",
+            "eid": "16033",
+            "pagenum": 258,
+            "content": "कौरव¦ <i>kaurava, as, ī, am</i> (fr. <i>kuru</i>), belonging to the Kurus &c.; (<i>as</i>), m. a patronymic from Kuru; a descendant of Kuru; also <i>kauravaka.</i>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "कौरव",
+            "eid": "31454",
+            "pagenum": 2,
+            "content": "कौरव¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> (<lex>f.</lex> ई) <i>zu den</i> <is>Kuru</is> <i>in Beziehung stehend, ihnen gehörig</i>. क्षेत्र. <lex>n.</lex> = कुरुक्षेत्र. <dvsn n='1'>— 2〉 <lex>m.</lex> <ab>Patron.</ab> von कुरु. Gewöhnlich <ab>Pl.</ab> Am Ende eines <ab>adj. Comp.</ab> <lex>f.</lex> आ <dvsn n='1'>— 3〉 *<lex>f.</lex> ई <i><bot>Trigonella foenum graecum</bot></i> <ls>GAL.</ls>"
+        }
+    ],
+    "PWG": [
+        {
+            "word": "कौरव",
+            "eid": "19578",
+            "pagenum": 2,
+            "content": "कौरव¦ (von कुरु) <dvsn n='1'> 1) <lex>adj.</lex> = कौरवक <ls>P. 4, 2, 130.</ls> कौ/रव <is>gaṇa</is> उत्सादि zu <ls>P. 4, 1, 86.</ls> कौरव/ <is>gaṇa</is> कच्छादि zu <ls n='P.'>4, 2, 133.</ls> <i>den</i> <is>Kuru</is> <i>gehörig u.s.w.</i>: कौरवीं चमूम् <ls>MBH. 1, 5457.</ls> <ls n='MBH.'>4, 1972.</ls> कौरवं क्षेत्रम् = कुरुक्षेत्रम् <ls>MEGH. 49.</ls> <dvsn n='1'>— 2) patron. von <is>Kuru</is> <ls>N. 14, 25.</ls> pl. <ls>MBH. 1, 5457.</ls> <ls n='MBH.'>3, 311.</ls> <ls>HARIV. 1801.</ls> <ls>CĀṆ. 50.</ls> कौरववंशज <ls>MBH. 1, 1664.</ls> कौरवेन्द्र <ls>BENF. Chr. 36, 17. 60, 29.</ls> कौरवनन्दन <ls n='BENF. Chr.'>41, 1. 63, 68.</ls> Am Ende eines <lex>adj.</lex> comp. <lex>f.</lex> आः अद्य निष्कौरवामेकः करिष्यामि वसुंधराम् <ls>MBH. 1, 7961.</ls>"
+        },
+        {
+            "word": "कौरव",
+            "eid": "71765",
+            "pagenum": 5,
+            "content": "कौरव¦ <dvsn n='1'> 1) <ls>VARĀH. BṚH. S. 4, 24. fg.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "कौरव",
+            "eid": "11861",
+            "pagenum": 209,
+            "content": "कौरव¦ m. (-वः) A Kaurava, a descendant of KURU. E. कुरु, and अण् affix; also with वुञ् affix कौरवक."
+        }
+    ],
+    "STC": [
+        {
+            "word": "कौरव",
+            "eid": "8356",
+            "pagenum": 211,
+            "content": "<b>kaurava-</b>¦ <i>-ī-</i> <ab>a.</ab> qui se rapporte, qui appartient <lbinfo n='5'/> aux Kuru ; <ab>m.</ab> descendant de Kuru."
+        }
+    ],
+    "VEI": [
+        {
+            "word": "कौरव",
+            "eid": "749",
+            "pagenum": 1,
+            "content": "<b>Kaurava</b>¦ is the reading of the text of the Khilas<sup>1</sup> and of some manuscripts of the Śāṅkhāyana Śrauta Sūtra<sup>2</sup> for the Kaurama of the Atharvaveda,<sup>3</sup> who appears in a Dānastuti (‘Praise of Gifts’) as a generous donor among the <b>Ruśamas.</b> <F>1) v. 8, 1 (Scheftelowitz, <i>Die Apo-</i> <i>kryphen des Ṛgveda,</i> 155).</F> <F>2) xii. 14, 1.</F> <F>3) xx. 127, 1. <dvsn n='P'/><i>Cf.</i> Bloomfield, <i>Hymns of the Athar-</i> <i>vaveda,</i> 689.</F>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "कौरव",
+            "eid": "11867",
+            "pagenum": 254,
+            "content": "कौरव¦ m. (-वः) A <i>Kaurava,</i> a descendant of KURU. .E. कुरु, and अण् affix; also with वुञ् affix कौरवक."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "कौरव",
+            "eid": "11319",
+            "pagenum": 218,
+            "content": "कौरव¦ (वः) 1. <i>m. Kaurava,</i> of a <i>Kuru.</i>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कौरव",
+            "eid": "9109",
+            "pagenum": "2-209-a",
+            "content": "कौरवः¦, पुं स्त्री, (कुरोरपत्यमिति अण् । कुरोरयं इति कच्छादित्वादण् वा । कुरुराजसन्ततिः । इति महाभारतम् ॥ (यथा, महाभारते । १ । द्रुपदशासने १३९ । १६ । “तमुद्यतं रथेनैकमाशुकारिणम्बहवे । अनेकमिव सन्त्रासान्मेनिरे तत्र कौरवाः” ॥ कुरुसम्बन्धिदेशः । यथा, मेघदूते । ५० । “क्षेत्रं क्षत्त्रप्रधनपिशुनं कौरवं तद्भजेथाः” ॥ स्त्रियां डीप् कौरवी कुरुसम्बन्धिनीत्यर्थः । यथा, महाभारते । १ । १३०१ । १५ । “द्रुपदः कौरवान् दृष्ट्वा प्राधावत समन्ततः । शरजालेन महता मोहयन् कौरवीं चमूम्” ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "कौरव",
+            "eid": "15351",
+            "pagenum": "2278,a",
+            "content": "कौरव¦ पुंस्त्री० कुरोरपत्यादि उत्सा० अञ् तद्देशस्य रा जा अण् तेषु भवो वा अण् । १ कुरुवंश्ये “तस्यान्ववायः सुमहान् यस्य नाम्ना स्थ कौरवाः । कुरोस्तु पुत्राश्चत्वारः” हरिवं ६२ अ० । २ तद्देशनृपे पु० ३ कुरुसम्बन्धिनि ४ तद्देशभवे च त्रि० । स्त्रियां ङीप् । “द्रुपदः कौरवान् दृष्ट्वा प्राधावत समन्ततः । शरजालेन महता मोहयन् कौरवीं चमूम्” भा० आ० १३८ अ० “क्षेत्रं क्षत्रप्रधनपिशुनं कौरवं तद्भजेथाः” मेघदूतम् ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कौरव",
+            "content": "कौरव वि. -  कुरू + अण् कुरूओं से सम्बन्ध रखने वाला"
+        },
+        {
+            "word": "कौरव",
+            "content": "कौरवः पुं. -  कुरू + अण् कुरू की सन्तान"
+        },
+        {
+            "word": "कौरव",
+            "content": "कौरवः पुं. -  कुरू + अण् कुरूओं का राजा"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कौरव",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಕುರುರಾಜನ ಮಗ",
+            "निष्पत्तिः": "'अञ्' (५-१-८६)",
+            "व्युत्पत्तिः": "कुरोरपत्यम्",
+            "content": ""
+        },
+        {
+            "word": "कौरव",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಕುರುವಂಶದಲ್ಲಿ ಹುಟ್ಟಿದವನು",
+            "प्रयोगाः": "'तमुद्यतं रथेनैकमाशुकारिणमाहवे । अनेकमिव सन्त्रासान्मेनिरे तत्र कौरवाः ॥' 'मथ्नामि कौरवशतं समरे न कोपात्' ।",
+            "उल्लेखाः": "भा० आदि० १४८-१८, वेणी० १-१५",
+            "content": ""
+        },
+        {
+            "word": "कौरव",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಕುರು ಸಂಬಂಧವಾದ",
+            "निष्पत्तिः": "'अण्' (४-३-१२०)",
+            "व्युत्पत्तिः": "कुरोरिदम्",
+            "प्रयोगाः": "'क्षेत्रं क्षत्रप्रधनपिशुनं कौरवं तद्भजेथाः'",
+            "उल्लेखाः": "मेघ० १-४८",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "कौरव",
+            "content": "<lexhead no=\"1687\">\n<dentry>कौरव</dentry>\n<prAwipaxikam>कौरव</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">कौरव</prAwipaxikam>\n<etymology>[कुरू+अण्]</etymology>\n<sense no=\"1\">कुरूओं से सम्बन्ध रखने वाला, क्षेत्रं क्षत्रप्रधनपिशुनं कौरवं तद्भजेथाः<citation>मेघ* ४८</citation>स्त्री - कौरवी</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "कौरव",
+            "content": "<body><s>kOrava puMstrI° kurorapatyAdi utsA° aY taddeSasya rA jA aR tezu Bavo vA aR . <lb/><b>1</b> kuruvaMSye <q>tasyAnvavAyaH suma­hAn yasya nAmnA sTa kOravAH . kurostu putrAScatvAraH</q> harivaM 62 a° . <lb/><b>2</b> taddeSanfpe pu° <lb/><b>3</b> kurusambanDini <lb/><b>4</b> tadde­SaBave ca tri° . striyAM NIp . <q>drupadaH kOravAn dfzwvA prADAvata samantataH . SarajAlena mahatA mohayan kOravIM camUm</q> BA° A° 138 a° <q>kzetraM kzatrapraDanapiSunaM kOravaM tadBajeTAH</q> meGadUtam .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "कौरव",
+            "content": "<H1><h><key1>kOrava</key1><key2>kOrava</key2></h><body><s>kOrava</s>   <lex>mf(<s>I</s>)n.</lex> (= <s>°vaka</s>, <ls>Pāṇ. iv, 2, 130</ls>; <ab>g.</ab> <s>utsA<srs />di</s> and <s>kacCA<srs />di</s>) relating or belonging to the <s1 slp1=\"kuru\">Kuru</s1>s, <ls>MBh.</ls>; <ls>VarBṛS.</ls><info lex=\"m:f#I:n\" /></body><tail><L>57278</L><pc>317,1</pc></tail></H1>\n <H1A><h><key1>kOrava</key1><key2>kOrava</key2></h><body>  (<s>kzetra</s> = <s>kuru-kz°</s>), <ls>Megh.</ls><info lex=\"inh\" /></body><tail><L>57279</L><pc>317,1</pc></tail></H1A>\n <H1B><h><key1>kOrava</key1><key2>kOrava</key2></h><body><s>kOrava</s>   <lex>m.</lex> <ab>patr.</ab> <ab>fr.</ab> <s1 slp1=\"kuru\">Kuru</s1>, descendant of <s1 slp1=\"kuru\">Kuru</s1> (generally used in <ab>pl.</ab>), <ls>MBh.</ls>; <ls>Hariv.</ls> &amp;c. (<ab>ifc.</ab> <lex type=\"hwifc\">f(<s>A</s>). </lex>, <ls>MBh. i, 7961</ls>)<info lex=\"m:f#A\" /></body><tail><L>57280</L><pc>317,1</pc></tail></H1B>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "कौरव",
+            "content": "<H1><h><key1>kOrava</key1><key2>kOrava</key2></h><body><s>kOrava</s>  <div n=\"1\">m. (<s>-vaH</s>) A Kaurava, a descendant of KURU.</div><div n=\"E\"> E. <s>kuru,</s> and <s>aR</s> affix; <lb />also</div><div n=\"1\">with <s>vuY</s> affix <s>kOravaka</s>.</div></body><tail><L>11861</L><pc>209-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कौरव",
+            "content": "<span lang=\"sa\">कौरव<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕುರುರಾಜನ ಮಗ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"अञ्\" (५-१-८६)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>कुरोरपत्यम्<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कौरव<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕುರುವಂಶದಲ್ಲಿ ಹುಟ್ಟಿದವನು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"तमुद्यतं रथेनैकमाशुकारिणमाहवे । अनेकमिव सन्त्रासान्मेनिरे तत्र कौरवाः ॥\" \"मथ्नामि कौरवशतं समरे न कोपात्\" ।<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भा० आदि० १४८-१८, वेणी० १-१५<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कौरव<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕುರು ಸಂಬಂಧವಾದ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"अण्\" (४-३-१२०)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>कुरोरिदम्<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"क्षेत्रं क्षत्रप्रधनपिशुनं कौरवं तद्भजेथाः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मेघ० १-४८<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-async function withMiddlewareEffects(options) {
-    const matches = await matchesMiddleware(options);
-    if (!matches || !options.fetchData) {
-        return null;
-    }
-    try {
-        const data = await options.fetchData();
-        const effect = await getMiddlewareData(data.dataHref, data.response, options);
-        return {
-            dataHref: data.dataHref,
-            json: data.json,
-            response: data.response,
-            text: data.text,
-            cacheKey: data.cacheKey,
-            effect
-        };
-    } catch (e) {
-        /**
-     * TODO: Revisit this in the future.
-     * For now we will not consider middleware data errors to be fatal.
-     * maybe we should revisit in the future.
-     */ return null;
-    }
-}
-const manualScrollRestoration = process.env.__NEXT_SCROLL_RESTORATION && "object" !== "undefined" && "scrollRestoration" in window.history && !!function() {
-    try {
-        let v = "__next";
-        // eslint-disable-next-line no-sequences
-        return sessionStorage.setItem(v, v), sessionStorage.removeItem(v), true;
-    } catch (n) {}
-}();
-const SSG_DATA_NOT_FOUND = Symbol("SSG_DATA_NOT_FOUND");
-function fetchRetry(url, attempts, options) {
-    return fetch(url, {
-        // Cookies are required to be present for Next.js' SSG "Preview Mode".
-        // Cookies may also be required for `getServerSideProps`.
-        //
-        // > `fetch` won’t send cookies, unless you set the credentials init
-        // > option.
-        // https://developer.mozilla.org/docs/Web/API/Fetch_API/Using_Fetch
-        //
-        // > For maximum browser compatibility when it comes to sending &
-        // > receiving cookies, always supply the `credentials: 'same-origin'`
-        // > option instead of relying on the default.
-        // https://github.com/github/fetch#caveats
-        credentials: "same-origin",
-        method: options.method || "GET",
-        headers: Object.assign({}, options.headers, {
-            "x-nextjs-data": "1"
-        })
-    }).then((response)=>{
-        return !response.ok && attempts > 1 && response.status >= 500 ? fetchRetry(url, attempts - 1, options) : response;
-    });
-}
-function tryToParseAsJSON(text) {
-    try {
-        return JSON.parse(text);
-    } catch (error) {
-        return null;
-    }
-}
-function fetchNextData(param) {
-    let { dataHref, inflightCache, isPrefetch, hasMiddleware, isServerRender, parseJSON, persistCache, isBackground, unstable_skipClientCache } = param;
-    const { href: cacheKey } = new URL(dataHref, window.location.href);
-    var _params_method;
-    const getData = (params)=>fetchRetry(dataHref, isServerRender ? 3 : 1, {
-            headers: Object.assign({}, isPrefetch ? {
-                purpose: "prefetch"
-            } : {}, isPrefetch && hasMiddleware ? {
-                "x-middleware-prefetch": "1"
-            } : {}),
-            method: (_params_method = params == null ? void 0 : params.method) != null ? _params_method : "GET"
-        }).then((response)=>{
-            if (response.ok && (params == null ? void 0 : params.method) === "HEAD") {
-                return {
-                    dataHref,
-                    response,
-                    text: "",
-                    json: {},
-                    cacheKey
-                };
-            }
-            return response.text().then((text)=>{
-                if (!response.ok) {
-                    /**
-             * When the data response is a redirect because of a middleware
-             * we do not consider it an error. The headers must bring the
-             * mapped location.
-             * TODO: Change the status code in the handler.
-             */ if (hasMiddleware && [
-                        301,
-                        302,
-                        307,
-                        308
-                    ].includes(response.status)) {
-                        return {
-                            dataHref,
-                            response,
-                            text,
-                            json: {},
-                            cacheKey
-                        };
-                    }
-                    if (response.status === 404) {
-                        var _tryToParseAsJSON;
-                        if ((_tryToParseAsJSON = tryToParseAsJSON(text)) == null ? void 0 : _tryToParseAsJSON.notFound) {
-                            return {
-                                dataHref,
-                                json: {
-                                    notFound: SSG_DATA_NOT_FOUND
-                                },
-                                response,
-                                text,
-                                cacheKey
-                            };
-                        }
-                    }
-                    const error = new Error("Failed to load static props");
-                    /**
-             * We should only trigger a server-side transition if this was
-             * caused on a client-side transition. Otherwise, we'd get into
-             * an infinite loop.
-             */ if (!isServerRender) {
-                        (0, _routeloader.markAssetError)(error);
-                    }
-                    throw error;
-                }
-                return {
-                    dataHref,
-                    json: parseJSON ? tryToParseAsJSON(text) : null,
-                    response,
-                    text,
-                    cacheKey
-                };
-            });
-        }).then((data)=>{
-            if (!persistCache || "production" !== "production" || data.response.headers.get("x-middleware-cache") === "no-cache") {
-                delete inflightCache[cacheKey];
-            }
-            return data;
-        }).catch((err)=>{
-            if (!unstable_skipClientCache) {
-                delete inflightCache[cacheKey];
-            }
-            if (err.message === "Failed to fetch" || // firefox
-            err.message === "NetworkError when attempting to fetch resource." || // safari
-            err.message === "Load failed") {
-                (0, _routeloader.markAssetError)(err);
-            }
-            throw err;
-        });
-    // when skipping client cache we wait to update
-    // inflight cache until successful data response
-    // this allows racing click event with fetching newer data
-    // without blocking navigation when stale data is available
-    if (unstable_skipClientCache && persistCache) {
-        return getData({}).then((data)=>{
-            inflightCache[cacheKey] = Promise.resolve(data);
-            return data;
-        });
-    }
-    if (inflightCache[cacheKey] !== undefined) {
-        return inflightCache[cacheKey];
-    }
-    return inflightCache[cacheKey] = getData(isBackground ? {
-        method: "HEAD"
-    } : {});
-}
-function createKey() {
-    return Math.random().toString(36).slice(2, 10);
-}
-function handleHardNavigation(param) {
-    let { url, router } = param;
-    // ensure we don't trigger a hard navigation to the same
-    // URL as this can end up with an infinite refresh
-    if (url === (0, _addbasepath.addBasePath)((0, _addlocale.addLocale)(router.asPath, router.locale))) {
-        throw new Error("Invariant: attempted to hard navigate to the same URL " + url + " " + location.href);
-    }
-    window.location.href = url;
-}
-const getCancelledHandler = (param)=>{
-    let { route, router } = param;
-    let cancelled = false;
-    const cancel = router.clc = ()=>{
-        cancelled = true;
-    };
-    const handleCancelled = ()=>{
-        if (cancelled) {
-            const error = new Error('Abort fetching component for route: "' + route + '"');
-            error.cancelled = true;
-            throw error;
-        }
-        if (cancel === router.clc) {
-            router.clc = null;
-        }
-    };
-    return handleCancelled;
-};
-class Router {
-    reload() {
-        window.location.reload();
-    }
-    /**
-   * Go back in history
-   */ back() {
-        window.history.back();
-    }
-    /**
-   * Go forward in history
-   */ forward() {
-        window.history.forward();
-    }
-    /**
-   * Performs a `pushState` with arguments
-   * @param url of the route
-   * @param as masks `url` for the browser
-   * @param options object you can define `shallow` and other options
-   */ push(url, as, options) {
-        if (options === void 0) options = {};
-        if (process.env.__NEXT_SCROLL_RESTORATION) {
-            // TODO: remove in the future when we update history before route change
-            // is complete, as the popstate event should handle this capture.
-            if (manualScrollRestoration) {
-                try {
-                    // Snapshot scroll position right before navigating to a new page:
-                    sessionStorage.setItem("__next_scroll_" + this._key, JSON.stringify({
-                        x: self.pageXOffset,
-                        y: self.pageYOffset
-                    }));
-                } catch (e) {}
-            }
-        }
-        ({ url, as } = prepareUrlAs(this, url, as));
-        return this.change("pushState", url, as, options);
-    }
-    /**
-   * Performs a `replaceState` with arguments
-   * @param url of the route
-   * @param as masks `url` for the browser
-   * @param options object you can define `shallow` and other options
-   */ replace(url, as, options) {
-        if (options === void 0) options = {};
-        ({ url, as } = prepareUrlAs(this, url, as));
-        return this.change("replaceState", url, as, options);
-    }
-    async _bfl(as, resolvedAs, locale, skipNavigate) {
-        if (process.env.__NEXT_CLIENT_ROUTER_FILTER_ENABLED) {
-            let matchesBflStatic = false;
-            let matchesBflDynamic = false;
-            for (const curAs of [
-                as,
-                resolvedAs
-            ]){
-                if (curAs) {
-                    const asNoSlash = (0, _removetrailingslash.removeTrailingSlash)(new URL(curAs, "http://n").pathname);
-                    const asNoSlashLocale = (0, _addbasepath.addBasePath)((0, _addlocale.addLocale)(asNoSlash, locale || this.locale));
-                    if (asNoSlash !== (0, _removetrailingslash.removeTrailingSlash)(new URL(this.asPath, "http://n").pathname)) {
-                        var _this__bfl_s, _this__bfl_s1;
-                        matchesBflStatic = matchesBflStatic || !!((_this__bfl_s = this._bfl_s) == null ? void 0 : _this__bfl_s.contains(asNoSlash)) || !!((_this__bfl_s1 = this._bfl_s) == null ? void 0 : _this__bfl_s1.contains(asNoSlashLocale));
-                        for (const normalizedAS of [
-                            asNoSlash,
-                            asNoSlashLocale
-                        ]){
-                            // if any sub-path of as matches a dynamic filter path
-                            // it should be hard navigated
-                            const curAsParts = normalizedAS.split("/");
-                            for(let i = 0; !matchesBflDynamic && i < curAsParts.length + 1; i++){
-                                var _this__bfl_d;
-                                const currentPart = curAsParts.slice(0, i).join("/");
-                                if (currentPart && ((_this__bfl_d = this._bfl_d) == null ? void 0 : _this__bfl_d.contains(currentPart))) {
-                                    matchesBflDynamic = true;
-                                    break;
-                                }
-                            }
-                        }
-                        // if the client router filter is matched then we trigger
-                        // a hard navigation
-                        if (matchesBflStatic || matchesBflDynamic) {
-                            if (skipNavigate) {
-                                return true;
-                            }
-                            handleHardNavigation({
-                                url: (0, _addbasepath.addBasePath)((0, _addlocale.addLocale)(as, locale || this.locale, this.defaultLocale)),
-                                router: this
-                            });
-                            return new Promise(()=>{});
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-    async change(method, url, as, options, forcedScroll) {
-        var _this_components_pathname;
-        if (!(0, _islocalurl.isLocalURL)(url)) {
-            handleHardNavigation({
-                url,
-                router: this
-            });
-            return false;
-        }
-        // WARNING: `_h` is an internal option for handing Next.js client-side
-        // hydration. Your app should _never_ use this property. It may change at
-        // any time without notice.
-        const isQueryUpdating = options._h === 1;
-        if (!isQueryUpdating && !options.shallow) {
-            await this._bfl(as, undefined, options.locale);
-        }
-        let shouldResolveHref = isQueryUpdating || options._shouldResolveHref || (0, _parsepath.parsePath)(url).pathname === (0, _parsepath.parsePath)(as).pathname;
-        const nextState = {
-            ...this.state
-        };
-        // for static pages with query params in the URL we delay
-        // marking the router ready until after the query is updated
-        // or a navigation has occurred
-        const readyStateChange = this.isReady !== true;
-        this.isReady = true;
-        const isSsr = this.isSsr;
-        if (!isQueryUpdating) {
-            this.isSsr = false;
-        }
-        // if a route transition is already in progress before
-        // the query updating is triggered ignore query updating
-        if (isQueryUpdating && this.clc) {
-            return false;
-        }
-        const prevLocale = nextState.locale;
-        if (process.env.__NEXT_I18N_SUPPORT) {
-            nextState.locale = options.locale === false ? this.defaultLocale : options.locale || nextState.locale;
-            if (typeof options.locale === "undefined") {
-                options.locale = nextState.locale;
-            }
-            const parsedAs = (0, _parserelativeurl.parseRelativeUrl)((0, _hasbasepath.hasBasePath)(as) ? (0, _removebasepath.removeBasePath)(as) : as);
-            const localePathResult = (0, _normalizelocalepath.normalizeLocalePath)(parsedAs.pathname, this.locales);
-            if (localePathResult.detectedLocale) {
-                nextState.locale = localePathResult.detectedLocale;
-                parsedAs.pathname = (0, _addbasepath.addBasePath)(parsedAs.pathname);
-                as = (0, _formaturl.formatWithValidation)(parsedAs);
-                url = (0, _addbasepath.addBasePath)((0, _normalizelocalepath.normalizeLocalePath)((0, _hasbasepath.hasBasePath)(url) ? (0, _removebasepath.removeBasePath)(url) : url, this.locales).pathname);
-            }
-            let didNavigate = false;
-            // we need to wrap this in the env check again since regenerator runtime
-            // moves this on its own due to the return
-            if (process.env.__NEXT_I18N_SUPPORT) {
-                var _this_locales;
-                // if the locale isn't configured hard navigate to show 404 page
-                if (!((_this_locales = this.locales) == null ? void 0 : _this_locales.includes(nextState.locale))) {
-                    parsedAs.pathname = (0, _addlocale.addLocale)(parsedAs.pathname, nextState.locale);
-                    handleHardNavigation({
-                        url: (0, _formaturl.formatWithValidation)(parsedAs),
-                        router: this
-                    });
-                    // this was previously a return but was removed in favor
-                    // of better dead code elimination with regenerator runtime
-                    didNavigate = true;
-                }
-            }
-            const detectedDomain = (0, _detectdomainlocale.detectDomainLocale)(this.domainLocales, undefined, nextState.locale);
-            // we need to wrap this in the env check again since regenerator runtime
-            // moves this on its own due to the return
-            if (process.env.__NEXT_I18N_SUPPORT) {
-                // if we are navigating to a domain locale ensure we redirect to the
-                // correct domain
-                if (!didNavigate && detectedDomain && this.isLocaleDomain && self.location.hostname !== detectedDomain.domain) {
-                    const asNoBasePath = (0, _removebasepath.removeBasePath)(as);
-                    handleHardNavigation({
-                        url: "http" + (detectedDomain.http ? "" : "s") + "://" + detectedDomain.domain + (0, _addbasepath.addBasePath)("" + (nextState.locale === detectedDomain.defaultLocale ? "" : "/" + nextState.locale) + (asNoBasePath === "/" ? "" : asNoBasePath) || "/"),
-                        router: this
-                    });
-                    // this was previously a return but was removed in favor
-                    // of better dead code elimination with regenerator runtime
-                    didNavigate = true;
-                }
-            }
-            if (didNavigate) {
-                return new Promise(()=>{});
-            }
-        }
-        // marking route changes as a navigation start entry
-        if (_utils.ST) {
-            performance.mark("routeChange");
-        }
-        const { shallow = false, scroll = true } = options;
-        const routeProps = {
-            shallow
-        };
-        if (this._inFlightRoute && this.clc) {
-            if (!isSsr) {
-                Router.events.emit("routeChangeError", buildCancellationError(), this._inFlightRoute, routeProps);
-            }
-            this.clc();
-            this.clc = null;
-        }
-        as = (0, _addbasepath.addBasePath)((0, _addlocale.addLocale)((0, _hasbasepath.hasBasePath)(as) ? (0, _removebasepath.removeBasePath)(as) : as, options.locale, this.defaultLocale));
-        const cleanedAs = (0, _removelocale.removeLocale)((0, _hasbasepath.hasBasePath)(as) ? (0, _removebasepath.removeBasePath)(as) : as, nextState.locale);
-        this._inFlightRoute = as;
-        const localeChange = prevLocale !== nextState.locale;
-        // If the url change is only related to a hash change
-        // We should not proceed. We should only change the state.
-        if (!isQueryUpdating && this.onlyAHashChange(cleanedAs) && !localeChange) {
-            nextState.asPath = cleanedAs;
-            Router.events.emit("hashChangeStart", as, routeProps);
-            // TODO: do we need the resolved href when only a hash change?
-            this.changeState(method, url, as, {
-                ...options,
-                scroll: false
-            });
-            if (scroll) {
-                this.scrollToHash(cleanedAs);
-            }
-            try {
-                await this.set(nextState, this.components[nextState.route], null);
-            } catch (err) {
-                if ((0, _iserror.default)(err) && err.cancelled) {
-                    Router.events.emit("routeChangeError", err, cleanedAs, routeProps);
-                }
-                throw err;
-            }
-            Router.events.emit("hashChangeComplete", as, routeProps);
-            return true;
-        }
-        let parsed = (0, _parserelativeurl.parseRelativeUrl)(url);
-        let { pathname, query } = parsed;
-        // if we detected the path as app route during prefetching
-        // trigger hard navigation
-        if ((_this_components_pathname = this.components[pathname]) == null ? void 0 : _this_components_pathname.__appRouter) {
-            handleHardNavigation({
-                url: as,
-                router: this
-            });
-            return new Promise(()=>{});
-        }
-        // The build manifest needs to be loaded before auto-static dynamic pages
-        // get their query parameters to allow ensuring they can be parsed properly
-        // when rewritten to
-        let pages, rewrites;
-        try {
-            [pages, { __rewrites: rewrites }] = await Promise.all([
-                this.pageLoader.getPageList(),
-                (0, _routeloader.getClientBuildManifest)(),
-                this.pageLoader.getMiddleware()
-            ]);
-        } catch (err) {
-            // If we fail to resolve the page list or client-build manifest, we must
-            // do a server-side transition:
-            handleHardNavigation({
-                url: as,
-                router: this
-            });
-            return false;
-        }
-        // If asked to change the current URL we should reload the current page
-        // (not location.reload() but reload getInitialProps and other Next.js stuffs)
-        // We also need to set the method = replaceState always
-        // as this should not go into the history (That's how browsers work)
-        // We should compare the new asPath to the current asPath, not the url
-        if (!this.urlIsNew(cleanedAs) && !localeChange) {
-            method = "replaceState";
-        }
-        // we need to resolve the as value using rewrites for dynamic SSG
-        // pages to allow building the data URL correctly
-        let resolvedAs = as;
-        // url and as should always be prefixed with basePath by this
-        // point by either next/link or router.push/replace so strip the
-        // basePath from the pathname to match the pages dir 1-to-1
-        pathname = pathname ? (0, _removetrailingslash.removeTrailingSlash)((0, _removebasepath.removeBasePath)(pathname)) : pathname;
-        let route = (0, _removetrailingslash.removeTrailingSlash)(pathname);
-        const parsedAsPathname = as.startsWith("/") && (0, _parserelativeurl.parseRelativeUrl)(as).pathname;
-        const isMiddlewareRewrite = !!(parsedAsPathname && route !== parsedAsPathname && (!(0, _isdynamic.isDynamicRoute)(route) || !(0, _routematcher.getRouteMatcher)((0, _routeregex.getRouteRegex)(route))(parsedAsPathname)));
-        // we don't attempt resolve asPath when we need to execute
-        // middleware as the resolving will occur server-side
-        const isMiddlewareMatch = !options.shallow && await matchesMiddleware({
-            asPath: as,
-            locale: nextState.locale,
-            router: this
-        });
-        if (isQueryUpdating && isMiddlewareMatch) {
-            shouldResolveHref = false;
-        }
-        if (shouldResolveHref && pathname !== "/_error") {
-            options._shouldResolveHref = true;
-            if (process.env.__NEXT_HAS_REWRITES && as.startsWith("/")) {
-                const rewritesResult = (0, _resolverewrites.default)((0, _addbasepath.addBasePath)((0, _addlocale.addLocale)(cleanedAs, nextState.locale), true), pages, rewrites, query, (p)=>resolveDynamicRoute(p, pages), this.locales);
-                if (rewritesResult.externalDest) {
-                    handleHardNavigation({
-                        url: as,
-                        router: this
-                    });
-                    return true;
-                }
-                if (!isMiddlewareMatch) {
-                    resolvedAs = rewritesResult.asPath;
-                }
-                if (rewritesResult.matchedPage && rewritesResult.resolvedHref) {
-                    // if this directly matches a page we need to update the href to
-                    // allow the correct page chunk to be loaded
-                    pathname = rewritesResult.resolvedHref;
-                    parsed.pathname = (0, _addbasepath.addBasePath)(pathname);
-                    if (!isMiddlewareMatch) {
-                        url = (0, _formaturl.formatWithValidation)(parsed);
-                    }
-                }
-            } else {
-                parsed.pathname = resolveDynamicRoute(pathname, pages);
-                if (parsed.pathname !== pathname) {
-                    pathname = parsed.pathname;
-                    parsed.pathname = (0, _addbasepath.addBasePath)(pathname);
-                    if (!isMiddlewareMatch) {
-                        url = (0, _formaturl.formatWithValidation)(parsed);
-                    }
-                }
-            }
-        }
-        if (!(0, _islocalurl.isLocalURL)(as)) {
-            if ("production" !== "production") {
-                throw new Error('Invalid href: "' + url + '" and as: "' + as + '", received relative href and external as' + "\nSee more info: https://nextjs.org/docs/messages/invalid-relative-url-external-as");
-            }
-            handleHardNavigation({
-                url: as,
-                router: this
-            });
-            return false;
-        }
-        resolvedAs = (0, _removelocale.removeLocale)((0, _removebasepath.removeBasePath)(resolvedAs), nextState.locale);
-        route = (0, _removetrailingslash.removeTrailingSlash)(pathname);
-        let routeMatch = false;
-        if ((0, _isdynamic.isDynamicRoute)(route)) {
-            const parsedAs = (0, _parserelativeurl.parseRelativeUrl)(resolvedAs);
-            const asPathname = parsedAs.pathname;
-            const routeRegex = (0, _routeregex.getRouteRegex)(route);
-            routeMatch = (0, _routematcher.getRouteMatcher)(routeRegex)(asPathname);
-            const shouldInterpolate = route === asPathname;
-            const interpolatedAs = shouldInterpolate ? (0, _interpolateas.interpolateAs)(route, asPathname, query) : {};
-            if (!routeMatch || shouldInterpolate && !interpolatedAs.result) {
-                const missingParams = Object.keys(routeRegex.groups).filter((param)=>!query[param] && !routeRegex.groups[param].optional);
-                if (missingParams.length > 0 && !isMiddlewareMatch) {
-                    if ("production" !== "production") {
-                        console.warn("" + (shouldInterpolate ? "Interpolating href" : "Mismatching `as` and `href`") + " failed to manually provide " + ("the params: " + missingParams.join(", ") + " in the `href`'s `query`"));
-                    }
-                    throw new Error((shouldInterpolate ? "The provided `href` (" + url + ") value is missing query values (" + missingParams.join(", ") + ") to be interpolated properly. " : "The provided `as` value (" + asPathname + ") is incompatible with the `href` value (" + route + "). ") + ("Read more: https://nextjs.org/docs/messages/" + (shouldInterpolate ? "href-interpolation-failed" : "incompatible-href-as")));
-                }
-            } else if (shouldInterpolate) {
-                as = (0, _formaturl.formatWithValidation)(Object.assign({}, parsedAs, {
-                    pathname: interpolatedAs.result,
-                    query: (0, _omit.omit)(query, interpolatedAs.params)
-                }));
-            } else {
-                // Merge params into `query`, overwriting any specified in search
-                Object.assign(query, routeMatch);
-            }
-        }
-        if (!isQueryUpdating) {
-            Router.events.emit("routeChangeStart", as, routeProps);
-        }
-        const isErrorRoute = this.pathname === "/404" || this.pathname === "/_error";
-        try {
-            var _self___NEXT_DATA___props_pageProps, _self___NEXT_DATA___props, _routeInfo_props;
-            let routeInfo = await this.getRouteInfo({
-                route,
-                pathname,
-                query,
-                as,
-                resolvedAs,
-                routeProps,
-                locale: nextState.locale,
-                isPreview: nextState.isPreview,
-                hasMiddleware: isMiddlewareMatch,
-                unstable_skipClientCache: options.unstable_skipClientCache,
-                isQueryUpdating: isQueryUpdating && !this.isFallback,
-                isMiddlewareRewrite
-            });
-            if (!isQueryUpdating && !options.shallow) {
-                await this._bfl(as, "resolvedAs" in routeInfo ? routeInfo.resolvedAs : undefined, nextState.locale);
-            }
-            if

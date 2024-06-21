@@ -1,1 +1,299 @@
-CircleElement":false,"SVGClipPathElement":false,"SVGComponentTransferFunctionElement":false,"SVGDefsElement":false,"SVGDescElement":false,"SVGDiscardElement":false,"SVGElement":false,"SVGEllipseElement":false,"SVGFEBlendElement":false,"SVGFEColorMatrixElement":false,"SVGFEComponentTransferElement":false,"SVGFECompositeElement":false,"SVGFEConvolveMatrixElement":false,"SVGFEDiffuseLightingElement":false,"SVGFEDisplacementMapElement":false,"SVGFEDistantLightElement":false,"SVGFEDropShadowElement":false,"SVGFEFloodElement":false,"SVGFEFuncAElement":false,"SVGFEFuncBElement":false,"SVGFEFuncGElement":false,"SVGFEFuncRElement":false,"SVGFEGaussianBlurElement":false,"SVGFEImageElement":false,"SVGFEMergeElement":false,"SVGFEMergeNodeElement":false,"SVGFEMorphologyElement":false,"SVGFEOffsetElement":false,"SVGFEPointLightElement":false,"SVGFESpecularLightingElement":false,"SVGFESpotLightElement":false,"SVGFETileElement":false,"SVGFETurbulenceElement":false,"SVGFilterElement":false,"SVGForeignObjectElement":false,"SVGGElement":false,"SVGGeometryElement":false,"SVGGradientElement":false,"SVGGraphicsElement":false,"SVGImageElement":false,"SVGLength":false,"SVGLengthList":false,"SVGLinearGradientElement":false,"SVGLineElement":false,"SVGMarkerElement":false,"SVGMaskElement":false,"SVGMatrix":false,"SVGMetadataElement":false,"SVGMPathElement":false,"SVGNumber":false,"SVGNumberList":false,"SVGPathElement":false,"SVGPatternElement":false,"SVGPoint":false,"SVGPointList":false,"SVGPolygonElement":false,"SVGPolylineElement":false,"SVGPreserveAspectRatio":false,"SVGRadialGradientElement":false,"SVGRect":false,"SVGRectElement":false,"SVGScriptElement":false,"SVGSetElement":false,"SVGStopElement":false,"SVGStringList":false,"SVGStyleElement":false,"SVGSVGElement":false,"SVGSwitchElement":false,"SVGSymbolElement":false,"SVGTextContentElement":false,"SVGTextElement":false,"SVGTextPathElement":false,"SVGTextPositioningElement":false,"SVGTitleElement":false,"SVGTransform":false,"SVGTransformList":false,"SVGTSpanElement":false,"SVGUnitTypes":false,"SVGUseElement":false,"SVGViewElement":false,"TaskAttributionTiming":false,"Text":false,"TextDecoder":false,"TextEncoder":false,"TextEvent":false,"TextMetrics":false,"TextTrack":false,"TextTrackCue":false,"TextTrackCueList":false,"TextTrackList":false,"TimeRanges":false,"toolbar":false,"top":false,"Touch":false,"TouchEvent":false,"TouchList":false,"TrackEvent":false,"TransitionEvent":false,"TreeWalker":false,"UIEvent":false,"URL":false,"URLSearchParams":false,"ValidityState":false,"visualViewport":false,"VisualViewport":false,"VTTCue":false,"WaveShaperNode":false,"WebAssembly":false,"WebGL2RenderingContext":false,"WebGLActiveInfo":false,"WebGLBuffer":false,"WebGLContextEvent":false,"WebGLFramebuffer":false,"WebGLProgram":false,"WebGLQuery":false,"WebGLRenderbuffer":false,"WebGLRenderingContext":false,"WebGLSampler":false,"WebGLShader":false,"WebGLShaderPrecisionFormat":false,"WebGLSync":false,"WebGLTexture":false,"WebGLTransformFeedback":false,"WebGLUniformLocation":false,"WebGLVertexArrayObject":false,"WebSocket":false,"WheelEvent":false,"window":false,"Window":false,"Worker":false,"WritableStream":false,"XMLDocument":false,"XMLHttpRequest":false,"XMLHttpRequestEventTarget":false,"XMLHttpRequestUpload":false,"XMLSerializer":false,"XPathEvaluator":false,"XPathExpression":false,"XPathResult":false,"XSLTProcessor":false},"worker":{"addEventListener":false,"applicationCache":false,"atob":false,"Blob":false,"BroadcastChannel":false,"btoa":false,"Cache":false,"caches":false,"clearInterval":false,"clearTimeout":false,"close":true,"console":false,"fetch":false,"FileReaderSync":false,"FormData":false,"Headers":false,"IDBCursor":false,"IDBCursorWithValue":false,"IDBDatabase":false,"IDBFactory":false,"IDBIndex":false,"IDBKeyRange":false,"IDBObjectStore":false,"IDBOpenDBRequest":false,"IDBRequest":false,"IDBTransaction":false,"IDBVersionChangeEvent":false,"ImageData":false,"importScripts":true,"indexedDB":false,"location":false,"MessageChannel":false,"MessagePort":false,"name":false,"navigator":false,"Notification":false,"onclose":true,"onconnect":true,"onerror":true,"onlanguagechange":true,"onmessage":true,"onoffline":true,"ononline":true,"onrejectionhandled":true,"onunhandledrejection":true,"performance":false,"Performance":false,"PerformanceEntry":false,"PerformanceMark":false,"PerformanceMeasure":false,"PerformanceNavigation":false,"PerformanceResourceTiming":false,"PerformanceTiming":false,"postMessage":true,"Promise":false,"queueMicrotask":false,"removeEventListener":false,"Request":false,"Response":false,"self":true,"ServiceWorkerRegistration":false,"setInterval":false,"setTimeout":false,"TextDecoder":false,"TextEncoder":false,"URL":false,"URLSearchParams":false,"WebSocket":false,"Worker":false,"WorkerGlobalScope":false,"XMLHttpRequest":false},"node":{"__dirname":false,"__filename":false,"Buffer":false,"clearImmediate":false,"clearInterval":false,"clearTimeout":false,"console":false,"exports":true,"global":false,"Intl":false,"module":false,"process":false,"queueMicrotask":false,"require":false,"setImmediate":false,"setInterval":false,"setTimeout":false,"TextDecoder":false,"TextEncoder":false,"URL":false,"URLSearchParams":false},"commonjs":{"exports":true,"global":false,"module":false,"require":false},"amd":{"define":false,"require":false},"mocha":{"after":false,"afterEach":false,"before":false,"beforeEach":false,"context":false,"describe":false,"it":false,"mocha":false,"run":false,"setup":false,"specify":false,"suite":false,"suiteSetup":false,"suiteTeardown":false,"teardown":false,"test":false,"xcontext":false,"xdescribe":false,"xit":false,"xspecify":false},"jasmine":{"afterAll":false,"afterEach":false,"beforeAll":false,"beforeEach":false,"describe":false,"expect":false,"fail":false,"fdescribe":false,"fit":false,"it":false,"jasmine":false,"pending":false,"runs":false,"spyOn":false,"spyOnProperty":false,"waits":false,"waitsFor":false,"xdescribe":false,"xit":false},"jest":{"afterAll":false,"afterEach":false,"beforeAll":false,"beforeEach":false,"describe":false,"expect":false,"fdescribe":false,"fit":false,"it":false,"jest":false,"pit":false,"require":false,"test":false,"xdescribe":false,"xit":false,"xtest":false},"qunit":{"asyncTest":false,"deepEqual":false,"equal":false,"expect":false,"module":false,"notDeepEqual":false,"notEqual":false,"notOk":false,"notPropEqual":false,"notStrictEqual":false,"ok":false,"propEqual":false,"QUnit":false,"raises":false,"start":false,"stop":false,"strictEqual":false,"test":false,"throws":false},"phantomjs":{"console":true,"exports":true,"phantom":true,"require":true,"WebPage":true},"couch":{"emit":false,"exports":false,"getRow":false,"log":false,"module":false,"provides":false,"require":false,"respond":false,"send":false,"start":false,"sum":false},"rhino":{"defineClass":false,"deserialize":false,"gc":false,"help":false,"importClass":false,"importPackage":false,"java":false,"load":false,"loadClass":false,"Packages":false,"print":false,"quit":false,"readFile":false,"readUrl":false,"runCommand":false,"seal":false,"serialize":false,"spawn":false,"sync":false,"toint32":false,"version":false},"nashorn":{"__DIR__":false,"__FILE__":false,"__LINE__":false,"com":false,"edu":false,"exit":false,"java":false,"Java":false,"javafx":false,"JavaImporter":false,"javax":false,"JSAdapter":false,"load":false,"loadWithNewGlobal":false,"org":false,"Packages":false,"print":false,"quit":false},"wsh":{"ActiveXObject":true,"Enumerator":true,"GetObject":true,"ScriptEngine":true,"ScriptEngineBuildVersion":true,"ScriptEngineMajorVersion":true,"ScriptEngineMinorVersion":true,"VBArray":true,"WScript":true,"WSH":true,"XDomainRequest":true},"jquery":{"$":false,"jQuery":false},"yui":{"YAHOO":false,"YAHOO_config":false,"YUI":false,"YUI_config":false},"shelljs":{"cat":false,"cd":false,"chmod":false,"config":false,"cp":false,"dirs":false,"echo":false,"env":false,"error":false,"exec":false,"exit":false,"find":false,"grep":false,"ln":false,"ls":false,"mkdir":false,"mv":false,"popd":false,"pushd":false,"pwd":false,"rm":false,"sed":false,"set":false,"target":false,"tempdir":false,"test":false,"touch":false,"which":false},"prototypejs":{"$":false,"$$":false,"$A":false,"$break":false,"$continue":false,"$F":false,"$H":false,"$R":false,"$w":false,"Abstract":false,"Ajax":false,"Autocompleter":false,"Builder":false,"Class":false,"Control":false,"Draggable":false,"Draggables":false,"Droppables":false,"Effect":false,"Element":false,"Enumerable":false,"Event":false,"Field":false,"Form":false,"Hash":false,"Insertion":false,"ObjectRange":false,"PeriodicalExecuter":false,"Position":false,"Prototype":false,"Scriptaculous":false,"Selector":false,"Sortable":false,"SortableObserver":false,"Sound":false,"Template":false,"Toggle":false,"Try":false},"meteor":{"_":false,"$":false,"Accounts":false,"AccountsClient":false,"AccountsCommon":false,"AccountsServer":false,"App":false,"Assets":false,"Blaze":false,"check":false,"Cordova":false,"DDP":false,"DDPRateLimiter":false,"DDPServer":false,"Deps":false,"EJSON":false,"Email":false,"HTTP":false,"Log":false,"Match":false,"Meteor":false,"Mongo":false,"MongoInternals":false,"Npm":false,"Package":false,"Plugin":false,"process":false,"Random":false,"ReactiveDict":false,"ReactiveVar":false,"Router":false,"ServiceConfiguration":false,"Session":false,"share":false,"Spacebars":false,"Template":false,"Tinytest":false,"Tracker":false,"UI":false,"Utils":false,"WebApp":false,"WebAppInternals":false},"mongo":{"_isWindows":false,"_rand":false,"BulkWriteResult":false,"cat":false,"cd":false,"connect":false,"db":false,"getHostName":false,"getMemInfo":false,"hostname":false,"ISODate":false,"listFiles":false,"load":false,"ls":false,"md5sumFile":false,"mkdir":false,"Mongo":false,"NumberInt":false,"NumberLong":false,"ObjectId":false,"PlanCache":false,"print":false,"printjson":false,"pwd":false,"quit":false,"removeFile":false,"rs":false,"sh":false,"UUID":false,"version":false,"WriteResult":false},"applescript":{"$":false,"Application":false,"Automation":false,"console":false,"delay":false,"Library":false,"ObjC":false,"ObjectSpecifier":false,"Path":false,"Progress":false,"Ref":false},"serviceworker":{"addEventListener":false,"applicationCache":false,"atob":false,"Blob":false,"BroadcastChannel":false,"btoa":false,"Cache":false,"caches":false,"CacheStorage":false,"clearInterval":false,"clearTimeout":false,"Client":false,"clients":false,"Clients":false,"close":true,"console":false,"ExtendableEvent":false,"ExtendableMessageEvent":false,"fetch":false,"FetchEvent":false,"FileReaderSync":false,"FormData":false,"Headers":false,"IDBCursor":false,"IDBCursorWithValue":false,"IDBDatabase":false,"IDBFactory":false,"IDBIndex":false,"IDBKeyRange":false,"IDBObjectStore":false,"IDBOpenDBRequest":false,"IDBRequest":false,"IDBTransaction":false,"IDBVersionChangeEvent":false,"ImageData":false,"importScripts":false,"indexedDB":false,"location":false,"MessageChannel":false,"MessagePort":false,"name":false,"navigator":false,"Notification":false,"onclose":true,"onconnect":true,"onerror":true,"onfetch":true,"oninstall":true,"onlanguagechange":true,"onmessage":true,"onmessageerror":true,"onnotificationclick":true,"onnotificationclose":true,"onoffline":true,"ononline":true,"onpush":true,"onpushsubscriptionchange":true,"onrejectionhandled":true,"onsync":true,"onunhandledrejection":true,"performance":false,"Performance":false,"PerformanceEntry":false,"PerformanceMark":false,"PerformanceMeasure":false,"PerformanceNavigation":false,"PerformanceResourceTiming":false,"PerformanceTiming":false,"postMessage":true,"Promise":false,"queueMicrotask":false,"registration":false,"removeEventListener":false,"Request":false,"Response":false,"self":false,"ServiceWorker":false,"ServiceWorkerContainer":false,"ServiceWorkerGlobalScope":false,"ServiceWorkerMessageEvent":false,"ServiceWorkerRegistration":false,"setInterval":false,"setTimeout":false,"skipWaiting":false,"TextDecoder":false,"TextEncoder":false,"URL":false,"URLSearchParams":false,"WebSocket":false,"WindowClient":false,"Worker":false,"WorkerGlobalScope":false,"XMLHttpRequest":false},"atomtest":{"advanceClock":false,"fakeClearInterval":false,"fakeClearTimeout":false,"fakeSetInterval":false,"fakeSetTimeout":false,"resetTimeouts":false,"waitsForPromise":false},"embertest":{"andThen":false,"click":false,"currentPath":false,"currentRouteName":false,"currentURL":false,"fillIn":false,"find":false,"findAll":false,"findWithAssert":false,"keyEvent":false,"pauseTest":false,"resumeTest":false,"triggerEvent":false,"visit":false,"wait":false},"protractor":{"$":false,"$$":false,"browser":false,"by":false,"By":false,"DartObject":false,"element":false,"protractor":false},"shared-node-browser":{"clearInterval":false,"clearTimeout":false,"console":false,"setInterval":false,"setTimeout":false,"URL":false,"URLSearchParams":false},"webextensions":{"browser":false,"chrome":false,"opr":false},"greasemonkey":{"cloneInto":false,"createObjectIn":false,"exportFunction":false,"GM":false,"GM_addStyle":false,"GM_deleteValue":false,"GM_getResourceText":false,"GM_getResourceURL":false,"GM_getValue":false,"GM_info":false,"GM_listValues":false,"GM_log":false,"GM_openInTab":false,"GM_registerMenuCommand":false,"GM_setClipboard":false,"GM_setValue":false,"GM_xmlhttpRequest":false,"unsafeWindow":false},"devtools":{"$":false,"$_":false,"$$":false,"$0":false,"$1":false,"$2":false,"$3":false,"$4":false,"$x":false,"chrome":false,"clear":false,"copy":false,"debug":false,"dir":false,"dirxml":false,"getEventListeners":false,"inspect":false,"keys":false,"monitor":false,"monitorEvents":false,"profile":false,"profileEnd":false,"queryObjects":false,"table":false,"undebug":false,"unmonitor":false,"unmonitorEvents":false,"values":false}}')}};var t={};function __nccwpck_require__(r){var n=t[r];if(n!==undefined){return n.exports}var s=t[r]={id:r,loaded:false,exports:{}};var i=true;try{e[r].call(s.exports,s,s.exports,__nccwpck_require__);i=false}finally{if(i)delete t[r]}s.loaded=true;return s.exports}(()=>{__nccwpck_require__.o=(e,t)=>Object.prototype.hasOwnProperty
+{
+    "word": "स्वाप",
+    "ABCH": [
+        {
+            "word": "स्वाप",
+            "linga": "पुं",
+            "pagenum": "17",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "1036",
+            "group": "284",
+            "synonyms": [
+                "निद्रा",
+                "प्रमीला",
+                "शयन",
+                "संवेश",
+                "संलय",
+                "नन्दीमुखी",
+                "श्वासहेति",
+                "तन्द्रा"
+            ],
+            "content": "निद्रा प्रमीला शयनं संवेशस्वापसंलयाः ।\nनन्दीमुखी श्वासहेतिस्तन्द्रा सुप्तं तु साधिका ॥ ३१३ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "स्वाप",
+            "eid": "31190",
+            "pagenum": 1162,
+            "content": "स्वापः¦ [स्वप्-घञ्] <b>1</b> Sleep, <lbinfo n='sleep+ing'/> sleeping; <ls>U. 1. 37.</ls> <b>--2</b> Dreaming, dream. <b>--3</b> Sleepiness, sloth. <b>--4</b> Paralysis, palsy, insensibility. <b>--5</b> Temporary or partial loss of sensation from pressure on a nerve, numbness."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "स्वाप",
+            "eid": "16912",
+            "pagenum": 1099,
+            "content": "स्वाप¦ <i>svāpa,</i> <ab>i. e.</ab> <i>svap + a,</i> <ab>m.</ab> <b>1.</b> Sleeping, <ls>Utt. Rāmac.</ls> 24, 7; sleep. <b>2.</b> Sleepiness. <b>3.</b> Loss of sensation. <b>4.</b> The sleep of a limb. <b>5.</b> Ignorance. <b>6.</b> Dream. <b> -- <ab>Comp.</ab></b> <i>Divā-,</i> <ab>m.</ab> sleeping by day, <ls>Suśr.</ls> 1, 330, 5."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "स्वाप",
+            "eid": "19457",
+            "pagenum": 746,
+            "content": "स्वाप¦ <i>svāpa</i> <ab>m.</ab> <i>(svap)</i> sommeil; || somnolence; <lbinfo n='8'/> || au <ab>fig.</ab> ignorance, stupidité. || Perte, temporaire ou durable, générale ou partielle, de la sensibilité physique, paralysie, <lbinfo n='6'/> engourdissement.  <P><i>svāpayāmi</i> (<ab>c.</ab> de <i>svap)</i>; <ab>pqp.</ab> <i>asūṣupam.</i> Endormir; || au <ab>fig.</ab> tuer."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "स्वाप",
+            "eid": "39182",
+            "pagenum": 654,
+            "content": "स्वाप¦ <lex>m.</lex> sleep, dream."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "स्वाप",
+            "eid": "29091",
+            "pagenum": 524,
+            "content": "स्वाप¦ <i>m.</i> Schlaf, Traum."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "स्वाप",
+            "eid": "10505",
+            "pagenum": 1637,
+            "content": "<b>(svāpa)</b>¦ [von svap], in anu-ṣvā́pam."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "स्वाप",
+            "eid": "42810",
+            "pagenum": 823,
+            "content": "svApa¦ <i>m.</i> 1. Sleep, sleeping; 2. dreaming, dream; 3. sleepiness, sloth; 4. paralysis, palsy; 5. temporary or partial loss of sensation from pressure on a nerve."
+        }
+    ],
+    "MD": [
+        {
+            "word": "स्वाप",
+            "eid": "20305",
+            "pagenum": 373,
+            "content": "स्वाप¦ svāp-a, <lex>m.</lex> [√ svap] sleep (<ab>ord. mg.</ab>); 🞄dream; numbness (<i>of a limb</i>)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "स्वाप",
+            "eid": "259033",
+            "pagenum": "1280,3",
+            "content": "स्वाप <hom>a</hom> ¦ <lex>m.</lex> sleeping, sleep, <ls>Suśr.</ls>; <ls>Kathās.</ls>; <ls>BhP.</ls><info lex='m'/>"
+        },
+        {
+            "word": "स्वाप",
+            "eid": "259034",
+            "pagenum": "1280,3",
+            "content": "¦ dreaming, a dream, <ls>Prab.</ls>; <ls>BhP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "स्वाप",
+            "eid": "259035",
+            "pagenum": "1280,3",
+            "content": "¦ sleepiness, sloth, <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "स्वाप",
+            "eid": "259036",
+            "pagenum": "1280,3",
+            "content": "¦ the sleep of a limb, numbness, <ls>Suśr.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "स्वाप",
+            "eid": "259037",
+            "pagenum": "1280,3",
+            "content": "¦ loss of sensation, ignorance, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "स्वाप",
+            "eid": "259637",
+            "pagenum": "1283,3",
+            "content": "स्वाप <hom>b</hom> ¦ &c. See <pcol>p. 1280, col. 3</pcol>."
+        }
+    ],
+    "MW72": [
+        {
+            "word": "स्वाप",
+            "eid": "53718",
+            "pagenum": 1160,
+            "content": "<i>Svāpa, as,</i>¦ m. sleep, sleeping; dreaming, a dream; sleepiness, sloth; paralysis, palsy, loss of sensation, ignorance; temporary or partial loss of sensation from pressure on a nerve, numbness, the sleep of a limb."
+        },
+        {
+            "word": "स्वाप",
+            "eid": "53779",
+            "pagenum": 1161,
+            "content": "स्वाप¦ <i>svāpa.</i> See p. 1160, col. 1."
+        }
+    ],
+    "PW": [
+        {
+            "word": "स्वाप",
+            "eid": "133044",
+            "pagenum": 7,
+            "content": "स्वाप¦ <lex>m.</lex> <dvsn n='1'>— 1〉 <i>Schlaf</i>. <dvsn n='1'>— 2〉 <i>Traum</i>. <dvsn n='1'>— 3〉 <i>das Eingeschlafensein —, Taubheit der Glieder</i> <ab>u. s. w.</ab> <dvsn n='1'>— 4〉 *<i>Unwissenheit</i>. — <ls>RĀJAT. 4,195</ls> wohl fehlerhaft."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "स्वाप",
+            "eid": "115664",
+            "pagenum": 7,
+            "content": "स्वाप¦ (von स्वप्) <lex>m.</lex> <dvsn n='1'> 1) <i>Schlaf</i> <ls>AK. 1, 1, 7, 36.</ls> <ls>TRIK. 3, 3, 280.</ls> <ls>H. 313.</ls> <ls>an. 2, 301.</ls> <ls>MED. p. 12.</ls> <ls>SUŚR. 1, 316, 5.</ls> <ls>UTTARAR. 17, 17 (24, 7).</ls> <ls>KATHĀS. 32, 31. 33, 178. 73, 359. 105, 62.</ls> <ls>RĀJA-TAR. 3, 507.</ls> <ls>KULL.</ls> zu <ls>M. 1, 66.</ls> <ls>BHĀG. P. 7, 15, 61.</ls> स्वापं यातः <i>eingeschlafen</i> <ls n='BHĀG. P.'>10, 51, 23.</ls> <dvsn n='1'>— 2) <i>Traum</i> <ls>TRIK.</ls> <ls>H. an.</ls> <ls>MED.</ls> <ls>PRAB. 90, 14.</ls> <ls>BHĀG. P. 3, 26, 30. 6, 16, 55.</ls> <dvsn n='1'>— 3) <i>das Eingeschlafensein —, Taubheit der Glieder u.s.w.</i> <ls>H. an.</ls> <ls>MED.</ls> <ls>SUŚR. 1, 252, 3. 253, 10. 350, 12.</ls> <dvsn n='1'>— 4) <i>Unwissenheit</i> <ls>H. an.</ls> <ls>MED.</ls> — Wohl fehlerhaft <ls>RĀJA-TAR. 4, 195.</ls> Vgl. इन्द्रिय°, दिवा° <i>(Schlaf am Tage</i> auch  <ls>MBH. 13, 6063</ls>), सु°, सुख° ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "स्वाप",
+            "eid": "46371",
+            "pagenum": 824,
+            "content": "स्वाप¦ m. (-पः) 1. Sleep, sleeping. 2. Sleepiness, sloth. 3. Paralysis, palsy, loss of sensation. 4. Ignorance. 5. Dreaming, a dream. 6. Temporary and partial palsy from pressure on a nerve, numbness, the sleep of a limb, &c. E. ष्वप् to sleep, aff. घञ् ।"
+        }
+    ],
+    "STC": [
+        {
+            "word": "स्वाप",
+            "eid": "24282",
+            "pagenum": 881,
+            "content": "<b>svāpa-</b>¦ <ab>m.</ab> sommeil ; rêve.  <P><i>°vyasana-</i> <ab>nt.</ab> léthargie, somnolence.  <P><i>°hetu-</i> <ab>m.</ab> ce qui fait dormir."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "स्वाप",
+            "eid": "43785",
+            "pagenum": 965,
+            "content": "स्वाप¦ m. (-पः) .²1 Sleep, sleeping. .²2 Sleepiness, sloth. .²3 Paralysis, palsy, loss of sensation. .²4 Ignorance. .²5 Dreaming, a dream. .²6 Temporary and partial palsy from pressure on a nerve, numbness, the sleep of a limb, &c. .E. ष्वप to sleep, aff. घञ्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "स्वाप",
+            "eid": "43591",
+            "pagenum": 889,
+            "content": "स्वाप¦ (पः) 1. <i>m.</i> Sleep, sleeping; sloth; palsy; ignorance; dream; sleep of a limb."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "स्वाप",
+            "eid": "41253",
+            "pagenum": "5-492-a",
+            "content": "स्वापः¦, पुं, (स्वप + घञ् ।) निद्रा । इत्यमरः । १ । ७ । ३६ ॥ (यथा, भागवते । ३ । २६ । २९ । “संशयोऽथ विपर्य्यासो निश्चयः स्मृतिरेव च । स्वाप इत्युच्यते बुद्धेर्लक्षणं वृत्तितः पृथक् ॥”) शयनम् । स्पर्शाज्ञता । अज्ञानम् । इति विश्वमेदिन्यौ ॥ (विषयोऽस्य यथा, “सर्व्वर्त्तुषु दिवास्वापः प्रतिसिद्धोऽन्यत्र ग्रीष्मात् ॥” इति सुश्रुते शारीरस्थाने चतुर्लेंऽध्याये ॥)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "स्वाप",
+            "eid": "47683",
+            "pagenum": "5388,a",
+            "content": "स्वाप¦ पु० स्वप--घञ् । निद्रायाम् अमरः । २ शयने ३ अज्ञाने ४ स्पर्शाज्ञतायां च मेदि० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "स्वाप",
+            "content": "स्वापः पुं. -  स्वप् + घञ् 'निद्रा, सोना'"
+        },
+        {
+            "word": "स्वाप",
+            "content": "स्वापः पुं. -  स्वप् + घञ् 'सपना आना, स्वप्न'"
+        },
+        {
+            "word": "स्वाप",
+            "content": "स्वापः पुं. -  स्वप् + घञ् 'निद्रालुता, ऊंघना, आलस्य'"
+        },
+        {
+            "word": "स्वाप",
+            "content": "स्वापः पुं. -  स्वप् + घञ् 'लकवा, कम्पवायु, सुन्न हो जाना'"
+        },
+        {
+            "word": "स्वाप",
+            "content": "स्वापः पुं. -  स्वप् + घञ् 'किसी एक नाड़ी पर दबाव से अस्थायी या आंशिक असंवेद्यता, जडता'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "स्वाप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ನಿದ್ರೆ \\/ನಿದ್ದೆ",
+            "निष्पत्तिः": "ञिष्वप् (शये) 'घञ्' (३-३-१८)",
+            "content": ""
+        },
+        {
+            "word": "स्वाप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಶಯನ \\/ಮಲಗುವುದು",
+            "प्रयोगाः": "'स्वापहेतुरनुपाश्रितोऽन्यया रामबाहुरूपधानमेष ते'",
+            "उल्लेखाः": "उ० रा० १-३७",
+            "content": ""
+        },
+        {
+            "word": "स्वाप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸ್ಪರ್ಶ ಮಾಡಿದರೂ ತಿಳಿಯದಿರುವಿಕೆ \\/ಮುಟ್ಟಿದರೂ ಅರಿವಾಗದಿರುವಿಕೆ",
+            "content": ""
+        },
+        {
+            "word": "स्वाप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಅಜ್ಞಾನ \\/ತಿಳಿಗೇಡಿತನ",
+            "विस्तारः": "'स्वापः शयननिद्रयोः। स्पर्शाज्ञतायामज्ञाने' मेदि०",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "स्वाप",
+            "linga": "P",
+            "artha": "निद्रा",
+            "synonyms": [
+                "निद्रा",
+                "शयन",
+                "स्वाप",
+                "स्वप्न",
+                "संवेश",
+                "तन्द्रा"
+            ],
+            "num": "1.7.38",
+            "text": "स्यान्निद्रा शयनं स्वापः स्वप्नः संवेश इत्यपि । तन्द्री प्रमीला भ्रकुटिर्भ्रुकुटिर्भ्रूकुटिः स्त्रियाम् ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "स्वाप",
+            "content": "<body><s>svApa pu° svapa—GaY . nidrAyAm amaraH . 2 Sayane 3 ajYAne 4 sparSAjYatAyAM ca medi° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "स्वाप",
+            "content": "<H2><h><key1>svApa</key1><key2>svApa</key2><hom>a</hom></h><body><s>svApa</s> <hom>a</hom>   <lex>m.</lex> sleeping, sleep, <ls>Suśr.</ls>; <ls>Kathās.</ls>; <ls>BhP.</ls><info lex=\"m\" /></body><tail><L>259033</L><pc>1280,3</pc></tail></H2>\n <H2A><h><key1>svApa</key1><key2>svApa</key2></h><body>  dreaming, a dream, <ls>Prab.</ls>; <ls>BhP.</ls><info lex=\"inh\" /></body><tail><L>259034</L><pc>1280,3</pc></tail></H2A>\n <H2A><h><key1>svApa</key1><key2>svApa</key2></h><body>  sleepiness, sloth, <ls>W.</ls><info lex=\"inh\" /></body><tail><L>259035</L><pc>1280,3</pc></tail></H2A>\n <H2A><h><key1>svApa</key1><key2>svApa</key2></h><body>  the sleep of a limb, numbness, <ls>Suśr.</ls><info lex=\"inh\" /></body><tail><L>259036</L><pc>1280,3</pc></tail></H2A>\n <H2A><h><key1>svApa</key1><key2>svApa</key2></h><body>  loss of sensation, ignorance, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>259037</L><pc>1280,3</pc></tail></H2A>\n <H1><h><key1>svApa</key1><key2>svApa</key2><hom>b</hom></h><body><s>svApa</s> <hom>b</hom>   &amp;c. See <pcol>p. 1280, col. 3</pcol>.</body><tail><L>259637</L><pc>1283,3</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "स्वाप",
+            "content": "<H1><h><key1>svApa</key1><key2>svApa</key2></h><body><s>svApa</s>  <div n=\"1\">m. (<s>-paH</s>) </div><div n=\"2\"> 1. Sleep, sleeping. </div><div n=\"2\"> 2. Sleepiness, sloth. </div><div n=\"2\"> 3. Paralysis, palsy, <lb />loss of sensation. </div><div n=\"2\"> 4. Ignorance. </div><div n=\"2\"> 5. Dreaming, a dream. </div><div n=\"2\"> 6. Tem- <lb />porary and partial palsy from pressure on a nerve, numbness, the <lb />sleep of a limb, &amp;c.</div><div n=\"E\"> E. <s>zvap</s> to sleep, aff. <s>GaY .</s></div></body><tail><L>46371</L><pc>824-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "स्वाप",
+            "content": "<span lang=\"sa\">स्वाप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನಿದ್ರೆ /ನಿದ್ದೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>ञिष्वप् (शये) \"घञ्\" (३-३-१८)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>स्वाप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶಯನ /ಮಲಗುವುದು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"स्वापहेतुरनुपाश्रितोऽन्यया रामबाहुरूपधानमेष ते\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>उ० रा० १-३७<div class=\"h-2\"> </div><div class=\"h-2\"> </div>स्वाप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸ್ಪರ್ಶ ಮಾಡಿದರೂ ತಿಳಿಯದಿರುವಿಕೆ /ಮುಟ್ಟಿದರೂ ಅರಿವಾಗದಿರುವಿಕೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>स्वाप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಜ್ಞಾನ /ತಿಳಿಗೇಡಿತನ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"स्वापः शयननिद्रयोः। स्पर्शाज्ञतायामज्ञाने\" मेदि०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

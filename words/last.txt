@@ -1,299 +1,63 @@
-						dependencies: [from.module]
-					};
-				}
-			}
-			case "reexport-undefined":
-				return {
-					exports: [/** @type {string} */ (mode.name)],
-					dependencies: [/** @type {Module} */ (moduleGraph.getModule(this))]
-				};
-			case "reexport-fake-namespace-object": {
-				const from =
-					/** @type {ModuleGraphConnection} */
-					(moduleGraph.getConnection(this));
-				return {
-					exports: [
-						{
-							name: /** @type {string} */ (mode.name),
-							from,
-							export: null,
-							exports: [
-								{
-									name: "default",
-									canMangle: false,
-									from,
-									export: null
-								}
-							]
-						}
-					],
-					priority: 1,
-					dependencies: [from.module]
-				};
-			}
-			case "reexport-namespace-object": {
-				const from =
-					/** @type {ModuleGraphConnection} */
-					(moduleGraph.getConnection(this));
-				return {
-					exports: [
-						{
-							name: /** @type {string} */ (mode.name),
-							from,
-							export: null
-						}
-					],
-					priority: 1,
-					dependencies: [from.module]
-				};
-			}
-			case "reexport-named-default": {
-				const from =
-					/** @type {ModuleGraphConnection} */
-					(moduleGraph.getConnection(this));
-				return {
-					exports: [
-						{
-							name: /** @type {string} */ (mode.name),
-							from,
-							export: ["default"]
-						}
-					],
-					priority: 1,
-					dependencies: [from.module]
-				};
-			}
-			default:
-				throw new Error(`Unknown mode ${mode.type}`);
-		}
-	}
-
-	/**
-	 * @param {ModuleGraph} moduleGraph module graph
-	 * @returns {number} effective mode
-	 */
-	_getEffectiveExportPresenceLevel(moduleGraph) {
-		if (this.exportPresenceMode !== ExportPresenceModes.AUTO)
-			return this.exportPresenceMode;
-		const module = /** @type {Module} */ (moduleGraph.getParentModule(this));
-		return /** @type {BuildMeta} */ (module.buildMeta).strictHarmonyModule
-			? ExportPresenceModes.ERROR
-			: ExportPresenceModes.WARN;
-	}
-
-	/**
-	 * Returns warnings
-	 * @param {ModuleGraph} moduleGraph module graph
-	 * @returns {WebpackError[] | null | undefined} warnings
-	 */
-	getWarnings(moduleGraph) {
-		const exportsPresence = this._getEffectiveExportPresenceLevel(moduleGraph);
-		if (exportsPresence === ExportPresenceModes.WARN) {
-			return this._getErrors(moduleGraph);
-		}
-		return null;
-	}
-
-	/**
-	 * Returns errors
-	 * @param {ModuleGraph} moduleGraph module graph
-	 * @returns {WebpackError[] | null | undefined} errors
-	 */
-	getErrors(moduleGraph) {
-		const exportsPresence = this._getEffectiveExportPresenceLevel(moduleGraph);
-		if (exportsPresence === ExportPresenceModes.ERROR) {
-			return this._getErrors(moduleGraph);
-		}
-		return null;
-	}
-
-	/**
-	 * @param {ModuleGraph} moduleGraph module graph
-	 * @returns {WebpackError[] | undefined} errors
-	 */
-	_getErrors(moduleGraph) {
-		const ids = this.getIds(moduleGraph);
-		let errors = this.getLinkingErrors(
-			moduleGraph,
-			ids,
-			`(reexported as '${this.name}')`
-		);
-		if (ids.length === 0 && this.name === null) {
-			const potentialConflicts =
-				this._discoverActiveExportsFromOtherStarExports(moduleGraph);
-			if (potentialConflicts && potentialConflicts.namesSlice > 0) {
-				const ownNames = new Set(
-					potentialConflicts.names.slice(
-						potentialConflicts.namesSlice,
-						potentialConflicts.dependencyIndices[
-							potentialConflicts.dependencyIndex
-						]
-					)
-				);
-				const importedModule = moduleGraph.getModule(this);
-				if (importedModule) {
-					const exportsInfo = moduleGraph.getExportsInfo(importedModule);
-					const conflicts = new Map();
-					for (const exportInfo of exportsInfo.orderedExports) {
-						if (exportInfo.provided !== true) continue;
-						if (exportInfo.name === "default") continue;
-						if (this.activeExports.has(exportInfo.name)) continue;
-						if (ownNames.has(exportInfo.name)) continue;
-						const conflictingDependency = findDependencyForName(
-							potentialConflicts,
-							exportInfo.name,
-							this.allStarExports
-								? this.allStarExports.dependencies
-								: [...this.otherStarExports, this]
-						);
-						if (!conflictingDependency) continue;
-						const target = exportInfo.getTerminalBinding(moduleGraph);
-						if (!target) continue;
-						const conflictingModule = moduleGraph.getModule(
-							conflictingDependency
-						);
-						if (conflictingModule === importedModule) continue;
-						const conflictingExportInfo = moduleGraph.getExportInfo(
-							/** @type {Module} */ (conflictingModule),
-							exportInfo.name
-						);
-						const conflictingTarget =
-							conflictingExportInfo.getTerminalBinding(moduleGraph);
-						if (!conflictingTarget) continue;
-						if (target === conflictingTarget) continue;
-						const list = conflicts.get(conflictingDependency.request);
-						if (list === undefined) {
-							conflicts.set(conflictingDependency.request, [exportInfo.name]);
-						} else {
-							list.push(exportInfo.name);
-						}
-					}
-					for (const [request, exports] of conflicts) {
-						if (!errors) errors = [];
-						errors.push(
-							new HarmonyLinkingError(
-								`The requested module '${
-									this.request
-								}' contains conflicting star exports for the ${
-									exports.length > 1 ? "names" : "name"
-								} ${exports
-									.map(e => `'${e}'`)
-									.join(", ")} with the previous requested module '${request}'`
-							)
-						);
-					}
-				}
-			}
-		}
-		return errors;
-	}
-
-	/**
-	 * @param {ObjectSerializerContext} context context
-	 */
-	serialize(context) {
-		const { write, setCircularReference } = context;
-
-		setCircularReference(this);
-		write(this.ids);
-		write(this.name);
-		write(this.activeExports);
-		write(this.otherStarExports);
-		write(this.exportPresenceMode);
-		write(this.allStarExports);
-
-		super.serialize(context);
-	}
-
-	/**
-	 * @param {ObjectDeserializerContext} context context
-	 */
-	deserialize(context) {
-		const { read, setCircularReference } = context;
-
-		setCircularReference(this);
-		this.ids = read();
-		this.name = read();
-		this.activeExports = read();
-		this.otherStarExports = read();
-		this.exportPresenceMode = read();
-		this.allStarExports = read();
-
-		super.deserialize(context);
-	}
+{
+    "word": "last",
+    "AE": [
+        {
+            "word": "last",
+            "eid": "6066",
+            "pagenum": 251,
+            "content": "<b>Last,</b>¦ <i>a.</i> अंत्य, अंतिम, अवर, अवतरम, चरम, पश्चिम; शेष-अंत -in comp. <b>2</b> गत, अतीत, चरम, पूर्व, भूत. <b>3</b> जघन्य, अधम, अपकृष्ट. <b>4</b> परम, उत्तम, अत्यंत; ‘l. night’ गतायां रात्रौ; ‘the l. year’ गत-अतीत-संवत्सरः, परुत् <i>ind.;</i> ‘l. but one’ उपांत्य, उपांतिक; ‘l. -born’ अवरज; ‘at l.’ अते, अंततः; ‘l. part’ शेषभागः; ‘l. part of the night’ उत्तररात्रः, चरमयामः; ‘l. half’ उत्तरार्धः, पश्चार्धः, परार्धः, ‘the year before l.’ परारि <i>ind.;</i> ‘to the l.’ शेषं यावत्. <i>-adv.</i> अंते, शेषे, अंततः, अवरं, चरमं, अवरतः. <i>-v. i.</i> अव-स्था 1 A, स्था 1 P; oft. by अवधिः in comp.; ‘l. ing for many days’ चिरस्थायिन्, एष ते जी- -वितावधिः प्रवादः (U. 1) ‘will l. through life’; ‘this will l. as food for four months’ एतेन (अस्माकं) मासचतुष्टयस्य भोजनं भविष्यति; ‘the bloom of youth l. s for a few days’ कतिपयदिवसस्थायिनी यौवनश्रीः (Bh. II. 2). <b>-ing,</b> <i>a.</i> स्थायिन्, चिर-दीर्घ-कालस्थायिन्; अनपायिन्, नित्य, स्थिर, ध्रुव, अक्षय, शाश्वत (ती <i>f.</i>), अजर, चिरंतन (नी <i>f.</i>). <b>-ly,</b> <i>adv.</i> अंते, अंततः, चरमतः, शेषे, अवरतः."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "last",
+            "eid": "13225",
+            "pagenum": 408,
+            "content": "<b>LAST</b>¦ (subs.): *मूलपादुका; पादुकालिङ्गम्।"
+        },
+        {
+            "word": "last",
+            "eid": "13226",
+            "pagenum": 408,
+            "content": "<b>LAST</b>¦ (adj.): <dvsn n='I'>I Final: </dvsn><dvsn n='1'>(1) अन्त्य (f. न्त्या) <i>or</i> अन्त- in comp., <dvsn n='xe'><i>l. syllable</i></dvsn> <dvsn n='xs'>अन्त्याक्षरम्;</dvsn> <i>to the l.:</i> अन्तपर्यन्तम्; <dvsn n='xe'><i>at l.:</i></dvsn> <dvsn n='xs'>अन्ते</dvsn> [शेषे <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>अवशेषे</dvsn> is used in this sense in Bengali, but I do not remem-ber any instance in Sanskrit]; </dvsn><dvsn n='1'>(2) चरमः (मा, मं), <dvsn n='xe'><i>nor the l.:</i></dvsn> <dvsn n='xs'>नापि चरमः,</dvsn> D.s.; </dvsn><dvsn n='1'>(3) पश्चिमः (मा, मं), <dvsn n='xe'><i>getting up at the l. watch:</i></dvsn> <dvsn n='xs'>याम उत्थाय   पश्चिमे,</dvsn> Mah.; <i>l. order of</i> (<i>their</i>) <dvsn n='xe'><i>master:</i></dvsn> <dvsn n='xs'>मर्तुः   पश्चिमाज्ञा,</dvsn> R. xvii. 8. </dvsn><dvsn n='I'>II Preceding: </dvsn><dvsn n='1'>(1) पूर्वः (र्वा, र्वं) (= former); </dvsn><dvsn n='1'>(2) गतः (ता, तं) (= past), <dvsn n='xe'><i>l. year:</i></dvsn> <dvsn n='xs'>गतवर्षः।</dvsn> Ph.: <dvsn n='xe'><i>l. evening:</i></dvsn> <dvsn n='xs'>ह्यः   प्रदोषे:</dvsn> v. Yesterday.</dvsn>"
+        },
+        {
+            "word": "last",
+            "eid": "13227",
+            "pagenum": 408,
+            "content": "<b>LAST</b>¦ (adv.): v. Lastly, <dvsn n='xe'><i>l. -born:</i></dvsn> <dvsn n='xs'>जघन्यजः</dvsn> (जा, जं) (rare)."
+        },
+        {
+            "word": "last",
+            "eid": "13228",
+            "pagenum": 408,
+            "content": "<b>LAST</b>¦ (v.): तिष्ठति (स्था, c. 1.), <i>l. s one moment:</i> तिष्ठत्येकक्षणम्, <dvsn n='I'>V ii. 1.; <i>l. ing but one moment:</i> क्षणमात्रस्थायिन् (f. नी), M. n.: v. To remain.</dvsn>"
+        }
+    ],
+    "MWE": [
+        {
+            "word": "last",
+            "eid": "17443",
+            "pagenum": 438,
+            "content": "LAST¦, <i>a.</i> (Final) अन्तिमः -मा -मं, अन्त्यः -न्त्या -न्त्यं, अन्त in comp., शेष in comp., अवरः -रा -रं, चरमः -मा -मं, अवरतमः -मा -मं. — (Hindmost) पश्चिमः -मा -मं, जघन्यः -न्या -न्यं, अवरः -रा -रं, पाश्चात्यः -त्या -त्यं, पश्चातीयः -या -यं. — (Next before the present) गतः -ता -तं, अतीतः -ता -तं, भूतः -ता -तं. — (Last but one) उपान्तः -न्ता -न्तं, उपान्तिकः -की -कं, उपान्त्यः -न्त्या -न्त्यं. — (Extreme) परमः -मा -मं, अत्यन्तः -न्ता -न्तं, आत्यन्तिकः -की -कं, उत्तमः -मा -मं. — (Lowest) अधमः -मा -मं, अवरः -रा -रं, अधरः -रा -रं, अवमः -मा -मं, अपकृष्टः -ष्टा -ष्टं; ‘come last,’ अवरागतः -ता -तं, चरमागतः -ता -तं; ‘born last,’ अवरजः -जा -जं, जघन्यजः -जा -जं; ‘last state,’ शेषावस्था, शेषदशा, परिणामः; ‘last past,’ शेषभागः; ‘last part of the night,’ शेषरात्रिः <i>f.;</i> ‘last half,’ अवरार्द्धं, पश्चार्द्धं; ‘last night,’ गतरात्रिः <i>f.;</i> ‘last month,’ गतमासः; ‘last year,’ गतवत्सरः, परुत्; ‘belonging to last year,’ परुत्नः -त्ना -त्नं; ‘year before last,’ परारि; ‘belonging to the year before last,’ परारित्नः -त्ना -त्नं; ‘at last,’ शेषे, अन्ते, शेषतस्, अवशेषे, अन्ततस्, अनन्तरं, चिरकालात्परं, दीर्घकालात्परं, चरमं; ‘to the last,’ शेषं यावत्."
+        },
+        {
+            "word": "last",
+            "eid": "17444",
+            "pagenum": 438,
+            "content": "LAST¦, <i>adv.</i> अवरं, चरमं, अन्ततस्, अन्ते, शेषतस्, पश्चात्, अवरस्तात्, अवस्तात्; ‘come last,’ अवरागतः -ता -तं, चरमागतः -ता -तं; ‘born last,’ अवरजः -जा -जं, जघन्यजः -जा -जं."
+        },
+        {
+            "word": "last",
+            "eid": "17445",
+            "pagenum": 438,
+            "content": "LAST¦, <i>s.</i> (Of a shoe) काष्ठमयः पादुकासंस्कारः or पादुकाकारः."
+        },
+        {
+            "word": "last",
+            "eid": "17446",
+            "pagenum": 438,
+            "content": "<i>To</i> LAST¦, <i>v. n.</i> स्था (c. 1. तिष्ठति -ते, स्थातुं), संस्था, पर्यवस्था, स्थिरीभू, चिरस्थायी -यिनी -यि भू."
+        }
+    ]
 }
-
-makeSerializable(
-	HarmonyExportImportedSpecifierDependency,
-	"webpack/lib/dependencies/HarmonyExportImportedSpecifierDependency"
-);
-
-module.exports = HarmonyExportImportedSpecifierDependency;
-
-HarmonyExportImportedSpecifierDependency.Template = class HarmonyExportImportedSpecifierDependencyTemplate extends (
-	HarmonyImportDependency.Template
-) {
-	/**
-	 * @param {Dependency} dependency the dependency for which the template should be applied
-	 * @param {ReplaceSource} source the current replace source which can be modified
-	 * @param {DependencyTemplateContext} templateContext the context object
-	 * @returns {void}
-	 */
-	apply(dependency, source, templateContext) {
-		const { moduleGraph, runtime, concatenationScope } = templateContext;
-
-		const dep = /** @type {HarmonyExportImportedSpecifierDependency} */ (
-			dependency
-		);
-
-		const mode = dep.getMode(moduleGraph, runtime);
-
-		if (concatenationScope) {
-			switch (mode.type) {
-				case "reexport-undefined":
-					concatenationScope.registerRawExport(
-						mode.name,
-						"/* reexport non-default export from non-harmony */ undefined"
-					);
-			}
-			return;
-		}
-
-		if (mode.type !== "unused" && mode.type !== "empty-star") {
-			super.apply(dependency, source, templateContext);
-
-			this._addExportFragments(
-				templateContext.initFragments,
-				dep,
-				mode,
-				templateContext.module,
-				moduleGraph,
-				runtime,
-				templateContext.runtimeTemplate,
-				templateContext.runtimeRequirements
-			);
-		}
-	}
-
-	/**
-	 * @param {InitFragment<GenerateContext>[]} initFragments target array for init fragments
-	 * @param {HarmonyExportImportedSpecifierDependency} dep dependency
-	 * @param {ExportMode} mode the export mode
-	 * @param {Module} module the current module
-	 * @param {ModuleGraph} moduleGraph the module graph
-	 * @param {RuntimeSpec} runtime the runtime
-	 * @param {RuntimeTemplate} runtimeTemplate the runtime template
-	 * @param {RuntimeRequirements} runtimeRequirements runtime requirements
-	 * @returns {void}
-	 */
-	_addExportFragments(
-		initFragments,
-		dep,
-		mode,
-		module,
-		moduleGraph,
-		runtime,
-		runtimeTemplate,
-		runtimeRequirements
-	) {
-		const importedModule = /** @type {Module} */ (moduleGr

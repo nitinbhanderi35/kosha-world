@@ -1,1 +1,486 @@
- const lookbehind = self._lookbehind;\n      if (pos < 0) {\n        while (pos < 0 && pos <= end) {\n          const nextPos = pos + lastNeedleCharPos;\n          const ch = nextPos < 0 ? lookbehind[self._lookbehindSize + nextPos] : data[nextPos];\n          if (ch === lastNeedleChar && matchNeedle(self, data, pos, lastNeedleCharPos)) {\n            self._lookbehindSize = 0;\n            ++self.matches;\n            if (pos > -self._lookbehindSize)\n              self._cb(true, lookbehind, 0, self._lookbehindSize + pos, false);\n            else\n              self._cb(true, void 0, 0, 0, true);\n            return self._bufPos = pos + needleLen;\n          }\n          pos += occ[ch];\n        }\n        while (pos < 0 && !matchNeedle(self, data, pos, len - pos))\n          ++pos;\n        if (pos < 0) {\n          const bytesToCutOff = self._lookbehindSize + pos;\n          if (bytesToCutOff > 0) {\n            self._cb(false, lookbehind, 0, bytesToCutOff, false);\n          }\n          self._lookbehindSize -= bytesToCutOff;\n          lookbehind.copy(lookbehind, 0, bytesToCutOff, self._lookbehindSize);\n          lookbehind.set(data, self._lookbehindSize);\n          self._lookbehindSize += len;\n          self._bufPos = len;\n          return len;\n        }\n        self._cb(false, lookbehind, 0, self._lookbehindSize, false);\n        self._lookbehindSize = 0;\n      }\n      pos += self._bufPos;\n      const firstNeedleChar = needle[0];\n      while (pos <= end) {\n        const ch = data[pos + lastNeedleCharPos];\n        if (ch === lastNeedleChar && data[pos] === firstNeedleChar && memcmp(needle, 0, data, pos, lastNeedleCharPos)) {\n          ++self.matches;\n          if (pos > 0)\n            self._cb(true, data, self._bufPos, pos, true);\n          else\n            self._cb(true, void 0, 0, 0, true);\n          return self._bufPos = pos + needleLen;\n        }\n        pos += occ[ch];\n      }\n      while (pos < len) {\n        if (data[pos] !== firstNeedleChar || !memcmp(data, pos, needle, 0, len - pos)) {\n          ++pos;\n          continue;\n        }\n        data.copy(lookbehind, 0, pos, len);\n        self._lookbehindSize = len - pos;\n        break;\n      }\n      if (pos > 0)\n        self._cb(false, data, self._bufPos, pos < len ? pos : len, true);\n      self._bufPos = len;\n      return len;\n    }\n    __name(feed, "feed");\n    function matchNeedle(self, data, pos, len) {\n      const lb = self._lookbehind;\n      const lbSize = self._lookbehindSize;\n      const needle = self._needle;\n      for (let i = 0; i < len; ++i, ++pos) {\n        const ch = pos < 0 ? lb[lbSize + pos] : data[pos];\n        if (ch !== needle[i])\n          return false;\n      }\n      return true;\n    }\n    __name(matchNeedle, "matchNeedle");\n    module2.exports = SBMH;\n  }\n});\n\n// ../../node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js\nvar require_multipart = __commonJS({\n  "../../node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/multipart.js"(exports, module2) {\n    "use strict";\n    init_define_process();\n    var { Readable, Writable } = require("stream");\n    var StreamSearch = require_sbmh();\n    var {\n      basename,\n      convertToUTF8,\n      getDecoder,\n      parseContentType,\n      parseDisposition\n    } = require_utils();\n    var BUF_CRLF = Buffer.from("\\r\\n");\n    var BUF_CR = Buffer.from("\\r");\n    var BUF_DASH = Buffer.from("-");\n    function noop() {\n    }\n    __name(noop, "noop");\n    var MAX_HEADER_PAIRS = 2e3;\n    var MAX_HEADER_SIZE = 16 * 1024;\n    var HPARSER_NAME = 0;\n    var HPARSER_PRE_OWS = 1;\n    var HPARSER_VALUE = 2;\n    var _HeaderParser = class _HeaderParser {\n      constructor(cb) {\n        this.header = /* @__PURE__ */ Object.create(null);\n        this.pairCount = 0;\n        this.byteCount = 0;\n        this.state = HPARSER_NAME;\n        this.name = "";\n        this.value = "";\n        this.crlf = 0;\n        this.cb = cb;\n      }\n      reset() {\n        this.header = /* @__PURE__ */ Object.create(null);\n        this.pairCount = 0;\n        this.byteCount = 0;\n        this.state = HPARSER_NAME;\n        this.name = "";\n        this.value = "";\n        this.crlf = 0;\n      }\n      push(chunk, pos, end) {\n        let start = pos;\n        while (pos < end) {\n          switch (this.state) {\n            case HPARSER_NAME: {\n              let done = false;\n              for (; pos < end; ++pos) {\n                if (this.byteCount === MAX_HEADER_SIZE)\n                  return -1;\n                ++this.byteCount;\n                const code = chunk[pos];\n                if (TOKEN[code] !== 1) {\n                  if (code !== 58)\n                    return -1;\n                  this.name += chunk.latin1Slice(start, pos);\n                  if (this.name.length === 0)\n                    return -1;\n                  ++pos;\n                  done = true;\n                  this.state = HPARSER_PRE_OWS;\n                  break;\n                }\n              }\n              if (!done) {\n                this.name += chunk.latin1Slice(start, pos);\n                break;\n              }\n            }\n            case HPARSER_PRE_OWS: {\n              let done = false;\n              for (; pos < end; ++pos) {\n                if (this.byteCount === MAX_HEADER_SIZE)\n                  return -1;\n                ++this.byteCount;\n                const code = chunk[pos];\n                if (code !== 32 && code !== 9) {\n                  start = pos;\n                  done = true;\n                  this.state = HPARSER_VALUE;\n                  break;\n                }\n              }\n              if (!done)\n                break;\n            }\n            case HPARSER_VALUE:\n              switch (this.crlf) {\n                case 0:\n                  for (; pos < end; ++pos) {\n                    if (this.byteCount === MAX_HEADER_SIZE)\n                      return -1;\n                    ++this.byteCount;\n                    const code = chunk[pos];\n                    if (FIELD_VCHAR[code] !== 1) {\n                      if (code !== 13)\n                        return -1;\n                      ++this.crlf;\n                      break;\n                    }\n                  }\n                  this.value += chunk.latin1Slice(start, pos++);\n                  break;\n                case 1:\n                  if (this.byteCount === MAX_HEADER_SIZE)\n                    return -1;\n                  ++this.byteCount;\n                  if (chunk[pos++] !== 10)\n                    return -1;\n                  ++this.crlf;\n                  break;\n                case 2: {\n                  if (this.byteCount === MAX_HEADER_SIZE)\n                    return -1;\n                  ++this.byteCount;\n                  const code = chunk[pos];\n                  if (code === 32 || code === 9) {\n                    start = pos;\n                    this.crlf = 0;\n                  } else {\n                    if (++this.pairCount < MAX_HEADER_PAIRS) {\n                      this.name = this.name.toLowerCase();\n                      if (this.header[this.name] === void 0)\n                        this.header[this.name] = [this.value];\n                      else\n                        this.header[this.name].push(this.value);\n                    }\n                    if (code === 13) {\n                      ++this.crlf;\n                      ++pos;\n                    } else {\n                      start = pos;\n                      this.crlf = 0;\n                      this.state = HPARSER_NAME;\n                      this.name = "";\n                      this.value = "";\n                    }\n                  }\n                  break;\n                }\n                case 3: {\n                  if (this.byteCount === MAX_HEADER_SIZE)\n                    return -1;\n                  ++this.byteCount;\n                  if (chunk[pos++] !== 10)\n                    return -1;\n                  const header = this.header;\n                  this.reset();\n                  this.cb(header);\n                  return pos;\n                }\n              }\n              break;\n          }\n        }\n        return pos;\n      }\n    };\n    __name(_HeaderParser, "HeaderParser");\n    var HeaderParser = _HeaderParser;\n    var _FileStream = class _FileStream extends Readable {\n      constructor(opts, owner) {\n        super(opts);\n        this.truncated = false;\n        this._readcb = null;\n        this.once("end", () => {\n          this._read();\n          if (--owner._fileEndsLeft === 0 && owner._finalcb) {\n            const cb = owner._finalcb;\n            owner._finalcb = null;\n            define_process_default.nextTick(cb);\n          }\n        });\n      }\n      _read(n) {\n        const cb = this._readcb;\n        if (cb) {\n          this._readcb = null;\n          cb();\n        }\n      }\n    };\n    __name(_FileStream, "FileStream");\n    var FileStream = _FileStream;\n    var ignoreData = {\n      push: (chunk, pos) => {\n      },\n      destroy: () => {\n      }\n    };\n    function callAndUnsetCb(self, err) {\n      const cb = self._writecb;\n      self._writecb = null;\n      if (err)\n        self.destroy(err);\n      else if (cb)\n        cb();\n    }\n    __name(callAndUnsetCb, "callAndUnsetCb");\n    function nullDecoder(val, hint) {\n      return val;\n    }\n    __name(nullDecoder, "nullDecoder");\n    var _Multipart = class _Multipart extends Writable {\n      constructor(cfg) {\n        const streamOpts = {\n          autoDestroy: true,\n          emitClose: true,\n          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0\n        };\n        super(streamOpts);\n        if (!cfg.conType.params || typeof cfg.conType.params.boundary !== "string")\n          throw new Error("Multipart: Boundary not found");\n        const boundary = cfg.conType.params.boundary;\n        const paramDecoder = typeof cfg.defParamCharset === "string" && cfg.defParamCharset ? getDecoder(cfg.defParamCharset) : nullDecoder;\n        const defCharset = cfg.defCharset || "utf8";\n        const preservePath = cfg.preservePath;\n        const fileOpts = {\n          autoDestroy: true,\n          emitClose: true,\n          highWaterMark: typeof cfg.fileHwm === "number" ? cfg.fileHwm : void 0\n        };\n        const limits = cfg.limits;\n        const fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;\n        const fileSizeLimit = limits && typeof limits.fileSize === "number" ? limits.fileSize : Infinity;\n        const filesLimit = limits && typeof limits.files === "number" ? limits.files : Infinity;\n        const fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;\n        const partsLimit = limits && typeof limits.parts === "number" ? limits.parts : Infinity;\n        let parts = -1;\n        let fields = 0;\n        let files = 0;\n        let skipPart = false;\n        this._fileEndsLeft = 0;\n        this._fileStream = void 0;\n        this._complete = false;\n        let fileSize = 0;\n        let field;\n        let fieldSize = 0;\n        let partCharset;\n        let partEncoding;\n        let partType;\n        let partName;\n        let partTruncated = false;\n        let hitFilesLimit = false;\n        let hitFieldsLimit = false;\n        this._hparser = null;\n        const hparser = new HeaderParser((header) => {\n          this._hparser = null;\n          skipPart = false;\n          partType = "text/plain";\n          partCharset = defCharset;\n          partEncoding = "7bit";\n          partName = void 0;\n          partTruncated = false;\n          let filename;\n          if (!header["content-disposition"]) {\n            skipPart = true;\n            return;\n          }\n          const disp = parseDisposition(\n            header["content-disposition"][0],\n            paramDecoder\n          );\n          if (!disp || disp.type !== "form-data") {\n            skipPart = true;\n            return;\n          }\n          if (disp.params) {\n            if (disp.params.name)\n              partName = disp.params.name;\n            if (disp.params["filename*"])\n              filename = disp.params["filename*"];\n            else if (disp.params.filename)\n              filename = disp.params.filename;\n            if (filename !== void 0 && !preservePath)\n              filename = basename(filename);\n          }\n          if (header["content-type"]) {\n            const conType = parseContentType(header["content-type"][0]);\n            if (conType) {\n              partType = `${conType.type}/${conType.subtype}`;\n              if (conType.params && typeof conType.params.charset === "string")\n                partCharset = conType.params.charset.toLowerCase();\n            }\n          }\n          if (header["content-transfer-encoding"])\n            partEncoding = header["content-transfer-encoding"][0].toLowerCase();\n          if (partType === "application/octet-stream" || filename !== void 0) {\n            if (files === filesLimit) {\n              if (!hitFilesLimit) {\n                hitFilesLimit = true;\n                this.emit("filesLimit");\n              }\n              skipPart = true;\n              return;\n            }\n            ++files;\n            if (this.listenerCount("file") === 0) {\n              skipPart = true;\n              return;\n            }\n            fileSize = 0;\n            this._fileStream = new FileStream(fileOpts, this);\n            ++this._fileEndsLeft;\n            this.emit(\n              "file",\n              partName,\n              this._fileStream,\n              {\n                filename,\n                encoding: partEncoding,\n                mimeType: partType\n              }\n            );\n          } else {\n            if (fields === fieldsLimit) {\n              if (!hitFieldsLimit) {\n                hitFieldsLimit = true;\n                this.emit("fieldsLimit");\n              }\n              skipPart = true;\n              return;\n            }\n            ++fields;\n            if (this.listenerCount("field") === 0) {\n              skipPart = true;\n              return;\n            }\n            field = [];\n            fieldSize = 0;\n          }\n        });\n        let matchPostBoundary = 0;\n        const ssCb = /* @__PURE__ */ __name((isMatch, data, start, end, isDataSafe) => {\n          retrydata:\n            while (data) {\n              if (this._hparser !== null) {\n                const ret = this._hparser.push(data, start, end);\n                if (ret === -1) {\n                  this._hparser = null;\n                  hparser.reset();\n                  this.emit("error", new Error("Malformed part header"));\n                  break;\n                }\n                start = ret;\n              }\n              if (start === end)\n                break;\n              if (matchPostBoundary !== 0) {\n                if (matchPostBoundary === 1) {\n                  switch (data[start]) {\n                    case 45:\n                      matchPostBoundary = 2;\n                      ++start;\n                      break;\n                    case 13:\n                      matchPostBoundary = 3;\n                      ++start;\n                      break;\n                    default:\n                      matchPostBoundary = 0;\n                  }\n                  if (start === end)\n                    return;\n                }\n                if (matchPostBoundary === 2) {\n                  matchPostBoundary = 0;\n                  if (data[start] === 45) {\n                    this._complete = true;\n                    this._bparser = ignoreData;\n                    return;\n                  }\n                  const writecb = this._writecb;\n                  this._writecb = noop;\n                  ssCb(false, BUF_DASH, 0, 1, false);\n                  this._writecb = writecb;\n                } else if (matchPostBoundary === 3) {\n                  matchPostBoundary = 0;\n                  if (data[start] === 10) {\n                    ++start;\n                    if (parts >= partsLimit)\n                      break;\n                    this._hparser = hparser;\n                    if (start === end)\n                      break;\n                    continue retrydata;\n                  } else {\n                    const writecb = this._writecb;\n                    this._writecb = noop;\n                    ssCb(false, BUF_CR, 0, 1, false);\n                    this._writecb = writecb;\n                  }\n                }\n              }\n              if (!skipPart) {\n                if (this._fileStream) {\n                  let chunk;\n                  const actualLen = Math.min(end - start, fileSizeLimit - fileSize);\n                  if (!isDataSafe) {\n                    chunk = Buffer.allocUnsafe(actualLen);\n                    data.copy(chunk, 0, start, start + actualLen);\n                  } else {\n                    chunk = data.slice(start, start + actualLen);\n                  }\n                  fileSize += chunk.length;\n                  if (fileSize === fileSizeLimit) {\n                    if (chunk.length > 0)\n                      this._fileStream.push(chunk);\n                    this._fileStream.emit("limit");\n                    this._fileStream.truncated = true;\n                    skipPart = true;\n                  } else if (!this._fileStream.push(chunk)) {\n                    if (this._writecb)\n                      this._fileStream._readcb = this._writecb;\n                    this._writecb = null;\n                  }\n                } else if (field !== void 0) {\n                  let chunk;\n                  const actualLen = Math.min(\n                    end - start,\n                    fieldSizeLimit - fieldSize\n                  );\n                  if (!isDataSafe) {\n                    chunk = Buffer.allocUnsafe(actualLen);\n                    data.copy(chunk, 0, start, start + actualLen);\n                  } else {\n                    chunk = data.slice(start, start + actualLen);\n                  }\n                  fieldSize += actualLen;\n                  field.push(chunk);\n                  if (fieldSize === fieldSizeLimit) {\n                    skipPart = true;\n                    partTruncated = true;\n                  }\n                }\n              }\n              break;\n            }\n          if (isMatch) {\n            matchPostBoundary = 1;\n            if (this._fileStream) {\n              this._fileStream.push(null);\n              this._fileStream = null;\n            } else if (field !== void 0) {\n              let data2;\n              switch (field.length) {\n                case 0:\n                  data2 = "";\n                  break;\n                case 1:\n                  data2 = convertToUTF8(field[0], partCharset, 0);\n                  break;\n                default:\n                  data2 = convertToUTF8(\n                    Buffer.concat(field, fieldSize),\n                    partCharset,\n                    0\n                  );\n              }\n              field = void 0;\n              fieldSize = 0;\n              this.emit(\n                "field",\n                partName,\n                data2,\n                {\n                  nameTruncated: false,\n                  valueTruncated: partTruncated,\n                  encoding: partEncoding,\n                  mimeType: partType\n                }\n              );\n            }\n            if (++parts === partsLimit)\n              this.emit("partsLimit");\n          }\n        }, "ssCb");\n        this._bparser = new StreamSearch(`\\r\n--${boundary}`, ssCb);\n        this._writecb = null;\n        this._finalcb = null;\n        this.write(BUF_CRLF);\n      }\n      static detect(conType) {\n        return conType.type === "multipart" && conType.subtype === "form-data";\n      }\n      _write(chunk, enc, cb) {\n        this._writecb = cb;\n        this._bparser.push(chunk, 0);\n        if (this._writecb)\n          callAndUnsetCb(this);\n      }\n      _destroy(err, cb) {\n        this._hparser = null;\n        this._bparser = ignoreData;\n        if (!err)\n          err = checkEndState(this);\n        const fileStream = this._fileStream;\n        if (fileStream) {\n          this._fileStream = null;\n          fileStream.destroy(err);\n        }\n        cb(err);\n      }\n      _final(cb) {\n        this._bparser.destroy();\n        if (!this._complete)\n          return cb(new Error("Unexpected end of form"));\n        if (this._fileEndsLeft)\n          this._finalcb = finalcb.bind(null, this, cb);\n        else\n          finalcb(this, cb);\n      }\n    };\n    __name(_Multipart, "Multipart");\n    var Multipart = _Multipart;\n    function finalcb(self, cb, err) {\n      if (err)\n        return cb(err);\n      err = checkEndState(self);\n      cb(err);\n    }\n    __name(finalcb, "finalcb");\n    function checkEndState(self) {\n      if (self._hparser)\n        return new Error("Malformed part header");\n      const fileStream = self._fileStream;\n      if (fileStream) {\n        self._fileStream = null;\n        fileStream.destroy(new Error("Unexpected end of file"));\n      }\n      if (!self._complete)\n        return new Error("Unexpected end of form");\n    }\n    __name(checkEndState, "checkEndState");\n    var TOKEN = [\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      1,\n      0,\n      1,\n      1,\n      1,\n      1,\n      1,\n      0,\n      0,\n      1,\n      1,\n      0,\n      1,\n      1,\n      0,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      0,\n      0,\n      0,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      0,\n      1,\n      0,\n      1,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0\n    ];\n    var FIELD_VCHAR = [\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      1,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      0,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      0,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1,\n      1\n    ];\n    module2.exports = Multipart;\n  }\n});\n\n// ../../node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/urlencoded.js\nvar require_urlencoded = __commonJS({\n  "../../node_modules/.pnpm/busboy@1.6.0/node_modules/busboy/lib/types/urlencoded.js"(exports, module2) {\n    "use strict";\n    init_define_process();\n    var { Writable } = require("stream");\n    var { getDecoder } = require_utils();\n    var _URLEncoded = class _URLEncoded extends Writable {\n      constructor(cfg) {\n        const streamOpts = {\n          autoDestroy: true,\n          emitClose: true,\n          highWaterMark: typeof cfg.highWaterMark === "number" ? cfg.highWaterMark : void 0\n        };\n        super(streamOpts);\n        let charset = cfg.defCharset || "utf8";\n        if (cfg.conType.params && typeof cfg.conType.params.charset === "string")\n          charset = cfg.conType.params.charset;\n        this.charset = charset;\n        const limits = cfg.limits;\n        this.fieldSizeLimit = limits && typeof limits.fieldSize === "number" ? limits.fieldSize : 1 * 1024 * 1024;\n        this.fieldsLimit = limits && typeof limits.fields === "number" ? limits.fields : Infinity;\n        this.fieldNameSizeLimit = limits && typeof limits.fieldNameSize === "number" ? limits.fieldNameSize : 100;\n        this._inKey = true;\n        this._keyTrunc = false;\n        this._valTrunc = false;\n        this._bytesKey = 0;\n        this._bytesVal = 0;\n        this._fields = 0;\n        this._key = "";\n        this._val = "";\n        this._byte = -2;\n        this._lastPos = 0;\n        this._encode = 0;\n        this._decoder = getDecoder(charset);\n      }\n      static detect(conType) {\n        return conType.type === "application" && conType.subtype === "x-www-form-urlencoded";\n      }\n      _write(chunk, enc, cb) {\n        if (this._fields >= this.fieldsLimit)\n          return cb();\n        let i = 0;\n        const len = chunk.length;\n        this._lastPos = 0;\n        if (this._byte !== -2) {\n          i = readPctEnc(this, chunk, i, len);\n          if (i === -1)\n            return cb(new Error("Malformed urlencoded form"));\n          if (i >= len)\n            return cb();\n          if (this._inKey)\n            ++this._bytesKey;\n          else\n            ++this._bytesVal;\n        }\n        main:\n          while (i < len) {\n            if (this._inKey) {\n              i = skipKeyBytes(this, chunk, i, len);\n              while (i < len) {\n                switch (chunk[i]) {\n                  case 61:\n                    if (this._lastPos < i)\n                      this._key += chunk.latin1Slice(this._lastPos, i);\n                    this._lastPos = ++i;\n                    this._key = this._decoder(this._key, this._encode);\n                    this._encode = 0;\n                    this._inKey = false;\n                    continue main;\n                  case 38:\n                    if (this._lastPos < i)\n                      this._key += chunk.latin1Slice(this._lastPos, i);\n                    this._lastPos = ++i;\n                    this._key = this._decoder(this._key, this._encode);\n                    this._encode = 0;\n                    if (this._bytesKey > 0) {\n                      this.emit(\n                        "field",\n                        this._key,\n                        "",\n                        {\n                          nameTruncated: this._keyTrunc,\n                          valueTruncated: false,\n                          encoding: this.charset,\n                          mimeType: "text/plain"\n                        }\n                      );\n                    }\n                    this._key = "";\n                    this._val = "";\n                    this._keyTrunc = false;\n                    this._valTrunc = false;\n                    this._bytesKey = 0;\n                    this._bytesVal = 0;\n                    if (++this._fields >= this.fieldsLimit) {\n                      this.emit("fieldsLimit");\n                      return cb();\n                    }\n                    continue;\n                  case 43:\n                    if (this._lastPos < i)\n                      this._key += chunk.latin1Slice(this._lastPos, i);\n                    this._key += " ";\n                    this._lastPos = i + 1;\n                    break;\n                  case 37:\n                    if (this._encode === 0)\n                      this._encode = 1;\n                    if (this._lastPos < i)\n                      this._key += chunk.latin1Slice(this._lastPos, i);\n                    this._lastPos = i + 1;\n                    this._byte = -1;\n                    i = readPctEnc(this, chunk, i + 1, len);\n                    if (i === -1)\n                      return cb(new Error("Malformed urlencoded form"));\n                    if (i >= len)\n                      return cb();\n                    ++this._bytesKey;\n                    i = skipKeyBytes(this, chunk, i, len);\n                    continue;\n                }\n                ++i;\n                ++this._bytesKey;\n                i = skipKeyBytes(this, chunk, i, len);\n              }\n              if (this._lastPos < i)\n                this._key += chunk.latin1Slice(this._lastPos, i);\n            } else {\n              i = sk
+{
+    "word": "कुतप",
+    "ABCH": [
+        {
+            "word": "कुतप",
+            "linga": "पुं",
+            "pagenum": "9",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "495",
+            "group": "91",
+            "synonyms": [
+                "श्राद्धकाल"
+            ],
+            "content": "श्राद्धकालस्तु कुतपोऽष्टमो भागो दिनस्य यः ।"
+        },
+        {
+            "word": "कुतप",
+            "linga": "पुं",
+            "pagenum": "24",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1686",
+            "group": "569",
+            "synonyms": [
+                "स्वस्रीय",
+                "भागिनेय",
+                "जामेय"
+            ],
+            "content": "स्वस्रीयो भागिनेयश्च जामेयः कुतपश्च सः ॥ ५४३ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "कुतप",
+            "eid": "11101",
+            "pagenum": 408,
+            "content": "कुतपः¦ <b>1</b> A Brāhmaṇa. <b>--2</b> A <lbinfo n='twice+born'/> twiceborn man (द्विजन्मन्). <b>--3</b> The sun. <b>--4</b> Fire. <b>--5</b> A guest. <b>--6</b> An ox, a bull. <b>--7</b> A daughter's son. <b>--8</b> A sister's son. <b>--9</b> Grain. <b>--10</b> The eighth Muhūrta of the day; अह्नो मुहूर्ता <lbinfo n='vi#KyAtA'/> विख्याता दश पंच च सर्वदा । तत्राष्टमो मुहूर्तो यः स कालः कुतपः स्मृतः ॥ <b>--11</b> A <lbinfo n='musi+cal'/> musical instrument. <b>--12</b> A time suitable for the performance of sacrifices to the manes. --पं  The Kuśa grass"
+        }
+    ],
+    "BEN": [
+        {
+            "word": "कुतप",
+            "eid": "3526",
+            "pagenum": 193,
+            "content": "कुतप¦ <i>ku-tap + a,</i> <ab>m.</ab> and <ab>n.</ab> <b>1.</b> A blanket made of the hair of the mountain goat, <ls>Man.</ls> 3, 234. <b>2.</b> The eighth portion of the day, about noon, <ls>MBh.</ls> 13, 6040."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "कुतप",
+            "eid": "4751",
+            "pagenum": 170,
+            "content": "कुतप¦ <i>kutapa</i> <ab>m.</ab> <i>(ku; tap)</i> feu; soleil. || Au <ab>fig.</ab> un <i>dvija;</i> || bœuf; || hôte; || neveu par la sœur. -- <ab>M.</ab> <ab>n.</ab> les 8 heures de la chaleur du jour; || couverture de laine très-chaude faite avec le poil de la chèvre sauvage. || Au <ab>fig.</ab> poa cynosuroïdes ou gazon sacré; || instrument de musique."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "कुतप",
+            "eid": "7929",
+            "pagenum": 123,
+            "content": "कुतप¦ <lex>m.</lex> <lex>n.</lex> a blanket of goat-hair; <lex>m.</lex> Kuśa grass."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "कुतप",
+            "eid": "5014",
+            "pagenum": 86,
+            "content": "कुतप¦ <i>m. n.</i> Decke von Ziegenhaar."
+        },
+        {
+            "word": "कुतप",
+            "eid": "29799",
+            "pagenum": 539,
+            "content": "कुतप¦ <i>st.</i> कुलप."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "कुतप",
+            "eid": "09681",
+            "pagenum": 194,
+            "content": "kutapa¦ <i>(I) m.</i> 1. The sun; 2. fire; 3. a guest; 4. an ox, a bull; 5. a daughter’s son; 6. a sister’s son; 7. a twice-born man; 8. the eighth <i>muhūrta</i> of the day, अह्णो मुहूर्ता विख्याता दश पंच च सर्वदा । तत्राष्टमो मुहूर्तो यः स कालः कुतपः स्मृतः."
+        },
+        {
+            "word": "कुतप",
+            "eid": "09682",
+            "pagenum": 194,
+            "content": "kutapa¦ <i>(II) n.</i> 1. The Kuśa grass; 2. a sort of blanket."
+        }
+    ],
+    "MD": [
+        {
+            "word": "कुतप",
+            "eid": "6007",
+            "pagenum": 69,
+            "content": "कुतप¦ ku-tapa, <lex>m.</lex> <lex>n.</lex> goatʼs hair blanket."
+        }
+    ],
+    "MW": [
+        {
+            "word": "कुतप",
+            "eid": "50969",
+            "pagenum": "286,1",
+            "content": "कु—तप <hom>a</hom> ¦ <lex>mfn.</lex> slightly hot, <ls>W.</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50970",
+            "pagenum": "286,1",
+            "content": "कु—तप ¦ <lex>mn.</lex> (<ab>g.</ab> arDarcA<srs/>di) a sort of blanket (made of the hair of the mountain goat), <ls>Gaut.</ls>; <ls>Mn.</ls>; <ls>Yājñ.</ls>; <ls>VarBṛS.</ls><info lex='m:n'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50971",
+            "pagenum": "286,1",
+            "content": "कु—तप ¦ <lex>m.</lex> the <s1 slp1='kuSa'>Kuśa</s1> grass (<bot>Poa cynosuroides</bot>), <ls>Hcat.</ls><info lex='m'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50972",
+            "pagenum": "286,1",
+            "content": "¦ the eighth <s1 slp1='muhUrta'>Muhūrta</s1> or portion of the day from the last <s1 slp1='daRqa'>Daṇḍa</s1> of the second watch to the first of the third or about noon (an eligible time for the performance of sacrifices to the Manes), <ls>MBh. xiii, 6040</ls>; <ls>MatsyaP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50973",
+            "pagenum": "286,1",
+            "content": "¦ grain, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50974",
+            "pagenum": "286,1",
+            "content": "¦ a daughter's son, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50975",
+            "pagenum": "286,1",
+            "content": "¦ a sister's son, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50976",
+            "pagenum": "286,1",
+            "content": "¦ a twice-born man (one of the first three classes), <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50977",
+            "pagenum": "286,1",
+            "content": "¦ a <ns>Brāhman</ns>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50978",
+            "pagenum": "286,1",
+            "content": "¦ a guest, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50979",
+            "pagenum": "286,1",
+            "content": "¦ the sun, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50980",
+            "pagenum": "286,1",
+            "content": "¦ fire, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50981",
+            "pagenum": "286,1",
+            "content": "¦ an ox, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "50982",
+            "pagenum": "286,1",
+            "content": "¦ a kind of musical instrument, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुतप",
+            "eid": "51982",
+            "pagenum": "290,2",
+            "content": "कु-तप <hom>b</hom> ¦ &c. See <ls>ib.</ls>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "कुतप",
+            "eid": "15071",
+            "pagenum": 235,
+            "content": "कुतप¦ <i>ku-tapa, as, ā, am</i> (see 1. <i>ku</i>), slightly hot, mild, tepid; (<i>as, am</i>), m. n. a sort of blanket made of the hair of the mountain-goat; the eighth Muhūrta or portion of the day from the last Daṇḍa of the second watch to the first of the third or about noon; an eligible time for the performance of sacrifices to the manes; a kind of sacrificial grass, Poa Cynosuroides; grain; a daughter's son; a sister's son; a twice-born man, one of the first three classes; a Brāhman; a guest; the sun; fire; an ox; a musical instrument. <i>—Kutapa-saptaka, am,</i> n. a Śrāddha in which seven constituents occur, viz. noon, a horn platter, a Nepal blanket, silver, sacrificial grass, Sesamum, and Kine."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "कुतप",
+            "eid": "3130",
+            "pagenum": 1,
+            "content": "<i>Kutapas</i>¦ — eight in relation to a <i>śrāddha</i> — middle noon, <i>khaḍgapātram,</i> Nepal shawl, silver, <i>kuśa grass,</i> seasamum, cow, son of a daughter: <i>ety. kutsitam pāpam tapanti;</i> Of 5 and 6 are born of Viṣṇu's body and are by themselves enough to protect a <i>Śrāddha.</i> <dvsn n='P'/>M. 22. 84-9."
+        }
+    ],
+    "PW": [
+        {
+            "word": "कुतप",
+            "eid": "28505",
+            "pagenum": 2,
+            "content": "कुतप¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <lex>n.</lex> <i>eine Decke von Ziegenhaar</i> <ls>GAUT.</ls> <dvsn n='1'>— 2〉 <lex>m.</lex> <dvsn n='2'>— a〉 <is>Kuśa</is>-<i>Gras, <bot>Poa cynosuroides</bot></i> <ls>HEMĀDRI 1,703,10. 704,3</ls>. <dvsn n='2'>— b〉 <i>die achte Stunde des 30theiligen Tages, die Zeit um Mittag</i>. <dvsn n='2'>— c〉 *<i>Korn</i>. <dvsn n='2'>— d〉 *<i>Schwestersohn</i>. <dvsn n='2'>— e〉 *<i>Tochtersohn</i>. <dvsn n='2'>— f〉 *<i>ein Brahman</i>. <dvsn n='2'>— g〉 *<i>Gast</i>. <dvsn n='2'>— h〉 *<i>die Sonne</i>. <dvsn n='2'>— i〉 *<i>Feuer</i>. <dvsn n='2'>— k〉 *<i>Ochs</i>. <dvsn n='2'>— l〉 *<i>ein <ab>best.</ab> musikalisches Instrument</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "कुतप",
+            "eid": "17662",
+            "pagenum": 2,
+            "content": "कुतप¦ <lex>m.</lex> <lex>n.</lex> <is>gaṇa</is> अर्धर्चादि zu <ls>P. 2, 4, 31.</ls> <ls>SIDDH. K. 249,a,5.</ls> <ls>TRIK. 3,5,13.</ls> <dvsn n='1'> 1) <i>eine Decke von Ziegenhaar</i> <ls>TRIK. 3, 3, 275.</ls> <ls>H. an. 3, 442.</ls> <ls>MED. p. 19.</ls> कुतपं चासने दद्यात् <ls>M. 3, 234.</ls> त्रीणि श्राद्धे पवित्राणि दौहित्रः कुतपस्तिलाः <ls n='M.'>235.</ls> कुतपानामरिष्टकैः (शुद्धिः) <ls n='M.'>5, 120.</ls> उदकगोमूत्रैः शुध्यति - सारिष्टैः कुतपम्  <ls>YĀJÑ. 1, 186.</ls> <ls n='YĀJÑ.'>3, 37.</ls> आक्रामति वृद्धः कुतपम् <ls>P. 1, 3, 40</ls>, <ls>Sch.</ls>  <dvsn n='1'>— 2) <i>die achte Stunde des 30theiligen Tages, die Zeit um Mittag</i> <ls>AK. 2, 7, 31.</ls> <ls>TRIK.</ls> <ls>H. 141.</ls> <ls>H. an.</ls> <ls>MED.</ls> दिवसस्याष्टमे भागे मन्दीभवति भास्करः । स कालः कुतपो ज्ञेयः पितॄणामन्नमक्षयम् ॥ (vgl. <ls>Sch.</ls> zu <ls>H. 141</ls>) <ls>ŚĀTĀTAPA</ls> im <ls>ŚKDR.</ls> आरभ्य कुतपे श्राद्धं कुर्यादारोहिणं बुधः । विधिज्ञो विधिमास्थाय रौहिणं तु न लङ्घयेत् ॥ <ls>ŚRĀDDHAT.</ls> ebend. परमान्नेन यो दानात्पितॄणामौपहारिकम् । वाजच्छायायां पूर्वस्यां कुतपे दक्षिणामुखः ॥ <ls>MBH. 13, 6040.</ls> <dvsn n='1'>— 3) N. eines Grases, <i>Poa cynosuroides Retz.</i> (कुश), <ls>TRIK.</ls> <ls>H. an.</ls> <ls>MED.</ls> <dvsn n='1'>— 4) <i>Korn</i> (धान्य) <ls>TRIK.</ls> <dvsn n='1'>— 5) <i>Schwestersohn</i> <ls>H. 543.</ls> <ls>H. an.</ls> <dvsn n='1'>— 6) <i>Tochtersohn</i> <ls>MED.</ls> <dvsn n='1'>— 7) <i>ein Brahman.</i> <dvsn n='1'>— 8) <i>Gast</i> <ls>H. an.</ls> <dvsn n='1'>— 9) <i>Sonne</i> <ls>H. an.</ls> <ls>MED.</ls> <dvsn n='1'>— 10) <i>Feuer.</i> <dvsn n='1'>— 11) <i>Ochs</i> <ls>H. an.</ls> <dvsn n='1'>— 12) <i>ein musik. Instrument</i> <ls>H. an.</ls> <ls>MED.</ls> — Nach <ls>MED.</ls> ist das Wort bloss in der 8ten Bed. masc., <ls>TRIK.</ls> und <ls>H. an.</ls> theilen die von ihnen gekannten Bedd. dem masc. zu. — In den beiden ersten, allein belegbaren Bedd., lässt sich das Wort in 1. कु + तप <i>Hitze</i> zerlegen; <ls>WILS.</ls> hat auch noch die <lex>adj.</lex> Bed. <i>slightly hot, mild, tepid.</i> <dvsn n='v'>— Vgl. कौतप ."
+        },
+        {
+            "word": "कुतप",
+            "eid": "70945",
+            "pagenum": 5,
+            "content": "कुतप¦ <dvsn n='1'> 1) <ls>VARĀH. BṚH. S. 41, 2</ls> (कुतुप Druckfehler). <dvsn n='1'>— 2) अह्नो मुहूर्ता विख्याता दश पञ्च च सर्वदा । तत्राष्टमो मुहूर्तो यः स कालः कुतपः स्मृतः ॥ <ls>MATSYA-P. 22, 79</ls> bei <ls>AUFRECHT, HALĀY.</ls> <ls>Ind.</ls> = अपराह्ण (?) <ls>HALĀY. 5, 36.</ls>"
+        }
+    ],
+    "SCH": [
+        {
+            "word": "कुतप",
+            "eid": "10794",
+            "pagenum": 149,
+            "content": "<i>kutapa</i>¦ m. *ein best. musikalisches Instrument, <ls>S</ls> I, 275, 1 (Ko. <i>tūrya</i>); II, 29, 5. {part=,seq=10954,type=,n=3}"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "कुतप",
+            "eid": "10707",
+            "pagenum": 187,
+            "content": "कुतप¦ mfn. (-पः-पा-पं) Slightly hot, mild, tepid. mn. (-पः-पं) 1. The eight Muhurta or portion of the day, from the last Danda of the second watch to the first of the third or about noon; an eligible time for the performance of sacrifices to the manes. 2. A daughter's son. 3. A musical instrument. 4. A sort of blanket made of the hair of the mountain goat. 5. Sacrificial grass, (Poa cynosuroides.) m. (-पः) 1. The. sun. 2. Fire. 3. A twice born man, one of the three first classes. 4. A guest. 5. A sister's son. 6. An ox. E. कु the earth, and तप what warms, or कु diminutive, and तप heat; the sun being on the decline, &c."
+        }
+    ],
+    "STC": [
+        {
+            "word": "कुतप",
+            "eid": "8087",
+            "pagenum": 197,
+            "content": "<b>kutapa-</b>¦ <ab>m.</ab> <ab>nt.</ab> couverture en peau de chèvre ; <ab>n.</ab> d'une division du temps (vers midi)."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "कुतप",
+            "eid": "10713",
+            "pagenum": 228,
+            "content": "कुतप¦ mfn. (-पः-पा-पं) Slightly hot, mild, tepid. mn. (-पः-पं) .²1 The eighth <i>Muhūrta</i> or portion of the day, from the last <i>Daṇḍa</i> of the second watch to the first of the third or about noon; an eligible time for the performance of sacrifices to the manes. .²2 A daughter's son. .²3 A musical instrument. .²4 A sort of blanket made of the hair of the mountain goat. .²5 Sacrificial grass, (<bot>Poa cynosuroides</bot>.) m. (-पः) .²1 The sun. .²2 Fire. .²3 A twice born man, one of the three first classes. .²4 A guest. .²5 A sister's son. .²6 An ox. .E. कु the earth, and तप what warms, or कु diminutive, and तप heat; the sun being on the decline, &c."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "कुतप",
+            "eid": "10158",
+            "pagenum": 193,
+            "content": "कु-तप¦ (पः-पं) 1. <i>m. n.</i> The eighth hour or portion of the day, about noon; the sun; fire; daughter's or sister's son; a guest; sacrificial grass. <i>a.</i> Tepid."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कुतप",
+            "eid": "8020",
+            "pagenum": "2-140-c",
+            "content": "कुतपः¦, पुं क्ली, अह्नोऽष्टमोऽंशः । दिवसस्याष्टमो मूहूर्त्तः । यथा, “अह्नो मुहूर्त्ता विख्याता दश पञ्च च सर्व्वदा । तत्राष्टमो मुहूर्त्तो यः स कालः कुतपः स्मृतः” ॥ इति श्राद्ध्वतत्त्वे मत्स्यपुराणवचनम् ॥ * ॥ पारिभाषिककुतपा यथा, “मध्याह्नः खङ्गपात्रञ्च तथा नेपालकम्बलः । रौप्यं दर्भास्तिला गावो दौहित्रश्चाष्टमः स्मृतः ॥ पापं कुत्सितमित्याहुस्तस्य सन्तापकारिणः । अष्टावेते यतस्तस्मात् कुतपा इति विश्रुताः” ॥ इति मिताक्षरायामाचाराध्यायः ॥ स च त्रिंशद्दण्डदिनमाने द्वितीहप्रहरशेषदण्डावधि तृतीयप्रहरप्रथमदण्डपर्य्यन्तकालः । इत्यमरः । २ । ७ । ३१ ॥ स तु एकोद्दिष्टश्राद्धारम्भकालः । यथा, “आरभ्य कुतपे श्राद्धं कुर्य्यादारौहिणं बुधः । विधिज्ञो विधिमास्थाय रौहिणन्तु न लङ्घयेत्” ॥ इति श्राद्धतत्त्वम् ॥ “दिवसस्याष्टमे भागे मन्दीमवति भास्करः । स कालः कुतपो ज्ञेयः पितॄणामन्नमक्षयम्” ॥ इति शातातपः ॥ * ॥ दौहित्रः । वाद्यम् । छागलोमजकम्बलम् । कुशतृणम् । इति मेदिनी ॥"
+        },
+        {
+            "word": "कुतप",
+            "eid": "8021",
+            "pagenum": "2-140-c",
+            "content": "कुतपः¦, पुं, (कुत्सितं पापं तपति कुं भूमिं तपति वा । तप + अच् । कुत् + कपन् वा ।) सूर्य्यः । वैश्वानरः । द्विजन्मा । अतिथिः । गौः । भागिनेयः । इति हेमचन्द्रः ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "कुतप",
+            "eid": "13986",
+            "pagenum": "2094,b",
+            "content": "कुतप¦ पु० कुत्सितं पापं तपति कुं भूमिं तपति--तप--अच् कुतकपन् वा । १ सूर्य्ये २ वह्नौ ३ अतिथौ ४ गवि ५ भागिनेये ६ द्विजातौ च ७ दौहित्रे ८ वाद्यभेदे ९ नेपालकम्बले १० कुशतृणे च न० मेदि० । पञ्चदशधा विभक्तदिनस्याष्टमे ११ भागे अमरः अर्द्धर्चादि “मध्याह्नः खड्गपात्रञ्च तथा नेपालकम्बलम् । रौप्य दर्भास्त्रिलाः शाकं दौहित्रश्चाष्टमः स्मृतः” इति स्मृत्युक्तेषु अष्टसु पदार्थेषु । “कुत्सितं पापमित्याहुस्त्रस्य सन्तापकारिणः । अष्टावेतेयस्तस्मात् कुतपा इति विश्रुताः” इति स्मृत्युक्तेस्तेषां तथात्वम् । अह्नोमुहूर्त्ता विख्याता दश पञ्च च सर्व्वदा । तत्राष्टमो मुहूर्त्तोशः स कालः कुतपःस्मृतः” स्मृतिः । स च एकोद्द्विष्टश्राद्धारम्भकालः “कुतपप्रथमे भागे एकोदिष्टमुपक्रमेत् । आवर्त्तनसमीपे वा तत्रैव नियतात्मवान्” कालमा० व्यासोक्तेः । “आवर्त्तनं पश्चिमदिगवस्थितच्छायायाः पूर्व्वपदिग्गतिकालः कुतपशेषपदण्ड इत्यर्थः” रघु० । “आरभ्य कुतपे श्राद्धं कुर्य्यादारोहिणं बुधः । विधिज्ञो विधिमास्थाय रीहिणं तु न लङ्घयेत्” गौतमः । “दिवसस्याष्टमे भागे सन्दीभवति भास्करः । स कालः कुतपोज्ञेयः पितॄणां दत्तमक्षयम्” मत्० पु० “त्रीणि श्राद्धे प्रशस्यन्ते दौहित्रः कुतपस्तिलाः” मनूक्तौ दौहित्रतिलानां पृथङ्मिर्द्देशातुक्तकालपरता । तथाच तत्रैव मुख्यत्वम् दौहित्रादौ परिभाषिकत्वमिति विवेकः । ज्योत्स्नादि० चतुरर्थ्याम् अण् । कौतप तन्निर्वृत्तादौ त्रि० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् ब्राह्मण"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् द्विज"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् सूर्य"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् अग्नि"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् अतिथि"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् 'बैल, साँड़'"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् दोहता"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् भानजा"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् अनाज"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. -  कु - तप् - अच् दिन का आठवाँ मुहूर्त"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपम् नपुं. -  कु - तप् - अच् कुश घास"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपम् नपुं. -  कु - तप् - अच् एक प्रकार का कम्बल"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. कु-तपः  - एक प्रकार का कम्बल जो पहाड़ी बकरियों के बालों से बनता है"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. कु-तपः  - दिन का आठवाँ मुहूर्त"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. कु-तपः  - दोहता या भानजा"
+        },
+        {
+            "word": "कुतप",
+            "content": "कुतपः पुं. कु-तपः  - सूर्य"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸೂರ್ಯ",
+            "निष्पत्तिः": "तप (सन्तापे)'अच्' (३-१-१३४)",
+            "व्युत्पत्तिः": "कुं भूमिं तपति",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮಗಳ ಮಗ \\/ದೌಹಿತ್ರ",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವಾದ್ಯ",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಆಡಿನ ಕೂದಲಿನಿಂದ ತಯಾರಿಸಲ್ಪಟ್ಟ ನೇಪಾಳದ ಶಾಲು",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಕುಶ \\/ದರ್ಭೆ",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಕುತಪಕಾಲ \\/ಹಗಲಿನ ಎಂಟನೆಯ ಭಾಗ",
+            "विस्तारः": "'दिवसस्याष्टमे भागे मन्दीभवति भास्करः । स कालः कुतपो ज्ञेयः पितॄणां दत्तमक्षयम्'मत्स्यपु० । 'कुअतपोऽस्त्रियां दौहित्रे वाद्ये छागलकम्बले । कुशे दिनस्याष्टमांशे ना सूर्ये'मेदि० । 'अह्नो मुहूर्ता विख्याता दश पञ्च च सर्वदा । तत्राष्टमो मुहुर्तो यः स कालः कुतपः स्मृतः' -",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಧಾನ್ಯ",
+            "विस्तारः": "'धान्ये कुशेष्टमांशोऽह्नः कुतपश्छागकम्बले'त्रिकाण्ड०",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಅಗ್ನಿ \\/ಬೆಂಕಿ",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಬ್ರಾಹ್ಮಣ",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಅತಿಥಿ",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ವೃಷಭ \\/ಎತ್ತು",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಭಾಗಿನೇಯ \\/ಸಹೋದರಿಯ ಮಗ \\/ಸೋದರಳಿಯ",
+            "विस्तारः": "'कुतपस्तु छागकम्बलदर्भयोः । वैश्वानरेदिनकरे द्विजन्मन्यतिथौ गवि । भागिनेयेष्टमांशोऽह्नौ वाद्ये' -हेम० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "कुतप",
+            "linga": "PN",
+            "artha": "अह्नोऽष्टमभागः",
+            "synonyms": [
+                "कुतप"
+            ],
+            "num": "2.7.33",
+            "text": "पितृदानं निवापः स्याच्छ्राद्धं तत्कर्म शास्त्रतः । अन्वाहार्यं मासिकेंऽशोऽष्टमोऽह्नः कुतपोऽस्त्रियाम् ॥",
+            "content": ""
+        },
+        {
+            "word": "कुतप",
+            "linga": "P",
+            "artha": "मृगरोमोत्थपटः",
+            "synonyms": [
+                "कुतप"
+            ],
+            "num": "3.3.140",
+            "text": "रवर्णे पुंसि रेफः स्यात्कुत्सिते वाच्यलिङ्गकः । कुतपो मृगरोमोत्थपटे चाह्नोऽष्टमेंऽशके ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "कुतप",
+            "content": "<body><s>kutapa pu° kutsitaM pApaM tapati kuM BUmiM tapati—tapa—ac kuta­kapan vA . <lb/><b>1</b> sUryye <lb/><b>2</b> vahnO <lb/><b>3</b> atiTO <lb/><b>4</b> gavi <lb/><b>5</b> BAgineye <lb/><b>6</b> dvijAtO ca <lb/><b>7</b> dOhitre <lb/><b>8</b> vAdyaBede <lb/><b>9</b> nepAlakambale <lb/><b>1°</b> kuSa­tfRe ca na° medi° . paYcadaSaDA viBaktadinasyAzwame <lb/><b>11</b> BAge amaraH ardDarcAdi <q>maDyAhnaH KaqgapAtraYca taTA nepAla­kambalam . rOpya darBAstrilAH SAkaM dOhitraScAzwamaH smftaH</q> iti smftyuktezu azwasu padArTezu . <q>kutsitaM pApa­mityAhustrasya santApakAriRaH . azwAveteyastasmAt kutapA iti viSrutAH</q> iti smftyuktestezAM taTAtvam . ahno­muhUrttA viKyAtA daSa paYca ca sarvvadA . tatrAzwamo muhUrttoSaH sa kAlaH kutapaHsmftaH” smftiH . sa ca ekoddvizwaSrAdDAramBakAlaH <q>kutapapraTame BAge eko­dizwamupakramet . AvarttanasamIpe vA tatrEva niyatAtma­vAn</q> kAlamA° vyAsokteH . <q>AvarttanaM paScimadigava­sTitacCAyAyAH pUrvvapadiggatikAlaH kutapaSezapadaRqa ityarTaH</q> raGu° . <q>AraBya kutape SrAdDaM kuryyAdArohiRaM buDaH . viDijYo viDimAsTAya rIhiRaM tu na laNGa­yet</q> gOtamaH . <q>divasasyAzwame BAge sandIBavati BAskaraH . sa kAlaH kutapojYeyaH pitFRAM dattamakzayam</q> mat° pu° <q>trIRi SrAdDe praSasyante dOhitraH kutapastilAH</q> manUktO dOhitratilAnAM pfTaNmirddeSAtuktakAla­paratA . taTAca tatrEva muKyatvam dOhitrAdO pariBAzi­katvamiti vivekaH . jyotsnAdi° caturarTyAm aR . kOtapa tannirvfttAdO tri° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "कुतप",
+            "content": "<H3><h><key1>kutapa</key1><key2>ku—tapa</key2><hom>a</hom></h><body><s>ku—tapa</s> <hom>a</hom>   <lex>mfn.</lex> slightly hot, <ls>W.</ls><info lex=\"m:f:n\" /></body><tail><L>50969</L><pc>286,1</pc></tail></H3>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body><s>ku—tapa</s>   <lex>mn.</lex> (<ab>g.</ab> <s>arDarcA<srs />di</s>) a sort of blanket (made of the hair of the mountain goat), <ls>Gaut.</ls>; <ls>Mn.</ls>; <ls>Yājñ.</ls>; <ls>VarBṛS.</ls><info lex=\"m:n\" /></body><tail><L>50970</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body><s>ku—tapa</s>   <lex>m.</lex> the <s1 slp1=\"kuSa\">Kuśa</s1> grass (<bot>Poa cynosuroides</bot>), <ls>Hcat.</ls><info lex=\"m\" /></body><tail><L>50971</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  the eighth <s1 slp1=\"muhUrta\">Muhūrta</s1> or portion of the day from the last <s1 slp1=\"daRqa\">Daṇḍa</s1> of the second watch to the first of the third or about noon (an eligible time for the performance of sacrifices to the Manes), <ls>MBh. xiii, 6040</ls>; <ls>MatsyaP.</ls><info lex=\"inh\" /></body><tail><L>50972</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  grain, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50973</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  a daughter's son, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50974</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  a sister's son, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50975</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  a twice-born man (one of the first three classes), <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50976</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  a <ns>Brāhman</ns>, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50977</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  a guest, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50978</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  the sun, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50979</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  fire, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50980</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  an ox, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50981</L><pc>286,1</pc></tail></H3B>\n <H3B><h><key1>kutapa</key1><key2>ku—tapa</key2></h><body>  a kind of musical instrument, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>50982</L><pc>286,1</pc></tail></H3B>\n <H2><h><key1>kutapa</key1><key2>ku-tapa</key2><hom>b</hom></h><body><s>ku-tapa</s> <hom>b</hom>   &amp;c. See <ls>ib.</ls></body><tail><L>51982</L><pc>290,2</pc></tail></H2>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "कुतप",
+            "content": "<H1><h><key1>kutapa</key1><key2>kutapa</key2></h><body><s>kutapa</s>  <div n=\"1\">mfn. (<s>-paH-pA-paM</s>) Slightly hot, mild, tepid. </div><div n=\"1\">mn. (<s>-paH-paM</s>) </div><div n=\"2\"> 1. The eight <lb />Muhurta or portion of the day, from the last Danda of the second <lb />watch to the first of the third or about noon; an eligible time for <lb />the performance of sacrifices to the manes. </div><div n=\"2\"> 2. A daughter's son. <lb />3. A musical instrument. </div><div n=\"2\"> 4. A sort of blanket made of the hair of <lb />the mountain goat. </div><div n=\"2\"> 5. Sacrificial grass, (Poa cynosuroides.) </div><div n=\"1\">m. (<s>-paH</s>) <lb />1. The. sun. </div><div n=\"2\"> 2. Fire. </div><div n=\"2\"> 3. A twice born man, one of the three first <lb />classes. </div><div n=\"2\"> 4. A guest. </div><div n=\"2\"> 5. A sister's son. </div><div n=\"2\"> 6. An ox.</div><div n=\"E\"> E. <s>ku</s> the earth, <lb />and <s>tapa</s> what warms, or <s>ku</s> diminutive, and <s>tapa</s> heat; the sun being <lb />on the decline, &amp;c.</div></body><tail><L>10707</L><pc>187-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कुतप",
+            "content": "<span lang=\"sa\">कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸೂರ್ಯ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>तप (सन्तापे) - \"अच्\" (३-१-१३४)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>कुं भूमिं तपति<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮಗಳ ಮಗ /ದೌಹಿತ್ರ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಾದ್ಯ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಆಡಿನ ಕೂದಲಿನಿಂದ ತಯಾರಿಸಲ್ಪಟ್ಟ ನೇಪಾಳದ ಶಾಲು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕುಶ /ದರ್ಭೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕುತಪಕಾಲ /ಹಗಲಿನ ಎಂಟನೆಯ ಭಾಗ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"दिवसस्याष्टमे भागे मन्दीभवति भास्करः । स कालः कुतपो ज्ञेयः पितॄणां दत्तमक्षयम्\" - मत्स्यपु० । \"कुअतपोऽस्त्रियां दौहित्रे वाद्ये छागलकम्बले । कुशे दिनस्याष्टमांशे ना सूर्ये\" - मेदि० । \"अह्नो मुहूर्ता विख्याता दश पञ्च च सर्वदा । तत्राष्टमो मुहुर्तो यः स कालः कुतपः स्मृतः\" -<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಧಾನ್ಯ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"धान्ये कुशेष्टमांशोऽह्नः कुतपश्छागकम्बले\" - त्रिकाण्ड०<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅಗ್ನಿ /ಬೆಂಕಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬ್ರಾಹ್ಮಣ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಅತಿಥಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವೃಷಭ /ಎತ್ತು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुतप<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಭಾಗಿನೇಯ /ಸಹೋದರಿಯ ಮಗ /ಸೋದರಳಿಯ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"कुतपस्तु छागकम्बलदर्भयोः । वैश्वानरेदिनकरे द्विजन्मन्यतिथौ गवि । भागिनेयेष्टमांशोऽह्नौ वाद्ये\" -हेम० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

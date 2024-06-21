@@ -1,208 +1,167 @@
-e, maxRange) {}
-        function getShiftFromSize(size) {
-            switch(size){
-                case 1:
-                    return 0;
-                case 2:
-                    return 1;
-                case 4:
-                    return 2;
-                case 8:
-                    return 3;
-                default:
-                    throw new TypeError("Unknown type size: " + size);
-            }
+{
+    "word": "त्रिवेद",
+    "CAE": [
+        {
+            "word": "त्रिवेद",
+            "eid": "12937",
+            "pagenum": 213,
+            "content": "1 त्रिवेद¦ (°—) the three Vedas (also त्रिवेदी <lex>f.</lex>)."
+        },
+        {
+            "word": "त्रिवेद",
+            "eid": "12938",
+            "pagenum": 213,
+            "content": "2 त्रिवेद¦ <lex>a.</lex> knowing or containing the three Vedas (also °दिन्)."
         }
-        function embind_init_charCodes() {
-            var codes = new Array(256);
-            for(var i = 0; i < 256; ++i){
-                codes[i] = String.fromCharCode(i);
-            }
-            embind_charCodes = codes;
+    ],
+    "CCS": [
+        {
+            "word": "त्रिवेद",
+            "eid": "9087",
+            "pagenum": 161,
+            "content": "त्रिवेद¦ (°—) <i>u.</i> त्रिवेदी <i>f.</i> die drei Veda; <i>Adj.</i> die d. V. enthaltend <i>o.</i> kennend."
         }
-        var embind_charCodes = undefined;
-        function readLatin1String(ptr) {
-            var ret = "";
-            var c = ptr;
-            while(HEAPU8[c]){
-                ret += embind_charCodes[HEAPU8[c++]];
-            }
-            return ret;
+    ],
+    "LAN": [
+        {
+            "word": "त्रिवेद",
+            "eid": "1833",
+            "pagenum": 166,
+            "content": "<b>tri-veda,</b>¦ <i>in <ab>cpds</ab> and <ab>derivs.</ab></i> the three Vedas. [<ls n='wg,1312'>1312<sup>3</sup></ls>.]"
         }
-        var BindingError = undefined;
-        function throwBindingError(message) {
-            throw new BindingError(message);
+    ],
+    "LRV": [
+        {
+            "word": "त्रिवेद",
+            "eid": "16183",
+            "pagenum": 318,
+            "content": "tri-veda¦ <i>m.</i> a Brāhmaṇa who knows the three <i>Vedas</i>."
         }
-        function registerType(rawType, registeredInstance, options) {
-            options = options || {};
-            if (!("argPackAdvance" in registeredInstance)) {
-                throw new TypeError("registerType registeredInstance requires argPackAdvance");
-            }
-            var name = registeredInstance.name;
-            if (!rawType) {
-                throwBindingError('type "' + name + '" must have a positive integer typeid pointer');
-            }
-            if (registeredTypes.hasOwnProperty(rawType)) {
-                if (options.ignoreDuplicateRegistrations) {
-                    return;
-                } else {
-                    throwBindingError("Cannot register type '" + name + "' twice");
-                }
-            }
-            registeredTypes[rawType] = registeredInstance;
-            delete typeDependencies[rawType];
-            if (awaitingDependencies.hasOwnProperty(rawType)) {
-                var callbacks = awaitingDependencies[rawType];
-                delete awaitingDependencies[rawType];
-                callbacks.forEach(function(cb) {
-                    cb();
-                });
-            }
+    ],
+    "MW": [
+        {
+            "word": "त्रिवेद",
+            "eid": "88304",
+            "pagenum": "460,3",
+            "content": "त्रि—वेद <hom>a</hom> ¦ in <ab>comp.</ab> the 3 <s1 slp1='veda'>Veda</s1>s, <ls>KātyŚr. xxv</ls>"
+        },
+        {
+            "word": "त्रिवेद",
+            "eid": "88304.2",
+            "pagenum": "460,3",
+            "content": "त्रि—वेद ¦ <lex>mfn.</lex> familiar with the 3 <s1 slp1='veda'>Veda</s1>s, <ls>Mn. ii, 118</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिवेद",
+            "eid": "88304.3",
+            "pagenum": "460,3",
+            "content": "त्रि—वेद ¦ <lex>m.</lex> = त्रयी-देह, <ls>Hcat. i</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिवेद",
+            "eid": "88304.41",
+            "pagenum": "1328,2",
+            "content": "त्रि—वेद <hom>b</hom> ¦ <lex>m.</lex> (with कृष्ण-राश-लौहित्य) <ab>N.</ab> of a teacher, <ls>JaimUp.</ls><info n='sup'/><info lex='m'/>"
         }
-        function __embind_register_bool(rawType, name, size, trueValue, falseValue) {
-            var shift = getShiftFromSize(size);
-            name = readLatin1String(name);
-            registerType(rawType, {
-                name: name,
-                fromWireType: function(wt) {
-                    return !!wt;
-                },
-                toWireType: function(destructors, o) {
-                    return o ? trueValue : falseValue;
-                },
-                argPackAdvance: 8,
-                readValueFromPointer: function(pointer) {
-                    var heap;
-                    if (size === 1) {
-                        heap = HEAP8;
-                    } else if (size === 2) {
-                        heap = HEAP16;
-                    } else if (size === 4) {
-                        heap = HEAP32;
-                    } else {
-                        throw new TypeError("Unknown boolean type size: " + name);
-                    }
-                    return this["fromWireType"](heap[pointer >> shift]);
-                },
-                destructorFunction: null
-            });
+    ],
+    "PW": [
+        {
+            "word": "त्रिवेद",
+            "eid": "47813",
+            "pagenum": 3,
+            "content": "<hom>1.</hom> त्रिवेद¦ am <ab>Anf.</ab> eines <ab>Comp.</ab> und °वेदी <lex>f.</lex> <i>die drei</i> <is>Veda</is>."
+        },
+        {
+            "word": "त्रिवेद",
+            "eid": "47814",
+            "pagenum": 3,
+            "content": "<hom>2.</hom> त्रिवेद¦ <lex>Adj.</lex> <dvsn n='1'>— 1〉 <i>mit den drei</i> <is>Veda</is> <i>vertraut</i>. <dvsn n='1'>— 2〉 <i>die drei</i> <is>Veda</is> <i>in sich bergend</i> (die Sonne) <ls>HEMĀDRI 1,591,9</ls>."
         }
-        var emval_free_list = [];
-        var emval_handle_array = [
-            {},
-            {
-                value: undefined
-            },
-            {
-                value: null
-            },
-            {
-                value: true
-            },
-            {
-                value: false
-            }
-        ];
-        function __emval_decref(handle) {
-            if (handle > 4 && 0 === --emval_handle_array[handle].refcount) {
-                emval_handle_array[handle] = undefined;
-                emval_free_list.push(handle);
-            }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिवेद",
+            "eid": "31156",
+            "pagenum": 3,
+            "content": "1. त्रिवेद¦ (त्रि + वेद) <i>die drei</i> <is>Veda</is>, am Anf. eines comp.: °संयोग <ls>KĀTY. ŚR. 25, 14, 37.</ls> °वेदी <lex>f.</lex> dass. <ls>TRIK. 3, 3, 312.</ls>"
+        },
+        {
+            "word": "त्रिवेद",
+            "eid": "31157",
+            "pagenum": 3,
+            "content": "2. त्रिवेद¦ (wie eben) <lex>adj.</lex> <i>mit den drei</i> <is>Veda</is> <i>vertraut</i> <ls>M. 2, 118.</ls> त्रिवेदिन् dass. <ls>COLEBR. Misc. Ess. I, 13.</ls>"
+        },
+        {
+            "word": "त्रिवेद",
+            "eid": "75348",
+            "pagenum": 5,
+            "content": "2. त्रिवेद¦, त्रिवेदिन् als Beiw. <is>Viṣṇu's</is> wohl so v. a. <i>die drei</i> <is>Veda</is> <i>in sich enthaltend</i> <ls>R. 7, 37, 5, 48.</ls>"
         }
-        function count_emval_handles() {
-            var count = 0;
-            for(var i = 5; i < emval_handle_array.length; ++i){
-                if (emval_handle_array[i] !== undefined) {
-                    ++count;
-                }
-            }
-            return count;
+    ],
+    "SHS": [
+        {
+            "word": "त्रिवेद",
+            "eid": "18143",
+            "pagenum": 326,
+            "content": "त्रिवेद¦ n. (-दं) The three Vedas collectively. E. त्रि, and वेद a Veda."
         }
-        function get_first_emval() {
-            for(var i = 5; i < emval_handle_array.length; ++i){
-                if (emval_handle_array[i] !== undefined) {
-                    return emval_handle_array[i];
-                }
-            }
-            return null;
+    ],
+    "WIL": [
+        {
+            "word": "त्रिवेद",
+            "eid": "18160",
+            "pagenum": 391,
+            "content": "त्रिवेद¦ n. (-दं) The three <i>Vedas</i> collectively. .E. त्रि, and वेद a <i>Veda.</i>"
         }
-        function init_emval() {
-            Module["count_emval_handles"] = count_emval_handles;
-            Module["get_first_emval"] = get_first_emval;
+    ],
+    "YAT": [
+        {
+            "word": "त्रिवेद",
+            "eid": "17636",
+            "pagenum": 346,
+            "content": "त्रि-वेद¦ (दं) 1. <i>n.</i> The three <i>vedas.</i>"
         }
-        function __emval_register(value) {
-            switch(value){
-                case undefined:
-                    {
-                        return 1;
-                    }
-                case null:
-                    {
-                        return 2;
-                    }
-                case true:
-                    {
-                        return 3;
-                    }
-                case false:
-                    {
-                        return 4;
-                    }
-                default:
-                    {
-                        var handle = emval_free_list.length ? emval_free_list.pop() : emval_handle_array.length;
-                        emval_handle_array[handle] = {
-                            refcount: 1,
-                            value: value
-                        };
-                        return handle;
-                    }
-            }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिवेद",
+            "eid": "23803",
+            "pagenum": "3383,b",
+            "content": "त्रिवेद¦ पु० त्रीन् वेदान् वेत्ति विद--अण् उप० स० त्रयो वेदा अधीतत्वेन सन्त्यस्य अच् वा । १ वेदत्रयवेत्तरि । “नाय न्द्रितस्त्रिवेदोऽपि सर्वाशी सर्वविक्रयी” मनुः ततः स्वार्थे ब्राह्म० ष्यञ् । त्रैवेद्य तदर्थे “त्रैवेद्याः शुचयोदान्ताः” गीता । त्रिगुणितो वेदः शा० त० । २ वेदत्रये ३ तद्विहितकर्मणि च “त्रिवेदसंयोगाच्च” कात्या० श्रौ० २५ । १४ । ३७ । “वेदत्रयविहितकर्मयोगो ब्राह्मणः” कर्कः ।"
         }
-        function __embind_register_emval(rawType, name) {
-            name = readLatin1String(name);
-            registerType(rawType, {
-                name: name,
-                fromWireType: function(handle) {
-                    var rv = emval_handle_array[handle].value;
-                    __emval_decref(handle);
-                    return rv;
-                },
-                toWireType: function(destructors, value) {
-                    return __emval_register(value);
-                },
-                argPackAdvance: 8,
-                readValueFromPointer: simpleReadValueFromPointer,
-                destructorFunction: null
-            });
+    ],
+    "APHI": [
+        {
+            "word": "त्रिवेद",
+            "content": "त्रिवेदः पुं. त्रि-वेदः  - तीनों वेदों में निष्णात ब्राह्मण"
         }
-        function _embind_repr(v) {
-            if (v === null) {
-                return "null";
-            }
-            var t = typeof v;
-            if (t === "object" || t === "array" || t === "function") {
-                return v.toString();
-            } else {
-                return "" + v;
-            }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिवेद",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಮೂರು ವೇದಗಳನ್ನು ತಿಳಿದವನು \\/ಮೂರು ವೇದಗಳನ್ನು ಅಧ್ಯಯನ ಮಾಡಿದವನು",
+            "निष्पत्तिः": "विद (ज्ञाने)'अण्' (३-२-१)",
+            "व्युत्पत्तिः": "त्रीन् वेदान् वेत्ति",
+            "content": ""
         }
-        function floatReadValueFromPointer(name, shift) {
-            switch(shift){
-                case 2:
-                    return function(pointer) {
-                        return this["fromWireType"](HEAPF32[pointer >> 2]);
-                    };
-                case 3:
-                    return function(pointer) {
-                        return this["fromWireType"](HEAPF64[pointer >> 3]);
-                    };
-                default:
-                    throw new TypeError("Unknown float type: " + name);
-            }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिवेद",
+            "content": "<body><s>triveda pu° trIn vedAn vetti vida—aR upa° sa° trayo vedA aDItatvena santyasya ac vA . <lb/><b>1</b> vedatrayavettari . <q>nAya ndritastrivedo'pi sarvASI sarvavikrayI</q> manuH tataH svArTe brAhma° zyaY . trEvedya tadarTe <q>trEvedyAH Suca­yodAntAH</q> gItA . triguRito vedaH SA° ta° . <lb/><b>2</b> vedatraye <lb/><b>3</b> tadvihitakarmaRi ca <q>trivedasaMyogAcca</q> kAtyA° SrO° 25 . 14 . 37 . <q>vedatrayavihitakarmayogo brAhmaRaH</q> karkaH .</s></body>"
         }
-        function __embind_register_float(rawType, name, size) {
-            var shift = getShiftFromSize(size);
-            name = readLatin1String(name);
-            registerType(rawType, {
-                name
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिवेद",
+            "content": "<H1><h><key1>triveda</key1><key2>triveda</key2></h><body><s>triveda</s>  <div n=\"1\">n. (<s>-daM</s>) The three Vedas collectively.</div><div n=\"E\"> E. <s>tri,</s> and <s>veda</s> a Veda.</div></body><tail><L>18143</L><pc>326-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिवेद",
+            "content": "<span lang=\"sa\">त्रिवेद<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ವೇದಗಳನ್ನು ತಿಳಿದವನು /ಮೂರು ವೇದಗಳನ್ನು ಅಧ್ಯಯನ ಮಾಡಿದವನು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>विद (ज्ञाने) - \"अण्\" (३-२-१)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीन् वेदान् वेत्ति<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

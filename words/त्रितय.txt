@@ -1,1 +1,218 @@
-new WeakSet,o=(t,e)=>{if("object"==typeof e&&null!==e){if(n.has(e))return`[object ${e.constructor.name}]`;n.add(e)}return e},i=e?` ${JSON.stringify(e,o)}`:"",r=v(t);return t+i+r}(t,n)),this.name="CKEditorError",this.context=e,this.data=n}is(t){return"CKEditorError"===t}static rethrowUnexpectedError(t,e){if(t.is&&t.is("CKEditorError"))throw t;const n=new A(t.message,e);throw n.stack=t.stack,n}}function C(t,e){console.warn(...y(t,e))}function v(t){return`\nRead more: ${_}#error-${t}`}function y(t,e){const n=v(t);return e?[t,e,n]:[t,n]}const x="41.3.1",E=new Date(2024,3,16);if(globalThis.CKEDITOR_VERSION)throw new A("ckeditor-duplicated-modules",null);globalThis.CKEDITOR_VERSION=x;const B=Symbol("listeningTo"),D=Symbol("emitterId"),S=Symbol("delegations"),T=P(Object);function P(t){if(!t)return T;return class extends t{on(t,e,n){this.listenTo(this,t,e,n)}once(t,e,n){let o=!1;this.listenTo(this,t,((t,...n)=>{o||(o=!0,t.off(),e.call(this,t,...n))}),n)}off(t,e){this.stopListening(this,t,e)}listenTo(t,e,n,o={}){let i,r;this[B]||(this[B]={});const s=this[B];M(t)||I(t);const a=M(t);(i=s[a])||(i=s[a]={emitter:t,callbacks:{}}),(r=i.callbacks[e])||(r=i.callbacks[e]=[]),r.push(n),function(t,e,n,o,i){e._addEventListener?e._addEventListener(n,o,i):t._addEventListener.call(e,n,o,i)}(this,t,e,n,o)}stopListening(t,e,n){const o=this[B];let i=t&&M(t);const r=o&&i?o[i]:void 0,s=r&&e?r.callbacks[e]:void 0;if(!(!o||t&&!r||e&&!s))if(n){O(this,t,e,n);-1!==s.indexOf(n)&&(1===s.length?delete r.callbacks[e]:O(this,t,e,n))}else if(s){for(;n=s.pop();)O(this,t,e,n);delete r.callbacks[e]}else if(r){for(e in r.callbacks)this.stopListening(t,e);delete o[i]}else{for(i in o)this.stopListening(o[i].emitter);delete this[B]}}fire(t,...e){try{const n=t instanceof m?t:new m(this,t),o=n.name;let i=L(this,o);if(n.path.push(this),i){const t=[n,...e];i=Array.from(i);for(let e=0;e<i.length&&(i[e].callback.apply(this,t),n.off.called&&(delete n.off.called,this._removeEventListener(o,i[e].callback)),!n.stop.called);e++);}const r=this[S];if(r){const t=r.get(o),i=r.get("*");t&&V(t,n,e),i&&V(i,n,e)}return n.return}catch(t){A.rethrowUnexpectedError(t,this)}}delegate(...t){return{to:(e,n)=>{this[S]||(this[S]=new Map),t.forEach((t=>{const o=this[S].get(t);o?o.set(e,n):this[S].set(t,new Map([[e,n]]))}))}}}stopDelegating(t,e){if(this[S])if(t)if(e){const n=this[S].get(t);n&&n.delete(e)}else this[S].delete(t);else this[S].clear()}_addEventListener(t,e,n){!function(t,e){const n=R(t);if(n[e])return;let o=e,i=null;const r=[];for(;""!==o&&!n[o];)n[o]={callbacks:[],childEvents:[]},r.push(n[o]),i&&n[o].childEvents.push(i),i=o,o=o.substr(0,o.lastIndexOf(":"));if(""!==o){for(const t of r)t.callbacks=n[o].callbacks.slice();n[o].childEvents.push(i)}}(this,t);const o=F(this,t),i={callback:e,priority:b.get(n.priority)};for(const t of o)w(t,i)}_removeEventListener(t,e){const n=F(this,t);for(const t of n)for(let n=0;n<t.length;n++)t[n].callback==e&&(t.splice(n,1),n--)}}}function I(t,e){t[D]||(t[D]=e||f())}function M(t){return t[D]}function R(t){return t._events||Object.defineProperty(t,"_events",{value:{}}),t._events}function F(t,e){const n=R(t)[e];if(!n)return[];let o=[n.callbacks];for(let e=0;e<n.childEvents.length;e++){const i=F(t,n.childEvents[e]);o=o.concat(i)}return o}function L(t,e){let n;return t._events&&(n=t._events[e])&&n.callbacks.length?n.callbacks:e.indexOf(":")>-1?L(t,e.substr(0,e.lastIndexOf(":"))):null}function V(t,e,n){for(let[o,i]of t){i?"function"==typeof i&&(i=i(e.name)):i=e.name;const t=new m(e.source,i);t.path=[...e.path],o.fire(t,...n)}}function O(t,e,n,o){e._removeEventListener?e._removeEventListener(n,o):t._removeEventListener.call(e,n,o)}["on","once","off","listenTo","stopListening","fire","delegate","stopDelegating","_addEventListener","_removeEventListener"].forEach((t=>{P[t]=T.prototype[t]}));const z=function(t){var e=typeof t;return null!=t&&("object"==e||"function"==e)},N=Symbol("observableProperties"),H=Symbol("boundObservables"),j=Symbol("boundProperties"),q=Symbol("decoratedMethods"),$=Symbol("decoratedOriginal"),G=K(P());function K(t){if(!t)return G;return class extends t{set(t,e){if(z(t))return void Object.keys(t).forEach((e=>{this.set(e,t[e])}),this);U(this);const n=this[N];if(t in this&&!n.has(t))throw new A("observable-set-cannot-override",this);Object.defineProperty(this,t,{enumerable:!0,configurable:!0,get:()=>n.get(t),set(e){const o=n.get(t);let i=this.fire(`set:${t}`,t,e,o);void 0===i&&(i=e),o===i&&n.has(t)||(n.set(t,i),this.fire(`change:${t}`,t,i,o))}}),this[t]=e}bind(...t){if(!t.length||!J(t))throw new A("observable-bind-wrong-properties",this);if(new Set(t).size!==t.length)throw new A("observable-bind-duplicate-properties",this);U(this);const e=this[j];t.forEach((t=>{if(e.has(t))throw new A("observable-bind-rebind",this)}));const n=new Map;return t.forEach((t=>{const o={property:t,to:[]};e.set(t,o),n.set(t,o)})),{to:W,toMany:Z,_observable:this,_bindProperties:t,_to:[],_bindings:n}}unbind(...t){if(!this[N])return;const e=this[j],n=this[H];if(t.length){if(!J(t))throw new A("observable-unbind-wrong-properties",this);t.forEach((t=>{const o=e.get(t);o&&(o.to.forEach((([t,e])=>{const i=n.get(t),r=i[e];r.delete(o),r.size||delete i[e],Object.keys(i).length||(n.delete(t),this.stopListening(t,"change"))})),e.delete(t))}))}else n.forEach(((t,e)=>{this.stopListening(e,"change")})),n.clear(),e.clear()}decorate(t){U(this);const e=this[t];if(!e)throw new A("observablemixin-cannot-decorate-undefined",this,{object:this,methodName:t});this.on(t,((t,n)=>{t.return=e.apply(this,n)})),this[t]=function(...e){return this.fire(t,e)},this[t][$]=e,this[q]||(this[q]=[]),this[q].push(t)}stopListening(t,e,n){if(!t&&this[q]){for(const t of this[q])this[t]=this[t][$];delete this[q]}super.stopListening(t,e,n)}}}function U(t){t[N]||(Object.defineProperty(t,N,{value:new Map}),Object.defineProperty(t,H,{value:new Map}),Object.defineProperty(t,j,{value:new Map}))}function W(...t){const e=function(...t){if(!t.length)throw new A("observable-bind-to-parse-error",null);const e={to:[]};let n;"function"==typeof t[t.length-1]&&(e.callback=t.pop());return t.forEach((t=>{if("string"==typeof t)n.properties.push(t);else{if("object"!=typeof t)throw new A("observable-bind-to-parse-error",null);n={observable:t,properties:[]},e.to.push(n)}})),e}(...t),n=Array.from(this._bindings.keys()),o=n.length;if(!e.callback&&e.to.length>1)throw new A("observable-bind-to-no-callback",this);if(o>1&&e.callback)throw new A("observable-bind-to-extra-callback",this);var i;e.to.forEach((t=>{if(t.properties.length&&t.properties.length!==o)throw new A("observable-bind-to-properties-length",this);t.properties.length||(t.properties=this._bindProperties)})),this._to=e.to,e.callback&&(this._bindings.get(n[0]).callback=e.callback),i=this._observable,this._to.forEach((t=>{const e=i[H];let n;e.get(t.observable)||i.listenTo(t.observable,"change",((o,r)=>{n=e.get(t.observable)[r],n&&n.forEach((t=>{Y(i,t.property)}))}))})),function(t){let e;t._bindings.forEach(((n,o)=>{t._to.forEach((i=>{e=i.properties[n.callback?0:t._bindProperties.indexOf(o)],n.to.push([i.observable,e]),function(t,e,n,o){const i=t[H],r=i.get(n),s=r||{};s[o]||(s[o]=new Set);s[o].add(e),r||i.set(n,s)}(t._observable,n,i.observable,e)}))}))}(this),this._bindProperties.forEach((t=>{Y(this._observable,t)}))}function Z(t,e,n){if(this._bindings.size>1)throw new A("observable-bind-to-many-not-one-binding",this);this.to(...function(t,e){const n=t.map((t=>[t,e]));return Array.prototype.concat.apply([],n)}(t,e),n)}function J(t){return t.every((t=>"string"==typeof t))}function Y(t,e){const n=t[j].get(e);let o;n.callback?o=n.callback.apply(t,n.to.map((t=>t[0][t[1]]))):(o=n.to[0],o=o[0][o[1]]),Object.prototype.hasOwnProperty.call(t,e)?t[e]=o:t.set(e,o)}["set","bind","unbind","decorate","on","once","off","listenTo","stopListening","fire","delegate","stopDelegating","_addEventListener","_removeEventListener"].forEach((t=>{K[t]=G.prototype[t]}));class Q{constructor(){this._replacedElements=[]}replace(t,e){this._replacedElements.push({element:t,newElement:e}),t.style.display="none",e&&t.parentNode.insertBefore(e,t.nextSibling)}restore(){this._replacedElements.forEach((({element:t,newElement:e})=>{t.style.display="",e&&e.remove()})),this._replacedElements=[]}}function X(t){let e=0;for(const n of t)e++;return e}function tt(t,e){const n=Math.min(t.length,e.length);for(let o=0;o<n;o++)if(t[o]!=e[o])return o;return t.length==e.length?"same":t.length<e.length?"prefix":"extension"}function et(t){return!(!t||!t[Symbol.iterator])}const nt="object"==typeof global&&global&&global.Object===Object&&global;var ot="object"==typeof self&&self&&self.Object===Object&&self;const it=nt||ot||Function("return this")();const rt=it.Symbol;var st=Object.prototype,at=st.hasOwnProperty,ct=st.toString,lt=rt?rt.toStringTag:void 0;const dt=function(t){var e=at.call(t,lt),n=t[lt];try{t[lt]=void 0;var o=!0}catch(t){}var i=ct.call(t);return o&&(e?t[lt]=n:delete t[lt]),i};var ht=Object.prototype.toString;const ut=function(t){return ht.call(t)};var pt=rt?rt.toStringTag:void 0;const gt=function(t){return null==t?void 0===t?"[object Undefined]":"[object Null]":pt&&pt in Object(t)?dt(t):ut(t)};const mt=Array.isArray;const kt=function(t){return null!=t&&"object"==typeof t};const ft=function(t){return"string"==typeof t||!mt(t)&&kt(t)&&"[object String]"==gt(t)};function bt(t,e,n={},o=[]){const i=n&&n.xmlns,r=i?t.createElementNS(i,e):t.createElement(e);for(const t in n)r.setAttribute(t,n[t]);!ft(o)&&et(o)||(o=[o]);for(let e of o)ft(e)&&(e=t.createTextNode(e)),r.appendChild(e);return r}const wt=function(t,e){return function(n){return t(e(n))}};const _t=wt(Object.getPrototypeOf,Object);var At=Function.prototype,Ct=Object.prototype,vt=At.toString,yt=Ct.hasOwnProperty,xt=vt.call(Object);const Et=function(t){if(!kt(t)||"[object Object]"!=gt(t))return!1;var e=_t(t);if(null===e)return!0;var n=yt.call(e,"constructor")&&e.constructor;return"function"==typeof n&&n instanceof n&&vt.call(n)==xt};const Bt=function(){this.__data__=[],this.size=0};const Dt=function(t,e){return t===e||t!=t&&e!=e};const St=function(t,e){for(var n=t.length;n--;)if(Dt(t[n][0],e))return n;return-1};var Tt=Array.prototype.splice;const Pt=function(t){var e=this.__data__,n=St(e,t);return!(n<0)&&(n==e.length-1?e.pop():Tt.call(e,n,1),--this.size,!0)};const It=function(t){var e=this.__data__,n=St(e,t);return n<0?void 0:e[n][1]};const Mt=function(t){return St(this.__data__,t)>-1};const Rt=function(t,e){var n=this.__data__,o=St(n,t);return o<0?(++this.size,n.push([t,e])):n[o][1]=e,this};funct
+{
+    "word": "त्रितय",
+    "AP90": [
+        {
+            "word": "त्रितय",
+            "eid": "15030",
+            "pagenum": 551,
+            "content": "त्रितय¦ <i><ab>a.</ab></i> (यी <i><ab>f.</ab></i>) Consisting of three parts, three-fold. --यं A triad, a group of three; श्रद्धा वित्तं विधिश्चेति त्रितयं तत्समागतं <ls>Ś. 7. 29</ls>; <ls>R. 8. 78</ls>; <ls>Y. 3. 266.</ls>"
+        }
+    ],
+    "BEN": [
+        {
+            "word": "त्रितय",
+            "eid": "6150",
+            "pagenum": 378,
+            "content": "त्रितय¦ <i>tri + taya,</i> <ab>n.</ab> A triad, <ls>MBh.</ls> 13, 5415."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "त्रितय",
+            "eid": "3891",
+            "pagenum": 160,
+            "content": "त्रितय¦ <i>n.</i> (e त्रि s. तय) trium numerus, trinitas. BR. 2. 21. (Hib. <i>treidhe</i> «three things, three parts».)"
+        }
+    ],
+    "BUR": [
+        {
+            "word": "त्रितय",
+            "eid": "8237",
+            "pagenum": 303,
+            "content": "त्रितय¦ <i>tritaya</i> <ab>a.</ab> troisième, <lang n='greek'>τρίτος</lang>; <ab>lat.</ab> tertius. -- <ab>S.</ab> <ab>n.</ab> le nombre trois; triade, trinité."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रितय",
+            "eid": "12842",
+            "pagenum": 212,
+            "content": "त्रितय¦ <lex>n.</lex> त्रिता <lex>f.</lex>, त्रित्व <lex>n.</lex> a triad."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रितय",
+            "eid": "9004",
+            "pagenum": 160,
+            "content": "त्रितय¦ <i>n.</i> Dreiheit, Triade."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रितय",
+            "eid": "16096",
+            "pagenum": 318,
+            "content": "tri-taya¦ <i>(I) a. (f. यी)</i> threefold, consisting of three parts."
+        },
+        {
+            "word": "त्रितय",
+            "eid": "16097",
+            "pagenum": 318,
+            "content": "tri-taya¦ <i>(II) n.</i> a triad, a group of three, चक्षुषा त्रितयं ज्ञानमयेन पश्यति <ls>R.</ls>viii.78."
+        }
+    ],
+    "MD": [
+        {
+            "word": "त्रितय",
+            "eid": "8859",
+            "pagenum": 113,
+            "content": "त्रितय¦ tri-taya, <lex>n.</lex> triad; <b>-tā,</b> <lex>f.</lex>, <b>-tva,</b> <lex>n.</lex> <ab>id.</ab>; 🞄<b>-daṇḍa,</b> <lex>n.</lex> triple staff <i>of the Brāhman ascetic</i>; 🞄triple control (<i>of thought, word, and deed</i>); 🞄<b>-daṇḍin,</b> <lex>a.</lex> bearing the triple staff; controlling 🞄thought, word, and deed; <lex>m.</lex> Brāhman 🞄ascetic."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रितय",
+            "eid": "88583",
+            "pagenum": "461,3",
+            "content": "त्रितय ¦ <lex>n.</lex> (<ls>Pāṇ. v, 2, 42 f.</ls>) a triad, <ls>Yājñ.</ls> &c.<info lex='n'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "त्रितय",
+            "eid": "21562",
+            "pagenum": 393,
+            "content": "<i>Tritaya, as, ā, am,</i>¦ consisting of three parts; (<i>am</i>), n. a collection of three, <lang n='greek'>τριάς.</lang>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रितय",
+            "eid": "47449",
+            "pagenum": 3,
+            "content": "त्रितय¦ <lex>n.</lex> <i>Dreizahl,</i> <gk>τριάς</gk>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रितय",
+            "eid": "30935",
+            "pagenum": 3,
+            "content": "त्रि/तय¦ (von त्रि) <ls>P. 5, 2, 42.</ls> <ls n='P. 5, 2,'>43.</ls> <ls>VOP. 7, 47.</ls> <dvsn n='1'> 1) <lex>adj.</lex> <i>aus drei Theilen bestehend.</i> <dvsn n='1'>— 2) <lex>n.</lex> <i>Dreizahl</i>, <lang n='greek'>τριάς</lang> <ls>YĀJÑ. 3, 266.</ls> <ls>MBH. 13, 5415.</ls> <ls n='MBH. 13,'>6859</ls> (wohl so v. a. <i>Vergangenheit, Gegenwart und Zukunft).</i> <ls>BRĀHMAṆ. 2, 21.</ls> <ls>SUŚR. 2, 376, 13. 377, 8. 394, 20.</ls> <ls>BHARTṚ. Suppl. 13.</ls> <ls>ŚĀK. 188.</ls> <ls>ŚRUT. 36.</ls> <ls>RAGH. 8, 77.</ls> <ls>PAÑCAT. III, 12.</ls> <ls>HIT. I, 33.</ls> <ls>AK. 3, 2, 50.</ls> <ls>KATHĀS. 10, 107</ls> (तृ°). <ls n='KATHĀS.'>15, 135.</ls> <ls>BHĀG. P. 2, 4, 12. 10, 9.</ls> <ls>MĀRK. P. 21, 70. 30, 16.</ls> <ls>SĀH. D. 28, 16.</ls> <dvsn n='v'>— Vgl. त्रय ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रितय",
+            "eid": "18043",
+            "pagenum": 324,
+            "content": "त्रितय¦ mfn. (-यः-या-यं) Third. E. त्रि three, तयप् aff."
+        }
+    ],
+    "STC": [
+        {
+            "word": "त्रितय",
+            "eid": "10224",
+            "pagenum": 294,
+            "content": "<b>tritaya-</b>¦ <ab>nt.</ab> triade."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रितय",
+            "eid": "18060",
+            "pagenum": 389,
+            "content": "त्रितय¦ mfn. (-यः-या-यं) Third. .E. त्रि three, तयप् aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रितय",
+            "eid": "17536",
+            "pagenum": 344,
+            "content": "त्रि-तय¦ (यः-या-यं) <i>a.</i> Third."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रितय",
+            "eid": "15521",
+            "pagenum": "2-656-c",
+            "content": "त्रितयं¦, क्ली, (त्रयोऽवयवा अस्य । त्रि + “संख्याया अवयवे तयप् ।” ५ । २ । ४२ । इति तयप् ।) त्रयम् । इति व्याकरणम् ॥ (यथा, महाभारते । १३ । १११ । १८ । “धर्म्मश्चार्थश्च कामश्च त्रितयं जीविते फलम् । एतत्त्रयमवाप्तव्यमधर्म्मपरिवर्ज्जितम् ॥” त्रिप्राकारे, त्रि । यथा, पञ्चदश्याम् । १ । ४६ । “त्रितयीमपि तां मुक्त्रा परस्परविरोधिनीम् । अखण्डं सच्चिदानन्दं महावाक्येन लक्ष्यते ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रितय",
+            "eid": "23625",
+            "pagenum": "3366,a",
+            "content": "त्रितय¦ न० स्त्री त्रयाणामवयवः त्रयोऽवयवा येषाम् वा तयप् ॥ त्रयशब्दार्थे १ त्रित्वसंख्यायाम् “ब्रह्महत्याव्रतं वापि वत्सरत्रितयं चरेत्” याज्ञ० “उदूढलोकत्रितयेन साम्प्रतम्” माघः । “वरमाप स दिष्टपिष्टपत्रितयानन्यसदृग्गुणोदयाम्” नैष० । स्त्रियां ङीप् । २ तत्सङ्ख्यान्विते त्रि० । “पतिश्वशुरता ज्येष्ठे पतिदेवरतानुजे । इतरेषु च पाञ्चाल्याः त्रितयं त्रितयं त्रिषु” उद्भटः । “त्रितयं ज्ञानमयेन चक्षुषा” रघुः । “प्रणवव्याहृतिभ्यां च गायत्र्या त्रितये न च । उपास्यं परमं ब्रह्म आत्मा यत्र प्रतिष्ठितः” यो० याज्ञ० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रितय",
+            "content": "त्रितय वि. -  त्रयोऽवयवा अस्य - त्रि + तयप् 'तीन भागों वाला, तिगुना, तीन तह का'"
+        },
+        {
+            "word": "त्रितय",
+            "content": "त्रितयम् नपुं. - 'तिगड्डा, तीन का समूह'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रितय",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮೂರು \\/ಮೂರರ ಸಮುದಾಯ",
+            "निष्पत्तिः": "'तयप्' (५-२-४२)",
+            "व्युत्पत्तिः": "त्रयोऽवयवा यस्य",
+            "content": ""
+        },
+        {
+            "word": "त्रितय",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮೂರು \\/ಮೂರರಸಮುದಾಯ",
+            "निष्पत्तिः": "वा 'अयच्' (५-२-४३)",
+            "प्रयोगाः": "'उदूढलोकत्रितयेन साम्प्रतं गुरुर्धरित्री क्रियतेतरां त्वया'",
+            "उल्लेखाः": "माघ० १-२६",
+            "content": ""
+        },
+        {
+            "word": "त्रितय",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಮೂರು ಸಂಖ್ಯೆಯುಳ್ಳ \\/ಮೂರರಿಂದ ಕೂಡಿದ",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रितय",
+            "content": "<lexhead no=\"576\">\n<dentry>त्रितय</dentry>\n<prAwipaxikam>त्रितय</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">त्रितय</prAwipaxikam>\n<etymology><vigrahavAkya>त्रयोऽवयवा अस्य </vigrahavAkya>- त्रि+तयप्</etymology>\n<sense no=\"1\">तीन भागों वाला, तिगुना, तीन तह का, स्त्री - त्रितयी</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रितय",
+            "content": "<body><s>tritaya na° strI trayARAmavayavaH trayo'vayavA yezAm vA tayap .. trayaSabdArTe <lb/><b>1</b> tritvasaMKyAyAm <q>brahmahatyAvrataM vApi vatsaratritayaM caret</q> yAjYa° <q>udUQalokatritayena sAmpra­tam</q> mAGaH . <q>varamApa sa dizwapizwapatritayAnanyasadfg­guRodayAm</q> nEza° . striyAM NIp . <lb/><b>2</b> tatsaNKyAnvite tri° . <q>patiSvaSuratA jyezWe patidevaratAnuje . itarezu ca pAYcAlyAH tritayaM tritayaM trizu</q> udBawaH . <q>tritayaM jYAnamayena cakzuzA</q> raGuH . <q>praRavavyAhftiByAM ca gAyatryA tritaye na ca . upAsyaM paramaM brahma AtmA yatra pratizWitaH</q> yo° yAjYa° .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "त्रितय",
+            "content": "<H2><h><key1>tritaya</key1><key2>tritaya</key2></h><body><s>tritaya</s>   <lex>n.</lex> (<ls>Pāṇ. v, 2, 42 f.</ls>) a triad, <ls>Yājñ.</ls> &amp;c.<info lex=\"n\" /></body><tail><L>88583</L><pc>461,3</pc></tail></H2>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रितय",
+            "content": "<H1><h><key1>tritaya</key1><key2>tritaya</key2></h><body><s>tritaya</s>  <div n=\"1\">mfn. (<s>-yaH-yA-yaM</s>) Third.</div><div n=\"E\"> E. <s>tri</s> three, <s>tayap</s> aff.</div></body><tail><L>18043</L><pc>324-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रितय",
+            "content": "<span lang=\"sa\">त्रितय<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು /ಮೂರರ ಸಮುದಾಯ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"तयप्\" (५-२-४२)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रयोऽवयवा यस्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रितय<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು /ಮೂರರಸಮುದಾಯ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>वा \"अयच्\" (५-२-४३)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"उदूढलोकत्रितयेन साम्प्रतं गुरुर्धरित्री क्रियतेतरां त्वया\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० १-२६<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रितय<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮೂರು ಸಂಖ್ಯೆಯುಳ್ಳ /ಮೂರರಿಂದ ಕೂಡಿದ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

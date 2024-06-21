@@ -1,313 +1,45 @@
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-
-"use strict";
-
-const { getContext } = require("loader-runner");
-const asyncLib = require("neo-async");
-const {
-	AsyncSeriesBailHook,
-	SyncWaterfallHook,
-	SyncBailHook,
-	SyncHook,
-	HookMap
-} = require("tapable");
-const ChunkGraph = require("./ChunkGraph");
-const Module = require("./Module");
-const ModuleFactory = require("./ModuleFactory");
-const ModuleGraph = require("./ModuleGraph");
-const { JAVASCRIPT_MODULE_TYPE_AUTO } = require("./ModuleTypeConstants");
-const NormalModule = require("./NormalModule");
-const BasicEffectRulePlugin = require("./rules/BasicEffectRulePlugin");
-const BasicMatcherRulePlugin = require("./rules/BasicMatcherRulePlugin");
-const ObjectMatcherRulePlugin = require("./rules/ObjectMatcherRulePlugin");
-const RuleSetCompiler = require("./rules/RuleSetCompiler");
-const UseEffectRulePlugin = require("./rules/UseEffectRulePlugin");
-const LazySet = require("./util/LazySet");
-const { getScheme } = require("./util/URLAbsoluteSpecifier");
-const { cachedCleverMerge, cachedSetProperty } = require("./util/cleverMerge");
-const { join } = require("./util/fs");
-const {
-	parseResource,
-	parseResourceWithoutFragment
-} = require("./util/identifier");
-
-/** @typedef {import("../declarations/WebpackOptions").ModuleOptionsNormalized} ModuleOptions */
-/** @typedef {import("../declarations/WebpackOptions").RuleSetRule} RuleSetRule */
-/** @typedef {import("./Generator")} Generator */
-/** @typedef {import("./ModuleFactory").ModuleFactoryCreateData} ModuleFactoryCreateData */
-/** @typedef {import("./ModuleFactory").ModuleFactoryCreateDataContextInfo} ModuleFactoryCreateDataContextInfo */
-/** @typedef {import("./ModuleFactory").ModuleFactoryResult} ModuleFactoryResult */
-/** @typedef {import("./NormalModule").GeneratorOptions} GeneratorOptions */
-/** @typedef {import("./NormalModule").LoaderItem} LoaderItem */
-/** @typedef {import("./NormalModule").NormalModuleCreateData} NormalModuleCreateData */
-/** @typedef {import("./NormalModule").ParserOptions} ParserOptions */
-/** @typedef {import("./Parser")} Parser */
-/** @typedef {import("./ResolverFactory")} ResolverFactory */
-/** @typedef {import("./ResolverFactory").ResolveContext} ResolveContext */
-/** @typedef {import("./ResolverFactory").ResolveRequest} ResolveRequest */
-/** @typedef {import("./ResolverFactory").ResolverWithOptions} ResolverWithOptions */
-/** @typedef {import("./dependencies/ModuleDependency")} ModuleDependency */
-/** @typedef {import("./util/fs").InputFileSystem} InputFileSystem */
-
-/** @typedef {Pick<RuleSetRule, 'type'|'sideEffects'|'parser'|'generator'|'resolve'|'layer'>} ModuleSettings */
-/** @typedef {Partial<NormalModuleCreateData & {settings: ModuleSettings}>} CreateData */
-
-/**
- * @typedef {Object} ResolveData
- * @property {ModuleFactoryCreateData["contextInfo"]} contextInfo
- * @property {ModuleFactoryCreateData["resolveOptions"]} resolveOptions
- * @property {string} context
- * @property {string} request
- * @property {Record<string, any> | undefined} assertions
- * @property {ModuleDependency[]} dependencies
- * @property {string} dependencyType
- * @property {CreateData} createData
- * @property {LazySet<string>} fileDependencies
- * @property {LazySet<string>} missingDependencies
- * @property {LazySet<string>} contextDependencies
- * @property {boolean} cacheable allow to use the unsafe cache
- */
-
-/**
- * @typedef {Object} ResourceData
- * @property {string} resource
- * @property {string=} path
- * @property {string=} query
- * @property {string=} fragment
- * @property {string=} context
- */
-
-/** @typedef {ResourceData & { data: Record<string, any> }} ResourceDataWithData */
-
-/**
- * @typedef {Object} ParsedLoaderRequest
- * @property {string} loader loader
- * @property {string|undefined} options options
- */
-
-/**
- * @template T
- * @callback Callback
- * @param {(Error | null)=} err
- * @param {T=} stats
- * @returns {void}
- */
-
-const EMPTY_RESOLVE_OPTIONS = {};
-/** @type {ParserOptions} */
-const EMPTY_PARSER_OPTIONS = {};
-/** @type {GeneratorOptions} */
-const EMPTY_GENERATOR_OPTIONS = {};
-/** @type {ParsedLoaderRequest[]} */
-const EMPTY_ELEMENTS = [];
-
-const MATCH_RESOURCE_REGEX = /^([^!]+)!=!/;
-const LEADING_DOT_EXTENSION_REGEX = /^[^.]/;
-
-/**
- * @param {LoaderItem} data data
- * @returns {string} ident
- */
-const loaderToIdent = data => {
-	if (!data.options) {
-		return data.loader;
-	}
-	if (typeof data.options === "string") {
-		return data.loader + "?" + data.options;
-	}
-	if (typeof data.options !== "object") {
-		throw new Error("loader options must be string or object");
-	}
-	if (data.ident) {
-		return data.loader + "??" + data.ident;
-	}
-	return data.loader + "?" + JSON.stringify(data.options);
-};
-
-/**
- * @param {LoaderItem[]} loaders loaders
- * @param {string} resource resource
- * @returns {string} stringified loaders and resource
- */
-const stringifyLoadersAndResource = (loaders, resource) => {
-	let str = "";
-	for (const loader of loaders) {
-		str += loaderToIdent(loader) + "!";
-	}
-	return str + resource;
-};
-
-/**
- * @param {number} times times
- * @param {(err?: null | Error) => void} callback callback
- * @returns {(err?: null | Error) => void} callback
- */
-const needCalls = (times, callback) => {
-	return err => {
-		if (--times === 0) {
-			return callback(err);
-		}
-		if (err && times > 0) {
-			times = NaN;
-			return callback(err);
-		}
-	};
-};
-
-/**
- * @template T
- * @template O
- * @param {T} globalOptions global options
- * @param {string} type type
- * @param {O} localOptions local options
- * @returns {T & O | T | O} result
- */
-const mergeGlobalOptions = (globalOptions, type, localOptions) => {
-	const parts = type.split("/");
-	let result;
-	let current = "";
-	for (const part of parts) {
-		current = current ? `${current}/${part}` : part;
-		const options = globalOptions[current];
-		if (typeof options === "object") {
-			if (result === undefined) {
-				result = options;
-			} else {
-				result = cachedCleverMerge(result, options);
-			}
-		}
-	}
-	if (result === undefined) {
-		return localOptions;
-	} else {
-		return cachedCleverMerge(result, localOptions);
-	}
-};
-
-// TODO webpack 6 remove
-/**
- * @param {string} name name
- * @param {TODO} hook hook
- * @returns {string} result
- */
-const deprecationChangedHookMessage = (name, hook) => {
-	const names = hook.taps
-		.map(
-			/**
-			 * @param {TODO} tapped tapped
-			 * @returns {string} name
-			 */
-			tapped => {
-				return tapped.name;
-			}
-		)
-		.join(", ");
-
-	return (
-		`NormalModuleFactory.${name} (${names}) is no longer a waterfall hook, but a bailing hook instead. ` +
-		"Do not return the passed object, but modify it instead. " +
-		"Returning false will ignore the request and results in no module created."
-	);
-};
-
-const ruleSetCompiler = new RuleSetCompiler([
-	new BasicMatcherRulePlugin("test", "resource"),
-	new BasicMatcherRulePlugin("scheme"),
-	new BasicMatcherRulePlugin("mimetype"),
-	new BasicMatcherRulePlugin("dependency"),
-	new BasicMatcherRulePlugin("include", "resource"),
-	new BasicMatcherRulePlugin("exclude", "resource", true),
-	new BasicMatcherRulePlugin("resource"),
-	new BasicMatcherRulePlugin("resourceQuery"),
-	new BasicMatcherRulePlugin("resourceFragment"),
-	new BasicMatcherRulePlugin("realResource"),
-	new BasicMatcherRulePlugin("issuer"),
-	new BasicMatcherRulePlugin("compiler"),
-	new BasicMatcherRulePlugin("issuerLayer"),
-	new ObjectMatcherRulePlugin("assert", "assertions"),
-	new ObjectMatcherRulePlugin("descriptionData"),
-	new BasicEffectRulePlugin("type"),
-	new BasicEffectRulePlugin("sideEffects"),
-	new BasicEffectRulePlugin("parser"),
-	new BasicEffectRulePlugin("resolve"),
-	new BasicEffectRulePlugin("generator"),
-	new BasicEffectRulePlugin("layer"),
-	new UseEffectRulePlugin()
-]);
-
-class NormalModuleFactory extends ModuleFactory {
-	/**
-	 * @param {Object} param params
-	 * @param {string=} param.context context
-	 * @param {InputFileSystem} param.fs file system
-	 * @param {ResolverFactory} param.resolverFactory resolverFactory
-	 * @param {ModuleOptions} param.options options
-	 * @param {Object=} param.associatedObjectForCache an object to which the cache will be attached
-	 * @param {boolean=} param.layers enable layers
-	 */
-	constructor({
-		context,
-		fs,
-		resolverFactory,
-		options,
-		associatedObjectForCache,
-		layers = false
-	}) {
-		super();
-		this.hooks = Object.freeze({
-			/** @type {AsyncSeriesBailHook<[ResolveData], Module | false | void>} */
-			resolve: new AsyncSeriesBailHook(["resolveData"]),
-			/** @type {HookMap<AsyncSeriesBailHook<[ResourceDataWithData, ResolveData], true | void>>} */
-			resolveForScheme: new HookMap(
-				() => new AsyncSeriesBailHook(["resourceData", "resolveData"])
-			),
-			/** @type {HookMap<AsyncSeriesBailHook<[ResourceDataWithData, ResolveData], true | void>>} */
-			resolveInScheme: new HookMap(
-				() => new AsyncSeriesBailHook(["resourceData", "resolveData"])
-			),
-			/** @type {AsyncSeriesBailHook<[ResolveData], Module | undefined>} */
-			factorize: new AsyncSeriesBailHook(["resolveData"]),
-			/** @type {AsyncSeriesBailHook<[ResolveData], false | void>} */
-			beforeResolve: new AsyncSeriesBailHook(["resolveData"]),
-			/** @type {AsyncSeriesBailHook<[ResolveData], false | void>} */
-			afterResolve: new AsyncSeriesBailHook(["resolveData"]),
-			/** @type {AsyncSeriesBailHook<[ResolveData["createData"], ResolveData], Module | void>} */
-			createModule: new AsyncSeriesBailHook(["createData", "resolveData"]),
-			/** @type {SyncWaterfallHook<[Module, ResolveData["createData"], ResolveData], Module>} */
-			module: new SyncWaterfallHook(["module", "createData", "resolveData"]),
-			/** @type {HookMap<SyncBailHook<[ParserOptions], Parser>>} */
-			createParser: new HookMap(() => new SyncBailHook(["parserOptions"])),
-			/** @type {HookMap<SyncBailHook<[TODO, ParserOptions], void>>} */
-			parser: new HookMap(() => new SyncHook(["parser", "parserOptions"])),
-			/** @type {HookMap<SyncBailHook<[GeneratorOptions], Generator>>} */
-			createGenerator: new HookMap(
-				() => new SyncBailHook(["generatorOptions"])
-			),
-			/** @type {HookMap<SyncBailHook<[TODO, GeneratorOptions], void>>} */
-			generator: new HookMap(
-				() => new SyncHook(["generator", "generatorOptions"])
-			),
-			/** @type {HookMap<SyncBailHook<[TODO, ResolveData], Module>>} */
-			createModuleClass: new HookMap(
-				() => new SyncBailHook(["createData", "resolveData"])
-			)
-		});
-		this.resolverFactory = resolverFactory;
-		this.ruleSet = ruleSetCompiler.compile([
-			{
-				rules: options.defaultRules
-			},
-			{
-				rules: options.rules
-			}
-		]);
-		this.context = context || "";
-		this.fs = fs;
-		this._globalParserOptions = options.parser;
-		this._globalGeneratorOptions = options.generator;
-		/** @type {Map<string, WeakMap<Object, Parser>>} */
-		this.parserCache = new Map();
-		/** @type {Map<string, WeakMap<Object, Generator>
+{
+    "word": "judge",
+    "AE": [
+        {
+            "word": "judge",
+            "eid": "5889",
+            "pagenum": 244,
+            "content": "<b>Judge,</b>¦ <i>s.</i> प्राड्विवाकः, अ(आ)धिकर- -णिकः, अक्षदर्शकः, धर्माध्यक्षः, धर्माधिकारिन् <i>m.,</i> न्यायाध्यक्षः, निर्णेतृ <i>m.,</i> दंडनायकः. <b>2</b> (In general) अभिज्ञः, गुणदोषज्ञः, वि- -षेशज्ञः, परीक्षकः, परिच्छेदकः, विवेकिन् <i>m.,</i> गुणग्राहिन् <i>m.,</i> रसज्ञः, तद्विद् <i>m., -v.</i> वि-विच् 3, 7 U, परिच्छिद् 7 P, वि-ज्ञा 9 U, विभू c., विचर् c., निर्णी 1 P, निश्वि 5 U, अव- निर्-धृ 10, अव-परि-ईक्ष् 1 A, तीर् 10, अनु- -सं-धा 3 U. <b>2</b> वितर्क् 10, विमृश् 6 P, विगण् 10, विकॢप् c., मनसा विचर् or विविच्, मन् 4 A; ‘it is for you to j. whether &c.’ एतद्विषये भवान् प्रमाणं; ‘j. me by my acts’ फलेन मद्गुणदोषनिर्णयः क्रियतां; ‘to j. ill or wrongly’ मिथ्या कॢप् c. or संभू c. or मन्. <b>-ment,</b> <i>s.</i> विवेकः, परिच्छेदः, विचारः- रणा, विज्ञानं, विभावनं, निर्धारणा, निर्णयः, निश्चयः, सं- -कल्पः, अवधारणं-णा. <b>2</b> (Judicial decision) निर्णयः, विचारः, निर्णयपादः, आधर्षणं; तीरणं, दंडाज्ञा. <b>3</b> अनुभवः, तर्कः, ज्ञानं, अनुमानं. <b>4</b> मति <i>f.,</i> बुद्धि <i>f.,</i> मतं, अ- -भिप्रायः, संकल्पः, बोधः; ‘according to one's j.’ यथामति, यथाबुद्धि. <b>5</b> (Divine j.) ईश्वराज्ञा, ईश्वर-विधिः-नियमः- -शासनं; ‘j.-day’ विचारदिनं; ‘j. -hall’ न्यायसभा, विचार-धर्म-सभा; ‘j.-seat’ व्यवहारासनं, न्यायासनं, धर्मासनं. <b>-Judicatory,</b> <i>s.</i> धर्म-विचार-न्याय-सभा, व्यवहारमंडपः, धर्माधिकरणं. <b>2</b> न्यायप्रणयनं. <b>-Judicature,</b> <i>s.</i> न्यायाधिकारः, व्यवहार- -दर्शनाधिकारः; <i>See</i> <b>Judicatory</b> above. <b>-Judiciary,</b> <i>a.</i> विचारक, व्य(व्या)वहा- -रिक (की <i>f.</i>). <b>-Judicial,</b> <i>a.</i> व्यवहार- -विषवक, व्यवहार in comp.; ‘j. proceed-ing’ व्यवहारदर्शनं, व्यवहारः, न्यायविचारः. <b>-ly,</b> <i>adv.</i> व्यवहारानुसारेण, यथा- -व्यवहारं, न्यायानुरूपं. <b>-Judicious,</b> <i>a.</i> (Act) समीक्ष्य-विमृश्य-कृत, न्याय्य, धर्म्य, समंजस, उचित, यथान्याय, सविवेक, युक्त, योग्य. <b>2</b> (Persons) विमृश्य-समीक्ष्य-कारिन्, विवेकिन्, नीतिमत्, परिच्छेदक, नयज्ञ, प्राज्ञ, विवेकदृश्वन्, विशेषज्ञ, सदसद्दर्शिन्. <b>-ly,</b> <i>adv.</i> युक्तं, समंजसं, यथान्यायं, उचितं, सम्यक्. <b>2</b> सविवेकं, सपरिच्छेदं, सुविमृश्य, सुविचार्य, प्राज्ञ-विज्ञ-वत्."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "judge",
+            "eid": "12914",
+            "pagenum": 398,
+            "content": "<b>JUDGE</b>¦ (subs.): <dvsn n='I'>I Civil: </dvsn><dvsn n='1'>(1) प्राड्विवाकः (the chief j.), <dvsn n='xe'><i>an appeal lies to the c. j. from the</i> <i>decision of a king's employee:</i></dvsn> <dvsn n='xs'>नृपाधिकृतकृतः प्राड्- विवाकसविधं परावर्तते,</dvsn> Mit.; </dvsn><dvsn n='1'>(2) अधिकर्णिकः, धर्म-, (any j.), <dvsn n='xe'><i>then enters the j. with the merchant</i> <i>and the writer:</i></dvsn> <dvsn n='xs'>ततः प्रविशति श्रेष्ठिकायस्थपरिवृतोऽधि- करणिकः,</dvsn> Mr. ix.; </dvsn><dvsn n='1'>(3) विचारकः, निर्णेतृ (m.), etc. (in gen. sense), <i>the heads of families,</i> <i>classes and communities are j. s of the said</i> (<i>actions</i>): कुलश्रेणिगणाध्यक्षाः प्रोक्तनिर्णयकारिणः, Vri.</dvsn> <dvsn n='I'>II An expert: </dvsn><dvsn n='1'>(1) गुणदोषज्ञः; </dvsn><dvsn n='1'>(2) विशेषज्ञः;</dvsn> <dvsn n='1'>(3) रसज्ञः (= appreciator).</dvsn>"
+        },
+        {
+            "word": "judge",
+            "eid": "12915",
+            "pagenum": 398,
+            "content": "<b>JUDGE</b>¦ (v.t.): <dvsn n='1'>(1) विचारयति (c. of चर्), <dvsn n='xe'><i>as he</i> <i>j. s:</i></dvsn> <dvsn n='xs'>विचारयति येनासौ।</dvsn> Vy.; </dvsn><dvsn n='1'>(2) विवेचयति (c. of विच्); </dvsn><dvsn n='1'>(3) निर्णयति (नी, c. 1.) (= to decide q.v.); </dvsn><dvsn n='1'>(4) संचिन्तयति (चिन्त्, c. 10.) (= to think, consider: q.v.).</dvsn>"
+        }
+    ],
+    "MWE": [
+        {
+            "word": "judge",
+            "eid": "16972",
+            "pagenum": 421,
+            "content": "JUDGE¦, <i>s.</i> (Officer who hears and determines causes) धर्म्माध्यक्षः, धर्म्माधिकारी <i>m.</i> (न्), न्यायाधीशः, न्यायाधिपतिः <i>m.,</i> प्राड्विवाकः, विचार- कर्त्ता <i>m.</i> (र्त्तृ), विचारकः, दण्डनायकः, व्यवहर्त्ता <i>m.</i> (र्त्तृ), अक्षदर्शकः, आक्षपाटिकः, स्थेयः, आधिकरणिकः, निर्णेता <i>m.</i> (तृ), निर्णयकारः. — (One who has skill to decide on the merits of any thing, a connoisseur) गुणग्राही <i>m.</i> (न्), गुणग्राहकः, गुणज्ञः, अभिज्ञः, विज्ञः, ज्ञानी <i>m.</i> (न्), परीक्षकः, तद्विद् <i>m.,</i> रसज्ञः, विवेकी <i>m.</i> (न्), विवेचकः, विवेकदृश्वा <i>m.</i> (न्), परिच्छेदकः."
+        },
+        {
+            "word": "judge",
+            "eid": "16973",
+            "pagenum": 421,
+            "content": "<i>To</i> JUDGE¦, <i>v. n.</i> (Form an opinion, determine) विचर् (c. 10. -चारयति -यितुं), विचारं कृ, निर्णी (c. 1. -णयति -णेतुं), निर्णयं कृ, निश्चि (c. 5. -चिनोति -चेतुं), निश्चयं कृ, निर्धृ (c. 10. -धारयति -यितुं), अवधृ, निर्धारणं कृ. — (Weigh, consider, deliberate) मनसा विचर्, वितर्क् (c. 10. -तर्कयति -यितुं), वितर्कं कृ, विमृश् (c. 6. -मृशति -म्रष्टुं), विगण् (c. 10. -गणयति -यितुं), विकॢप् (c. 10. -कल्पयति -यितुं), समर्थ (nom. समर्थयति -यितुं), समर्थनां कृ, मनसा विवेचनं कृ. — (Discriminate) विज्ञा (c. 9. -जानाति -नीते -ज्ञातुं), परिछिद् (c. 7. -छिनत्ति -छेत्तुं)), विविच् (c. 7. -विनक्ति -वेक्तुं c. 10. -वेचयति -यितुं), विभू (c. 10. -भावयति -यितुं), विचर्, विवेकं कृ, परिच्छेदं कृ. — (Examine) परीक्ष् (c. 1. -ईक्षते -क्षितुं), परीक्षां कृ. — (Determine causes judicially, pass sentence) विचर्, विचारं कृ, निर्णी, निर्णयं कृ, प्रणयनं कृ, व्यवहारदर्शनं कृ, तीर् (c. 10. तीरयति -यितुं), न्यायं कृ."
+        },
+        {
+            "word": "judge",
+            "eid": "16974",
+            "pagenum": 421,
+            "content": "<i>To</i> JUDGE¦, <i>v. a.</i> (Examine, bring under investigation) परीक्ष् (c. 1. -ईक्षते -क्षितुं), अनुसन्धा (c. 3. -दधाति -धातुं), अनुयुज् (c. 7. -युनक्ति -युंक्ते -योक्तुं), परीक्षितं -तां कृ. — (Judicially) विचर् (c. 10. -चारयति -यितुं), निर्णी (c. 1. -णयति -णेतुं), तीर् (c. 10. तीरयति -यितुं), विचारणं कृ, निर्णयं कृ. — (Censure, impute fault) निन्द् (c. 1. निन्दति -न्दितुं), दोषीकृ, दोषारोपणं कृ, अपवद् (c. 1. -वदति -दितुं), दोषप्रसङ्गं कृ. — (Consider, reckon) तर्क् (c. 10. तर्कयति -यितुं), मन् (c. 4. मन्यते, मन्तुं)."
+        }
+    ]
+}

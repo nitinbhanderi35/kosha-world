@@ -1,146 +1,39 @@
-veData,
-							(err, createdModule) => {
-								if (!createdModule) {
-									if (!resolveData.request) {
-										return callback(new Error("Empty dependency (no request)"));
-									}
-
-									// TODO webpack 6 make it required and move javascript/wasm/asset properties to own module
-									createdModule = this.hooks.createModuleClass
-										.for(
-											/** @type {ModuleSettings} */ (createData.settings).type
-										)
-										.call(createData, resolveData);
-
-									if (!createdModule) {
-										createdModule = /** @type {Module} */ (
-											new NormalModule(
-												/** @type {NormalModuleCreateData} */ (createData)
-											)
-										);
-									}
-								}
-
-								createdModule = this.hooks.module.call(
-									createdModule,
-									createData,
-									resolveData
-								);
-
-								return callback(null, createdModule);
-							}
-						);
-					});
-				});
-			}
-		);
-		this.hooks.resolve.tapAsync(
-			{
-				name: "NormalModuleFactory",
-				stage: 100
-			},
-			(data, callback) => {
-				const {
-					contextInfo,
-					context,
-					dependencies,
-					dependencyType,
-					request,
-					assertions,
-					resolveOptions,
-					fileDependencies,
-					missingDependencies,
-					contextDependencies
-				} = data;
-				const loaderResolver = this.getResolver("loader");
-
-				/** @type {ResourceData | undefined} */
-				let matchResourceData = undefined;
-				/** @type {string} */
-				let unresolvedResource;
-				/** @type {ParsedLoaderRequest[]} */
-				let elements;
-				let noPreAutoLoaders = false;
-				let noAutoLoaders = false;
-				let noPrePostAutoLoaders = false;
-
-				const contextScheme = getScheme(context);
-				/** @type {string | undefined} */
-				let scheme = getScheme(request);
-
-				if (!scheme) {
-					/** @type {string} */
-					let requestWithoutMatchResource = request;
-					const matchResourceMatch = MATCH_RESOURCE_REGEX.exec(request);
-					if (matchResourceMatch) {
-						let matchResource = matchResourceMatch[1];
-						if (matchResource.charCodeAt(0) === 46) {
-							// 46 === ".", 47 === "/"
-							const secondChar = matchResource.charCodeAt(1);
-							if (
-								secondChar === 47 ||
-								(secondChar === 46 && matchResource.charCodeAt(2) === 47)
-							) {
-								// if matchResources startsWith ../ or ./
-								matchResource = join(this.fs, context, matchResource);
-							}
-						}
-						matchResourceData = {
-							resource: matchResource,
-							...cacheParseResource(matchResource)
-						};
-						requestWithoutMatchResource = request.slice(
-							matchResourceMatch[0].length
-						);
-					}
-
-					scheme = getScheme(requestWithoutMatchResource);
-
-					if (!scheme && !contextScheme) {
-						const firstChar = requestWithoutMatchResource.charCodeAt(0);
-						const secondChar = requestWithoutMatchResource.charCodeAt(1);
-						noPreAutoLoaders = firstChar === 45 && secondChar === 33; // startsWith "-!"
-						noAutoLoaders = noPreAutoLoaders || firstChar === 33; // startsWith "!"
-						noPrePostAutoLoaders = firstChar === 33 && secondChar === 33; // startsWith "!!";
-						const rawElements = requestWithoutMatchResource
-							.slice(
-								noPreAutoLoaders || noPrePostAutoLoaders
-									? 2
-									: noAutoLoaders
-										? 1
-										: 0
-							)
-							.split(/!+/);
-						unresolvedResource = /** @type {string} */ (rawElements.pop());
-						elements = rawElements.map(el => {
-							const { path, query } = cachedParseResourceWithoutFragment(el);
-							return {
-								loader: path,
-								options: query ? query.slice(1) : undefined
-							};
-						});
-						scheme = getScheme(unresolvedResource);
-					} else {
-						unresolvedResource = requestWithoutMatchResource;
-						elements = EMPTY_ELEMENTS;
-					}
-				} else {
-					unresolvedResource = request;
-					elements = EMPTY_ELEMENTS;
-				}
-
-				/** @type {ResolveContext} */
-				const resolveContext = {
-					fileDependencies,
-					missingDependencies,
-					contextDependencies
-				};
-
-				/** @type {ResourceDataWithData} */
-				let resourceData;
-
-				/** @type {undefined | LoaderItem[]} */
-				let loaders;
-
-				const continueCallback = needCalls(2, err => {
-					if
+{
+    "word": "journey",
+    "AE": [
+        {
+            "word": "journey",
+            "eid": "5883",
+            "pagenum": 244,
+            "content": "<b>Journey,</b>¦ <i>s.</i> प्रयाणं, प्रस्थानं, प्रवासः, यात्रा, देशभ्रमणं-पर्यटनं, अध्वन् <i>m.,</i> मार्गः, अध्व or मार्ग-गमनं or क्रमणं, ‘on account of the fatigues of j.’ अध्वसंजातखेदात्; उत्थाय पुनरवहत् (Ka. 299). ‘resumed his j.’ &c.; ‘it is only a week's j.’ सप्ताहग- -म्योऽध्वा; ‘to return from a j.’ प्रवासाद् उपानि-वृत् 1 A; ‘may the j. be pleasant to you’ शिवास्ते पंथानः संतु. <i>-v. i.</i> प्र-या 2 P, मार्गेण गम् or व्रज् or चर् 1 P or या, पर्यट् 1 P, परिभ्रम् 1, 4 P वह् 1 P, दिवा रात्रौ चावहत् (Ka. 301); ‘to j. abroad’ प्रवस् 1 P. <b>-er,</b> <i>s.</i> अध्वगः, पथिकः, पांथः, यात्रिकः. <b>-Journeyman,</b> <i>s.</i> वैतनिकः, हस्तकर्मकारः."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "journey",
+            "eid": "12897",
+            "pagenum": 398,
+            "content": "<b>JOURNEY</b>¦ (subs.): <dvsn n='1'>(1) प्रयाणम्: v. March; </dvsn><dvsn n='1'>(2) expr. by words given under way, <dvsn n='xe'><i>thus after</i> <i>a few day's j.:</i></dvsn> <dvsn n='xs'>इत्यध्वनः कैश्चदहोभिरन्ते,</dvsn> R. xvi. 35.; <dvsn n='xe'><i>I wish you a pleasant j.:</i></dvsn> <dvsn n='xs'>तव वर्त्मनि वर्ततां   शिवम्,</dvsn> N. ii. 62. <dvsn n='xe'><i>or</i></dvsn> <dvsn n='xs'>शिवास्ते सन्तु पन्थानः,</dvsn> Sa. iv.</dvsn>"
+        },
+        {
+            "word": "journey",
+            "eid": "12898",
+            "pagenum": 398,
+            "content": "<b>JOURNEY</b>¦ (v.): प्रयाति (या, c. 2.): v. To march, travel."
+        }
+    ],
+    "MWE": [
+        {
+            "word": "journey",
+            "eid": "16945",
+            "pagenum": 420,
+            "content": "JOURNEY¦, <i>s.</i> अध्वा <i>m.</i> (न्), अध्वगमनं, मार्गः, मार्गगमनं, मार्गक्रमणं, यात्रा, यात्राकरणं, यानं, प्रयाणं, प्रस्थानं, प्रस्थितिः <i>f.,</i> व्रज्या, भ्रमणं, देशभ्रमणं, पर्यटनं, प्रवासः, प्रवासगमनं; ‘a long journey,’ दीर्घा- ध्वा <i>m.</i> -ध्व <i>n.</i> (न्); ‘a day's journey,’ एकाहगमः -मनं; ‘to return from a journey,’ प्रवासाद् आगम् (c. 1. -गच्छति -गन्तुं); ‘a pleasant journey to you,’ शिवास् ते पन्थानः सन्तु."
+        },
+        {
+            "word": "journey",
+            "eid": "16946",
+            "pagenum": 420,
+            "content": "<i>To</i> JOURNEY¦, <i>v. n.</i> अध्वना or मार्गेण गम् (c. 1. गच्छति, गन्तुं) or या (c. 2. याति -तुं) or व्रज् (c. 1. व्रजगि -जितुं) or चर् (c. 1. चरति -रितुं), मार्गगमनं कृ, अध्वगमनं कृ, यात्रां कृ, देशभ्रमणं कृ, देशाद्देशं भ्रम् (c. 4. भ्राम्यति, भ्रमितुं) or परिभ्रम् or पर्यट् (c. 1. अटति -टितुं)."
+        }
+    ]
+}

@@ -1,670 +1,266 @@
-  //
-      // Suspense boundaries are implemented as multiple fibers, but they
-      // are a single conceptual unit. The legacy mode behavior where we
-      // pretend the suspended fiber committed as `null` won't work,
-      // because in this case the "suspended" fiber is the inner
-      // Offscreen wrapper.
-      //
-      // Because the contents of the boundary haven't started rendering
-      // yet (i.e. nothing in the tree has partially rendered) we can
-      // switch to the regular, concurrent mode behavior: mark the
-      // boundary with ShouldCapture and enter the unwind phase.
-      suspenseBoundary.flags |= ShouldCapture;
-    } else {
-      suspenseBoundary.flags |= DidCapture;
-      sourceFiber.flags |= ForceUpdateForLegacySuspense; // We're going to commit this fiber even though it didn't complete.
-      // But we shouldn't call any lifecycle methods or callbacks. Remove
-      // all lifecycle effect tags.
-
-      sourceFiber.flags &= ~(LifecycleEffectMask | Incomplete);
-
-      if (sourceFiber.tag === ClassComponent) {
-        const currentSourceFiber = sourceFiber.alternate;
-
-        if (currentSourceFiber === null) {
-          // This is a new mount. Change the tag so it's not mistaken for a
-          // completed class component. For example, we should not call
-          // componentWillUnmount if it is deleted.
-          sourceFiber.tag = IncompleteClassComponent;
-        } else {
-          // When we try rendering again, we should not reuse the current fiber,
-          // since it's known to be in an inconsistent state. Use a force update to
-          // prevent a bail out.
-          const update = createUpdate(SyncLane);
-          update.tag = ForceUpdate;
-          enqueueUpdate(sourceFiber, update, SyncLane);
-        }
-      } // The source fiber did not complete. Mark it with Sync priority to
-      // indicate that it still has pending work.
-
-
-      sourceFiber.lanes = mergeLanes(sourceFiber.lanes, SyncLane);
-    }
-
-    return suspenseBoundary;
-  } // Confirmed that the boundary is in a concurrent mode tree. Continue
-  // with the normal suspend path.
-  //
-  // After this we'll use a set of heuristics to determine whether this
-  // render pass will run to completion or restart or "suspend" the commit.
-  // The actual logic for this is spread out in different places.
-  //
-  // This first principle is that if we're going to suspend when we complete
-  // a root, then we should also restart if we get an update or ping that
-  // might unsuspend it, and vice versa. The only reason to suspend is
-  // because you think you might want to restart before committing. However,
-  // it doesn't make sense to restart only while in the period we're suspended.
-  //
-  // Restarting too aggressively is also not good because it starves out any
-  // intermediate loading state. So we use heuristics to determine when.
-  // Suspense Heuristics
-  //
-  // If nothing threw a Promise or all the same fallbacks are already showing,
-  // then don't suspend/restart.
-  //
-  // If this is an initial render of a new tree of Suspense boundaries and
-  // those trigger a fallback, then don't suspend/restart. We want to ensure
-  // that we can show the initial loading state as quickly as possible.
-  //
-  // If we hit a "Delayed" case, such as when we'd switch from content back into
-  // a fallback, then we should always suspend/restart. Transitions apply
-  // to this case. If none is defined, JND is used instead.
-  //
-  // If we're already showing a fallback and it gets "retried", allowing us to show
-  // another level, but there's still an inner boundary that would show a fallback,
-  // then we suspend/restart for 500ms since the last time we showed a fallback
-  // anywhere in the tree. This effectively throttles progressive loading into a
-  // consistent train of commits. This also gives us an opportunity to restart to
-  // get to the completed state slightly earlier.
-  //
-  // If there's ambiguity due to batching it's resolved in preference of:
-  // 1) "delayed", 2) "initial render", 3) "retry".
-  //
-  // We want to ensure that a "busy" state doesn't get force committed. We want to
-  // ensure that new initial loading states can commit as soon as possible.
-
-
-  suspenseBoundary.flags |= ShouldCapture; // TODO: I think we can remove this, since we now use `DidCapture` in
-  // the begin phase to prevent an early bailout.
-
-  suspenseBoundary.lanes = rootRenderLanes;
-  return suspenseBoundary;
-}
-
-function throwException(root, returnFiber, sourceFiber, value, rootRenderLanes) {
-  // The source fiber did not complete.
-  sourceFiber.flags |= Incomplete;
-
-  if (value !== null && typeof value === 'object') {
-    if (value.$$typeof === REACT_POSTPONE_TYPE) {
-      // Act as if this is an infinitely suspending promise.
-      value = {
-        then: function () {}
-      };
-    }
-
-    if (typeof value.then === 'function') {
-      // This is a wakeable. The component suspended.
-      const wakeable = value;
-      resetSuspendedComponent(sourceFiber);
-
-
-      const suspenseBoundary = getSuspenseHandler();
-
-      if (suspenseBoundary !== null) {
-        switch (suspenseBoundary.tag) {
-          case SuspenseComponent:
-            {
-              // If this suspense boundary is not already showing a fallback, mark
-              // the in-progress render as suspended. We try to perform this logic
-              // as soon as soon as possible during the render phase, so the work
-              // loop can know things like whether it's OK to switch to other tasks,
-              // or whether it can wait for data to resolve before continuing.
-              // TODO: Most of these checks are already performed when entering a
-              // Suspense boundary. We should track the information on the stack so
-              // we don't have to recompute it on demand. This would also allow us
-              // to unify with `use` which needs to perform this logic even sooner,
-              // before `throwException` is called.
-              if (sourceFiber.mode & ConcurrentMode) {
-                if (getShellBoundary() === null) {
-                  // Suspended in the "shell" of the app. This is an undesirable
-                  // loading state. We should avoid committing this tree.
-                  renderDidSuspendDelayIfPossible();
-                } else {
-                  // If we suspended deeper than the shell, we don't need to delay
-                  // the commmit. However, we still call renderDidSuspend if this is
-                  // a new boundary, to tell the work loop that a new fallback has
-                  // appeared during this render.
-                  // TODO: Theoretically we should be able to delete this branch.
-                  // It's currently used for two things: 1) to throttle the
-                  // appearance of successive loading states, and 2) in
-                  // SuspenseList, to determine whether the children include any
-                  // pending fallbacks. For 1, we should apply throttling to all
-                  // retries, not just ones that render an additional fallback. For
-                  // 2, we should check subtreeFlags instead. Then we can delete
-                  // this branch.
-                  const current = suspenseBoundary.alternate;
-
-                  if (current === null) {
-                    renderDidSuspend();
-                  }
-                }
-              }
-
-              suspenseBoundary.flags &= ~ForceClientRender;
-              markSuspenseBoundaryShouldCapture(suspenseBoundary, returnFiber, sourceFiber, root, rootRenderLanes); // Retry listener
-              //
-              // If the fallback does commit, we need to attach a different type of
-              // listener. This one schedules an update on the Suspense boundary to
-              // turn the fallback state off.
-              //
-              // Stash the wakeable on the boundary fiber so we can access it in the
-              // commit phase.
-              //
-              // When the wakeable resolves, we'll attempt to render the boundary
-              // again ("retry").
-              // Check if this is a Suspensey resource. We do not attach retry
-              // listeners to these, because we don't actually need them for
-              // rendering. Only for committing. Instead, if a fallback commits
-              // and the only thing that suspended was a Suspensey resource, we
-              // retry immediately.
-              // TODO: Refactor throwException so that we don't have to do this type
-              // check. The caller already knows what the cause was.
-
-              const isSuspenseyResource = wakeable === noopSuspenseyCommitThenable;
-
-              if (isSuspenseyResource) {
-                suspenseBoundary.flags |= ScheduleRetry;
-              } else {
-                const retryQueue = suspenseBoundary.updateQueue;
-
-                if (retryQueue === null) {
-                  suspenseBoundary.updateQueue = new Set([wakeable]);
-                } else {
-                  retryQueue.add(wakeable);
-                } // We only attach ping listeners in concurrent mode. Legacy
-                // Suspense always commits fallbacks synchronously, so there are
-                // no pings.
-
-
-                if (suspenseBoundary.mode & ConcurrentMode) {
-                  attachPingListener(root, wakeable, rootRenderLanes);
-                }
-              }
-
-              return;
-            }
-
-          case OffscreenComponent:
-            {
-              if (suspenseBoundary.mode & ConcurrentMode) {
-                suspenseBoundary.flags |= ShouldCapture;
-                const isSuspenseyResource = wakeable === noopSuspenseyCommitThenable;
-
-                if (isSuspenseyResource) {
-                  suspenseBoundary.flags |= ScheduleRetry;
-                } else {
-                  const offscreenQueue = suspenseBoundary.updateQueue;
-
-                  if (offscreenQueue === null) {
-                    const newOffscreenQueue = {
-                      transitions: null,
-                      markerInstances: null,
-                      retryQueue: new Set([wakeable])
-                    };
-                    suspenseBoundary.updateQueue = newOffscreenQueue;
-                  } else {
-                    const retryQueue = offscreenQueue.retryQueue;
-
-                    if (retryQueue === null) {
-                      offscreenQueue.retryQueue = new Set([wakeable]);
-                    } else {
-                      retryQueue.add(wakeable);
-                    }
-                  }
-
-                  attachPingListener(root, wakeable, rootRenderLanes);
-                }
-
-                return;
-              }
-            }
-        }
-
-        throw Error(formatProdErrorMessage(435, suspenseBoundary.tag));
-      } else {
-        // No boundary was found. Unless this is a sync update, this is OK.
-        // We can suspend and wait for more data to arrive.
-        if (root.tag === ConcurrentRoot) {
-          // In a concurrent root, suspending without a Suspense boundary is
-          // allowed. It will suspend indefinitely without committing.
-          //
-          // TODO: Should we have different behavior for discrete updates? What
-          // about flushSync? Maybe it should put the tree into an inert state,
-          // and potentially log a warning. Revisit this for a future release.
-          attachPingListener(root, wakeable, rootRenderLanes);
-          renderDidSuspendDelayIfPossible();
-          return;
-        } else {
-          // In a legacy root, suspending without a boundary is always an error.
-          const uncaughtSuspenseError = Error(formatProdErrorMessage(426));
-          value = uncaughtSuspenseError;
-        }
-      }
-    }
-  } // This is a regular error, not a Suspense wakeable.
-
-
-  if (getIsHydrating() && sourceFiber.mode & ConcurrentMode) {
-    const suspenseBoundary = getSuspenseHandler(); // If the error was thrown during hydration, we may be able to recover by
-    // discarding the dehydrated content and switching to a client render.
-    // Instead of surfacing the error, find the nearest Suspense boundary
-    // and render it again without hydration.
-
-    if (suspenseBoundary !== null) {
-      if ((suspenseBoundary.flags & ShouldCapture) === NoFlags$1) {
-        // Set a flag to indicate that we should try rendering the normal
-        // children again, not the fallback.
-        suspenseBoundary.flags |= ForceClientRender;
-      }
-
-      markSuspenseBoundaryShouldCapture(suspenseBoundary, returnFiber, sourceFiber, root, rootRenderLanes); // Even though the user may not be affected by this error, we should
-      // still log it so it can be fixed.
-
-      queueHydrationError(createCapturedValueAtFiber(value, sourceFiber));
-      return;
-    }
-  }
-
-  value = createCapturedValueAtFiber(value, sourceFiber);
-  renderDidError(value); // We didn't find a boundary that could handle this type of exception. Start
-  // over and traverse parent path again, this time treating the exception
-  // as an error.
-
-  let workInProgress = returnFiber;
-
-  do {
-    switch (workInProgress.tag) {
-      case HostRoot:
+{
+    "word": "तृप्",
+    "AP90": [
         {
-          const errorInfo = value;
-          workInProgress.flags |= ShouldCapture;
-          const lane = pickArbitraryLane(rootRenderLanes);
-          workInProgress.lanes = mergeLanes(workInProgress.lanes, lane);
-          const update = createRootErrorUpdate(workInProgress, errorInfo, lane);
-          enqueueCapturedUpdate(workInProgress, update);
-          return;
+            "word": "तृप्",
+            "eid": "14883",
+            "pagenum": 544,
+            "content": "तृप्¦ {vI.v} {c4c} {c5c} {c6c} <ab>P.</ab> (तृप्यति, तृप्नोति, तृपति, तृप्त) <b>1</b> To become satisfied, be pleased or contented; अद्य तर्प्स्यंति मांसादाः <ls>Bk. 16. 29</ls>; प्राशीन्न चातृपत् क्रूरः <ls n='Bk.'>15. 29</ls>; (usually with <ab>instr.</ab>; but sometimes with <ab>gen.</ab> or <ab>loc.</ab> also); कोन तृप्यति वित्तेन <ls>H. 2. 174.</ls> तृप्तस्तत्पिशितने <ls>Bh. 2. 84</ls>; नाग्निरतृप्य, ति काष्टानां नापगानां महोदधिः । <lbinfo n='nAMtaka#sarvaBUtAnAM'/> नांतकसर्वभूतानां न पुंसां वामलोचना ॥  <lbinfo n='ls:Pt. 1.+137'/> <ls>Pt. 1. 137</ls>; तस्मिन्हि ततृपुर्देवास्तते यज्ञे <ls>Mb.</ls> <b>--2</b> To please, gratify. <i>--<ab>Caus.</ab></i> To gratify, please. <i>--<ab>Desid.</ab></i> तितृप्सति, ति तपिंषति. {vII.v} {c1c} <ab>P.</ab>, {c10c} <ab>U.</ab> (तर्पति, <lbinfo n='tarpaya#ti'/> तर्पयति-ते) <b>1</b> To light up, kindle. <b>--2</b> (<ab>Atm.</ab>) To be satisfied. <b>--3</b> To please, satisfy. <b>--4</b> To gladden, refresh, reanimate, <ls>U. 3. 2.</ls>"
         }
-
-      case ClassComponent:
-        // Capture and retry
-        const errorInfo = value;
-        const ctor = workInProgress.type;
-        const instance = workInProgress.stateNode;
-
-        if ((workInProgress.flags & DidCapture) === NoFlags$1 && (typeof ctor.getDerivedStateFromError === 'function' || instance !== null && typeof instance.componentDidCatch === 'function' && !isAlreadyFailedLegacyErrorBoundary(instance))) {
-          workInProgress.flags |= ShouldCapture;
-          const lane = pickArbitraryLane(rootRenderLanes);
-          workInProgress.lanes = mergeLanes(workInProgress.lanes, lane); // Schedule the error boundary to re-render using updated state
-
-          const update = createClassErrorUpdate(workInProgress, errorInfo, lane);
-          enqueueCapturedUpdate(workInProgress, update);
-          return;
+    ],
+    "BEN": [
+        {
+            "word": "तृप्",
+            "eid": "6032",
+            "pagenum": 371,
+            "content": "तृप्¦ <i>TṚP</i> (i. 1, <ab>Par.</ab>, <ls>MBh.</ls> 14, 1040), i. 4, <ab>Par.</ab> (in epic poetry also <ab>Ātm.</ab>, <ls>MBh.</ls> 3, 1781), † i. 6, Par, ii. 5, <i>tṛpnu</i> (<ab>ved.</ab> <i>tṛpṇu</i>), <ab>Par.</ab>, and तृम्प् <i>TṚMP,</i> i. 6, <ab>Par.</ab> <b>1.</b> To become satiate, <ls>Kathās.</ls> 26, 237. <b>2.</b> To be satisfied, <ls>Man.</ls> 3, 267. <b>3.</b> To enjoy, <ls>Man.</ls> 4, 251. With <ab>gen.</ab> <ab>instr.</ab> and <ab>loc.</ab>, <ls>MBh.</ls> 3, 336; <ls>Hit.</ls> ii. <ab>d.</ab> 164; <ls>MBh.</ls> 4, 2320. <b>4.</b> † To kindle. <ab>Ptcple.</ab> of the <ab>pf.</ab> <ab>pass.</ab> <i>tṛpta,</i> Satisfied, <ls>Bhartṛ.</ls> 2, 82; <ls>MBh.</ls> 3, 2247. <ab>Caus.</ab> <i>tarpaya,</i> <ab>Par.</ab> (and <ab>Ātm.</ab>, <ls>MBh.</ls> 12, 5542), <b>1.</b> To satisfy, <ls>Kathās.</ls> 26, 237; <ls>Chr.</ls> 292, 1 = <ls>Rigv.</ls> i. 85, 11; <ls>Man.</ls> 3, 283. <b>2.</b> To gladden, to exhilarate, <ls>Bhāg. P.</ls> 7, 2, 8. <b>3.</b> † To kindle. Anomalous <ab>ptcple.</ab> of the <ab>pres.</ab> <ab>Ātm.</ab> <i>tarpayāna</i> (with <i>n</i> instead of <i>ṇ</i>), <ls>MBh.</ls> 14, 291. With the <ab>prep.</ab> अति <i>ati,</i> To become satisfied, <ls>Bhāg. P.</ls> 8, 5, 13. -- With अनु <i>anu,</i> To be satisfied after (with <ab>abl.</ab>), <ls>MBh.</ls> 13, 1922. -- With अप <i>apa,</i> <ab>Caus.</ab> To cause to hunger, <ls>Suśr.</ls> 2, 43, 1. With अभि <i>abhi,</i> <b>1.</b> To be satisfied, <ls>MBh.</ls> 5, 3604. <b>2.</b> To enjoy, <ls>Bhāg. P.</ls> 3, 5, 1. <ab>Caus.</ab> To satisfy, <ls>Rām.</ls> 1, 54, 5 <ls>Gorr.</ls> -- With परि <i>pari,</i> <ab>Caus.</ab> To satisfy completely, <ls>MBh.</ls> 3, 8537. -- With प्र <i>pra,</i> <ab>Caus.</ab> To satisfy, <ls>Pañc.</ls> 217, 6. -- With वि <i>vi,</i> To be satisfied, <ls>Bhāg. P.</ls> 1, 1, 19; <ls>Rām.</ls> 4, 35, 9. -- With सम् <i>sam,</i> <ab>Caus.</ab> To satisfy, <ls>MBh.</ls> 3, 946. -- <ab>Cf.</ab> <lang n='greek'>τέρπω</lang>; <ab>Lat.</ab> torpor, torpere; <ab>Goth.</ab> tharf (primitively ‘to satisfy,’ then ‘to be of use,’ <ab>cf.</ab> <ab>O.H.G.</ab> bidarbi; and finally ‘to be necessary’), thrafstjan; <ab>A.S.</ab> thearf; <ab>O.H.G.</ab> trôstjan."
         }
-
-        break;
-    } // $FlowFixMe[incompatible-type] we bail out when we get a null
-
-
-    workInProgress = workInProgress.return;
-  } while (workInProgress !== null);
-}
-
-const ReactCurrentOwner$1 = ReactSharedInternals.ReactCurrentOwner; // A special exception that's used to unwind the stack when an update flows
-// into a dehydrated boundary.
-
-const SelectiveHydrationException = Error(formatProdErrorMessage(461));
-let didReceiveUpdate = false;
-
-function reconcileChildren(current, workInProgress, nextChildren, renderLanes) {
-  if (current === null) {
-    // If this is a fresh new component that hasn't been rendered yet, we
-    // won't update its child set by applying minimal side-effects. Instead,
-    // we will add them all to the child before it gets rendered. That means
-    // we can optimize this reconciliation pass by not tracking side-effects.
-    workInProgress.child = mountChildFibers(workInProgress, null, nextChildren, renderLanes);
-  } else {
-    // If the current child is the same as the work in progress, it means that
-    // we haven't yet started any work on these children. Therefore, we use
-    // the clone algorithm to create a copy of all the current children.
-    // If we had any progressed work already, that is invalid at this point so
-    // let's throw it out.
-    workInProgress.child = reconcileChildFibers(workInProgress, current.child, nextChildren, renderLanes);
-  }
-}
-
-function forceUnmountCurrentAndReconcile(current, workInProgress, nextChildren, renderLanes) {
-  // This function is fork of reconcileChildren. It's used in cases where we
-  // want to reconcile without matching against the existing set. This has the
-  // effect of all current children being unmounted; even if the type and key
-  // are the same, the old child is unmounted and a new child is created.
-  //
-  // To do this, we're going to go through the reconcile algorithm twice. In
-  // the first pass, we schedule a deletion for all the current children by
-  // passing null.
-  workInProgress.child = reconcileChildFibers(workInProgress, current.child, null, renderLanes); // In the second pass, we mount the new children. The trick here is that we
-  // pass null in place of where we usually pass the current child set. This has
-  // the effect of remounting all children regardless of whether their
-  // identities match.
-
-  workInProgress.child = reconcileChildFibers(workInProgress, null, nextChildren, renderLanes);
-}
-
-function updateForwardRef(current, workInProgress, Component, nextProps, renderLanes) {
-
-  const render = Component.render;
-  const ref = workInProgress.ref; // The rest is a fork of updateFunctionComponent
-
-  let nextChildren;
-  let hasId;
-  prepareToReadContext(workInProgress, renderLanes);
-
-  {
-    nextChildren = renderWithHooks(current, workInProgress, render, nextProps, ref, renderLanes);
-    hasId = checkDidRenderIdHook();
-  }
-
-  if (current !== null && !didReceiveUpdate) {
-    bailoutHooks(current, workInProgress, renderLanes);
-    return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
-  }
-
-  if (getIsHydrating() && hasId) {
-    pushMaterializedTreeId(workInProgress);
-  } // React DevTools reads this flag.
-
-
-  workInProgress.flags |= PerformedWork;
-  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
-  return workInProgress.child;
-}
-
-function updateMemoComponent(current, workInProgress, Component, nextProps, renderLanes) {
-  if (current === null) {
-    const type = Component.type;
-
-    if (isSimpleFunctionComponent(type) && Component.compare === null && // SimpleMemoComponent codepath doesn't resolve outer props either.
-    Component.defaultProps === undefined) {
-      let resolvedType = type;
-      // and with only the default shallow comparison, we upgrade it
-      // to a SimpleMemoComponent to allow fast path updates.
-
-
-      workInProgress.tag = SimpleMemoComponent;
-      workInProgress.type = resolvedType;
-
-      return updateSimpleMemoComponent(current, workInProgress, resolvedType, nextProps, renderLanes);
-    }
-
-    const child = createFiberFromTypeAndProps(Component.type, null, nextProps, null, workInProgress, workInProgress.mode, renderLanes);
-    child.ref = workInProgress.ref;
-    child.return = workInProgress;
-    workInProgress.child = child;
-    return child;
-  }
-
-  const currentChild = current.child; // This is always exactly one child
-
-  const hasScheduledUpdateOrContext = checkScheduledUpdateOrContext(current, renderLanes);
-
-  if (!hasScheduledUpdateOrContext) {
-    // This will be the props with resolved defaultProps,
-    // unlike current.memoizedProps which will be the unresolved ones.
-    const prevProps = currentChild.memoizedProps; // Default to shallow comparison
-
-    let compare = Component.compare;
-    compare = compare !== null ? compare : shallowEqual;
-
-    if (compare(prevProps, nextProps) && current.ref === workInProgress.ref) {
-      return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
-    }
-  } // React DevTools reads this flag.
-
-
-  workInProgress.flags |= PerformedWork;
-  const newChild = createWorkInProgress(currentChild, nextProps);
-  newChild.ref = workInProgress.ref;
-  newChild.return = workInProgress;
-  workInProgress.child = newChild;
-  return newChild;
-}
-
-function updateSimpleMemoComponent(current, workInProgress, Component, nextProps, renderLanes) {
-
-  if (current !== null) {
-    const prevProps = current.memoizedProps;
-
-    if (shallowEqual(prevProps, nextProps) && current.ref === workInProgress.ref && ( // Prevent bailout if the implementation changed due to hot reload.
-    true)) {
-      didReceiveUpdate = false; // The props are shallowly equal. Reuse the previous props object, like we
-      // would during a normal fiber bailout.
-      //
-      // We don't have strong guarantees that the props object is referentially
-      // equal during updates where we can't bail out anyway — like if the props
-      // are shallowly equal, but there's a local state or context update in the
-      // same batch.
-      //
-      // However, as a principle, we should aim to make the behavior consistent
-      // across different ways of memoizing a component. For example, React.memo
-      // has a different internal Fiber layout if you pass a normal function
-      // component (SimpleMemoComponent) versus if you pass a different type
-      // like forwardRef (MemoComponent). But this is an implementation detail.
-      // Wrapping a component in forwardRef (or React.lazy, etc) shouldn't
-      // affect whether the props object is reused during a bailout.
-
-      workInProgress.pendingProps = nextProps = prevProps;
-
-      if (!checkScheduledUpdateOrContext(current, renderLanes)) {
-        // The pending lanes were cleared at the beginning of beginWork. We're
-        // about to bail out, but there might be other lanes that weren't
-        // included in the current render. Usually, the priority level of the
-        // remaining updates is accumulated during the evaluation of the
-        // component (i.e. when processing the update queue). But since since
-        // we're bailing out early *without* evaluating the component, we need
-        // to account for it here, too. Reset to the value of the current fiber.
-        // NOTE: This only applies to SimpleMemoComponent, not MemoComponent,
-        // because a MemoComponent fiber does not have hooks or an update queue;
-        // rather, it wraps around an inner component, which may or may not
-        // contains hooks.
-        // TODO: Move the reset at in beginWork out of the common path so that
-        // this is no longer necessary.
-        workInProgress.lanes = current.lanes;
-        return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
-      } else if ((current.flags & ForceUpdateForLegacySuspense) !== NoFlags$1) {
-        // This is a special case that only exists for legacy mode.
-        // See https://github.com/facebook/react/pull/19216.
-        didReceiveUpdate = true;
-      }
-    }
-  }
-
-  return updateFunctionComponent(current, workInProgress, Component, nextProps, renderLanes);
-}
-
-function updateOffscreenComponent(current, workInProgress, renderLanes) {
-  const nextProps = workInProgress.pendingProps;
-  const nextChildren = nextProps.children;
-  const nextIsDetached = (workInProgress.stateNode._pendingVisibility & OffscreenDetached) !== 0;
-  const prevState = current !== null ? current.memoizedState : null;
-  markRef$1(current, workInProgress);
-
-  if (nextProps.mode === 'hidden' || enableLegacyHidden  || nextIsDetached) {
-    // Rendering a hidden tree.
-    const didSuspend = (workInProgress.flags & DidCapture) !== NoFlags$1;
-
-    if (didSuspend) {
-      // Something suspended inside a hidden tree
-      // Include the base lanes from the last render
-      const nextBaseLanes = prevState !== null ? mergeLanes(prevState.baseLanes, renderLanes) : renderLanes;
-
-      if (current !== null) {
-        // Reset to the current children
-        let currentChild = workInProgress.child = current.child; // The current render suspended, but there may be other lanes with
-        // pending work. We can't read `childLanes` from the current Offscreen
-        // fiber because we reset it when it was deferred; however, we can read
-        // the pending lanes from the child fibers.
-
-        let currentChildLanes = NoLanes;
-
-        while (currentChild !== null) {
-          currentChildLanes = mergeLanes(mergeLanes(currentChildLanes, currentChild.lanes), currentChild.childLanes);
-          currentChild = currentChild.sibling;
+    ],
+    "BOP": [
+        {
+            "word": "तृप्",
+            "eid": "3833",
+            "pagenum": 156,
+            "content": "तृप्¦ 1. <i>P.</i> exhilarare, satiare. -- <i>Cl.</i> 4. <i>P. A.</i> 5. <i>P.</i> 6. <i>P.</i> 1) gaudere. HIT. 76. 14.: को न तृप्यति वित्तेन. 2) satiarī. SA. 7. 2.: ना ऽतृप्यन् कथयन्तः पुनः पुनः; IN. 2. 26.: गुडाकेशम् प्रेक्षमाणः…नचा ऽतृप्यत वृत्रहा; MAH. 3. 2247.: अतृप्यन् हतानाम् मांसशोनितैः <i>C. gen.</i> HIT. 66. 8.: ना ऽग्निस् तृप्यति काष्ठानान् ना ऽपगानाम् महोदधिः. -- <i>Caus.</i> exhilarare, delectare, satiare. H. 2. 12.: मानुष्यो गन्धो घ्राणन् तर्पयती ऽव मे; N. 17. 27.: अतर्पयत् सुदेवञ्च गोसहस्रेण; MAH. 1. 6803.: तन् धनेन तर्पयामास; IN. 1. 21.: पितॄन् यथान्यायन् तर्प- यित्वा; MAH. 1. 8126.: आज्यधाराभिस् तर्पयसेऽन- लम्. (Cf. तृम्प्, तृफ्, तृम्फ्; gr. <lang n='greek'>τέϱπω, τϱέϕω</lang>; boruss. vet. <i>en-terpo</i> prodest; lith. <i>tarpstu</i> incrementa capio, augesco, praet. <i>tarpau; tarpà</i> incrementum; huc etiam traxerim nostrum <i>darbe, be-darf</i>, ita ut sensus primitivus in oppositum transierit; goth. <i>tharbs</i> egenus, <i>tharf</i> egeo, <i>thaurba</i> id.; russ. <lang n='russian'>шерплю̀</lang> <i>terplju</i> patior, tolero; fortasse lat. <i>sa-tur</i> e <i>sa-turp, san-turp</i> = सन्तर्प्, abjectâ radicis litterâ finali; itaque <i>sat</i> e <i>satur</i>, non vice versâ; hib. <i>tropadh</i> «heavy, weighty, grave», <i>trom</i> id. mutato <i>p</i> in nasalem ejusdem organi, nisi <i>trom</i> e <i>tromp</i>, inserto <i>m</i>, abjecto <i>p</i>, cf. तृम्प्; <i>tromaighim</i> = तर्पया- मि «I aggravate, load, burden, make heavy», <i>tromaim</i> id.; <i>tormach</i> «increase, augmentation»; <i>torp</i> «bulk»; <i>tormad</i> «pregnant growing, big».) <dvsn n='pfx'>c. परि <i>Caus.</i> saturare. MAH. 3. 8537.: देवा हविषा प- रितर्पिताः. <dvsn n='pfx'>c. सम् saturari. RIG.-V. 110. 1.: स्वाहाकृतस्य सम् उ- तृप्नुत «rite effusi <i>libaminis potu</i> nunc satiamini». <i>Caus.</i> saturare, exhilarare, delectare, satiare. MAH. 1. 4470.: सुहृदः…धनेन समतर्पयत्; RAGH. 13. 45.: सन्तर्प्य समिद्भिर् अग्निम्; MAH. 3. 946.: तान् मूल- फलैः सन्तर्पयामास."
         }
-
-        const lanesWeJustAttempted = nextBaseLanes;
-        const remainingChildLanes = removeLanes(currentChildLanes, lanesWeJustAttempted);
-        workInProgress.childLanes = remainingChildLanes;
-      } else {
-        workInProgress.childLanes = NoLanes;
-        workInProgress.child = null;
-      }
-
-      return deferHiddenOffscreenComponent(current, workInProgress, nextBaseLanes);
-    }
-
-    if ((workInProgress.mode & ConcurrentMode) === NoMode) {
-      // In legacy sync mode, don't defer the subtree. Render it now.
-      // TODO: Consider how Offscreen should work with transitions in the future
-      const nextState = {
-        baseLanes: NoLanes,
-        cachePool: null
-      };
-      workInProgress.memoizedState = nextState;
-
-      {
-        // push the cache pool even though we're going to bail out
-        // because otherwise there'd be a context mismatch
-        if (current !== null) {
-          pushTransition(workInProgress, null);
+    ],
+    "BUR": [
+        {
+            "word": "तृप्",
+            "eid": "8107",
+            "pagenum": 298,
+            "content": "*तृप्¦ <i>tṛp.</i> <i>tṛpyāmi</i> 4, <i>tṛpnomi</i> 5 et <i>tṛpāmi</i> 6; <ab>qqf.</ab> <i>tarpāmi</i> 1 et <i>trype</i> 4; <ab>p.</ab> <i>tatarpa;</i> <lbinfo n='8'/> <ab>f1.</ab> <i>tarpitāsmi, tarptāsmi</i> et <i>traptāsmi;</i> <lbinfo n='5'/> <ab>f2.</ab> <i>tarpiṣyāmi, tarpsyāmi</i> et <i>trapsyāmi;</i> <ab>a1.</ab> <i>atarpiṣam</i> et <i>atārpsam;</i> <ab>a2.</ab> <i>atṛpam;</i> <ab>pp.</ab> <i>tṛpta.</i> Se réjouir. || Se rassasier: <i>hatānām māṃsaśoṇitais</i> du sang et de la chair des tués; <i>tatṛpur devā yajñe</i> les dieux se sont rassasiés dans le sacrifice; <i>nāgnir tṛpyati</i> <i>kāṣṭhānām</i> le feu est insatiable de bois. || <ab>Actt.</ab> rassasier; || réjouir. || <ab>Gr.</ab> <lang n='greek'>τέρπω; τρέφω</lang><ab>(?)</ab>."
         }
-      }
-
-      reuseHiddenContextOnStack();
-      pushOffscreenSuspenseHandler(workInProgress);
-    } else if (!includesSomeLane(renderLanes, OffscreenLane)) {
-      // We're hidden, and we're not rendering at Offscreen. We will bail out
-      // and resume this tree later.
-      // Schedule this fiber to re-render at Offscreen priority
-      workInProgress.lanes = workInProgress.childLanes = laneToLanes(OffscreenLane); // Include the base lanes from the last render
-
-      const nextBaseLanes = prevState !== null ? mergeLanes(prevState.baseLanes, renderLanes) : renderLanes;
-      return deferHiddenOffscreenComponent(current, workInProgress, nextBaseLanes);
-    } else {
-      // This is the second render. The surrounding visible content has already
-      // committed. Now we resume rendering the hidden tree.
-      // Rendering at offscreen, so we can clear the base lanes.
-      const nextState = {
-        baseLanes: NoLanes,
-        cachePool: null
-      };
-      workInProgress.memoizedState = nextState;
-
-      if (current !== null) {
-        // If the render that spawned this one accessed the cache pool, resume
-        // using the same cache. Unless the parent changed, since that means
-        // there was a refresh.
-        const prevCachePool = prevState !== null ? prevState.cachePool : null; // TODO: Consider if and how Offscreen pre-rendering should
-        // be attributed to the transition that spawned it
-
-        pushTransition(workInProgress, prevCachePool);
-      } // Push the lanes that were skipped when we bailed out.
-
-
-      if (prevState !== null) {
-        pushHiddenContext(workInProgress, prevState);
-      } else {
-        reuseHiddenContextOnStack();
-      }
-
-      pushOffscreenSuspenseHandler(workInProgress);
-    }
-  } else {
-    // Rendering a visible tree.
-    if (prevState !== null) {
-      // We're going from hidden -> visible.
-      let prevCachePool = null;
-
-      {
-        // If the render that spawned this one accessed the cache pool, resume
-        // using the same cache. Unless the parent changed, since that means
-        // there was a refresh.
-        prevCachePool = prevState.cachePool;
-      }
-
-      pushTransition(workInProgress, prevCachePool); // Push the lanes that were skipped when we bailed out.
-
-      pushHiddenContext(workInProgress, prevState);
-      reuseSuspenseHandlerOnStack(workInProgress); // Since we're not hidden anymore, reset the state
-
-      workInProgress.memoizedState = null;
-    } else {
-      // We weren't previously hidden, and we still aren't, so there's nothing
-      // special to do. Need to push to the stack regardless, though, to avoid
-      // a push/pop misalignment.
-      {
-        // If the render that spawned this one accessed the cache pool, resume
-        // using the same cache. Unless the parent changed, since that means
-        // there was a refresh.
-        if (current !== null) {
-          pushTransition(workInProgress, null);
+    ],
+    "CAE": [
+        {
+            "word": "तृप्",
+            "eid": "12629",
+            "pagenum": 208,
+            "content": "तृप्¦ तृ/प्यति <vlex type='root'/> (तृ/प्य°ते), तृप्णो/ति (तृप्नोति), तृम्प/ति (तर्पति), <ab>pp.</ab> तप्त/ satiate one's self, be satisfied or content with (<ab>gen.</ab>, <ab>instr.</ab> or —°); enjoy (<ab>abl.</ab>). <ab>C.</ab> तर्प/यति, °ते satisfy, please, nourish; <ab>M.</ab> refl. <dvsn n='p'>— अभि <ab>C.</ab> satiate, refresh. <dvsn n='p'>आ be satiated or satisfied; <ab>C.</ab> satiate. <dvsn n='p'>परि <ab>C.</ab> satiate or refresh thoroughly. <dvsn n='p'>प्र <ab>C.</ab> satiate, fill. <dvsn n='p'>वि be satiated or pleased. <dvsn n='p'>सम् be satiated or satisfied with (<ab>gen.</ab>). <ab>C.</ab> satiate, refresh, gladden."
         }
-      } // We're about to bail out, but we need to push this to the stack anyway
-      // to avoid a push/pop misalignment.
-
-
-      reuseHiddenContextOnStack();
-      reuseSuspenseHandlerOnStack(workInProgress);
-    }
-  }
-
-  reconcileChildren(current, workInProgress, nextChildren, renderLanes);
-  return workInProgress.child;
+    ],
+    "CCS": [
+        {
+            "word": "तृप्",
+            "eid": "8813",
+            "pagenum": 157,
+            "content": "तृप्¦ <i>s.</i> तर्प्."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "तृप्",
+            "eid": "3877",
+            "pagenum": 548,
+            "content": "<b>√tṛp</b>¦ [<ls>Cu. 〔240〕</ls>], 1〉 <i>bis zur Sättigung geniessen,</i> mit <ab>Gen.</ab>, besonders Flüssigkeiten; 2〉 auch ohne Object, <i>sich sättigen, befriedigt werden;</i> insbesondere 3〉 <ab>Part.</ab> tṛptá, <i>gesättigt;</i> 4〉 <ab>neutr.</ab> des <ab>Part.</ab> tṛpát, <i>zur Genüge, bis zur Sättigung</i>. <dvsn n='P'>Causativ: <i>sättigen, befriedigen</i>. <dvsn n='P'>Desiderativ: <i>dürsten nach</i> [<ab>A.</ab>]. [Page549] <dvsn n='Pf'>Mit <b>ā́</b> 1〉 <i>befriedigt werden;</i> 2〉 <ab>Caus.</ab> <ab>Med.</ab>, <i>sich ergötzen an</i> [<ab>Gen.</ab>]. <dvsn n='Pf'><b>ní,</b> <i>verzehren</i> (?) [<ab>A.</ab>]. <dvsn n='Pf'><b>sám,</b> <i>zusammen sich sättigen</i> an [<ab>G.</ab>]. <dvsn n='H'>Stamm I. <b>tṛpṇu,</b> stark <b>tṛpṇó</b> (tṛpṇáv): <dvsn n='TS'>-ávas 1〉 asya (mádasya) {276,2}. <dvsn n='TS'>-uhi 1〉 sómasya {207,6}; táva bhāgásya {227,4}. <dvsn n='TS'>-utám [<pe>2.</pe> <ab>d.</ab>] 2〉 píbatam 〰 ca {655,10}. <dvsn n='TS'>-uta <b>sám:</b> svā́hākṛtasya (samudrásya = sómasya) {110,1}. <dvsn n='H'>Stamm II. <b>tṛmpá:</b> <dvsn n='TS'>-ási 1〉 sómasya {624,12}; {1022,4}. <dvsn n='TS'>-asi <b>ní:</b> tuānídas {679,10}. <dvsn n='TS'>-á 2〉 {665,22} tṛmpā́ ví aśnuhī mádam. <dvsn n='TS'>-atu 2〉 ‥ sómapītaye, sajū́s gaṇéna tṛmpatu {23,7}. <dvsn n='TS'>-atam 1〉 sutásya {342,2}; ándhasas {655,24}. <dvsn n='TS'>-atām [<pe>3.</pe> <ab>d.</ab>] 1〉 sómasya {246,3}. <dvsn n='H'>Stamm III. <b>tṛpá:</b> <dvsn n='TS'>-án [<pe>3.</pe> <ab>p.</ab> <ab>C.</ab>] <b>á</b> (<ls>Pada</ls> falsch tṛpát) 1〉 ā́ yád 〰 marutas vāvaśānā́s {572,10}. <dvsn n='H'>Stamm des <ab>Caus.</ab> <b>tarpáya</b> (betont nur {54,9}): <dvsn n='TS'>-a [-ā] kā́mam eṣām {54,9}. <dvsn n='TS'>-anta [<ab>C.</ab>] kā́mam {85,11}. <dvsn n='TS'>-ethām [<ab>Iv.</ab>] sukṣitī́s {580,4}. — <b>ā́</b> 2〉 rāyás {17,3} (anukāmám). <dvsn n='H'><ab>Imperf.</ab> <ab>Caus.</ab> <b>átarpaya</b> (betont nur {315,5}): <dvsn n='TS'>-as visṛ́tas {315,5}. <dvsn n='TS'>-at devī́s {721,6} (krívis). <dvsn n='H'>Stamm des <ab>Desid.</ab> <b>títṛpsa:</b> <dvsn n='TS'>-āt pīyū́ṣam {913,17}. <dvsn n='H'><ab>Part.</ab> <b>tṛpṇuvat</b> [Stamm I.] <dvsn n='P'>enthalten in átṛpṇuvat. <dvsn n='H'><ab>Part.</ab> <b>tṛpát</b> [Stamm III.]: <dvsn n='TS'>-át 4〉 als <ab>Adv.</ab> zu pā, trinken: {202,15}; {213,1}; {227,5}; {942,1}; zu ā́ vṛṣasva {266,2} (vorher geht pibá). <dvsn n='H'><ab>Part.</ab> <ab>Perf.</ab> <ab>Me.</ab> <b>tātṛpāṇá:</b> <dvsn n='TS'>-ā́ [<ab>f.</ab>] 2〉 {921,16}. <dvsn n='H'><ab>Part.</ab> <ab>Caus.</ab> <b>tarpáyat:</b> <dvsn n='TS'>-antam sárasvantam {164,52} (vāyasám). <dvsn n='H'><ab>Part.</ab> II. <b>tṛptá:</b> <dvsn n='TS'>-ā́s 3〉 {554,8} (vorher madhvás pibata). <dvsn n='H'>Verbale <b>tṛ́p</b> <dvsn n='P'>enthalten in asu-, paśu-tṛ́p."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "तृप्",
+            "eid": "1796",
+            "pagenum": 165,
+            "content": "<b>√1tṛp</b>¦ (<b>tṛ́pyati, -te</b> [<ls n='wg,761'>761a</ls>]; <b>tatárpa; átṛpat;</b> <lbinfo n='átṛp-at;'/> <b>trapsyáti; tṛptá; -tṛ́pya; tarpáyati</b>). be satisfied; become content; <i>--<ab>caus.</ab></i> satisfy, <lbinfo n='sat-isfy,'/> please; nourish. [<ab>cf.</ab> <lang n='greek'>τέρπω</lang>, ‘satisfy, please,’ <lang n='greek'>τρέφω</lang>, ‘nourish.’] <dvsn n='p'/><b>+ ā,</b> become content <i>or</i> glad."
+        },
+        {
+            "word": "तृप्",
+            "eid": "1797",
+            "pagenum": 165,
+            "content": "<b>√2tṛp,</b>¦ steal, <i>not actually occurring in <ab>vbl</ab></i> <i>forms, but rendered probable by the <ab>deriv.</ab></i> <b>tṛpu,</b> ‘thief,’ <i>the <ab>cpds</ab></i> <b>asu-</b> <i>and</i> <b>paśu-tṛp,</b> <i>and by the Avestan</i> <b>√tṛf,</b> ‘steal.’"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "तृप्",
+            "eid": "15880",
+            "pagenum": 314,
+            "content": "tfp¦ <i>(I) vt. or vi. 4P, 5P, 6P (pp. तृप्त; pres. तृप्यति, तृप्नोति, तृपति; desid. तितर्पिषति, तितृप्सति)</i> 1. To become satisfied, to be contented, प्राशीन्न चातृपत् <ls>Bt.</ls>xv.29, xvi.29; (used with the inst. gen. or loc., e.g. को न तृप्यति वित्तेन, or नाग्निस्तृप्यति काष्ठानां नापगानां महोदधिः । नांतकः सर्वभूतानां न पुंसां वामलोचनाः, or तस्मिन् हि ततृपुर्देवास्तते यज्ञे); 2. to please, to satisfy."
+        },
+        {
+            "word": "तृप्",
+            "eid": "15881",
+            "pagenum": 314,
+            "content": "tfp¦ <i>(II) vt. 1P, 10U (pres. तर्पति, तर्पयति-ते)</i> To light up, to kindle."
+        }
+    ],
+    "MD": [
+        {
+            "word": "तृप्",
+            "eid": "8745",
+            "pagenum": 111,
+            "content": "तृप्¦ TṚP, <cl>Ⅳ.</cl> <b>tṛ́pya</b>; <cl>Ⅴ.</cl> <lex>P.</lex> <b>tṛpṇoti</b> (<ab>V.</ab>); 🞄<cl>Ⅵ.</cl> <lex>P.</lex> <b>tṛmpáti</b> (<ab>V.</ab>), become satiated, 🞄be satisfied (with, <ab>in.</ab>, <ab>g.</ab>, <ab>lc.</ab>); partake of, enjoy 🞄[Page111-3] 🞄(<ab>ab.</ab>): <ab>pp.</ab> <b>tṛptá,</b> satisfied with (<ab>in.</ab>, <ab>g.</ab>, <ab>—°</ab>); 🞄<ab>cs.</ab> <b>tarpáya,</b> satisfy; refresh; please, gladden; 🞄<ab>des.</ab> <i>of</i> <ab>cs.</ab> <b>titarpayiṣa,</b> wish to satisfy <i>or</i> 🞄refresh. <b>pra,</b> <ab>cs.</ab> satisfy; strengthen, invigorate. 🞄<b>sam,</b> refresh oneself with (<ab>g.</ab>); <ab>cs.</ab> satisfy, 🞄refresh, gladden."
+        }
+    ],
+    "MW": [
+        {
+            "word": "तृप्",
+            "eid": "86723",
+            "pagenum": "453,3",
+            "content": "<hom>1.</hom> तृप् ¦ <ab>cl.</ab> 4. तृ/प्यति [<ls>AV.</ls>; <ls>TS.</ls> &c.; metrically also °ते] <ab>cl.</ab> 5. [<ab>Subj.</ab> 2. <ab>sg.</ab> तृप्ण/वस् <ab>Impv.</ab> °णुहि, °णुत/म्, <ls>RV.</ls> (See also अ/-तृप्णुवत्); °नोति, <ls>Dhātup.</ls> and <ab>g.</ab> kzuBnA<srs/>di] <ab>cl.</ab> 6. [2. <ab>sg.</ab> तृम्प/सि <ab>Impv.</ab> °प/, °पतु, &c., <ls>RV.</ls>; <ls>ŚBr.</ls>; <ab>cf.</ab> <ls>Pāṇ. vii, 1, 59</ls>, <ab>Vārtt.</ab> 1, <ls>Pat.</ls>; तृपति, <ls>Dhātup.</ls>; <ab>pf.</ab> <ab>p.</ab> <ab>Ā.</ab> तातृपाण/, <ls>RV. x, 95, 16</ls>; <ab>P.</ab> ततर्प; 3. <ab>pl.</ab> तातृपुर्, <ls>AV. xi, 7, 13</ls>; <ab>aor.</ab> अतृपत्, <ls n='AV.'>iii, 13, 6</ls> or अत्राप्सीत्, <ls>Pāṇ. iii, 1, 44</ls>, <ab>Vārtt.</ab>; अतर्पीत्, अतार्प्सीत्, <ls>Vop.</ls>; <ab>fut.</ab> 1st तर्पिष्यति (but <ab>cf.</ab> <ls>Pāṇ. vii, 2, 10</ls>; <ls>Siddh.</ls>), तर्प्स्य्°, त्रप्स्य्°; <ab>Cond.</ab> अत्रप्स्यत्, <ls>AitUp. iii, 3</ls>; <ab>fut.</ab> 2nd तर्पिता, °प्ता, त्रप्ता, <ls>Kāś.</ls> on <ls>Pāṇ. vi, 1, 59</ls> and <ls n='Pāṇ.'>vii, 2, 45</ls>] <dvsn n='to'/>to satisfy one's self, become satiated or satisfied, be pleased with (<ab>gen.</ab> <ab>instr.</ab>, or rarely <ab>loc.</ab>, <ab>e.g.</ab> nA<srs/>gnis tfpyati kAzWAnAm, ‘fire is not satisfied with wood’, <ls>MBh. xiii</ls>; अ/तृप्यन् ब्राह्मणा/ ध/नैः, ‘the <s1 slp1='brahman'>Brahman</s1>s were pleased with wealth’, <ls>ŚBr. xiii</ls>), <ls>RV.</ls> &c.; <dvsn n='to'/>to enjoy (with <ab>abl.</ab>), <ls>Mn. iv, 251</ls>; <dvsn n='to'/>to satisfy, please, <ls>Bhaṭṭ. i f.</ls> : <ab>cl.</ab> 1. तर्पति, to kindle, <ls>Dhātup.</ls> : <dvsn n='vp'/><ab>Caus.</ab> तर्पयति, rarely °ते (<ab>impf.</ab> अतर्पयत्, <ls>RV.</ls> &c.; <ab>p.</ab> तर्प/यत्, <ls>ib.</ls>; <ab>aor.</ab> अतीतृपत्, <ls>ŚāṅkhGṛ. iii, 12</ls>; <ls>BhP.</ls>; अ/तीतृपाम, <ls>VS.</ls>; <ab>inf.</ab> त/र्पयितवै/, <ls>ŚBr. i, 7, 3, 28</ls>; <ls>ĀpŚr. iv, 16, 17</ls>) <dvsn n='to'/>to satiate, satisfy, refresh, gladden, <ls>RV.</ls> &c.; <dvsn n='vp'/> <ab>Ā.</ab> to become satiated or satisfied, <ls>VS.</ls>; <ls>AV. vi</ls>; <dvsn n='to'/>to kindle, <ls>Dhātup.</ls> : <dvsn n='vp'/><ab>Desid.</ab> (<ab>Subj.</ab> ति/तृप्सात्) to wish to enjoy, <ls>RV. x, 87, 19</ls> : <dvsn n='vp'/><ab>Caus.</ab> <ab>Desid.</ab> (<ab>Pot.</ab> तितर्पयिषेत्) to wish to satiate or refresh or satisfy, <ls>ŚāṅkhGṛ. i, 2, 7</ls>; <ls>Gobh. i, 9, 2</ls> : <dvsn n='vp'/><ab>Intens.</ab> तरीतृप्यते, तरीतर्प्ति, °त्रप्ति, <ls>W.</ls>; <dvsn n='vp'/> [<ab>cf.</ab> √ तृफ्; <lang n='greek'>τέρπω</lang>.]<info whitneyroots='tfp,65'/><info verb='genuineroot' cp='4,5,6Ā,6P,1Ā'/>"
+        },
+        {
+            "word": "तृप्",
+            "eid": "86724",
+            "pagenum": "453,3",
+            "content": "<hom>2.</hom> तृप् ¦ See असु- and पशु-तृ/प्"
+        },
+        {
+            "word": "तृप्",
+            "eid": "86724.1",
+            "pagenum": "453,3",
+            "content": "¦ SiSno<srs/>dara-."
+        }
+    ],
+    "MW72": [
+        {
+            "word": "तृप्",
+            "eid": "21273",
+            "pagenum": 383,
+            "content": "तृप् 1¦. <i>tṛp,</i> cl. 4. 5. 6. P. <i>tṛpyati, tṛp-</i> <i>noti</i> (Ved. <i>tṛpṇoti</i>), <i>tṛpati</i> or <i>tṛmpati,</i> <i>tatarpa; tarpiṣyati, tarpsyati, trapsyati; atṛ-</i> <i>pat, atarpīt, atārpsīt, atrāpsīt; tarptum, trap-</i> <i>tum, tarpitum;</i> to satisfy one's self, to become satiated or satisfied, to be pleased or satisfied or contented (with gen., inst., or loc., e. g. <i>nāgnis tṛp-</i> <i>yati kāṣṭhānām,</i> fire is not satisfied with wood; <i>tṛpyati phalaiḥ,</i> he is satisfied with fruits); to enjoy; to satisfy, satiate, please; cl. 1. P. <i>tarpati,</i> &c., to light up, kindle (i. e. satiate a fire with fuel): Caus. P. A. <i>tarpayati, -te, -yitum,</i> Aor. <i>atītṛpat</i> and <i>atatarpat,</i> to gladden, exhilarate; to satiate, refresh, satisfy; A. to become satiated or satisfied; P. to light, kindle: Desid. <i>titṛpsati, titarpiṣati,</i> to wish to satiate one's self, to desire to satisfy: Desid. of the Caus. <i>titarpayiṣati,</i> to wish to satiate or refresh or satisfy: Intens. <i>tarītṛpyate, ta-</i> <i>rītarpti</i> and <i>tarītrapti;</i> [cf. <i>tṛmp, tṛph, tṛmph:</i> Gr. <lang n='greek'>τέρτω, τρέφω</lang> (?) Old Pruss. <nsi>en-terpo,</nsi> ‘to be useful:’ Lith. <nsi>tarpstu,</nsi> ‘to increase, to prosper;’ <nsi>tarpà,</nsi> ‘increase:’ Goth. <nsi>tharf,</nsi> ‘to satisfy, to be useful:’ Old Germ. <nsi>trôstyan:</nsi> Angl. Sax. <nsi>thearf:</nsi> Hib. <nsi>tropadh,</nsi> ‘heavy, grave;’ <nsi>tromaighim = tar-</nsi> <nsi>payāmi; tormach,</nsi> ‘increase, augmentation;’ <nsi>torp,</nsi> ‘bulk;’ <nsi>tormad,</nsi> ‘pregnant, big.’]"
+        },
+        {
+            "word": "तृप्",
+            "eid": "21274",
+            "pagenum": 383,
+            "content": "2. <i>tṛp,</i>¦ at the end of a comp. in <i>a-sutṛp</i> and <i>paśu-tṛp.</i>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "तृप्",
+            "eid": "46800",
+            "pagenum": 3,
+            "content": "तृप्¦ in असु°, पशु° und शिश्नोदर°."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "तृप्",
+            "eid": "30413",
+            "pagenum": 3,
+            "content": "तृप्¦ (= तर्प्) am Ende eines comp. in असुतृप् und पशुतृप् . Das erste Wort kömmt in der oben angegebenen Bed. <i>unersättlich</i> auch <ls>BHĀG. P. 7, 15, 10</ls> vor. <ls>BURN.</ls> übersetzt: <i>qui ne pense qu'á soutenir son existence</i>, hat also das Wort in असु + तृप् zerlegt."
+        },
+        {
+            "word": "तृप्",
+            "eid": "75173",
+            "pagenum": 5,
+            "content": "तृप्¦, शिश्नोदर° <i>den Geschlechtstrieb und die Gelüste des Magens befriedigend</i> <ls>BHĀG. P. 11, 26, 3.</ls>"
+        }
+    ],
+    "STC": [
+        {
+            "word": "तृप्",
+            "eid": "10130",
+            "pagenum": 288,
+            "content": "<b>TṚP-</b>¦ <i>tṛpyati</i> (<i>-te</i>) <i>tṛpṇoti</i> (<i>tarpanti</i>) ; <i>tatarpa ;</i> (<i>atītṛpat</i>) ; (<i>tarpsyati atrapsyat</i>) ; <i>tarpayati</i><i> -te</i> (<i>tarpyate</i>) ; <i>tṛpta-</i> -- être satisfait, content, rassasié, se plaire à (<ab>gén.</ab> <ab>instr.</ab>, <ab>qqf.</ab> <ab>loc.</ab>), jouir de (<ab>abl.</ab>) ; <ab>caus.</ab> satisfaire, contenter, <lbinfo n='3'/> réjouir, réconforter, plaire ; <ab>a. v.</ab> satisfait, assouvi, content de (<ab>gén.</ab> <ab>instr.</ab> <ab>ifc.</ab>)."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "तृप्",
+            "eid": "17305",
+            "pagenum": 339,
+            "content": "तृप्¦ तर्पति 1. <i>a.</i> (य, ञि, उ) तृप्यति 4. <i>a.</i> (न) तृप्नोति 5. <i>a.</i> (श) तृपति 6. <i>a.</i> (क) तर्पयति 10. <i>a.</i> To please, to satisfy, to be content. (कि) 1. or 10. <i>a.</i> To light, or kindle."
+        }
+    ],
+    "APHI": [
+        {
+            "word": "तृप्",
+            "content": "तृप् 'दिवा . , स्वा.तुदा.पर. तृपुं . '  - 'संतुष्ट होना, प्रसन्न होना, परितुष्ट होना'"
+        },
+        {
+            "word": "तृप्",
+            "content": "तृप् 'दिवा . , स्वा.तुदा.पर. तृपुं . '  - 'प्रसन्न करना, परितृप्त करना'"
+        },
+        {
+            "word": "तृप्",
+            "content": "तृप् 'दिवा . , स्वा.तुदा.पर.पुं . '  - 'प्रसन्न करना, परितृप्त करना'"
+        },
+        {
+            "word": "तृप्",
+            "content": "तृप् 'दिवा . ,तुदा.पर.इच्छा. तितृपुं . '  - 'जलाना, प्रज्वलित करना'"
+        },
+        {
+            "word": "तृप्",
+            "content": "तृप् 'भ्वा.पर . , चुरा.उभ. तर्पति  ,  तर्पयति  ,  तर्पयते  '  - 'जलाना, प्रज्वलित करना'"
+        },
+        {
+            "word": "तृप्",
+            "content": "तृप् चुरा.आ. - सन्तुष्ट होना"
+        }
+    ],
+    "UPSC": [
+        {
+            "word": "तृप्",
+            "upasarga": "अप",
+            "dhatu": "तृप्",
+            "artha": "तृप तृप्तौ, तृप प्रीणने",
+            "baseindex": "04.0092,05.0028,06.0028",
+            "examples": [
+                "'स्थूलमेदस्विनमपतर्पयामः' (चरके सूत्र॰१०.६)। <hl>उपवासमनशनं कारयाम इत्याह।</hl>",
+                "'ण्यन्तकस्तर्पिरुपवासने रूढः। <hl>अपशब्दोऽत्र धात्वर्थं विपर्यासयति।</hl>",
+                "'साम्रेडं चाहुरत्र भिषजः- <hl>अजीर्णे भोजनं विषमित्ययमपतर्पयितव्यः।</hl>",
+                "अपतन्त्रकातुरं नापतर्पयेत्' (सुश्रुते २.४३.१)।"
+            ],
+            "content": ""
+        },
+        {
+            "word": "तृप्",
+            "upasarga": "सम्",
+            "dhatu": "तृप्",
+            "artha": "तृप प्रीणने",
+            "baseindex": "04.0092,05.0028",
+            "examples": [
+                "'यावन्तः कामाः समतीतृपस्तान्' (अथर्व॰१२.३.३६)। <hl>या तृप्तिः सैव सन्तृप्तिः, तेन सम्शब्दो धात्वर्थानुवादी नार्थोपजनाय। धातुपाठेऽर्थनिर्देशो व्यामोहकः। धातुरेष प्राचीने साहित्ये सर्वत्राकर्मको न केवलं दैवादिकः सौवादिकोऽपि। अत एव प्रकृते समतीतृप इत्यत्र प्रीणने णिच्प्रयोगः।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "तृप्",
+            "upasarga": "वि",
+            "dhatu": "तृप्",
+            "artha": "तृप प्रीणने",
+            "baseindex": "04.0092,05.0028",
+            "examples": [
+                "'वितर्पयन्ति ये पुण्यास्तृषिताञ्शीतलै र्जलैः' (स्कन्दपु० का० ४।१२।६०)। <hl>वितर्पयन्ति विगततृष्णान् सुहितान्कुर्वन्ति।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "तृप्",
+            "upasarga": "आङ्",
+            "dhatu": "तृप्",
+            "artha": "तृप प्रीणने",
+            "baseindex": "04.0092,05.0028",
+            "examples": [
+                "'आ यत् तृपन्मरुतो वावशानाः' (ऋ० १।१७।३)। <hl>आतृपन् तृप्ताः सुहिता अभूवन्।</hl>",
+                "'अनुकामं तर्पयेथामिन्द्रावरुणा राय आ' (ऋ० १।७३।३)। <hl>धनस्य प्रकामं तर्पयतं न इत्याह। अन्यत्र आतर्पणं मङ्गलालेपनं भवति।</hl>"
+            ],
+            "content": ""
+        },
+        {
+            "word": "तृप्",
+            "upasarga": "नि",
+            "dhatu": "तृप्",
+            "artha": "तृप प्रीणने",
+            "baseindex": "04.0092,05.0028",
+            "examples": [
+                "'त्वं न इन्द्र ऋतयुस्त्वानिदो नि तृम्पसि' (ऋ० ८।७०।१०)।"
+            ],
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "तृप्",
+            "content": "<lexhead no=\"468\">\n<dentry>तृप्</dentry>\n<prAwipaxikam>तृप्</prAwipaxikam>\n<grammar><gaNa>दिवा*</gaNa><gaNa>स्वा*</gaNa><gaNa>तुदा*</gaNa><paxI>पर*</paxI>तृपुं*</grammar>\n<sense no=\"1\">संतुष्ट होना, प्रसन्न होना, परितुष्ट होना, अद्यः तर्प्स्यन्ति मांसादाः<citation>भट्टि* १६।२९</citation>प्राशीन्न चातृपत् क्रूरः १५।२९, को न तृप्यति वित्तेन<citation>हि* २।१७४</citation>तृप्तस्तत्पिशितेन<citation>भर्तृ* २।३४</citation>नाग्निस्तृप्यति काष्ठानां नापगानां महोदधिः नातङ्क सर्धभूतानां न पुंसां वामलोचनाः<citation>पंच* १।१३७</citation>तस्मिन्हि ततृपुर्देवास्तते यज्ञे<citation>महा*</citation>प्रायः करण* के साथ परन्तु कभी-कभी संबं या अधि* के साथ भी</sense>\n<sense n=\"2\">प्रसन्न करना, परितृप्त करना</sense>\n<sense n=\"3\">प्रसन्न करना, परितृप्त करना</sense>\n<sense n=\"4\">जलाना, प्रज्वलित करना</sense>\n<sense n=\"5\">जलाना, प्रज्वलित करना</sense>\n<sense n=\"6\">सन्तुष्ट होना</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "तृप्",
+            "content": "<H1><h><key1>tfp</key1><key2>tfp</key2><hom>1</hom></h><body><hom>1.</hom> <s>tfp</s>   <ab>cl.</ab> 4. <s>tf/pyati</s> [<ls>AV.</ls>; <ls>TS.</ls> &amp;c.; metrically also <s>°te</s>] <ab>cl.</ab> 5. [<ab>Subj.</ab> 2. <ab>sg.</ab> <s>tfpRa/vas</s> <ab>Impv.</ab> <s>°Ruhi</s>, <s>°Ruta/m</s>, <ls>RV.</ls> (See also <s>a/-tfpRuvat</s>); <s>°noti</s>, <ls>Dhātup.</ls> and <ab>g.</ab> <s>kzuBnA<srs />di</s>] <ab>cl.</ab> 6. [2. <ab>sg.</ab> <s>tfmpa/si</s> <ab>Impv.</ab> <s>°pa/</s>, <s>°patu</s>, &amp;c., <ls>RV.</ls>; <ls>ŚBr.</ls>; <ab>cf.</ab> <ls>Pāṇ. vii, 1, 59</ls>, <ab>Vārtt.</ab> 1, <ls>Pat.</ls>; <s>tfpati</s>, <ls>Dhātup.</ls>; <ab>pf.</ab> <ab>p.</ab> <ab>Ā.</ab> <s>tAtfpARa/</s>, <ls>RV. x, 95, 16</ls>; <ab>P.</ab> <s>tatarpa</s>; 3. <ab>pl.</ab> <s>tAtfpur</s>, <ls>AV. xi, 7, 13</ls>; <ab>aor.</ab> <s>atfpat</s>, <ls n=\"AV.\">iii, 13, 6</ls> or <s>atrApsIt</s>, <ls>Pāṇ. iii, 1, 44</ls>, <ab>Vārtt.</ab>; <s>atarpIt</s>, <s>atArpsIt</s>, <ls>Vop.</ls>; <ab>fut.</ab> 1st <s>tarpizyati</s> (but <ab>cf.</ab> <ls>Pāṇ. vii, 2, 10</ls>; <ls>Siddh.</ls>), <s>tarpsy°</s>, <s>trapsy°</s>; <ab>Cond.</ab> <s>atrapsyat</s>, <ls>AitUp. iii, 3</ls>; <ab>fut.</ab> 2nd <s>tarpitA</s>, <s>°ptA</s>, <s>traptA</s>, <ls>Kāś.</ls> on <ls>Pāṇ. vi, 1, 59</ls> and <ls n=\"Pāṇ.\">vii, 2, 45</ls>] <div n=\"to\" />to satisfy one's self, become satiated or satisfied, be pleased with (<ab>gen.</ab> <ab>instr.</ab>, or rarely <ab>loc.</ab>, <ab>e.g.</ab> <s>nA<srs />gnis tfpyati kAzWAnAm</s>, ‘fire is not satisfied with wood’, <ls>MBh. xiii</ls>; <s>a/tfpyan brAhmaRA/ Da/nEH</s>, ‘the <s1 slp1=\"brahman\">Brahman</s1>s were pleased with wealth’, <ls>ŚBr. xiii</ls>), <ls>RV.</ls> &amp;c.; <div n=\"to\" />to enjoy (with <ab>abl.</ab>), <ls>Mn. iv, 251</ls>; <div n=\"to\" />to satisfy, please, <ls>Bhaṭṭ. i f.</ls> : <ab>cl.</ab> 1. <s>tarpati</s>, to kindle, <ls>Dhātup.</ls> : <div n=\"vp\" /><ab>Caus.</ab> <s>tarpayati</s>, rarely <s>°te</s> (<ab>impf.</ab> <s>atarpayat</s>, <ls>RV.</ls> &amp;c.; <ab>p.</ab> <s>tarpa/yat</s>, <ls>ib.</ls>; <ab>aor.</ab> <s>atItfpat</s>, <ls>ŚāṅkhGṛ. iii, 12</ls>; <ls>BhP.</ls>; <s>a/tItfpAma</s>, <ls>VS.</ls>; <ab>inf.</ab> <s>ta/rpayitavE/</s>, <ls>ŚBr. i, 7, 3, 28</ls>; <ls>ĀpŚr. iv, 16, 17</ls>) <div n=\"to\" />to satiate, satisfy, refresh, gladden, <ls>RV.</ls> &amp;c.; <div n=\"vp\" /> <ab>Ā.</ab> to become satiated or satisfied, <ls>VS.</ls>; <ls>AV. vi</ls>; <div n=\"to\" />to kindle, <ls>Dhātup.</ls> : <div n=\"vp\" /><ab>Desid.</ab> (<ab>Subj.</ab> <s>ti/tfpsAt</s>) to wish to enjoy, <ls>RV. x, 87, 19</ls> : <div n=\"vp\" /><ab>Caus.</ab> <ab>Desid.</ab> (<ab>Pot.</ab> <s>titarpayizet</s>) to wish to satiate or refresh or satisfy, <ls>ŚāṅkhGṛ. i, 2, 7</ls>; <ls>Gobh. i, 9, 2</ls> : <div n=\"vp\" /><ab>Intens.</ab> <s>tarItfpyate</s>, <s>tarItarpti</s>, <s>°trapti</s>, <ls>W.</ls>; <div n=\"vp\" /> [<ab>cf.</ab> √ <s>tfP</s>; <gk>τέρπω</gk>.]<info whitneyroots=\"tfp,65\" /><info verb=\"genuineroot\" cp=\"4,5,6Ā,6P,1Ā\" /></body><tail><L>86723</L><pc>453,3</pc></tail></H1>\n <H2><h><key1>tfp</key1><key2>tfp</key2><hom>2</hom></h><body><hom>2.</hom> <s>tfp</s>   See <s>asu-</s> and <s>paSu-tf/p</s></body><tail><L>86724</L><pc>453,3</pc></tail></H2>\n <H2A><h><key1>tfp</key1><key2>tfp</key2></h><body>  <s>SiSno<srs />dara-</s>.</body><tail><L>86724.1</L><pc>453,3</pc></tail></H2A>\n"
+        }
+    ]
 }
-
-function deferHiddenOffscreenComponent(current, workInProgress, nextBaseLanes, renderLanes) {
-  const nextState = {
-    baseLanes: nextBaseLanes,
-    // Save the cache pool so we can resume later.
-    cachePool: getOffscreenDeferredCache() 
-  };
-  workInProgress.memoizedState = nextState;
-
-  {
-    // push the cache pool even though we're going to bail out
-    // because otherwise there'd be a context mismatch
-    if (current !== null) {
-      pushTransition(workInProgress, null);
-    }
-  } // We're about to bail out, but we need to push this to the stack anyway
-  // to avoid a push/pop misalignment.
-
-
-  reuseHiddenContextOnStack();
-  pushOffscreenSuspenseHandler(workInProgress);
-
-  return null;
-} // Note: These happen to have identical begin phases, for now. We shouldn't hold
-
-function updateCacheComponent(current, workInProgress, renderLanes) {
-
-  prepareToReadContext(workInProgress, renderLanes);
-  const parentCache = readContext(CacheContext);
-
-  if (current === null) {
-    // Initial mount. Request a fresh cache from the pool.
-    const freshCache = requestCacheFromPool(renderLanes);
-    const initialState = {
-      parent: parentCache,
-      cache: freshCache
-    };
-    workInProgress.memoizedState = 

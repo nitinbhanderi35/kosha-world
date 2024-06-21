@@ -1,184 +1,174 @@
-              destructorFunction: function(ptr) {
-                    _free(ptr);
-                }
-            });
+{
+    "word": "त्रिशूल",
+    "BHS": [
+        {
+            "word": "त्रिशूल",
+            "eid": "7117",
+            "pagenum": 258,
+            "content": "<b>Triśūla</b>¦, <ab>n.</ab> of a rākṣasa king: <ls>Mmk</ls> 〔18.2〕."
         }
-        function __embind_register_value_object(rawType, name, constructorSignature, rawConstructor, destructorSignature, rawDestructor) {
-            structRegistrations[rawType] = {
-                name: readLatin1String(name),
-                rawConstructor: embind__requireFunction(constructorSignature, rawConstructor),
-                rawDestructor: embind__requireFunction(destructorSignature, rawDestructor),
-                fields: []
-            };
+    ],
+    "BUR": [
+        {
+            "word": "त्रिशूल",
+            "eid": "8297",
+            "pagenum": 305,
+            "content": "त्रिशूल¦ <i>triśūla</i> <ab>n.</ab> trident. || Tiare à trois cornes <ab>(?)</ab>.  <P><i>triśūlin</i> <ab>m.</ab> <s1 slp1='Siva'>Śiva</s1> [qui porte la tiare à trois cornes ou le trident]."
         }
-        function __embind_register_value_object_field(structType, fieldName, getterReturnType, getterSignature, getter, getterContext, setterArgumentType, setterSignature, setter, setterContext) {
-            structRegistrations[structType].fields.push({
-                fieldName: readLatin1String(fieldName),
-                getterReturnType: getterReturnType,
-                getter: embind__requireFunction(getterSignature, getter),
-                getterContext: getterContext,
-                setterArgumentType: setterArgumentType,
-                setter: embind__requireFunction(setterSignature, setter),
-                setterContext: setterContext
-            });
+    ],
+    "CAE": [
+        {
+            "word": "त्रिशूल",
+            "eid": "12950",
+            "pagenum": 213,
+            "content": "त्रिशूल¦ <lex>n.</lex> trident (weapon of Śiva); <lex>a.</lex> bearing the trident."
         }
-        function __embind_register_void(rawType, name) {
-            name = readLatin1String(name);
-            registerType(rawType, {
-                isVoid: true,
-                name: name,
-                argPackAdvance: 0,
-                fromWireType: function() {
-                    return undefined;
-                },
-                toWireType: function(destructors, o) {
-                    return undefined;
-                }
-            });
+    ],
+    "CCS": [
+        {
+            "word": "त्रिशूल",
+            "eid": "9099",
+            "pagenum": 161,
+            "content": "त्रिशूल¦ <i>n.</i> Dreizack; <i>Adj.</i> den Dreizack führend <i>(Śiva).</i>"
         }
-        var emval_symbols = {};
-        function getStringOrSymbol(address) {
-            var symbol = emval_symbols[address];
-            if (symbol === undefined) {
-                return readLatin1String(address);
-            } else {
-                return symbol;
-            }
+    ],
+    "IEG": [
+        {
+            "word": "त्रिशूल",
+            "eid": "6049",
+            "pagenum": 344,
+            "content": "<i>triśūla,</i>¦ cf. <i>tiriśūlam</i> (SITI), trident; same as <i>śūla.</i>"
         }
-        function emval_get_global() {
-            if (typeof globalThis === "object") {
-                return globalThis;
-            }
-            return (function() {
-                return Function;
-            })()("return this")();
+    ],
+    "LRV": [
+        {
+            "word": "त्रिशूल",
+            "eid": "16191",
+            "pagenum": 318,
+            "content": "tri-SUla¦ <i>n.</i> a trident."
         }
-        function __emval_get_global(name) {
-            if (name === 0) {
-                return __emval_register(emval_get_global());
-            } else {
-                name = getStringOrSymbol(name);
-                return __emval_register(emval_get_global()[name]);
-            }
+    ],
+    "MW": [
+        {
+            "word": "त्रिशूल",
+            "eid": "88389",
+            "pagenum": "461,1",
+            "content": "त्रि—शूल ¦ <lex>n.</lex> a trident, <ls>MBh.</ls> &c. (<s1 slp1='Siva'>Śiva</s1>'s weapon, iii, 5009 <ls>Hariv.</ls>; <ls>MatsyaP. xi, 29</ls>)<info lex='n'/>"
+        },
+        {
+            "word": "त्रिशूल",
+            "eid": "88390",
+            "pagenum": "461,1",
+            "content": "त्रि—शूल ¦ <lex>m.</lex> <ab>N.</ab> of a mountain<info lex='m'/>"
         }
-        function __emval_incref(handle) {
-            if (handle > 4) {
-                emval_handle_array[handle].refcount += 1;
-            }
+    ],
+    "PW": [
+        {
+            "word": "त्रिशूल",
+            "eid": "47864",
+            "pagenum": 3,
+            "content": "<hom>1.</hom> त्रिशूल¦ <lex>n.</lex> <i>Dreizack,</i> <ab>insbes.</ab> als <i>Waffe</i> <is>Śiva</is>ʼs <lex>m.</lex> fehlerhaft."
+        },
+        {
+            "word": "त्रिशूल",
+            "eid": "47865",
+            "pagenum": 3,
+            "content": "<hom>2.</hom> त्रिशूल¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>mit dem Dreizack versehen</i> (<is>Śiva</is>). <dvsn n='1'>— 2〉 <lex>m.</lex> <ab>N. pr.</ab> eines Gebirges."
         }
-        function requireRegisteredType(rawType, humanName) {
-            var impl = registeredTypes[rawType];
-            if (undefined === impl) {
-                throwBindingError(humanName + " has unknown type " + getTypeName(rawType));
-            }
-            return impl;
+    ],
+    "PWG": [
+        {
+            "word": "त्रिशूल",
+            "eid": "31189",
+            "pagenum": 3,
+            "content": "1. त्रिशूल¦ (त्रि + शूल) <lex>n.</lex> <i>Dreizack</i> <ls>TRIK. 3, 3, 50.</ls> <ls>H. an. 3, 112.</ls> <ls>MED. kh. 9.</ls> <ls>MBH. 1, 1432.</ls> <ls>HARIV. 10472. fg.</ls> <ls>R. 1, 56, 12.</ls> <ls n='R.'>5, 37, 38</ls> <ls n='R.'>6, 28, 5.</ls> <ls>VET. 13, 2.</ls> <ls>BHĀG. P. 6, 11, 17.</ls> <ls>RĀJA-TAR. 2, 133.</ls> m. <ls>ARJ. 7, 21.</ls> die Waffe <is>Śiva's</is> <ls>MBH. 3, 5009.</ls> <ls>HARIV. 10658.</ls> <ls>MATSYA-P.</ls> in <ls>Verz. d. Oxf. H. 39,a, N. 3.</ls> °हस्त von <is>Śiva</is> <ls>MBH. 14, 207.</ls> °वरपाणिन् desgl. <ls n='MBH.'>12, 10357.</ls> त्रिशूलाङ्क <ls>ŚIV.</ls>"
+        },
+        {
+            "word": "त्रिशूल",
+            "eid": "31190",
+            "pagenum": 3,
+            "content": "2. त्रिशूल¦ (wie eben) <dvsn n='1'> 1) <lex>adj.</lex> <i>mit dem Dreizack versehen</i>, Bein. <is>Śiva's</is>: °पुरीमाहात्म्य aus dem <ls>SKANDA-P.</ls> <ls>MACK. Coll. 1, 73.</ls> <dvsn n='1'>— 2) N. pr. eines Gebirges <ls>LIA. I, 48.</ls>"
         }
-        function craftEmvalAllocator(argCount) {
-            var argsList = "";
-            for(var i = 0; i < argCount; ++i){
-                argsList += (i !== 0 ? ", " : "") + "arg" + i;
-            }
-            var functionBody = "return function emval_allocator_" + argCount + "(constructor, argTypes, args) {\n";
-            for(var i = 0; i < argCount; ++i){
-                functionBody += "var argType" + i + " = requireRegisteredType(Module['HEAP32'][(argTypes >>> 2) + " + i + '], "parameter ' + i + '");\n' + "var arg" + i + " = argType" + i + ".readValueFromPointer(args);\n" + "args += argType" + i + "['argPackAdvance'];\n";
-            }
-            functionBody += "var obj = new constructor(" + argsList + ");\n" + "return __emval_register(obj);\n" + "}\n";
-            return new Function("requireRegisteredType", "Module", "__emval_register", functionBody)(requireRegisteredType, Module, __emval_register);
+    ],
+    "SCH": [
+        {
+            "word": "त्रिशूल",
+            "eid": "14969",
+            "pagenum": 206,
+            "content": "<i>triśūla</i>¦ °eine Schutzvorrichtung beim Festungsbau, <ls>Kauṭ.</ls> 52, 1 v.u. {part=,seq=15204,type=,n=2}"
         }
-        var emval_newers = {};
-        function requireHandle(handle) {
-            if (!handle) {
-                throwBindingError("Cannot use deleted val. handle = " + handle);
-            }
-            return emval_handle_array[handle].value;
+    ],
+    "SHS": [
+        {
+            "word": "त्रिशूल",
+            "eid": "18153",
+            "pagenum": 326,
+            "content": "त्रिशूल¦ n. (-लं) A trident, a three-pointed pike or spear, especially the weapon of SIVA. E. त्रि three or Tri, and शूल a dar."
         }
-        function __emval_new(handle, argCount, argTypes, args) {
-            handle = requireHandle(handle);
-            var newer = emval_newers[argCount];
-            if (!newer) {
-                newer = craftEmvalAllocator(argCount);
-                emval_newers[argCount] = newer;
-            }
-            return newer(handle, argTypes, args);
+    ],
+    "WIL": [
+        {
+            "word": "त्रिशूल",
+            "eid": "18170",
+            "pagenum": 391,
+            "content": "त्रिशूल¦ n. (-लं) A trident, a three-pointed pike or spear, especially the weapon of ŚIVA. .E. त्रि three or <i>Tri,</i> and शूल a dart."
         }
-        function _abort() {
-            abort();
+    ],
+    "YAT": [
+        {
+            "word": "त्रिशूल",
+            "eid": "17646",
+            "pagenum": 347,
+            "content": "त्रि-शूल¦ (लं) 1. <i>n. Idem.</i>"
         }
-        function _emscripten_memcpy_big(dest, src, num) {
-            HEAPU8.copyWithin(dest, src, src + num);
+    ],
+    "SKD": [
+        {
+            "word": "त्रिशूल",
+            "eid": "15641",
+            "pagenum": "2-663-b",
+            "content": "त्रिशूलं¦, क्ली, (त्रीणि शूलानि इव अग्राणि यस्य ।) अस्त्रविशेषः । तत्र्य्यायः । त्रिशिखम् २ । इति मेदिनी । खे, ९ ॥ शूलम् ३ त्रिशीर्षकम् ४ । इति हेमचन्द्रः ॥ (यथा, महाभारते । २ । ३० । ४९ । “चक्राणि परिघाश्चैव त्रिशूलानि परश्वधान् ॥”)"
         }
-        function emscripten_realloc_buffer(size) {
-            try {
-                wasmMemory.grow(size - buffer.byteLength + 65535 >>> 16);
-                updateGlobalBufferAndViews(wasmMemory.buffer);
-                return 1;
-            } catch (e) {}
+    ],
+    "VCP": [
+        {
+            "word": "त्रिशूल",
+            "eid": "23822",
+            "pagenum": "3387,a",
+            "content": "त्रिशूल¦ न० त्रीणि शूलानीव अग्राणि यस्य । स्वनामख्याते अस्त्रभेदे हेमच० । “त्रिशूलं दक्षिणे हस्ते खड्गं चक्रं क्रमादधः” दुर्गाध्यानम् “त्रिशूलडमरुकरं व्याघ्रकृत्तिं वसानम्” शिवध्यानम् ।"
         }
-        function _emscripten_resize_heap(requestedSize) {
-            var oldSize = HEAPU8.length;
-            requestedSize = requestedSize >>> 0;
-            var maxHeapSize = 2147483648;
-            if (requestedSize > maxHeapSize) {
-                return false;
-            }
-            for(var cutDown = 1; cutDown <= 4; cutDown *= 2){
-                var overGrownHeapSize = oldSize * (1 + 0.2 / cutDown);
-                overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296);
-                var newSize = Math.min(maxHeapSize, alignUp(Math.max(requestedSize, overGrownHeapSize), 65536));
-                var replacement = emscripten_realloc_buffer(newSize);
-                if (replacement) {
-                    return true;
-                }
-            }
-            return false;
+    ],
+    "APHI": [
+        {
+            "word": "त्रिशूल",
+            "content": "त्रिशूलम् नपुं. त्रि-शूलम्  - तिरसूल"
         }
-        var ENV = {};
-        function getExecutableName() {
-            return thisProgram || "./this.program";
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिशूल",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಚೂಪಾದ ಮೂರು ಅಗ್ರವುಳ್ಳ ಒಂದು ಆಯುಧ",
+            "व्युत्पत्तिः": "त्रीणि शूलानीव अग्राणि यस्य",
+            "content": ""
         }
-        function getEnvStrings() {
-            if (!getEnvStrings.strings) {
-                var lang = (typeof navigator === "object" && navigator.languages && navigator.languages[0] || "C").replace("-", "_") + ".UTF-8";
-                var env = {
-                    USER: "web_user",
-                    LOGNAME: "web_user",
-                    PATH: "/",
-                    PWD: "/",
-                    HOME: "/home/web_user",
-                    LANG: lang,
-                    _: getExecutableName()
-                };
-                for(var x in ENV){
-                    env[x] = ENV[x];
-                }
-                var strings = [];
-                for(var x in env){
-                    strings.push(x + "=" + env[x]);
-                }
-                getEnvStrings.strings = strings;
-            }
-            return getEnvStrings.strings;
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिशूल",
+            "content": "<body><s>triSUla na° trIRi SUlAnIva agrARi yasya . svanAmaKyAte astraBede hemaca° . <q>triSUlaM dakziRe haste KaqgaM cakraM kramAdaDaH</q> durgADyAnam <q>triSUlaqamarukaraM vyAGrakfttiM vasAnam</q> SivaDyAnam .</s></body>"
         }
-        var SYSCALLS = {
-            mappings: {},
-            buffers: [
-                null,
-                [],
-                []
-            ],
-            printChar: function(stream, curr) {
-                var buffer = SYSCALLS.buffers[stream];
-                if (curr === 0 || curr === 10) {
-                    (stream === 1 ? out : err)(UTF8ArrayToString(buffer, 0));
-                    buffer.length = 0;
-                } else {
-                    buffer.push(curr);
-                }
-            },
-            varargs: undefined,
-            get: function() {
-                SYSCALLS.varargs += 4;
-                var ret = HEAP32[SYSCALLS.varargs - 4 >> 2];
-                return ret;
-            },
-   
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिशूल",
+            "content": "<H1><h><key1>triSUla</key1><key2>triSUla</key2></h><body><s>triSUla</s>  <div n=\"1\">n. (<s>-laM</s>) A trident, a three-pointed pike or spear, especially the <lb />weapon of SIVA.</div><div n=\"E\"> E. <s>tri</s> three or Tri, and <s>SUla</s> a dar.</div></body><tail><L>18153</L><pc>326-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिशूल",
+            "content": "<span lang=\"sa\">त्रिशूल<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಚೂಪಾದ ಮೂರು ಅಗ್ರವುಳ್ಳ ಒಂದು ಆಯುಧ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रीणि शूलानीव अग्राणि यस्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

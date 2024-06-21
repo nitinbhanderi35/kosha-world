@@ -1,1 +1,151 @@
-und:transparent}.ck.ck-collapsible>.ck.ck-button:active,.ck.ck-collapsible>.ck.ck-button:hover:not(:focus),.ck.ck-collapsible>.ck.ck-button:not(:focus){background:transparent;border-color:transparent;box-shadow:none}.ck.ck-collapsible>.ck.ck-button>.ck-icon{margin-right:var(--ck-spacing-medium);width:var(--ck-collapsible-arrow-size)}.ck.ck-collapsible>.ck-collapsible__children{padding:var(--ck-spacing-medium) var(--ck-spacing-large) var(--ck-spacing-large)}.ck.ck-collapsible.ck-collapsible_collapsed>.ck.ck-button .ck-icon{transform:rotate(-90deg)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/collapsible/collapsible.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/collapsible/collapsible.css"],names:[],mappings:"AAMC,sEACC,YACD,CCHD,MACC,yDACD,CAGC,iCAIC,eAAgB,CAChB,aAAc,CAHd,eAAiB,CACjB,qCAAsC,CAFtC,UAoBD,CAdC,uCACC,sBACD,CAEA,wIACC,sBAAuB,CACvB,wBAAyB,CACzB,eACD,CAEA,0CACC,qCAAsC,CACtC,sCACD,CAGD,6CACC,gFACD,CAGC,mEACC,wBACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-collapsible.ck-collapsible_collapsed {\n\t& > .ck-collapsible__children {\n\t\tdisplay: none;\n\t}\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t--ck-collapsible-arrow-size: calc(0.5 * var(--ck-icon-size));\n}\n\n.ck.ck-collapsible {\n\t& > .ck.ck-button {\n\t\twidth: 100%;\n\t\tfont-weight: bold;\n\t\tpadding: var(--ck-list-button-padding);\n\t\tborder-radius: 0;\n\t\tcolor: inherit;\n\n\t\t&:focus {\n\t\t\tbackground: transparent;\n\t\t}\n\n\t\t&:active, &:not(:focus), &:hover:not(:focus) {\n\t\t\tbackground: transparent;\n\t\t\tborder-color: transparent;\n\t\t\tbox-shadow: none;\n\t\t}\n\n\t\t& > .ck-icon {\n\t\t\tmargin-right: var(--ck-spacing-medium);\n\t\t\twidth: var(--ck-collapsible-arrow-size);\n\t\t}\n\t}\n\n\t& > .ck-collapsible__children {\n\t\tpadding: var(--ck-spacing-medium) var(--ck-spacing-large) var(--ck-spacing-large);\n\t}\n\n\t&.ck-collapsible_collapsed {\n\t\t& > .ck.ck-button .ck-icon {\n\t\t\ttransform: rotate(-90deg);\n\t\t}\n\t}\n}\n"],sourceRoot:""}]);const a=s},4239:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-color-grid{display:grid}:root{--ck-color-grid-tile-size:24px;--ck-color-color-grid-check-icon:#166fd4}.ck.ck-color-grid{grid-gap:5px;padding:8px}.ck.ck-color-grid__tile{border:0;height:var(--ck-color-grid-tile-size);min-height:var(--ck-color-grid-tile-size);min-width:var(--ck-color-grid-tile-size);padding:0;transition:box-shadow .2s ease;width:var(--ck-color-grid-tile-size)}.ck.ck-color-grid__tile.ck-disabled{cursor:unset;transition:unset}.ck.ck-color-grid__tile.ck-color-selector__color-tile_bordered{box-shadow:0 0 0 1px var(--ck-color-base-border)}.ck.ck-color-grid__tile .ck.ck-icon{color:var(--ck-color-color-grid-check-icon);display:none}.ck.ck-color-grid__tile.ck-on{box-shadow:inset 0 0 0 1px var(--ck-color-base-background),0 0 0 2px var(--ck-color-base-text)}.ck.ck-color-grid__tile.ck-on .ck.ck-icon{display:block}.ck.ck-color-grid__tile.ck-on,.ck.ck-color-grid__tile:focus:not(.ck-disabled),.ck.ck-color-grid__tile:hover:not(.ck-disabled){border:0}.ck.ck-color-grid__tile:focus:not(.ck-disabled),.ck.ck-color-grid__tile:hover:not(.ck-disabled){box-shadow:inset 0 0 0 1px var(--ck-color-base-background),0 0 0 2px var(--ck-color-focus-border)}.ck.ck-color-grid__label{padding:0 var(--ck-spacing-standard)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/colorgrid/colorgrid.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/colorgrid/colorgrid.css"],names:[],mappings:"AAKA,kBACC,YACD,CCAA,MACC,8BAA+B,CAK/B,wCACD,CAEA,kBACC,YAAa,CACb,WACD,CAEA,wBAOC,QAAS,CALT,qCAAsC,CAEtC,yCAA0C,CAD1C,wCAAyC,CAEzC,SAAU,CACV,8BAA+B,CAL/B,oCAyCD,CAjCC,oCACC,YAAa,CACb,gBACD,CAEA,+DACC,gDACD,CAEA,oCAEC,2CAA4C,CAD5C,YAED,CAEA,8BACC,8FAKD,CAHC,0CACC,aACD,CAGD,8HAIC,QACD,CAEA,gGAEC,iGACD,CAGD,yBACC,oCACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-color-grid {\n\tdisplay: grid;\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_rounded.css";\n\n:root {\n\t--ck-color-grid-tile-size: 24px;\n\n\t/* Not using global colors here because these may change but some colors in a pallette\n\t * require special treatment. For instance, this ensures no matter what the UI text color is,\n\t * the check icon will look good on the black color tile. */\n\t--ck-color-color-grid-check-icon: hsl(212, 81%, 46%);\n}\n\n.ck.ck-color-grid {\n\tgrid-gap: 5px;\n\tpadding: 8px;\n}\n\n.ck.ck-color-grid__tile {\n\twidth: var(--ck-color-grid-tile-size);\n\theight: var(--ck-color-grid-tile-size);\n\tmin-width: var(--ck-color-grid-tile-size);\n\tmin-height: var(--ck-color-grid-tile-size);\n\tpadding: 0;\n\ttransition: .2s ease box-shadow;\n\tborder: 0;\n\n\t&.ck-disabled {\n\t\tcursor: unset;\n\t\ttransition: unset;\n\t}\n\n\t&.ck-color-selector__color-tile_bordered {\n\t\tbox-shadow: 0 0 0 1px var(--ck-color-base-border);\n\t}\n\n\t& .ck.ck-icon {\n\t\tdisplay: none;\n\t\tcolor: var(--ck-color-color-grid-check-icon);\n\t}\n\n\t&.ck-on {\n\t\tbox-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-base-text);\n\n\t\t& .ck.ck-icon {\n\t\t\tdisplay: block;\n\t\t}\n\t}\n\n\t&.ck-on,\n\t&:focus:not( .ck-disabled ),\n\t&:hover:not( .ck-disabled ) {\n\t\t/* Disable the default .ck-button\'s border ring. */\n\t\tborder: 0;\n\t}\n\n\t&:focus:not( .ck-disabled ),\n\t&:hover:not( .ck-disabled ) {\n\t\tbox-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border);\n\t}\n}\n\n.ck.ck-color-grid__label {\n\tpadding: 0 var(--ck-spacing-standard);\n}\n'],sourceRoot:""}]);const a=s},3019:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".color-picker-hex-input{width:-moz-max-content;width:max-content}.color-picker-hex-input .ck.ck-input{min-width:unset}.ck.ck-color-picker__row{display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:space-between;margin:var(--ck-spacing-large) 0 0;width:unset}.ck.ck-color-picker__row .ck.ck-labeled-field-view{padding-top:unset}.ck.ck-color-picker__row .ck.ck-input-text{width:unset}.ck.ck-color-picker__row .ck-color-picker__hash-view{padding-right:var(--ck-spacing-medium);padding-top:var(--ck-spacing-tiny)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/colorpicker/colorpicker.css"],names:[],mappings:"AAKA,wBACC,sBAAkB,CAAlB,iBAKD,CAHC,qCACC,eACD,CAGD,yBACC,YAAa,CACb,kBAAmB,CACnB,gBAAiB,CACjB,6BAA8B,CAC9B,kCAAmC,CACnC,WAcD,CAZC,mDACC,iBACD,CAEA,2CACC,WACD,CAEA,qDAEC,sCAAuC,CADvC,kCAED",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.color-picker-hex-input {\n\twidth: max-content;\n\n\t& .ck.ck-input {\n\t\tmin-width: unset;\n\t}\n}\n\n.ck.ck-color-picker__row {\n\tdisplay: flex;\n\tflex-direction: row;\n\tflex-wrap: nowrap;\n\tjustify-content: space-between;\n\tmargin: var(--ck-spacing-large) 0 0;\n\twidth: unset;\n\n\t& .ck.ck-labeled-field-view {\n\t\tpadding-top: unset;\n\t}\n\n\t& .ck.ck-input-text {\n\t\twidth: unset;\n\t}\n\n\t& .ck-color-picker__hash-view {\n\t\tpadding-top: var(--ck-spacing-tiny);\n\t\tpadding-right: var(--ck-spacing-medium);\n\t}\n}\n"],sourceRoot:""}]);const a=s},2927:(t,e,n)=>{"us
+{
+    "word": "त्रिपिष्टप",
+    "BOP": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "3900",
+            "pagenum": 160,
+            "content": "त्रिपिष्टप¦ <i>n.</i> (<i>DVIGU.</i> gr. 674. e त्रि et पिष्टप mundus, tres mundi) <i>Indri</i> coelum, <i>v.</i> त्रिदिव."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "8257",
+            "pagenum": 304,
+            "content": "त्रिपिष्टप¦ <i>tripiṣṭapa</i> <ab>n.</ab> les trois mondes, le triple ciel d'<s1 slp1='indra'>Indra</s1>. || Le ciel, l'atmosphère. <lbinfo n='3'/> || <ab>Cf.</ab> <i>tridiva.</i>  <P><i>tripiṣṭapasad</i> <ab>m.</ab> <i>(das)</i> dieu du ciel d'<s1 slp1='indra'>Indra</s1>."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "12875",
+            "pagenum": 212,
+            "content": "त्रिपिष्टप¦ <lex>n.</lex> the (third) heaven, Indra's residence (<ab>cf.</ab> त्रिदिव/)."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "9034",
+            "pagenum": 160,
+            "content": "त्रिपिष्टप¦ <i>n.</i> (Indra's) Himmel."
+        }
+    ],
+    "INM": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "10966",
+            "pagenum": 681,
+            "content": "<b>Tripiṣṭapa</b><sup>1</sup>¦ (“Indra's heaven”): I, 1468 (B. <i>Triviṣṭapa</i>), 7580 (<i>°saṅkāśaṃ Indraprasthaṃ</i>), 7657; II, 1257 (<i>Śakrasyeva</i> <i>T°e</i>), 2054 (<i>devair iva samavetais T°ṃ</i>); III, 329 (<i>gatā…</i> <i>Surabhī</i>), 5074 (<i>ye vasanti Kurukṣetre te vasanti T°e</i>), 7075 (do.), 8706 (<i>°samaprakhyaṃ</i>); V, 346, 347, 350, 351, 538, 3616; XII, †8332, ††13214, ††13217 (<i>°sthaḥ</i>), 13792. Cf. Triviṣṭapa."
+        },
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "10967",
+            "pagenum": 681,
+            "content": "<b>Tripiṣṭapa</b><sup>2</sup>,¦ a tīrtha. § 364 (Tīrthayatrāp.): III, <b>83</b>, 6054."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "16180.1",
+            "pagenum": 318,
+            "content": "tri-pizwapa¦ <i>n.</i> heaven, त्रिविष्टपस्येव पतिं जयंतः <ls>R.</ls>vi.78."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "87950",
+            "pagenum": "459,2",
+            "content": "त्रि—पिष्टप ¦ <lex>n.</lex> (<lex type='hwalt'>m.</lex>, <ls>Uṇ., Sch.</ls>) = -दिव/, <s1 slp1='indra'>Indra</s1>'s heaven, <ls>MBh. i, 7580</ls> and <ls n='MBh. i,'>7657</ls>; <ls>R. i</ls>, <ls n='R.'>vi</ls>; <ls>MārkP. xviii, 27</ls><info lex='m:n'/>"
+        },
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "87951",
+            "pagenum": "459,2",
+            "content": "¦ the sky, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "87952",
+            "pagenum": "459,2",
+            "content": "¦ <ab>cf.</ab> -विष्ट्°<info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "47577",
+            "pagenum": 3,
+            "content": "त्रिपिष्टप¦ (*<lex>m.</lex>) <lex>n.</lex> <dvsn n='1'>— 1〉 <i>die Himmelswelt,</i> <is>Indra</is>ʼs <i>Himmel</i>. <dvsn n='1'>— 2〉 *<i>der Luftraum</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "31024",
+            "pagenum": 3,
+            "content": "त्रिपिष्टप¦ <lex>n.</lex> (m. <ls>UJJVAL.</ls> zu <ls>UṆĀDIS. 3, 145</ls>) = त्रिदिव <i>der Wohnort der 33 Götter</i>, <is>Indra's</is> <i>Himmel</i> <ls>H. 87</ls>, <ls>Sch.</ls>  <ls>MBH. 1, 7580.</ls> हित्वा त्रिपिष्टपं जग्मुर्ब्रह्मलोकं ततः सुराः <ls>SUND. 2, 6.</ls> (ब्रह्मा) जगाम सह दैवतैः । त्रिपिष्टपं (त्रिपिष्टपात् <ls>R. GORR. 1, 59, 3</ls>) ब्रह्मलोकम् <ls>R. 1, 57, 6.</ls> °कृतावास <ls n='R.'>6, 82, 116.</ls> <ls>MĀRK. P. 18, 27.</ls> <i>der Luftraum</i> <ls>ŚABDAR.</ls> im <ls>ŚKDR.</ls> <dvsn n='v'>— Vgl. त्रिविष्टप ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "18089",
+            "pagenum": 324,
+            "content": "त्रिपिष्टप¦ n. (-पं) 1. Heaven, Swarga or paradise. 2. Sky, æther. E. पिष्टप a world, and त्रि three, or the third; also त्रिविष्टप ।"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "18106",
+            "pagenum": 390,
+            "content": "त्रिपिष्टप¦ n. (-पं) .²1 Heaven, <i>Svarga</i> or paradise. .²2 Sky, æther. .E. पिष्टप a world. and त्रि three, or the third; also त्रिविष्टप."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "17582",
+            "pagenum": 345,
+            "content": "त्रि-पिष्टप¦ (पं) 1. <i>n.</i> Paradise; sky."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "15567",
+            "pagenum": "2-658-c",
+            "content": "त्रिपिष्टपं¦, क्ली, (त्रिदशानां देवानां पिष्टपं वासस्थानम् । पृषोदरादित्वात् दशशब्दस्य लोपः । यद्बा, मर्त्त्यपातालापेक्षया तृतीयं पिष्टपम् भुवनम् । वृत्तौ त्रिशब्दस्य त्रिभागवत् पूरणार्थता ।) स्वर्गः । इत्यमरः । १ । १ । ६ ॥ (यथा, महाभारते । १ । २०८ । ३५ । “तत् त्रिपिष्टपसङ्काशमिन्द्रप्रस्थं व्यरोचत ॥”) आकाशम् । इति शब्दरत्नावली ॥"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिपिष्टप",
+            "eid": "23697",
+            "pagenum": "3370,b",
+            "content": "त्रिपि(वि)ष्टप¦ न० मर्त्यपातालापेक्षया तृतीयं पि(वि)ष्टपं भुवनम् वृत्तौ त्रिशब्दस्य त्रिभागवत् पूरणार्थता । १ स्वर्गे अमरः “तत् त्रिपिष्टपसङ्काशमिन्द्रप्रस्थं व्यरोचत” भा० आ० २०६ अ० । २ आकाशे शब्दर० ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिपिष्टप",
+            "content": "त्रिपिष्टपम् नपुं. त्रि-पिष्टपम्  - 'इन्द्रलोक, स्वर्ग'"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिपिष्टप",
+            "content": "<body><s>tripi(vi)zwapa na° martyapAtAlApekzayA tftIyaM pi(vi)zwapaM Buvanam vfttO triSabdasya triBAgavat pUraRArTatA . <lb/><b>1</b> svarge amaraH <q>tat tripizwapasaNkASamindraprasTaM vyarocata</q> BA° A° 2°6 a° . <lb/><b>2</b> AkASe Sabdara° .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिपिष्टप",
+            "content": "<H1><h><key1>tripizwapa</key1><key2>tripizwapa</key2></h><body><s>tripizwapa</s>  <div n=\"1\">n. (<s>-paM</s>) </div><div n=\"2\"> 1. Heaven, Swarga or paradise. </div><div n=\"2\"> 2. Sky, æther.</div><div n=\"E\"> E. <s>pizwapa</s> <lb />a world, and <s>tri</s> three, or the third; also <s>trivizwapa .</s></div></body><tail><L>18089</L><pc>324-b</pc></tail></H1>\n"
+        }
+    ]
+}

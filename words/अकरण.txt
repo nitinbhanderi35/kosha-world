@@ -1,1 +1,151 @@
-n  \"transform-classes\": () => transformClasses,\n  \"transform-computed-properties\": () => transformComputedProperties,\n  \"transform-destructuring\": () => transformDestructuring,\n  \"transform-dotall-regex\": () => transformDotallRegex,\n  \"transform-duplicate-keys\": () => transformDuplicateKeys,\n  \"transform-dynamic-import\": () => proposalDynamicImport,\n  \"transform-exponentiation-operator\": () => transformExponentialOperator,\n  \"transform-export-namespace-from\": () => proposalExportNamespaceFrom,\n  \"transform-for-of\": () => transformForOf,\n  \"transform-function-name\": () => transformFunctionName,\n  \"transform-json-strings\": () => proposalJsonStrings,\n  \"transform-literals\": () => transformLiterals,\n  \"transform-logical-assignment-operators\": () =>\n    proposalLogicalAssignmentOperators,\n  \"transform-member-expression-literals\": () =>\n    transformMemberExpressionLiterals,\n  \"transform-modules-amd\": () => transformModulesAmd,\n  \"transform-modules-commonjs\": () => transformModulesCommonjs,\n  \"transform-modules-systemjs\": () => transformModulesSystemjs,\n  \"transform-modules-umd\": () => transformModulesUmd,\n  \"transform-named-capturing-groups-regex\": () =>\n    transformNamedCapturingGroupsRegex,\n  \"transform-new-target\": () => transformNewTarget,\n  \"transform-nullish-coalescing-operator\": () =>\n    proposalNullishCoalescingOperator,\n  \"transform-numeric-separator\": () => proposalNumericSeparator,\n  \"transform-object-rest-spread\": () => proposalObjectRestSpread,\n  \"transform-object-super\": () => transformObjectSuper,\n  \"transform-optional-catch-binding\": () => proposalOptionalCatchBinding,\n  \"transform-optional-chaining\": () => proposalOptionalChaining,\n  \"transform-parameters\": () => transformParameters,\n  \"transform-private-methods\": () => proposalPrivateMethods,\n  \"transform-private-property-in-object\": () => proposalPrivatePropertyInObject,\n  \"transform-property-literals\": () => transformPropertyLiterals,\n  \"transform-regenerator\": () => transformRegenerator,\n  \"transform-reserved-words\": () => transformReservedWords,\n  \"transform-shorthand-properties\": () => transformShorthandProperties,\n  \"transform-spread\": () => transformSpread,\n  \"transform-sticky-regex\": () => transformStickyRegex,\n  \"transform-template-literals\": () => transformTemplateLiterals,\n  \"transform-typeof-symbol\": () => transformTypeofSymbol,\n  \"transform-unicode-escapes\": () => transformUnicodeEscapes,\n  \"transform-unicode-property-regex\": () => proposalUnicodePropertyRegex,\n  \"transform-unicode-regex\": () => transformUnicodeRegex,\n  \"transform-unicode-sets-regex\": () => transformUnicodeSetsRegex,\n};\n\nexport const minVersions = {};\n\nif (!process.env.BABEL_8_BREAKING) {\n  Object.assign(minVersions, {\n    \"bugfix/transform-safari-id-destructuring-collision-in-function-expression\":\n      \"7.16.0\",\n    \"syntax-import-attributes\": \"7.22.0\",\n    \"transform-class-static-block\": \"7.12.0\",\n    \"transform-private-property-in-object\": \"7.10.0\",\n  });\n\n  const emptyPlugin = () => ({});\n\n  const babel7SyntaxPlugin = (name: string) => {\n    // We cannot use the require call in ESM and when bundling.\n    // Babel standalone uses a modern parser, so just include a noop plugin.\n    // Use `bind` so that it's not detected as a duplicate plugin when using it.\n    // @ts-expect-error key not recognized in the object\n    availablePlugins[`syntax-${name}`] = USE_ESM\n      ? () => emptyPlugin.bind(null)\n      : IS_STANDALONE\n      ? () => emptyPlugin.bind(null)\n      : // eslint-disable-next-line no-restricted-globals\n        () => require(`@babel/plugin-syntax-${name}`);\n  };\n\n  babel7SyntaxPlugin(\"async-generators\");\n  babel7SyntaxPlugin(\"class-properties\");\n  babel7SyntaxPlugin(\"class-static-block\");\n  babel7SyntaxPlugin(\"dynamic-import\");\n  babel7SyntaxPlugin(\"export-namespace-from\");\n  babel7SyntaxPlugin(\"import-meta\");\n  babel7SyntaxPlugin(\"json-strings\");\n  babel7SyntaxPlugin(\"logical-assignment-operators\");\n  babel7SyntaxPlugin(\"nullish-coalescing-operator\");\n  babel7SyntaxPlugin(\"numeric-separator\");\n  babel7SyntaxPlugin(\"object-rest-spread\");\n  babel7SyntaxPlugin(\"optional-catch-binding\");\n  babel7SyntaxPlugin(\"optional-chaining\");\n  babel7SyntaxPlugin(\"private-property-in-object\");\n  babel7SyntaxPlugin(\"top-level-await\");\n\n  // This is a CJS plugin that depends on a package from the monorepo, so it\n  // breaks using ESM. Given that ESM builds are new enough to have this\n  // syntax enabled by default, we can safely skip enabling it.\n  if (!USE_ESM) babel7SyntaxPlugin(\"unicode-sets-regex\");\n}\n"],"mappings":"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
+{
+    "word": "अकरण",
+    "AP90": [
+        {
+            "word": "अकरण",
+            "eid": "41",
+            "pagenum": 3,
+            "content": "अकरणं¦ [कृ-भावे ल्युट् न. त.] Not doing, absence of action; अकरणात् मंदकरणं श्रेयः; <ab>cf.</ab> the English phrases “Something is better than nothing,” “Better late than never”. --ण <i><ab>a.</ab></i> [न. ब.] <b>1</b> Not artificial, natural. <b>--2</b> Devoid of all organs, epithet of the Supreme Spirit."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "अकरण",
+            "eid": "35",
+            "pagenum": 1,
+            "content": "अकरण¦ <lex>n.</lex> non-doing, omission."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "अकरण",
+            "eid": "24",
+            "pagenum": 1,
+            "content": "अकरण¦ <i>n.</i> Nichtthun, Unterlassung."
+        }
+    ],
+    "MD": [
+        {
+            "word": "अकरण",
+            "eid": "40",
+            "pagenum": 1,
+            "content": "अकरण¦ <hom>1.</hom> a-karaṇa, <lex>n.</lex> omission to do."
+        },
+        {
+            "word": "अकरण",
+            "eid": "41",
+            "pagenum": 1,
+            "content": "अकरण¦ <hom>2.</hom> a-karaṇa, <lex>a.</lex> unartificial, natural."
+        }
+    ],
+    "MW": [
+        {
+            "word": "अकरण",
+            "eid": "169",
+            "pagenum": "1,3",
+            "content": "अ-करण ¦ <lex>n.</lex> absence of action.<info lex='n'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "अकरण",
+            "eid": "46",
+            "pagenum": 1,
+            "content": "अकरण¦ <i>a-karaṇa, am,</i> n. absence of action."
+        }
+    ],
+    "PW": [
+        {
+            "word": "अकरण",
+            "eid": "85",
+            "pagenum": 1,
+            "content": "<hom>1.</hom> अकरण¦ <lex>n.</lex> <i>das Nichtthun, Unterlassen</i> <ls n='Chr.'>254,21</ls>. <ls>GAUT. 12,27. 18,32</ls>."
+        },
+        {
+            "word": "अकरण",
+            "eid": "86",
+            "pagenum": 1,
+            "content": "<hom>2.</hom> अकरण¦ <lex>Adj.</lex> <dvsn n='1'>— 1〉 <i>nicht durch Kunst erzeugt, natürlich</i> <ls>Spr. 4103</ls>. <dvsn n='1'>— 2〉 <i>unthätig</i> oder ohne <i>Organe</i> <ls>Ind. St. 9,165</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "अकरण",
+            "eid": "62440",
+            "pagenum": 5,
+            "content": "अकरण¦ (3. अ + क°) <lex>adj.</lex> <i>kunstlos, natürlich</i> <ls>Spr. 4544.</ls>"
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "अकरण",
+            "eid": "8177",
+            "pagenum": 6,
+            "content": "<hom>2.</hom> अकरण¦ auch <i>mit keiner religiösen Handlung verbunden</i> <ls>ĀPAST. ŚR. 4,1,3</ls>."
+        },
+        {
+            "word": "अकरण",
+            "eid": "9434",
+            "pagenum": 7,
+            "content": "<hom>2.</hom> अकरण¦ I. 6."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "अकरण",
+            "eid": "38",
+            "pagenum": 1,
+            "content": "2. <i>akaraṇa</i>¦ auch: mit keiner religiösen Handlung verbunden, <ls>Āpast. Śr.</ls> 4, 1, 3. {part=,seq=40,type=,n=3}"
+        }
+    ],
+    "STC": [
+        {
+            "word": "अकरण",
+            "eid": "19",
+            "pagenum": 1,
+            "content": "<b>a-karaṇa-</b>¦ <ab>a.</ab> naturel ; <ab>nt.</ab> fait de ne pas agir."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "अकरण",
+            "eid": "49",
+            "pagenum": "0038,b",
+            "content": "अकरण¦ न० कृ--भावे ल्युट् अर्थाभावे न० त० । करणाभावे निवृत्तौ “अकरणे प्रत्यवायानुबन्धित्वं नित्यत्वमिति” मीमांसकादयः । “अकरणात् मन्दकरणं श्रेय” इति स्मार्त्ताः अकरणञ्च न्यायादिमते करणाभावः, मीमांसकवेदान्तिमते निवृत्तिः । अत एव अष्टम्यां मांसं नाश्नीयादित्यादौ सर्वत्र निषेधसमभिव्याहृतक्रियाविषयकनिवृत्तावेव विध्यर्थान्वयः इत्युक्तं मीमांसकैः । शङ्कराचार्य्येण च “नासतो विद्यते भावोनाभावो विद्यते सत” इति गीता श्लोकभाष्ये महता प्रबन्धेन सत्पदार्थादभावोत्पत्तिं निरस्यता निषेधस्य निवृत्तिरूपत्वमुररीकृतम् । निवृत्तिश्च प्रवृत्तिविरोधी भावरूपोधर्मविशेषः । नास्ति करणं देहेन्द्रियादिकमस्य । सर्व्वकरणशून्ये परात्मनि पु० । “अपाणिपादोजवनोग्रहीतेत्यादि” श्रुतौ तस्य सर्वकरणशून्यत्वमुक्तम् ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "अकरण",
+            "content": "अकरणम् नपुं. -  कृ भावे ल्युट्  'अक्रिया, कार्य का अभाव'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "अकरण",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಕೆಲಸ ಮಾಡದಿರುವಿಕೆ",
+            "निष्पत्तिः": "क्रियते- डु कृञ् (करणे) 'त्युट्' (३-३-११५) ।",
+            "व्युत्पत्तिः": "न कारणम् ।",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "अकरण",
+            "content": "<body><s>akaraRa na° kf—BAve lyuw arTABAve na° ta° . karaRA­BAve nivfttO <q>akaraRe pratyavAyAnubanDitvaM nityatvamiti</q> mImAMsakAdayaH . <q>akaraRAt mandakaraRaM Sreya</q> iti smArttAH akaraRaYca nyAyAdimate karaRABAvaH, mImAMsakavedAntimate nivfttiH . ata eva azwamyAM mAMsaM nASnIyAdityAdO sarvatra nizeDasamaBivyAhftakriyAvizayakanivfttAveva viDyarTA­nvayaH ityuktaM mImAMsakEH . SaNkarAcAryyeRa ca <q>nAsato vidyate BAvonABAvo vidyate sata</q> iti gItA SlokaBAzye mahatA prabanDena satpadArTAdaBAvotpattiM nirasyatA nizeDasya nivfttirUpatvamurarIkftam . nivfttiSca pravfttiviroDI BAvarUpoDarmaviSezaH . nAsti karaRaM dehe­ndriyAdikamasya . sarvvakaraRaSUnye parAtmani pu° . <q>apARipAdojavanograhItetyAdi</q> SrutO tasya sarvakaraRa­SUnyatvamuktam .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "अकरण",
+            "content": "<H1><h><key1>akaraRa</key1><key2>a-karaRa</key2></h><body><s>a-karaRa</s>   <lex>n.</lex> absence of action.<info lex=\"n\" /></body><tail><L>169</L><pc>1,3</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "अकरण",
+            "content": "<span lang=\"sa\">अकरण<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೆಲಸ ಮಾಡದಿರುವಿಕೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>क्रियते- डु कृञ् (करणे) “त्युट्” (३-३-११५) ।<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>न कारणम् ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

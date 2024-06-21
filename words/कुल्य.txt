@@ -1,1 +1,549 @@
-type==="space"){l.value=" "}else if(l.type==="div"){l.before=l.after=""}else if(l.type==="function"){if(!S.has(l.value.toLowerCase())){l.before=l.after=""}if(l.value.toLowerCase()==="calc"){y.walk(l.nodes,reduceCalcWhitespaces);return false}}}function pluginCreator(){return{postcssPlugin:"postcss-normalize-whitespace",OnceExit(l){const v=new Map;l.walk((l=>{const{type:m}=l;if([w,k,_].includes(m)&&l.raws.before){l.raws.before=l.raws.before.replace(/\s/g,"")}if(m===w){if(l.important){l.raws.important="!important"}l.value=l.value.replace(/\s*(\\9)\s*/,"$1");const m=l.value;if(v.has(m)){l.value=v.get(m)}else{const _=y(l.value);const w=_.walk(reduceWhitespaces).toString();l.value=w;v.set(m,w)}if(l.prop.startsWith("--")&&l.value===""){l.value=" "}if(l.raws.before){const v=l.prev();if(v&&v.type!==k){l.raws.before=l.raws.before.replace(/;/g,"")}}l.raws.between=":";l.raws.semicolon=false}else if(m===k||m===_){l.raws.between=l.raws.after="";l.raws.semicolon=false}}));l.raws.after=""}}}pluginCreator.postcss=true;l.exports=pluginCreator},3716:(l,v,m)=>{"use strict";const y=m(2045);const{normalizeGridAutoFlow:_,normalizeGridColumnRowGap:w,normalizeGridColumnRow:k}=m(9551);const S=m(1960);const E=m(8182);const O=m(6773);const P=m(1933);const C=m(6946);const T=m(4552);const L=m(4322);const D=m(2473);const R=[["border",E],["border-block",E],["border-inline",E],["border-block-end",E],["border-block-start",E],["border-inline-end",E],["border-inline-start",E],["border-top",E],["border-right",E],["border-bottom",E],["border-left",E]];const A=[["grid-auto-flow",_],["grid-column-gap",w],["grid-row-gap",w],["grid-column",k],["grid-row",k],["grid-row-start",k],["grid-row-end",k],["grid-column-start",k],["grid-column-end",k]];const q=[["column-rule",E],["columns",L]];const F=new Map([["animation",S],["outline",E],["box-shadow",O],["flex-flow",P],["list-style",T],["transition",C],...R,...A,...q]);const $=new Set(["var","env","constant"]);function isVariableFunctionNode(l){if(l.type!=="function"){return false}return $.has(l.value.toLowerCase())}function shouldAbort(l){let v=false;l.walk((l=>{if(l.type==="comment"||isVariableFunctionNode(l)||l.type==="word"&&l.value.includes(`___CSS_LOADER_IMPORT___`)){v=true;return false}}));return v}function getValue(l){let{value:v,raws:m}=l;if(m&&m.value&&m.value.raw){v=m.value.raw}return v}function pluginCreator(){return{postcssPlugin:"postcss-ordered-values",prepare(){const l=new Map;return{OnceExit(v){v.walkDecls((v=>{const m=v.prop.toLowerCase();const _=D(m);const w=F.get(_);if(!w){return}const k=getValue(v);if(l.has(k)){v.value=l.get(k);return}const S=y(k);if(S.nodes.length<2||shouldAbort(S)){l.set(k,k);return}const E=w(S);v.value=E.toString();l.set(k,E.toString())}))}}}}}pluginCreator.postcss=true;l.exports=pluginCreator},8480:l=>{"use strict";l.exports=function addSpace(){return{type:"space",value:" "}}},7235:(l,v,m)=>{"use strict";const{stringify:y}=m(2045);l.exports=function getValue(l){return y(flatten(l))};function flatten(l){const v=[];for(const[m,y]of l.entries()){y.forEach(((_,w)=>{if(w===y.length-1&&m===l.length-1&&_.type==="space"){return}v.push(_)}));if(m!==l.length-1){v[v.length-1].type="div";v[v.length-1].value=","}}return v}},4851:l=>{"use strict";l.exports=function joinGridVal(l){return l.join(" / ").trim()}},2110:l=>{"use strict";l.exports=new Set(["calc","clamp","max","min"])},2473:l=>{"use strict";function vendorUnprefixed(l){return l.replace(/^-\w+-/,"")}l.exports=vendorUnprefixed},1960:(l,v,m)=>{"use strict";const{unit:y}=m(2045);const{getArguments:_}=m(7979);const w=m(8480);const k=m(7235);const S=new Set(["steps","cubic-bezier","frames"]);const E=new Set(["ease","ease-in","ease-in-out","ease-out","linear","step-end","step-start"]);const O=new Set(["normal","reverse","alternate","alternate-reverse"]);const P=new Set(["none","forwards","backwards","both"]);const C=new Set(["running","paused"]);const T=new Set(["ms","s"]);const isTimingFunction=(l,v)=>v==="function"&&S.has(l)||E.has(l);const isDirection=l=>O.has(l);const isFillMode=l=>P.has(l);const isPlayState=l=>C.has(l);const isTime=l=>{const v=y(l);return v&&T.has(v.unit)};const isIterationCount=l=>{const v=y(l);return l==="infinite"||v&&!v.unit};const L=[{property:"duration",delegate:isTime},{property:"timingFunction",delegate:isTimingFunction},{property:"delay",delegate:isTime},{property:"iterationCount",delegate:isIterationCount},{property:"direction",delegate:isDirection},{property:"fillMode",delegate:isFillMode},{property:"playState",delegate:isPlayState}];function normalize(l){const v=[];for(const m of l){const l={name:[],duration:[],timingFunction:[],delay:[],iterationCount:[],direction:[],fillMode:[],playState:[]};m.forEach((v=>{let{type:m,value:y}=v;if(m==="space"){return}y=y.toLowerCase();const _=L.some((({property:_,delegate:k})=>{if(k(y,m)&&!l[_].length){l[_]=[v,w()];return true}}));if(!_){l.name=[...l.name,v,w()]}}));v.push([...l.name,...l.duration,...l.timingFunction,...l.delay,...l.iterationCount,...l.direction,...l.fillMode,...l.playState])}return v}l.exports=function normalizeAnimation(l){const v=normalize(_(l));return k(v)}},8182:(l,v,m)=>{"use strict";const{unit:y,stringify:_}=m(2045);const w=m(2110);const k=new Set(["thin","medium","thick"]);const S=new Set(["none","auto","hidden","dotted","dashed","solid","double","groove","ridge","inset","outset"]);l.exports=function normalizeBorder(l){const v={width:"",style:"",color:""};l.walk((l=>{const{type:m,value:E}=l;if(m==="word"){if(S.has(E.toLowerCase())){v.style=E;return false}if(k.has(E.toLowerCase())||y(E.toLowerCase())){if(v.width!==""){v.width=`${v.width} ${E}`;return false}v.width=E;return false}v.color=E;return false}if(m==="function"){if(w.has(E.toLowerCase())){v.width=_(l)}else{v.color=_(l)}return false}}));return`${v.width} ${v.style} ${v.color}`.trim()}},6773:(l,v,m)=>{"use strict";const{unit:y}=m(2045);const{getArguments:_}=m(7979);const w=m(8480);const k=m(7235);const S=m(2110);const E=m(2473);l.exports=function normalizeBoxShadow(l){let v=_(l);const m=normalize(v);if(m===false){return l.toString()}return k(m)};function normalize(l){const v=[];let m=false;for(const _ of l){let l=[];let k={inset:[],color:[]};_.forEach((v=>{const{type:_,value:O}=v;if(_==="function"&&S.has(E(O.toLowerCase()))){m=true;return}if(_==="space"){return}if(y(O)){l=[...l,v,w()]}else if(O.toLowerCase()==="inset"){k.inset=[...k.inset,v,w()]}else{k.color=[...k.color,v,w()]}}));if(m){return false}v.push([...k.inset,...l,...k.color])}return v}},4322:(l,v,m)=>{"use strict";const{unit:y}=m(2045);function hasUnit(l){const v=y(l);return v&&v.unit!==""}l.exports=l=>{const v=[];const m=[];l.walk((l=>{const{type:y,value:_}=l;if(y==="word"){if(hasUnit(_)){v.push(_)}else{m.push(_)}}}));if(m.length===1&&v.length===1){return`${v[0].trimStart()} ${m[0].trimStart()}`}return l}},1933:l=>{"use strict";const v=new Set(["row","row-reverse","column","column-reverse"]);const m=new Set(["nowrap","wrap","wrap-reverse"]);l.exports=function normalizeFlexFlow(l){let y={direction:"",wrap:""};l.walk((({value:l})=>{if(v.has(l.toLowerCase())){y.direction=l;return}if(m.has(l.toLowerCase())){y.wrap=l;return}}));return`${y.direction} ${y.wrap}`.trim()}},9551:(l,v,m)=>{"use strict";const y=m(4851);const normalizeGridAutoFlow=l=>{let v={front:"",back:""};let m=false;l.walk((l=>{if(l.value==="dense"){m=true;v.back=l.value}else if(["row","column"].includes(l.value.trim().toLowerCase())){m=true;v.front=l.value}else{m=false}}));if(m){return`${v.front.trim()} ${v.back.trim()}`}return l};const normalizeGridColumnRowGap=l=>{let v={front:"",back:""};let m=false;l.walk((l=>{if(l.value==="normal"){m=true;v.front=l.value}else{v.back=`${v.back} ${l.value}`}}));if(m){return`${v.front.trim()} ${v.back.trim()}`}return l};const normalizeGridColumnRow=l=>{let v=l.toString().split("/");if(v.length>1){return y(v.map((l=>{let v={front:"",back:""};l=l.trim();l.split(" ").forEach((l=>{if(l==="span"){v.front=l}else{v.back=`${v.back} ${l}`}}));return`${v.front.trim()} ${v.back.trim()}`})))}return v.map((l=>{let v={front:"",back:""};l=l.trim();l.split(" ").forEach((l=>{if(l==="span"){v.front=l}else{v.back=`${v.back} ${l}`}}));return`${v.front.trim()} ${v.back.trim()}`}))};l.exports={normalizeGridAutoFlow:normalizeGridAutoFlow,normalizeGridColumnRowGap:normalizeGridColumnRowGap,normalizeGridColumnRow:normalizeGridColumnRow}},4552:(l,v,m)=>{"use strict";const y=m(2045);const _=m(2202);const w=new Set(_["list-style-type"]);const k=new Set(["inside","outside"]);l.exports=function listStyleNormalizer(l){const v={type:"",position:"",image:""};l.walk((l=>{if(l.type==="word"){if(w.has(l.value)){v.type=`${v.type} ${l.value}`}else if(k.has(l.value)){v.position=`${v.position} ${l.value}`}else if(l.value==="none"){if(v.type.split(" ").filter((l=>l!==""&&l!==" ")).includes("none")){v.image=`${v.image} ${l.value}`}else{v.type=`${v.type} ${l.value}`}}else{v.type=`${v.type} ${l.value}`}}if(l.type==="function"){v.image=`${v.image} ${y.stringify(l)}`}}));return`${v.type.trim()} ${v.position.trim()} ${v.image.trim()}`.trim()}},6946:(l,v,m)=>{"use strict";const{unit:y}=m(2045);const{getArguments:_}=m(7979);const w=m(8480);const k=m(7235);const S=new Set(["ease","linear","ease-in","ease-out","ease-in-out","step-start","step-end"]);function normalize(l){const v=[];for(const m of l){let l={timingFunction:[],property:[],time1:[],time2:[]};m.forEach((v=>{const{type:m,value:_}=v;if(m==="space"){return}if(m==="function"&&new Set(["steps","cubic-bezier"]).has(_.toLowerCase())){l.timingFunction=[...l.timingFunction,v,w()]}else if(y(_)){if(!l.time1.length){l.time1=[...l.time1,v,w()]}else{l.time2=[...l.time2,v,w()]}}else if(S.has(_.toLowerCase())){l.timingFunction=[...l.timingFunction,v,w()]}else{l.property=[...l.property,v,w()]}}));v.push([...l.property,...l.time1,...l.timingFunction,...l.time2])}return v}l.exports=function normalizeTransition(l){const v=normalize(_(l));return k(v)}},9871:(l,v,m)=>{"use strict";const y=m(4907);const{isSupported:_}=m(6615);const w=m(9270);const k=m(9309);const S="initial";const E=["writing-mode","transform-box"];function pluginCreator(){return{postcssPlugin:"postcss-reduce-initial",prepare(l){const v=l.opts||{};const m=y(null,{stats:v.stats,path:__dirname,env:v.env});const O=_("css-initial-value",m);return{OnceExit(l){l.walkDecls((l=>{const m=l.prop.toLowerCase();const y=new Set(E.concat(v.ignore||[]));if(y.has(m)){return}if(O&&Object.prototype.hasOwnProperty.call(k,m)&&l.value.toLowerCase()===k[m]){l.value=S;return}if(l.value.toLowerCase()!==S||!w[m]){return}l.value=w[m]}))}}}}}pluginCreator.postcss=true;l.exports=pluginCreator},2018:(l,v,m)=>{"use strict";const y=m(2045);function getValues(l,v,m){if(m%2===0){let m=NaN;if(v.type==="function"&&(v.value==="var"||v.value==="env")&&v.nodes.length===1){m=y.stringify(v.nodes)}else if(v.type==="word"){m=parseFloat(v.value)}return[...l,m]}return l}function matrix3d(l,v){if(v.length!==16){return}if(v[15]&&v[2]===0&&v[3]===0&&v[6]===0&&v[7]===0&&v[8]===0&&v[9]===0&&v[10]===1&&v[11]===0&&v[14]===0&&v[15]===1){const{nodes:v}=l;l.value="matrix";l.nodes=[v[0],v[1],v[2],v[3],v[8],v[9],v[10],v[11],v[24],v[25],v[26]]}}const _=new Map([[[1,0,0].toString(),"rotateX"],[[0,1,0].toString(),"rotateY"],[[0,0,1].toString(),"rotate"]]);function rotate3d(l,v){if(v.length!==4){return}const{nodes:m}=l;const y=_.get(v.slice(0,3).toString());if(y){l.value=y;l.nodes=[m[6]]}}function rotateZ(l,v){if(v.length!==1){return}l.value="rotate"}function scale(l,v){if(v.length!==2){return}const{nodes:m}=l;const[y,_]=v;if(y===_){l.nodes=[m[0]];return}if(_===1){l.value="scaleX";l.nodes=[m[0]];return}if(y===1){l.value="scaleY";l.nodes=[m[2]];return}}function scale3d(l,v){if(v.length!==3){return}const{nodes:m}=l;const[y,_,w]=v;if(_===1&&w===1){l.value="scaleX";l.nodes=[m[0]];return}if(y===1&&w===1){l.value="scaleY";l.nodes=[m[2]];return}if(y===1&&_===1){l.value="scaleZ";l.nodes=[m[4]];return}}function translate(l,v){if(v.length!==2){return}const{nodes:m}=l;if(v[1]===0){l.nodes=[m[0]];return}if(v[0]===0){l.value="translateY";l.nodes=[m[2]];return}}function translate3d(l,v){if(v.length!==3){return}const{nodes:m}=l;if(v[0]===0&&v[1]===0){l.value="translateZ";l.nodes=[m[4]]}}const w=new Map([["matrix3d",matrix3d],["rotate3d",rotate3d],["rotateZ",rotateZ],["scale",scale],["scale3d",scale3d],["translate",translate],["translate3d",translate3d]]);function normalizeReducerName(l){const v=l.toLowerCase();if(v==="rotatez"){return"rotateZ"}return v}function reduce(l){if(l.type==="function"){const v=normalizeReducerName(l.value);const m=w.get(v);if(m!==undefined){m(l,l.nodes.reduce(getValues,[]))}}return false}function pluginCreator(){return{postcssPlugin:"postcss-reduce-transforms",prepare(){const l=new Map;return{OnceExit(v){v.walkDecls(/transform$/i,(v=>{const m=v.value;if(!m){return}if(l.has(m)){v.value=l.get(m);return}const _=y(m).walk(reduce).toString();v.value=_;l.set(m,_)}))}}}}}pluginCreator.postcss=true;l.exports=pluginCreator},475:(l,v,m)=>{"use strict";v.__esModule=true;v["default"]=void 0;var y=_interopRequireDefault(m(9605));var _=_interopRequireWildcard(m(1534));function _getRequireWildcardCache(){if(typeof WeakMap!=="function")return null;var l=new WeakMap;_getRequireWildcardCache=function _getRequireWildcardCache(){return l};return l}function _interopRequireWildcard(l){if(l&&l.__esModule){return l}if(l===null||typeof l!=="object"&&typeof l!=="function"){return{default:l}}var v=_getRequireWildcardCache();if(v&&v.has(l)){return v.get(l)}var m={};var y=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var _ in l){if(Object.prototype.hasOwnProperty.call(l,_)){var w=y?Object.getOwnPropertyDescriptor(l,_):null;if(w&&(w.get||w.set)){Object.defineProperty(m,_,w)}else{m[_]=l[_]}}}m["default"]=l;if(v){v.set(l,m)}return m}function _interopRequireDefault(l){return l&&l.__esModule?l:{default:l}}var w=function parser(l){return new y["default"](l)};Object.assign(w,_);delete w.__esModule;var k=w;v["default"]=k;l.exports=v.default},4969:(l,v,m)=>{"use strict";v.__esModule=true;v["default"]=void 0;var y=_interopRequireDefault(m(173));var _=_interopRequireDefault(m(8589));var w=_interopRequireDefault(m(9616));var k=_interopRequireDefault(m(1042));var S=_interopRequireDefault(m(5046));var E=_interopRequireDefault(m(2308));var O=_interopRequireDefault(m(2429));var P=_interopRequireDefault(m(3794));var C=_interopRequireWildcard(m(6382));var T=_interopRequireDefault(m(4893));var L=_interopRequireDefault(m(6884));var D=_interopRequireDefault(m(9743));var R=_interopRequireDefault(m(3393));var A=_interopRequireWildcard(m(452));var q=_interopRequireWildcard(m(9210));var F=_interopRequireWildcard(m(3342));var $=m(7984);var z,V;function _getRequireWildcardCache(){if(typeof WeakMap!=="function")return null;var l=new WeakMap;_getRequireWildcardCache=function _getRequireWildcardCache(){return l};return l}function _interopRequireWildcard(l){if(l&&l.__esModule){return l}if(l===null||typeof l!=="object"&&typeof l!=="function"){return{default:l}}var v=_getRequireWildcardCache();if(v&&v.has(l)){return v.get(l)}var m={};var y=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var _ in l){if(Object.prototype.hasOwnProperty.call(l,_)){var w=y?Object.getOwnPropertyDescriptor(l,_):null;if(w&&(w.get||w.set)){Object.defineProperty(m,_,w)}else{m[_]=l[_]}}}m["default"]=l;if(v){v.set(l,m)}return m}function _interopRequireDefault(l){return l&&l.__esModule?l:{default:l}}function _defineProperties(l,v){for(var m=0;m<v.length;m++){var y=v[m];y.enumerable=y.enumerable||false;y.configurable=true;if("value"in y)y.writable=true;Object.defineProperty(l,y.key,y)}}function _createClass(l,v,m){if(v)_defineProperties(l.prototype,v);if(m)_defineProperties(l,m);return l}var W=(z={},z[q.space]=true,z[q.cr]=true,z[q.feed]=true,z[q.newline]=true,z[q.tab]=true,z);var U=Object.assign({},W,(V={},V[q.comment]=true,V));function tokenStart(l){return{line:l[A.FIELDS.START_LINE],column:l[A.FIELDS.START_COL]}}function tokenEnd(l){return{line:l[A.FIELDS.END_LINE],column:l[A.FIELDS.END_COL]}}function getSource(l,v,m,y){return{start:{line:l,column:v},end:{line:m,column:y}}}function getTokenSource(l){return getSource(l[A.FIELDS.START_LINE],l[A.FIELDS.START_COL],l[A.FIELDS.END_LINE],l[A.FIELDS.END_COL])}function getTokenSourceSpan(l,v){if(!l){return undefined}return getSource(l[A.FIELDS.START_LINE],l[A.FIELDS.START_COL],v[A.FIELDS.END_LINE],v[A.FIELDS.END_COL])}function unescapeProp(l,v){var m=l[v];if(typeof m!=="string"){return}if(m.indexOf("\\")!==-1){(0,$.ensureObject)(l,"raws");l[v]=(0,$.unesc)(m);if(l.raws[v]===undefined){l.raws[v]=m}}return l}function indexesOf(l,v){var m=-1;var y=[];while((m=l.indexOf(v,m+1))!==-1){y.push(m)}return y}function uniqs(){var l=Array.prototype.concat.apply([],arguments);return l.filter((function(v,m){return m===l.indexOf(v)}))}var B=function(){function Parser(l,v){if(v===void 0){v={}}this.rule=l;this.options=Object.assign({lossy:false,safe:false},v);this.position=0;this.css=typeof this.rule==="string"?this.rule:this.rule.selector;this.tokens=(0,A["default"])({css:this.css,error:this._errorGenerator(),safe:this.options.safe});var m=getTokenSourceSpan(this.tokens[0],this.tokens[this.tokens.length-1]);this.root=new y["default"]({source:m});this.root.errorGenerator=this._errorGenerator();var w=new _["default"]({source:{start:{line:1,column:1}}});this.root.append(w);this.current=w;this.loop()}var l=Parser.prototype;l._errorGenerator=function _errorGenerator(){var l=this;return function(v,m){if(typeof l.rule==="string"){return new Error(v)}return l.rule.error(v,m)}};l.attribute=function attribute(){var l=[];var v=this.currToken;this.position++;while(this.position<this.tokens.length&&this.currToken[A.FIELDS.TYPE]!==q.closeSquare){l.push(this.currToken);this.position++}if(this.currToken[A.FIELDS.TYPE]!==q.closeSquare){return this.expected("closing square bracket",this.currToken[A.FIELDS.START_POS])}var m=l.length;var y={source:getSource(v[1],v[2],this.currToken[3],this.currToken[4]),sourceIndex:v[A.FIELDS.START_POS]};if(m===1&&!~[q.word].indexOf(l[0][A.FIELDS.TYPE])){return this.expected("attribute",l[0][A.FIELDS.START_POS])}var _=0;var w="";var k="";var S=null;var E=false;while(_<m){var O=l[_];var P=this.content(O);var T=l[_+1];switch(O[A.FIELDS.TYPE]){case q.space:E=true;if(this.options.lossy){break}if(S){(0,$.ensureObject)(y,"spaces",S);var L=y.spaces[S].after||"";y.spaces[S].after=L+P;var D=(0,$.getProp)(y,"raws","spaces",S,"after")||null;if(D){y.raws.spaces[S].after=D+P}}else{w=w+P;k=k+P}break;case q.asterisk:if(T[A.FIELDS.TYPE]===q.equals){y.operator=P;S="operator"}else if((!y.namespace||S==="namespace"&&!E)&&T){if(w){(0,$.ensureObject)(y,"spaces","attribute");y.spaces.attribute.before=w;w=""}if(k){(0,$.ensureObject)(y,"raws","spaces","attribute");y.raws.spaces.attribute.before=w;k=""}y.namespace=(y.namespace||"")+P;var R=(0,$.getProp)(y,"raws","namespace")||null;if(R){y.raws.namespace+=P}S="namespace"}E=false;break;case q.dollar:if(S==="value"){var F=(0,$.getProp)(y,"raws","value");y.value+="$";if(F){y.raws.value=F+"$"}break}case q.caret:if(T[A.FIELDS.TYPE]===q.equals){y.operator=P;S="operator"}E=false;break;case q.combinator:if(P==="~"&&T[A.FIELDS.TYPE]===q.equals){y.operator=P;S="operator"}if(P!=="|"){E=false;break}if(T[A.FIELDS.TYPE]===q.equals){y.operator=P;S="operator"}else if(!y.namespace&&!y.attribute){y.namespace=true}E=false;break;case q.word:if(T&&this.content(T)==="|"&&l[_+2]&&l[_+2][A.FIELDS.TYPE]!==q.equals&&!y.operator&&!y.namespace){y.namespace=P;S="namespace"}else if(!y.attribute||S==="attribute"&&!E){if(w){(0,$.ensureObject)(y,"spaces","attribute");y.spaces.attribute.before=w;w=""}if(k){(0,$.ensureObject)(y,"raws","spaces","attribute");y.raws.spaces.attribute.before=k;k=""}y.attribute=(y.attribute||"")+P;var z=(0,$.getProp)(y,"raws","attribute")||null;if(z){y.raws.attribute+=P}S="attribute"}else if(!y.value&&y.value!==""||S==="value"&&!E){var V=(0,$.unesc)(P);var W=(0,$.getProp)(y,"raws","value")||"";var U=y.value||"";y.value=U+V;y.quoteMark=null;if(V!==P||W){(0,$.ensureObject)(y,"raws");y.raws.value=(W||U)+P}S="value"}else{var B=P==="i"||P==="I";if((y.value||y.value==="")&&(y.quoteMark||E)){y.insensitive=B;if(!B||P==="I"){(0,$.ensureObject)(y,"raws");y.raws.insensitiveFlag=P}S="insensitive";if(w){(0,$.ensureObject)(y,"spaces","insensitive");y.spaces.insensitive.before=w;w=""}if(k){(0,$.ensureObject)(y,"raws","spaces","insensitive");y.raws.spaces.insensitive.before=k;k=""}}else if(y.value||y.value===""){S="value";y.value+=P;if(y.raws.value){y.raws.value+=P}}}E=false;break;case q.str:if(!y.attribute||!y.operator){return this.error("Expected an attribute followed by an operator preceding the string.",{index:O[A.FIELDS.START_POS]})}var Q=(0,C.unescapeValue)(P),Y=Q.unescaped,G=Q.quoteMark;y.value=Y;y.quoteMark=G;S="value";(0,$.ensureObject)(y,"raws");y.raws.value=P;E=false;break;case q.equals:if(!y.attribute){return this.expected("attribute",O[A.FIELDS.START_POS],P)}if(y.value){return this.error('Unexpected "=" found; an operator was already defined.',{index:O[A.FIELDS.START_POS]})}y.operator=y.operator?y.operator+P:P;S="operator";E=false;break;case q.comment:if(S){if(E||T&&T[A.FIELDS.TYPE]===q.space||S==="insensitive"){var J=(0,$.getProp)(y,"spaces",S,"after")||"";var Z=(0,$.getProp)(y,"raws","spaces",S,"after")||J;(0,$.ensureObject)(y,"raws","spaces",S);y.raws.spaces[S].after=Z+P}else{var K=y[S]||"";var X=(0,$.getProp)(y,"raws",S)||K;(0,$.ensureObject)(y,"raws");y.raws[S]=X+P}}else{k=k+P}break;default:return this.error('Unexpected "'+P+'" found.',{index:O[A.FIELDS.START_POS]})}_++}unescapeProp(y,"attribute");unescapeProp(y,"namespace");this.newNode(new C["default"](y));this.position++};l.parseWhitespaceEquivalentTokens=function parseWhitespaceEquivalentTokens(l){if(l<0){l=this.tokens.length}var v=this.position;var m=[];var y="";var _=undefined;do{if(W[this.currToken[A.FIELDS.TYPE]]){if(!this.options.lossy){y+=this.content()}}else if(this.currToken[A.FIELDS.TYPE]===q.comment){var w={};if(y){w.before=y;y=""}_=new k["default"]({value:this.content(),source:getTokenSource(this.currToken),sourceIndex:this.currToken[A.FIELDS.START_POS],spaces:w});m.push(_)}}while(++this.position<l);if(y){if(_){_.spaces.after=y}else if(!this.options.lossy){var S=this.tokens[v];var E=this.tokens[this.position-1];m.push(new O["default"]({value:"",source:getSource(S[A.FIELDS.START_LINE],S[A.FIELDS.START_COL],E[A.FIELDS.END_LINE],E[A.FIELDS.END_COL]),sourceIndex:S[A.FIELDS.START_POS],spaces:{before:y,after:""}}))}}return m};l.convertWhitespaceNodesToSpace=function convertWhitespaceNodesToSpace(l,v){var m=this;if(v===void 0){v=false}var y="";var _="";l.forEach((function(l){var w=m.lossySpace(l.spaces.before,v);var k=m.lossySpace(l.rawSpaceBefore,v);y+=w+m.lossySpace(l.spaces.after,v&&w.length===0);_+=w+l.value+m.lossySpace(l.rawSpaceAfter,v&&k.length===0)}));if(_===y){_=undefined}var w={space:y,rawSpace:_};return w};l.isNamedCombinator=function isNamedCombinator(l){if(l===void 0){l=this.position}return this.tokens[l+0]&&this.tokens[l+0][A.FIELDS.TYPE]===q.slash&&this.tokens[l+1]&&this.tokens[l+1][A.FIELDS.TYPE]===q.word&&this.tokens[l+2]&&this.tokens[l+2][A.FIELDS.TYPE]===q.slash};l.namedCombinator=function namedCombinator(){if(this.isNamedCombinator()){var l=this.content(this.tokens[this.position+1]);var v=(0,$.unesc)(l).toLowerCase();var m={};if(v!==l){m.value="/"+l+"/"}var y=new L["default"]({value:"/"+v+"/",source:getSource(this.currToken[A.FIELDS.START_LINE],this.currToken[A.FIELDS.START_COL],this.tokens[this.position+2][A.FIELDS.END_LINE],this.tokens[this.position+2][A.FIELDS.END_COL]),sourceIndex:this.currToken[A.FIELDS.START_POS],raws:m});this.position=this.position+3;return y}else{this.unexpected()}};l.combinator=function combinator(){var l=this;if(this.content()==="|"){return this.namespace()}var v=this.locateNextMeaningfulToken(this.position);if(v<0||this.tokens[v][A.FIELDS.TYPE]===q.comma){var m=this.parseWhitespaceEquivalentTokens(v);if(m.length>0){var y=this.current.last;if(y){var _=this.convertWhitespaceNodesToSpace(m),w=_.space,k=_.rawSpace;if(k!==undefined){y.rawSpaceAfter+=k}y.spaces.after+=w}else{m.forEach((function(v){return l.newNode(v)}))}}return}var S=this.currToken;var E=undefined;if(v>this.position){E=this.parseWhitespaceEquivalentTokens(v)}var O;if(this.isNamedCombinator()){O=this.namedCombinator()}else if(this.currToken[A.FIELDS.TYPE]===q.combinator){O=new L["default"]({value:this.content(),source:getTokenSource(this.currToken),sourceIndex:this.currToken[A.FIELDS.START_POS]});this.position++}else if(W[this.currToken[A.FIELDS.TYPE]]){}else if(!E){this.unexpected()}if(O){if(E){var P=this.convertWhitespaceNodesToSpace(E),C=P.space,T=P.rawSpace;O.spaces.before=C;O.rawSpaceBefore=T}}else{var D=this.convertWhitespaceNodesToSpace(E,true),R=D.space,F=D.rawSpace;if(!F){F=R}var $={};var z={spaces:{}};if(R.endsWith(" ")&&F.endsWith(" ")){$.before=R.slice(0,R.length-1);z.spaces.before=F.slice(0,F.length-1)}else if(R.startsWith(" ")&&F.startsWith(" ")){$.after=R.slice(1);z.spaces.after=F.slice(1)}else{z.value=F}O=new L["default"]({value:" ",source:getTokenSourceSpan(S,this.tokens[this.position-1]),sourceIndex:S[A.FIELDS.START_POS],spaces:$,raws:z})}if(this.currToken&&this.currToken[A.FIELDS.TYPE]===q.space){O.spaces.after=this.optionalSpace(this.content());this.position++}return this.newNode(O)};l.comma=function comma(){if(this.position===this.tokens.length-1){this.root.trailingComma=true;this.position++;return}this.current._inferEndPosition();var l=new _["default"]({source:{start:tokenStart(this.tokens[this.position+1])}});this.current.parent.append(l);this.current=l;this.position++};l.comment=function comment(){var l=this.currToken;this.newNode(new k["default"]({value:this.content(),source:getTokenSource(l),sourceIndex:l[A.FIELDS.START_POS]}));this.position++};l.error=function error(l,v){throw this.root.error(l,v)};l.missingBackslash=function missingBackslash(){return this.error("Expected a backslash preceding the semicolon.",{index:this.currToken[A.FIELDS.START_POS]})};l.missingParenthesis=function missingParenthesis(){return this.expected("opening parenthesis",this.currToken[A.FIELDS.START_POS])};l.missingSquareBracket=function missingSquareBracket(){return this.expected("opening square bracket",this.currToken[A.FIELDS.START_POS])};l.unexpected=function unexpected(){return this.error("Unexpected '"+this.content()+"'. Escaping special characters with \\ may help.",this.currToken[A.FIELDS.START_POS])};l.namespace=function namespace(){var l=this.prevToken&&this.content(this.prevToken)||true;if(this.nextToken[A.FIELDS.TYPE]===q.word){this.position++;return this.word(l)}else if(this.nextToken[A.FIELDS.TYPE]===q.asterisk){this.position++;return this.universal(l)}};l.nesting=function nesting(){if(this.nextToken){var l=this.content(this.nextToken);if(l==="|"){this.position++;return}}var v=this.currToken;this.newNode(new D["default"]({value:this.content(),source:getTokenSource(v),sourceIndex:v[A.FIELDS.START_POS]}));this.position++};l.parentheses=function parentheses(){var l=this.current.last;var v=1;this.position++;if(l&&l.type===F.PSEUDO){var m=new _["default"]({source:{start:tokenStart(this.tokens[this.position-1])}});var y=this.current;l.append(m);this.current=m;while(this.position<this.tokens.length&&v){if(this.currToken[A.FIELDS.TYPE]===q.openParenthesis){v++}if(this.currToken[A.FIELDS.TYPE]===q.closeParenthesis){v--}if(v){this.parse()}else{this.current.source.end=tokenEnd(this.currToken);this.current.parent.source.end=tokenEnd(this.currToken);this.position++}}this.current=y}else{var w=this.currToken;var k="(";var S;while(this.position<this.tokens.length&&v){if(this.currToken[A.FIELDS.TYPE]===q.openParenthesis){v++}if(this.currToken[A.FIELDS.TYPE]===q.closeParenthesis){v--}S=this.currToken;k+=this.parseParenthesisToken(this.currToken);this.position++}if(l){l.appendToPropertyAndEscape("value",k,k)}else{this.newNode(new O["default"]({value:k,source:getSource(w[A.FIELDS.START_LINE],w[A.FIELDS.START_COL],S[A.FIELDS.END_LINE],S[A.FIELDS.END_COL]),sourceIndex:w[A.FIELDS.START_POS]}))}}if(v){return this.expected("closing parenthesis",this.currToken[A.FIELDS.START_POS])}};l.pseudo=function pseudo(){var l=this;var v="";var m=this.currToken;while(this.currToken&&this.currToken[A.FIELDS.TYPE]===q.colon){v+=this.content();this.position++}if(!this.currToken){return this.expected(["pseudo-class","pseudo-element"],this.position-1)}if(this.currToken[A.FIELDS.TYPE]===q.word){this.splitWord(false,(function(y,_){v+=y;l.newNode(new P["default"]({value:v,source:getTokenSourceSpan(m,l.currToken),sourceIndex:m[A.FIELDS.START_POS]}));if(_>1&&l.nextToken&&l.nextToken[A.FIELDS.TYPE]===q.openParenthesis){l.error("Misplaced parenthesis.",{index:l.nextToken[A.FIELDS.START_POS]})}}))}else{return this.expected(["pseudo-class","pseudo-element"],this.currToken[A.FIELDS.START_POS])}};l.space=function space(){var l=this.content();if(this.position===0||this.prevToken[A.FIELDS.TYPE]===q.comma||this.prevToken[A.FIELDS.TYPE]===q.openParenthesis||this.current.nodes.every((function(l){return l.type==="comment"}))){this.spaces=this.optionalSpace(l);this.position++}else if(this.position===this.tokens.length-1||this.nextToken[A.FIELDS.TYPE]===q.comma||this.nextToken[A.FIELDS.TYPE]===q.closeParenthesis){this.current.last.spaces.after=this.optionalSpace(l);this.position++}else{this.combinator()}};l.string=function string(){var l=this.currToken;this.newNode(new O["default"]({value:this.content(),source:getTokenSource(l),sourceIndex:l[A.FIELDS.START_POS]}));this.position++};l.universal=function universal(l){var v=this.nextToken;if(v&&this.content(v)==="|"){this.position++;return this.namespace()}var m=this.currToken;this.newNode(new T["default"]({value:this.content(),source:getTokenSource(m),sourceIndex:m[A.FIELDS.START_POS]}),l);this.position++};l.splitWord=function splitWord(l,v){var m=this;var y=this.nextToken;var _=this.content();while(y&&~[q.dollar,q.caret,q.equals,q.word].indexOf(y[A.FIELDS.TYPE])){this.position++;var k=this.content();_+=k;if(k.lastIndexOf("\\")===k.length-1){var O=this.nextToken;if(O&&O[A.FIELDS.TYPE]===q.space){_+=this.requiredSpace(this.content(O));this.position++}}y=this.nextToken}var P=indexesOf(_,".").filter((function(l){var v=_[l-1]==="\\";var m=/^\d+\.\d+%$/.test(_);return!v&&!m}));var C=indexesOf(_,"#").filter((function(l){return _[l-1]!=="\\"}));var T=indexesOf(_,"#{");if(T.length){C=C.filter((function(l){return!~T.indexOf(l)}))}var L=(0,R["default"])(uniqs([0].conc
+{
+    "word": "कुल्य",
+    "ABCH": [
+        {
+            "word": "कुल्य",
+            "linga": "पुं",
+            "pagenum": "23",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1549",
+            "group": "524",
+            "synonyms": [
+                "कुलीन",
+                "अभिजात",
+                "कौलेयक",
+                "महाकुल",
+                "जात्य"
+            ],
+            "content": "कुल्यः कुलीनोऽभिजातः कौलेयकमहाकुलौ ॥ ५०२ ॥\nजात्यो गोत्रं तु संतानोऽन्ववायोऽभिजनः कुलम् ।\nअन्वयो जननं वंशः स्त्री नारी वनिता वधूः ॥ ५०३ ॥\nवशा सीमन्तिनी वामा वर्णिनी महिलाबला ।\nयोषा योषिद्विशेषास्तु कान्ता भीरुर्नितम्बिनी ॥ ५०४ ॥\nप्रमदा सुन्दरी रामा रमणी ललनाङ्गना ।"
+        },
+        {
+            "word": "कुल्य",
+            "linga": "पुंक्ली",
+            "pagenum": "27",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1913",
+            "group": "682",
+            "synonyms": [
+                "अस्थि",
+                "भारद्वाज",
+                "मेदस्तेजस्",
+                "मज्जकृत्",
+                "मांसपित्त",
+                "श्वदयित",
+                "कर्कर",
+                "देहधारक",
+                "मेदोज",
+                "कीकस",
+                "सार"
+            ],
+            "content": "अस्थि कुल्यं भारद्वाजं मेदस्तेजश्च मज्जकृत् ॥ ६२५ ॥\nमांसपित्तं श्वदयितं कर्करो देहधारकम् ।\nमेदोजं कीकसं सारं करोटिः शिरसोऽस्थनि ॥ ६२६ ॥"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "कुल्य",
+            "eid": "11222",
+            "pagenum": 413,
+            "content": "कुल्य¦ <i><ab>a.</ab></i> [कुल-यत्] <b>1</b> Relating to a family, race, or corporation. <b>--2</b> <lbinfo n='Well+born'/> Wellborn. --ल्यः A respectable man. --ल्यं <b>1</b> Friendly inquiry after family <lbinfo n='af+fairs'/> affairs, (condolence, congratulation &c.) <b>--2</b> A bone; <ls>Mv. 2. 16.</ls> <b>--3</b> Flesh. <b>--4</b> A winnowing basket. --ल्या <b>1</b> A virtuous woman. <b>--2</b> A small river, canal, stream;  <lbinfo n='kulyAMBo#BiH'/> कुल्यांभोभिः पवनचपलैः शाखिनो धौतमूलाः  <lbinfo n='ls:Ś. 1.+ 15'/> <ls>Ś. 1. 15</ls>; कुल्येवोद्यानपादपान् <ls>R. 12. 3</ls>,  <lbinfo n='ls:7.+49'/> <ls n='R.'>7. 49</ls>; <ls>U. 3. 23.</ls> <b>--3</b> A dike, trench. <b>--4</b> A measure of grain equal to 8 droṇas."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "कुल्य",
+            "eid": "3611",
+            "pagenum": 198,
+            "content": "कुल्य¦ <i>kulya,</i> <ab>i. e.</ab> <i>kula + ya,</i> <ab>adj.</ab>, <ab>f.</ab> <i>yā,</i> Referring or belonging to a family, <ls>Bhāg. P.</ls> 7, 6, 12; <ls>Bhartṛ.</ls> 3, 24. <b> --</b> <b><ab>Comp.</ab></b> <i>Sa-,</i> <ab>m.</ab> 1. A distant kinsman, <ls>Man.</ls> 9, 187. 2. A kinsman in general."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "कुल्य",
+            "eid": "2295",
+            "pagenum": 78,
+            "content": "कुल्य¦ (a कुल s. य) <i>Adj.</i> 1) familiaris. BHAR. 3. 24. 2) generosâ stirpe ortus. <i>Subst. n.</i> (ut videtur, a r. कुल् s. य) os, ossis. AM."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "कुल्य",
+            "eid": "4880",
+            "pagenum": 175,
+            "content": "कुल्य¦ <i>kulya</i> <ab>a.</ab> <i>(kula)</i> de la famille; relatif <lbinfo n='3'/> à la famille; || de bonne famille. -- <ab>S.</ab> <ab>m.</ab> conseiller. -- <i>kulyā</i> <ab>f.</ab> femme honnête et vertueuse. || Fossé, canal, rivière. || Micocoulier <lbinfo n='7'/> ou celtis orientalis, arbre dont l'écorce <lbinfo n='5'/> est employée contre l'épilepsie et la phthisie. -- <i>kulya</i> <ab>n.</ab> os; viande. || Van. || Mesure de 8 <i>droṇas</i> [environ 43 <ab n='litres'>lit.</ab>]."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "कुल्य",
+            "eid": "8090",
+            "pagenum": 125,
+            "content": "1 कुल्य¦ <lex>a.</lex> belonging to a family; also = कुलीन."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "8091",
+            "pagenum": 125,
+            "content": "2 कु/ल्य¦ <lex>a.</lex> belonging to a river."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "8092",
+            "pagenum": 126,
+            "content": "3 कुल्य¦ <lex>n.</lex> place for preserving the bones of a burnt corpse."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "कुल्य",
+            "eid": "5138",
+            "pagenum": 88,
+            "content": "1. कुल्य¦ = कुलीन"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "5139",
+            "pagenum": 88,
+            "content": "2. कु/ल्य¦ zu Flüssen gehörig."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "5140",
+            "pagenum": 88,
+            "content": "3. कुल्य¦ <i>n.</i> Aufbewahrungsort für die Knochen <lbinfo n='4'/> eines verbrannten Leichnams."
+        }
+    ],
+    "IEG": [
+        {
+            "word": "कुल्य",
+            "eid": "2911",
+            "pagenum": 165,
+            "content": "<i>kulya</i>¦ (IE 8-6), a measure of capacity equal to 8 <i>droṇas.</i> <dvsn n='P'>(<i>IE</i> 8-6; EI 29), a land measure; shortened form of <i>kulyavāpa.</i>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "कुल्य",
+            "eid": "09919",
+            "pagenum": 198,
+            "content": "kulya¦ <i>(I) a. (f. ल्या)</i> 1. Relating to a family; 2. well-born."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "09920",
+            "pagenum": 198,
+            "content": "kulya¦ <i>(II) m.</i> A respectable man."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "09921",
+            "pagenum": 198,
+            "content": "kulya¦ <i>(III) n.</i> 1. A bone; 2. flesh; 3. a winnowing basket; 4. friendly inquiry after family affairs."
+        }
+    ],
+    "MD": [
+        {
+            "word": "कुल्य",
+            "eid": "6098",
+            "pagenum": 71,
+            "content": "कुल्य¦ <hom>1.</hom> kul-ya, <lex>a.</lex> referring <i>or</i> belonging to 🞄a family."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "6099",
+            "pagenum": 71,
+            "content": "कुल्य¦ <hom>2.</hom> kulya, <lex>n.</lex> receptacle <i>for the bones of 🞄a cremated corpse</i>."
+        }
+    ],
+    "MW": [
+        {
+            "word": "कुल्य",
+            "eid": "53086",
+            "pagenum": "295,3",
+            "content": "<hom>1.</hom> कुल्य ¦ <lex>mf(आ)n.</lex> relating to a family or race, <ls>Bhartṛ. iii, 24</ls> (<ab>ifc.</ab>), <ls>BhP. vii, 6, 12</ls>; <ls n='BhP.'>x, 57, 1</ls> (<ab>cf.</ab> राज-क्°)<info lex='m:f#A:n'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53087",
+            "pagenum": "295,3",
+            "content": "¦ belonging to a congregation or corporation, <ls>W.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53088",
+            "pagenum": "295,3",
+            "content": "¦ of good family, well-descended, <ls>Pāṇ. iv, 1, 140</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53089",
+            "pagenum": "295,3",
+            "content": "कुल्य ¦ <lex>m.</lex> a respectable man, <ls>L.</ls><info lex='m'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53090",
+            "pagenum": "295,3",
+            "content": "¦ <ab>N.</ab> of a teacher (the pupil of <s1 slp1='pOzpaYji'>Pauṣpañji</s1>), <ls>BhP. xii, 6, 79</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53095",
+            "pagenum": "295,3",
+            "content": "कुल्य ¦ (अम्), <lex>n.</lex> friendly inquiry after family affairs or domestic accidents (condolence, congratulation, &c.), <ls>W.</ls><info lex='n'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53220",
+            "pagenum": "296,2",
+            "content": "कुल्य <hom>1a</hom> ¦ <hom>1.</hom> कुल्या/. See कु/ल."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53221",
+            "pagenum": "296,2",
+            "content": "<hom>2.</hom> कु/ल्य ¦ <lex>mfn.</lex> (<ab>fr.</ab> <hom>2.</hom> कुल्या/), presiding over a river (as a deity), <ls>VS. xvi, 37.</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53226",
+            "pagenum": "296,2",
+            "content": "<hom>3.</hom> कुल्य ¦ <lex>n.</lex> a receptacle for bones (left from a burnt corpse), <ls>MBh. i, 150, 13</ls>; <ls>Hariv. 2098</ls><info lex='n'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53227",
+            "pagenum": "296,2",
+            "content": "¦ a bone, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53228",
+            "pagenum": "296,2",
+            "content": "¦ flesh, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53229",
+            "pagenum": "296,2",
+            "content": "¦ a winnowing basket, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "53230",
+            "pagenum": "296,2",
+            "content": "¦ a measure of eight <s1 slp1='droRa'>Droṇa</s1>s, <ls>L.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "कुल्य",
+            "eid": "15328",
+            "pagenum": 241,
+            "content": "1. <i>kulya, as, ā, am,</i>¦ of or relating to a family or race; belonging to a congregation or corporation; of good family, well-born, well-descended; (<i>as</i>), m. a respectable man; (<i>ā</i>), f. a virtuous or decent woman; custom or habit of a family?; (<i>am</i>), n. friendly inquiry after family affairs or domestic accidents, condolence, congratulation, &c. (For 2. 3. see col. 3.)"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "15376",
+            "pagenum": 241,
+            "content": "कुल्य 2¦. <i>kulya, am,</i> n. (for 1. <i>kulya</i> see col. 1), a bone; flesh; a winnowing basket; a measure of eight Droṇas."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "15378",
+            "pagenum": 241,
+            "content": "3. <i>kulya, as, ā, am,</i>¦ Ved. belonging to a river."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "कुल्य",
+            "eid": "3287",
+            "pagenum": 1,
+            "content": "<i>Kulya</i> (I)¦ — a disciple of Pauṣyañji; learnt a hundred Sāma samhitas. <dvsn n='P'/>Bhā. XII. 6. 79."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "3288",
+            "pagenum": 1,
+            "content": "<i>Kulya</i> (II)¦ — a son of Āṇḍira, after whom the Kulya deśa was called. <dvsn n='P'/>Br. III. 74. 6."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "3289",
+            "pagenum": 1,
+            "content": "<i>Kulya</i> (III)¦ — one of the four sons of Janāpīḍa; his country, Kulayāḥ. <dvsn n='P'/>Vā. 99. 6."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "3290",
+            "pagenum": 1,
+            "content": "<i>Kulyas</i>¦ — the people of a southern kingdom,<sup>1</sup> a Janapada.<sup>2</sup> <F>1) Br. II. 16. 56; M. 114. 35 and 46.</F> <F>2) Vā. 45. 110, 124.</F>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "कुल्य",
+            "eid": "29326",
+            "pagenum": 2,
+            "content": "<hom>1.</hom> कुल्य¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> (<lex>f.</lex> आ) <dvsn n='2'>— a〉 <i>einem Geschlecht —, einer Familie eigenthümlich, dazu gehörig</i>. राज° <i>von königlichem Geschlecht</i>. <dvsn n='2'>— b〉 *<i>einer edlen Familie entsprossen;</i> <ab>Subst.</ab> <i>ein gesitteter Mann, eine tugendhafte Frau</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <ab>N. pr.</ab> eines Lehrers. <dvsn n='1'>— 3〉 *<lex>f.</lex> आ <dvsn n='2'>— a〉 <i>Schmarotzerpflanze</i>. <dvsn n='2'>— b〉 <i><bot>Solanum longum</bot></i>. <dvsn n='1'>— 4〉 *<lex>n.</lex> <i>eine freundliche Erkundigung nach den Familienverhältnissen</i>."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "29327",
+            "pagenum": 2,
+            "content": "<hom>2.</hom> कु/ल्य¦ <lex>Adj.</lex> <i>rivalis</i>."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "29328",
+            "pagenum": 2,
+            "content": "<hom>3.</hom> कुल्य¦ <lex>n.</lex> <dvsn n='1'>— 1〉 <i>ein Aufbewahrungsort der Knochen eines verbrannten Leichnams</i> <ls>MBH. 1,150,12</ls>. <ls>HARIV. 2098</ls>. <dvsn n='1'>— 2〉 *<i>Knochen</i>. <dvsn n='1'>— 3〉 *<i>Fleisch</i>. <dvsn n='1'>— 4〉 *<i>Schwingkorb</i>. <dvsn n='1'>— 5〉 *<i>ein <ab>best.</ab> Hohlmaass</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "कुल्य",
+            "eid": "18181",
+            "pagenum": 2,
+            "content": "1. कुल्य¦ (von कुल) <dvsn n='1'> 1) <lex>adj.</lex> <lex>f.</lex> आ <dvsn n='2'> a) <i>die Familie betreffend</i>: वृत्तीस्तु कुल्याः <ls>BHĀG. P. 7, 6, 12.</ls> = कुलहित <ls>MED. y. 14.</ls> Als <lex>n.</lex> <i>friendly inquiry after family affairs or domestic accidents, condolence, congratulation, etc.</i> <ls>WILS.</ls> <dvsn n='2'>— b) <i>zu einer Gemeine, einer Innung gehörig</i>: कुल्यगण als Erkl. von कुल <ls>H. an. 2, 480.</ls> तुल्यकुल्येषु <ls>BHARTṚ. 3, 24.</ls> <dvsn n='2'>— c) parox. <i>einer edlen Familie entsprossen</i> <ls>P. 4, 1, 140.</ls> <ls>TRIK. 2, 7, 1.</ls> <ls>H. 502.</ls> <ls>an. 2, 352.</ls> <ls>MED. y. 14.</ls> <lex>m.</lex> <i>ein achtungswerther Mann</i> (मान्य) <ls>MED.</ls> <lex>f.</lex> <i>eine tugendhafte, sittsame Frau</i> <ls>HALĀY.</ls> im <ls>ŚKDR.</ls> <dvsn n='1'>— 2) subst. oxyt. <is>gaṇa</is> बलादि zu <ls>P. 4, 2, 80.</ls>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "18182",
+            "pagenum": 2,
+            "content": "2. कु/ल्य¦ (von 1. कुल्या) <lex>adj.</lex> <i>rivalis</i>: नम\\ः कुल्या^य च सर\\स्या^य च <ls>VS. 16, 37.</ls>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "18183",
+            "pagenum": 2,
+            "content": "3. कुल्य¦ <lex>n.</lex> <dvsn n='1'> 1) <i>Knochen</i> <ls>AK. 2, 6, 2, 19.</ls> <ls>H. 625.</ls> <ls>an. 2, 352.</ls> <ls>MED. y. 13.</ls> <dvsn n='1'>— 2) <i>Fleisch.</i> <dvsn n='1'>— 3) <i>Schwingkorb.</i> <dvsn n='1'>— 4) <i>ein best. Hohlmaass</i>, = 8 <is>Droṇa</is> <ls>H. an.</ls> <ls>MED.</ls>"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "71176",
+            "pagenum": 5,
+            "content": "1. कुल्य¦ <dvsn n='1'> 1) <dvsn n='2'> a) °करण <ls>BHĀG. P. 10, 57, 1.</ls> राज° <i>von königlichem Geschlecht, von königlicher Abstammung</i> <ls n='BHĀG. P.'>64, 38.</ls> किरातकुल्यौ <ls>PAÑCAV. BR. 13, 12, 5</ls>; vgl. M. <ls>MÜLLER</ls> in <ls>J. R. As. S. 2, 438.</ls> <dvsn n='2'>— b) तुल्य° ist so v. a. सकुल्य <i>Geschlechtsgenosse, Verwandter.</i> <dvsn n='1'>— 2) <lex>m.</lex> N. pr. eines Schülers des <is>Pauṣpañji</is> <ls>BHĀG. P. 12, 6, 79.</ls> <dvsn n='v'>— Vgl. चक्रकुल्या ."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "119537",
+            "pagenum": 7,
+            "content": "3. कुल्य¦ <dvsn n='1'> 1) <ls>HARIV. 2098</ls> nach <ls>NĪLAK.</ls>"
+        }
+    ],
+    "SHS": [
+        {
+            "word": "कुल्य",
+            "eid": "11008",
+            "pagenum": 193,
+            "content": "कुल्य¦ mfn. (-ल्यः-ल्या-ल्यं) 1. Of a good family, well-born, well descended. 2. Of or relating to a family or race. m. (-ल्यः) A counsellor. f. (-ल्या) 1. A river in general. 2. A canal, a channel for irrigation. 3. A ditch, a dyke or trench. 4. A drug or medicinal plant, (Celtis orientalis:) see जीवन्ती. 5. A chaste or virtuous woman, n. (-ल्यं) 1. A bone. 2. A measure of eight Dronas: see द्रोण 3. A winnowing basket. 4. Flesh. 5. Friendly inquiry after family affairs or domestic accidents, condolence, congratulation, &c. E. कुल् to accumulate, and यत् affix, &c."
+        }
+    ],
+    "STC": [
+        {
+            "word": "कुल्य",
+            "eid": "8147",
+            "pagenum": 201,
+            "content": "<b>1 kulya-</b>¦ <ab>a.</ab> qui appartient à la famille ou à la communauté."
+        },
+        {
+            "word": "कुल्य",
+            "eid": "8148",
+            "pagenum": 201,
+            "content": "<b>2 kulya-</b>¦ <ab>nt.</ab> réceptacle des os (après la crémation) ; os."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "कुल्य",
+            "eid": "11014",
+            "pagenum": 235,
+            "content": "कुल्य¦ mfn. (-ल्यः-ल्या-ल्यं) .²1 Of a good family, well-born, well descended. .²2 Of or relating to a family or race. m. (-ल्यः) A counsellor. f. (-ल्या) .²1 A river in general. .²2 A canal, a channel for irrigation. .²3 A ditch, a dyke or trench. .²4 A drug or medicinal plant, (<bot>Celtis orientalis</bot>:) see जीवन्ती. .²5 A chaste or virtuous woman. n. (-ल्यं) .²1 A bone. .²2 A measure of eight <i>Droṇas:</i> see द्रोण. .²3 A winnowing basket. .²4 Flesh. .²5 Friendly inquiry after family affairs or domestic accidents, condolence, congratulation, &c. .E. कुल to accumulate, and यत् affix, &c."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "कुल्य",
+            "eid": "10459",
+            "pagenum": 199,
+            "content": "कुल्य¦ (ल्यं) 1. <i>n.</i> A bone; a measure; flesh; kind inquiry. <i>m.</i> A counseller. <i>f.</i> (ल्या) A river; a chaste woman. <i>a.</i> Well born, well bred."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कुल्य",
+            "eid": "8305",
+            "pagenum": "2-156-c",
+            "content": "कुल्यं¦, क्ली, (कुल् बन्धे + क्यप् ।) अस्थि । इत्यमरः । २ । ६ । ६८ ॥ अष्टद्रोणपरिमाणम् । सूर्पम् । आमिषम् । इति मेदिनी ॥"
+        },
+        {
+            "word": "कुल्य",
+            "eid": "8306",
+            "pagenum": "2-156-c",
+            "content": "कुल्यः¦, त्रि, (कुलस्यापत्यम् । “अपूर्व्वपदादन्यतरस्यामिति” । ४ । १ । १४० । इति यत् । यद्वा कुले भवः कुलाय हितः कुले साधुः वा दिगादित्वात् तत्र साधुरिवि वा यत् ।) कुलोद्भवः । कुलहितः । (यथा, भागवते ७ । ६ । १३ । “गृहान् मनोज्ञोरुपरिच्छदांश्च वृत्तीश्च कुल्याः पशुभृत्यवर्गान्” ॥) मान्ये पुं इति । मेदिनी ।"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "कुल्य",
+            "eid": "14362",
+            "pagenum": "2140,a",
+            "content": "कुल्य¦ न० कुल--क्यप् । १ अस्थ्नि अमरः । २ अष्टद्रोणपरिमाणे शूर्पे ३ आमिषे च मेदि० । कुले भवः यत् । ४ कुलजाते ५ मान्येच त्रि० मेदि० । कुल + चतुरर्थ्या बला० य । ५ कुलसन्निकृष्टदेशादौ त्रि० । कुलाय हितं यत् । ६ कुलहिते त्रि० “वृत्तीश्च कुल्याः पशुभूतवर्गान्” भाग० ७ । ६ । १३ । कुल्यायां भवः यत् यलोपः । ९ कुल्याभवे त्रि० “नमः कुल्याय त्व सरस्याय च” यजु० १६, ३७ कृत्रिमेऽल्पे १० सरिद्भेदे स्त्री अमरः ११ पयःप्रणाल्याम् १२ जीवन्त्यामौषधौ १२ नदीमात्रे च स्त्री० मेदि० “मैन्धवारण्यमासाद्य कुल्यानां कुरु दर्शनम्” भा० व० १०४०८ श्लो० । “घृतकुल्याश्च दघ्नश्च नद्यो बहुशतास्तथा” भा० व० ८५३० श्लो० । ऋषिकुल्या घृतकुल्या दधिकुल्या मधुकुल्या इत्यादि ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कुल्य",
+            "content": "कुल्य वि. -  कुल - यत् 'कुटुंब, वंश या निगम से सम्बन्ध रखने वाला'"
+        },
+        {
+            "word": "कुल्य",
+            "content": "कुल्य वि. -  कुल - यत् सत्कुलोद्भव"
+        },
+        {
+            "word": "कुल्य",
+            "content": "कुल्यः पुं. -  कुल - यत् प्रतिष्ठित मनुष्य"
+        },
+        {
+            "word": "कुल्य",
+            "content": "कुल्यम् नपुं. -  कुल - यत् कौटुंबिक विषयों में मित्रों की भाँति पूछताछ"
+        },
+        {
+            "word": "कुल्य",
+            "content": "कुल्यम् नपुं. -  कुल - यत् हड्डी"
+        },
+        {
+            "word": "कुल्य",
+            "content": "कुल्यम् नपुं. -  कुल - यत् मांस"
+        },
+        {
+            "word": "कुल्य",
+            "content": "कुल्यम् नपुं. -  कुल - यत् छाज"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कुल्य",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಮಾನ್ಯನಾದ ಪುರುಷ \\/ಗೌರವಿಸಲು ಯೋಗ್ಯನಾದವನು",
+            "व्युत्पत्तिः": "कुले सत्कुले भवः",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಎಲುಬು \\/ಮೂಳೆ",
+            "निष्पत्तिः": "कुल (संस्त्याने)'यक्' (उ० ४-१११)",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಮಾಂಸ",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಶೂರ್ಪ \\/ಮೊರ \\/ಧಾನ್ಯವನ್ನು ಕೇರುವ ಒಂದು ಸಾಧನ",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "೮ ಕೊಳಗದ ಅಳತೆ",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಕೃತ್ರಿಮವಾದ ಸಣ್ಣ ಹೊಳೆ \\/ಅಗೆದು ತೋಡಿ ನಿರ್ಮಿತವಾದ ನದಿ",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಬದನಿಕೆ ಗಿಡ",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ನದಿ \\/ಹೊಳೆ",
+            "प्रयोगाः": "'सेनास्वानाद्दन्तिनामात्मनैव स्थूलास्तावत् प्रावहन् दानकुल्याः'",
+            "उल्लेखाः": "माघ० १८-२६",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಸತ್ಕುಲದಲ್ಲಿ ಹುಟ್ಟಿದ ಹೆಂಗಸು",
+            "प्रयोगाः": "'केनापि दौष्कुलेयेन कुल्यां महाकुलीं प्रियाम् । हृतां माहाकुलीनस्य तस्य लिप्सामहे वयम् ॥'",
+            "उल्लेखाः": "भट्टि० ७-८८",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಕುಲಕ್ಕೆ ಹಿತವಾದ \\/ವಂಶಕ್ಕೆ ಅನುಕೂಲವಾದ",
+            "निष्पत्तिः": "'यत्' (५-१-५)",
+            "व्युत्पत्तिः": "कुलाय हितम्",
+            "content": ""
+        },
+        {
+            "word": "कुल्य",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ವಂಶದಲ್ಲಿ ಹುಟ್ಟಿದ \\/ಕುಲದಲ್ಲಿ ಜನಿಸಿದ",
+            "विस्तारः": "'कुल्यं स्यात् कीकसेऽप्यष्टद्रोणीशूर्पामिमेषु च । कुल्या पयःप्रणाल्यां च नद्यां जीवन्तिकोषधौ । कुलोद्भवे कुलहिते त्रिषु मान्ये पुनः पुमान्'मेदि० ।",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "कुल्य",
+            "linga": "N",
+            "artha": "अस्थिः",
+            "synonyms": [
+                "कीकस",
+                "कुल्य",
+                "अस्थि"
+            ],
+            "num": "2.6.69",
+            "text": "पुरीषं गूथवर्चस्कमस्त्री विष्ठाविशौ स्त्रियौ । स्यात्कर्परः कपालोऽस्त्री कीकसं कुल्यमस्थि च ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "कुल्य",
+            "content": "<lexhead no=\"1300\">\n<dentry>कुल्य</dentry>\n<prAwipaxikam>कुल्य</prAwipaxikam>\n<grammar>वि*</grammar>\n<prAwipaxikam gen=\"स्त्री\">कुल्य</prAwipaxikam>\n<etymology>[कुल - यत्]</etymology>\n<is_a_part>देहः</is_a_part>\n<kind_of>देहावयवः</kind_of>\n<upAXi>अवयवः</upAXi>\n<sense no=\"1\">कुटुंब, वंश या निगम से सम्बन्ध रखने वाला</sense>\n<sense n=\"2\">सत्कुलोद्भव</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "कुल्य",
+            "content": "<body><s>kulya na° kula—kyap . <lb/><b>1</b> asTni amaraH . <lb/><b>2</b> azwadroRaparimARe SUrpe <lb/><b>3</b> Amize ca medi° . kule BavaH yat . <lb/><b>4</b> kulajAte <lb/><b>5</b> mAnyeca tri° medi° . kula + caturarTyA balA° ya . 5 kula­sannikfzwadeSAdO tri° . kulAya hitaM yat . <lb/><b>6</b> kulahite tri° <q>vfttISca kulyAH paSuBUtavargAn</q> BAga° <lb/><b>7</b> . 6 . 13 . kulyAyAM BavaH yat yalopaH . 9 kulyABave tri° <q>namaH kulyAya tva sarasyAya ca</q> yaju° 16, 37 kftrime'lpe 1° sa­ridBede strI amaraH 11 payaHpraRAlyAm 12 jIvantyA­mOzaDO 12 nadImAtre ca strI° medi° <q>mEnDavAraRyamAsAdya kulyAnAM kuru darSanam</q> BA° va° 1°4°8 Slo° . <q>Gfta­kulyASca daGnaSca nadyo bahuSatAstaTA</q> BA° va° 853° Slo° . fzikulyA GftakulyA daDikulyA maDukulyA ityAdi .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "कुल्य",
+            "content": "<H2><h><key1>kulya</key1><key2>kulya</key2><hom>1</hom></h><body><hom>1.</hom> <s>kulya</s>   <lex>mf(<s>A</s>)n.</lex> relating to a family or race, <ls>Bhartṛ. iii, 24</ls> (<ab>ifc.</ab>), <ls>BhP. vii, 6, 12</ls>; <ls n=\"BhP.\">x, 57, 1</ls> (<ab>cf.</ab> <s>rAja-k°</s>)<info lex=\"m:f#A:n\" /></body><tail><L>53086</L><pc>295,3</pc></tail></H2>\n <H2A><h><key1>kulya</key1><key2>kulya</key2></h><body>  belonging to a congregation or corporation, <ls>W.</ls><info lex=\"inh\" /></body><tail><L>53087</L><pc>295,3</pc></tail></H2A>\n <H2A><h><key1>kulya</key1><key2>kulya</key2></h><body>  of good family, well-descended, <ls>Pāṇ. iv, 1, 140</ls><info lex=\"inh\" /></body><tail><L>53088</L><pc>295,3</pc></tail></H2A>\n <H2B><h><key1>kulya</key1><key2>kulya</key2></h><body><s>kulya</s>   <lex>m.</lex> a respectable man, <ls>L.</ls><info lex=\"m\" /></body><tail><L>53089</L><pc>295,3</pc></tail></H2B>\n <H2B><h><key1>kulya</key1><key2>kulya</key2></h><body>  <ab>N.</ab> of a teacher (the pupil of <s1 slp1=\"pOzpaYji\">Pauṣpañji</s1>), <ls>BhP. xii, 6, 79</ls><info lex=\"inh\" /></body><tail><L>53090</L><pc>295,3</pc></tail></H2B>\n <H2B><h><key1>kulya</key1><key2>kulya</key2></h><body><s>kulya</s>   (<s>am</s>), <lex>n.</lex> friendly inquiry after family affairs or domestic accidents (condolence, congratulation, &amp;c.), <ls>W.</ls><info lex=\"n\" /></body><tail><L>53095</L><pc>295,3</pc></tail></H2B>\n <H1><h><key1>kulya</key1><key2>kulya</key2><hom>1a</hom></h><body><s>kulya</s> <hom>1a</hom>   <hom>1.</hom> <s>kulyA/</s>. See <s>ku/la</s>.</body><tail><L>53220</L><pc>296,2</pc></tail></H1>\n <H1><h><key1>kulya</key1><key2>ku/lya</key2><hom>2</hom></h><body><hom>2.</hom> <s>ku/lya</s>   <lex>mfn.</lex> (<ab>fr.</ab> <hom>2.</hom> <s>kulyA/</s>), presiding over a river (as a deity), <ls>VS. xvi, 37.</ls><info lex=\"m:f:n\" /></body><tail><L>53221</L><pc>296,2</pc></tail></H1>\n <H1><h><key1>kulya</key1><key2>kulya</key2><hom>3</hom></h><body><hom>3.</hom> <s>kulya</s>   <lex>n.</lex> a receptacle for bones (left from a burnt corpse), <ls>MBh. i, 150, 13</ls>; <ls>Hariv. 2098</ls><info lex=\"n\" /></body><tail><L>53226</L><pc>296,2</pc></tail></H1>\n <H1A><h><key1>kulya</key1><key2>kulya</key2></h><body>  a bone, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53227</L><pc>296,2</pc></tail></H1A>\n <H1A><h><key1>kulya</key1><key2>kulya</key2></h><body>  flesh, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53228</L><pc>296,2</pc></tail></H1A>\n <H1A><h><key1>kulya</key1><key2>kulya</key2></h><body>  a winnowing basket, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53229</L><pc>296,2</pc></tail></H1A>\n <H1A><h><key1>kulya</key1><key2>kulya</key2></h><body>  a measure of eight <s1 slp1=\"droRa\">Droṇa</s1>s, <ls>L.</ls><info lex=\"inh\" /></body><tail><L>53230</L><pc>296,2</pc></tail></H1A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "कुल्य",
+            "content": "<H1><h><key1>kulya</key1><key2>kulya</key2></h><body><s>kulya</s>  <div n=\"1\">mfn. (<s>-lyaH-lyA-lyaM</s>) </div><div n=\"2\"> 1. Of a good family, well-born, well descended. <lb />2. Of or relating to a family or race. </div><div n=\"1\">m. (<s>-lyaH</s>) A counsellor. </div><div n=\"1\">f. <lb />(<s>-lyA</s>) </div><div n=\"2\"> 1. A river in general. </div><div n=\"2\"> 2. A canal, a channel for irrigation. <lb />3. A ditch, a dyke or trench. </div><div n=\"2\"> 4. A drug or medicinal plant, (Cel- <lb />tis orientalis:) see <s>jIvantI</s>. </div><div n=\"2\"> 5. A chaste or virtuous woman, </div><div n=\"1\">n. (<s>-lyaM</s>) <lb />1. A bone. </div><div n=\"2\"> 2. A measure of eight Dronas: see <s>droRa</s> </div><div n=\"2\"> 3. A win- <lb />nowing basket. </div><div n=\"2\"> 4. Flesh. </div><div n=\"2\"> 5. Friendly inquiry after family affairs or <lb />domestic accidents, condolence, congratulation, &amp;c.</div><div n=\"E\"> E. <s>kul</s> to <lb />accumulate, and <s>yat</s> affix, &amp;c.</div></body><tail><L>11008</L><pc>193-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कुल्य",
+            "content": "<span lang=\"sa\">कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮಾನ್ಯನಾದ ಪುರುಷ /ಗೌರವಿಸಲು ಯೋಗ್ಯನಾದವನು<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>कुले सत्कुले भवः<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಎಲುಬು /ಮೂಳೆ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>कुल (संस्त्याने) - \"यक्\" (उ० ४-१११)<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮಾಂಸ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶೂರ್ಪ /ಮೊರ /ಧಾನ್ಯವನ್ನು ಕೇರುವ ಒಂದು ಸಾಧನ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>೮ ಕೊಳಗದ ಅಳತೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೃತ್ರಿಮವಾದ ಸಣ್ಣ ಹೊಳೆ /ಅಗೆದು ತೋಡಿ ನಿರ್ಮಿತವಾದ ನದಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬದನಿಕೆ ಗಿಡ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನದಿ /ಹೊಳೆ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"सेनास्वानाद्दन्तिनामात्मनैव स्थूलास्तावत् प्रावहन् दानकुल्याः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० १८-२६<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸತ್ಕುಲದಲ್ಲಿ ಹುಟ್ಟಿದ ಹೆಂಗಸು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"केनापि दौष्कुलेयेन कुल्यां महाकुलीं प्रियाम् । हृतां माहाकुलीनस्य तस्य लिप्सामहे वयम् ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भट्टि० ७-८८<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕುಲಕ್ಕೆ ಹಿತವಾದ /ವಂಶಕ್ಕೆ ಅನುಕೂಲವಾದ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"यत्\" (५-१-५)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>कुलाय हितम्<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कुल्य<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>विशेष्यनिघ्नम्<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವಂಶದಲ್ಲಿ ಹುಟ್ಟಿದ /ಕುಲದಲ್ಲಿ ಜನಿಸಿದ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"कुल्यं स्यात् कीकसेऽप्यष्टद्रोणीशूर्पामिमेषु च । कुल्या पयःप्रणाल्यां च नद्यां जीवन्तिकोषधौ । कुलोद्भवे कुलहिते त्रिषु मान्ये पुनः पुमान्\" - मेदि० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

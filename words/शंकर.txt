@@ -1,425 +1,207 @@
-under the terms of the WTFPL, Version 2
-	  // For more information see LICENSE.txt or http://www.wtfpl.net/
-	  //
-	  // For more information, the home page:
-	  // http://pieroxy.net/blog/pages/lz-string/testing.html
-	  //
-	  // LZ-based compression algorithm, version 1.4.5
-	  var LZString = function () {
-	    // private property
-	    var f = String.fromCharCode;
-	    var keyStrBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-	    var keyStrUriSafe = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
-	    var baseReverseDic = {};
-	    function getBaseValue(alphabet, character) {
-	      if (!baseReverseDic[alphabet]) {
-	        baseReverseDic[alphabet] = {};
-	        for (var i = 0; i < alphabet.length; i++) {
-	          baseReverseDic[alphabet][alphabet.charAt(i)] = i;
-	        }
-	      }
-	      return baseReverseDic[alphabet][character];
-	    }
-	    var LZString = {
-	      compressToBase64: function (input) {
-	        if (input == null) return "";
-	        var res = LZString._compress(input, 6, function (a) {
-	          return keyStrBase64.charAt(a);
-	        });
-	        switch (res.length % 4) {
-	          // To produce valid Base64
-	          default: // When could this happen ?
-	          case 0:
-	            return res;
-	          case 1:
-	            return res + "===";
-	          case 2:
-	            return res + "==";
-	          case 3:
-	            return res + "=";
-	        }
-	      },
-	      decompressFromBase64: function (input) {
-	        if (input == null) return "";
-	        if (input == "") return null;
-	        return LZString._decompress(input.length, 32, function (index) {
-	          return getBaseValue(keyStrBase64, input.charAt(index));
-	        });
-	      },
-	      compressToUTF16: function (input) {
-	        if (input == null) return "";
-	        return LZString._compress(input, 15, function (a) {
-	          return f(a + 32);
-	        }) + " ";
-	      },
-	      decompressFromUTF16: function (compressed) {
-	        if (compressed == null) return "";
-	        if (compressed == "") return null;
-	        return LZString._decompress(compressed.length, 16384, function (index) {
-	          return compressed.charCodeAt(index) - 32;
-	        });
-	      },
-	      //compress into uint8array (UCS-2 big endian format)
-	      compressToUint8Array: function (uncompressed) {
-	        var compressed = LZString.compress(uncompressed);
-	        var buf = new Uint8Array(compressed.length * 2); // 2 bytes per character
-
-	        for (var i = 0, TotalLen = compressed.length; i < TotalLen; i++) {
-	          var current_value = compressed.charCodeAt(i);
-	          buf[i * 2] = current_value >>> 8;
-	          buf[i * 2 + 1] = current_value % 256;
-	        }
-	        return buf;
-	      },
-	      //decompress from uint8array (UCS-2 big endian format)
-	      decompressFromUint8Array: function (compressed) {
-	        if (compressed === null || compressed === undefined) {
-	          return LZString.decompress(compressed);
-	        } else {
-	          var buf = new Array(compressed.length / 2); // 2 bytes per character
-	          for (var i = 0, TotalLen = buf.length; i < TotalLen; i++) {
-	            buf[i] = compressed[i * 2] * 256 + compressed[i * 2 + 1];
-	          }
-	          var result = [];
-	          buf.forEach(function (c) {
-	            result.push(f(c));
-	          });
-	          return LZString.decompress(result.join(''));
-	        }
-	      },
-	      //compress into a string that is already URI encoded
-	      compressToEncodedURIComponent: function (input) {
-	        if (input == null) return "";
-	        return LZString._compress(input, 6, function (a) {
-	          return keyStrUriSafe.charAt(a);
-	        });
-	      },
-	      //decompress from an output of compressToEncodedURIComponent
-	      decompressFromEncodedURIComponent: function (input) {
-	        if (input == null) return "";
-	        if (input == "") return null;
-	        input = input.replace(/ /g, "+");
-	        return LZString._decompress(input.length, 32, function (index) {
-	          return getBaseValue(keyStrUriSafe, input.charAt(index));
-	        });
-	      },
-	      compress: function (uncompressed) {
-	        return LZString._compress(uncompressed, 16, function (a) {
-	          return f(a);
-	        });
-	      },
-	      _compress: function (uncompressed, bitsPerChar, getCharFromInt) {
-	        if (uncompressed == null) return "";
-	        var i,
-	          value,
-	          context_dictionary = {},
-	          context_dictionaryToCreate = {},
-	          context_c = "",
-	          context_wc = "",
-	          context_w = "",
-	          context_enlargeIn = 2,
-	          // Compensate for the first entry which should not count
-	          context_dictSize = 3,
-	          context_numBits = 2,
-	          context_data = [],
-	          context_data_val = 0,
-	          context_data_position = 0,
-	          ii;
-	        for (ii = 0; ii < uncompressed.length; ii += 1) {
-	          context_c = uncompressed.charAt(ii);
-	          if (!Object.prototype.hasOwnProperty.call(context_dictionary, context_c)) {
-	            context_dictionary[context_c] = context_dictSize++;
-	            context_dictionaryToCreate[context_c] = true;
-	          }
-	          context_wc = context_w + context_c;
-	          if (Object.prototype.hasOwnProperty.call(context_dictionary, context_wc)) {
-	            context_w = context_wc;
-	          } else {
-	            if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate, context_w)) {
-	              if (context_w.charCodeAt(0) < 256) {
-	                for (i = 0; i < context_numBits; i++) {
-	                  context_data_val = context_data_val << 1;
-	                  if (context_data_position == bitsPerChar - 1) {
-	                    context_data_position = 0;
-	                    context_data.push(getCharFromInt(context_data_val));
-	                    context_data_val = 0;
-	                  } else {
-	                    context_data_position++;
-	                  }
-	                }
-	                value = context_w.charCodeAt(0);
-	                for (i = 0; i < 8; i++) {
-	                  context_data_val = context_data_val << 1 | value & 1;
-	                  if (context_data_position == bitsPerChar - 1) {
-	                    context_data_position = 0;
-	                    context_data.push(getCharFromInt(context_data_val));
-	                    context_data_val = 0;
-	                  } else {
-	                    context_data_position++;
-	                  }
-	                  value = value >> 1;
-	                }
-	              } else {
-	                value = 1;
-	                for (i = 0; i < context_numBits; i++) {
-	                  context_data_val = context_data_val << 1 | value;
-	                  if (context_data_position == bitsPerChar - 1) {
-	                    context_data_position = 0;
-	                    context_data.push(getCharFromInt(context_data_val));
-	                    context_data_val = 0;
-	                  } else {
-	                    context_data_position++;
-	                  }
-	                  value = 0;
-	                }
-	                value = context_w.charCodeAt(0);
-	                for (i = 0; i < 16; i++) {
-	                  context_data_val = context_data_val << 1 | value & 1;
-	                  if (context_data_position == bitsPerChar - 1) {
-	                    context_data_position = 0;
-	                    context_data.push(getCharFromInt(context_data_val));
-	                    context_data_val = 0;
-	                  } else {
-	                    context_data_position++;
-	                  }
-	                  value = value >> 1;
-	                }
-	              }
-	              context_enlargeIn--;
-	              if (context_enlargeIn == 0) {
-	                context_enlargeIn = Math.pow(2, context_numBits);
-	                context_numBits++;
-	              }
-	              delete context_dictionaryToCreate[context_w];
-	            } else {
-	              value = context_dictionary[context_w];
-	              for (i = 0; i < context_numBits; i++) {
-	                context_data_val = context_data_val << 1 | value & 1;
-	                if (context_data_position == bitsPerChar - 1) {
-	                  context_data_position = 0;
-	                  context_data.push(getCharFromInt(context_data_val));
-	                  context_data_val = 0;
-	                } else {
-	                  context_data_position++;
-	                }
-	                value = value >> 1;
-	              }
-	            }
-	            context_enlargeIn--;
-	            if (context_enlargeIn == 0) {
-	              context_enlargeIn = Math.pow(2, context_numBits);
-	              context_numBits++;
-	            }
-	            // Add wc to the dictionary.
-	            context_dictionary[context_wc] = context_dictSize++;
-	            context_w = String(context_c);
-	          }
-	        }
-
-	        // Output the code for w.
-	        if (context_w !== "") {
-	          if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate, context_w)) {
-	            if (context_w.charCodeAt(0) < 256) {
-	              for (i = 0; i < context_numBits; i++) {
-	                context_data_val = context_data_val << 1;
-	                if (context_data_position == bitsPerChar - 1) {
-	                  context_data_position = 0;
-	                  context_data.push(getCharFromInt(context_data_val));
-	                  context_data_val = 0;
-	                } else {
-	                  context_data_position++;
-	                }
-	              }
-	              value = context_w.charCodeAt(0);
-	              for (i = 0; i < 8; i++) {
-	                context_data_val = context_data_val << 1 | value & 1;
-	                if (context_data_position == bitsPerChar - 1) {
-	                  context_data_position = 0;
-	                  context_data.push(getCharFromInt(context_data_val));
-	                  context_data_val = 0;
-	                } else {
-	                  context_data_position++;
-	                }
-	                value = value >> 1;
-	              }
-	            } else {
-	              value = 1;
-	              for (i = 0; i < context_numBits; i++) {
-	                context_data_val = context_data_val << 1 | value;
-	                if (context_data_position == bitsPerChar - 1) {
-	                  context_data_position = 0;
-	                  context_data.push(getCharFromInt(context_data_val));
-	                  context_data_val = 0;
-	                } else {
-	                  context_data_position++;
-	                }
-	                value = 0;
-	              }
-	              value = context_w.charCodeAt(0);
-	              for (i = 0; i < 16; i++) {
-	                context_data_val = context_data_val << 1 | value & 1;
-	                if (context_data_position == bitsPerChar - 1) {
-	                  context_data_position = 0;
-	                  context_data.push(getCharFromInt(context_data_val));
-	                  context_data_val = 0;
-	                } else {
-	                  context_data_position++;
-	                }
-	                value = value >> 1;
-	              }
-	            }
-	            context_enlargeIn--;
-	            if (context_enlargeIn == 0) {
-	              context_enlargeIn = Math.pow(2, context_numBits);
-	              context_numBits++;
-	            }
-	            delete context_dictionaryToCreate[context_w];
-	          } else {
-	            value = context_dictionary[context_w];
-	            for (i = 0; i < context_numBits; i++) {
-	              context_data_val = context_data_val << 1 | value & 1;
-	              if (context_data_position == bitsPerChar - 1) {
-	                context_data_position = 0;
-	                context_data.push(getCharFromInt(context_data_val));
-	                context_data_val = 0;
-	              } else {
-	                context_data_position++;
-	              }
-	              value = value >> 1;
-	            }
-	          }
-	          context_enlargeIn--;
-	          if (context_enlargeIn == 0) {
-	            context_enlargeIn = Math.pow(2, context_numBits);
-	            context_numBits++;
-	          }
-	        }
-
-	        // Mark the end of the stream
-	        value = 2;
-	        for (i = 0; i < context_numBits; i++) {
-	          context_data_val = context_data_val << 1 | value & 1;
-	          if (context_data_position == bitsPerChar - 1) {
-	            context_data_position = 0;
-	            context_data.push(getCharFromInt(context_data_val));
-	            context_data_val = 0;
-	          } else {
-	            context_data_position++;
-	          }
-	          value = value >> 1;
-	        }
-
-	        // Flush the last char
-	        while (true) {
-	          context_data_val = context_data_val << 1;
-	          if (context_data_position == bitsPerChar - 1) {
-	            context_data.push(getCharFromInt(context_data_val));
-	            break;
-	          } else context_data_position++;
-	        }
-	        return context_data.join('');
-	      },
-	      decompress: function (compressed) {
-	        if (compressed == null) return "";
-	        if (compressed == "") return null;
-	        return LZString._decompress(compressed.length, 32768, function (index) {
-	          return compressed.charCodeAt(index);
-	        });
-	      },
-	      _decompress: function (length, resetValue, getNextValue) {
-	        var dictionary = [],
-	          enlargeIn = 4,
-	          dictSize = 4,
-	          numBits = 3,
-	          entry = "",
-	          result = [],
-	          i,
-	          w,
-	          bits,
-	          resb,
-	          maxpower,
-	          power,
-	          c,
-	          data = {
-	            val: getNextValue(0),
-	            position: resetValue,
-	            index: 1
-	          };
-	        for (i = 0; i < 3; i += 1) {
-	          dictionary[i] = i;
-	        }
-	        bits = 0;
-	        maxpower = Math.pow(2, 2);
-	        power = 1;
-	        while (power != maxpower) {
-	          resb = data.val & data.position;
-	          data.position >>= 1;
-	          if (data.position == 0) {
-	            data.position = resetValue;
-	            data.val = getNextValue(data.index++);
-	          }
-	          bits |= (resb > 0 ? 1 : 0) * power;
-	          power <<= 1;
-	        }
-	        switch (bits) {
-	          case 0:
-	            bits = 0;
-	            maxpower = Math.pow(2, 8);
-	            power = 1;
-	            while (power != maxpower) {
-	              resb = data.val & data.position;
-	              data.position >>= 1;
-	              if (data.position == 0) {
-	                data.position = resetValue;
-	                data.val = getNextValue(data.index++);
-	              }
-	              bits |= (resb > 0 ? 1 : 0) * power;
-	              power <<= 1;
-	            }
-	            c = f(bits);
-	            break;
-	          case 1:
-	            bits = 0;
-	            maxpower = Math.pow(2, 16);
-	            power = 1;
-	            while (power != maxpower) {
-	              resb = data.val & data.position;
-	              data.position >>= 1;
-	              if (data.position == 0) {
-	                data.position = resetValue;
-	                data.val = getNextValue(data.index++);
-	              }
-	              bits |= (resb > 0 ? 1 : 0) * power;
-	              power <<= 1;
-	            }
-	            c = f(bits);
-	            break;
-	          case 2:
-	            return "";
-	        }
-	        dictionary[3] = c;
-	        w = c;
-	        result.push(c);
-	        while (true) {
-	          if (data.index > length) {
-	            return "";
-	          }
-	          bits = 0;
-	          maxpower = Math.pow(2, numBits);
-	          power = 1;
-	          while (power != maxpower) {
-	            resb = data.val & data.position;
-	            data.position >>= 1;
-	            if (data.position == 0) {
-	              data.position = resetValue;
-	              data.val = getNextValue(data.index++);
-	            }
-	            bits |= (resb > 0 ? 1 : 0) * power;
-	            power <<= 1;
-	          }
-	          switch (c = bits) {
-	            case 0:
-	              bits = 0;
-	              maxpower = Math.pow(2, 8);
-	              power = 1;
-	              while (power != maxp
+{
+    "word": "शंकर",
+    "AP90": [
+        {
+            "word": "शंकर",
+            "eid": "27550",
+            "pagenum": 1029,
+            "content": "शंकर¦ <i><ab>a.</ab></i> (रा --री <i><ab>f.</ab></i>) [शं सुखं करोति कृ-अच्] Conferring happiness or <lbinfo n='pros+perity'/> prosperity, auspicious, propitious. --रः <b>1</b> <ab>N.</ab> of Śiva. <b>--2</b> <ab>N.</ab> of a celebrated teacher and author; see App. II. --री <b>1</b> <ab>N.</ab> of Pārvatī, wife of Śiva. <b>--2</b> Bengal madder. <b>--3</b> The Śamī tree. <b>--Comp.</b> --आवासः the <lbinfo n='Kai+lāsa'/> Kailāsa. {2} camphor. --प्रियः the <lbinfo n='fran+coline'/> francoline partridge."
+        },
+        {
+            "word": "शंकर",
+            "eid": "32027",
+            "pagenum": 1192,
+            "content": "शंकर¦ The celebrated teacher of the Vedānta <lbinfo n='philoso+phy'/> philosophy and author of the शारीरकभाष्य and of a large number of original works, especially on Vedānta. He is said to have been born in 788 <ab>A. D.</ab> and to have died in 820 at the early age of 32. But some scholars (Mr. Telang, Dr. Bhandarkar &c.) have tried to show that Śaṅkara's date must be the 6th or 7th century at the latest. See <lbinfo n='In+troduction'/> Introduction to Mudrārākṣasa."
+        }
+    ],
+    "BEN": [
+        {
+            "word": "शंकर",
+            "eid": "14380",
+            "pagenum": 927,
+            "content": "शंकर¦ <i>śaṃkara,</i> <ab>i. e.</ab> <i>śam-kṛ + a,</i> <b>I.</b> <ab>adj.</ab> <b>1.</b> Causing happiness, <ls>Padmap.</ls> 2, 6. <b>2.</b> Auspicious. <b>II.</b> <ab>m.</ab> <b>1.</b> Śiva, <ls>Hariv.</ls> 15408; <ls>Vedāntas.</ls> in <ls>Chr.</ls> 209, 20. <b>2.</b> A proper name, <ls>Lass.</ls> 2. ed. 87, 16."
+        }
+    ],
+    "BHS": [
+        {
+            "word": "शंकर",
+            "eid": "14773",
+            "pagenum": 521,
+            "content": "<b>Śaṃkara</b>¦, (<b>1</b>) <ab>n.</ab> of a cakravartin: <ls>Mvy</ls> 〔3578〕; (<b>2</b>) <ab>n.</ab> of a yakṣa: <ls>Māy</ls> 〔95〕. See also <b>Śaṃkāra</b>."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "शंकर",
+            "eid": "31631",
+            "pagenum": 534,
+            "content": "शंकर/¦ <lex>f.</lex> ई causing welfare or happiness; <lex>m.</lex> <ab>E.</ab> of Rudra-Śiva, a man's name."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "शंकर",
+            "eid": "23973",
+            "pagenum": 433,
+            "content": "शंकर/¦ <i>f.</i> ई heilbringend. <i>m. Bein. RudraŚiva's</i>; <lbinfo n='7'/> <i>Mannsn., bes. versch. Gelehrten.</i>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "शंकर",
+            "eid": "36920",
+            "pagenum": 705,
+            "content": "SaMkara¦ <i>(I) a. (f. रा or री)</i> Conferring happiness or prosperity, propitious."
+        },
+        {
+            "word": "शंकर",
+            "eid": "36921",
+            "pagenum": 705,
+            "content": "SaMkara¦ <i>(II) m.</i> An epithet of Śiva."
+        },
+        {
+            "word": "शंकर",
+            "eid": "37086",
+            "pagenum": 709,
+            "content": "Sam-kara¦ <i>a.</i> causing happines or bliss."
+        }
+    ],
+    "MD": [
+        {
+            "word": "शंकर",
+            "eid": "17443",
+            "pagenum": 306,
+            "content": "शंकर¦ śaṃ-kará, <lex>a.</lex> (<b>ī</b>) causing prosperity, 🞄beneficent (<ab>C.</ab>); <lex>m.</lex> <ab>ep.</ab> <i>of</i> Rudra <i>or</i> Śiva (<ab>V.</ab>, 🞄<ab>C.</ab>); <ab>N.</ab>, <ab>esp.</ab> <i>of a philosopher, regenerator 🞄of Brāhmanism</i> (<i>born</i> ¤788¤ <ab>A. D.</ab>): <b>-giri,</b> <lex>m.</lex> <ab>N.</ab> 🞄<i>of a mountain</i>; <b>-gaurī‿īśa,</b> <lex>m.</lex> <ab>N.</ab> <i>of a temple</i>; 🞄<b>-datta,</b> <lex>m.</lex> <ab>N.</ab> <i>of a Brāhman</i>; <b>-priyā,</b> 🞄<lex>f.</lex> Śivaʼs wife; <b>-vardhana,</b> <lex>m.</lex> <ab>N.</ab>; <b>-varman,</b> 🞄<lex>m.</lex> <ab>N.</ab>; <b>-vṛṣabha,</b> <lex>m.</lex> Śivaʼs (<i>white</i>) bull; 🞄<b>-siddhi,</b> <lex>m.</lex> <ab>N.</ab>; <b>-svāmin,</b> <lex>m.</lex> <ab>N.</ab> <i>of a Brāhman</i>; 🞄<b>-ācārya,</b> <lex>m.</lex> <ab>N.</ab> <i>of a celebrated scholar, 🞄author of numerous philosophical commentaries, 🞄reformer of Śaivism</i> (<i>died</i> ¤820¤ <ab>A. D.</ab>)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "शंकर",
+            "eid": "213080",
+            "pagenum": "1054,3",
+            "content": "शं—कर/ <hom>a</hom> ¦ See below."
+        },
+        {
+            "word": "शंकर",
+            "eid": "213100",
+            "pagenum": "1054,3",
+            "content": "शंकर/ <hom>b</hom> ¦ <lex>mf(ई)n.</lex> causing prosperity, auspicious, beneficent, <ls>Nir.</ls>; <ls>MBh.</ls>; <ls>BhP.</ls><info lex='m:f#I:n'/>"
+        },
+        {
+            "word": "शंकर",
+            "eid": "213101",
+            "pagenum": "1054,3",
+            "content": "शंकर/ ¦ <lex>m.</lex> <ab>N.</ab> of <s1 slp1='rudra'>Rudra</s1> or <s1 slp1='Siva'>Śiva</s1>, <ls>VS.</ls>; <ls>ĀśvGṛ.</ls>; <ls>MBh.</ls> &c.<info lex='m'/>"
+        },
+        {
+            "word": "शंकर",
+            "eid": "213102",
+            "pagenum": "1054,3",
+            "content": "¦ of a son of <s1 slp1='kaSyapa'>Kaśyapa</s1> and <s1 slp1='danu'>Danu</s1>, <ls>VP.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "शंकर",
+            "eid": "213103",
+            "pagenum": "1054,3",
+            "content": "¦ of <s1 slp1='skanda'>Skanda</s1>, <ls>AV.Pariś.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "शंकर",
+            "eid": "213104",
+            "pagenum": "1054,3",
+            "content": "¦ of a serpent-demon, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "शंकर",
+            "eid": "213105",
+            "pagenum": "1054,3",
+            "content": "¦ of a <s1 slp1='cakra-vartin'>Cakra-vartin</s1>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "शंकर",
+            "eid": "213106",
+            "pagenum": "1054,3",
+            "content": "¦ <ab>N.</ab> of various authors and commentators, (<ab>esp.</ab>) of <s1 slp1='SaMkarAcArya'>Śaṃkarācārya</s1> (See next page, <ab>col.</ab> 1; also with भट्ट, पण्डित, शर्मन्, rAjA<srs/>naka, &c.)<info lex='inh'/>"
+        }
+    ],
+    "PGN": [
+        {
+            "word": "शंकर",
+            "eid": "239",
+            "pagenum": 80,
+            "content": "15. <i>Śaṃkara</i>¦ (No. 43, L. 9): Literally meaning ‘causing prosperity’, Saṃkara is the name of Lord Śiva.<sup>76</sup>."
+        },
+        {
+            "word": "शंकर",
+            "eid": "292",
+            "pagenum": 94,
+            "content": "16. <i>Śaṃkara</i>¦ (No. 22, L. 6): It is the name of a Jaina monk<sup>46</sup>, who installed an image of Pārśvanātha. Literally meaning ‘causing prosperity’, it is one of the common names of Lord Śiva.<sup>47</sup> The present case goes against the traditions of the Smṛtis which forbid the giving of the names of deities directly to human beings."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "शंकर",
+            "eid": "13936",
+            "pagenum": 3,
+            "content": "<i>Śaṃkara</i> (I)¦ — a name of Śiva; four kalās of;<sup>1</sup> also Śambhu, Umāpati, Sūlapāṇi, Vṛṣabhadhvaja and Hara; fight of, with Kṛṣṇa for Bāṇa; bound by Jṛmbāstra he became disabled; asked Kṛṣṇa to spare the life of Bāṇa.<sup>2</sup> Also (Śaṃkara) — an epithet of Mahādeva;<sup>3</sup> the āśrama of;<sup>4</sup> approached Vāsudeva to aid him to put down the Asura Andhakas;<sup>5</sup> remembered Nṛsimha to vanquish the mātṛgaṇa.<sup>6</sup> <F>1) Bhā. II. 4. 19; Br. II. 9. 90; 13. 62; IV. 35. 97; Vā. 21. 10; 24. 62. 43. 38; 54. 48; 112. 35; Vi. I. 9. 2; V. 34. 29.</F> <F>2) Ib. V. 32. 8; 33. 21.</F> <F>3) M. 154. 235.</F> <F>4) Ib. 154. 381.</F> <F>5) Ib. 154. 437, 514; 179. 35.</F> <F>6) Ib. 179. 54; 180. 20.</F>"
+        },
+        {
+            "word": "शंकर",
+            "eid": "13937",
+            "pagenum": 3,
+            "content": "<i>Śaṃkara</i> (II)¦ — a son of Danu. <dvsn n='P'/>Vi. I. 21. 4."
+        }
+    ],
+    "PW": [
+        {
+            "word": "शंकर",
+            "eid": "109496",
+            "pagenum": 6,
+            "content": "शंकर/¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> (<lex>f.</lex> ई) <i>wohlthätig, Segen bringend</i>. <dvsn n='1'>— 2〉 <lex>m.</lex> <dvsn n='2'>— a〉 <ab>Beiw.</ab> und <ab>Bein.</ab> <is>Rudra</is>ʼs oder <is>Śiva</is>ʼs. <dvsn n='2'>— b〉 <ab>N. pr.</ab> <dvsn n='3'>— α〉 eines Sohnes des <is>Kaśyapa</is> von der <is>Danu</is>. <dvsn n='3'>— β〉 *eines Schlangendämons. <dvsn n='3'>— γ〉 *eines <is>Cakravartin</is>. <dvsn n='3'>— δ〉 verschiedener anderer Männer, <ab>insbes.</ab> Gelehrter. Auch °दीक्षित, °भारतीतीर्थ (<ls>BURNELL, T.</ls>), °भारत्याचार्य und = शंकरकवि und शंकराचार्य. <dvsn n='2'>— c〉 fehlerhaft für संकर <ls>CARAKA. 1,14. 6,19. 24. 30. 8,6</ls>. <dvsn n='1'>— 3〉 *<lex>f.</lex> शंकरा = <dvsn n='2'>— a〉 शकुनिका <ls>PAT. zu P. 3,2,14, Vārtt. 1</ls>. <dvsn n='2'>— b〉 <ab>N. pr.</ab> einer Nonne <ls>ebend.</ls> <dvsn n='1'>— 4〉 <lex>f.</lex> शंकरी <dvsn n='2'>— a〉 <is>Śiva</is>ʼs <i>Gattin</i>. <dvsn n='2'>— b〉 *<i><bot>Rubia Munjista</bot></i>. <dvsn n='2'>— c〉 *<i><bot>Prosopis spicigera</bot></i> (<ls>RĀJAN. 8,34</ls>) oder <i><bot>Mimosa Suma</bot></i>. <dvsn n='2'>— d〉 Titel <ls>BURNELL, T.</ls>"
+        }
+    ],
+    "PWG": [
+        {
+            "word": "शंकर",
+            "eid": "97249",
+            "pagenum": 7,
+            "content": "1. शंकर/¦ (5. शम् + 1. कर) <ls>P. 3, 2, 14.</ls> (संज्ञायाम् .) <dvsn n='1'> 1) <lex>adj.</lex> (f. ई) <i>wohlthätig, Segen bringend</i> <ls>TRIK. 3, 1, 1.</ls> <ls>NIR. 9, 3.</ls> देव (<ab>d. i.</ab> <is>Śiva</is>) <ls>MBH. 13, 589.</ls> <ls>KĀVYĀD. 2, 322.</ls> नामानि लोकानां मातॄणाम् <ls>BHĀG. P. 6, 6, 24.</ls> लोकानाम् <ls>MBH. 3, 14407.</ls> <ls n='MBH.'>5, 2575.</ls> लोक° (शंकर) <ls>PADMA-P. 2, 6.</ls> <ls>Verz. d. Oxf. H. 197,b,No. 462.</ls> <ls>Spr. 2487, v. l.</ls> <dvsn n='1'>— 2) <lex>m.</lex> <dvsn n='2'> a) Beiw. und Bein. <is>Śiva's</is> (<is>Rudra's</is>) <ls>AK. 1, 1, 1, 26.</ls> <ls n='AK.'>3, 4, 1, 14.</ls> <ls>H. 195.</ls> <ls>HALĀY. 1, 11.</ls> <ls>VS. 16, 41.</ls> <ls>ĀŚV. GṚHY. 2, 2, 2. 4, 8, 19.</ls> <ls>Ind. St. 4, 356. 5, 194. 9, 84.</ls> रुद्राणां शंकरश्चास्मि sagt <is>Kṛṣṇa</is> <ls>BHAG. 10, 23.</ls> <ls>MBH. 3, 12007.</ls> <ls n='MBH.'>13, 4216.</ls> <ls n='MBH.'>14, 193.</ls> <ls>HARIV. 15406. fg.</ls> <ls>R. 1, 1, 32</ls> (<ls n='GORR. 1, 1,'>34</ls> <ls>GORR.</ls>). <ls>R. GORR. 1, 38, 14.</ls> <ls>VARĀH. BṚH. S. 43, 42. 54, 3. 86, 75.</ls> <ls>KATHĀS. 4, 27. 15, 2. 18, 337. 43, 186.</ls> <ls>WEBER, RĀMAT. UP. 344.</ls> <ls>VP. 7.</ls> <ls>BHĀG. P. 2, 4, 19. 4, 1, 33. 4, 1. 9, 1, 37.</ls> <ls>PAÑCAR. 1, 8, 28.</ls> <ls>Verz. d. Oxf. H. 27,a,3. 6.</ls> <ls n='Verz. d. Oxf. H.'>80,a,27.</ls> <ls n='Verz. d. Oxf. H.'>103,a,36.</ls> <ls>Verz. d. B. H. No. 1242.</ls> <ls>PRAB. 40, 12.</ls> <ls>KĀVYĀD. 2, 322.</ls> <ls>VEDĀNTAS. (Allah.) No. 74.</ls> <ls>BURNOUF, Intr. 131.</ls> °श्वशुर (हिमवन्त्) <ls>R. 1, 40, 4.</ls> <ls n='R.'>4, 9, 41.</ls> °कवच <ls>Verz. d. Oxf. H. 22,b,15. fg.</ls>  <dvsn n='2'>— b) N. pr. eines Sohnes des <is>Kaśyapa</is> von der <is>Danu</is> <ls>VP. 147.</ls> (शङ्कुर zwei Hdschrr. nach <ls>HALL</ls>). eines Schlangendämons <ls>VYUTP. 85. 87.</ls> eines <is>Cakravartin</is> 92. <dvsn n='2'>— c) N. verschiedener Männer (auch = शंकराचार्य und शंकरकवि) <ls>LA. (III) 87,19.</ls> <ls>Verz. d. Oxf. H. 135,a,No. 254. 146,a,No. 310.</ls> <ls n='Verz. d. Oxf. H.'>150,b,No. 320.</ls> <ls n='Verz. d. Oxf. H.'>280,a,No. 655.</ls> <ls n='Verz. d. Oxf. H.'>b,No. 657. fg.</ls> <ls n='Verz. d. Oxf. H.'>281,a,No. 659.</ls> <ls n='Verz. d. Oxf. H.'>329,a,No. 780.</ls> <ls>Verz. d. Cambr. H. 49.</ls> <ls>HALL 35. 50. 67. 180. 195.</ls> in der Einl. zu <ls>VĀSAVAD. S. 7.</ls> <ls>WASSILJEW 49. 201.</ls> <ls>TĀRAN. 4. 5. 303.</ls> °भट्ट <ls>HALL 176. fg. 183. fg.</ls> <ls>Verz. d. Oxf. H. 341,b,N.</ls> °दीक्षित <ls n='Verz. d. Oxf. H.'>134,b,No. 250.</ls> <ls n='Verz. d. Oxf. H.'>140,b,No. 285.</ls> °भारत्याचार्य <ls>WILSON, Sel. Works 1, 201.</ls> <dvsn n='1'>— 3) <lex>f.</lex> आ ein Frauenname: शंकरा नाम परिव्राजिका । तच्छीला शंकरा <ls>P. 3, 2, 14</ls>, <is>Vārtt</is>., Schol. <dvsn n='1'>— 4) <lex>f.</lex> ई <dvsn n='2'> a) <is>Śaṅkara's</is> (<is>Śiva's</is>) <i>Gattin</i> <ls>RUDRAYĀMALA</ls> im <ls>ŚKDR.</ls> <dvsn n='2'>— b) Bez. zweier Pflanzen: = मञ्जिष्ठा <ls>ŚABDAC.</ls> im <ls>ŚKDR.</ls> = शमी <ls>RĀJAN.</ls> ebend. <dvsn n='v'>— Vgl. अत्यन्तशंकरी, भीमशंकर und शांकर ."
+        },
+        {
+            "word": "शंकर",
+            "eid": "97250",
+            "pagenum": 7,
+            "content": "2. शंकर¦ fehlerhaft für संकर, z. B. 5, 14, 55. <ls>KĀM. NĪTIS. 2, 33.</ls> <ls>Verz. d. Oxf. H. 22,a,25.</ls>"
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "शंकर",
+            "eid": "21401",
+            "pagenum": 7,
+            "content": "शंकर¦ auch <ab>Bein.</ab> <is>Skanda</is>ʼs <ls>AV. PARIŚ. 20,6</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "शंकर",
+            "eid": "24720",
+            "pagenum": 340,
+            "content": "<i>Śaṃkara</i>¦ auch Bein. Skanda's, <ls>AV. Pariś.</ls> 20, 6. {part=,seq=25059,type=,n=1}"
+        },
+        {
+            "word": "शंकर",
+            "eid": "24720.1",
+            "pagenum": 340,
+            "content": "<i>śaṃkara</i>¦ [m.?] °Asclepias gigantea? E 884 (A). 886 (P). {part=,seq=25060,type=,n=3}"
+        }
+    ],
+    "STC": [
+        {
+            "word": "शंकर",
+            "eid": "20011",
+            "pagenum": 713,
+            "content": "<b>śaṃ-kara-</b>¦ <i>-ī-</i> <ab>a.</ab> bienfaisant, qui donne la prospérité ; <ab>m.</ab> Rudra ou Śiva ; <ab>n.</ab> de divers auteurs et <ab>not.</ab> de Śaṃkarācārya, philosophe du Vedānta, commentateur des VedāntaSūtra <lbinfo n='5'/> et des Upaniṣad.  <P><i>°giri-</i> <ab>m.</ab> <ab>n.</ab> d'une montagne.  <P><i>°datta-</i> <ab>m.</ab> <ab>n.</ab> d'un Brâhmane.  <P><i>°nṛtya-raṅga-deśa-</i> <ab>m.</ab> cimetière.  <P><i>°priyā-</i> <ab>f.</ab> femme de Śiva.  <P><i>°śvaśura-</i> <ab>m.</ab> Himavant.  <P><i>°siddhi-</i> <ab>m.</ab> <ab>n.</ab> d'un homme.  <P><i>°stuti-</i> <ab>f.</ab> <ab>n.</ab> d'une section du <ab>MhBh.</ab>  <P><i>°svāmin-</i> <ab>m.</ab> <ab>n.</ab> d'un Brâhmane.  <P><i>śaṃkarācārya-</i> <ab>v.</ab> <i>śaṃkara-.</i>  <P><i>śaṃkarānanda-</i> <ab>m.</ab> <ab>n.</ab> d'un philosophe, auteur de commentaires et d'un arrangement en vers des Upaniṣad."
+        }
+    ]
+}

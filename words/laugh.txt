@@ -1,99 +1,39 @@
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-
-"use strict";
-
-const Dependency = require("../Dependency");
-const { UsageState } = require("../ExportsInfo");
-const HarmonyLinkingError = require("../HarmonyLinkingError");
-const InitFragment = require("../InitFragment");
-const RuntimeGlobals = require("../RuntimeGlobals");
-const Template = require("../Template");
-const { countIterable } = require("../util/IterableHelpers");
-const { first, combine } = require("../util/SetHelpers");
-const makeSerializable = require("../util/makeSerializable");
-const propertyAccess = require("../util/propertyAccess");
-const { propertyName } = require("../util/propertyName");
-const { getRuntimeKey, keyToRuntime } = require("../util/runtime");
-const HarmonyExportInitFragment = require("./HarmonyExportInitFragment");
-const HarmonyImportDependency = require("./HarmonyImportDependency");
-const processExportInfo = require("./processExportInfo");
-
-/** @typedef {import("webpack-sources").ReplaceSource} ReplaceSource */
-/** @typedef {import("../ChunkGraph")} ChunkGraph */
-/** @typedef {import("../Dependency").ExportsSpec} ExportsSpec */
-/** @typedef {import("../Dependency").GetConditionFn} GetConditionFn */
-/** @typedef {import("../Dependency").ReferencedExport} ReferencedExport */
-/** @typedef {import("../Dependency").TRANSITIVE} TRANSITIVE */
-/** @typedef {import("../Dependency").UpdateHashContext} UpdateHashContext */
-/** @typedef {import("../DependencyTemplate").DependencyTemplateContext} DependencyTemplateContext */
-/** @typedef {import("../ExportsInfo")} ExportsInfo */
-/** @typedef {import("../ExportsInfo").ExportInfo} ExportInfo */
-/** @typedef {import("../Generator").GenerateContext} GenerateContext */
-/** @typedef {import("../Module")} Module */
-/** @typedef {import("../Module").BuildMeta} BuildMeta */
-/** @typedef {import("../Module").RuntimeRequirements} RuntimeRequirements */
-/** @typedef {import("../ModuleGraph")} ModuleGraph */
-/** @typedef {import("../ModuleGraphConnection")} ModuleGraphConnection */
-/** @typedef {import("../ModuleGraphConnection").ConnectionState} ConnectionState */
-/** @typedef {import("../RuntimeTemplate")} RuntimeTemplate */
-/** @typedef {import("../WebpackError")} WebpackError */
-/** @typedef {import("../javascript/JavascriptParser").Attributes} Attributes */
-/** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
-/** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
-/** @typedef {import("../util/Hash")} Hash */
-/** @typedef {import("../util/runtime").RuntimeSpec} RuntimeSpec */
-
-/** @typedef {"missing"|"unused"|"empty-star"|"reexport-dynamic-default"|"reexport-named-default"|"reexport-namespace-object"|"reexport-fake-namespace-object"|"reexport-undefined"|"normal-reexport"|"dynamic-reexport"} ExportModeType */
-
-const { ExportPresenceModes } = HarmonyImportDependency;
-
-const idsSymbol = Symbol("HarmonyExportImportedSpecifierDependency.ids");
-
-class NormalReexportItem {
-	/**
-	 * @param {string} name export name
-	 * @param {string[]} ids reexported ids from other module
-	 * @param {ExportInfo} exportInfo export info from other module
-	 * @param {boolean} checked true, if it should be checked at runtime if this export exists
-	 * @param {boolean} hidden true, if it is hidden behind another active export in the same module
-	 */
-	constructor(name, ids, exportInfo, checked, hidden) {
-		this.name = name;
-		this.ids = ids;
-		this.exportInfo = exportInfo;
-		this.checked = checked;
-		this.hidden = hidden;
-	}
+{
+    "word": "laugh",
+    "AE": [
+        {
+            "word": "laugh",
+            "eid": "6081",
+            "pagenum": 252,
+            "content": "<b>Laugh,</b>¦ <i>v. i.</i> हस् 1 P, प्र-वि°; स्मि 1 A (l. gently); ‘l. violently’ उच्चैः हस्, अट्ट- -हासं कृ 8 U; ‘l. at’ अव-उप-हस्, उपहा- -सास्पदं मन् 4 A, अव-मन्; ‘l. in the sleeves’ अंतर्-निभृतं-हस्. <i>-s.,</i> <b>-ing,</b> <b>-Laughter,</b> <i>s.</i> हासः, हसनं, हास्यं, हसितं, वि-प्र°; स्मितं; ‘a horse-l.’ अट्टहासः, उच्चैर्हासः, प्र-अति-हासः; ‘an inward l.’ अंतर्हासः <b>-able,</b> <i>a.</i> हासकर (री <i>f.</i>), हा- -स्यास्पदं, हास्य. <b>-er,</b> <i>s.</i> हासकः, हासिन् <i>m.</i> <b>-ing,</b> <i>a.</i> हास्यमुख (खी <i>f.</i>), स्मेरमुख, हास्यवदन; ‘l. -stock’ उपहासास्पदं, हास्य- -पात्रं. <b>-ingly,</b> <i>adv.</i> सहासं, विहस्य, सस्मितं."
+        }
+    ],
+    "BOR": [
+        {
+            "word": "laugh",
+            "eid": "13261",
+            "pagenum": 409,
+            "content": "<b>LAUGH</b>¦ (v.): हसति (हस्, c. 1.), <i>l. ed violently:</i> स्वनवज्जहास, <dvsn n='I'>V p.; <dvsn n='xe'><i>the ladies l. ed:</i></dvsn> <dvsn n='xs'>जहसुरङ्गनाः,</dvsn> <ls>K.</ls> ; <dvsn n='xe'><i>he l. s at Daśānana and others:</i></dvsn> <dvsn n='xs'>दशाननादीन्   हसत्यसौ,</dvsn> S. i. 71.; <dvsn n='xe'><i>to l. at:</i></dvsn> <dvsn n='xs'>हास्यम्,</dvsn> Vi. iii. 28.: v. Also to smile., deride. Ph.: <dvsn n='xe'><i>to l. down or</i> <i>out:</i></dvsn> <dvsn n='xs'>अप</dvsn> (व) हसति; <dvsn n='xe'><i>to l. in one's sleeve:</i></dvsn> <dvsn n='xs'>अन्तर् हसति।</dvsn></dvsn>"
+        },
+        {
+            "word": "laugh",
+            "eid": "13262",
+            "pagenum": 409,
+            "content": "<b>LAUGH, LAUGHING</b>¦ (subs.): <dvsn n='1'>(1) हास्यम्; </dvsn><dvsn n='1'>(2) हासः;</dvsn> <dvsn n='1'>(3) हसितम् (rare).</dvsn>"
+        }
+    ],
+    "MWE": [
+        {
+            "word": "laugh",
+            "eid": "17497",
+            "pagenum": 440,
+            "content": "<i>To</i> LAUGH¦, <i>v. n.</i> हस् (c. 1. हसति -सितुं), प्रहस्, विहस्, सम्प्रहस्, स्मि (c. 1. स्मयते, स्मेतुं), हासं कृ, हसनं कृ, हास्यं कृ, तक् (c. 1. तकति -कितुं), कक्क् (c. 1. कक्कति -क्कितुं), कख् or कक्ख् (c. 1. कखति -खितुं), ‘to laugh violently,’ अतिहस्, अत्यन्तं हस्, अतिहासं कृ, अट्टहासं कृ, महाहासं कृ, आच्छुरितं कृ; ‘to laugh in one's sleeve,’ अन्तर्हासं कृ, उच्चघनं कृ; ‘to laugh at,’ अवहस्, अपहस्, उपहस्, उत्स्मि, अभिस्मि, अवहासभूमिं कृ, अपहासास्पदं कृ. <i>See To</i> DERIDE."
+        },
+        {
+            "word": "laugh",
+            "eid": "17498",
+            "pagenum": 440,
+            "content": "LAUGH¦, <i>s.</i> हासः, हसनं, हसितं, हास्यं, हसः, विहसितं, प्रहसितं, परि- हासः, प्रहासः, उपहसितं, स्मितं, हः, हा, हं; ‘a horse-laugh,’ अट्टहासः, अट्टहसितं, आच्छुरितं -तकं, अवच्छुरितं, सोत्प्रासः; ‘an inward laugh,’ अन्तर्हासः, उच्चघनं."
+        }
+    ]
 }
-
-class ExportMode {
-	/**
-	 * @param {ExportModeType} type type of the mode
-	 */
-	constructor(type) {
-		/** @type {ExportModeType} */
-		this.type = type;
-
-		// for "normal-reexport":
-		/** @type {NormalReexportItem[] | null} */
-		this.items = null;
-
-		// for "reexport-named-default" | "reexport-fake-namespace-object" | "reexport-namespace-object"
-		/** @type {string | null} */
-		this.name = null;
-		/** @type {ExportInfo | null} */
-		this.partialNamespaceExportInfo = null;
-
-		// for "dynamic-reexport":
-		/** @type {Set<string> | null} */
-		this.ignored = null;
-
-		// for "dynamic-reexport" | "empty-star":
-		/** @type {Set<string> | null} */
-		this.hidden = null;
-
-		// for "missing":
-		/** @type 

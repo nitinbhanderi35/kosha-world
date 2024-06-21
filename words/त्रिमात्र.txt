@@ -1,1 +1,111 @@
-ACD,CAEA,wBAGC,wCAAoC,CAApC,mCAAoC,CAFpC,oCAAwC,CAGxC,+BAAgC,CAFhC,gCA4BD,CAxBC,mCAiBC,sBAAuB,CAPvB,QAAS,CANT,SAmBD,CAJC,+EAhBA,uCAAwC,CADxC,sCAoBA",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-list-styles-list {\n\tdisplay: grid;\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t--ck-list-style-button-size: 44px;\n}\n\n.ck.ck-list-styles-list {\n\tgrid-template-columns: repeat( 3, auto );\n\trow-gap: var(--ck-spacing-medium);\n\tcolumn-gap: var(--ck-spacing-medium);\n\tpadding: var(--ck-spacing-large);\n\n\t& .ck-button {\n\t\t/* Make the button look like a thumbnail (the icon "takes it all"). */\n\t\twidth: var(--ck-list-style-button-size);\n\t\theight: var(--ck-list-style-button-size);\n\t\tpadding: 0;\n\n\t\t/*\n\t\t * Buttons are aligned by the grid so disable default button margins to not collide with the\n\t\t * gaps in the grid.\n\t\t */\n\t\tmargin: 0;\n\n\t\t/*\n\t\t * Make sure the button border (which is displayed on focus, BTW) does not steal pixels\n\t\t * from the button dimensions and, as a result, decrease the size of the icon\n\t\t * (which becomes blurry as it scales down).\n\t\t */\n\t\tbox-sizing: content-box;\n\n\t\t& .ck-icon {\n\t\t\twidth: var(--ck-list-style-button-size);\n\t\t\theight: var(--ck-list-style-button-size);\n\t\t}\n\t}\n}\n'],sourceRoot:""}]);const a=s},3161:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,':root{--ck-todo-list-checkmark-size:16px}.ck-content .todo-list{list-style:none}.ck-content .todo-list li{margin-bottom:5px;position:relative}.ck-content .todo-list li .todo-list{margin-top:5px}.ck-content .todo-list .todo-list__label>input{-webkit-appearance:none;border:0;display:inline-block;height:var(--ck-todo-list-checkmark-size);left:-25px;margin-left:0;margin-right:-15px;position:relative;right:0;vertical-align:middle;width:var(--ck-todo-list-checkmark-size)}.ck-content[dir=rtl] .todo-list .todo-list__label>input{left:0;margin-left:-15px;margin-right:0;right:-25px}.ck-content .todo-list .todo-list__label>input:before{border:1px solid #333;border-radius:2px;box-sizing:border-box;content:"";display:block;height:100%;position:absolute;transition:box-shadow .25s ease-in-out;width:100%}.ck-content .todo-list .todo-list__label>input:after{border-color:transparent;border-style:solid;border-width:0 calc(var(--ck-todo-list-checkmark-size)/8) calc(var(--ck-todo-list-checkmark-size)/8) 0;box-sizing:content-box;content:"";display:block;height:calc(var(--ck-todo-list-checkmark-size)/2.6);left:calc(var(--ck-todo-list-checkmark-size)/3);pointer-events:none;position:absolute;top:calc(var(--ck-todo-list-checkmark-size)/5.3);transform:rotate(45deg);width:calc(var(--ck-todo-list-checkmark-size)/5.3)}.ck-content .todo-list .todo-list__label>input[checked]:before{background:#26ab33;border-color:#26ab33}.ck-content .todo-list .todo-list__label>input[checked]:after{border-color:#fff}.ck-content .todo-list .todo-list__label .todo-list__label__description{vertical-align:middle}.ck-content .todo-list .todo-list__label.todo-list__label_without-description input[type=checkbox]{position:absolute}.ck-editor__editable.ck-content .todo-list .todo-list__label>input,.ck-editor__editable.ck-content .todo-list .todo-list__label>span[contenteditable=false]>input{cursor:pointer}.ck-editor__editable.ck-content .todo-list .todo-list__label>input:hover:before,.ck-editor__editable.ck-content .todo-list .todo-list__label>span[contenteditable=false]>input:hover:before{box-shadow:0 0 0 5px rgba(0,0,0,.1)}.ck-editor__editable.ck-content .todo-list .todo-list__label>span[contenteditable=false]>input{-webkit-appearance:none;border:0;display:inline-block;height:var(--ck-todo-list-checkmark-size);left:-25px;margin-left:0;margin-right:-15px;position:relative;right:0;vertical-align:middle;width:var(--ck-todo-list-checkmark-size)}.ck-editor__editable.ck-content[dir=rtl] .todo-list .todo-list__label>span[contenteditable=false]>input{left:0;margin-left:-15px;margin-right:0;right:-25px}.ck-editor__editable.ck-content .todo-list .todo-list__label>span[contenteditable=false]>input:before{border:1px solid #333;border-radius:2px;box-sizing:border-box;content:"";display:block;height:100%;position:absolute;transition:box-shadow .25s ease-in-out;width:100%}.ck-editor__editable.ck-content .todo-list .todo-list__label>span[contenteditable=false]>input:after{border-color:transparent;border-style:solid;border-width:0 calc(var(--ck-todo-list-checkmark-size)/8) calc(var(--ck-todo-list-checkmark-size)/8) 0;box-sizing:content-box;content:"";display:block;height:calc(var(--ck-todo-list-checkmark-size)/2.6);left:calc(var(--ck-todo-list-checkmark-size)/3);pointer-events:none;position:absolute;top:calc(var(--ck-todo-list-checkmark-size)/5.3);transform:rotate(45deg);width:calc(var(--ck-todo-list-checkmark-size)/5.3)}.ck-editor__editable.ck-content .todo-list .todo-list__label>span[contenteditable=false]>input[checked]:before{background:#26ab33;border-color:#26ab33}.ck-editor__editable.ck-content .todo-list .todo-list__label>span[contenteditable=false]>input[checked]:after{border-color:#fff}.ck-editor__editable.ck-content .todo-list .todo-list__label.todo-list__label_without-description input[type=checkbox]{position:absolute}',"",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-list/theme/todolist.css"],names:[],mappings:"AAKA,MACC,kCACD,CAwEA,uBACC,eAwBD,CAtBC,0BAEC,iBAAkB,CADlB,iBAMD,CAHC,qCACC,cACD,CAIA,+CAlFD,uBAAwB,CAQxB,QAAS,CAPT,oBAAqB,CAGrB,yCAA0C,CAO1C,UAAW,CAGX,aAAc,CAFd,kBAAmB,CAVnB,iBAAkB,CAWlB,OAAQ,CARR,qBAAsB,CAFtB,wCAiFC,CAFA,wDAhEA,MAAO,CAGP,iBAAkB,CAFlB,cAAe,CACf,WAgEA,CA5DD,sDAOC,qBAAiC,CACjC,iBAAkB,CALlB,qBAAsB,CACtB,UAAW,CAHX,aAAc,CAKd,WAAY,CAJZ,iBAAkB,CAOlB,sCAAwC,CAJxC,UAKD,CAEA,qDAaC,wBAAyB,CADzB,kBAAmB,CAEnB,sGAA+G,CAX/G,sBAAuB,CAEvB,UAAW,CAJX,aAAc,CAUd,mDAAwD,CAHxD,+CAAoD,CAJpD,mBAAoB,CAFpB,iBAAkB,CAOlB,gDAAqD,CAMrD,uBAAwB,CALxB,kDAMD,CAGC,+DACC,kBAA8B,CAC9B,oBACD,CAEA,8DACC,iBACD,CAwBA,wEACC,qBACD,CAEA,mGACC,iBACD,CAYD,kKAEC,cAKD,CAHC,4LACC,mCACD,CAMD,+FApHA,uBAAwB,CAQxB,QAAS,CAPT,oBAAqB,CAGrB,yCAA0C,CAO1C,UAAW,CAGX,aAAc,CAFd,kBAAmB,CAVnB,iBAAkB,CAWlB,OAAQ,CARR,qBAAsB,CAFtB,wCAmHA,CAFA,wGAlGC,MAAO,CAGP,iBAAkB,CAFlB,cAAe,CACf,WAkGD,CA9FA,sGAOC,qBAAiC,CACjC,iBAAkB,CALlB,qBAAsB,CACtB,UAAW,CAHX,aAA
+{
+    "word": "त्रिमात्र",
+    "BUR": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "8269",
+            "pagenum": 304,
+            "content": "त्रिमात्र¦ <i>trimātra</i> <ab>a.</ab> <i>(mā)</i> de trois temps ou mesures, <ab>tg.</ab>"
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "12902",
+            "pagenum": 212,
+            "content": "त्रिमात्र¦ <lex>a.</lex> containing three (prosodical) instants."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "9055",
+            "pagenum": 161,
+            "content": "त्रिमात्र¦ drei Moren enthaltend."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "88109",
+            "pagenum": "460,1",
+            "content": "त्रि—मात्र ¦ <lex>mf(आ)n.</lex> = °त्रा-काल, <ls>RPrāt.</ls>; <ls>APrāt.</ls>; <ls>ŚāṅkhŚr.</ls>; 3 in number, <ls>MBh. vii</ls><info lex='m:f#A:n'/>"
+        }
+    ],
+    "PUI": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "5665",
+            "pagenum": 2,
+            "content": "<i>Trimātra</i>¦ — is Om; Praṇava constituted by Vaidyutī, Tāmasī and Nirguṇi Mātras. <dvsn n='P'/>Vā. 20. 1."
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "47673",
+            "pagenum": 3,
+            "content": "त्रिमात्र¦ <lex>Adj.</lex> <i>drei Moren enthaltend, einen Laut von <ab n='drei Moren'>d. M.</ab> von sich gebend</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "75318",
+            "pagenum": 5,
+            "content": "त्रिमात्र¦ <lex>adj.</lex> <i>drei Moren enthaltend</i> <ls>ṚV. PRĀT. 1, 16.</ls> <ls n='ṚV. PRĀT.'>3, 17.</ls> <ls>AV. PRĀT. 1, 62.</ls> <ls>ŚĀṄKH. ŚR.</ls> in <ls>Ind. St. 8, 22.</ls> त्रिमात्राम् <ls>ṚV. PRĀT. 13, 20</ls> fehlerhaft für त्रिमात्रम्, wie die v.l. hat. <dvsn n='v'>— Vgl. auch u. मात्र 2) <i>b).</i>"
+        }
+    ],
+    "PWKVN": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "17966",
+            "pagenum": 7,
+            "content": "त्रिमात्र¦ <lex>Adj.</lex> (<lex>f.</lex> आ) auch so <ab>v. a.</ab> <i>drei an der Zahl, drei</i> <ls>MBH. 7,87,14</ls>."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "14930",
+            "pagenum": 206,
+            "content": "<i>trimātra</i>¦ Adj. (f. <i>ā</i>) auch so v.a. drei an der Zahl, drei, <ls>MBh.</ls> 7, 87, 14. {part=,seq=15164,type=,n=2}"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिमात्र",
+            "eid": "23747",
+            "pagenum": "3377,a",
+            "content": "त्रिमात्र¦ पु० तिस्रः मात्रा उच्चारणकालेऽस्य । प्लुतस्वरे “एकमात्रो भवेद् ह्रस्वो द्विमात्रो दीर्घ उच्यते । त्रिमात्रस्तु प्लुतो ज्ञेयो व्यञ्जनं चार्द्धमात्रकम्” शिक्षा० “प्रणवस्य ऋषिर्ब्रह्मा देवोऽग्निस्तस्य कथ्यते । गायत्रञ्च भवेच्छन्दो नियोगः सर्वकर्मसु । त्रिमात्रस्तु प्रयोक्तव्यः प्रारम्भे सर्वकर्मणाम्” संवर्त्तः । भोजदेवेन तु तस्य सार्द्धत्रिमात्रकतोक्ता यथा “तज्जपस्तदर्थभावनम्” पा० सू० “तस्य सार्द्धत्रिमात्रिकस्य प्रणवस्य जपः” वृत्तिः । युक्तञ्चैतत् ओकारस्य प्लुतत्वेन त्रिमात्रत्वेऽपि तदुत्तरमकारस्य व्यञ्जनत्वादर्द्धमात्रत्वेन सार्द्धत्रिमात्रत्वं संवर्तवचने त्रिमात्रपदं सार्द्धत्रिमात्रे लाक्षणिकमिति बोध्यम् । वस्तुतः मकारान्तत्वे सार्द्धत्रिमात्रत्वम् अनुस्वरान्तत्वे त्रिमात्रत्वमिति भेदः । तदभिप्रायेणैव तस्य त्रिमात्रतया जपफलं प्रश्लोपनिषद्युक्तं तच्च ओम् शब्दं १५६० पृ० दर्शितम् ।"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "त्रिमात्र",
+            "content": "consisting of three moras or matras. The protracted or प्लुत vowels are said to consist of three matras as contrasted with the short and long vowels which respectively consist of one and two matras; cf. Kas. on P.I.2.27."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिमात्र",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಪ್ಲುತಸ್ವರ",
+            "व्युत्पत्तिः": "तिस्रो मात्रा उच्चारणकालोऽस्य",
+            "विस्तारः": "'एकमात्रो भवेत् ह्रस्वः द्विमात्रो दिर्घ उच्यते । त्रिमात्रस्तु प्लुतो ज्ञेयः व्यञ्जनं तु अर्धमात्रकम् ॥'",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिमात्र",
+            "content": "<body><s>trimAtra pu° tisraH mAtrA uccAraRakAle'sya . plutasvare <q>ekamAtro Baved hrasvo dvimAtro dIrGa ucyate . trimA­trastu pluto jYeyo vyaYjanaM cArdDamAtrakam</q> SikzA° <q>praRavasya fzirbrahmA devo'gnistasya kaTyate . gAyatraYca BavecCando niyogaH sarvakarmasu . trimAtrastu prayoktavyaH prAramBe sarvakarmaRAm</q> saMvarttaH . Bojadevena tu tasya sArdDa­trimAtrakatoktA yaTA <q>tajjapastadarTaBAvanam</q> pA° sU° <q>tasya sArdDatrimAtrikasya praRavasya japaH</q> vfttiH . yukta­YcEtat okArasya plutatvena trimAtratve'pi taduttarama­kArasya vyaYjanatvAdardDamAtratvena sArdDatrimAtratvaM saMvarta­vacane trimAtrapadaM sArdDatrimAtre lAkzaRikamiti boDyam . vastutaH makArAntatve sArdDatrimAtratvam anusvarAntatve trimAtratvamiti BedaH . tadaBiprAyeREva tasya trimAtratayA japaPalaM praSlopanizadyuktaM tacca om SabdaM 156° pf° darSitam .</s></body>"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिमात्र",
+            "content": "<span lang=\"sa\">त्रिमात्र<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪ್ಲುತಸ್ವರ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>तिस्रो मात्रा उच्चारणकालोऽस्य<div class=\"h-2\"> </div><b>विस्तारः - </b>\"एकमात्रो भवेत् ह्रस्वः द्विमात्रो दिर्घ उच्यते । त्रिमात्रस्तु प्लुतो ज्ञेयः व्यञ्जनं तु अर्धमात्रकम् ॥\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

@@ -1,194 +1,45 @@
-ndencies": {
-        "glob": "10.3.10"
-      }
-    },
-    "node_modules/@next/swc-win32-x64-msvc": {
-      "version": "14.2.3",
-      "resolved": "https://registry.npmjs.org/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-14.2.3.tgz",
-      "integrity": "sha512-Q1/zm43RWynxrO7lW4ehciQVj+5ePBhOK+/K2P7pLFX3JaJ/IZVC69SHidrmZSOkqz7ECIOhhy7XhAFG4JYyHA==",
-      "cpu": [
-        "x64"
-      ],
-      "optional": true,
-      "os": [
-        "win32"
-      ],
-      "engines": {
-        "node": ">= 10"
-      }
-    },
-    "node_modules/@nodelib/fs.scandir": {
-      "version": "2.1.5",
-      "resolved": "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz",
-      "integrity": "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==",
-      "dev": true,
-      "dependencies": {
-        "@nodelib/fs.stat": "2.0.5",
-        "run-parallel": "^1.1.9"
-      },
-      "engines": {
-        "node": ">= 8"
-      }
-    },
-    "node_modules/@nodelib/fs.stat": {
-      "version": "2.0.5",
-      "resolved": "https://registry.npmjs.org/@nodelib/fs.stat/-/fs.stat-2.0.5.tgz",
-      "integrity": "sha512-RkhPPp2zrqDAQA/2jNhnztcPAlv64XdhIp7a7454A5ovI7Bukxgt7MX7udwAu3zg1DcpPU0rz3VV1SeaqvY4+A==",
-      "dev": true,
-      "engines": {
-        "node": ">= 8"
-      }
-    },
-    "node_modules/@nodelib/fs.walk": {
-      "version": "1.2.8",
-      "resolved": "https://registry.npmjs.org/@nodelib/fs.walk/-/fs.walk-1.2.8.tgz",
-      "integrity": "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==",
-      "dev": true,
-      "dependencies": {
-        "@nodelib/fs.scandir": "2.1.5",
-        "fastq": "^1.6.0"
-      },
-      "engines": {
-        "node": ">= 8"
-      }
-    },
-    "node_modules/@pkgjs/parseargs": {
-      "version": "0.11.0",
-      "resolved": "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz",
-      "integrity": "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==",
-      "dev": true,
-      "optional": true,
-      "engines": {
-        "node": ">=14"
-      }
-    },
-    "node_modules/@rushstack/eslint-patch": {
-      "version": "1.10.2",
-      "resolved": "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.10.2.tgz",
-      "integrity": "sha512-hw437iINopmQuxWPSUEvqE56NCPsiU8N4AYtfHmJFckclktzK9YQJieD3XkDCDH4OjL+C7zgPUh73R/nrcHrqw==",
-      "dev": true
-    },
-    "node_modules/@swc/counter": {
-      "version": "0.1.3",
-      "resolved": "https://registry.npmjs.org/@swc/counter/-/counter-0.1.3.tgz",
-      "integrity": "sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ=="
-    },
-    "node_modules/@swc/helpers": {
-      "version": "0.5.5",
-      "resolved": "https://registry.npmjs.org/@swc/helpers/-/helpers-0.5.5.tgz",
-      "integrity": "sha512-KGYxvIOXcceOAbEk4bi/dVLEK9z8sZ0uBB3Il5b1rhfClSpcX0yfRO0KmTkqR2cnQDymwLB+25ZyMzICg/cm/A==",
-      "dependencies": {
-        "@swc/counter": "^0.1.3",
-        "tslib": "^2.4.0"
-      }
-    },
-    "node_modules/@types/json5": {
-      "version": "0.0.29",
-      "resolved": "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz",
-      "integrity": "sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==",
-      "dev": true
-    },
-    "node_modules/@typescript-eslint/parser": {
-      "version": "7.2.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-7.2.0.tgz",
-      "integrity": "sha512-5FKsVcHTk6TafQKQbuIVkXq58Fnbkd2wDL4LB7AURN7RUOu1utVP+G8+6u3ZhEroW3DF6hyo3ZEXxgKgp4KeCg==",
-      "dev": true,
-      "dependencies": {
-        "@typescript-eslint/scope-manager": "7.2.0",
-        "@typescript-eslint/types": "7.2.0",
-        "@typescript-eslint/typescript-estree": "7.2.0",
-        "@typescript-eslint/visitor-keys": "7.2.0",
-        "debug": "^4.3.4"
-      },
-      "engines": {
-        "node": "^16.0.0 || >=18.0.0"
-      },
-      "funding": {
-        "type": "opencollective",
-        "url": "https://opencollective.com/typescript-eslint"
-      },
-      "peerDependencies": {
-        "eslint": "^8.56.0"
-      },
-      "peerDependenciesMeta": {
-        "typescript": {
-          "optional": true
+{
+    "word": "knock",
+    "AE": [
+        {
+            "word": "knock",
+            "eid": "5974",
+            "pagenum": 248,
+            "content": "<b>Knock,</b>¦ <i>v. t.</i> समा-आ-हन् 2 U, तड् 10, प्रहृ 1 P; ‘k. on the head’ मस्तकं तड्, मस्त- -काघातेन व्यापद् c.; (fig.) मोघीकृ 8 U, विफलीकृ, भंज् 7 P. <i>-v. i.</i> द्वारं तड् or प्रहृ. <i>-s.</i> आघातः, अभिघातः, प्रहारः, ताडनं, पातः, हति <i>f.;</i> ‘k. with a stick’ वेत्राघातः; ‘k. with the fist’ मुष्टिघातः-प्रहारः. <b>-a-</b> <b>-gainst,</b> अभि-प्रति-आ-हन्, संघट्ट 1 A, अभिसं-पत् 1 P; ‘k. ed her head against a rock’ दृषदं शीर्षेण आजघ्ने. <b>-down,</b> नि- -अव-पत् c., आघातेन-प्रहारेण-निपत् c. or भ्रंश् c. <b>-off,</b> सत्वरं-लघु-संपद् c. or साध् 5 P. <b>2</b> विरम् 1 P, निवृत् 1 A. <b>-out,</b> प्रहारेण निर्गम् c. (गमयति) or निः-सृ c. or बहिष्कृ 8 U; ‘k. out the brains’ मस्तिष्कं निष्पिष् 7 P. <b>-up,</b> खिद् c., आयस् c., अवसद् c., श्रम् c. or क्लम् c. (श्र-क्ल-मयति); <i>(v. i.)</i> श्रम् 4 P, क्लम् 1, 4 P, खिद् pass., अवसद् 1 P, ग्लै-म्लै 1 P; ‘k. ed up by the journey’ अध्वसंजातखेदः, नितांतं परिश्रांतः. <b>-er,</b> <i>s.</i> प्रहर्तृ <i>m.,</i> ताडयितृ <i>m.</i> <b>2</b> द्वारमुद्गरः, द्वारताडनी."
         }
-      }
-    },
-    "node_modules/@typescript-eslint/scope-manager": {
-      "version": "7.2.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/scope-manager/-/scope-manager-7.2.0.tgz",
-      "integrity": "sha512-Qh976RbQM/fYtjx9hs4XkayYujB/aPwglw2choHmf3zBjB4qOywWSdt9+KLRdHubGcoSwBnXUH2sR3hkyaERRg==",
-      "dev": true,
-      "dependencies": {
-        "@typescript-eslint/types": "7.2.0",
-        "@typescript-eslint/visitor-keys": "7.2.0"
-      },
-      "engines": {
-        "node": "^16.0.0 || >=18.0.0"
-      },
-      "funding": {
-        "type": "opencollective",
-        "url": "https://opencollective.com/typescript-eslint"
-      }
-    },
-    "node_modules/@typescript-eslint/types": {
-      "version": "7.2.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/types/-/types-7.2.0.tgz",
-      "integrity": "sha512-XFtUHPI/abFhm4cbCDc5Ykc8npOKBSJePY3a3s+lwumt7XWJuzP5cZcfZ610MIPHjQjNsOLlYK8ASPaNG8UiyA==",
-      "dev": true,
-      "engines": {
-        "node": "^16.0.0 || >=18.0.0"
-      },
-      "funding": {
-        "type": "opencollective",
-        "url": "https://opencollective.com/typescript-eslint"
-      }
-    },
-    "node_modules/@typescript-eslint/typescript-estree": {
-      "version": "7.2.0",
-      "resolved": "https://registry.npmjs.org/@typescript-eslint/typescript-estree/-/typescript-estree-7.2.0.tgz",
-      "integrity": "sha512-cyxS5WQQCoBwSakpMrvMXuMDEbhOo9bNHHrNcEWis6XHx6KF518tkF1wBvKIn/tpq5ZpUYK7Bdklu8qY0MsFIA==",
-      "dev": true,
-      "dependencies": {
-        "@typescript-eslint/types": "7.2.0",
-        "@typescript-eslint/visitor-keys": "7.2.0",
-        "debug": "^4.3.4",
-        "globby": "^11.1.0",
-        "is-glob": "^4.0.3",
-        "minimatch": "9.0.3",
-        "semver": "^7.5.4",
-        "ts-api-utils": "^1.0.1"
-      },
-      "engines": {
-        "node": "^16.0.0 || >=18.0.0"
-      },
-      "funding": {
-        "type": "opencollective",
-        "url": "https://opencollective.com/typescript-eslint"
-      },
-      "peerDependenciesMeta": {
-        "typescript": {
-          "optional": true
+    ],
+    "BOR": [
+        {
+            "word": "knock",
+            "eid": "13069",
+            "pagenum": 403,
+            "content": "<b>KNOCK</b>¦ (v.): आ-हन्ति, सम्-, (हन्, c. 2.): v. To strike, beat. <dvsn n='xe'><i>K. against:</i></dvsn> <dvsn n='xs'>प्रतिहन्ति</dvsn> (with ins. of the English acc.). <i>K. down:</i> (a) to fell: पातयति (c. of पत्), <i>I will k. d. all your teeth:</i> पातयिष्यामि दशनान् वदनादखिलांस्तव, V.p. xvi. 7.; (b) in auction: *आह्वानं समापयति (c. of आप्). <i>K. in or on the head</i> (fig.): समापयतिः v. Also to frustrate. <i>K. off:</i> (a) to k. out: q.v.; (b) in auction: v. K. down (b); (c) to cease: q.v. <i>K. out:</i> (a) to fell: पातयति; (b) to force out: बहिष्करोति। <i>K. under:</i> v. To yield, submit. <i>K. up:</i> (a) to assure: *द्वारे समाहत्य प्रबोधयति (c. of बुध्); (b) to be k. ed up: परि-क्लाम्यति (क्लम्, c. 4.): v. Fatigued."
+        },
+        {
+            "word": "knock",
+            "eid": "13070",
+            "pagenum": 403,
+            "content": "<b>KNOCK,</b>¦ <b>KNOCKING</b> (subs.): <dvsn n='1'>(1) आघातः, सम्-;</dvsn> <dvsn n='1'>(2) अभिघातः।</dvsn>"
         }
-      }
-    },
-    "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion": {
-      "version": "2.0.1",
-      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.0.1.tgz",
-      "integrity": "sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==",
-      "dev": true,
-      "dependencies": {
-        "balanced-match": "^1.0.0"
-      }
-    },
-    "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch": {
-      "version": "9.0.3",
-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-9.0.3.tgz",
-      "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
-      "dev": true,
-      "dependencies": {
-        "brace-expansion": "^2.0.1"
-      },
-  
+    ],
+    "MWE": [
+        {
+            "word": "knock",
+            "eid": "17200",
+            "pagenum": 429,
+            "content": "<i>To</i> KNOCK¦, <i>v. a.</i> (Strike, hit) तड् (c. 10. ताडयति -यितुं), वितड्, तुद् (c. 6. तुदति -ते, तोत्तुं), आतुद्, वितुद्, प्रहृ (c. 1. -हरति -हर्त्तुं), हन् (c. 2. हन्ति -न्तुं), अभिहन्, निहन्, आहन्, विहन्, समाहन्, अभ्याहन्. — (Strike a door) द्वारं तड्. — (Knock down) पत् (c. 10. पात- यति -यितुं), अवपत्, निपत्, भ्रंश् (c. 10. भ्रंशयति -यितुं), आघातेन or प्रहारेण भूमौ पत्. — (Knock out) आघातेन वहिष्कृ; ‘to knock out the brains,’ मस्तकं निष्पिष् (c. 7. -पिनष्टि -पेष्टुं), आघातेन मस्तिष्कं वहिष्कृ. — (Knock off) आघातेन पत्; ‘do quickly,’ सत्वरं सम्पद् (c. 10. -पादयति -यितुं), त्वरितं कृ. — (Knock up, fatigue) खिद् (c. 10. खेदयति -यितुं), अवसद् (c. 10. -सादयति -यितुं), आयासेन सत्त्वं or बलं हृ (c. 1. हरति, हर्त्तुं) or अपहृ. — (Knock on the head) मस्तकम् आहत्य or ताडयित्वा व्यापद् (c. 10. -पादयति -यितुं)."
+        },
+        {
+            "word": "knock",
+            "eid": "17201",
+            "pagenum": 429,
+            "content": "<i>To</i> KNOCK¦, <i>v. n.</i> (Strike) ताडनं कृ, आघातं कृ, अभिघातं कृ, प्रहारं कृ, ‘to knock with a stick,’ वेत्राघातं कृ, दण्डप्रहारं कृ, दण्डपातनं कृ; ‘with the fist,’ मुष्ट्याघातं कृ, मुष्टिप्रहारं कृ, बाहुप्रहरणं कृ, मुष्टिपातं कृ. — (Strike against, clash) अभिहन् (c. 2. -हन्ति -न्तुं), प्रतिहन्, प्रतिघातं कृ, सङ्घट्ट् (c. 1. -घट्टते -ट्टितुं), आपत् (c. 1. -पतति -तितुं), अभिपत्. — (Knock under, submit) उपगम् (c. 1. -गच्छति -गन्तुं), वशं गम्, वशीभू. — (Knock up) श्रम् (c. 4. श्राम्यति, श्रमितुं), खिद् (c. 4. खिद्यते, खेत्तुं), अत्यायासात् or अतिखेदाद् गतसत्त्वः -त्त्वा -त्त्वं भू."
+        },
+        {
+            "word": "knock",
+            "eid": "17202",
+            "pagenum": 429,
+            "content": "KNOCK¦, <i>s.</i> (Blow) आघातः, अभिघातः, घातः, प्रहारः, आहतिः <i>f.,</i> हतिः <i>f.,</i> ताडनं, पातः -तनं; ‘a knock with a stick,’ वेत्राघातः; ‘a knock with the fist,’ मुष्टिप्रहारः; ‘a knock-down argument,’ गलहस्तः."
+        }
+    ]
+}

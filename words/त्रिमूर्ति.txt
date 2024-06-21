@@ -1,1 +1,132 @@
-oot}.ck-content hr{background:#dedede;border:0;height:4px;margin:15px 0}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-horizontal-line/theme/horizontalline.css"],names:[],mappings:"AAMA,yCAEC,iBACD,CAEA,eAGC,kBAA2B,CAC3B,QAAS,CAFT,UAAW,CADX,aAID",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n\n.ck-editor__editable .ck-horizontal-line {\n\t/* Necessary to render properly next to floated objects, e.g. side image case. */\n\tdisplay: flow-root;\n}\n\n.ck-content hr {\n\tmargin: 15px 0;\n\theight: 4px;\n\tbackground: hsl(0, 0%, 87%);\n\tborder: 0;\n}\n"],sourceRoot:""}]);const a=s},7865:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck .ck-link_selected{background:var(--ck-color-link-selected-background)}.ck .ck-link_selected span.image-inline{outline:var(--ck-widget-outline-thickness) solid var(--ck-color-link-selected-background)}.ck .ck-fake-link-selection{background:var(--ck-color-link-fake-selection)}.ck .ck-fake-link-selection_collapsed{border-right:1px solid var(--ck-color-base-text);height:100%;margin-right:-1px;outline:1px solid hsla(0,0%,100%,.5)}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-link/link.css"],names:[],mappings:"AAMA,sBACC,mDAMD,CAHC,wCACC,yFACD,CAOD,4BACC,8CACD,CAGA,sCAEC,gDAAiD,CADjD,WAAY,CAEZ,iBAAkB,CAClB,oCACD",sourcesContent:['/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/* Class added to span element surrounding currently selected link. */\n.ck .ck-link_selected {\n\tbackground: var(--ck-color-link-selected-background);\n\n\t/* Give linked inline images some outline to let the user know they are also part of the link. */\n\t& span.image-inline {\n\t\toutline: var(--ck-widget-outline-thickness) solid var(--ck-color-link-selected-background);\n\t}\n}\n\n/*\n * Classes used by the "fake visual selection" displayed in the content when an input\n * in the link UI has focus (the browser does not render the native selection in this state).\n */\n.ck .ck-fake-link-selection {\n\tbackground: var(--ck-color-link-fake-selection);\n}\n\n/* A collapsed fake visual selection. */\n.ck .ck-fake-link-selection_collapsed {\n\theight: 100%;\n\tborder-right: 1px solid var(--ck-color-base-text);\n\tmargin-right: -1px;\n\toutline: solid 1px hsla(0, 0%, 100%, .5);\n}\n'],sourceRoot:""}]);const a=s},6144:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-link-actions{display:flex;flex-direction:row;flex-wrap:nowrap}.ck.ck-link-actions .ck-link-actions__preview{display:inline-block}.ck.ck-link-actions .ck-link-actions__preview .ck-button__label{overflow:hidden}@media screen and (max-width:600px){.ck.ck-link-actions{flex-wrap:wrap}.ck.ck-link-actions .ck-link-actions__preview{flex-basis:100%}.ck.ck-link-actions .ck-button:not(.ck-link-actions__preview){flex-basis:50%}}.ck.ck-link-actions .ck-button.ck-link-actions__preview{padding-left:0;padding-right:0}.ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label{color:var(--ck-color-link-default);cursor:pointer;max-width:var(--ck-input-width);min-width:3em;padding:0 var(--ck-spacing-medium);text-align:center;text-overflow:ellipsis}.ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label:hover{text-decoration:underline}.ck.ck-link-actions .ck-button.ck-link-actions__preview,.ck.ck-link-actions .ck-button.ck-link-actions__preview:active,.ck.ck-link-actions .ck-button.ck-link-actions__preview:focus,.ck.ck-link-actions .ck-button.ck-link-actions__preview:hover{background:none}.ck.ck-link-actions .ck-button.ck-link-actions__preview:active{box-shadow:none}.ck.ck-link-actions .ck-button.ck-link-actions__preview:focus .ck-button__label{text-decoration:underline}[dir=ltr] .ck.ck-link-actions .ck-button:not(:first-child),[dir=rtl] .ck.ck-link-actions .ck-button:not(:last-child){margin-left:var(--ck-spacing-standard)}@media screen and (max-width:600px){.ck.ck-link-actions .ck-button.ck-link-actions__preview{margin:var(--ck-spacing-standard) var(--ck-spacing-standard) 0}.ck.ck-link-actions .ck-button.ck-link-actions__preview .ck-button__label{max-width:100%;min-width:0}[dir=ltr] .ck.ck-link-actions .ck-button:not(.ck-link-actions__preview),[dir=rtl] .ck.ck-link-actions .ck-button:not(.ck-link-actions__preview){margin-left:0}}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-link/theme/linkactions.css","webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-link/linkactions.css"],names:[],mappings:"AAOA,oBACC,YAAa,CACb,kBAAmB,CACnB,gBAqBD,CAnBC,8CACC,oBAKD,CAHC,gEACC,eACD,CCXD,oCDCD,oBAcE,cAUF,CARE,8CACC,eACD,CAEA,8DACC,cACD,CCrBD,CCIA,wDACC,cAAe,CACf,eAmCD,CAjCC,0EAEC,kCAAmC,CAEnC,cAAe,CAIf,+BAAgC,CAChC,aAAc,CARd,kCAAmC,CASnC,iBAAkB,CAPlB,sBAYD,CAHC,gFACC,yBACD,CAGD,mPAIC,eACD,CAEA,+DACC,eACD,CAGC,gFACC,yBACD,CAWD,qHACC,sCACD,CDtDD,oCC0DC,wDACC,8DAMD,CAJC,0EAEC,cAAe,CADf,WAED,CAGD,gJAME,aAEF,CDzED",sourcesContent:['/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";\n\n.ck.ck-link-actions {\n\tdisplay: flex;\n\tflex-direction: row;\n\tflex-wrap: nowrap;\n\n\t& .ck-link-actions__preview {\n\t\tdisplay: inline-block;\n\n\t\t& .ck-button__label {\n\t\t\toverflow: hidden;\n\t\t}\n\t}\n\n\t@mixin ck-media-phone {\n\t\tflex-wrap: wrap;\n\n\t\t& .ck-link-actions__preview {\n\t\t\tflex-basis: 100%;\n\t\t}\n\n\t\t& .ck-button:not(.ck-link-actions__preview) {\n\t\t\tflex-basis: 50%;\n\t\t}\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@define-mixin ck-media-phone {\n\t@media screen and (max-width: 600px) {\n\t\t@mixin-content;\n\t}\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";\n@import "../mixins/_focus.css";\n@import "../mixins/_shadow.css";\n@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";\n\n.ck.ck-link-actions {\n\t& .ck-button.ck-link-actions__preview {\n\t\tpadding-left: 0;\n\t\tpadding-right: 0;\n\n\t\t& .ck-button__label {\n\t\t\tpadding: 0 v
+{
+    "word": "त्रिमूर्ति",
+    "BUR": [
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "8271",
+            "pagenum": 304,
+            "content": "त्रिमूर्ति¦ <i>trimūrti</i> <ab>m.</ab> les trois personnes divines ou la trinité indienne [<s1 slp1='brahmA'>Brahmā</s1>, <s1 slp1='vizRu'>Viṣṇu</s1>, <s1 slp1='Siva'>Śiva</s1>]."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "12903",
+            "pagenum": 212,
+            "content": "त्रिमूर्ति¦ <lex>a.</lex> having three forms; subst. °— the trinity (<ab>i.e.</ab> Brahman, Viṣṇu, & Śiva)."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "9056",
+            "pagenum": 161,
+            "content": "त्रिमूर्ति¦ dreigestaltig; die Dreigestalt, Trinität <lbinfo n='5'/> <i>(d. i. Brahmen, Viṣṇu u. Śiva).</i>"
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "16162",
+            "pagenum": 318,
+            "content": "tri-mUrti¦ <i>m.</i> the united form of Brahman (m.), Vishṇu and Mahesa, <ls>K.S.</ls>ii.4."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "88120",
+            "pagenum": "460,1",
+            "content": "त्रि—मूर्ति ¦ <lex>mfn.</lex> having 3 forms or shapes (as <s1 slp1='brahmA'>Brahmā</s1>, <s1 slp1='vizRu'>Viṣṇu</s1>., <s1 slp1='Siva'>Śiva</s1>), <ls>Kum. ii, 4</ls><info lex='m:f:n'/>"
+        },
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "88121",
+            "pagenum": "460,1",
+            "content": "¦ <ls>Gaṅgeś.</ls>; <ls>RāmatUp. i, 16</ls>, <ab>Sch.</ab><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "88122",
+            "pagenum": "460,1",
+            "content": "¦ in <ab>comp.</ab> <s1 slp1='brahmA'>Brahmā</s1>, <s1 slp1='vizRu'>Viṣṇu</s1>, <s1 slp1='Siva'>Śiva</s1>, <ls>Hcat. i, 11, 547</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "88123",
+            "pagenum": "460,1",
+            "content": "त्रि—मूर्ति ¦ <lex>m.</lex> the sun (<ab>cf.</ab> त्रयी-देह), <ls n='Hcat. i,'>8, 221</ls><info lex='m'/>"
+        },
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "88124",
+            "pagenum": "460,1",
+            "content": "¦ a <s1 slp1='budDa'>Buddha</s1>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "88125",
+            "pagenum": "460,1",
+            "content": "¦ one of the 8 <s1 slp1='vidyeSvara'>Vidyeśvara</s1>s <ls n='Hcat. i,'>8, 406</ls>; <ls n='Hcat. i,'>11, 857</ls>; <ls n='Hcat.'>ii, 1, 941</ls>; <ls>Śaktir. v</ls><info lex='inh'/>"
+        },
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "88126",
+            "pagenum": "460,1",
+            "content": "¦ (°तिक), <ls>Sarvad. vii, 75.</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "47685",
+            "pagenum": 3,
+            "content": "त्रिमूर्ति¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>drei Gestalten —, drei Formen habend</i>. <dvsn n='1'>— 2〉 am <ab>Anf.</ab> eines <ab>Comp.</ab> Collectivbezeichnung <is>Brahman</is>ʼs <is>Viṣṇu</is>ʼs und <is>Śiva</is>ʼs [Page3-053-a] <ls>HEMĀDRI 1,782,9</ls>. <dvsn n='1'>— 3〉 <lex>m.</lex> <dvsn n='2'>— a〉 <ab>Bein.</ab> der Sonne <ls>HEMĀDRI 1,591,8</ls>. <dvsn n='2'>— b〉 <i>ein</i> <is>Buddha</is> <dvsn n='2'>— c〉 <ab>N. pr.</ab> eines der 8 <is>Vidyeśvara</is> <ls>HEMĀDRI 1,611,9. 823,6. 2,a,126,11</ls>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "31081",
+            "pagenum": 3,
+            "content": "त्रिमूर्ति¦ (त्रि + मू°) <dvsn n='1'> 1) <lex>adj.</lex> <i>drei Gestalten habend, drei Formen annehmend</i>: नमस्त्रिमूर्तये तुभ्यं (ब्रह्मणे) प्राक्सृष्टेः केवलात्मने । गुणत्रयविभागाय पश्चाद्भेदमुपेयुषे ॥ <ls>KUMĀRAS. 2, 4.</ls> त्रिमूर्तिर्यः सर्गस्थितिविलयकर्माणि तनुते (als <is>Brahman</is>, <is>Viṣṇu</is> und <is>Śiva</is>) <ls>GAṄGEŚOPĀDHYĀYA</ls> im <ls>ŚKDR.</ls> <dvsn n='1'>— 2) <lex>m.</lex> <i>ein</i> <is>Buddha</is> <ls>TRIK. 1, 1, 9.</ls>"
+        },
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "75323",
+            "pagenum": 5,
+            "content": "त्रिमूर्ति¦ <dvsn n='1'> 1) <ls>WEBER, RĀMAT. UP. 290.</ls> <dvsn n='1'>— 3) <lex>m.</lex> N. pr. eines Autors von <is>Mantra</is> bei den <is>Śākta</is> <ls>Verz. d. Oxf. H. 101,b,5.</ls>"
+        }
+    ],
+    "SCH": [
+        {
+            "word": "त्रिमूर्ति",
+            "eid": "14933",
+            "pagenum": 206,
+            "content": "<i>trimūrti</i>¦ m. ° = Śiva, <ls>H</ls> 7, 8. {part=,seq=15167,type=,n=1}"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिमूर्ति",
+            "content": "त्रिमूर्तिः पुं. त्रि-मूर्तिः  - 'हिन्दुओं के त्रिदेव - ब्रह्मा, विष्णु और महेश का संयुक्त रुप'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिमूर्ति",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಬ್ರಹ್ಮ ವಿಷ್ಣು ಮಹೇಶ್ವರ ರೂಪದಿಂದ ಕೂಡಿದ ಪರಮಾತ್ಮ",
+            "व्युत्पत्तिः": "तिस्रो मूर्तयोऽस्य",
+            "प्रयोगाः": "'नमस्त्रिमूर्तये तुभ्यं प्राक्सृष्टेः केवलात्मने'",
+            "उल्लेखाः": "कुमा० २-४",
+            "content": ""
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिमूर्ति",
+            "content": "<span lang=\"sa\">त्रिमूर्ति<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬ್ರಹ್ಮ ವಿಷ್ಣು ಮಹೇಶ್ವರ ರೂಪದಿಂದ ಕೂಡಿದ ಪರಮಾತ್ಮ<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>तिस्रो मूर्तयोऽस्य<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"नमस्त्रिमूर्तये तुभ्यं प्राक्सृष्टेः केवलात्मने\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>कुमा० २-४<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

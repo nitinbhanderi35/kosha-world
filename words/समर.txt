@@ -1,676 +1,367 @@
-     return obj.inspect();
-	    }
-	  }
-	  if (isMap$3(obj)) {
-	    var mapParts = [];
-	    if (mapForEach) {
-	      mapForEach.call(obj, function (value, key) {
-	        mapParts.push(inspect(key, obj, true) + ' => ' + inspect(value, obj));
-	      });
-	    }
-	    return collectionOf('Map', mapSize.call(obj), mapParts, indent);
-	  }
-	  if (isSet$3(obj)) {
-	    var setParts = [];
-	    if (setForEach) {
-	      setForEach.call(obj, function (value) {
-	        setParts.push(inspect(value, obj));
-	      });
-	    }
-	    return collectionOf('Set', setSize.call(obj), setParts, indent);
-	  }
-	  if (isWeakMap$1(obj)) {
-	    return weakCollectionOf('WeakMap');
-	  }
-	  if (isWeakSet$1(obj)) {
-	    return weakCollectionOf('WeakSet');
-	  }
-	  if (isWeakRef(obj)) {
-	    return weakCollectionOf('WeakRef');
-	  }
-	  if (isNumber$1(obj)) {
-	    return markBoxed(inspect(Number(obj)));
-	  }
-	  if (isBigInt$1(obj)) {
-	    return markBoxed(inspect(bigIntValueOf$1.call(obj)));
-	  }
-	  if (isBoolean$1(obj)) {
-	    return markBoxed(booleanValueOf.call(obj));
-	  }
-	  if (isString$3(obj)) {
-	    return markBoxed(inspect(String(obj)));
-	  }
-	  if (!isDate$1(obj) && !isRegExp(obj)) {
-	    var ys = arrObjKeys(obj, inspect);
-	    var isPlainObject = gPO$1 ? gPO$1(obj) === Object.prototype : obj instanceof Object || obj.constructor === Object;
-	    var protoTag = obj instanceof Object ? '' : 'null prototype';
-	    var stringTag = !isPlainObject && toStringTag && Object(obj) === obj && toStringTag in obj ? $slice$2.call(toStr$6(obj), 8, -1) : protoTag ? 'Object' : '';
-	    var constructorTag = isPlainObject || typeof obj.constructor !== 'function' ? '' : obj.constructor.name ? obj.constructor.name + ' ' : '';
-	    var tag = constructorTag + (stringTag || protoTag ? '[' + $join.call($concat.call([], stringTag || [], protoTag || []), ': ') + '] ' : '');
-	    if (ys.length === 0) {
-	      return tag + '{}';
-	    }
-	    if (indent) {
-	      return tag + '{' + indentedJoin(ys, indent) + '}';
-	    }
-	    return tag + '{ ' + $join.call(ys, ', ') + ' }';
-	  }
-	  return String(obj);
-	};
-	function wrapQuotes(s, defaultStyle, opts) {
-	  var quoteChar = (opts.quoteStyle || defaultStyle) === 'double' ? '"' : "'";
-	  return quoteChar + s + quoteChar;
-	}
-	function quote(s) {
-	  return $replace.call(String(s), /"/g, '&quot;');
-	}
-	function isArray$2(obj) {
-	  return toStr$6(obj) === '[object Array]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj));
-	}
-	function isDate$1(obj) {
-	  return toStr$6(obj) === '[object Date]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj));
-	}
-	function isRegExp(obj) {
-	  return toStr$6(obj) === '[object RegExp]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj));
-	}
-	function isError(obj) {
-	  return toStr$6(obj) === '[object Error]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj));
-	}
-	function isString$3(obj) {
-	  return toStr$6(obj) === '[object String]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj));
-	}
-	function isNumber$1(obj) {
-	  return toStr$6(obj) === '[object Number]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj));
-	}
-	function isBoolean$1(obj) {
-	  return toStr$6(obj) === '[object Boolean]' && (!toStringTag || !(typeof obj === 'object' && toStringTag in obj));
-	}
-
-	// Symbol and BigInt do have Symbol.toStringTag by spec, so that can't be used to eliminate false positives
-	function isSymbol$2(obj) {
-	  if (hasShammedSymbols) {
-	    return obj && typeof obj === 'object' && obj instanceof Symbol;
-	  }
-	  if (typeof obj === 'symbol') {
-	    return true;
-	  }
-	  if (!obj || typeof obj !== 'object' || !symToString) {
-	    return false;
-	  }
-	  try {
-	    symToString.call(obj);
-	    return true;
-	  } catch (e) {}
-	  return false;
-	}
-	function isBigInt$1(obj) {
-	  if (!obj || typeof obj !== 'object' || !bigIntValueOf$1) {
-	    return false;
-	  }
-	  try {
-	    bigIntValueOf$1.call(obj);
-	    return true;
-	  } catch (e) {}
-	  return false;
-	}
-	var hasOwn = Object.prototype.hasOwnProperty || function (key) {
-	  return key in this;
-	};
-	function has$2(obj, key) {
-	  return hasOwn.call(obj, key);
-	}
-	function toStr$6(obj) {
-	  return objectToString.call(obj);
-	}
-	function nameOf(f) {
-	  if (f.name) {
-	    return f.name;
-	  }
-	  var m = $match.call(functionToString.call(f), /^function\s*([\w$]+)/);
-	  if (m) {
-	    return m[1];
-	  }
-	  return null;
-	}
-	function indexOf(xs, x) {
-	  if (xs.indexOf) {
-	    return xs.indexOf(x);
-	  }
-	  for (var i = 0, l = xs.length; i < l; i++) {
-	    if (xs[i] === x) {
-	      return i;
-	    }
-	  }
-	  return -1;
-	}
-	function isMap$3(x) {
-	  if (!mapSize || !x || typeof x !== 'object') {
-	    return false;
-	  }
-	  try {
-	    mapSize.call(x);
-	    try {
-	      setSize.call(x);
-	    } catch (s) {
-	      return true;
-	    }
-	    return x instanceof Map; // core-js workaround, pre-v2.5.0
-	  } catch (e) {}
-	  return false;
-	}
-	function isWeakMap$1(x) {
-	  if (!weakMapHas || !x || typeof x !== 'object') {
-	    return false;
-	  }
-	  try {
-	    weakMapHas.call(x, weakMapHas);
-	    try {
-	      weakSetHas.call(x, weakSetHas);
-	    } catch (s) {
-	      return true;
-	    }
-	    return x instanceof WeakMap; // core-js workaround, pre-v2.5.0
-	  } catch (e) {}
-	  return false;
-	}
-	function isWeakRef(x) {
-	  if (!weakRefDeref || !x || typeof x !== 'object') {
-	    return false;
-	  }
-	  try {
-	    weakRefDeref.call(x);
-	    return true;
-	  } catch (e) {}
-	  return false;
-	}
-	function isSet$3(x) {
-	  if (!setSize || !x || typeof x !== 'object') {
-	    return false;
-	  }
-	  try {
-	    setSize.call(x);
-	    try {
-	      mapSize.call(x);
-	    } catch (m) {
-	      return true;
-	    }
-	    return x instanceof Set; // core-js workaround, pre-v2.5.0
-	  } catch (e) {}
-	  return false;
-	}
-	function isWeakSet$1(x) {
-	  if (!weakSetHas || !x || typeof x !== 'object') {
-	    return false;
-	  }
-	  try {
-	    weakSetHas.call(x, weakSetHas);
-	    try {
-	      weakMapHas.call(x, weakMapHas);
-	    } catch (s) {
-	      return true;
-	    }
-	    return x instanceof WeakSet; // core-js workaround, pre-v2.5.0
-	  } catch (e) {}
-	  return false;
-	}
-	function isElement(x) {
-	  if (!x || typeof x !== 'object') {
-	    return false;
-	  }
-	  if (typeof HTMLElement !== 'undefined' && x instanceof HTMLElement) {
-	    return true;
-	  }
-	  return typeof x.nodeName === 'string' && typeof x.getAttribute === 'function';
-	}
-	function inspectString(str, opts) {
-	  if (str.length > opts.maxStringLength) {
-	    var remaining = str.length - opts.maxStringLength;
-	    var trailer = '... ' + remaining + ' more character' + (remaining > 1 ? 's' : '');
-	    return inspectString($slice$2.call(str, 0, opts.maxStringLength), opts) + trailer;
-	  }
-	  // eslint-disable-next-line no-control-regex
-	  var s = $replace.call($replace.call(str, /(['\\])/g, '\\$1'), /[\x00-\x1f]/g, lowbyte);
-	  return wrapQuotes(s, 'single', opts);
-	}
-	function lowbyte(c) {
-	  var n = c.charCodeAt(0);
-	  var x = {
-	    8: 'b',
-	    9: 't',
-	    10: 'n',
-	    12: 'f',
-	    13: 'r'
-	  }[n];
-	  if (x) {
-	    return '\\' + x;
-	  }
-	  return '\\x' + (n < 0x10 ? '0' : '') + $toUpperCase.call(n.toString(16));
-	}
-	function markBoxed(str) {
-	  return 'Object(' + str + ')';
-	}
-	function weakCollectionOf(type) {
-	  return type + ' { ? }';
-	}
-	function collectionOf(type, size, entries, indent) {
-	  var joinedEntries = indent ? indentedJoin(entries, indent) : $join.call(entries, ', ');
-	  return type + ' (' + size + ') {' + joinedEntries + '}';
-	}
-	function singleLineValues(xs) {
-	  for (var i = 0; i < xs.length; i++) {
-	    if (indexOf(xs[i], '\n') >= 0) {
-	      return false;
-	    }
-	  }
-	  return true;
-	}
-	function getIndent(opts, depth) {
-	  var baseIndent;
-	  if (opts.indent === '\t') {
-	    baseIndent = '\t';
-	  } else if (typeof opts.indent === 'number' && opts.indent > 0) {
-	    baseIndent = $join.call(Array(opts.indent + 1), ' ');
-	  } else {
-	    return null;
-	  }
-	  return {
-	    base: baseIndent,
-	    prev: $join.call(Array(depth + 1), baseIndent)
-	  };
-	}
-	function indentedJoin(xs, indent) {
-	  if (xs.length === 0) {
-	    return '';
-	  }
-	  var lineJoiner = '\n' + indent.prev + indent.base;
-	  return lineJoiner + $join.call(xs, ',' + lineJoiner) + '\n' + indent.prev;
-	}
-	function arrObjKeys(obj, inspect) {
-	  var isArr = isArray$2(obj);
-	  var xs = [];
-	  if (isArr) {
-	    xs.length = obj.length;
-	    for (var i = 0; i < obj.length; i++) {
-	      xs[i] = has$2(obj, i) ? inspect(obj[i], obj) : '';
-	    }
-	  }
-	  var syms = typeof gOPS === 'function' ? gOPS(obj) : [];
-	  var symMap;
-	  if (hasShammedSymbols) {
-	    symMap = {};
-	    for (var k = 0; k < syms.length; k++) {
-	      symMap['$' + syms[k]] = syms[k];
-	    }
-	  }
-	  for (var key in obj) {
-	    // eslint-disable-line no-restricted-syntax
-	    if (!has$2(obj, key)) {
-	      continue;
-	    } // eslint-disable-line no-restricted-syntax, no-continue
-	    if (isArr && String(Number(key)) === key && key < obj.length) {
-	      continue;
-	    } // eslint-disable-line no-restricted-syntax, no-continue
-	    if (hasShammedSymbols && symMap['$' + key] instanceof Symbol) {
-	      // this is to prevent shammed Symbols, which are stored as strings, from being included in the string key section
-	      continue; // eslint-disable-line no-restricted-syntax, no-continue
-	    } else if ($test.call(/[^\w$]/, key)) {
-	      xs.push(inspect(key, obj) + ': ' + inspect(obj[key], obj));
-	    } else {
-	      xs.push(key + ': ' + inspect(obj[key], obj));
-	    }
-	  }
-	  if (typeof gOPS === 'function') {
-	    for (var j = 0; j < syms.length; j++) {
-	      if (isEnumerable.call(obj, syms[j])) {
-	        xs.push('[' + inspect(syms[j]) + ']: ' + inspect(obj[syms[j]], obj));
-	      }
-	    }
-	  }
-	  return xs;
-	}
-
-	var GetIntrinsic$6 = getIntrinsic;
-	var callBound$a = callBound$d;
-	var inspect = objectInspect;
-	var $TypeError$1 = GetIntrinsic$6('%TypeError%');
-	var $WeakMap$1 = GetIntrinsic$6('%WeakMap%', true);
-	var $Map$3 = GetIntrinsic$6('%Map%', true);
-	var $weakMapGet = callBound$a('WeakMap.prototype.get', true);
-	var $weakMapSet = callBound$a('WeakMap.prototype.set', true);
-	var $weakMapHas = callBound$a('WeakMap.prototype.has', true);
-	var $mapGet$1 = callBound$a('Map.prototype.get', true);
-	var $mapSet = callBound$a('Map.prototype.set', true);
-	var $mapHas$5 = callBound$a('Map.prototype.has', true);
-
-	/*
-	 * This function traverses the list returning the node corresponding to the
-	 * given key.
-	 *
-	 * That node is also moved to the head of the list, so that if it's accessed
-	 * again we don't need to traverse the whole list. By doing so, all the recently
-	 * used nodes can be accessed relatively quickly.
-	 */
-	var listGetNode = function (list, key) {
-	  // eslint-disable-line consistent-return
-	  for (var prev = list, curr; (curr = prev.next) !== null; prev = curr) {
-	    if (curr.key === key) {
-	      prev.next = curr.next;
-	      curr.next = list.next;
-	      list.next = curr; // eslint-disable-line no-param-reassign
-	      return curr;
-	    }
-	  }
-	};
-	var listGet = function (objects, key) {
-	  var node = listGetNode(objects, key);
-	  return node && node.value;
-	};
-	var listSet = function (objects, key, value) {
-	  var node = listGetNode(objects, key);
-	  if (node) {
-	    node.value = value;
-	  } else {
-	    // Prepend the new node to the beginning of the list
-	    objects.next = {
-	      // eslint-disable-line no-param-reassign
-	      key: key,
-	      next: objects.next,
-	      value: value
-	    };
-	  }
-	};
-	var listHas = function (objects, key) {
-	  return !!listGetNode(objects, key);
-	};
-	var sideChannel = function getSideChannel() {
-	  var $wm;
-	  var $m;
-	  var $o;
-	  var channel = {
-	    assert: function (key) {
-	      if (!channel.has(key)) {
-	        throw new $TypeError$1('Side channel does not contain ' + inspect(key));
-	      }
-	    },
-	    get: function (key) {
-	      // eslint-disable-line consistent-return
-	      if ($WeakMap$1 && key && (typeof key === 'object' || typeof key === 'function')) {
-	        if ($wm) {
-	          return $weakMapGet($wm, key);
-	        }
-	      } else if ($Map$3) {
-	        if ($m) {
-	          return $mapGet$1($m, key);
-	        }
-	      } else {
-	        if ($o) {
-	          // eslint-disable-line no-lonely-if
-	          return listGet($o, key);
-	        }
-	      }
-	    },
-	    has: function (key) {
-	      if ($WeakMap$1 && key && (typeof key === 'object' || typeof key === 'function')) {
-	        if ($wm) {
-	          return $weakMapHas($wm, key);
-	        }
-	      } else if ($Map$3) {
-	        if ($m) {
-	          return $mapHas$5($m, key);
-	        }
-	      } else {
-	        if ($o) {
-	          // eslint-disable-line no-lonely-if
-	          return listHas($o, key);
-	        }
-	      }
-	      return false;
-	    },
-	    set: function (key, value) {
-	      if ($WeakMap$1 && key && (typeof key === 'object' || typeof key === 'function')) {
-	        if (!$wm) {
-	          $wm = new $WeakMap$1();
-	        }
-	        $weakMapSet($wm, key, value);
-	      } else if ($Map$3) {
-	        if (!$m) {
-	          $m = new $Map$3();
-	        }
-	        $mapSet($m, key, value);
-	      } else {
-	        if (!$o) {
-	          /*
-	           * Initialize the linked list as an empty node, so that we don't have
-	           * to special-case handling of the first node: we can always refer to
-	           * it as (previous node).next, instead of something like (list).head
-	           */
-	          $o = {
-	            key: {},
-	            next: null
-	          };
-	        }
-	        listSet($o, key, value);
-	      }
-	    }
-	  };
-	  return channel;
-	};
-
-	var GetIntrinsic$5 = getIntrinsic;
-	var has$1 = src;
-	var channel = sideChannel();
-	var $TypeError = GetIntrinsic$5('%TypeError%');
-	var SLOT$1 = {
-	  assert: function (O, slot) {
-	    if (!O || typeof O !== 'object' && typeof O !== 'function') {
-	      throw new $TypeError('`O` is not an object');
-	    }
-	    if (typeof slot !== 'string') {
-	      throw new $TypeError('`slot` must be a string');
-	    }
-	    channel.assert(O);
-	    if (!SLOT$1.has(O, slot)) {
-	      throw new $TypeError('`' + slot + '` is not present on `O`');
-	    }
-	  },
-	  get: function (O, slot) {
-	    if (!O || typeof O !== 'object' && typeof O !== 'function') {
-	      throw new $TypeError('`O` is not an object');
-	    }
-	    if (typeof slot !== 'string') {
-	      throw new $TypeError('`slot` must be a string');
-	    }
-	    var slots = channel.get(O);
-	    return slots && slots['$' + slot];
-	  },
-	  has: function (O, slot) {
-	    if (!O || typeof O !== 'object' && typeof O !== 'function') {
-	      throw new $TypeError('`O` is not an object');
-	    }
-	    if (typeof slot !== 'string') {
-	      throw new $TypeError('`slot` must be a string');
-	    }
-	    var slots = channel.get(O);
-	    return !!slots && has$1(slots, '$' + slot);
-	  },
-	  set: function (O, slot, V) {
-	    if (!O || typeof O !== 'object' && typeof O !== 'function') {
-	      throw new $TypeError('`O` is not an object');
-	    }
-	    if (typeof slot !== 'string') {
-	      throw new $TypeError('`slot` must be a string');
-	    }
-	    var slots = channel.get(O);
-	    if (!slots) {
-	      slots = {};
-	      channel.set(O, slots);
-	    }
-	    slots['$' + slot] = V;
-	  }
-	};
-	if (Object.freeze) {
-	  Object.freeze(SLOT$1);
-	}
-	var internalSlot = SLOT$1;
-
-	var SLOT = internalSlot;
-	var $SyntaxError = SyntaxError;
-	var $StopIteration = typeof StopIteration === 'object' ? StopIteration : null;
-	var stopIterationIterator = function getStopIterationIterator(origIterator) {
-	  if (!$StopIteration) {
-	    throw new $SyntaxError('this environment lacks StopIteration');
-	  }
-	  SLOT.set(origIterator, '[[Done]]', false);
-	  var siIterator = {
-	    next: function next() {
-	      var iterator = SLOT.get(this, '[[Iterator]]');
-	      var done = SLOT.get(iterator, '[[Done]]');
-	      try {
-	        return {
-	          done: done,
-	          value: done ? void undefined : iterator.next()
-	        };
-	      } catch (e) {
-	        SLOT.set(iterator, '[[Done]]', true);
-	        if (e !== $StopIteration) {
-	          throw e;
-	        }
-	        return {
-	          done: true,
-	          value: void undefined
-	        };
-	      }
-	    }
-	  };
-	  SLOT.set(siIterator, '[[Iterator]]', origIterator);
-	  return siIterator;
-	};
-
-	var toString = {}.toString;
-	var isarray = Array.isArray || function (arr) {
-	  return toString.call(arr) == '[object Array]';
-	};
-
-	var strValue = String.prototype.valueOf;
-	var tryStringObject = function tryStringObject(value) {
-	  try {
-	    strValue.call(value);
-	    return true;
-	  } catch (e) {
-	    return false;
-	  }
-	};
-	var toStr$5 = Object.prototype.toString;
-	var strClass = '[object String]';
-	var hasToStringTag$7 = shams();
-	var isString$2 = function isString(value) {
-	  if (typeof value === 'string') {
-	    return true;
-	  }
-	  if (typeof value !== 'object') {
-	    return false;
-	  }
-	  return hasToStringTag$7 ? tryStringObject(value) : toStr$5.call(value) === strClass;
-	};
-
-	var $Map$2 = typeof Map === 'function' && Map.prototype ? Map : null;
-	var $Set$3 = typeof Set === 'function' && Set.prototype ? Set : null;
-	var exported$2;
-	if (!$Map$2) {
-	  // eslint-disable-next-line no-unused-vars
-	  exported$2 = function isMap(x) {
-	    // `Map` is not present in this environment.
-	    return false;
-	  };
-	}
-	var $mapHas$4 = $Map$2 ? Map.prototype.has : null;
-	var $setHas$4 = $Set$3 ? Set.prototype.has : null;
-	if (!exported$2 && !$mapHas$4) {
-	  // eslint-disable-next-line no-unused-vars
-	  exported$2 = function isMap(x) {
-	    // `Map` does not have a `has` method
-	    return false;
-	  };
-	}
-	var isMap$2 = exported$2 || function isMap(x) {
-	  if (!x || typeof x !== 'object') {
-	    return false;
-	  }
-	  try {
-	    $mapHas$4.call(x);
-	    if ($setHas$4) {
-	      try {
-	        $setHas$4.call(x);
-	      } catch (e) {
-	        return true;
-	      }
-	    }
-	    return x instanceof $Map$2; // core-js workaround, pre-v2.5.0
-	  } catch (e) {}
-	  return false;
-	};
-
-	var $Map$1 = typeof Map === 'function' && Map.prototype ? Map : null;
-	var $Set$2 = typeof Set === 'function' && Set.prototype ? Set : null;
-	var exported$1;
-	if (!$Set$2) {
-	  // eslint-disable-next-line no-unused-vars
-	  exported$1 = function isSet(x) {
-	    // `Set` is not present in this environment.
-	    return false;
-	  };
-	}
-	var $mapHas$3 = $Map$1 ? Map.prototype.has : null;
-	var $setHas$3 = $Set$2 ? Set.prototype.has : null;
-	if (!exported$1 && !$setHas$3) {
-	  // eslint-disable-next-line no-unused-vars
-	  exported$1 = function isSet(x) {
-	    // `Set` does not have a `has` method
-	    return false;
-	  };
-	}
-	var isSet$2 = exported$1 || function isSet(x) {
-	  if (!x || typeof x !== 'object') {
-	    return false;
-	  }
-	  try {
-	    $setHas$3.call(x);
-	    if ($mapHas$3) {
-	      try {
-	        $mapHas$3.call(x);
-	      } catch (e) {
-	        return true;
-	      }
-	    }
-	    return x instanceof $Set$2; // core-js workaround, pre-v2.5.0
-	  } catch (e) {}
-	  return false;
-	};
-
-	/* eslint global-require: 0 */
-	// the code is structured this way so that bundlers can
-	// alias out `has-symbols` to `() => true` or `() => false` if your target
-	// environments' Symbol capabilities are known, and then use
-	// dead code elimination on the rest of this module.
-	//
-	// Similarly, `isarray` can be aliased to `Array.isArray` if
-	// available in all target environments.
-
-	var isArguments$1 = isArguments$2;
-	var getStopIterationIterator = stopIterationIterator;
-	if (hasSymbols$5() || shams$1()) {
-	  var $iterator = Symbol.iterator;
-	  // Symbol is available natively or shammed
-	  // natively:
-	  //  - Chrome >= 38
-	  //  - Edge 12-14?, Edge >= 15 for sure
-	  //  - FF >= 36
-	  //  - Safari >= 9
-	  //  - node >= 0.12
-	  esGetIterator.exports = function getIterator(iterable) {
-	    // alternatively, `iterable[$iterator]?.()`
-	    if (iterable != null && typeof iterable[$iterator] !== 'undefined') {
-	      return iterable[$iterator]();
-	    }
-	    if (isArguments$1(iterable)) {
-	      // arg
+{
+    "word": "समर",
+    "ABCH": [
+        {
+            "word": "समर",
+            "linga": "पुंक्ली",
+            "pagenum": "32",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "2422",
+            "group": "918",
+            "synonyms": [
+                "युद्ध",
+                "सङ्ख्य",
+                "कलि",
+                "सङ्ग्राम",
+                "आहव",
+                "सम्प्रहार",
+                "जन्य",
+                "युध्",
+                "आयोधन",
+                "संस्फोट",
+                "कलह",
+                "मृध",
+                "प्रहरण",
+                "संयत्",
+                "रण",
+                "विग्रह",
+                "द्वन्द्व",
+                "समाघात",
+                "समाह्वय",
+                "अभिसम्पात",
+                "संमर्द",
+                "समिध्",
+                "प्रघात",
+                "आस्कन्दन",
+                "आजि",
+                "प्रधन",
+                "अनीक",
+                "अभ्यागम",
+                "प्रविदारण",
+                "समुदाय",
+                "समुदय",
+                "राटि",
+                "समिति",
+                "सङ्गर",
+                "अभ्यामर्द",
+                "सम्पराय",
+                "समीक",
+                "साम्परायिक",
+                "आक्रन्द",
+                "संयुग"
+            ],
+            "content": "प्राणः स्थाम तरः पराक्रमबलद्युम्नानि शौर्यौजसी\nशुष्मं शुष्म च शक्तिरूर्जसहसी युद्धं तु संख्यं कलिः ।\nसंग्रामाहवसंप्रहारसमरा जन्यं युदायोधनं\nसंस्फोटः कलहो मृधं प्रहरणं संयद्रणो विग्रहः ॥ ७९६ ॥\nद्वन्द्वं समाघातसमाह्वयाभिसंपातसंमर्दसमित्प्रघाताः ।\nआस्कन्दनाजिप्रधनान्यनीकमभ्यागमश्च प्रविदारणं च ॥ ७९७ ॥\nसमुदायः समुदयो राटिः समितिसंगरौ ।\nअभ्यामर्दः संपरायः समीकं सांपरायिकम् ॥ ७९८ ॥\nआक्रन्दः संयुगश्चाथ नियुद्धं तद्भुजोद्भवम् ।"
+        }
+    ],
+    "AP90": [
+        {
+            "word": "समर",
+            "eid": "29328",
+            "pagenum": 1094,
+            "content": "समरः --रं¦ War, battle, fight;  <lbinfo n='ka#rRAdayo'/> कर्णादयोऽपि समरात्पराङ्मुखीभवंति  <lbinfo n='ls:Ve.+3'/> <ls>Ve. 3.</ls> <b>--Comp.</b> --उद्देशः, --भूमि <i><ab>f.</ab></i> <lbinfo n='battle+field'/> battlefield. --मूर्धन् <i><ab>m.</ab></i>, --शिरस् <i><ab>n.</ab></i> the front or van of battle; <ls>U. 5. 3.</ls>"
+        }
+    ],
+    "BEN": [
+        {
+            "word": "समर",
+            "eid": "15585",
+            "pagenum": 1010,
+            "content": "समर¦ <i>samara,</i> <ab>i. e.</ab> <i>sam-ṛ + a,</i> <b>I.</b> <ab>m.</ab> and <ab>n.</ab> War, battle, <ls>Hit.</ls> 106, 10. <b>II.</b> <ab>m.</ab> A proper name, <ls>Rājat.</ls> 5, 25."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "समर",
+            "eid": "8286",
+            "pagenum": 369,
+            "content": "समर¦ <i>m. n.</i> (r. ऋ ire praef. सम् s. अ) pugna, bellum (<i>cf.</i> समिति). DR. 8. 9."
+        }
+    ],
+    "BUR": [
+        {
+            "word": "समर",
+            "eid": "17659",
+            "pagenum": 682,
+            "content": "समर¦ <i>samara</i> <ab>m.</ab> <ab>n.</ab> <i>(sam; ṛ)</i> rencontre, conflit, combat.  <P><i>samarodyata</i> <ab>a.</ab> <i>(udyata)</i> prêt au combat."
+        }
+    ],
+    "CAE": [
+        {
+            "word": "समर",
+            "eid": "35170",
+            "pagenum": 591,
+            "content": "समर/¦ <lex>m.</lex> सम/रण <lex>n.</lex> encounter, fight."
+        }
+    ],
+    "CCS": [
+        {
+            "word": "समर",
+            "eid": "26368",
+            "pagenum": 476,
+            "content": "समर/¦ <i>m.</i> Zusammentreffen, Kampf."
+        }
+    ],
+    "GRA": [
+        {
+            "word": "समर",
+            "eid": "9375",
+            "pagenum": 1480,
+            "content": "<b>samará,</b>¦ <ab>m.</ab> (oder <ab>n.</ab>), <i>Zusammenkommen, Zusammenströmen</i> [von ar <ab n='mit'>m.</ab> sám], mit <ab>Gen.</ab>; 2〉 <i>Wettstreit</i>. <dvsn n='TS'>-é 1〉 vásūnām {488,6}; dhánānām {965,3}. — 2〉 {450,2}."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "समर",
+            "eid": "39721",
+            "pagenum": 758,
+            "content": "samara¦ <i>m.n.</i> War, battle, यदि समरमपास्य नास्ति मृत्योर्भयम् <ls>Ve.</ls>iii."
+        }
+    ],
+    "MD": [
+        {
+            "word": "समर",
+            "eid": "18843",
+            "pagenum": 336,
+            "content": "समर¦ sam-ará, <lex>m.</lex> [coming together: √ ṛ] 🞄concourse, confluence (<ab>V.</ab>); conflict, strife, 🞄battle, with (saha; <i>rare in</i> <ab>V.</ab>; <ab>C.</ab>); <ab>N.</ab> (<ab>C.</ab>): 🞄<b>-karman,</b> <lex>n.</lex> battle; <b>-kṣiti,</b> <lex>f.</lex> battle-field; 🞄<b>-jit,</b> <lex>m.</lex> (victorious in battle) <ab>N.</ab> <i>of a prince</i>."
+        }
+    ],
+    "MW": [
+        {
+            "word": "समर",
+            "eid": "233742",
+            "pagenum": "1156,3",
+            "content": "सम्-अर <hom>a</hom> ¦ &c. See सम्-√ ऋ, <ab>p.</ab> 1170."
+        },
+        {
+            "word": "समर",
+            "eid": "235808",
+            "pagenum": "1170,3",
+            "content": "सम्-अर/ <hom>b</hom> ¦ <lex>m.</lex> (or <lex type='hwalt'>n.</lex> <ab>g.</ab> arDarcA<srs/>dI) coming together, meeting, concourse, confluence, <ls>RV.</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls><info lex='m:n'/>"
+        },
+        {
+            "word": "समर",
+            "eid": "235809",
+            "pagenum": "1170,3",
+            "content": "¦ (<ab>ifc.</ab> <lex type='hwifc'>f(आ). </lex>) hostile encounter, conflict, struggle, war, battle with (सह), <ls>ŚāṅkhBr.</ls>; <ls>MBh.</ls> &c.<info lex='f#A'/><info lex='inh'/>"
+        },
+        {
+            "word": "समर",
+            "eid": "235810",
+            "pagenum": "1170,3",
+            "content": "¦ <ab>N.</ab> of a king of the <s1 slp1='vidyA-Dara'>Vidyā-dhara</s1>s, <ls>Kathās.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समर",
+            "eid": "235811",
+            "pagenum": "1170,3",
+            "content": "¦ of a king of <s1 slp1='kAmpilya'>Kāmpilya</s1>, <ls>Hariv.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "समर",
+            "eid": "235812",
+            "pagenum": "1170,3",
+            "content": "¦ of a brother of king <s1 slp1='avantivarman'>Avantivarman</s1>, <ls>Rājat.</ls><info lex='inh'/>"
+        }
+    ],
+    "MW72": [
+        {
+            "word": "समर",
+            "eid": "49770",
+            "pagenum": 1070,
+            "content": "समर¦ <i>sam-ara, sam-arāṇa,</i> &c. See under <i>sam-ṛ.</i>"
+        },
+        {
+            "word": "समर",
+            "eid": "50651",
+            "pagenum": 1082,
+            "content": "<i>Sam-ara, as, am,</i>¦ m. n. coming together in a hostile manner, conflict, combat, struggle, strife, war, battle [cf. <i>samarya</i>]; (<i>as</i>), m. a proper N. <i>—Sam-</i> <i>ara-kanda,</i> N. of a district. <i>—Samarañ-jaya, as,</i> m. a proper N. <i>—Samara-mardana, as,</i> m. ‘destroying in battle,’ epithet of Śiva. <i>—Samara-mūr-</i> <i>dhan, ā,</i> m. the front or van of battle. <i>—Samara-</i> <i>varman, ā,</i> m. a proper N. <i>—Samara-vijayin, ī,</i> <i>inī, i,</i> victorious in battle. <i>—Samara-siṃha, as,</i> m. a proper N. <i>—Samara-svāmin, ī,</i> m. a particular statue or idol erected by Samara-varman. <i>—Sama-</i> <i>rārṇava (°ra-ar°), as,</i> m. the ocean of war. <i>—Sa-</i> <i>marocita (°ra-uc°), as, ā, am,</i> fit for war. <i>—Sa-</i> <i>maroddeśa (°ra-ud°), as,</i> m. a battle-field, place of combat. <i>—Samarodyata (°ra-ud°), as, ā, am,</i> prepared for conflict, ready for combat."
+        }
+    ],
+    "PUI": [
+        {
+            "word": "समर",
+            "eid": "15387",
+            "pagenum": 3,
+            "content": "<i>Samara</i> (I)¦ — a son of Kāvya; had three sons. <dvsn n='P'/>M. 49. 54."
+        },
+        {
+            "word": "समर",
+            "eid": "15388",
+            "pagenum": 3,
+            "content": "<i>Samara</i> (II)¦ — one of the lineal descendants of Nīpa; capital Kampilya. <dvsn n='P'/>Vā. 99. 176."
+        },
+        {
+            "word": "समर",
+            "eid": "15389",
+            "pagenum": 3,
+            "content": "<i>Samara</i> (III)¦ — a son of Nīla and lord of Kāmpilya; father of three sons, Pāra and two others. <dvsn n='P'/>Vi. IV. 19. 40-1."
+        }
+    ],
+    "PW": [
+        {
+            "word": "समर",
+            "eid": "119995",
+            "pagenum": 7,
+            "content": "समर/¦ <lex>m.</lex> (<lex>n.</lex>) <dvsn n='1'>— 1〉 <i>Zusammenlauf, -fluss, Ort des Zusammenflusses</i>. <dvsn n='1'>— 2〉 <i>feindlicher Zusammenstoss, Kampf, — mit</i> सह. Am Ende eines <ab>adj. Comp.</ab> <lex>f.</lex> आ <dvsn n='1'>— 3〉 <ab>N. pr.</ab> <dvsn n='2'>— a〉 eines Fürsten der <is>Vidyādhara</is>. <dvsn n='2'>— b〉 eines Fürsten von <is>Kāmpilya</is> und eines Bruders des Fürsten <is>Avantivarman</is>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "समर",
+            "eid": "105371",
+            "pagenum": 7,
+            "content": "समर/¦ (von अर् mit सम्) <ls>UJJVAL.</ls> zu <ls>UṆĀDIS. 3, 131</ls> (parox.). <lex>m.</lex> und <lex>n.</lex> (dieses nicht zu belegen) <is>gaṇa</is> अर्धर्चादि zu <ls>P. 2, 4, 31.</ls> <ls>TRIK. 3, 5, 14.</ls> <dvsn n='1'> 1) <i>Zusammenlauf, Zusammenfluss; Ort des Z.</i>: धना^नाम् <ls>ṚV. 10, 139, 3.</ls> <ls n='ṚV.'>6, 9, 2.</ls> वसू^नाम् <ls n='ṚV. 6,'>47, 6.</ls> व\\धाना^म् <ls>AV. 5, 20, 5.</ls> सीता° <ls>ŚAT. BR. 7, 2, 3, 3.</ls> <dvsn n='1'>— 2) <i>feindlicher Zusammenstoss, Kampf</i> <ls>AK. 2, 8, 2, 73.</ls> <ls n='AK.'>3, 4, 14, 66.</ls> <ls>H. 796.</ls> <ls>HALĀY. 2, 298.</ls> <ls>ŚĀṄKH. ŚR. 15, 15, 12.</ls> <ls>BR. 7, 9</ls> (असमराय). <ls>MBH. 1, 1174.</ls> <ls n='MBH.'>3, 11979.</ls> <ls n='MBH. 3,'>15724.</ls> <ls>HARIV. 5457.</ls> <ls>MEGH. 50.</ls> <ls>RAGH. 12, 82.</ls> <ls>ed. Calc. 7, 33.</ls> <ls>Spr. (II) 3461.</ls> <ls n='Spr. (II)'>5238.</ls> <ls>AK. 2, 8, 2, 19.</ls> <ls>VARĀH. BṚH. S. 4, 29. 20, 2. 43, 1. 47, 26.</ls> <ls>KATHĀS. 54, 214.</ls> <ls>RĀJA-TAR. 1, 82.</ls> <ls>PRAB. 83, 6. 9.</ls> <ls>BHĀG. P. 6, 12, 17.</ls> देवानां सह दानवैः <ls n='BHĀG. P.'>9, 6, 13. 14, 7.</ls> <ls>HIT. 106, 10.</ls> समराग्र <ls>R. 5, 42, 14.</ls> °व्यसनिन् <ls>MṚCCH. 1, 20.</ls> °विमर्द <ls>VARĀH. BṚH. S. 5, 60.</ls> समरागम <i>Ausbruch eines Krieges</i> <ls n='VARĀH. BṚH. S.'>8, 32.</ls> °शूर <ls n='VARĀH. BṚH. S.'>16, 4.</ls> am Ende eines <lex>adj.</lex> comp. (f. आ): प्रवरनृवराबद्धसमरा धरा <ls n='VARĀH. BṚH. S.'>27, 5.</ls> इष्ट° <ls>HARIV. 1062.</ls> कृत° <ls>R. 7, 29, 40.</ls> वितीर्ण° <ls>RĀJA-TAR. 5, 135.</ls> असमरम् adv. <i>ohne Anstoss</i>: अभ्युदैति <ls>ŚĀṄKH. BR. 8, 9.</ls> <dvsn n='1'>— 3) N. pr. eines Fürsten von <is>Kāmpilya</is> <ls>HARIV. 1062. fg.</ls> <ls>VP. 452.</ls> eines Fürsten der <is>Vidyādhara</is> <ls>KATHĀS. 52,170.</ls> eines Bruders des Fürsten <is>Avantivarman</is> <ls>RĀJA-TAR. 5, 25.</ls> <dvsn n='v'>— Vgl. सामरेय ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "समर",
+            "eid": "42559",
+            "pagenum": 761,
+            "content": "समर¦ mn. (-रः-रं) War, battle, conflict. E. सम् with, together, ऋ to go, aff. अप् ।"
+        }
+    ],
+    "STC": [
+        {
+            "word": "समर",
+            "eid": "21707",
+            "pagenum": 790,
+            "content": "<b>sam-ara-</b>¦ <ab>m.</ab> conflit, collision, combat, guerre ; <ab>n.</ab> d'un roi de Kāmpilya ; d'un prince des Vidyādhara.  <P><i>°karman-</i> <ab>nt.</ab> fait d'armes, combat.  <P><i>°kṣiti-</i> <ab>f.</ab> champ de bataille.  <P><i>°jit- °bala- °bhaṭa- °ratha-</i> <ab>m.</ab> <ab>n.</ab> de rois.  <P><i>°tuṅga-</i> <ab>m.</ab> <ab>n.</ab> d'un guerrier.  <P><i>°bhū- °bhūmi-</i> <ab>f.</ab> = <i>°kṣiti-.</i>  <P><i>°mardana-</i> <ab>m.</ab> <ab>n.</ab> de Śiva.  <P><i>°mūrdhan-</i> <ab>m.</ab> <i>°śiras-</i> <ab>nt.</ab> front, première ligne du combat.  <P><i>°vijayin-</i> <ab>a.</ab> victorieux dans le combat.  <P><i>°vyasanin-</i> <ab>a.</ab> qui aime la guerre, belliqueux.  <P><i>°śauṇḍatā-</i> <ab>f.</ab> joie du combat.  <P><i>°sīman-</i> <ab>m.</ab> ou <ab>f.</ab> = <i>°kṣiti- ; samarāṅgaṇa-</i> (ou <i>-na-</i>) <i>samarājira-</i> <ab>nt.</ab> <ab>id.</ab>  <P><i>samarāgra-</i> <ab>nt.</ab> = <i>°mūrdhan-.</i>  <P><i>samarātithi-</i> <ab>m.</ab> celui qu'on rencontre dans le combat.  <P><i>samarotsava-</i> <ab>m.</ab> = <i>°śauṇḍatā-.</i>  <P><i>samaroddeśa-</i> <ab>m.</ab> = <i>°kṣiti-.</i>"
+        }
+    ],
+    "VEI": [
+        {
+            "word": "समर",
+            "eid": "3490",
+            "pagenum": 2,
+            "content": "<b>Samara</b>¦ in the sense of ‘battle’ is found in the Kauṣītaki Brāhmaṇa,<sup>1</sup> and, according to Geldner,<sup>2</sup> in the Rigveda.<sup>3</sup> <F>1) vii. 9; Sāṅkhāyana Śrauta Sūtra, xv. 15, 12.</F> <F>2) <i>Rigveda, Glossar,</i> 190.</F> <F>3) vi. 9, 2 (at the sacrifice; <i>cf. samarya,</i> iv. 24, 8, etc.).</F>"
+        }
+    ],
+    "WIL": [
+        {
+            "word": "समर",
+            "eid": "40536",
+            "pagenum": 894,
+            "content": "समर¦ mn. (-रः-रं) War, battle, conflict. .E. सम् with, together, ऋ to go, aff. अप्."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "समर",
+            "eid": "40249",
+            "pagenum": 815,
+            "content": "समर¦ (रः-रं) 1. <i>m. n.</i> War, battle."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "समर",
+            "eid": "37894",
+            "pagenum": "5-269-c",
+            "content": "समरः¦, पुं, क्ली, (सम्यक् अरणं प्रापणमिति सं + ऋ गतौ + अप् । यद्बा, सम्यक् ऋच्छत्यत्रेति । “मन्दरकन्दरशीकरेति ।” बाहुलकात् अरप्रत्ययेन साधुः । इत्युज्ज्वलः । ३ । १३१ ।) युद्धम् । इत्यमरः ॥ (यथा, रघुः । १२ । ८२ । “इतराण्यपि रक्षांसि पेतुर्वानरकोटिषु । रजांसि समरोत्थानि तच्छोणितनदीष्विव ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "समर",
+            "eid": "45260",
+            "pagenum": "5229,b",
+            "content": "समर¦ पु० न० सम् + ऋ--आधारे अप् । युद्धे अमरः ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "समर",
+            "content": "समरः पुं. -  सम् + ऋ + अप् 'संग्राम, युद्ध, लड़ाई'"
+        },
+        {
+            "word": "समर",
+            "content": "समरम् नपुं. -  सम् + ऋ + अप् 'संग्राम, युद्ध, लड़ाई'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "समर",
+            "पदविभागः": "पुल्लिङ्गः \\/ नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಯುದ್ಧ \\/ಕಾಳಗ",
+            "निष्पत्तिः": "सम् + ऋ (गतौ)'घः' (३-३-११८)",
+            "प्रयोगाः": "'समराय निकामकर्कशं क्षणमाकृष्टमुपैति यस्य च'",
+            "उल्लेखाः": "माघ० १६-६३",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "समर",
+            "linga": "P",
+            "artha": "युद्धम्",
+            "synonyms": [
+                "युद्ध",
+                "आयोधन",
+                "जन्य",
+                "प्रधन",
+                "प्रविदारण",
+                "मृध",
+                "आस्कन्दन",
+                "सङ्ख्य",
+                "समीक",
+                "साम्परायिक",
+                "समर",
+                "अनीक",
+                "रण",
+                "कलह",
+                "विग्रह",
+                "सम्प्रहार",
+                "अभिसम्पात",
+                "कलि",
+                "संस्फोट",
+                "संयुग",
+                "अभ्यामर्द",
+                "समाघात",
+                "सङ्ग्राम",
+                "अभ्यागम",
+                "आहव",
+                "समुदाय",
+                "संयत्",
+                "समिति",
+                "आजि",
+                "समित्",
+                "युध्",
+                "आनर्त",
+                "संविद्",
+                "सम्पराय",
+                "सङ्गर",
+                "हिलि",
+                "द्वन्द्व"
+            ],
+            "num": "2.8.104",
+            "text": "मृधमास्कन्दनं संख्यं समीकं सांपरायिकम् । अस्त्रियां समरानीकरणाः कलहविग्रहौ ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "समर",
+            "content": "<body><s>samara pu° na° sam + f—ADAre ap . yudDe amaraH .</s></body>"
+        }
+    ],
+    "AM_MW72": [
+        {
+            "word": "समर",
+            "content": "<H1><h><key1>samara</key1><key2>sam-ara</key2><hom>a</hom></h><body><s>sam-ara</s> <hom>a</hom>   &amp;c. See <s>sam-√ f</s>, <ab>p.</ab> 1170.</body><tail><L>233742</L><pc>1156,3</pc></tail></H1>\n <H2><h><key1>samara</key1><key2>sam-ara/</key2><hom>b</hom></h><body><s>sam-ara/</s> <hom>b</hom>   <lex>m.</lex> (or <lex type=\"hwalt\">n.</lex> <ab>g.</ab> <s>arDarcA<srs />dI</s>) coming together, meeting, concourse, confluence, <ls>RV.</ls>; <ls>AV.</ls>; <ls>ŚBr.</ls><info lex=\"m:n\" /></body><tail><L>235808</L><pc>1170,3</pc></tail></H2>\n <H2A><h><key1>samara</key1><key2>sam-ara/</key2></h><body>  (<ab>ifc.</ab> <lex type=\"hwifc\">f(<s>A</s>). </lex>) hostile encounter, conflict, struggle, war, battle with (<s>saha</s>), <ls>ŚāṅkhBr.</ls>; <ls>MBh.</ls> &amp;c.<info lex=\"f#A\" /><info lex=\"inh\" /></body><tail><L>235809</L><pc>1170,3</pc></tail></H2A>\n <H2A><h><key1>samara</key1><key2>sam-ara/</key2></h><body>  <ab>N.</ab> of a king of the <s1 slp1=\"vidyA-Dara\">Vidyā-dhara</s1>s, <ls>Kathās.</ls><info lex=\"inh\" /></body><tail><L>235810</L><pc>1170,3</pc></tail></H2A>\n <H2A><h><key1>samara</key1><key2>sam-ara/</key2></h><body>  of a king of <s1 slp1=\"kAmpilya\">Kāmpilya</s1>, <ls>Hariv.</ls><info lex=\"inh\" /></body><tail><L>235811</L><pc>1170,3</pc></tail></H2A>\n <H2A><h><key1>samara</key1><key2>sam-ara/</key2></h><body>  of a brother of king <s1 slp1=\"avantivarman\">Avantivarman</s1>, <ls>Rājat.</ls><info lex=\"inh\" /></body><tail><L>235812</L><pc>1170,3</pc></tail></H2A>\n"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "समर",
+            "content": "<H1><h><key1>samara</key1><key2>samara</key2></h><body><s>samara</s>  <div n=\"1\">mn. (<s>-raH-raM</s>) War, battle, conflict.</div><div n=\"E\"> E. <s>sam</s> with, together, <s>f</s> to go, aff. <s>ap .</s></div></body><tail><L>42559</L><pc>761-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "समर",
+            "content": "<span lang=\"sa\">समर<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः / नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಯುದ್ಧ /ಕಾಳಗ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>सम् + ऋ (गतौ) - \"घः\" (३-३-११८)<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"समराय निकामकर्कशं क्षणमाकृष्टमुपैति यस्य च\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>माघ० १६-६३<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

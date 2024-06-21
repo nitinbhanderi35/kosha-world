@@ -1,1 +1,125 @@
-when it should be displayed before the widget (backward keyboard navigation).\n\t */\n\t&.ck-widget_type-around_show-fake-caret_before > .ck-widget__type-around > .ck-widget__type-around__fake-caret {\n\t\ttop: calc( -1 * var(--ck-widget-outline-thickness) - 1px );\n\t\tdisplay: block;\n\t}\n\n\t/*\n\t * Styles for the horizontal "fake caret" when it should be displayed after the widget (forward keyboard navigation).\n\t */\n\t&.ck-widget_type-around_show-fake-caret_after > .ck-widget__type-around > .ck-widget__type-around__fake-caret {\n\t\tbottom: calc( -1 * var(--ck-widget-outline-thickness) - 1px );\n\t\tdisplay: block;\n\t}\n}\n\n/*\n * Integration with the read-only mode of the editor.\n */\n.ck.ck-editor__editable.ck-read-only .ck-widget__type-around {\n\tdisplay: none;\n}\n\n/*\n * Integration with the restricted editing mode (feature) of the editor.\n */\n.ck.ck-editor__editable.ck-restricted-editing_mode_restricted .ck-widget__type-around {\n\tdisplay: none;\n}\n\n/*\n * Integration with the #isEnabled property of the WidgetTypeAround plugin.\n */\n.ck.ck-editor__editable.ck-widget__type-around_disabled .ck-widget__type-around {\n\tdisplay: none;\n}\n','/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t--ck-widget-type-around-button-size: 20px;\n\t--ck-color-widget-type-around-button-active: var(--ck-color-focus-border);\n\t--ck-color-widget-type-around-button-hover: var(--ck-color-widget-hover-border);\n\t--ck-color-widget-type-around-button-blurred-editable: var(--ck-color-widget-blurred-border);\n\t--ck-color-widget-type-around-button-radar-start-alpha: 0;\n\t--ck-color-widget-type-around-button-radar-end-alpha: .3;\n\t--ck-color-widget-type-around-button-icon: var(--ck-color-base-background);\n}\n\n@define-mixin ck-widget-type-around-button-visible {\n\topacity: 1;\n\tpointer-events: auto;\n}\n\n@define-mixin ck-widget-type-around-button-hidden {\n\topacity: 0;\n\tpointer-events: none;\n}\n\n.ck .ck-widget {\n\t/*\n\t * Styles of the type around buttons\n\t */\n\t& .ck-widget__type-around__button {\n\t\twidth: var(--ck-widget-type-around-button-size);\n\t\theight: var(--ck-widget-type-around-button-size);\n\t\tbackground: var(--ck-color-widget-type-around-button);\n\t\tborder-radius: 100px;\n\t\ttransition: opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve), background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);\n\n\t\t@mixin ck-widget-type-around-button-hidden;\n\n\t\t& svg {\n\t\t\twidth: 10px;\n\t\t\theight: 8px;\n\t\t\ttransform: translate(-50%,-50%);\n\t\t\ttransition: transform .5s ease;\n\t\t\tmargin-top: 1px;\n\n\t\t\t& * {\n\t\t\t\tstroke-dasharray: 10;\n\t\t\t\tstroke-dashoffset: 0;\n\n\t\t\t\tfill: none;\n\t\t\t\tstroke: var(--ck-color-widget-type-around-button-icon);\n\t\t\t\tstroke-width: 1.5px;\n\t\t\t\tstroke-linecap: round;\n\t\t\t\tstroke-linejoin: round;\n\t\t\t}\n\n\t\t\t& line {\n\t\t\t\tstroke-dasharray: 7;\n\t\t\t}\n\t\t}\n\n\t\t&:hover {\n\t\t\t/*\n\t\t\t * Display the "sonar" around the button when hovered.\n\t\t\t */\n\t\t\tanimation: ck-widget-type-around-button-sonar 1s ease infinite;\n\n\t\t\t/*\n\t\t\t * Animate active button\'s icon.\n\t\t\t */\n\t\t\t& svg {\n\t\t\t\t& polyline {\n\t\t\t\t\tanimation: ck-widget-type-around-arrow-dash 2s linear;\n\t\t\t\t}\n\n\t\t\t\t& line {\n\t\t\t\t\tanimation: ck-widget-type-around-arrow-tip-dash 2s linear;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\t/*\n\t * Show type around buttons when the widget gets selected or being hovered.\n\t */\n\t&.ck-widget_selected,\n\t&:hover {\n\t\t& > .ck-widget__type-around > .ck-widget__type-around__button {\n\t\t\t@mixin ck-widget-type-around-button-visible;\n\t\t}\n\t}\n\n\t/*\n\t * Styles for the buttons when the widget is NOT selected (but the buttons are visible\n\t * and still can be hovered).\n\t */\n\t&:not(.ck-widget_selected) > .ck-widget__type-around > .ck-widget__type-around__button {\n\t\tbackground: var(--ck-color-widget-type-around-button-hover);\n\t}\n\n\t/*\n\t * Styles for the buttons when:\n\t * - the widget is selected,\n\t * - or the button is being hovered (regardless of the widget state).\n\t */\n\t&.ck-widget_selected > .ck-widget__type-around > .ck-widget__type-around__button,\n\t& > .ck-widget__type-around > .ck-widget__type-around__button:hover {\n\t\tbackground: var(--ck-color-widget-type-around-button-active);\n\n\t\t&::after {\n\t\t\twidth: calc(var(--ck-widget-type-around-button-size) - 2px);\n\t\t\theight: calc(var(--ck-widget-type-around-button-size) - 2px);\n\t\t\tborder-radius: 100px;\n\t\t\tbackground: linear-gradient(135deg, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,.3) 100%);\n\t\t}\n\t}\n\n\t/*\n\t * Styles for the "before" button when the widget has a selection handle. Because some space\n\t * is consumed by the handle, the button must be moved slightly to the right to let it breathe.\n\t */\n\t&.ck-widget_with-selection-handle > .ck-widget__type-around > .ck-widget__type-around__button_before {\n\t\tmargin-left: 20px;\n\t}\n\n\t/*\n\t * Styles for the horizontal "fake caret" which is displayed when the user navigates using the keyboard.\n\t */\n\t& .ck-widget__type-around__fake-caret {\n\t\tpointer-events: none;\n\t\theight: 1px;\n\t\tanimation: ck-widget-type-around-fake-caret-pulse linear 1s infinite normal forwards;\n\n\t\t/*\n\t\t * The semi-transparent-outline+background combo improves the contrast\n\t\t * when the background underneath the fake caret is dark.\n\t\t */\n\t\toutline: solid 1px hsla(0, 0%, 100%, .5);\n\t\tbackground: var(--ck-color-base-text);\n\t}\n\n\t/*\n\t * Styles of the widget when the "fake caret" is blinking (e.g. upon keyboard navigation).\n\t * Despite the widget being physically selected in the model, its outline should disappear.\n\t */\n\t&.ck-widget_selected {\n\t\t&.ck-widget_type-around_show-fake-caret_before,\n\t\t&.ck-widget_type-around_show-fake-caret_after {\n\t\t\toutline-color: transparent;\n\t\t}\n\t}\n\n\t&.ck-widget_type-around_show-fake-caret_before,\n\t&.ck-widget_type-around_show-fake-caret_after {\n\t\t/*\n\t\t * When the "fake caret" is visible we simulate that the widget is not selected\n\t\t * (despite being physically selected), so the outline color should be for the\n\t\t * unselected widget.\n\t\t */\n\t\t&.ck-widget_selected:hover {\n\t\t\toutline-color: var(--ck-color-widget-hover-border);\n\t\t}\n\n\t\t/*\n\t\t * Styles of the type around buttons when the "fake caret" is blinking (e.g. upon keyboard navigation).\n\t\t * In this state, the type around buttons would collide with the fake carets so they should disappear.\n\t\t */\n\t\t& > .ck-widget__type-around > .ck-widget__type-around__button {\n\t\t\t@mixin ck-widget-type-around-button-hidden;\n\t\t}\n\n\t\t/*\n\t\t * Fake horizontal caret integration with the selection handle. When the caret is visible, simply\n\t\t * hide the handle because it intersects with the caret (and does not make much sense anyway).\n\t\t */\n\t\t&.ck-widget_with-selection-handle {\n\t\t\t&.ck-widget_selected,\n\t\t\t&.ck-widget_selected:hover {\n\t\t\t\t& > .ck-widget__selection-handle {\n\t\t\t\t\topacity: 0\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\t/*\n\t\t * Fake horizontal caret integration with the
+{
+    "word": "त्रिदण्डिन्",
+    "BUR": [
+        {
+            "word": "त्रिदण्डिन्",
+            "eid": "8239",
+            "pagenum": 303,
+            "content": "त्रिदण्डिन्¦ <i>tridaṇḍin</i> <ab>m.</ab> <i>(daṇḍa)</i> ascète qui porte à sa main droite trois cannes de bambou, en signe de l'empire qu'il exerce sur ses pensées, ses paroles et ses actions."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिदण्डिन्",
+            "eid": "87743",
+            "pagenum": "458,3",
+            "content": "त्रि—दण्डिन् ¦ <lex>m.</lex> ‘carrying the 3 staves tied together’, a <s1 slp1='parivrAjaka'>Parivrājaka</s1>, <ls>Yājñ. iii, 58</ls>; <ls>MBh.</ls> &c.<info lex='m'/>"
+        },
+        {
+            "word": "त्रिदण्डिन्",
+            "eid": "87744",
+            "pagenum": "458,3",
+            "content": "¦ a triple commander (<ab>i.e.</ab> controlling his own thoughts, words and deeds), <ls>Mn. xii, 10</ls>; <ls>MārkP. xli.</ls><info lex='inh'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिदण्डिन्",
+            "eid": "47457",
+            "pagenum": 3,
+            "content": "त्रिदण्डिन्¦ <lex>Adj.</lex> <dvsn n='1'>— 1〉 <i>die drei in Eins verbundenen Stäbe eines brahmanischen Bettlers tragend;</i> <lex>m.</lex> <i>ein <ab n='brahmanischen Bettlers'>br. B.</ab>, der der Welt entsagt hat</i>. <dvsn n='1'>— 2〉 <i>der seine Rede, seine Gedanken und seine Handlungen vollkommen beherrscht</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिदण्डिन्",
+            "eid": "30941",
+            "pagenum": 3,
+            "content": "त्रिदण्डिन्¦ (von त्रिदण्ड) <lex>adj.</lex> subst. <dvsn n='1'> 1) <i>die drei in Eins verbundenen Stäbe eines brahmanischen Bettlers tragend; ein brahmanischer Bettler, der der Welt entsagt hat</i>, <ls>YĀJÑ. 3, 58.</ls> <ls>MBH. 12, 11859.</ls> <ls>PRAB. 21, 8.</ls> <ls>KULL.</ls> zu <ls>M. 1, 8.</ls> <ls>ŚATR. 10, 99.</ls> <dvsn n='1'>— 2) <i>der seine Rede, seine Gedanken und seine Handlungen vollkommen beherrscht</i>: वाग्दण्डो ऽथ मनोदण्डः कायदण्डस्तथैव च । यस्यैते निहिता बुद्धौ त्रिदण्डीति स उच्यते ॥ <ls>M. 12, 10.</ls> <ls>MĀRK. P. 41, 22.</ls> <dvsn n='v'>— Vgl. एकदण्डिन् ."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिदण्डिन्",
+            "eid": "18046",
+            "pagenum": 324,
+            "content": "त्रिदण्डिन्¦ m. (-ण्डी) 1. A wandering devotee, one who carries three long bamboo staves in his right hand. 2. The religious man who has obtained a command over his words, thoughts, and actions, or mind, body, and speech. E. त्रि three, and दण्ड a punishment, a staff, &c. इनि aff."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिदण्डिन्",
+            "eid": "18063",
+            "pagenum": 389,
+            "content": "त्रिदण्डिन्¦ m. (-ण्डी) .²1 A wandering devotee, one who carries three long bambu staves in his right hand. .²2 The religious man who has obtained a command over his words, thoughts, and actions, or mind, body, and speech. .E. त्रि three, and दण्ड a punishment, a staff, &c. इनि aff."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिदण्डिन्",
+            "eid": "17539",
+            "pagenum": 344,
+            "content": "त्रिदण्डिन्¦ (ण्डी) 5. <i>m.</i> A wandering devotee, carrying three staves."
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिदण्डिन्",
+            "eid": "23628",
+            "pagenum": "3366,a",
+            "content": "त्रिदण्डिन्¦ पु० त्रिदण्डमस्त्यस्य इनि । सन्त्यासाश्रमे । “वाग्दण्डोऽथ मनोदण्डः कायदण्डस्तथैव च । यस्यैते निहिता बुद्धौ त्रिदण्डीति स उच्यते । त्रिदण्डमेतन्निक्षिप्य सर्वभूतेषु मानवः । कामक्रोधौ तु संयम्य ततः सिद्धिं नियच्छति” मनुः । “त्रिदण्डग्रहणादेव प्रेतत्वं नैव जायते । अहन्येकादशे प्राप्ते पार्वणन्तु विधीयते” लिखि० सं० तस्यापि पार्वणं श्राद्धं विहितम् ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिदण्डिन्",
+            "content": "त्रिदण्डिन् पुं. त्रि-दण्डिन्  - धर्मनिष्ठ साधु या संन्यासी जिसने सांसारिक विषयवासनाओं का परित्याग कर दिया हैं और जो अपने दाहिने हाथ में तीन-दंड  रखता हैं"
+        },
+        {
+            "word": "त्रिदण्डिन्",
+            "content": "त्रिदण्डिन् पुं. त्रि-दण्डिन्  - 'जिसने अपने मन, वाणी और शरीर को वश में कर लिया हैं'"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिदण्डिन्",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ಸಂನ್ಯಾಸಾಶ್ರಮ",
+            "निष्पत्तिः": "'इनिः' (५-२-११५)",
+            "व्युत्पत्तिः": "त्रिदण्डमस्यास्ति",
+            "content": ""
+        },
+        {
+            "word": "त्रिदण्डिन्",
+            "पदविभागः": "पुल्लिङ्गः",
+            "कन्नडार्थः": "ತ್ರಿದಂಡವನ್ನು ಹಿಡಿದಿರುವ ಯತಿ \\/ವಾಗ್ದಂಡ ಮನೋದಂದ ಮತ್ತು ಕಾಯದಂಡ ಸೂಚಕವಾದ ತ್ರಿದಂಡವನು ಹಿಡಿದಿರುವ ಸಂನ್ಯಾಸಿ",
+            "प्रयोगाः": "'वाग्दण्डोऽथ मनोदण्डः कायदण्डस्तथैव च । यस्यैते निहिता बुद्धौ त्रिदण्डीति स उच्यते ॥'",
+            "उल्लेखाः": "मनु० १२-१०",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "त्रिदण्डिन्",
+            "content": "<segmenthd>\n<dentry>त्रिदण्डिन्</dentry>\n<prAwipaxikam>त्रिदण्डिन्</prAwipaxikam>\n<seg>त्रि-दण्डिन्</seg>\n<grammar>पुं*</grammar>\n<sense no=\"1\">धर्मनिष्ठ साधु या संन्यासी जिसने सांसारिक विषयवासनाओं का परित्याग कर दिया हैं और जो अपने दाहिने हाथ में तीन-दंड रखता हैं एक जगह मिलाकर बंधे हुए</sense>\n<sense no=\"2\">जिसने अपने मन, वाणी और शरीर को वश में कर लिया हैंवाग्दण्डोऽथ मनोदण्डः कायदण्डस्तथैव च यस्यैते निहिता बुद्धौ त्रिदण्डीति स उच्यते<citation>मनु* १२।१०</citation></sense></segmenthd>\n"
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिदण्डिन्",
+            "content": "<body><s>tridaRqin pu° tridaRqamastyasya ini . santyAsASrame . <q>vA­gdaRqo'Ta manodaRqaH kAyadaRqastaTEva ca . yasyEte ni­hitA budDO tridaRqIti sa ucyate . tridaRqametannikzipya sarvaBUtezu mAnavaH . kAmakroDO tu saMyamya tataH sidDiM niyacCati</q> manuH . <q>tridaRqagrahaRAdeva pretatvaM nEva jAyate . ahanyekAdaSe prApte pArvaRantu viDIyate</q> liKi° saM° tasyApi pArvaRaM SrAdDaM vihitam .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिदण्डिन्",
+            "content": "<H1><h><key1>tridaRqin</key1><key2>tridaRqin</key2></h><body><s>tridaRqin</s>  <div n=\"1\">m. (<s>-RqI</s>) </div><div n=\"2\"> 1. A wandering devotee, one who carries three long <lb />bamboo staves in his right hand. </div><div n=\"2\"> 2. The religious man who has ob- <lb />tained a command over his words, thoughts, and actions, or mind, <lb />body, and speech.</div><div n=\"E\"> E. <s>tri</s> three, and <s>daRqa</s> a punishment, a staff, &amp;c. <lb /><s>ini</s> aff.</div></body><tail><L>18046</L><pc>324-a</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिदण्डिन्",
+            "content": "<span lang=\"sa\">त्रिदण्डिन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಸಂನ್ಯಾಸಾಶ್ರಮ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>\"इनिः\" (५-२-११५)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रिदण्डमस्यास्ति<div class=\"h-2\"> </div><div class=\"h-2\"> </div>त्रिदण्डिन्<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ತ್ರಿದಂಡವನ್ನು ಹಿಡಿದಿರುವ ಯತಿ /ವಾಗ್ದಂಡ ಮನೋದಂದ ಮತ್ತು ಕಾಯದಂಡ ಸೂಚಕವಾದ ತ್ರಿದಂಡವನು ಹಿಡಿದಿರುವ ಸಂನ್ಯಾಸಿ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"वाग्दण्डोऽथ मनोदण्डः कायदण्डस्तथैव च । यस्यैते निहिता बुद्धौ त्रिदण्डीति स उच्यते ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>मनु० १२-१०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

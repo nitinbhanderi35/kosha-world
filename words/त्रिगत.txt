@@ -1,1 +1,99 @@
-r"==this.compareWith(t)}compareWith(t){if(this.root!==t.root)return"different";if(this.isEqual(t))return"same";const e=this.parent.is("node")?this.parent.getPath():[],n=t.parent.is("node")?t.parent.getPath():[];e.push(this.offset),n.push(t.offset);const o=tt(e,n);switch(o){case"prefix":return"before";case"extension":return"after";default:return e[o]<n[o]?"before":"after"}}getWalker(t={}){return t.startPosition=this,new fs(t)}clone(){return new bs(this.parent,this.offset)}static _createAt(t,e){if(t instanceof bs)return new this(t.parent,t.offset);{const n=t;if("end"==e)e=n.is("$text")?n.data.length:n.childCount;else{if("before"==e)return this._createBefore(n);if("after"==e)return this._createAfter(n);if(0!==e&&!e)throw new A("view-createpositionat-offset-required",n)}return new bs(n,e)}}static _createAfter(t){if(t.is("$textProxy"))return new bs(t.textNode,t.offsetInText+t.data.length);if(!t.parent)throw new A("view-position-after-root",t,{root:t});return new bs(t.parent,t.index+1)}static _createBefore(t){if(t.is("$textProxy"))return new bs(t.textNode,t.offsetInText);if(!t.parent)throw new A("view-position-before-root",t,{root:t});return new bs(t.parent,t.index)}}bs.prototype.is=function(t){return"position"===t||"view:position"===t};class ws extends xr{constructor(t,e=null){super(),this.start=t.clone(),this.end=e?e.clone():t.clone()}*[Symbol.iterator](){yield*new fs({boundaries:this,ignoreElementEnd:!0})}get isCollapsed(){return this.start.isEqual(this.end)}get isFlat(){return this.start.parent===this.end.parent}get root(){return this.start.root}getEnlarged(){let t=this.start.getLastMatchingPosition(_s,{direction:"backward"}),e=this.end.getLastMatchingPosition(_s);return t.parent.is("$text")&&t.isAtStart&&(t=bs._createBefore(t.parent)),e.parent.is("$text")&&e.isAtEnd&&(e=bs._createAfter(e.parent)),new ws(t,e)}getTrimmed(){let t=this.start.getLastMatchingPosition(_s);if(t.isAfter(this.end)||t.isEqual(this.end))return new ws(t,t);let e=this.end.getLastMatchingPosition(_s,{direction:"backward"});const n=t.nodeAfter,o=e.nodeBefore;return n&&n.is("$text")&&(t=new bs(n,0)),o&&o.is("$text")&&(e=new bs(o,o.data.length)),new ws(t,e)}isEqual(t){return this==t||this.start.isEqual(t.start)&&this.end.isEqual(t.end)}containsPosition(t){return t.isAfter(this.start)&&t.isBefore(this.end)}containsRange(t,e=!1){t.isCollapsed&&(e=!1);const n=this.containsPosition(t.start)||e&&this.start.isEqual(t.start),o=this.containsPosition(t.end)||e&&this.end.isEqual(t.end);return n&&o}getDifference(t){const e=[];return this.isIntersecting(t)?(this.containsPosition(t.start)&&e.push(new ws(this.start,t.start)),this.containsPosition(t.end)&&e.push(new ws(t.end,this.end))):e.push(this.clone()),e}getIntersection(t){if(this.isIntersecting(t)){let e=this.start,n=this.end;return this.containsPosition(t.start)&&(e=t.start),this.containsPosition(t.end)&&(n=t.end),new ws(e,n)}return null}getWalker(t={}){return t.boundaries=this,new fs(t)}getCommonAncestor(){return this.start.getCommonAncestor(this.end)}getContainedElement(){if(this.isCollapsed)return null;let t=this.start.nodeAfter,e=this.end.nodeBefore;return this.start.parent.is("$text")&&this.start.isAtEnd&&this.start.parent.nextSibling&&(t=this.start.parent.nextSibling),this.end.parent.is("$text")&&this.end.isAtStart&&this.end.parent.previousSibling&&(e=this.end.parent.previousSibling),t&&t.is("element")&&t===e?t:null}clone(){return new ws(this.start,this.end)}*getItems(t={}){t.boundaries=this,t.ignoreElementEnd=!0;const e=new fs(t);for(const t of e)yield t.item}*getPositions(t={}){t.boundaries=this;const e=new fs(t);yield e.position;for(const t of e)yield t.nextPosition}isIntersecting(t){return this.start.isBefore(t.end)&&this.end.isAfter(t.start)}static _createFromParentsAndOffsets(t,e,n,o){return new this(new bs(t,e),new bs(n,o))}static _createFromPositionAndShift(t,e){const n=t,o=t.getShiftedBy(e);return e>0?new this(n,o):new this(o,n)}static _createIn(t){return this._createFromParentsAndOffsets(t,0,t,t.childCount)}static _createOn(t){const e=t.is("$textProxy")?t.offsetSize:1;return this._createFromPositionAndShift(bs._createBefore(t),e)}}function _s(t){return!(!t.item.is("attributeElement")&&!t.item.is("uiElement"))}ws.prototype.is=function(t){return"range"===t||"view:range"===t};class As extends(P(xr)){constructor(...t){super(),this._ranges=[],this._lastRangeBackward=!1,this._isFake=!1,this._fakeSelectionLabel="",t.length&&this.setTo(...t)}get isFake(){return this._isFake}get fakeSelectionLabel(){return this._fakeSelectionLabel}get anchor(){if(!this._ranges.length)return null;const t=this._ranges[this._ranges.length-1];return(this._lastRangeBackward?t.end:t.start).clo
+{
+    "word": "त्रिगत",
+    "IEG": [
+        {
+            "word": "त्रिगत",
+            "eid": "6025",
+            "pagenum": 343,
+            "content": "<i>tri-gata</i>¦ (IE 7-1-2), ‘three’."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिगत",
+            "eid": "16079",
+            "pagenum": 318,
+            "content": "tri-gata¦ <i>a.</i> 1. tripled; 2. done in three ways."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिगत",
+            "eid": "87661",
+            "pagenum": "458,2",
+            "content": "त्रि—गत ¦ <lex>n.</lex> ‘tripled’, (in <ab>dram.</ab>) triple meaning given to the same word, <ls>Bhar. xviii, 115</ls>; <ls>Daśar. iii, 16</ls>; <ls>Pratāpar.</ls>; <ls>Sāh. vi.</ls><info lex='n'/>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिगत",
+            "eid": "47401",
+            "pagenum": 3,
+            "content": "त्रिगत¦ <lex>n.</lex> in der Dramatik <i>verschiedene Deutung gleicher Laute</i>."
+        }
+    ],
+    "PWG": [
+        {
+            "word": "त्रिगत",
+            "eid": "75269",
+            "pagenum": 5,
+            "content": "त्रिगत¦ <lex>n.</lex> in der Dramatik: यथानुदात्तवचनं त्रिधा विभक्तं भवेत्प्रयोगे तु । हास्यरससंप्रयुक्तं तत्त्रिगतं नाम विज्ञेयम् ॥ <ls>BHAR. NĀṬYAŚ. 18, 115.</ls> श्रुतिसाम्यादनेकार्थयोजनं त्रिगतं त्विह । नटादित्रितयालापः पूर्वरङ्गे तदिष्यते ॥ <ls>DAŚAR. 3, 14.</ls> Dazu ein Beispiel, in dem gehörte Laute entweder den Bienen, oder den <is>Kokila</is>, oder den <is>Kiṃnarī</is> (also Dreien) zuschrieben werden. <ls>PRATĀPAR. 23,b,3.</ls> त्रिगतं स्यादनेकार्थयोजनं श्रुतिसास्यतः <ls>SĀH. D. 523. 521.</ls> Als Beispiel <ls>VIKR. 114</ls> nebst der Antwort des Echos."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिगत",
+            "eid": "18030",
+            "pagenum": 323,
+            "content": "त्रिगत¦ mfn. (-तः-ता-तं) 1. Tripled. 2. Gone or done in three ways. n. (-तं) The expression of different senses by the same word. E. त्रि, and गत gone."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिगत",
+            "eid": "18047",
+            "pagenum": 389,
+            "content": "त्रिगत¦ mfn. (-तः-ता-तं) .²1 Tripled. .²2 Gone or done in three ways. n. (-तं) The expression of different senses by the same word. .E. त्रि, and गत gone."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिगत",
+            "eid": "17522",
+            "pagenum": 344,
+            "content": "त्रिगत¦ (तः-ता-तं) <i>a.</i> Tripled; having three senses; gone three ways."
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिगत",
+            "content": "त्रिगतः वि. त्रि-गतः  - तिगुणा"
+        },
+        {
+            "word": "त्रिगत",
+            "content": "त्रिगतः वि. त्रि-गतः  - तीन दिन में सम्पन्न"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिगत",
+            "पदविभागः": "नपुंसकलिङ्गः",
+            "कन्नडार्थः": "ಶಬ್ದ ಸಾಮ್ಯದಿಂದ ವಾಕ್ಯಕ್ಕೆ ಅನೇಕಾರ್ಥವನು ಹೇಳುವುದು",
+            "प्रयोगाः": "'श्रुतिसाम्यादनेकार्थयोजनं त्रिगतं त्विह । नटादि त्रितयालापः पूर्वरङ्गे तदिष्यते ॥' 'सर्वक्षितिभृतां नाथ, दृष्टा सर्वाङ्गसुन्दरि । रामा रम्ये वनान्तेऽस्मिन् मया विरहिता त्वया ॥'",
+            "उल्लेखाः": "दशरू०, विक्र० ४-५१",
+            "content": ""
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिगत",
+            "content": "<H1><h><key1>trigata</key1><key2>trigata</key2></h><body><s>trigata</s>  <div n=\"1\">mfn. (<s>-taH-tA-taM</s>) </div><div n=\"2\"> 1. Tripled. </div><div n=\"2\"> 2. Gone or done in three ways. </div><div n=\"1\">n. <lb />(<s>-taM</s>) The expression of different senses by the same word.</div><div n=\"E\"> E. <s>tri,</s> <lb />and <s>gata</s> gone.</div></body><tail><L>18030</L><pc>323-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिगत",
+            "content": "<span lang=\"sa\">त्रिगत<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>नपुंसकलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶಬ್ದ ಸಾಮ್ಯದಿಂದ ವಾಕ್ಯಕ್ಕೆ ಅನೇಕಾರ್ಥವನು ಹೇಳುವುದು<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"श्रुतिसाम्यादनेकार्थयोजनं त्रिगतं त्विह । नटादि त्रितयालापः पूर्वरङ्गे तदिष्यते ॥\" \"सर्वक्षितिभृतां नाथ, दृष्टा सर्वाङ्गसुन्दरि । रामा रम्ये वनान्तेऽस्मिन् मया विरहिता त्वया ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>दशरू०, विक्र० ४-५१<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

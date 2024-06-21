@@ -1,1 +1,191 @@
-onents/highlightedtext/highlightedtext.css"],names:[],mappings:"AAKA,6BACC,+CAAgD,CAIhD,iBAAkB,CAFlB,mBAAoB,CACpB,mBAAoB,CAFpB,sBAID",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-highlighted-text mark {\n\tbackground: var(--ck-color-highlight-background);\n\tvertical-align: initial;\n\tfont-weight: inherit;\n\tline-height: inherit;\n\tfont-size: inherit;\n}\n"],sourceRoot:""}]);const a=s},2191:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-icon{vertical-align:middle}:root{--ck-icon-size:calc(var(--ck-line-height-base)*var(--ck-font-size-normal))}.ck.ck-icon{font-size:.8333350694em;height:var(--ck-icon-size);width:var(--ck-icon-size);will-change:transform}.ck.ck-icon,.ck.ck-icon *{cursor:inherit}.ck.ck-icon.ck-icon_inherit-color,.ck.ck-icon.ck-icon_inherit-color *{color:inherit}.ck.ck-icon.ck-icon_inherit-color :not([fill]){fill:currentColor}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/icon/icon.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/icon/icon.css"],names:[],mappings:"AAKA,YACC,qBACD,CCFA,MACC,0EACD,CAEA,YAKC,uBAAwB,CAHxB,0BAA2B,CAD3B,yBAA0B,CAU1B,qBAoBD,CAlBC,0BALA,cAQA,CAMC,sEACC,aAMD,CAJC,+CAEC,iBACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-icon {\n\tvertical-align: middle;\n}\n",'/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n:root {\n\t--ck-icon-size: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));\n}\n\n.ck.ck-icon {\n\twidth: var(--ck-icon-size);\n\theight: var(--ck-icon-size);\n\n\t/* Multiplied by the height of the line in "px" should give SVG "viewport" dimensions */\n\tfont-size: .8333350694em;\n\n\t/* Inherit cursor style (#5). */\n\tcursor: inherit;\n\n\t/* This will prevent blurry icons on Firefox. See #340. */\n\twill-change: transform;\n\n\t& * {\n\t\t/* Inherit cursor style (#5). */\n\t\tcursor: inherit;\n\t}\n\n\t/* Allows dynamic coloring of an icon by inheriting its color from the parent. */\n\t&.ck-icon_inherit-color {\n\t\tcolor: inherit;\n\n\t\t& * {\n\t\t\tcolor: inherit;\n\n\t\t\t&:not([fill]) {\n\t\t\t\t/* Needed by FF. */\n\t\t\t\tfill: currentColor;\n\t\t\t}\n\t\t}\n\t}\n}\n'],sourceRoot:""}]);const a=s},4071:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,":root{--ck-input-width:18em;--ck-input-text-width:var(--ck-input-width)}.ck.ck-input{border-radius:0}.ck-rounded-corners .ck.ck-input,.ck.ck-input.ck-rounded-corners{border-radius:var(--ck-border-radius)}.ck.ck-input{background:var(--ck-color-input-background);border:1px solid var(--ck-color-input-border);min-height:var(--ck-ui-component-min-height);min-width:var(--ck-input-width);padding:var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);transition:box-shadow .1s ease-in-out,border .1s ease-in-out}.ck.ck-input:focus{border:var(--ck-focus-ring);box-shadow:var(--ck-focus-outer-shadow),0 0;outline:none}.ck.ck-input[readonly]{background:var(--ck-color-input-disabled-background);border:1px solid var(--ck-color-input-disabled-border);color:var(--ck-color-input-disabled-text)}.ck.ck-input[readonly]:focus{box-shadow:var(--ck-focus-disabled-outer-shadow),0 0}.ck.ck-input.ck-error{animation:ck-input-shake .3s ease both;border-color:var(--ck-color-input-error-border)}.ck.ck-input.ck-error:focus{box-shadow:var(--ck-focus-error-outer-shadow),0 0}@keyframes ck-input-shake{20%{transform:translateX(-2px)}40%{transform:translateX(2px)}60%{transform:translateX(-1px)}80%{transform:translateX(1px)}}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/input/input.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_focus.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css"],names:[],mappings:"AASA,MACC,qBAAsB,CAGtB,2CACD,CAEA,aCLC,eD2CD,CAtCA,iECDE,qCDuCF,CAtCA,aAGC,2CAA4C,CAC5C,6CAA8C,CAK9C,4CAA6C,CAH7C,+BAAgC,CADhC,6DAA8D,CAO9D,4DA0BD,CAxBC,mBEnBA,2BAA2B,CCF3B,2CAA8B,CDC9B,YFuBA,CAEA,uBAEC,oDAAqD,CADrD,sDAAuD,CAEvD,yCAMD,CAJC,6BG/BD,oDHkCC,CAGD,sBAEC,sCAAuC,CADvC,+CAMD,CAHC,4BGzCD,iDH2CC,CAIF,0BACC,IACC,0BACD,CAEA,IACC,yBACD,CAEA,IACC,0BACD,CAEA,IACC,yBACD,CACD",sourcesContent:['/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n@import "../../../mixins/_rounded.css";\n@import "../../../mixins/_focus.css";\n@import "../../../mixins/_shadow.css";\n\n:root {\n\t--ck-input-width: 18em;\n\n\t/* Backward compatibility. */\n\t--ck-input-text-width: var(--ck-input-width);\n}\n\n.ck.ck-input {\n\t@mixin ck-rounded-corners;\n\n\tbackground: var(--ck-color-input-background);\n\tborder: 1px solid var(--ck-color-input-border);\n\tpadding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);\n\tmin-width: var(--ck-input-width);\n\n\t/* This is important to stay of the same height as surrounding buttons */\n\tmin-height: var(--ck-ui-component-min-height);\n\n\t/* Apply some smooth transition to the box-shadow and border. */\n\ttransition: box-shadow .1s ease-in-out, border .1s ease-in-out;\n\n\t&:focus {\n\t\t@mixin ck-focus-ring;\n\t\t@mixin ck-box-shadow var(--ck-focus-outer-shadow);\n\t}\n\n\t&[readonly] {\n\t\tborder: 1px solid var(--ck-color-input-disabled-border);\n\t\tbackground: var(--ck-color-input-disabled-background);\n\t\tcolor: var(--ck-color-input-disabled-text);\n\n\t\t&:focus {\n\t\t\t/* The read-only input should have a slightly less visible shadow when focused. */\n\t\t\t@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow);\n\t\t}\n\t}\n\n\t&.ck-error {\n\t\tborder-color: var(--ck-color-input-error-border);\n\t\tanimation: ck-input-shake .3s ease both;\n\n\t\t&:focus {\n\t\t\t@mixin ck-box-shadow var(--ck-focus-error-outer-shadow);\n\t\t}\n\t}\n}\n\n@keyframes ck-input-shake {\n\t20% {\n\t\ttransform: translateX(-2px);\n\t}\n\n\t40% {\n\t\ttransform: translateX(2px);\n\t}\n\n\t60% {\n\t\ttransform: translateX(-1px);\n\t}\n\n\t80% {\n\t\ttransform: translateX(1px);\n\t}\n}\n',"/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * Implements rounded corner interface for .ck-rounded-corners class.\n *\n * @see $ck-border-radius\n */\n@define-mixin ck-rounded-corners {\n\tborder-radius: 0;\n\n\t@nest .ck-rounded-corners &,\n\t&.ck-rounded-corners {\n\t\tborder-radius: var(--ck-border-radius);\n\t\t@mixin-content;\n\t}\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A visual style of focused element's border.\n */\n@define-mixin ck-focus-ring {\n\t/* Disable native outline. */\n\toutline: none;\n\tborder: var(--ck-focus-ring)\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n/**\n * A helper to combine multiple shadows.\n */\n@define-mixin ck-box-shadow $shadowA, $shadowB: 0 0 {\n\tbox-shadow: $shadowA, $shadowB;\n}\n\n/**\n * Gives an element a drop shadow so it looks like a floating panel.\n */\n@define-mixin ck-drop-shadow {\n\t@mixin ck-box-shadow var(--ck-drop-shadow);\n}\n"],sourceRoot:""}]);const a=s},3475:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-label{display:block}.ck.ck-voice-label{display:none}.ck.ck-label{font-weight:700}","",{version:3,sources:["webpack://./node_modules/@ckeditor/ckeditor5-ui/theme/components/label/label.css","webpack://./node_modules/@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/label/label.css"],names:[],mappings:"AAKA,aACC,aACD,CAEA,mBACC,YACD,CCNA,aACC,eACD",sourcesContent:["/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-label {\n\tdisplay: block;\n}\n\n.ck.ck-voice-label {\n\tdisplay: none;\n}\n","/*\n * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.\n * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license\n */\n\n.ck.ck-label {\n\tfont-weight: bold;\n}\n"],sourceRoot:""}]);const a=s},2828:(t,e,n)=>{"use strict";n.d(e,{A:()=>a});var o=n(4991),i=n.n(o),r=n(6314),s=n.n(r)()(i());s.push([t.id,".ck.ck-labeled-field-view>.ck.ck-labeled-field-view__input-wrapper{display:flex;position:relative}.ck.ck-labeled-field-view .ck.ck-label{display:block;position:absolute}:root{--ck-labeled-field-view-transition:.1s cubic-bezier(0,0,0.24,0.95);--ck-labeled-field-empty-unfocused-max-width:100% - 2 * var(--ck-spacing-medium);--ck-labeled-field-label-default-position-x:var(--ck-spacing-medium);--ck-labeled-field-label-default-position-y:calc(var(--ck-font-size-base)*0.6);--ck-color-labeled-field-label-background:var(--ck-color-base-background)}.ck.ck-labeled-field-view{border-radius:0}.ck-rounded-corners .ck.ck-labeled-field-view,.ck.ck-labeled-field-view.ck-rounded-corners{border-radius:var(--ck-border-radius)}.ck.ck-labeled-field-view>.ck.ck-labeled-field-view__input-wrapper{width:100%}.ck.ck-labeled-field-view>.ck.ck-labeled-field-view__input-wrapper>.ck.ck-label{top:0}[dir=ltr] .ck.ck-labeled-field-view>.ck.ck-labeled-field-view__input-wrapper>.ck.ck-label{left:0;transform:translate(var(--ck-spacing-medium),-6px) scale(.75);transform-origin:0 0}[dir=rtl] .ck.ck-labeled-field-view>.ck.ck-labeled-field-view__input-wrapper>.ck.ck-label{right:0;transform:translate(calc(var(--ck-spacing-medium)*-1),-6px) scale(.75);transform-origin:100% 0}.ck.ck-labeled-field-view>.ck.ck-labeled-field-view__input-wrapper>.ck.ck-label{background:var(--ck-color-labeled-field-label-background);font-weight:400;line-height:normal;max-width:100%;overflow:hidden;padding:0 calc(var(--ck-font-size-tiny)*.5);pointer-events:none;text-overflow:ellipsis;transition:transform var(--ck-labeled-field-view-transition),padding var(--ck-labeled-field-view-transition),background var(--ck-labeled-field-view-transition)}.ck.ck-labeled-field-view.ck-error .ck-input:not([readonly])+.ck.ck-label,.ck.ck-labeled-field-view.ck-error>.ck.ck-labeled-field-view__input-wrapper>.ck.ck-label{color:var(--ck-
+{
+    "word": "त्रिपथगा",
+    "ABCH": [
+        {
+            "word": "त्रिपथगा",
+            "linga": "स्त्री",
+            "pagenum": "42",
+            "kanda": "तिर्यक्काण्डः",
+            "varga": "जलकायः",
+            "eid": "3253",
+            "group": "1335",
+            "synonyms": [
+                "गङ्गा",
+                "भागीरथी",
+                "त्रिदशदीर्घिका",
+                "त्रिस्रोतस्",
+                "जाह्नवी",
+                "मन्दाकिनी",
+                "भीष्मकुमारसू",
+                "सरिद्वरा",
+                "विष्णुपदी",
+                "सिद्धापगा",
+                "स्वरापगा",
+                "स्वर्ग्यापगा",
+                "खापगा",
+                "ऋषिकुल्या",
+                "हैमवती",
+                "स्वर्वापी",
+                "हरशेखरा"
+            ],
+            "content": "गङ्गा त्रिपथगा भागीरथी त्रिदशदीर्घिका ।\nत्रिस्रोता जाह्नवी मन्दाकिनी भीष्मकुमारसूः ॥ १०८१ ॥\nसरिद्वरा विष्णुपदी सिद्धस्वःस्वर्गिखापगा ।\nऋषिकुल्या हैमवती स्वर्वापी हरशेखरा ॥ १०८२ ॥"
+        }
+    ],
+    "ACC": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "30933",
+            "pagenum": 1,
+            "content": "त्रिपथगा¦ Paribhāṣenduśekharaṭīkā by Rāghavendrācārya."
+        }
+    ],
+    "BOP": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "3899",
+            "pagenum": 160,
+            "content": "त्रिपथगा¦ <i>f.</i> (e praec. et ग iens <i>in fem.</i>) nomen Gangis. UP. 28."
+        }
+    ],
+    "INM": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "10964",
+            "pagenum": 681,
+            "content": "<b>Tripathagā</b>¦ = Gaṅgā: II, 1484 (<i>G°</i>); III, 9906, 9965 (<i>G°</i>); VI, 242; XII, 1351; XIII, 1835, †1860 (B. has <i>Tripathā</i>); XIV, 1225 (<i>G°</i>)."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "16134",
+            "pagenum": 318,
+            "content": "tri-paTa˚gA¦ <i>f.</i> an epithet of the Ganges, तन्वी शरत्त्रिपथगा पुलिने कपोलौ <ls>Am.S.</ls>99."
+        }
+    ],
+    "MW": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "87884.3",
+            "pagenum": "459,1",
+            "content": "त्रि—पथ—गा ¦ <lex>f.</lex> ‘flowing through heaven, earth, and the lower regions’, the Ganges, <ls>MBh.</ls> &c.<info lex='f'/>"
+        }
+    ],
+    "PUI": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "5646",
+            "pagenum": 2,
+            "content": "<i>Tripathagā(minī)</i>¦ — Gangā (s.v.) descended at the Gaura hill;<sup>1</sup> fell on Śiva's head;<sup>2</sup> originating from the foot of Soma;<sup>3</sup> came to be divided into seven streams; flows in Antarikṣa, Divam and Bhūmi; Śiva prevented her course by yoga, when she grew angry and on account of which drops of water fell on the ground and collected themselves into a lake, Bindusaras; she resisted this and wanted to enter the Pātāla when Brahmā consoled her and let her flow in seven directions, three to the east, three to the west and the seventh to the south; the last one is Bhāgīrathī.<sup>4</sup> Stopped in the sky above Mānasa.<sup>5</sup> <F>1) Br. II. 18. 27, 29, 30.</F> <F>2) Ib. III. 13. 118; 25. 11.</F> <F>3) M. 102. 8; 106. 51; 121. 28-9; 183. 7.</F> <F>4) Vā. 47. 26-41.</F> <F>5) Ib. 77. 111.</F>"
+        }
+    ],
+    "PW": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "47549",
+            "pagenum": 3,
+            "content": "त्रिपथगा¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <lex>f.</lex> und <ab>Subst.</ab> <ab>Beiw.</ab> und <ab>Bein.</ab> der <is>Gaṅgā</is>. <dvsn n='1'>— 2〉 Titel eines Commentars zum <is>Paribhāṣenduśekhara</is> <ls>OPP. CAT. 1</ls>."
+        }
+    ],
+    "SHS": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "18084",
+            "pagenum": 324,
+            "content": "त्रिपथगा¦ f. (-गा) The Ganges. E. त्रिपथ three roads, and गा who goes, flowing through earth, heaven, and hell."
+        }
+    ],
+    "WIL": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "18101",
+            "pagenum": 390,
+            "content": "त्रिपथगा¦ f. (-गा) The Ganges. .E. त्रिपथ three roads, and गा who goes, flowing through earth, heaven, and hell."
+        }
+    ],
+    "YAT": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "17577",
+            "pagenum": 345,
+            "content": "त्रिपथ-गा¦ (गा) 1. <i>f.</i> The <i>Ganges.</i>"
+        }
+    ],
+    "SKD": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "15558",
+            "pagenum": "2-658-a",
+            "content": "त्रिपथगा¦, स्त्री, (त्रिपथे स्वर्गमर्त्त्यपातालमार्गे गच्छतीति । गम + डः ।) गङ्गा । इत्यमरः । १ । १० । ३१ ॥ (अस्या निरुक्तिरुक्ता यथा, रामायणे । १ । ४३ । ६ । “गङ्गा त्रिपथगा नाम दिव्या भागीरथीति च । त्रीन् पथो भावयन्तीति तस्मात् त्रिपथगा स्मृता ॥”)"
+        }
+    ],
+    "VCP": [
+        {
+            "word": "त्रिपथगा",
+            "eid": "23685",
+            "pagenum": "3369,a",
+            "content": "त्रिपथगा¦ स्त्री त्रयाणां पथां समाहारः अच् समा० तेन गच्छति गम--ड । गङ्गायाम् । त्रिमार्गगादयोऽप्यत्र “गङ्गा त्रिपथगा नाम दिव्या भागीरथीति च । त्रीन् पथो भावयन्तीति तस्मात् त्रिपथगा स्मृता” रामा० बा० ४४ अ० “तराम सरितां श्रेष्ठां पुण्यां त्रिपथगां नदीम्” ४५ अ० “तन्वी शरत्त्रिपथगा पुलिने कपोलौ लोले दृशौ रुचिरचञ्चलखञ्जरीटौ” अमरुशत० “त्रिशिखां भ्रुकुटिञ्चास्य ददृशुर्दानवा रणे । ललाटस्थां त्रिकूटस्थां गङ्गां त्रिपथगामिव” हरिवं० २३५ अ० । “त्रीन् पथो हेतुना केन प्ताकयेल्लोकपावनी । कथं गङ्गा त्रिपथगा विश्रुता सरिदुत्तमा । त्रिषु लोकेषु धर्मज्ञ! कर्मभिः कैः समन्विता” इत्युपक्रमे रामप्रश्ने विश्वामित्रस्योत्तरम् रामा० आ० ३६ अ० वाक्यं गङ्गाशब्दे दृश्यम् । णिनि ङीप् । त्रिपथ गामिन्यादयोऽप्यत्र ।"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "त्रिपथगा",
+            "content": "त्रिपथगाम् नपुं. त्रि-पथम्-गाम्  - गंगा का विशेषण"
+        }
+    ],
+    "ABSV": [
+        {
+            "word": "त्रिपथगा",
+            "content": "name of a commentary on the Paribhasendusekhara written by Raghavendracarya Gajendragadkar, a resident of Satara and a pupil of Nilakanthasastri Thatte. He lived in the second half of the eighteenth and first half of the nineteenth century and wrote comentaries on important grammar works."
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "त्रिपथगा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಗಂಗಾನದಿ",
+            "निष्पत्तिः": "गम्लृ (गतौ)'डः' (वा० ३-२-४८)",
+            "व्युत्पत्तिः": "त्रयाणां पथां समाहारः त्रिपथम् । त्रिपथेन स्वर्गमर्त्यपातालमार्गेण गच्छति",
+            "प्रयोगाः": "'गङ्गा त्रिपथगा नाम दिव्या भागीरथीति च । त्रीन् पथो भावयन्तीति तस्मात् त्रिपथगा स्मृताः ॥'",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "त्रिपथगा",
+            "linga": "S",
+            "artha": "गङ्गा",
+            "synonyms": [
+                "गङ्गा",
+                "विष्णुपदी",
+                "जह्नुतनया",
+                "सुरनिम्नगा",
+                "भागीरथी",
+                "त्रिपथगा",
+                "त्रिस्रोतस्",
+                "भीष्मसू"
+            ],
+            "num": "1.10.32",
+            "text": "भागीरथी त्रिपथगा त्रिस्रोता भीष्मसूरपि । कालिन्दी सूर्यतनया यमुना शमनस्वसा ॥",
+            "content": ""
+        }
+    ],
+    "AM_VCP": [
+        {
+            "word": "त्रिपथगा",
+            "content": "<body><s>tripaTagA strI trayARAM paTAM samAhAraH ac samA° tena gacCati gama—qa . gaNgAyAm . trimArgagAdayo'pyatra <q>gaNgA tripaTagA nAma divyA BAgIraTIti ca . trIn paTo BAvayantIti tasmAt tripaTagA smftA</q> rAmA° bA° 44 a° <q>tarAma saritAM SrezWAM puRyAM tripaTagAM nadIm</q> 45 a° <q>tanvI SarattripaTagA puline kapolO lole dfSO ruciracaYcalaKaYjarIwO</q> amaruSata° <q>triSiKAM Brukuwi­YcAsya dadfSurdAnavA raRe . lalAwasTAM trikUwasTAM gaNgAM tripaTagAmiva</q> harivaM° 235 a° . <q>trIn paTo hetunA kena ptAkayellokapAvanI . kaTaM gaNgA tripaTagA viSrutA sariduttamA . trizu lokezu DarmajYa! karmaBiH kEH sama­nvitA</q> ityupakrame rAmapraSne viSvAmitrasyottaram rAmA° A° 36 a° vAkyaM gaNgASabde dfSyam . Rini NIp . tripaTa gAminyAdayo'pyatra .</s></body>"
+        }
+    ],
+    "AM_SHS": [
+        {
+            "word": "त्रिपथगा",
+            "content": "<H1><h><key1>tripaTagA</key1><key2>tripaTagA</key2></h><body><s>tripaTagA</s>  <div n=\"1\">f. (<s>-gA</s>) The Ganges.</div><div n=\"E\"> E. <s>tripaTa</s> three roads, and <s>gA</s> who goes, <lb />flowing through earth, heaven, and hell.</div></body><tail><L>18084</L><pc>324-b</pc></tail></H1>\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "त्रिपथगा",
+            "content": "<span lang=\"sa\">त्रिपथगा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗಂಗಾನದಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>गम्लृ (गतौ) - \"डः\" (वा० ३-२-४८)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>त्रयाणां पथां समाहारः त्रिपथम् । त्रिपथेन स्वर्गमर्त्यपातालमार्गेण गच्छति<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"गङ्गा त्रिपथगा नाम दिव्या भागीरथीति च । त्रीन् पथो भावयन्तीति तस्मात् त्रिपथगा स्मृताः ॥\"<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
+}

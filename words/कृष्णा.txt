@@ -1,946 +1,460 @@
-/**
- * @license React
- * react-server-dom-turbopack-server.node.development.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-'use strict';
-
-if (process.env.NODE_ENV !== "production") {
-  (function() {
-'use strict';
-
-var React = require('react');
-var util = require('util');
-require('crypto');
-var async_hooks = require('async_hooks');
-var ReactDOM = require('react-dom');
-
-var ReactSharedInternals = React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-
-function error(format) {
-  {
-    {
-      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        args[_key2 - 1] = arguments[_key2];
-      }
-
-      printWarning('error', format, args);
-    }
-  }
-}
-
-function printWarning(level, format, args) {
-  // When changing this logic, you might want to also
-  // update consoleWithStackDev.www.js as well.
-  {
-    var ReactDebugCurrentFrame = ReactSharedInternals.ReactDebugCurrentFrame;
-    var stack = ReactDebugCurrentFrame.getStackAddendum();
-
-    if (stack !== '') {
-      format += '%s';
-      args = args.concat([stack]);
-    } // eslint-disable-next-line react-internal/safe-string-coercion
-
-
-    var argsWithFormat = args.map(function (item) {
-      return String(item);
-    }); // Careful: RN currently depends on this prefix
-
-    argsWithFormat.unshift('Warning: ' + format); // We intentionally don't use spread (or .apply) directly because it
-    // breaks IE9: https://github.com/facebook/react/issues/13610
-    // eslint-disable-next-line react-internal/no-production-logging
-
-    Function.prototype.apply.call(console[level], console, argsWithFormat);
-  }
-}
-
-// -----------------------------------------------------------------------------
-var enablePostpone = true;
-
-function scheduleWork(callback) {
-  setImmediate(callback);
-}
-function flushBuffered(destination) {
-  // If we don't have any more data to send right now.
-  // Flush whatever is in the buffer to the wire.
-  if (typeof destination.flush === 'function') {
-    // By convention the Zlib streams provide a flush function for this purpose.
-    // For Express, compression middleware adds this method.
-    destination.flush();
-  }
-}
-var VIEW_SIZE = 2048;
-var currentView = null;
-var writtenBytes = 0;
-var destinationHasCapacity = true;
-function beginWriting(destination) {
-  currentView = new Uint8Array(VIEW_SIZE);
-  writtenBytes = 0;
-  destinationHasCapacity = true;
-}
-
-function writeStringChunk(destination, stringChunk) {
-  if (stringChunk.length === 0) {
-    return;
-  } // maximum possible view needed to encode entire string
-
-
-  if (stringChunk.length * 3 > VIEW_SIZE) {
-    if (writtenBytes > 0) {
-      writeToDestination(destination, currentView.subarray(0, writtenBytes));
-      currentView = new Uint8Array(VIEW_SIZE);
-      writtenBytes = 0;
-    }
-
-    writeToDestination(destination, textEncoder.encode(stringChunk));
-    return;
-  }
-
-  var target = currentView;
-
-  if (writtenBytes > 0) {
-    target = currentView.subarray(writtenBytes);
-  }
-
-  var _textEncoder$encodeIn = textEncoder.encodeInto(stringChunk, target),
-      read = _textEncoder$encodeIn.read,
-      written = _textEncoder$encodeIn.written;
-
-  writtenBytes += written;
-
-  if (read < stringChunk.length) {
-    writeToDestination(destination, currentView.subarray(0, writtenBytes));
-    currentView = new Uint8Array(VIEW_SIZE);
-    writtenBytes = textEncoder.encodeInto(stringChunk.slice(read), currentView).written;
-  }
-
-  if (writtenBytes === VIEW_SIZE) {
-    writeToDestination(destination, currentView);
-    currentView = new Uint8Array(VIEW_SIZE);
-    writtenBytes = 0;
-  }
-}
-
-function writeViewChunk(destination, chunk) {
-  if (chunk.byteLength === 0) {
-    return;
-  }
-
-  if (chunk.byteLength > VIEW_SIZE) {
-    {
-      if (precomputedChunkSet && precomputedChunkSet.has(chunk)) {
-        error('A large precomputed chunk was passed to writeChunk without being copied.' + ' Large chunks get enqueued directly and are not copied. This is incompatible with precomputed chunks because you cannot enqueue the same precomputed chunk twice.' + ' Use "cloneChunk" to make a copy of this large precomputed chunk before writing it. This is a bug in React.');
-      }
-    } // this chunk may overflow a single view which implies it was not
-    // one that is cached by the streaming renderer. We will enqueu
-    // it directly and expect it is not re-used
-
-
-    if (writtenBytes > 0) {
-      writeToDestination(destination, currentView.subarray(0, writtenBytes));
-      currentView = new Uint8Array(VIEW_SIZE);
-      writtenBytes = 0;
-    }
-
-    writeToDestination(destination, chunk);
-    return;
-  }
-
-  var bytesToWrite = chunk;
-  var allowableBytes = currentView.length - writtenBytes;
-
-  if (allowableBytes < bytesToWrite.byteLength) {
-    // this chunk would overflow the current view. We enqueue a full view
-    // and start a new view with the remaining chunk
-    if (allowableBytes === 0) {
-      // the current view is already full, send it
-      writeToDestination(destination, currentView);
-    } else {
-      // fill up the current view and apply the remaining chunk bytes
-      // to a new view.
-      currentView.set(bytesToWrite.subarray(0, allowableBytes), writtenBytes);
-      writtenBytes += allowableBytes;
-      writeToDestination(destination, currentView);
-      bytesToWrite = bytesToWrite.subarray(allowableBytes);
-    }
-
-    currentView = new Uint8Array(VIEW_SIZE);
-    writtenBytes = 0;
-  }
-
-  currentView.set(bytesToWrite, writtenBytes);
-  writtenBytes += bytesToWrite.byteLength;
-
-  if (writtenBytes === VIEW_SIZE) {
-    writeToDestination(destination, currentView);
-    currentView = new Uint8Array(VIEW_SIZE);
-    writtenBytes = 0;
-  }
-}
-
-function writeChunk(destination, chunk) {
-  if (typeof chunk === 'string') {
-    writeStringChunk(destination, chunk);
-  } else {
-    writeViewChunk(destination, chunk);
-  }
-}
-
-function writeToDestination(destination, view) {
-  var currentHasCapacity = destination.write(view);
-  destinationHasCapacity = destinationHasCapacity && currentHasCapacity;
-}
-
-function writeChunkAndReturn(destination, chunk) {
-  writeChunk(destination, chunk);
-  return destinationHasCapacity;
-}
-function completeWriting(destination) {
-  if (currentView && writtenBytes > 0) {
-    destination.write(currentView.subarray(0, writtenBytes));
-  }
-
-  currentView = null;
-  writtenBytes = 0;
-  destinationHasCapacity = true;
-}
-function close$1(destination) {
-  destination.end();
-}
-var textEncoder = new util.TextEncoder();
-function stringToChunk(content) {
-  return content;
-}
-var precomputedChunkSet = new Set() ;
-function typedArrayToBinaryChunk(content) {
-  // Convert any non-Uint8Array array to Uint8Array. We could avoid this for Uint8Arrays.
-  return new Uint8Array(content.buffer, content.byteOffset, content.byteLength);
-}
-function byteLengthOfChunk(chunk) {
-  return typeof chunk === 'string' ? Buffer.byteLength(chunk, 'utf8') : chunk.byteLength;
-}
-function byteLengthOfBinaryChunk(chunk) {
-  return chunk.byteLength;
-}
-function closeWithError(destination, error) {
-  // $FlowFixMe[incompatible-call]: This is an Error object or the destination accepts other types.
-  destination.destroy(error);
-}
-
-// eslint-disable-next-line no-unused-vars
-var CLIENT_REFERENCE_TAG = Symbol.for('react.client.reference');
-var SERVER_REFERENCE_TAG = Symbol.for('react.server.reference');
-function isClientReference(reference) {
-  return reference.$$typeof === CLIENT_REFERENCE_TAG;
-}
-function isServerReference(reference) {
-  return reference.$$typeof === SERVER_REFERENCE_TAG;
-}
-function registerClientReference(proxyImplementation, id, exportName) {
-  return registerClientReferenceImpl(proxyImplementation, id + '#' + exportName, false);
-}
-
-function registerClientReferenceImpl(proxyImplementation, id, async) {
-  return Object.defineProperties(proxyImplementation, {
-    $$typeof: {
-      value: CLIENT_REFERENCE_TAG
-    },
-    $$id: {
-      value: id
-    },
-    $$async: {
-      value: async
-    }
-  });
-} // $FlowFixMe[method-unbinding]
-
-
-var FunctionBind = Function.prototype.bind; // $FlowFixMe[method-unbinding]
-
-var ArraySlice = Array.prototype.slice;
-
-function bind() {
-  // $FlowFixMe[unsupported-syntax]
-  var newFn = FunctionBind.apply(this, arguments);
-
-  if (this.$$typeof === SERVER_REFERENCE_TAG) {
-    var args = ArraySlice.call(arguments, 1);
-    return Object.defineProperties(newFn, {
-      $$typeof: {
-        value: SERVER_REFERENCE_TAG
-      },
-      $$id: {
-        value: this.$$id
-      },
-      $$bound: {
-        value: this.$$bound ? this.$$bound.concat(args) : args
-      },
-      bind: {
-        value: bind
-      }
-    });
-  }
-
-  return newFn;
-}
-
-function registerServerReference(reference, id, exportName) {
-  return Object.defineProperties(reference, {
-    $$typeof: {
-      value: SERVER_REFERENCE_TAG
-    },
-    $$id: {
-      value: exportName === null ? id : id + '#' + exportName
-    },
-    $$bound: {
-      value: null
-    },
-    bind: {
-      value: bind
-    }
-  });
-}
-var PROMISE_PROTOTYPE = Promise.prototype;
-var deepProxyHandlers = {
-  get: function (target, name, receiver) {
-    switch (name) {
-      // These names are read by the Flight runtime if you end up using the exports object.
-      case '$$typeof':
-        // These names are a little too common. We should probably have a way to
-        // have the Flight runtime extract the inner target instead.
-        return target.$$typeof;
-
-      case '$$id':
-        return target.$$id;
-
-      case '$$async':
-        return target.$$async;
-
-      case 'name':
-        return target.name;
-
-      case 'displayName':
-        return undefined;
-      // We need to special case this because createElement reads it if we pass this
-      // reference.
-
-      case 'defaultProps':
-        return undefined;
-      // Avoid this attempting to be serialized.
-
-      case 'toJSON':
-        return undefined;
-
-      case Symbol.toPrimitive:
-        // $FlowFixMe[prop-missing]
-        return Object.prototype[Symbol.toPrimitive];
-
-      case 'Provider':
-        throw new Error("Cannot render a Client Context Provider on the Server. " + "Instead, you can export a Client Component wrapper " + "that itself renders a Client Context Provider.");
-    } // eslint-disable-next-line react-internal/safe-string-coercion
-
-
-    var expression = String(target.name) + '.' + String(name);
-    throw new Error("Cannot access " + expression + " on the server. " + 'You cannot dot into a client module from a server component. ' + 'You can only pass the imported name through.');
-  },
-  set: function () {
-    throw new Error('Cannot assign to a client module from a server module.');
-  }
-};
-var proxyHandlers = {
-  get: function (target, name, receiver) {
-    switch (name) {
-      // These names are read by the Flight runtime if you end up using the exports object.
-      case '$$typeof':
-        return target.$$typeof;
-
-      case '$$id':
-        return target.$$id;
-
-      case '$$async':
-        return target.$$async;
-
-      case 'name':
-        return target.name;
-      // We need to special case this because createElement reads it if we pass this
-      // reference.
-
-      case 'defaultProps':
-        return undefined;
-      // Avoid this attempting to be serialized.
-
-      case 'toJSON':
-        return undefined;
-
-      case Symbol.toPrimitive:
-        // $FlowFixMe[prop-missing]
-        return Object.prototype[Symbol.toPrimitive];
-
-      case '__esModule':
-        // Something is conditionally checking which export to use. We'll pretend to be
-        // an ESM compat module but then we'll check again on the client.
-        var moduleId = target.$$id;
-        target.default = registerClientReferenceImpl(function () {
-          throw new Error("Attempted to call the default export of " + moduleId + " from the server " + "but it's on the client. It's not possible to invoke a client function from " + "the server, it can only be rendered as a Component or passed to props of a " + "Client Component.");
-        }, target.$$id + '#', target.$$async);
-        return true;
-
-      case 'then':
-        if (target.then) {
-          // Use a cached value
-          return target.then;
-        }
-
-        if (!target.$$async) {
-          // If this module is expected to return a Promise (such as an AsyncModule) then
-          // we should resolve that with a client reference that unwraps the Promise on
-          // the client.
-          var clientReference = registerClientReferenceImpl({}, target.$$id, true);
-          var proxy = new Proxy(clientReference, proxyHandlers); // Treat this as a resolved Promise for React's use()
-
-          target.status = 'fulfilled';
-          target.value = proxy;
-          var then = target.then = registerClientReferenceImpl(function then(resolve, reject) {
-            // Expose to React.
-            return Promise.resolve(resolve(proxy));
-          }, // If this is not used as a Promise but is treated as a reference to a `.then`
-          // export then we should treat it as a reference to that name.
-          target.$$id + '#then', false);
-          return then;
-        } else {
-          // Since typeof .then === 'function' is a feature test we'd continue recursing
-          // indefinitely if we return a function. Instead, we return an object reference
-          // if we check further.
-          return undefined;
-        }
-
-    }
-
-    var cachedReference = target[name];
-
-    if (!cachedReference) {
-      var reference = registerClientReferenceImpl(function () {
-        throw new Error( // eslint-disable-next-line react-internal/safe-string-coercion
-        "Attempted to call " + String(name) + "() from the server but " + String(name) + " is on the client. " + "It's not possible to invoke a client function from the server, it can " + "only be rendered as a Component or passed to props of a Client Component.");
-      }, target.$$id + '#' + name, target.$$async);
-      Object.defineProperty(reference, 'name', {
-        value: name
-      });
-      cachedReference = target[name] = new Proxy(reference, deepProxyHandlers);
-    }
-
-    return cachedReference;
-  },
-  getPrototypeOf: function (target) {
-    // Pretend to be a Promise in case anyone asks.
-    return PROMISE_PROTOTYPE;
-  },
-  set: function () {
-    throw new Error('Cannot assign to a client module from a server module.');
-  }
-};
-function createClientModuleProxy(moduleId) {
-  var clientReference = registerClientReferenceImpl({}, // Represents the whole Module object instead of a particular import.
-  moduleId, false);
-  return new Proxy(clientReference, proxyHandlers);
-}
-
-function getClientReferenceKey(reference) {
-  return reference.$$async ? reference.$$id + '#async' : reference.$$id;
-}
-function resolveClientReferenceMetadata(config, clientReference) {
-  var modulePath = clientReference.$$id;
-  var name = '';
-  var resolvedModuleData = config[modulePath];
-
-  if (resolvedModuleData) {
-    // The potentially aliased name.
-    name = resolvedModuleData.name;
-  } else {
-    // We didn't find this specific export name but we might have the * export
-    // which contains this name as well.
-    // TODO: It's unfortunate that we now have to parse this string. We should
-    // probably go back to encoding path and name separately on the client reference.
-    var idx = modulePath.lastIndexOf('#');
-
-    if (idx !== -1) {
-      name = modulePath.slice(idx + 1);
-      resolvedModuleData = config[modulePath.slice(0, idx)];
-    }
-
-    if (!resolvedModuleData) {
-      throw new Error('Could not find the module "' + modulePath + '" in the React Client Manifest. ' + 'This is probably a bug in the React Server Components bundler.');
-    }
-  }
-
-  if (clientReference.$$async === true) {
-    return [resolvedModuleData.id, resolvedModuleData.chunks, name, 1];
-  } else {
-    return [resolvedModuleData.id, resolvedModuleData.chunks, name];
-  }
-}
-function getServerReferenceId(config, serverReference) {
-  return serverReference.$$id;
-}
-function getServerReferenceBoundArguments(config, serverReference) {
-  return serverReference.$$bound;
-}
-
-var ReactDOMSharedInternals = ReactDOM.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
-
-var ReactDOMFlightServerDispatcher = {
-  prefetchDNS: prefetchDNS,
-  preconnect: preconnect,
-  preload: preload,
-  preloadModule: preloadModule$1,
-  preinitStyle: preinitStyle,
-  preinitScript: preinitScript,
-  preinitModuleScript: preinitModuleScript
-};
-
-function prefetchDNS(href) {
-  {
-    if (typeof href === 'string' && href) {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = 'D|' + href;
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
-        }
-
-        hints.add(key);
-        emitHint(request, 'D', href);
-      }
-    }
-  }
-}
-
-function preconnect(href, crossOrigin) {
-  {
-    if (typeof href === 'string') {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = "C|" + (crossOrigin == null ? 'null' : crossOrigin) + "|" + href;
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
-        }
-
-        hints.add(key);
-
-        if (typeof crossOrigin === 'string') {
-          emitHint(request, 'C', [href, crossOrigin]);
-        } else {
-          emitHint(request, 'C', href);
-        }
-      }
-    }
-  }
-}
-
-function preload(href, as, options) {
-  {
-    if (typeof href === 'string') {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = 'L';
-
-        if (as === 'image' && options) {
-          key += getImagePreloadKey(href, options.imageSrcSet, options.imageSizes);
-        } else {
-          key += "[" + as + "]" + href;
-        }
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
-        }
-
-        hints.add(key);
-        var trimmed = trimOptions(options);
-
-        if (trimmed) {
-          emitHint(request, 'L', [href, as, trimmed]);
-        } else {
-          emitHint(request, 'L', [href, as]);
-        }
-      }
-    }
-  }
-}
-
-function preloadModule$1(href, options) {
-  {
-    if (typeof href === 'string') {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = 'm|' + href;
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
-        }
-
-        hints.add(key);
-        var trimmed = trimOptions(options);
-
-        if (trimmed) {
-          return emitHint(request, 'm', [href, trimmed]);
-        } else {
-          return emitHint(request, 'm', href);
-        }
-      }
-    }
-  }
-}
-
-function preinitStyle(href, precedence, options) {
-  {
-    if (typeof href === 'string') {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = 'S|' + href;
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
-        }
-
-        hints.add(key);
-        var trimmed = trimOptions(options);
-
-        if (trimmed) {
-          return emitHint(request, 'S', [href, typeof precedence === 'string' ? precedence : 0, trimmed]);
-        } else if (typeof precedence === 'string') {
-          return emitHint(request, 'S', [href, precedence]);
-        } else {
-          return emitHint(request, 'S', href);
-        }
-      }
-    }
-  }
-}
-
-function preinitScript(href, options) {
-  {
-    if (typeof href === 'string') {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = 'X|' + href;
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
-        }
-
-        hints.add(key);
-        var trimmed = trimOptions(options);
-
-        if (trimmed) {
-          return emitHint(request, 'X', [href, trimmed]);
-        } else {
-          return emitHint(request, 'X', href);
-        }
-      }
-    }
-  }
-}
-
-function preinitModuleScript(href, options) {
-  {
-    if (typeof href === 'string') {
-      var request = resolveRequest();
-
-      if (request) {
-        var hints = getHints(request);
-        var key = 'M|' + href;
-
-        if (hints.has(key)) {
-          // duplicate hint
-          return;
-        }
-
-        hints.add(key);
-        var trimmed = trimOptions(options);
-
-        if (trimmed) {
-          return emitHint(request, 'M', [href, trimmed]);
-        } else {
-          return emitHint(request, 'M', href);
-        }
-      }
-    }
-  }
-} // Flight normally encodes undefined as a special character however for directive option
-// arguments we don't want to send unnecessary keys and bloat the payload so we create a
-// trimmed object which omits any keys with null or undefined values.
-// This is only typesafe because these option objects have entirely optional fields where
-// null and undefined represent the same thing as no property.
-
-
-function trimOptions(options) {
-  if (options == null) return null;
-  var hasProperties = false;
-  var trimmed = {};
-
-  for (var key in options) {
-    if (options[key] != null) {
-      hasProperties = true;
-      trimmed[key] = options[key];
-    }
-  }
-
-  return hasProperties ? trimmed : null;
-}
-
-function getImagePreloadKey(href, imageSrcSet, imageSizes) {
-  var uniquePart = '';
-
-  if (typeof imageSrcSet === 'string' && imageSrcSet !== '') {
-    uniquePart += '[' + imageSrcSet + ']';
-
-    if (typeof imageSizes === 'string') {
-      uniquePart += '[' + imageSizes + ']';
-    }
-  } else {
-    uniquePart += '[][]' + href;
-  }
-
-  return "[image]" + uniquePart;
-}
-
-var ReactDOMCurrentDispatcher = ReactDOMSharedInternals.Dispatcher;
-function prepareHostDispatcher() {
-  ReactDOMCurrentDispatcher.current = ReactDOMFlightServerDispatcher;
-} // Used to distinguish these contexts from ones used in other renderers.
-// small, smaller than how we encode undefined, and is unambiguous. We could use
-// a different tuple structure to encode this instead but this makes the runtime
-// cost cheaper by eliminating a type checks in more positions.
-// prettier-ignore
-
-function createHints() {
-  return new Set();
-}
-
-// We do this globally since the async work can potentially eagerly
-// start before the first request and once requests start they can interleave.
-// In theory we could enable and disable using a ref count of active requests
-// but given that typically this is just a live server, it doesn't really matter.
-
-function initAsyncDebugInfo() {
-  {
-    async_hooks.createHook({
-      init: function (asyncId, type, triggerAsyncId) {// TODO
-      },
-      promiseResolve: function (asyncId) {
-        // TODO
-        async_hooks.executionAsyncId();
-      },
-      destroy: function (asyncId) {// TODO
-      }
-    }).enable();
-  }
-}
-
-var requestStorage = new async_hooks.AsyncLocalStorage();
-
-// ATTENTION
-// When adding new symbols to this file,
-// Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
-// The Symbol used to tag the ReactElement-like types.
-var REACT_ELEMENT_TYPE = Symbol.for('react.element');
-var REACT_FRAGMENT_TYPE = Symbol.for('react.fragment');
-var REACT_PROVIDER_TYPE = Symbol.for('react.provider');
-var REACT_SERVER_CONTEXT_TYPE = Symbol.for('react.server_context');
-var REACT_FORWARD_REF_TYPE = Symbol.for('react.forward_ref');
-var REACT_SUSPENSE_TYPE = Symbol.for('react.suspense');
-var REACT_SUSPENSE_LIST_TYPE = Symbol.for('react.suspense_list');
-var REACT_MEMO_TYPE = Symbol.for('react.memo');
-var REACT_LAZY_TYPE = Symbol.for('react.lazy');
-var REACT_SERVER_CONTEXT_DEFAULT_VALUE_NOT_LOADED = Symbol.for('react.default_value');
-var REACT_MEMO_CACHE_SENTINEL = Symbol.for('react.memo_cache_sentinel');
-var REACT_POSTPONE_TYPE = Symbol.for('react.postpone');
-var MAYBE_ITERATOR_SYMBOL = Symbol.iterator;
-var FAUX_ITERATOR_SYMBOL = '@@iterator';
-function getIteratorFn(maybeIterable) {
-  if (maybeIterable === null || typeof maybeIterable !== 'object') {
-    return null;
-  }
-
-  var maybeIterator = MAYBE_ITERATOR_SYMBOL && maybeIterable[MAYBE_ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL];
-
-  if (typeof maybeIterator === 'function') {
-    return maybeIterator;
-  }
-
-  return null;
-}
-
-var rendererSigil;
-
 {
-  // Use this to detect multiple renderers using the same context
-  rendererSigil = {};
-} // Used to store the parent path of all context overrides in a shared linked list.
-// Forming a reverse tree.
-// The structure of a context snapshot is an implementation of this file.
-// Currently, it's implemented as tracking the current active node.
-
-
-var rootContextSnapshot = null; // We assume that this runtime owns the "current" field on all ReactContext instances.
-// This global (actually thread local) state represents what state all those "current",
-// fields are currently in.
-
-var currentActiveSnapshot = null;
-
-function popNode(prev) {
-  {
-    prev.context._currentValue = prev.parentValue;
-  }
+    "word": "कृष्णा",
+    "ABCH": [
+        {
+            "word": "कृष्णा",
+            "linga": "स्त्री",
+            "pagenum": "20",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "1305",
+            "group": "409",
+            "synonyms": [
+                "वैदेही",
+                "पिप्पली",
+                "उपकुल्या",
+                "मागधी",
+                "कणा"
+            ],
+            "content": "वैदेही पिप्पली कृष्णोपकुल्या मागधी कणा ।"
+        },
+        {
+            "word": "कृष्णा",
+            "linga": "स्त्री",
+            "pagenum": "30",
+            "kanda": "मर्त्यकाण्डः",
+            "varga": "",
+            "eid": "2149",
+            "group": "794",
+            "synonyms": [
+                "पाञ्चाली",
+                "द्रौपदी",
+                "सैरन्ध्री",
+                "नित्ययौवना",
+                "वेदिजा",
+                "याज्ञसेनी"
+            ],
+            "content": "पाञ्चाली द्रौपदी कृष्णा सैरंध्री नित्ययौवना ॥ ७१० ॥\nवेदिजा याज्ञसेनी च कर्णश्चम्पाधिपोऽङ्गराट् ।\nराधासुतोऽर्कतनयः कालपृष्ठम् तु तद्धनुः ॥ ७११ ॥"
+        }
+    ],
+    "ACPH": [
+        {
+            "word": "कृष्णा",
+            "linga": "स्त्री",
+            "pagenum": "2",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "679",
+            "group": "27",
+            "synonyms": [
+                "गौतमी",
+                "कौशिकी",
+                "तामसी",
+                "बाभ्रवी",
+                "जया",
+                "कालरात्रि",
+                "महामाया",
+                "भ्रामरी",
+                "यादवी",
+                "वरा",
+                "बर्हिध्वजा",
+                "शूलधरा",
+                "परमब्रह्मचारिणी",
+                "अमोघा",
+                "विन्ध्यनिलया",
+                "षष्ठी",
+                "कान्तारवासिनी",
+                "जाङ्गुली",
+                "बदरीवासा",
+                "वरदा",
+                "कृष्णपिङ्गला",
+                "दृषद्वती",
+                "इन्द्रभगिनी",
+                "प्रगल्भा",
+                "रेवती",
+                "महाविद्या",
+                "सिनीवाली",
+                "रक्तदन्ती",
+                "एकपाटला",
+                "एकपर्णा",
+                "बजुभुजा",
+                "नन्दपुत्री",
+                "महाजया",
+                "भद्रकाली",
+                "महाकाली",
+                "योगिनी",
+                "गणनायिका",
+                "हासा",
+                "भीमा",
+                "प्रकूष्माण्डी",
+                "गदिनी",
+                "वारुणी",
+                "हिमा",
+                "अनन्ता",
+                "विजया",
+                "क्षेमा",
+                "मानस्तोका",
+                "कुहावती",
+                "चारणा",
+                "पितृगणा",
+                "स्कन्दमाता",
+                "घनाञ्जनी",
+                "गान्धर्वी",
+                "कर्बुरा",
+                "गार्गी",
+                "सावित्री",
+                "ब्रह्मचारिणी",
+                "कोटिश्री",
+                "मन्दरावासा",
+                "केशी",
+                "मलयवासिनी",
+                "कालायनी",
+                "विशालाक्षी",
+                "किराती",
+                "गोकुलोद्भवा",
+                "एकानसी",
+                "नारायणी",
+                "शैला",
+                "शाकम्भरी",
+                "ईश्वरी",
+                "प्रकीर्णकेशी",
+                "कुण्डा",
+                "नीलवस्त्रा",
+                "उग्रचारिणी",
+                "अष्टादशभुजा",
+                "पौत्री",
+                "शिवदूती",
+                "यमस्वसा",
+                "सुनन्दा",
+                "विकचा",
+                "लम्बा",
+                "जयन्ती",
+                "नकुला",
+                "कुला",
+                "विलङ्का",
+                "नन्दिनी",
+                "नन्दा",
+                "नन्दयन्ती",
+                "निरञ्जना",
+                "कालञ्जरी",
+                "शतमुखी",
+                "विकराला",
+                "करालिका",
+                "विरजस्",
+                "पुरला",
+                "जारी",
+                "बहुपुत्री",
+                "कुलेश्वरी",
+                "कैटभी",
+                "कालदमनी",
+                "दर्दुरा",
+                "कुलदेवता",
+                "रौद्री",
+                "कुन्द्रा",
+                "महारौद्री",
+                "कालङ्गमा",
+                "महानिशा",
+                "बलदेवस्वसृ",
+                "पुत्री",
+                "हीरी",
+                "क्षेमङ्करी",
+                "प्रभा",
+                "मारी",
+                "हैमवती",
+                "गोला",
+                "शिखरवासिनी"
+            ],
+            "content": "गौतमी कौशिकी कृष्णा तामसी बाभ्रवी जया ॥ ४७ ॥\nकालरात्रिर्महामाया भ्रामरी यादवी वरा ।\nबर्हिध्वजा शूलधरा परमब्रह्मचारिणी ॥ ४८ ॥\nअमोघा विन्ध्यनिलया षष्ठी कान्तारवासिनी ।\nजाङ्गुली बदरीवासा वरदा कृष्णपिङ्गला ॥ ४९ ॥\nदृषद्वतीन्द्रभगिनी प्रगल्भा रेवती तथा ।\nमहाविद्या सिनीवाली रक्तदन्त्येकपाटला ॥ ५० ॥\nएकपर्णा बहुभुजा नन्दपुत्री महाजया ।\nभद्रकाली महाकाली योगिनी गणनायिका ॥ ५१ ॥\nहासा भीमा प्रकूष्माण्डी गदिनी वारुणी हिमा ।\nअनन्ता विजया क्षेमा मानस्तोका कुहावती ॥ ५२ ॥\nचारणा च पितृगणा स्कन्दमाता घनाञ्जनी ।\nगान्धर्वी कर्वरी गार्गी सावित्री ब्रह्मचारिणी ॥ ५३ ॥\nकोटिश्रीर्सन्दरावासा केशी मलयवासिनी ।\nकालायनी विशालाक्षी किराती गोकुलोद्भवा ॥ ५४ ॥\nएकानसी नारायणी शैला शाकंभरीश्वरी ।\nप्रकीर्णकेशी कुण्डा च नीलवस्त्रोग्रचारिणी ॥ ५५ ॥\nअष्टादशभुजा पौत्री शिवदूती यमस्वसा ।\nसुनन्दा विकचा लम्बा जयन्ती नकुलाकुला ॥ ५६ ॥\nविलङ्का नन्दिनी नन्दा नन्दयन्ती निरञ्जना ।\nकालंजरी शतमुखी विकराली करालिका ॥ ५७ ॥\nविरजाः पुरला जीरी बहुपुत्री कुलेश्वरी ।\nकैटभी कालदमनी दर्दुरा कुलदेवता ॥ ५८ ॥\nरौद्री कुन्द्रा महारौद्री कालंगमा महानिशा ।\nबलदेवस्वसा पुत्री हीरी क्षेमंकरी प्रभा ॥ ५९ ॥\nमारी हैमवती चापि गोला शिखरवासिनी ।"
+        }
+    ],
+    "BHS": [
+        {
+            "word": "कृष्णा",
+            "eid": "5154",
+            "pagenum": 192,
+            "content": "? <b>Kṛṣṇā</b>¦, possibly <ab>n. pr.</ab> (of a devakumārikā), see <ab>s.v.</ab> <b>Draupadī</b>: <ls>LV</ls> 〔390.6〕; <ls>Mv</ls> 〔iii.308.9〕; also short form for next, <ab>q.v.</ab>"
+        }
+    ],
+    "BOP": [
+        {
+            "word": "कृष्णा",
+            "eid": "2393",
+            "pagenum": 83,
+            "content": "कृष्णा¦ <i>f.</i> nomen Pândavorum uxoris."
+        }
+    ],
+    "INM": [
+        {
+            "word": "कृष्णा",
+            "eid": "5917",
+            "pagenum": 425,
+            "content": "<b>Kṛṣṇā</b><sup>1</sup>¦ = Draupadī: I, 125, 148, 167, 384, 430, 2259, 2289 (<i>D°</i>), 2438, 6323, 6325, 6402, 6407 (origin of the name), 6434 (<i>Pārṣatī</i>), 6942, 6952, 6977, †6979, †7007, †7009, †7015, †7024, †7059, 7125, †7132, 7142, †7164, †7167, †7169, †7171, †7174, †7177, †7179, †7181, †7182, †7183, †7198, †7203, †7205, †7211, 7221, 7227, 7235, 7239, 7243, 7263, 7326 (<i>Pārṣatī</i>), †7331, †7332, †7333, †7334, †7339, 7349, 7384, 7404, 7411, 7422, 7423, 7521, 7541 (<i>Pāñcālīṃ</i>), 7544, 7555, 7598, 7599, 7600, 7607, 7611, 7744, 7754, 7979, 7984, 8045; II, 27, 976, 2172, 2189, 2217, †2220, †2223, †2227, †2229, †2231, †2239, †2240, †2242, 2274, 2278, 2280, 2281, 2337, 2338, 2388, †2405 (<i>Pāñcālīṃ</i>), 2417, 2451, 2502, 2584, 2604, 2615, 2626, 2688, 2690, 2698, 2700; III, 10, 400, 440, 453, 582, 591, †903, †943, †950, 989, 990, 1078, 1093, 1099, 1105, 1162, 1164, 1182, 1189, 1191, 1199, 1201, 1403, 1479, (1479), 1492, 1933, 1945, 2003, 2014, 2015, 3070, 4021, 8293, 8415, 8481, 8651, †10219, †10229, †10282, 10417, †10837, †10838, 10842, 10849, 10859, 10860, 10869, 10976, 10997, 11004, 11007, 11019, 11021, 11052, 11058, 11067, 11403, 11406, 11412, 11430, 11453, 11494, 11558, 11629, 11679, 11740, 11786, †11907, 11935, 12315, 12557, †12571, †12576, †12578, †12579 (<i>Yājñasenīṃ</i>), †12580, †12581, †12582, †12584, 14708, 14725, 14730, 14738, †14746, †14751, †14753, 14792, 14803, 15019, 15493, 15521, 15537, 15540, 15541, 15542, 15543, †15606, 15611, 15615 (<i>D°</i>), 15619, 15636, 15637, †15648, †15649, †15663, †15681, †15683, †15697, 15747, 15762, 15766, 15783, 15859, 15860, 16611 (<i>D°</i>). 16617, †17219, 17221, 17222, 17224, 17243, 17476; IV, 74 (<i>D°</i>), 81, 90, 146, 245, 263 (<i>bhāryāṃ</i> <i>Kurūṇāṃ</i>), 279, 335, 337, 383, 434, 451, 464, 485, 487, 490, 497, 503, 504, 508, 521, 636, 644, 690, 711, 738, 773, 780, 786, 796, 801, 803, 807, 822, 839, 846, 876, 1182, 1370, 1537, 1566, 1576, 2292, †2305, 2367; V, 201, 222, 689 (<i>D°</i>), †847, †849, †850, †854, †928, †931, 1990, 2326, 2329, 2349, 2871, 2912, 2914, 2919, 3177, 3185, 3211, 3217, 3228, 3442, 4655, 4662, 4665, 4666, 5478, 5489, 5495, 5497, 5519, 5541, 5564; VI, 4090 (<i>D°</i>), 4907; VII, 1684, 3818, 3825, 5425, 5428, 5656, 5658, 6543, 9166, 9226; VIII, 7, 308, 310, †3346, 3716, 3717, 3770, 4489, †4562, 4754, 4755, 4756, 5002; IX, 248, 255, 257, 259, 3433; X, 577, 579, 582, 589 (<i>Yājñasenī</i>), 594, 746 (<i>D°</i>), 759; XI, 628, 629 (read <i>Kṛṣṇa</i> with B.); XII, 499, 1384, 1398, 1456 (<i>Drupadātmajāṃ</i>); XIV, 322, 356, 1505, 2584 (<i>D°</i>), 2604; XV, †437 (<i>D°</i>), 654, †664, 806 (<i>D°</i>); XVII, 24, 51, 58, 77, †86; XVIII, 97, 119."
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "5918",
+            "pagenum": 426,
+            "content": "<b>Kṛṣṇā</b><sup>2</sup>¦ = Durgā (Umā): IV, 184, 187; VI, 801."
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "5919",
+            "pagenum": 426,
+            "content": "<b>Kṛṣṇā</b><sup>3</sup>,¦ a river. § 574 (Jambūkh.): VI, <b>9</b>λ, 340 (in Bhāratavarṣa)."
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "5920",
+            "pagenum": 426,
+            "content": "<b>Kṛṣṇā</b><sup>4</sup>,¦ a mātṛ. § 615<i>u</i> (Skanda): IX, <b>46</b>θ, 2640."
+        }
+    ],
+    "LRV": [
+        {
+            "word": "कृष्णा",
+            "eid": "10298",
+            "pagenum": 206,
+            "content": "kfzRA¦ <i>f.</i> 1. An epithet of द्रौपदी, wife of the Pāṇḍavas; 2. name of a river in the Dekkan."
+        }
+    ],
+    "MCI": [
+        {
+            "word": "कृष्णा",
+            "eid": "1164",
+            "pagenum": 315,
+            "content": "<b>Kṛṣṇā</b>¦ f.: Name of a river. <dvsn n='P'>Listed by Mārkaṇḍeya among the rivers which are famous as mothers of the sacrificial hearths i. e. on the banks of which Soma sacrifices were performed (<i>dhiṣṇyānāṃ mā-</i> <i>taro yāḥ prakīrtitāḥ</i>) 3. 212. 24 (for Nī. comm. on Bom. Ed. 3. 222. 27 see <b>Kapilā</b> above)."
+        }
+    ],
+    "MW": [
+        {
+            "word": "कृष्णा",
+            "eid": "55181",
+            "pagenum": "306,3",
+            "content": "कृष्णा ¦ (आ), <lex>f.</lex> a kind of leech, <ls>Suśr.</ls><info lex='f'/>"
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "55182",
+            "pagenum": "306,3",
+            "content": "¦ a kind of venomous insect, <ls>ib.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "55183",
+            "pagenum": "306,3",
+            "content": "¦ <ab>N.</ab> of several plants (<bot>Piper longum</bot>, <ls>L.</ls>; the Indigo plant, <ls>L.</ls>; a grape, <ls>L.</ls>; a <s1 slp1='punar-navA'>Punar-navā</s1> with dark blossoms, <ls>L.</ls>; <bot>Gmelina</bot> arborea, <ls>L.</ls>; <bot>Nigella indica</bot>, <ls>L.</ls>; <bot>Sinapis</bot> ramosa, <ls>L.</ls>; <bot>Vernonia</bot> anthelminthica, <ls>L.</ls>; = काकोली, <ls>L.</ls>; a sort of <s1 slp1='sArivA'>Sārivā</s1>, <ls>L.</ls>), <ls>Suśr.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "55184",
+            "pagenum": "306,3",
+            "content": "¦ a kind of perfume (= पर्पटी), <ls>Bhpr.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "55185",
+            "pagenum": "306,3",
+            "content": "¦ <ab>N.</ab> of <s1 slp1='drOpadI'>Draupadī</s1>, <ls>MBh.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "55186",
+            "pagenum": "306,3",
+            "content": "¦ of <s1 slp1='durgA'>Durgā</s1>, <ls>MBh. iv, 184</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "55187",
+            "pagenum": "306,3",
+            "content": "¦ of one of the seven tongues of fire, <ls>L.</ls>, <ab>Sch.</ab><info lex='inh'/>"
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "55188",
+            "pagenum": "306,3",
+            "content": "¦ of one of the mothers in <s1 slp1='skanda'>Skanda</s1>'s retinue, <ls>MBh. ix, 2640</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "55189",
+            "pagenum": "306,3",
+            "content": "¦ of a <s1 slp1='yoginI'>Yoginī</s1>, <ls>Hcat.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "55190",
+            "pagenum": "306,3",
+            "content": "¦ (with or without गङ्गा) <ab>N.</ab> of the river Kistna, <ls>MBh. xiii, 4888</ls>; <ls>PadmaP.</ls>; <ls>NārP.</ls><info lex='inh'/>"
+        }
+    ],
+    "PUI": [
+        {
+            "word": "कृष्णा",
+            "eid": "3540",
+            "pagenum": 1,
+            "content": "<i>Kṛṣṇā</i> (I)¦ — a name of Draupadī. <dvsn n='P'/>Bhā. I. 7. 14."
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "3541",
+            "pagenum": 1,
+            "content": "<i>Kṛṣṇā</i> (II)¦ — a name of Yogamāyā. <dvsn n='P'/>Bhā. X. 2. 12."
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "3542",
+            "pagenum": 1,
+            "content": "<i>Kṛṣṇā</i> (III)¦ — a name of Yamunā. <dvsn n='P'/>Bhā. X. 32. 12."
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "3543",
+            "pagenum": 1,
+            "content": "<i>Kṛṣṇā</i> (IV)¦ — a daughter of Khaśa. <dvsn n='P'/>Vā. 69. 170."
+        },
+        {
+            "word": "कृष्णा",
+            "eid": "3544",
+            "pagenum": 1,
+            "content": "<i>Kṛṣṇā</i> (V)¦ — a R. of the Sahya hills of the Dakṣiṇāpatha. <dvsn n='P'/>Vā. 45. 104."
+        }
+    ],
+    "SCH": [
+        {
+            "word": "कृष्णा",
+            "eid": "11247",
+            "pagenum": 155,
+            "content": "<i>kṛṣṇā</i>¦ f. ° = Yamunā, <ls>Gopāl.</ls> 83, 30; 124, 21. {part=,seq=11420,type=,n=2}"
+        }
+    ],
+    "SNP": [
+        {
+            "word": "कृष्णा",
+            "eid": "74",
+            "pagenum": 545,
+            "content": "<i>kṛṣṇā</i>¦ <dvsn n='P'/>(1) <bot>PIPER LONGUM LINN.</bot> (Ainslie 1, p. 308; Bpn, p. 15; Dutt; HK; MW; PW; V 6, p. 120; Vśs); <dvsn n='P'/>(2) = <i>kṛṣṇajīraka</i> (Avk; KB 2, p. 1201-1203; MW; PW; Vśs); <dvsn n='P'/>(3) a) = <i>indrayava</i> = the seeds of <i>kuṭaja</i> (Vśs); b) = <i>kuṭaja</i> (Vśs); <dvsn n='P'/>(4) = <i>kaṭukā</i> (Vśs); <dvsn n='P'/>(5) = <i>kākolī</i> (MW; PW; Vśs); <i>kākolī</i> is an unidentifiable plant; <dvsn n='P'/>(6) = <i>kṛṣṇatulasī</i> (see <i>tulasī</i>) (Vśs); <dvsn n='P'/>(7) = <i>kṛṣṇanirguṇḍī:</i> <bot>VITEX NEGUNDO LINN.</bot> (Vśs); <dvsn n='P'/>(8) = <i>kṛṣṇasārivā</i> (see <i>śyāmā</i>) (MW and PW: a sort of <i>sārivā;</i> Vśs); <dvsn n='P'/>(9) = <i>gāmbhārī = kāśmarī = kāśmarya</i> (see <i>kāśmarya</i>) (MW; PW; Vśs); <dvsn n='P'/>(10) = <i>jaṭāmāṃsī:</i> <bot>NARDOSTACHYS JATAMANSI DC.</bot> (Vśs); <dvsn n='P'/>(11) = <i>dūrvā:</i> <bot>CYNODON DACTYLON (LINN.) PERS.</bot> [Intern. Code] (Vśs); <dvsn n='P'/>(12) <bot>VITIS VINIFERA LINN.</bot> (MW; PW; Vśs); <dvsn n='P'/>(13) = <i>nīlapunarnavā</i> (see <i>punarnavā</i>) (MW; PW; Vśs); <dvsn n='P'/>(14) = <i>nīlī</i> (MW; PW; Vśs); <dvsn n='P'/>(15) = <i>paṭola</i> (Vśs); <dvsn n='P'/>(16) = <i>marica</i> (Vśs); <dvsn n='P'/>(17) = <i>rājasarṣapa</i> (see <i>sarṣapa</i>) (MW; PW; Vśs); <dvsn n='P'/>(18) = <i>vanakulattha</i> (Vśs): unidentified; <dvsn n='P'/>(19) = <i>śirīṣa</i> (Vśs); <dvsn n='P'/>(20) = <i>somarājī:</i> a) <bot>VERNONIA ANTHELMINTICA WILLD.</bot>, b) = <i>bākucī:</i> <bot>PSORALEA CORYLIFOLIA LINN.</bot> (MW; PW; Vśs)."
+        }
+    ],
+    "SKD": [
+        {
+            "word": "कृष्णा",
+            "eid": "8743",
+            "pagenum": "2-185-a",
+            "content": "कृष्णा¦, स्त्री, (कृषे र्नक् णत्वं ततः टाप् ।) द्रौपदी । (सा तु पञ्चपाण्डवमहिषी । कृष्णवर्णत्वादेव अस्याः नाम तथा जातम् । यथा, महाभारते १ । १६८ । ४४ । “कृष्णेत्येवाब्रुवन् कृष्णां कृष्णाऽभूत् सा हि वर्णतः । तथा तन्मिथुनं यज्ञे द्रुपदस्य महामखे” ॥) नीलीवृक्षः । पिप्पली । (अस्याः पर्य्याया यथा । “पिप्पली चपला शौण्डी वैदेही मागधी कणा । कृष्णोपकुल्या मगधी कोला स्यात्तिक्ततण्डुला” ॥ इति वैद्यकरत्नमालायाम् ॥) द्राक्षा । इति मेदिनी ॥ नीलपुनर्नवा । कृष्णजीरकः । गम्भारी । कटुका । सारिवाविशेषः । राजसर्षपः । इति राजनिर्घण्टः ॥ पर्पटी । इति भावप्रकाशः ॥ काकोली । सोमराजी । इति जटाधरः ॥ (द्वादशप्रकाराणां जलौकसां मध्ये सविषप्रकारीयजलौकोविशेषः । तस्य लक्षण यथा । “तास्वञ्जनचूर्णवर्णा पृथुशिराः कृष्णा” ॥ इति सुश्रुते सूत्रस्थाने १३ अध्याये ॥)"
+        }
+    ],
+    "APHI": [
+        {
+            "word": "कृष्णा",
+            "content": "कृष्णा स्त्री. -  कृष्ण - टाप् 'द्रौपदी का नाम, पाण्डवों की पत्नी'"
+        },
+        {
+            "word": "कृष्णा",
+            "content": "कृष्णा स्त्री. -  कृष्ण - टाप् दक्षिण भारत की एक नदी जो मुसलीपट्टम् में समुद्र में गिरती है"
+        },
+        {
+            "word": "कृष्णा",
+            "content": "कृष्णा स्त्री. - यमुना नदी"
+        }
+    ],
+    "SHKB": [
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ದ್ರೌಪದಿ \\/ಪಾಂಡವರ ಪತ್ನಿ",
+            "प्रयोगाः": "'कृष्णेत्येवाब्रुवन् कृष्णां कृष्णाभूत् सा हि वर्णतः । तथा तन्मिथुनं जज्ञे द्रुपदस्य महासखे ॥'",
+            "उल्लेखाः": "भा० आदि० १८१-५७",
+            "content": ""
+        },
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಹಿಪ್ಪಲಿ",
+            "content": ""
+        },
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ದ್ರಾಕ್ಷಿ",
+            "content": ""
+        },
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ನೀಲಿಗಿಡ",
+            "content": ""
+        },
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಕರಿಜೀರಿಗೆ",
+            "content": ""
+        },
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಶೀವನೆಯ ಮರ",
+            "content": ""
+        },
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಕಟುಕರೋಹಿಣಿ",
+            "content": ""
+        },
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಬಾಹುಜಿಗೆ ಗಿಡ",
+            "विस्तारः": "'कृष्णः काके पिके वर्णे बिष्णौ व्यासेऽर्जुने कलौ । कृष्णा तु नील्यां द्रौपद्यां पिप्पलीद्राक्षयोरपि'हेम० ।",
+            "content": ""
+        },
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಕೃಷ್ಣಾನದಿ",
+            "विस्तारः": "'व्यासार्जुनाग्निहरिकोकिलकाकशूद्रतामिस्रपक्षकरिनीलगुणेषु कृष्णः । द्रव्ये त्रिषु द्रुपदजातटिनीकणासु कृष्णाथ लोहमरिचे दुरितं च कृष्णम् 'नानार्थर० ।",
+            "content": ""
+        },
+        {
+            "word": "कृष्णा",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "कृष्ण ಪದದ ದ್ರೌಪದಿ ಮೊದಲಾದ ಸ್ತ್ರೀಲಿಂಗದ ಅರ್ಥ",
+            "content": ""
+        }
+    ],
+    "AMARA": [
+        {
+            "word": "कृष्णा",
+            "linga": "S",
+            "artha": "पिप्पली",
+            "synonyms": [
+                "कृष्णा",
+                "उपकुल्या",
+                "वैदेही",
+                "मागधी",
+                "चपला",
+                "कणा",
+                "उषणा",
+                "पिप्पली",
+                "शौण्डी",
+                "कोला"
+            ],
+            "num": "2.4.96",
+            "text": "कालमेषी कृष्णफली बाकुची पूतिफल्यपि । कृष्णोपकुल्या वैदेही मागधी चपला कणा ॥",
+            "content": ""
+        }
+    ],
+    "AM_APHI": [
+        {
+            "word": "कृष्णा",
+            "content": "<lexhead no=\"1496\">\n<dentry>कृष्णा</dentry>\n<prAwipaxikam>कृष्णा</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[कृष्ण - टाप्]</etymology>\n<kind_of>लता</kind_of>\n<jAwi>लता</jAwi>\n<sense no=\"1\">द्रौपदी का नाम, पाण्डवों की पत्नी<citation>कि* १।२६</citation></sense>\n<sense n=\"2\">दक्षिण भारत की एक नदी जो मुसलीपट्टम् में समुद्र में गिरती है</sense>\n</lexhead>\n\n"
+        }
+    ],
+    "AM_SHKB": [
+        {
+            "word": "कृष्णा",
+            "content": "<span lang=\"sa\">कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದ್ರೌಪದಿ /ಪಾಂಡವರ ಪತ್ನಿ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"कृष्णेत्येवाब्रुवन् कृष्णां कृष्णाभूत् सा हि वर्णतः । तथा तन्मिथुनं जज्ञे द्रुपदस्य महासखे ॥\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>भा० आदि० १८१-५७<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಹಿಪ್ಪಲಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದ್ರಾಕ್ಷಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನೀಲಿಗಿಡ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕರಿಜೀರಿಗೆ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಶೀವನೆಯ ಮರ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕಟುಕರೋಹಿಣಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬಾಹುಜಿಗೆ ಗಿಡ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"कृष्णः काके पिके वर्णे बिष्णौ व्यासेऽर्जुने कलौ । कृष्णा तु नील्यां द्रौपद्यां पिप्पलीद्राक्षयोरपि\" - हेम० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕೃಷ್ಣಾನದಿ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"व्यासार्जुनाग्निहरिकोकिलकाकशूद्रतामिस्रपक्षकरिनीलगुणेषु कृष्णः । द्रव्ये त्रिषु द्रुपदजातटिनीकणासु कृष्णाथ लोहमरिचे दुरितं च कृष्णम् \" - नानार्थर० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>कृष्णा<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>कृष्ण ಪದದ ದ್ರೌಪದಿ ಮೊದಲಾದ ಸ್ತ್ರೀಲಿಂಗದ ಅರ್ಥ<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
+        }
+    ]
 }
-
-function pushNode(next) {
-  {
-    next.context._currentValue = next.value;
-  }
-}
-
-function popToNearestCommonAncestor(prev, next) {
-  if (prev === next) ; else {
-    popNode(prev);
-    var parentPrev = prev.parent;
-    var parentNext = next.parent;
-
-    if (parentPrev === null) {
-      if (parentNext !== null) {
-        throw new Error('The stacks must reach the root at the same time. This is a bug in React.');
-      }
-    } else {
-      if (parentNext === null) {
-        throw new Error('The stacks must reach the root at the same time. This is a bug in React.');
-      }
-
-      popToNearestCommonAncestor(parentPrev, parentNext); // On the way back, we push the new ones that weren't common.
-
-      pushNode(next);
-    }
-  }
-}
-
-function popAllPrevious(prev) {
-  popNode(prev);
-  var parentPrev = prev.parent;
-
-  if (parentPrev !== null) {
-    popAllPrevious(parentPrev);
-  }
-}
-
-function pushAllNext(next) {
-  var parentNext = next.parent;
-
-  if (parentNext !== null) {
-    pushAllNext(parentNext);
-  }
-
-  pushNode(next);
-}
-
-function popPreviousToCommonLevel(prev, next) {
-  popNode(prev);
-  var parentPrev = prev.parent;
-
-  if (parentPrev === null) {
-    throw new Error('The depth must equal at least at zero before reaching the root. This is a bug in React.');
-  }
-
-  if (parentPrev.depth === next.depth) {
-    // We found the same level. Now we just need to find a shared ancestor.
-    popToNearestCommonAncestor(parentPrev, next);
-  } else {
-    // We must still be deeper.
-    popPreviousToCommonLevel(parentPrev, next);
-  }
-}
-
-function popNextToCommonLevel(prev, next) {
-  var parentNext = next.parent;
-
-  if (parentNext === null) {
-    throw new Error('The depth must equal at least at zero before reaching the root. This is a bug in React.');
-  }
-
-  if (prev.depth === parentNext.depth) {
-    // We found the same level. Now we just need to find a shared ancestor.
-    popToNearestCommonAncestor(prev, parentNext);
-  } else {
-    // We must still be deeper.
-    popNextToCommonLevel(prev, parentNext);
-  }
-
-  pushNode(next);
-} // Perform context switching to the new snapshot.
-// To make it cheap to read many contexts, while not suspending, we make the switch eagerly by
-// updating all the context's current values. That way reads, always just read the current value.
-// At the cost of updating contexts even if they're never read by this subtree.
-
-
-function switchContext(newSnapshot) {
-  // The basic algorithm we need to do is to pop back any contexts that are no longer on the stack.
-  // We also need to update any new contexts that are now on the stack with the deepest value.
-  // The easiest way to update new contexts is to just reapply them in reverse order from the
-  // perspective of the backpointers. To avoid allocating a lot when switching, we use the stack
-  // for that. Therefore this algorithm is recursive.
-  // 1) First we pop which ever snapshot tree was deepest. Popping old contexts as we go.
-  // 2) Then we find the nearest common ancestor from there. Popping old contexts as we go.
-  // 3) Then we reapply new contexts on the way back up the stack.
-  var prev = currentActiveSnapshot;
-  var next = newSnapshot;
-
-  if (prev !== next) {
-    if (prev === null) {
-      // $FlowFixMe[incompatible-call]: This has to be non-null since it's not equal to prev.
-      pushAllNext(next);
-    } else if (next === null) {
-      popAllPrevious(prev);
-    } else if (prev.depth === next.depth) {
-      popToNearestCommonAncestor(prev, next);
-    } else if (prev.depth > next.depth) {
-      popPreviousToCommonLevel(prev, next);
-    } else {
-      popNextToCommonLevel(prev, next);
-    }
-
-    currentActiveSnapshot = next;
-  }
-}
-function pushProvider(context, nextValue) {
-  var prevValue;
-
-  {
-    prevValue = context._currentValue;
-    context._currentValue = nextValue;
-
-    {
-      if (context._currentRenderer !== undefined && context._currentRenderer !== null && context._currentRenderer !== rendererSigil) {
-        error('Detected multiple renderers concurr
