@@ -1,382 +1,589 @@
-{
-    "word": "किरात",
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+self["webpackHotUpdate_N_E"]("pages/dhatu/[dhatu_id]",{
+
+/***/ "./src/pages/dhatu/[dhatu_id].js":
+/*!***************************************!*\
+  !*** ./src/pages/dhatu/[dhatu_id].js ***!
+  \***************************************/
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+eval(__webpack_require__.ts("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"./node_modules/react/jsx-dev-runtime.js\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _components_LottieAnimation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/components/LottieAnimation */ \"./src/components/LottieAnimation.js\");\n/* harmony import */ var _components_card_SimpleDescriptionCard__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/card/SimpleDescriptionCard */ \"./src/components/card/SimpleDescriptionCard.js\");\n/* harmony import */ var _components_card_TabDescriptionCard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/card/TabDescriptionCard */ \"./src/components/card/TabDescriptionCard.js\");\n/* harmony import */ var _components_card_TitleCard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/components/card/TitleCard */ \"./src/components/card/TitleCard.js\");\n/* harmony import */ var _utils_Function__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/utils/Function */ \"./src/utils/Function.js\");\n/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! next/link */ \"./node_modules/next/link.js\");\n/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_6__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_7__);\n/* harmony import */ var framer_motion__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! framer-motion */ \"./node_modules/framer-motion/dist/es/index.mjs\");\n/* harmony import */ var _barrel_optimize_names_IoIosArrowBack_IoIosArrowForward_react_icons_io__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! __barrel_optimize__?names=IoIosArrowBack,IoIosArrowForward!=!react-icons/io */ \"__barrel_optimize__?names=IoIosArrowBack,IoIosArrowForward!=!./node_modules/react-icons/io/index.mjs\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! next/router */ \"./node_modules/next/router.js\");\n/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_8__);\n/* harmony import */ var _barrel_optimize_names_IoCloseSharp_react_icons_io5__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! __barrel_optimize__?names=IoCloseSharp!=!react-icons/io5 */ \"__barrel_optimize__?names=IoCloseSharp!=!./node_modules/react-icons/io5/index.mjs\");\n/* harmony import */ var react_multi_select_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-multi-select-component */ \"./node_modules/react-multi-select-component/dist/esm/index.js\");\n/* harmony import */ var react_responsive__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! react-responsive */ \"./node_modules/react-responsive/dist/esm/index.js\");\n\nvar _s = $RefreshSig$();\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nconst DhatuId = (param)=>{\n    let { dhatu_id } = param;\n    _s();\n    const router = (0,next_router__WEBPACK_IMPORTED_MODULE_8__.useRouter)();\n    const [dhatupath, setDhatupath] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)([]);\n    const [filterDhatu, setFilterDhatu] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)([]);\n    const isMobile = (0,react_responsive__WEBPACK_IMPORTED_MODULE_10__.useMediaQuery)({\n        query: \"(max-width: 640px)\"\n    });\n    const [isListOpen, setIsListOpen] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)(isMobile ? false : true);\n    const [currentDhatu, setCurrentDhatu] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)();\n    const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)(false);\n    const [isAnimationComplete, setAnimationComplete] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)(false);\n    const listRef = (0,react__WEBPACK_IMPORTED_MODULE_7__.useRef)(null);\n    const [selected, setSelected] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)([]);\n    const [options, setOptions] = (0,react__WEBPACK_IMPORTED_MODULE_7__.useState)([\n        {\n            value: \"kashikaapravachanam\",\n            label: \"॥ अष्टाध्यायी प्रवचनम् ॥\",\n            key: 1\n        },\n        {\n            value: \"kashika\",\n            label: \"॥ काशिका ॥\",\n            key: 2\n        },\n        {\n            value: \"nyasah\",\n            label: \"॥ न्यासः ॥\",\n            key: 3\n        },\n        {\n            value: \"padapanjari\",\n            label: \"॥ पदपञ्जरी ॥\",\n            key: 4\n        },\n        {\n            value: \"shabdakaustubhah\",\n            label: \"॥ शब्दकौस्तुभः ॥\",\n            key: 5\n        },\n        {\n            value: \"vyakaransiddhantasudhanidhih\",\n            label: \"॥ व्याकरणसिद्धान्तसुधानिधिः ॥\",\n            key: 6\n        },\n        {\n            value: \"siddhantakaumudi\",\n            label: \"॥ सिद्धान्तकौमुदी ॥\",\n            key: 7\n        },\n        {\n            value: \"balamanorama\",\n            label: \"॥ बालमनोरमा ॥\",\n            key: 8\n        },\n        {\n            value: \"tatvabodhini\",\n            label: \"॥ तत्त्वबोधिनी ॥\",\n            key: 9\n        },\n        {\n            value: \"lakshmitika\",\n            label: \"॥ लक्ष्मीटीका ॥\",\n            key: 10\n        },\n        {\n            value: \"shabdendusekharah\",\n            label: \"॥ बृहच्छब्देन्दुशेखरः ॥\",\n            key: 11\n        },\n        {\n            value: \"yogeshwardasaswamy\",\n            label: \"॥ डॉ. योगेश्वरस्वामी - सरधारधाम ॥\",\n            key: 12\n        },\n        {\n            value: \"praudhamanorama_sanskrit\",\n            label: \"॥ प्रौढमनोरमा - संस्कृतव्याख्या ॥\",\n            key: 13\n        },\n        {\n            value: \"praudhamanorama_hindi\",\n            label: \"॥ प्रौढमनोरमा-शब्दरत्न - हिन्दी ॥\",\n            key: 14\n        },\n        {\n            value: \"laghushabdendushekhar_sanskrit\",\n            label: \"॥ लघुशब्देन्दुशेखरः - संस्कृतव्याख्या ॥\",\n            key: 15\n        },\n        {\n            value: \"laghushabdendushekhar_hindi\",\n            label: \"॥ लघुशब्देन्दुशेखरः - हिन्दी ॥\",\n            key: 16\n        }\n    ]);\n    console.log(\"currentDhatu--------\", currentDhatu);\n    const fetchDhatuList = async ()=>{\n        try {\n            const res = await fetch(\"/api/dhatu\");\n            const data = await res.json();\n            setDhatupath(data.data);\n            setFilterDhatu(data.data);\n        } catch (error) {\n            console.error(\"Error fetchDhatuList:\", error);\n        }\n    };\n    (0,react__WEBPACK_IMPORTED_MODULE_7__.useEffect)(()=>{\n        fetchDhatuList();\n    }, []);\n    const getCurrentDhatu = async ()=>{\n        try {\n            setLoading(true);\n            const res = await fetch(\"/api/dhatu?chapter=\".concat(dhatu_id.split(\".\")[0], \"&dhatu=\").concat(dhatu_id.split(\".\")[1]));\n            const data = await res.json();\n            setCurrentDhatu(data.data);\n            setLoading(false);\n        } catch (error) {\n            setLoading(false);\n            console.log(\"getCurrentDhatu catch\", error);\n        }\n    };\n    (0,react__WEBPACK_IMPORTED_MODULE_7__.useEffect)(()=>{\n        getCurrentDhatu();\n    }, [\n        dhatu_id\n    ]);\n    const handelDhatuSearch = async (val)=>{\n        if (val.length > 0) {\n            const filterData = dhatupath.filter((s)=>{\n                if ((s === null || s === void 0 ? void 0 : s.word.includes(val)) || (s === null || s === void 0 ? void 0 : s.chapter.includes(val)) || (0,_utils_Function__WEBPACK_IMPORTED_MODULE_5__.convertToHindi)(\"\".concat(s === null || s === void 0 ? void 0 : s.chapter, \".\").concat(s === null || s === void 0 ? void 0 : s.dhatu)) == (0,_utils_Function__WEBPACK_IMPORTED_MODULE_5__.convertToHindi)(val)) {\n                    return true;\n                }\n            });\n            setFilterDhatu(filterData);\n        } else {\n            setFilterDhatu(dhatupath);\n        }\n    };\n    const handlePage = (page)=>{\n        const currentObject = dhatupath === null || dhatupath === void 0 ? void 0 : dhatupath.find((obj)=>obj.chapter == dhatu_id.split(\".\")[0] && obj.dhatu == dhatu_id.split(\".\")[1]);\n        const currentIndexInArray = dhatupath === null || dhatupath === void 0 ? void 0 : dhatupath.indexOf(currentObject);\n        if (page == \"NEXT\") {\n            const nextObject = dhatupath && dhatupath[currentIndexInArray + 1];\n            return nextObject ? \"/\".concat(nextObject === null || nextObject === void 0 ? void 0 : nextObject.chapter, \".\").concat(nextObject === null || nextObject === void 0 ? void 0 : nextObject.dhatu) : dhatu_id;\n        }\n        if (page == \"PREVIOUS\") {\n            const nextObject = dhatupath && dhatupath[currentIndexInArray - 1];\n            return nextObject ? \"/\".concat(nextObject === null || nextObject === void 0 ? void 0 : nextObject.chapter, \".\").concat(nextObject === null || nextObject === void 0 ? void 0 : nextObject.dhatu) : dhatu_id;\n        }\n    };\n    const ItemComponent = (param)=>{\n        let { item, index } = param;\n        return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n            \"data-id\": \"\".concat(item === null || item === void 0 ? void 0 : item.book, \"-\").concat(item === null || item === void 0 ? void 0 : item.chapter, \"-\").concat(item === null || item === void 0 ? void 0 : item.sutra),\n            onClick: ()=>{\n                console.log(router);\n                router.replace(\"/dhatu/\".concat(item === null || item === void 0 ? void 0 : item.chapter, \".\").concat(item === null || item === void 0 ? void 0 : item.dhatu));\n                if (isMobile) setIsListOpen(false);\n            },\n            className: \"cursor-pointer  \".concat(\"\".concat(item.chapter, \".\").concat(item.dhatu) == dhatu_id ? \"bg-title-card\" : \"\", \" flex items-center gap-2 font-bold border-b border-border_c p-2 hover:bg-body\"),\n            children: [\n                /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(\"div\", {\n                    className: \"p-1 bg-title-card rounded text-subheading{
+    "word": "मातृ",
     "ABCH": [
         {
-            "word": "किरात",
-            "linga": "पुं",
-            "pagenum": "37",
+            "word": "मातृ",
+            "linga": "स्त्री",
+            "pagenum": "17",
+            "kanda": "देवकाण्डः",
+            "varga": "",
+            "eid": "1097",
+            "group": "310",
+            "synonyms": [
+                "अम्बा"
+            ],
+            "content": "भर्तार्यपुत्रो माताम्बा भदन्ताः सौगतादयः ॥ ३३५ ॥"
+        },
+        {
+            "word": "मातृ",
+            "linga": "स्त्री",
+            "pagenum": "25",
             "kanda": "मर्त्यकाण्डः",
             "varga": "",
-            "eid": "2865",
-            "group": "1123",
-            "synonyms": [],
-            "content": "पुलिन्दा नाहला निष्ट्याः शबरा वरुटा भटाः ।\nमाला भिल्लाः किराताश्च सर्वेऽपि म्लेच्छजातयः ॥ ९३४ ॥"
+            "eid": "1726",
+            "group": "589",
+            "synonyms": [
+                "अम्बा",
+                "जननी",
+                "प्रसू",
+                "सवित्री",
+                "जनयित्री"
+            ],
+            "content": "पितामहस्तस्य पिता तत्पिता प्रपितामहः ।\nमातुर्मातामहाद्येवं माताम्बा जननी प्रसूः ॥ ५५७ ॥\nसवित्री जनयित्री च कृमिला तु बहुप्रसूः ।"
         }
     ],
     "AP90": [
         {
-            "word": "किरात",
-            "eid": "10925",
-            "pagenum": 404,
-            "content": "किरातः¦ [किरं पर्यंतभूमिं अतति <lbinfo n='gacCatI#ti'/> गच्छतीति किरातः] <b>1</b> <ab>N.</ab> of a degraded mountain tribe who live by hunting, a mountaineer;  <lbinfo n='vEyAkaraRakirAtAdapaSa#bdamfgAH'/> वैयाकरणकिरातादपशब्दमृगाः क्व यांतु संत्रस्ताः । यदि <lbinfo n='nawagaRakaci#kitsaka'/> नटगणकचिकित्सक वैतालिकवदनकंदरा न स्युः ॥ <lbinfo n='Su+bhāsh'/> <ls>Subhāṣ.</ls>; <ls>Pt. 1. 17</ls>; पर्यंताश्रयिभिर्निजस्य सदृशं नाम्नः किरातैः कृतं <ls>Ratn. 2. 3</ls>; <ls>Ku. 1. 6</ls>, <ls n='Ku. 1.'>15.</ls> <b>--2</b> A savage, <lbinfo n='barba+rian'/> barbarian. <b>--3</b> A dwarf. <b>--4</b> A groom, a horseman. <b>--5</b> <ab>N.</ab> of Śiva in the <lbinfo n='dis+guise'/> disguise of a Kirāta. --ताः (<ab>pl.</ab>) <ab>N.</ab> of a country. <b>--Comp.</b> --अर्जुनीयं <ab>N.</ab> of a poem by Bhāravi (in which the combat of Arjuna with Śiva in the form of a Kirāta or <lbinfo n='moun+taineer'/> mountaineer is poetically described).  <lbinfo n='--A#Sin'/> --आशिन् <i><ab>m.</ab></i> an epithet of Garuḍa."
+            "word": "मातृ",
+            "eid": "22941",
+            "pagenum": 857,
+            "content": "मातृ¦ <i><ab>f.</ab></i> [मान् पूजायां तृच् नलोपः  <lbinfo n='ls:Uṇ.+ 2. 94'/> <ls>Uṇ. 2. 94</ls>] <b>1</b> A mother; मातृवत्परदारेषु या पश्यति स पश्यति; सहस्रं तु पितॄन् मातः गौर वेणातिरिच्यते <ls>Subhāṣ.</ls> <b>--2</b> Mother as a term of respect or endearment; मातर्लक्ष्मि भजस्व कंचिदपरं <ls>Bh. 3. 64</ls>, <ls n='Bh. 3.'>87</ls>; अयि मातर्देवयजनसंभवे देवि सीते  <lbinfo n='ls:U.+4'/> <ls>U. 4</ls> <b>--3</b> A cow. <b>--4</b> An epithet of <lbinfo n='Lak+shmī'/> Lakshmī. <b>--5</b> An epithet of Durgā. <b>--6</b> Ether, sky. <b>--7</b> The earth. <b>--8</b> A divine mother; मातृभ्यो बलिमुपहर <ls>Mk. 1.</ls> <b>--9</b> An epithet of Revatī. <b>--10</b> <ab>N.</ab> of several plants आखुकर्णी, इंद्रवारुणी and जटामांसी &c. --<ab>pl.</ab> <b>1</b> An epithet of the divine mothers, said to attend on Śiva, but usually on Skanda. They are usually said to be 8; ब्र ह्मी <lbinfo n='mAheSva#rI'/> माहेश्वरी चंडी वाराही वैष्णवी तथा । कौमारी चैव <lbinfo n='cA#muMqAcarciMketyazwa'/> चामुंडाचर्चिंकेत्यष्ट मातरः ॥ or, according to some, only seven; ब्राह्मी माहेश्वरी चैव कौमारी वैष्णवी तथा । माहेंद्री चैव वाराही <lbinfo n='cAmuM#qA'/> चामुंडा-सप्त मातरः ॥ Some increase the umber to sixteen. <b>--2</b> <ab>N.</ab> of eight classes of female ancestors or Manes. <i>--<ab>m.</ab></i> <b>1</b> A measurer. <b>--2</b> <ab>Ved.</ab> A maker, builder, creator. <b>--3</b> A knower, one having true <lbinfo n='know+ledge'/> knowledge. <b>--4</b> Life, or soul (जीव) [<ab>cf.</ab> <ab>L.</ab> <i>Mater</i>.] <b>--Comp.</b>  <lbinfo n='--ke#SawaH'/> --केशटः a maternal uncle. --गणः the collection of the divine mothers. --गंधिनी an unnatural mother.  <lbinfo n='--go#min'/> --गोमिन् <i><ab>m.</ab></i> one who has committed incest with his mother.  <lbinfo n='--go#traM'/> --गोत्रं a mother's family. --ग्रामः the female sex, womankind. --घातः, <lbinfo n='GA#takaH'/> --घातकः, --घातिन् <i><ab>m.</ab></i> --घ्नः a matricide --घातुकः {1} a matricide. {2} an <lbinfo n='epi+thet'/> epithet of Indra. --चक्रं the group of divine mothers. --देव <i><ab>a.</ab></i> having a mother for one's god, adoring <lbinfo n='mo+ther'/> mother like a god. --नंदनः an epithet of Kārtikeya. --पक्ष <i><ab>a.</ab></i> belonging to the mother's side or line. (--क्षः) maternal kinsmen. --पितृ <i><ab>m.</ab></i> (dual) (forming मातापितरौ or मातरपितरौ) parents. --पुत्रौ (मातापुत्रौ) a mother and son. --पूजनं worship of the divine mothers --बंधुः, --बांधवः a maternal kinsman; <ls>R. 12. 12.</ls> (--<ab>pl.</ab>) a class of relatives on the mother's side; they are thus <lbinfo n='speci+fied'/> specified: --मातुः पितुः स्वसुः पुत्रा मातुर्मातुः <lbinfo n='sva#suH'/> स्वसुः सुताः । मातुर्मातुलपुत्राश्च विज्ञेया मातृबंधवः ॥ --भोगीण <i><ab>a.</ab></i> fit to be enjoyed or possessed by a mother. --मंडलं the collection of the divine mothers. --मातृ <i><ab>f.</ab></i> an epithet of Pārvatī. --मुखः, --शासितः a foolish fellow. simpleton. --यज्ञः a sacrifice offered to the divine mothers. --वत्सलः an epithet of Kārtikeya. --स्वसृ <i><ab>f.</ab></i> (मातृष्वसृ or मातुःस्वसृ) a mother's sister, a maternal aunt. --स्वसेयः (मातृष्वसेयः) a mother's sister's son. (--यी) the daughter of a maternal aunt so मातृष्वस्रीयः --या."
         }
     ],
     "BEN": [
         {
-            "word": "किरात",
-            "eid": "3417",
-            "pagenum": 187,
-            "content": "किरात¦ <i>kirāta,</i> <ab>m.</ab>, <ab>f.</ab> <i>tī,</i> The name of a people, <ls>MBh.</ls> 2, 584; <ls>Ragh.</ls> 16, 57."
+            "word": "मातृ",
+            "eid": "11161",
+            "pagenum": 697,
+            "content": "मातृ¦ <i>mā + tṛ,</i> <ab>f.</ab> <b>1.</b> A mother, <ls>Pañc.</ls> ii. <ab>d.</ab> 190. <b>2.</b> A divine mother, the personified energy of a deity, <ls>Pañc.</ls> pr. <ab>d.</ab> 1; <ls>MBh.</ls> 9, 2619 sqq. <b>3.</b> The wife of a Brāhmaṇa. <b>4.</b> The earth. <b>5.</b> A cow. <b>6.</b> Space, æther. <b> -- <ab>Comp.</ab></b> <i>Go-,</i> <ab>adj.</ab> having a cow as mother, <ls>Chr.</ls> 291, 3 = <ls>Rigv.</ls> i. 85, 3. <i>Jaganmātṛ,</i> <ab>i. e.</ab> <i>jagat-,</i> <ab>f.</ab> epithet of: 1. Durgā, <ls>Hariv.</ls> 10276; 2. Lakṣmī,  <ls>Mārk. P.</ls> 18, 32. <i>Nāga-,</i> <ab>f.</ab> the mother of the serpents, epithet of Surasā, <ls>Rām.</ls> 5, 6. 2. <i>Raṅga-,</i> <ab>f.</ab> 1. a bawd. 2. lac, the animal dye. <i>Vi-,</i> <ab>f.</ab> a stepmother. <i>Veda-,</i> <ab>f.</ab> source of the Veda, epithet of the Gāyatrī, a vedic prayer. <i>Śāṇḍilī-,</i> <ab>f.</ab> a matron descended from Śaṇḍila, <ls>Pañc.</ls> 122, 1. -- <ab>Cf.</ab> <ab>Lat.</ab> mater; <lang n='greek'>μήτηρ</lang>; <ab>A.S.</ab> móder."
         }
     ],
     "BOP": [
         {
-            "word": "किरात",
-            "eid": "2145",
-            "pagenum": 74,
-            "content": "किरात¦ <i>m.</i> Kirâtus, homo ferus, silvas vel montes habitans et venatu vivens."
+            "word": "मातृ",
+            "eid": "6178",
+            "pagenum": 262,
+            "content": "मातृ¦ <i>f.</i> (ut mihi videtur, a r. मा s. तृ, v. मा praef. निस्) mater. (Verum thema est मातर्, v. gr. 179. et cf. lat. <i>mâter</i>; dor. <lang n='greek'>μᾱτηϱ</lang>; germ. vet. <i>muoter</i>; slav. nom. <i>mati</i> = माता, them. <i>mater</i> = मातर्, gen. <i>mater-e</i>; lith. <i>motē4</i> uxor, genit. <i>moter-s</i>; hib. <i>mathair</i> mater.)"
         }
     ],
     "BUR": [
         {
-            "word": "किरात",
-            "eid": "4606",
-            "pagenum": 164,
-            "content": "किरात¦ <i>kirāta</i> <ab>m.</ab> <ab>np.</ab> d'une race d'hommes <lbinfo n='3'/> demi-sauvages, vivant dans les forêts et étrangers à la race âryenne. || Nain, pygmée; <lbinfo n='4'/> || petit corps, insecte <ab>(?)</ab> || Palefrenier; la caste des hommes attachés au soin des chevaux. || <ab>Esp.</ab> de gentiane, <ab>bot.</ab>  <P><i>kirātatikta</i> <ab>m.</ab> <i>(tij)</i> gentiana cherayta, <ab>bot.</ab>  <P><i>kirātāśin</i> <ab>m.</ab> <i>(aś)</i> le mangeur de pygmées, <i>garuḍa.</i>"
+            "word": "मातृ",
+            "eid": "13233",
+            "pagenum": 501,
+            "content": "मातृ¦ <i>mātṛ</i> <ab>m.</ab> <i>(mā;</i> <ab>sfx.</ab> <i>tṛ)</i> mesureur, <ab>Vd.</ab> -- <ab>F.</ab> mère; || <ab>t.</ab> de respect en parlant à une femme âgée. || Vache. || La terre; || l'espace, le vide. || Mère divine ou énergie féminine d'un dieu, en <ab>gén.</ab> [on en compte 7, 8 ou 16]. || <ab>Gr.</ab> <lang n='greek'>μητήρ</lang>; <ab>lat.</ab> mater; <ab>lith.</ab> motc; <ab>germ.</ab> mutter; <ab>angl.</ab> mother; <ab>etc.</ab>  <P><i>matṛkachida</i> <ab>m.</ab> <i>(chid)</i> <s1 slp1='paraSurAma'>Paraśurāma</s1>.  <P><i>mātṛkā</i> <ab>f.</ab> (<ab>sfx.</ab> <i>ka)</i> mère; || nourrice; || mère divine. || Voyelle; son simple; alphabet. <lbinfo n='7'/>  <P><i>mātṛkeśaṭa</i> <ab>m.</ab> oncle maternel.  <P><i>mātṛgrāma</i> <ab>m.</ab> le sexe féminin, les femmes <lbinfo n='3'/> [<ab>m.</ab> àm. la collection des mères] <ab>Bd.</ab>  <P><i>mātṛghātuka</i> <ab>m.</ab> <i>(han;</i> <ab>sfx.</ab> <i>uka)</i> <s1 slp1='indra'>Indra</s1>, destructeur <lbinfo n='8'/> de Diti.  <P><i>mātṛmukha</i> <ab>m.</ab> lourdaud, niais.  <P><i>mātṛbandhu</i> <ab>m.</ab> parent par la mère.  <P><i>mātṛcāsita</i> <ab>m.</ab> <i>(śās)</i> niais.  <P><i>mātṛṣvasṛ</i> <ab>f.</ab> <i>(svasṛ)</i> sœur de la mère, tante maternelle.  <P><i>mātṛṣvaseya</i> <ab>m.</ab> [<ab>f.</ab> <i>ī</i>] cousin, cousine [par la sœur de la mère].  <P><i>mātṛṣvastrīya</i> <ab>m.</ab> [<ab>f.</ab> <i>ā</i>] <ab>mms.</ab>  <P><i>mātṛsiṃhī</i> <ab>f.</ab> <i>(siṃha)</i> justicia, <ab>bot.</ab>"
         }
     ],
     "CAE": [
         {
-            "word": "किरात",
-            "eid": "7804",
-            "pagenum": 121,
-            "content": "कि/रात¦ <lex>m.</lex> ई <lex>f.</lex> <ab>N.</ab> of a barbarous mountain-tribe (appearing also in the service of kings)."
+            "word": "मातृ",
+            "eid": "24537",
+            "pagenum": 406,
+            "content": "1 मातृ/¦ <lex>f.</lex> mother (applied also to the earth, the cow, the sticks of attrition, in respectful address to near relatives or elderly women <ab>i.g.</ab>); <ab>E.</ab> of Lakṣmī & Durgā; <ab>du.</ab> father and mother, heaven and earth; <ab>du.</ab> & <ab>pl.</ab> the sticks of attrition; <ab>pl.</ab> the (7, 8, 9, or 16) divine mothers, or the (8) female Manes."
+        },
+        {
+            "word": "मातृ",
+            "eid": "24538",
+            "pagenum": 406,
+            "content": "2 मा/तृ¦ <lex>m.</lex> measurer (<ab>acc.</ab>), knower."
         }
     ],
-    "CCS": [
+    "GRA": [
         {
-            "word": "किरात",
-            "eid": "4909",
-            "pagenum": 84,
-            "content": "कि/रात¦ <i>m. N. eines verachteten Jägervolkes</i> <i>(das aber auch in der Bedienung eines</i> <i>Fürsten erscheint); f.</i> किराति <i>eine Frau</i> <i>der K.</i>"
+            "word": "मातृ",
+            "eid": "6775",
+            "pagenum": 1029,
+            "content": "<b>mātṛ́,</b>¦ <ab>f.</ab> [<ls>Cu. 〔472〕</ls>], die <i>Mutter</i> [von <hom>1.</hom> mā 8, also als die Bildnerin des Kindes im Mutterleibe], so auch 2〉 von der Kuh als der Mutter des Kalbes, meist jedoch im bildlichen Sinne; häufig 3〉 mit dem <ab>Gen.</ab> des Kindes oder Kalbes; oder 4〉 mit den Correlaten: sūnú [Page1030] oder 5〉 putrá oder 6〉 gárbha oder śíśu {805,2}; {901,4}; {830,3} oder 7〉 vatsá, oder 8〉 mit dem Gegensatze pitṛ́. Im bildlichen Sinne wird 9〉 die Heilung (íṣkṛti) als Mutter der Kräuter (óṣadhīnām) oder 10〉 uṣás als Mutter der Kühe (gávām) <ab>d. h.</ab> der rothen Morgenlichter bezeichnet; 11〉 als die rastlosen Mütter der ewigen Ordnung (yahvī́ ṛtásya mātárā) erscheinen Nacht und Morgenröthe, Himmel und Erde und īm <ab>pl.</ab> die Kühe (Milch) die dem Soma zuströmen; 12〉 in dem letzteren Sinne auch ohne den Zusatz ṛtásya; 13〉 <ab>du.</ab>, mātárā die <i>Aeltern, Vater und Mutter</i> (<ab>vgl.</ab> pitárā) auch mit <ab>Gen.</ab>; 14〉 <i>Mütter,</i> als die alles nährenden, pflegenden, liebend umfassenden werden verschiedene Göttinnen, oder als solche gedachte Wesen <ab>z. B.</ab> die Wasser aufgefasst, auch in diesem Sinne bisweilen ({442,5}) mit dem <ab>Gen.</ab>; namentlich 15〉 die <i>Mutter</i> Erde pṛthivī́ mātā́, einmal auch bhū́mis mātā́ ({844,10}); 16〉 die mahī́ mātā́ die grosse, reiche <i>Mutter,</i> welche sich mit dem Strome des befruchtenden Regens auf die Erde niederlässt und mit ihr eins wird, und welche auch unter dem Bilde einer Kuh (<ab>vgl.</ab> mahī́ gaús), oder eines Stromes ({395,15}) dargestellt und als Mutter der Maruts ({507,3}) aufgefasst oder auch mit der áditi gleichgesetzt wird ({72,9}; {645,3}); so auch im Dual Himmel und Erde; 17〉 auch unter der Mutter des Indra scheint dieselbe Göttin verstanden. 18〉 Häufig erscheint die Mutter Erde (pṛthivī́ mātā́) neben dem Vater Himmel (dyaús pitā́); oder 19〉 <ab>du.</ab>, beide als <i>Aeltern</i> aller Wesen; 20〉 namentlich scheinen sie auch als Aeltern des Indra gefasst, und damit steht nicht im Widerspruche, dass Indra auch als Schöpfer des Himmels und der Erde bezeichnet wird, indem ja oft [<ab>z. B.</ab> {880,3}] von den Göttern gesagt wird, dass sie sich ihre Aeltern selbst geschaffen haben; 21〉 als Mutter des Agni erscheint zunächst das Holz, aus welchem durch Reiben mit dem härteren Holzstücke (dem Vater) das Feuer entzündet wird, daher beide Holzstücke als seine Aeltern (mātárā) bezeichnet werden, häufig jedoch mit deutlicher Anspielung auf Erde und Himmel als die Aeltern des himmlischen Agni. Einmal ({140,3}) erscheint in diesem Sinne mātárā als <ab>masc.</ab> — <ab>Vgl.</ab> trimātṛ́ <ab>u. s. w.</ab> <dvsn n='TS'>-ar [<ab>V.</ab>] 18〉 {492,5}; dyāvāpṛthivī́ … pítar mā́tar {185,11}. <dvsn n='TS'>-ā́ {369,4} (〰 ‿iva). — 2〉 {164,9}; {289,12} 〰 duhitā́ ca dhenū́. — 3〉 devā́nām {113,19} (uṣā́s); yuuthásya {395,19} (íḍā); {858,4}; mitrásya aryamṇás váruṇasya {667,9}; mitrásya váruṇasya {862,3}; yuvós {958,6}; marútām {703,1}; rudrā́ṇām {710,15}; yamásya {843,1}; putrásya {860,10}. — 4〉 {229,5}; {396,2}. — 5〉 {72,9}; {516,4}; {844,11}. — 6〉 {280,5}; {830,3}; {853,14}. _{853,16}. — 7〉 {38,8}; {289,4}; {314,10}. — 8〉 {89,10} áditis 〰 sá pitā́ sá putrás; {164,8}; {571,5}; {617,3}; {621,6}; {707,11} tuám hí nas pitā́ vaso [Page1031] tuám 〰 babhū́vitha; {860,4}; {886,7}. — 9〉 {923,9}. — 10〉 {348,2}. _{348,3}; {399,2}; {593,2}. — 14〉 {399,6} (uṣā́s) wo mātā́n geschrieben, <ab>u.</ab> wahrscheinlich mātā́r (vor ṛnutá) zu sprechen ist; {442,5} pitā́ 〰 mā́nuṣānām (<ab>v.</ab> Agni); {889,3} (dyaús áditis); {890,10} (bṛhaddivā́); {940,4} (pṛthivī́ ?). — 15〉 {164,33}; {396,16}. — 16〉 {395,15}; {401,1}; {507,3} (pṛ́śnis); {645,3} (áditis). — 17〉 {282,2}; {314,5}. _{314,11}; {614,3}; {899,1}. — 18〉 {160,2}; {185,10}; {191,6}; {397,2}; {511,6}. — 21〉 {356,1}. _{356,2}; {887,20}. <dvsn n='TS'>-ā́ zu sprechen māatā́ 18〉 {89,4}. — 21〉 {361,8} suṣū́s asūta 〰. <dvsn n='TS'>-áram 1〉 pṛ́śnim vocanta 〰 {406,16}; krīḍáyas ná 〰 tudántas {920,14}. — 2〉 dhenúm ná 〰 {1002,1}. — 3〉 gós {121,2}; mṛgā́ṇām {972,6} (araṇyāním). — 5〉 {559,3}. — 7〉 {110,8}; {111,1}. — 8〉 {24,1}. _{24,2}; {114,7}; {163,13}. — 14〉 {940,4} (pṛthivī́m ?). — 15〉 {513,2}; {712,2}; {844,10}; {888,3}. — 17〉 {282,3}; {314,1}. _{314,3}. _{314,12}; {665,4}; {686,1}. — 18〉 ohne Zusatz von pṛthivī́m und dyā́m {914,15}; {1015,1}. — 20〉 {880,3} 〰 ca pitáram ca sākám ájanayathās tanúas suā́yās. <dvsn n='TS'>-ré 8〉 {678,15}. <dvsn n='TS'>-úr [<ab>Ab.</ab>] 1〉 {37,9} (níretave); {401,5}(?); {461,8}(?). — 14〉 uṣásas {298,15}. — 18〉 {785,5}. — 21〉 {520,2} (ájaniṣṭa). <dvsn n='TS'>-úr [<ab>G.</ab>] yónā {164,32}; svásā {196,6}; gárbhe {692,8}; upásthe {801,1}; ū́dhas {858,8}; didhiṣúm {496,5}. — 2〉 paramā́ṇi (nā́ma) {297,16} (dhenós wol Erde); padé paramé {301,10} (gós wol uṣásas); ū́dhas {846,2}. — 3〉 asyá (índrasya) {61,7} (sávaneṣu). — 4〉 te (uṣásas) syā́ma 〰 ná sūnávas {597,4}. — 14〉 padé paramé śukré {397,14} (uṣásas ?). — 15〉 〰 asyā́s upásthe {242,1}. — 18〉 mánas {159,2} (ohne divás, pṛthivyā́s). — 20〉 ádhi eti {313,12}. — 21〉 adhīvāsám {140,9}; upásthe {263,14}; {355,6}; {373,1}; gárbhe {457,35}. <dvsn n='TS'>-úr [<ab>G.</ab>] zu sprechen māatúr. — 21〉 gúhyam {905,3}. <dvsn n='TS'>-ári {432,9} dáśa mā́sān śaśayānás kumārás ádhi 〰. — 21〉 {263,11}. <dvsn n='TS'>-árā 2〉 gā́vā‿iva śubhré 〰 rihāṇé {267,1} (vípāṭ śutudrī́). — 7〉 vatṣám iva 〰 saṃrihāṇé {267,3}. — 11〉 náktoṣā́sā {142,7}; doṣā́m uṣā́sam {359,6}; ródasī {458,7}; {885,8}; samīcīné {814,7}. — 13〉 {155,3}; śíśum ná 〰 {518,5}; {708,6} (kṣonī́); kavīnā́m {473,2}. — 16〉 {159,3}; {235,7}; {861,3}; {890,14}. — 19〉 {241,1}; {318,4}; {721,3}; {730,5} (iva); {780,4}; {782,6}; {787,4}; {797,12}; {827,7}; {966,2}. — 20〉 {946,7}. — 21〉 {140,3} (ubhā́); {239,7}; {523,3} (viśvávāre); {905,4}. <dvsn n='TS'>-árā (zu sprechen māatarā) 13〉 rāspinásya āyós {122,4}. <dvsn n='TS'>-árau (-árāv vor a) 21〉 ná yás 〰 apiéti dhā́tave {941,1}. <dvsn n='TS'>-rós, zu sprechen -arós [<ab>G.</ab>] 19〉 putrás (agnís) <chg type='chg' n='184' src='gra'><old>{236,1}</old><new>{236,2}</new></chg>. <dvsn n='TS'>-rós [<ab>L.</ab>] 21〉 {519,9} (jániṣṭa). <dvsn n='TS'>-rós [<ab>L.</ab>] zu sprechen -arós 21〉 śéṣe váneṣu 〰 {669,15} (<ls>SV.</ls> mātṛ́ṣu); jāyase {365,3}. <dvsn n='TS'>-aras [<ab>V.</ab> <ab>p.</ab>] 14〉 óṣadhīs {923,4}. <dvsn n='TS'>-áras {835,2} uśatī́s iva 〰. — 2〉 {92,1} (uṣásas). — 4〉 7〉 sūnós vatsásya 〰 {731,4} (dhītáyas). [Page1032] — 5〉 {401,6}. — 6〉 {901,4}. — 7〉 {275,5}; {486,25}; {704,1}; {724,2}; {812,1}; {949,3} (vatsásya). — 11〉 {745,5} (gā́vas dhenávas). — 12〉 {798,36}; {812,7}; {814,4}. — 14〉 ā́pas {698,4}; {705,1}; {843,10}; {890,9}; {917,6}. — 21〉 {265,2}; {711,17} tám tvā‿ajananta 〰, kavím devā́sas aṅgiras. <dvsn n='TS'>-ī́s [<ab>A.</ab> <ab>p.</ab>] 7〉 {95,4}. — 14〉 apás {243,2}. — 21〉 {141,5}; {164,10} tisrás 〰 tṝ́n pitṝ́n bíbhrat ékas. <dvsn n='TS'>-ṝ́n 14〉 〰 síndhūn {861,2}. <dvsn n='TS'>-ṛ́bhis 2〉 {202,8}. — 6〉 {805,2}. — 7〉 {681,14}; {816,2}; {817,2}. — 12〉 {823,2}. <dvsn n='TS'>-ṛ́bhyas [<ab>Ab.</ab>] 21〉 {827,2} prá 〰 ádhi ‥ gās. <dvsn n='TS'>-ṛ́bhyas [<ab>D.</ab>] 21〉 {95,7}. <dvsn n='TS'>-ṛ́ṣu 14〉 madhyamā́su {782,4}; saptáśivāsu {141,2}. — 21〉 {257,3}; {303,6} (śáśvatīṣu)."
+        },
+        {
+            "word": "मातृ",
+            "eid": "11184",
+            "pagenum": 1745,
+            "content": "1031,13.b <ab>v. u.</ab>: {236,2} <ab>st.</ab> {236,1} <info vn='chg 184 gra'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "12463",
+            "pagenum": 1766,
+            "content": "<b>mātṛ́:</b>¦<info vn='add 419 gra'/> <dvsn n='TS'>-áram yásya {388,4}; <dvsn n='TS'>-úr ū́dhani {781,1}."
+        }
+    ],
+    "IEG": [
+        {
+            "word": "मातृ",
+            "eid": "3498",
+            "pagenum": 201,
+            "content": "<i>Mātṛ</i>¦ (EI 9), the Divine Mothers, often described as seven in number; cf. <i>mātṛ-maṇḍala,</i> various forms of the Mothergoddess installed around a Śiva temple."
         }
     ],
     "INM": [
         {
-            "word": "किरात",
-            "eid": "5764",
-            "pagenum": 408,
-            "content": "<b>Kirāta</b>,¦ pl. (<i>°āḥ</i>), a barbarous people (“hunters”). § 223 (Vāsiṣṭha): I, <b>175</b>, 6684 (among the peoples who sprang from the cow of Vasiṣṭha).—§ 273 (Rājasūyārambhap.): II, <b>14</b>, 584 (<i>Vaṅga-Puṇḍra-K°eṣu</i>).—§ 279 (Arjuna): II, <b>26</b>, 1002 (followed Bhagadatta).—§ 280 (Bhīmasena): II, <b>30</b>, 1085 (in the east, seven kings of the <i>K</i>. vanquished by Bhīmasena).—§ 285 (Nakula): II, <b>32</b>, 1199 (in the west, vanquished by Nakula).—§ 295 (Dyūtap.): II, <b>52</b>, 1865 (<i>carmavāsasaḥ</i>, brought tribute to Yudhiṣṭhira).—§ 342 (Indralokābhigamanap.): III, <b>51</b>, 1990 (present at the rājasūya of Yudhiṣṭhira).—§ 377 (Dhaumyatīrthak.): III, <b>90</b>, 8391 (<i>°Kinnarāvāsaṃ śailaṃ</i>, at Gaṅgādvāra).—§ 419 (Gandhamādanapr.): III, <b>140</b>, 10864 (<i>Subāhuviṣayaṃ…</i> <i>K°-Taṅganākīrṇaṃ</i>).—§ 555 (Sainyodyogap.): V, <b>19</b>, 584 (in the <i>akṣauhiṇī</i> of Bhagadatta).—§ 561 (Yānasandhip.): V, <b>64</b>, 2470, 2475.—§ 573 (Ambopākhyānap.): V, <b>195</b>ε, 7609 (in the army of Duryodhana).—§ 574 (Jambūkh.): VI, <b>9</b>μ, 358, 364, (ν), 376 (in the north-east).—§ 576 (Bhagavadgītāp.): VI, <b>20</b>, †753 (followed Kṛpa).—§ 578 (Bhīṣmavadhap.): VI, <b>50</b>π, 2080 (in the army of Yudhiṣṭhira).—§ 589 (Droṇābhiṣekap.): VII, <b>4</b>β, 121 (<i>Himavaddurganilayāḥ</i>, had been vanquished by Karṇa for Duryodhana).—§ 599 (Jayadrathavadhap.): VII, <b>112</b>, 4318, 4320, 4322 (<i>c</i>: the <i>K</i>. have elephants sprung from the race of <i>Añjana</i>, with impenetrable skins, well trained…adorned with armour of solid gold, and resembling <i>Airāvata</i> and coming from the northern hills, ridden by fierce robbers of strong limbs, the foremost of warriors, cased in steel coats of mail; among them are persons born of the cow, or of the ape, or of various other creatures, and also born of men. That division of the assembled <i>Mlecchas</i>, who are all sinful and come from the fastnesses of Himavat, seem at a distance to be of a smoky colour), 4339 (<i>viṣakalpaiḥ prahāribhiḥ</i>); <b>119</b>ββ, 4716 (Sātyaki has vanquished many Śakas, <i>K.</i>, etc.), (γγ), 4747 (thousands of <i>K.</i>, etc., have been slain by Sātyaki).— § 608 (Karṇap.): VIII, <b>73</b>, 3653 (have been vanquished by Arjuna).—§ 641 (Rājadh.): XII, <b>65</b>θ, 2429 (enumeration of barbarous peoples).—§ 664 (Mokṣadh.): XII, <b>207</b>θ, 7560 (among the barbarous peoples of the north).—§ 730<i>g</i> (Upamanyu): XIII, <b>14</b>η, 732 (<i>°-Śabarāṇāṃ</i>, Śiva assumes their form).—§ 739 (Ānuśāsanik.): XIII, <b>35</b>ε, 2159 (have been degraded to śūdras).—§ 785 (Anugītāp.): XIV, <b>73</b>, 2136 (vanquished by Arjuna, when he followed the sacrificial horse); <b>83</b>, 2469 (<i>Kośalān K°ān atha Taṅganān</i>)."
+            "word": "मातृ",
+            "eid": "7218",
+            "pagenum": 474,
+            "content": "<b>Mātṛ</b>¦ = Śiva (1000 names<sup>2</sup>)."
         },
         {
-            "word": "किरात",
-            "eid": "5765",
-            "pagenum": 408,
-            "content": "<b>Kirāta</b>,¦ sg. = Śiva in the shape of a <i>K.</i>, when he fought with Arjuna (v. Kairātaparvan): I, †160 (<i>Devadevaṃ K°rūpaṃ</i>), 433 (<i>°vapuṣā</i>, sc. <i>Mahādevena</i>); III, 1555 (<i>°veśa-</i> <i>saṃchannaḥ</i>, sc. Śiva), 1561, 1563, 1567, 1572, (1578), 1582, 1586, 1604 (<i>°rūpī</i>, sc. Śiva), 1605 (<i>°samarūpini</i>, sc. Śiva), 1606, 1607, 1609, 1616, 11956, 11977 (<i>°rūpaṃ</i>); IV, 1536 (<i>°rūpeṇa sthitaṃ Rudraṃ</i>); VIII, 1251 (<i>°rūpeṇa sthitaṃ</i> <i>Śarvaṃ</i>)."
+            "word": "मातृ",
+            "eid": "7219",
+            "pagenum": 474,
+            "content": "<b>*Mātṛ</b>,¦ pl. (<i>°araḥ</i>) (“mothers”): III, 14359 (<i>lokasya mātaraḥ</i>), 14364 (<i>°gaṇena</i>), 14368, 14369 (<i>°gaṇaiḥ</i>), 14395 (seven mothers of Śiśu enumerated), 14399 (<i>°gaṇa°</i>), 14467 (<i>°gaṇaḥ…lokasya mātaraḥ</i>), 14468(?), (14469), (14472), (14474), 14497 (<i>°gaṇāḥ</i>); VII, 9539 (<i>°ṝṇāṃ patiḥ</i>, i.e. Śiva); IX, 2461 (i.e. the Kṛttikās), 2478 (<i>sapta M°gaṇāḥ</i>), 2619 (<i>°gaṇān Kumārānucarān</i>), 2620 (enumeration), 2648, 2672; XII, 7551 (<i>Bhūta-M°gaṇādhyakṣaṃ Virūpākṣaṃ</i>); XIII, 874 (<i>vividhāḥ</i>), 5981 (<i>lokānāṃ mātaraś caiva gāvaḥ sṛṣṭāḥ</i> <i>Svayambhuvā</i>); XIV, 199 (<i>°bhaktaḥ</i>)."
+        }
+    ],
+    "LAN": [
+        {
+            "word": "मातृ",
+            "eid": "3227",
+            "pagenum": 215,
+            "content": "<b>mātṛ́</b>¦ [<ls n='wg,373'>373]</ls>, <i><ab>f.</ab></i> mother; applied also to the earth, the Dawn, the sticks of attrition (<ls n='lan,82,9'>82<sup>9</sup></ls>). [perhaps ‘the one who metes out’ food to the household, or else ‘the former’ of the child in the womb, <b>√1mā,</b> ‘measure <i>or</i> mete,’ ‘form,’ <ls n='wg,1182'>1182d</ls>: <ab>cf.</ab> <lang n='greek'>μήτηρ</lang>, Doric <lang n='greek'>μάτηρ</lang>, <ab>Lat.</ab> <i>māter,</i> <ab>AS.</ab> <i>mōder,</i> <ab>Eng.</ab> <i>mother;</i> also <lang n='greek'>μαῖα</lang>, ‘mother.’]"
         }
     ],
     "LRV": [
         {
-            "word": "किरात",
-            "eid": "09428",
-            "pagenum": 189,
-            "content": "kirAta¦ <i>(I) m.</i> 1. Name of a degraded mountain tribe who live by hunting, विंदंति मार्गं नखरंध्रमुक्तैर्मुक्ताफलैः केसरिनां किराताः <ls>K.S.</ls>i.6, 15; 2. savage; 3. a dwarf, पर्यंताश्रयिभिर्निजस्य सदृशं नात्रः किरातैः कृतम् <ls>Rat.</ls>ii.; 4. a groom, a horseman; 5. name of Śiva in the disguise of a <i>Kirāta</i>."
+            "word": "मातृ",
+            "eid": "29838",
+            "pagenum": 566,
+            "content": "mAtf¦ <i>(I) f.</i> 1. A mother, मातुर्दुहितरश्शेषम् <ls>Yaj.</ls>ii.111, 123, 139, 143, <ls>M.</ls>ii.50; 2. cow; 3. an epithet of Lakshmī; 4. an epithet of Durgā; 5. the earth; 6. a divine mother, मातृभ्यो बलिमुपहर <ls>Mrich.</ls>i.; (they are variously enumerated); 7. a respectful term used in addressings elderly women."
         },
         {
-            "word": "किरात",
-            "eid": "09429",
-            "pagenum": 189,
-            "content": "kirAta¦ <i>(II) m. pl.</i> The name of a country."
-        }
-    ],
-    "MCI": [
-        {
-            "word": "किरात",
-            "eid": "2204",
-            "pagenum": 660,
-            "content": "<b>Kirāta</b>¦ m. (pl.): Name of a mountain tribe of hunters. <b>A.</b> Location: (1) Listed by Saṃjaya among the various northern tribes of the Bhāratavarṣa; they probably occupied different regions since Saṃjaya has listed them thrice (<i>puṇḍrā bhārgāḥ kirātāś ca</i>) 6. 10. 49; (<i>kirātā barbarāḥ</i>) 6. 10. 55; (<i>uttarāś cāpare … kirātānāṃ ca jātayaḥ</i>) 6. 10. 63, 67; listed also by Bhīṣma as northerners (<i>uttarāpathajanmānaḥ kīrtayi-</i> <i>ṣyāmi tān api / … kirātā barbaraiḥ saha</i>) 12. 200. 40; (2) The large country of Subāhu on Himavant mountain was thronged by Kirātas and Taṅgaṇas (<i>subāhor</i> <i>viṣayaṃ mahat / … kirātataṅgaṇākīrṇam … /</i> <i>himavati</i>) 3. 141. 24-25; on the other side of the Himavant, near the mountain of sunrise, on the shore of Vāriṣeṇa ocean and around Lohitya (Brahmaputra) river (<i>ye</i> <i>parārdhe himavataḥ sūryodayagirau nṛpāḥ /</i> <i>vāriṣeṇasamudrānte lohityam abhitaś ca</i> <i>ye / … kirātāḥ</i>) 2. 48. 8; the inaccessible parts on the Himavant mountain was the place of residence of the Kirātas (<i>kirāta-</i> <i>kiṃnarāvāsaṃ śailaṃ śikhariṇāṃ varam</i>) 3. 88. 17; (<i>himavaddurganilayāḥ</i>) 7. 4. 6; (3) On the Indra mountain, near the Videha country (<i>vaidehasthas tu kaunteya</i> <i>indraparvatam antikāt / kirātānām adhi-</i> <i>patīn vyajayat … pāṇḍavaḥ</i>) 2. 27. 13. <b>B.</b> Origin: They were produced in ancient times by Vasiṣṭha's cow Nandinī from her foam when Viśvāmitra forcibly tried to take her away (<i>puṇḍrān kirātān … phenataḥ</i> <i>sā sasarja ha //</i>) 1. 165. 36; they are, however, reputed to have their origin from fire (<i>sarve caivāgniyonayaḥ</i>) 7. 87. 30. <b>C.</b> Characteristics: (1) Arrogant while fighting (<i>yuddhadurmada</i>) 7. 87. 30, 32: rough in battle (<i>raṇakarkaśa</i>) 7. 4. 6; of fierce prowess (<i>ugravikrama</i>) 8. 51. 19; hostile (<i>vikṛta</i>) 14. 72. 24; they have a collection of different kinds of weapons and they fight with them; when they strike, they act like poison (<i>nānāśastrasamāvāpair vividhā-</i> <i>yudhayodhibhiḥ / kirātaiś ca sameṣyāmi</i> <i>viṣakalpaiḥ prahāribhiḥ</i>) 7. 87. 49; they fight with swords and bows (<i>asidhanur-</i> <i>dhara</i>) 14. 72. 24; their army shone like a Karṇikāra forest full of Kāñcana trees (<i>kāñcanair iva saṃvṛtān / … balam … </i> <i>karṇikāravanaṃ yathā</i>) 5. 19. 15; they were always fondled by Duryodhana and they sought his welfare (<i>lālitaiḥ satataṃ rājñā</i> <i>duryodhanahitaiṣibhiḥ</i>) 7. 87. 49; they were expert in training elephants and they fought from elephant-backs; their elephants used to be protected by armours (<i>nāgān … / … </i> <i>varmasaṃchannān kirātaiḥ samadhiṣṭhi-</i> <i>tān // … teṣām ete mahāmātrāḥ kirātā … </i> <i>hastiśikṣāvidaś caiva</i>) 7. 87. 27, 30; (2) they were eaters of fruits and roots and they wore skins (<i>phalamūlāśanā ye ca kirātāś</i> <i>carmavāsasaḥ</i>) 2. 48. 8; (3) They were included by Bhīṣma among those Kṣatriyas who were degraded due to their nonrespect for Brāhmaṇas (<i>kirātā … tās tāḥ</i> <i>kṣatriyajātayaḥ / vṛṣalatvam anuprāptā</i> <i>brāhmaṇānām adarśanāt</i>) 13. 35. 18; they were sinful and lived the life of dogs, crows, <i>balas</i> (a kind of crow ?) and vultures; they did not exist in the Kṛtayuga but exist since the Tretāyuga (<i>ete pāpakṛtas tāta</i> <i>caranti pṛthivīm imām / śvakākabala-</i> <i>gṛdhrāṇāṃ sadharmāṇo narādhipa // naite</i> <i>kṛtayuge tāta caranti pṛthivīm imām / tre-</i> <i>tāprabhṛti vartante te janā … </i>) 12. 200. 4142; some of them apparently lived on country side but they lived like <i>dasyus;</i> Māndhātṛ asked Indra what was the <i>dharma</i> of the Kirātas and how they should be governed by kings like him (<i>kathaṃ dhar-</i> <i>maṃ careyus te sarve viṣayavāsinaḥ)</i> <i>madvidhaiś ca kathaṃ sthāpyāḥ sarve te</i> <i>dasyujīvinaḥ</i>) 12. 65. 15; Indra then told Māndhātṛ the <i>dharma</i> of the Dasyus 12. 65. 17-22; Bhīṣma included the Kirātas among those northern people who did not believe in Dhātṛ (12. 200. 33) or Bhūtapati (12. 200. 38) as being the superintendent of all beings (<i>niradhyakṣāṃs tu kaunteya kīrta-</i> <i>yiṣyāmi tān api … kirātā barbaraiḥ saha</i>) 12. 200. 38, 40. <b>D.</b> Epic events: (1) Kṛṣṇa told Yudhiṣṭhira that the King of the Cedis was known as Pauṇḍraka Vāsudeva among the Kirātas and others (<i>vaṅgapuṇḍra-</i> <i>kirāteṣu … /pauṇḍrako vāsudeveti yo 'sau</i> <i>lokeṣu viśrutaḥ</i>) 2. 13. 19; (2) Arjuna, in his expedition before the Rājasūya, fought with Kirātas and Cīnas, who had joined King Bhagadatta of Prāgjyotiṣa (<i>sa kirātaiś ca cīnaiś ca vṛtaḥ</i>) 2. 23. 19; (3) Bhīma, in his expedition to the east before the Rājasūya, defeated seven chiefs of the Kirātas (<i>kirātānām adhipatīn vyaja-</i> <i>yat sapta pāṇḍavaḥ</i>) 2. 27. 13; (4) The kings of Kirātas, who brought as tribute for Yudhiṣṭhira's Rājasūya loads of sandalwood and aloe and heaps of <i>kālīyaka,</i> as also large quantities of hides, jewels, gold and perfumes, an <i>ayuta</i> of Kirāta Dāsīs, charming exotic animals and birds, and extremely brilliant gold collected from mountains, were halted at the gate (<i>candanā-</i> <i>gurukāṣṭhānāṃ bhārān kālīyakasya ca /</i> <i>carmaratnasuvarṇānāṃ gandhānāṃ caiva</i> <i>rāśayaḥ // kairātikānām ayutaṃ dāsīnāṃ</i> <i>ca … /āhṛtya ramaṇīyārthān dūrajān</i> <i>mṛgapakṣiṇaḥ // nicitaṃ parvatebhyaś ca</i> <i>hiraṇyaṃ bhūrivarcasam / baliṃ ca kṛtsnam</i> <i>ādāya dvāri tiṣṭhanti vāritāḥ //</i>) 2. 48. 911; the kings of Kirātas acted at the Rājasūya as servers (<i>yatra sarvān mahī-</i> <i>pālāñ śastratejobhayārditān / … kirātān … </i> <i>yajñe te pariveṣakān</i>) 3. 48. 18, 20, 22; (5) Arjuna's encounter with Mahādeva, who appeared in the form of a Kīrāta, referred to in the list of events of the Āraṇyakaparvan (<i>yadāśrauṣam arjuno</i> <i>devadevaṃ kirātarūpaṃ tryambakaṃ toṣya</i> <i>yuddhe</i>) 1. 1. 109; (<i>mahādevena yuddhaṃ ca</i> <i>kirātavapuṣā saha</i>) 1. 2. 107; (6) Bhagadatta's army, unassailable on account of the inclusion of Cīnas and Kirātas, went to the side of Duryodhana (<i>tasya cīnaiḥ</i> <i>kirātaiś ca … babhau balam anādhṛṣyam</i>) 5. 19. 15; (7) Kirātas are mentioned among those who, at the instance of Duryodhana (5. 196. 1) marched towards Kurukṣetra (<i>śakāḥ kirātā … niryayuḥ</i>) 5. 196. 7-8; (8) Before the start of the war, the north side of the army was guarded by Kirātas and others led by Kṛpa (<i>śāradvataś cottara-</i> <i>dhūr mahātmā … śakaiḥ kirātair … sār-</i> <i>dhaṃ camūm uttarato 'bhipāti</i>) 6. 20. 13; (9) On the second day of the war, Kirātas stood at the neck of the Krauñcāruṇavyūha (6. 46. 38) of the Pāṇḍavas (<i>kirātāś ca</i> <i>grīvāyām</i>) 6. 46. 46; (10) Among the past exploits of Karṇa, Bhīṣma mentions his bringing the Kirātas under the control of Duryodhana (<i>kirātāḥ duryodhanasya</i> <i>vaśagāḥ kṛtāḥ karṇa tvayā purā</i>) 7. 4. 6; (11) Sātyaki pointed out to Yudhiṣṭhira seven hundred elephants, mounted by Kirātas, in the Kaurava army; they were defeated by Arjuna and their king had presented them to him as servants; they once served Yudhiṣṭhira, but in the war they took the side of the Kauravas and were helping Duryodhana; Sātyaki assured Yudhiṣṭhira that he could break through them and reach Arjuna (<i>yāṃs tv etān aparān rājan</i> <i>nāgān saptaśatānī ca / prekṣase … kirātaiḥ</i> <i>samadhiṣṭhitān // kirātarājo yān prādād</i> <i>gṛhītaḥ savyasācinā / … preṣyān icchañ</i> <i>jīvitam ātmanaḥ //āsann ete purā rājaṃs</i> <i>tava karmakarā dṛḍham / tvām evādya</i> <i>yuyutsante paśya kālasya paryayam // … </i> <i>ete vinirjitāḥ sarve saṃgrāme savyasācinā / </i> <i>madartham adya saṃyattā duryodhana-</i> <i>vaśānugāḥ // etān bhittvā śarai rājan kirātān</i> <i> … anuyāsyāmi pāṇḍavam //</i>) 7. 87. 27-29, 31-32; Sātyaki was expecting to meet the Kirātas who desired the benefit of Duryodhana (<i>kirātaiś ca sameṣyāmi … duryo-</i> <i>dhanahitaiṣibhiḥ</i>) 7. 87. 49; Sātyaki killed thousands of them and made the ground impassable due to the mud of flesh and blood (<i>sahasrais tu … kirātānām … aga-</i> <i>myarūpāṃ pṛthivīṃ māṃsaśoṇitakarda-</i> <i>mām</i>) 7. 95. 38-39; (12) On the seventeenth day of the war, Kṛṣṇa told Arjuna that the Kirātas and others who had joined the Kauravas could not be defeated by any one except him (<i>kirātāś ca … /ete</i> <i>suyodhanasyārthe saṃrabdhāḥ kurubhiḥ</i> <i>saha / na śakyā yudhi nirjetuṃ tvadanyena</i> <i>paraṃtapa //</i>) 8. 51. 19-20; (13) Kirātas mentioned among those who were formerly vanquished in the great war and whom Arjuna encountered again when he accompanied the Aśvamedha horse (<i>kirātā … </i> <i>pūrvaṃ vinikṛtā raṇe / … samīyuḥ pāṇḍu-</i> <i>putreṇa</i>) 14. 72. 24-25; the Aśvamedha horse first reached the city of the Cedis; from there it went to the Kirāta country (<i>āsasāda purīm ramyāṃ cedīnām … tatrā-</i> <i>rcito yayau rājaṃs tadā sa turagottamaḥ /</i> <i> … kirātān</i>) 14. 84. 2, 4."
+            "word": "मातृ",
+            "eid": "29839",
+            "pagenum": 566,
+            "content": "mAtf¦ <i>(II) f. pl.</i> Name of the divine mothers attending on Śiva; they are eight (ब्राह्मी माहेश्वरी चंडी वाराही वैष्णवी तथा । कौमारी चैव चामुंडा चर्चिकेत्यष्ट मातरः); according to some, they are seven (ब्राह्मी माहेश्वरी चैव कौमारी वैष्णवी तथा । वाराही च तथेंद्राणी चामुंडा सप्त मातरः)."
         }
     ],
     "MD": [
         {
-            "word": "किरात",
-            "eid": "5916",
-            "pagenum": 68,
-            "content": "किरात¦ kírāta, <lex>m.</lex> <ab>pl.</ab> <ab>N.</ab> <i>of a barbarous mountain 🞄tribe of hunters</i>; <ab>sg.</ab> man <i>or</i> king of the 🞄Kirātas: <b>ī,</b> <lex>f.</lex> Kirāta woman; <b>-arjunīya,</b> <lex>n.</lex> 🞄Arjunaʼs combat with <i>Śiva disguised as a</i> Kirāta: 🞄<ab>T.</ab> <i>of a poem by Bhāravi</i> (<i>6th</i> <ab n='century'>cent.</ab> <ab>A. D.</ab>)."
+            "word": "मातृ",
+            "eid": "13972",
+            "pagenum": 224,
+            "content": "मातृ¦ <hom>1.</hom> mā-tṛ́, <lex>f.</lex> [<i>perhaps</i> former <i>of children</i>: 🞄√ mā], mother (<i>also of animals</i>: <ab>du.</ab> father 🞄and mother: <ab>RV.</ab>); (mother) earth (<ab>du.</ab> 🞄heaven and earth: <ab>RV.</ab>); cow; waters (<ab>pl.</ab>; 🞄<ab>RV.</ab>); fire-stick (<ab>du.</ab> <i>and</i> <ab>pl.</ab>; <ab>RV.</ab>); <ab>ep.</ab> <i>of</i> 🞄Lakṣmī; <ab>ep.</ab> <i>of</i> Durgā: <ab>pl.</ab> the divine 🞄mothers, <i>being the personified energies of 🞄various gods</i> (¤7¤, ¤8¤, ¤9¤, <i>and</i> ¤16¤ <i>are spoken of</i>); 🞄<i>the word mother is also applied to nearly related 🞄or respected female relatives as a term 🞄of endearment, its use in familiar speech being 🞄even extended to elderly women in general</i>."
+        },
+        {
+            "word": "मातृ",
+            "eid": "13973",
+            "pagenum": 224,
+            "content": "मातृ¦ <hom>2.</hom> mā́-tṛ, <lex>m.</lex> measurer (<ab>RV.</ab>)."
         }
     ],
     "MW": [
         {
-            "word": "किरात",
-            "eid": "50521",
-            "pagenum": "283,3",
-            "content": "कि/रात ¦ <lex>m. <ab>pl.</ab></lex> <ab>N.</ab> of a degraded mountain-tribe (inhabiting woods and mountains and living by hunting, having become <s1 slp1='SUdra'>Śūdra</s1>s by their neglect of all prescribed religious rites; also regarded as <s1 slp1='mlecCa'>Mleccha</s1>s; the Kirrhadae of Arrian), <ls>VS. xxx, 16</ls>; <ls>TāṇḍyaBr.</ls>; <ls>Mn. x, 44</ls>; <ls>MBh.</ls> &c.<info lex='m'/>"
+            "word": "मातृ",
+            "eid": "161703",
+            "pagenum": "804,2",
+            "content": "<hom>1.</hom> मा/तृ ¦ <lex>m.</lex> (for <hom>2.</hom> मातृ/ <lex type='hwinfo'>f.</lex> See <pcol>p. 807, col. 1</pcol>) a measurer,<ls>Nir. xi, 5</ls><info lex='m'/>"
         },
         {
-            "word": "किरात",
-            "eid": "50522",
-            "pagenum": "283,3",
-            "content": "कि/रात ¦ <lex>m.</lex> a man of the <s1 slp1='kirAta'>Kirāta</s1> tribe<info lex='m'/>"
+            "word": "मातृ",
+            "eid": "161704",
+            "pagenum": "804,2",
+            "content": "¦ one who measures across or traverses, <ls>RV. viii, 41, 4</ls> (<ab>cf.</ab> 10)<info lex='inh'/>"
         },
         {
-            "word": "किरात",
-            "eid": "50523",
-            "pagenum": "283,3",
-            "content": "¦ a prince of the <s1 slp1='kirAta'>Kirāta</s1>s, <ls>VarBṛS. xi, 60</ls><info lex='inh'/>"
+            "word": "मातृ",
+            "eid": "161705",
+            "pagenum": "804,2",
+            "content": "¦ a knower, one who has true knowledge, <ls>Cat.</ls><info lex='inh'/>"
         },
         {
-            "word": "किरात",
-            "eid": "50524",
-            "pagenum": "283,3",
-            "content": "¦ a dwarf, <ls>L.</ls> (<ab>cf.</ab> कुब्ज-क्°)<info lex='inh'/>"
+            "word": "मातृ",
+            "eid": "161706",
+            "pagenum": "804,2",
+            "content": "¦ <ab>N.</ab> of a <ab>partic.</ab> caste, <ls>ib.</ls> (<ab>w.r.</ab> for माडव?)<info lex='inh'/>"
         },
         {
-            "word": "किरात",
-            "eid": "50525",
-            "pagenum": "283,3",
-            "content": "¦ a groom, horseman, <ls>L.</ls><info lex='inh'/>"
+            "word": "मातृ",
+            "eid": "161707",
+            "pagenum": "804,2",
+            "content": "¦ of an author, <ls>Bṛh.</ls><info lex='inh'/>"
         },
         {
-            "word": "किरात",
-            "eid": "50526",
-            "pagenum": "283,3",
-            "content": "¦ the plant <bot>Agathotes Chirayta</bot> (also called किरात-तिक्त), <ls>L.</ls><info lex='inh'/>"
+            "word": "मातृ",
+            "eid": "162237",
+            "pagenum": "807,1",
+            "content": "<hom>2.</hom> मातृ/ ¦ <lex>f.</lex> (derivation from √ <hom>3.</hom> मा very doubtful; for <hom>1.</hom> मा/तृ See <pcol>p. 804, col. 2</pcol>) a mother, any mother (applicable to animals), <ls>RV.</ls> &c. &c. (sometimes <ab>ifc.</ab>, <ab>e.g.</ab> कुन्ती-म्°, having <ab n='Kuntī' slp1='kuntI'>K°</ab> for a mother)<info lex='f'/>"
         },
         {
-            "word": "किरात",
-            "eid": "50527",
-            "pagenum": "283,3",
-            "content": "¦ <ab>N.</ab> of <s1 slp1='Siva'>Śiva</s1> (as a mountaineer opposed to <s1 slp1='arjuna'>Arjuna</s1>, described in <s1 slp1='BAravi'>Bhāravi</s1>'s poem <s1 slp1='kirAtArjunIya'>Kirātārjunīya</s1>)<info lex='inh'/>"
+            "word": "मातृ",
+            "eid": "162238",
+            "pagenum": "807,1",
+            "content": "¦ <ab>du.</ab> father and mother, parents, <ls>RV. iii, 3, 33</ls>; <ls n='RV.'>vii, 2, 5</ls> (also मात/रा-पित/रा, <ls n='RV.'>iv, 6, 7</ls>, and पित/रा-मात/रा, <ls>Pāṇ. vi, 3, 33</ls>; <ab>cf.</ab> मातरपितरौ, <ab>col.</ab> 2)<info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162239",
+            "pagenum": "807,1",
+            "content": "¦ the earth (<ab>du.</ab> heaven and earth), <ls>RV.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162240",
+            "pagenum": "807,1",
+            "content": "¦ (with or <ab>scil.</ab> लोकस्य), a cow, <ls>MBh.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162241",
+            "pagenum": "807,1",
+            "content": "¦ (<ab>du.</ab> and <ab>pl.</ab>) the two pieces of wood used in kindling fire, <ls>RV.</ls> (<ab>cf.</ab> द्वि-म्°)<info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162242",
+            "pagenum": "807,1",
+            "content": "¦ (<ab>pl.</ab>) the waters, <ls>RV.</ls> (<ab>cf.</ab> सप्तम्° and <ls>Naigh. i, 13</ls>)<info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162243",
+            "pagenum": "807,1",
+            "content": "¦ (<ab>pl.</ab>) the divine mothers or personified energies of the principal deities (sometimes reckoned as 7 in number, <ab>viz.</ab> <s1 slp1='brAhmI'>Brāhmī</s1> or <s1 slp1='brahmARI'>Brahmāṇī</s1>, <s1 slp1='mAheSvarI'>Māheśvarī</s1>, <s1 slp1='kOmArI'>Kaumārī</s1>, <s1 slp1='vEzRavI'>Vaiṣṇavī</s1>, <s1 slp1='vArAhI'>Vārāhī</s1>, <s1 slp1='indrARI'>Indrāṇī</s1> or <s1 slp1='EndrI'>Aindrī</s1> or <s1 slp1='mAhendrI'>Māhendrī</s1>, <s1 slp1='cAmuRqA'>Cāmuṇḍā</s1>; sometimes 8, <ab>viz.</ab> <s1 slp1='brAhmi'>Brāhmi</s1>, <s1 slp1='mAheSvarI'>Māheśvarī</s1>, <s1 slp1='kOmArI'>Kaumārī</s1>, <s1 slp1='vEzRavI'>Vaiṣṇavī</s1>, <s1 slp1='vArAhI'>Vārāhī</s1>, <s1 slp1='rOdrI'>Raudrī</s1>, <s1 slp1='carma-muRqA'>Carma-muṇḍā</s1>, <s1 slp1='kAla-saMkarziRI'>Kāla-saṃkarṣiṇī</s1>; sometimes 9, <ab>viz.</ab> <s1 slp1='brahmARI'>Brahmāṇī</s1>, <s1 slp1='vEzRavI'>Vaiṣṇavī</s1>, <s1 slp1='rOdrI'>Raudrī</s1>, <s1 slp1='vArAhI'>Vārāhī</s1>, <s1 slp1='nArasiMhikA'>Nārasiṃhikā</s1>, <s1 slp1='kOmArI'>Kaumārī</s1>, <s1 slp1='mAhendrI'>Māhendrī</s1>, <s1 slp1='cAmuRqA'>Cāmuṇḍā</s1>, <s1 slp1='caRqikA'>Caṇḍikā</s1>; sometimes 16, <ab>viz.</ab> <s1 slp1='gOrI'>Gaurī</s1>, <s1 slp1='padmA'>Padmā</s1>, <s1 slp1='SacI'>Śacī</s1>, <s1 slp1='meDA'>Medhā</s1>, <s1 slp1='sAvitrI'>Sāvitrī</s1>, <s1 slp1='vijayA'>Vijayā</s1>, <s1 slp1='jayA'>Jayā</s1>, <s1 slp1='deva-senA'>Deva-senā</s1>, <s1 slp1='sva-DA'>Sva-dhā</s1>, <s1 slp1='svAhA'>Svāhā</s1>, <s1 slp1='SAnti'>Śānti</s1>, <s1 slp1='puzwi'>Puṣṭi</s1>, <s1 slp1='Dfti'>Dhṛti</s1>, <s1 slp1='tuzwi'>Tuṣṭi</s1>, <s1 slp1='Atma-devatA'>Ātma-devatā</s1> and <s1 slp1='kula-devatA'>Kula-devatā</s1>; they are closely connected with the worship of <s1 slp1='Siva'>Śiva</s1> and are described as attending on his son <s1 slp1='skanda'>Skanda</s1> or <s1 slp1='kArttikeya'>Kārttikeya</s1>, to whom at first only 7 <s1 slp1='mAtf'>Mātṛ</s1>s were assigned, but later an innumerable number; also the 13 wives of <s1 slp1='kaSyapa'>Kaśyapa</s1> are called, लोकानाम् मातरः), <ls>MBh.</ls>; <ls>R.</ls>; <ls>Pur.</ls>; <ls>Hcat.</ls> (<ls>RTL. 222</ls> &c.)<info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162244",
+            "pagenum": "807,1",
+            "content": "¦ (<ab>pl.</ab>) the 8 classes of female ancestors (<ab>viz.</ab> mothers, grandmothers, great-grandmothers, paternal and maternal aunts &c., <ls>Saṃskārak.</ls>; but the word ‘mother’ is also applied to other female relatives and in familiar speech to elderly women generally)<info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162245",
+            "pagenum": "807,1",
+            "content": "¦ <ab>N.</ab> of <s1 slp1='lakzmI'>Lakṣmī</s1>, <ls>Bhartṛ.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162246",
+            "pagenum": "807,1",
+            "content": "¦ of <s1 slp1='durgA'>Durgā</s1>, <ls>L.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162247",
+            "pagenum": "807,1",
+            "content": "¦ of <s1 slp1='dAkzAyaRI'>Dākṣāyaṇī</s1> in certain places, <ls>Cat.</ls><info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162248",
+            "pagenum": "807,1",
+            "content": "¦ <ab>accord.</ab> to <ls>L.</ls> also = a colocynth<info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162249",
+            "pagenum": "807,1",
+            "content": "¦ <bot>Salvinia Cucullata</bot>, <bot>Nardostachys Jatamansi</bot>, <bot>Sphaeranthus Indicus</bot><info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162250",
+            "pagenum": "807,1",
+            "content": "¦ air, space<info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162251",
+            "pagenum": "807,1",
+            "content": "¦ the lower mill-stone<info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162252",
+            "pagenum": "807,1",
+            "content": "¦ = विभूति<info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162253",
+            "pagenum": "807,1",
+            "content": "¦ = -रेवती <info lex='inh'/>"
+        },
+        {
+            "word": "मातृ",
+            "eid": "162253.1",
+            "pagenum": "807,1",
+            "content": "मातृ ¦ [<ab>cf.</ab> <ab>Gk.</ab>, <lang n='greek'>μάτηρ</lang>, <lang n='greek'>μήτηρ</lang>; <ab>Lat.</ab> <etym>mater</etym>; <ab>Lith.</ab> <etym>motė́</etym>; <ab>Slav.</ab> <etym>mati</etym>; <ab>Germ.</ab> <etym>muotar</etym>, <etym>Mutter</etym>; <ab>Eng.</ab> <etym>mother</etym>.]"
         }
     ],
     "MW72": [
         {
-            "word": "किरात",
-            "eid": "14785",
-            "pagenum": 230,
-            "content": "किरात¦ <i>kirāta, as,</i> m., N. of a degraded mountain-tribe, one of the barbarous tribes who inhabit woods and mountains and live by hunting (the Kirrhadæ of Arrian), having become Śūdras by their neglect of all prescribed religious rites (they are also regarded as Mlecchas); a savage; a pigmy, a dwarf; a groom, a horseman; N. of a plant, a kind of gentian [cf. <i>kirāta-tikta</i>]; N. of Śiva, as a mountaineer opposed to Arjuna, the account of which is the subject of the celebrated poem by Bhāravi called Kirātārjunīya; (<i>ī</i>), f. a woman of the Kirāta tribe; a woman who carries a fly-flap or anything to keep off flies; an epithet of the goddess Durgā; a bawd, a procuress; an epithet of the river Gaṅgā; the celestial Gaṅgā or river of Svarga. <i>—Kirāta-tikta, as,</i> m. the plant Agathotes Chirayta, a kind of gentian; also <i>kirāta-tiktaka</i>. <i>—Kirātārjunīya, am,</i> n. (fr. <i>°ta + arjuna</i>), title of an artificial poem by Bhāravi, describing the combat of Arjuna with the god Śiva in the form of a wild mountaineer or Kirāta, (this combat and its result is described in the Vanaparva or third book of the Mahā-bhārata 1538-1664.) <i>—Kirātāśin (°ta-āś°), ī,</i> m. an epithet of Garuḍa, the bird of Viṣṇu (‘swallowing the Kirātas’)."
+            "word": "मातृ",
+            "eid": "36815",
+            "pagenum": 764,
+            "content": "<i>Mātṛ, tā, trī, tṛ,</i>¦ a measurer (cf. <i>dhānya-m°;</i> in Nirukta XI. 5, the moon is called <i>mātā,</i> ‘the measurer’); a maker, former, creator, arranger, preparer (Ved.); a knower, one who infers correctly or has true knowledge <i>(= jñātṛ, pra-mātṛ); (tā),</i> m., N. of a particular mixed caste; N. of an author; (<i>tā</i>), f. (nom. du. <i>mātărau,</i> nom. pl. <i>mātăras,</i> acc. pl. <i>mātṝs,</i> see Gram. 129), the maker (of the child in the womb, cf. <i>jā-mātṛ</i>); a mother (sometimes at the end of adj. comps., e. g. <i>Kuntī-m°,</i> having Kuntī for a mother, i. e. son of Kuntī); ‘mother’ as a respectful term used in addressing females, near relatives, and elderly women generally; mother earth [cf. Ṛg-veda 1. 89, 4, V. 42, 16]; a cow (<i>= go,</i> a cow being sometimes called <i>lokasya</i> <i>mātā,</i> mother of the world); space, ether, the firmament [cf. <i>mātari-śvan</i>]; epithet of Lakṣmī (?); epithet of Durgā; N. of Dākṣāyaṇī in Siddhapura (also read Siddha-vana) and Kāyāvarohaṇa; (<i>tarā</i>), du., Ved. the two parents, father and mother; epithet of heaven and earth; epithet of the two pieces of wood used in kindling fire (regarded as the parents of Agni, who is called <i>dvi-mātṛ,</i> having two mothers; in this sense also <i>mātaras,</i> pl.); (<i>taras</i>), f. pl. the divine mothers or personified energies of the principal deities (sometimes reckoned as seven in number, viz. Brāhmī or Brahmāṇī, Māheśvarī, Kaumārī, Vaiṣṇavaī, Vārāhī, Indrāṇī or Aindrī or Māhendrī, Cāmuṇḍā; sometimes eight, viz. Brāhmī, Māheśvarī, Raudrī, Vārāhī, Vaiṣṇavī, Kaumārī, Carma-muṇḍā, Kāla-saṅkarṣiṇī; sometimes nine, viz. Brahmāṇī, Vaiṣṇavī, Raudrī, Vārāhī, Nārasiṃhikā, Kaumārī, Māhendrī, Cāmuṇḍā, Caṇḍikā; sometimes sixteen, viz. Gaurī, Padmā, Śacī, Medhā, Sāvitrī, Vijayā, Jayā, Deva-senā, Svadhā, Svāhā, Śānti, Puṣṭi, Dhṛti, Tuṣṭi, Ātma-devatā, Kula-devatā; these divine mothers being closely connected with the worship of the god Śiva and attending on his son Skanda or Kārttikeya, to whom at first only seven Mātṛs were assigned, but in the later mythology an innumerable number, who are sometimes represented as having displaced the original divine mothers); N. of eight classes of female ancestors or female Manes (mothers, grandmothers, greatgrandmothers, paternal and maternal aunts, &c.); according to Naigh. 1. 13, <i>mātaraḥ = nadī,</i> a river, [cf. Ṛg-veda III. 9, 2, where the waters are also called <i>mātaraḥ,</i> mothers; cf. also 1. 34, 8, where the seven rivers, Gaṅgā &c., are called <i>sapta-mātṛ;</i> according to native lexicographers <i>mātṛ</i> has also the following senses, <i>vi-bhūti, revatī, ākhukarṇī, in-</i> <i>dra-vāruṇī, mahā-śrāvaṇī, jaṭā-māṃsī:</i> cf. Gr. <lang n='greek'>μήτηρ,</lang> Dor. <lang n='greek'>μάτηρ;</lang> Lat. <nsi>mater;</nsi> Old Germ. <nsi>muotar;</nsi> Old Slav. <nsi>mati;</nsi> Lith. <nsi>mote;</nsi> Hib. <nsi>ma-</nsi> <nsi>thair.</nsi>] <i>—Mātara-pitarau,</i> m. du. mother and father, parents. <i>—Mātari-puruṣa, as,</i> m. a man (who acts or speaks) against his mother, a cowardly bully; [cf. <i>pitari-śūra.</i>] <i>—Mātari-śva</i> (fr. the next), <i>as,</i> m. a proper N. <i>—Mātari-śvan, ā,</i> m. (according to Sāy. on Ṛg-veda III. 29, 11, fr. <i>mātari = antarikṣe,</i> in the atmosphere, + <i>śvasiti</i> <i>= ceṣṭate,</i> breathes or moves; or according to others fr. <i>mātari</i> + rt. <i>śvi</i>), N. of a divine being described in Ṛg-veda 1. 60, 1, &c. as bringing down the hidden Agni to the Bhṛgus, and identified by Sāy. on Ṛg-veda 1. 93, 6, &c. with Vāyu, the Wind; N. of Agni himself, (according to Sāy. on Ṛg-veda 1. 96, 4, so called as <i>sarvasya jagato</i> <i>nirmātary antarikṣe śvasan vartamāṇaḥ</i>); air, wind, breeze (personified in Mahā-bh. Udyoga-p. 3599 as son of Garuḍa); N. of a Ṛṣi. <i>—Mātā-</i> <i>pitṛ, tarau,</i> m. du. mother and father, parents; [cf. Pāṇ. VI. 3, 32.] <i>—Mātā-pitṛ-vihīna, as, ā, am,</i> bereft of father and mother, without father or mother. <i>—Mātā-putra, au,</i> m. du. mother and son. <i>—Mātā-</i> <i>maha, as,</i> m. a maternal grandfather; (<i>ī</i>), f. a maternal grandmother; (<i>au</i>), m. du. a grandfather and grandmother on the mother's side; (<i>ās</i>), m. pl. a mother's father, grandfather, and ancestors; <i>(as, ī,</i> <i>am), = mātāmahīya</i> below. <i>—Mātāmahīya, as, ā,</i> <i>am,</i> related or belonging to a maternal grandfather. <i>—Mātuḥ-śvasṛ</i> or <i>mātuḥ-svasṛ, ā,</i> f. a mother's sister, maternal aunt; [cf. <i>mātṛ-ṣvasṛ.</i>] <i>—Mātṛ-</i> <i>ka-cchida, as,</i> m. ‘the cutter off of his mother's head,’ an epithet of Paraśu-Rāma. <i>—Mātṛ-kṛta,</i> <i>as, ā, am,</i> done or performed towards a mother; done by a mother. <i>—Mātṛ-keśaṭa, as,</i> m. a mother's brother, maternal uncle. <i>—Mātṛ-gaṇa, as,</i> m. the assemblage of divine mothers (as worshipped in an especial manner in the western parts of India). <i>—Mātṛ-gandhinī,</i> f. ‘having but the smell (i. e. the name) of mother,’ an unnatural mother. <i>—Mā-</i> <i>tṛ-garbha, as,</i> m. a mother's womb. <i>—Mātṛgar-</i> <i>bha-stha, as, ā, am,</i> being in the mother's womb. <i>—Mātṛ-gāmin, ī,</i> m. ‘going to a mother,’ one who has committed incest with his mother. <i>—Mātṛ-</i> <i>gupta, as,</i> m., N. of a king. <i>—Mātṛguptābhi-</i> <i>ṣeṇana (°ta-abh°), am,</i> n. an expedition against Mātṛ-gupta. <i>—Mātṛ-gotra, am,</i> n. a mother's family; (<i>as, ā, am</i>), belonging to a mother's family. <i>—Mātṛ-grāma, as,</i> m. the aggregate of mothers, i. e. the female sex, womankind; N. of a village. <i>—Mātṛ-ghāta</i> or <i>mātṛ-ghātaka, as,</i> or <i>mātṛ-</i> <i>ghātin, ī,</i> or <i>mātṛ-ghna, as,</i> m. one who kills his mother, a matricide. <i>—Mātṛ-ghātuka, as,</i> m. a matricide; an epithet of Indra. <i>—Mātṛ-cakra, am,</i> n. a kind of mystical circle, an astrological figure; the circle or assemblage of divine mothers. <i>—Mātṛ-</i> <i>cakra-pramathana, as,</i> m. ‘afflicter of the circle of divine mothers (?),’ an epithet of Viṣṇu. <i>—Mā-</i> <i>tṛ-ceṭa, as,</i> m. a proper N. <i>—Mātṛ-tama, as, ā,</i> <i>am,</i> Ved. very motherly or maternal (said of the waters; according to Sāy. <i>= mātṛ-vaj jagatāṃ</i> <i>hita-kārin</i>). <i>—Mātṛ-tas,</i> ind. on the mother's side, in right of the mother. <i>—Mātṛ-tā,</i> f. maternity, the state of a mother, the being a mother. <i>—Mātṛ-</i> <i>tīrtha, am,</i> n., N. of a Tīrtha. <i>—Mātṛ-datta, as,</i> m. ‘mother-given,’ N. of a man; (<i>ā</i>), f., N. of a woman. <i>—Mātṛ-dattīya,</i> N. of a work. <i>—Mātṛ-</i> <i>deva, as,</i> m. having a mother for one's god. <i>—Mā-</i> <i>tṛ-doṣa, as,</i> m. the defect or inferiority of a mother (who is of a lower caste, Manu X. 14). <i>—Mātṛ-nandana, as,</i> m. ‘mother's joy,’ an epithet of Kārttikeya. <i>—Mātṛ-nāman, a,</i> n., scil. <i>sūkta,</i> epithet of a class of sacred texts in the Atharva-veda; (<i>ā</i>), m., N. of the reputed author and deity of these texts; (<i>ā, mnī, a</i>), named after the mother; [cf. <i>pitṛ-nāman.</i>] <i>—Mātṛ-nivātam,</i> ind. to a mother's shelter or protection, to a mother's side (Pāṇ. VI. 2, 8). <i>—Mātṛ-pakṣa, as, ā, am,</i> relating to the mother, belonging to the maternal line. <i>—Mātṛ-pālita, as,</i> n., N. of a Dānava. <i>—Mātṛ-pitṛ-kṛtābhyāsa (°ta-abh°), as, ā, am,</i> trained or exercised by one's father and mother. <i>—Mātṛ-pūjana, am,</i> n. the worship of the divine mothers. <i>—Mātṛ-bandhu, us,</i> m. a relation on the mother's side; (<i>u</i>), n. blood relationship on the mother's side. <i>—Mātṛ-bandhū, ūs,</i> f. a mother only in name, an unnatural mother; [cf. <i>brahma-</i> <i>bandhu.</i>] <i>—Mātṛ-bāndhava, as,</i> m. a relation on the mother's side. <i>—Mātṛ-bhāva, as,</i> m. the state or condition of a mother, maternity. <i>—Mātṛ-bheda-</i> <i>tantra, am,</i> n., N. of a Tantra. <i>—Mātṛ-bhogīṇa,</i> <i>as, ā, am,</i> fit or proper to be possessed by a mother; [cf. Scholiast on Pāṇ. V. 1, 9.] <i>—Mātṛ-</i> <i>maṇḍala, am,</i> n. the assemblage or company of divine mothers. <i>—Mātṛmaṇḍala-vid, t,</i> m. a priest of the Mātṛs. <i>—Mātṛ-mat, ān, atī, at,</i> Ved. possessing a mother, accompanied by a mother, having a mother. <i>—Mātṛ-mātṛ, tā,</i> f. ‘the mother of mothers,’ an epithet of Pārvatī. <i>—Mātṛ-mukha,</i> <i>as,</i> m. ‘mother-faced,’ a simple or foolish man, simpleton. <i>—Mātṛ-mṛṣṭa, as, ā, am,</i> adorned by a mother. <i>—Mātṛ-modaka,</i> N. of Uvaṭa's commentary on the Vājasaneyi-saṃhitā. <i>—Mātṛ-yajña</i> or <i>mātṛ-yāga, as,</i> m. a sacrifice or oblation to the Mātṛs. <i>—Mātṛ-vat,</i> ind. as a mother, like a mother, as towards a mother. <i>—Mātṛ-vatsala, as,</i> m. ‘mother-loving,’ an epithet of Kārttikeya. <i>—Mātṛ-</i> <i>vadha, as,</i> m. the murder of a mother, matricide. <i>—Mātṛ-vartin, ī, inī, i,</i> behaving well to a mother, dutiful to one's mother; (<i>ī</i>), m. a proper N. <i>—Mātṛ-vāhin, ī, inī, i,</i> carrying one's mother; (<i>inī</i>), f. a kind of bird <i>(= valgulā)</i>. <i>—Mātṛ-vidū-</i> <i>ṣita, as, ā, am,</i> tainted by the mother, inheriting a taint through the mother. <i>—Mātṛ-śāsita, as,</i> m. a man who is led or guided by his mother, a simpleton. <i>—Mātṛ-ṣaṣṭha, as, ī, am,</i> having a mother as a sixth person, six with a mother or inclusively of a mother. <i>—Mātṛ-ṣvasṛ, ā,</i> f. (also incorrectly <i>mātṛ-svasṛ</i>), a mother's sister, maternal aunt. <i>—Mātṛṣvaseya, as,</i> m. the son of a maternal aunt, a mother's sister's son; (<i>ī</i>), f. a mother's sister's daughter, the daughter of a maternal aunt. <i>—Mātṛ-ṣvasrīya, as,</i> m. a mother's sister's son, the son of a maternal aunt; (<i>ā</i>), f. a mother's sister's daughter. <i>—Mātṛ-siṃhī,</i> f. the plant Justicia Gendarussa. <i>—Mātṛ-han, ā,</i> m. (said to be Ved.), murderer of his own mother, a matricide. <i>—Mātrī-</i> <i>kṛ,</i> cl. 8. P. <i>-karoti, -kartum,</i> to adopt as a mother, see Scholiast on Pāṇ. VII. 4, 27."
+        },
+        {
+            "word": "मातृ",
+            "eid": "36958",
+            "pagenum": 768,
+            "content": "मातृ¦ <i>mātṛ.</i> See p. 764, col. 3."
         }
     ],
     "PUI": [
         {
-            "word": "किरात",
-            "eid": "3039",
-            "pagenum": 1,
-            "content": "<i>Kirāta</i>¦ — the story of. <dvsn n='P'/>Br. IV. 7. 13; 8. 9."
-        },
-        {
-            "word": "किरात",
-            "eid": "3040",
-            "pagenum": 1,
-            "content": "<i>Kirātas</i>¦ — People of an eastern kingdom; a mountain kingdom; defeated by Bharata and purified of sin by the worship of Hari;<sup>1</sup> vanquished by Kalki;<sup>2</sup> a hill tribe.<sup>3</sup> Defeated by Sagara, took caves and hills as residences;<sup>4</sup> reside on the east of Bhāratavarṣa;<sup>5</sup> co-habitation with Kirāta women by a Brāhmaṇa; purification at the end of the twelfth day — rites cited.<sup>6</sup> <F>1) Bhā. IX. 20. 30; II. 4. 18; Br. II. 16. 12 and 51, 60. 68; M. 114. 56; 121. 49; Vā. 45. 82; 120. 136; 47-48; 58. 83.</F> <F>2) Br. II. 18. 50; III. 73. 109; IV. 29. 131 and 135; Vā. 98. 108.</F> <F>3) Br. II. 16. 68; III. 48-49; IV. 7. 19; M. 114. 11 and 35.</F> <F>4) Br. III. 48. 23-49.</F> <F>5) Vi. II. 3. 8.</F> <F>6) Br. IV. 8. 9.</F>"
-        }
-    ],
-    "PW": [
-        {
-            "word": "किरात",
-            "eid": "27932",
+            "word": "मातृ",
+            "eid": "10581",
             "pagenum": 2,
-            "content": "कि/रात¦ <dvsn n='1'>— 1〉 <lex>m.</lex> <dvsn n='2'>— a〉 <ab>Pl.</ab> <ab>N. pr.</ab> eines verachteten, von der Jagd lebenden Gebirgsvolks. In der Umgebung eines Fürsten <ls n='Chr.'>299,27</ls> (Etymologie: wilden Schweinen nachsetzend). <ab>Sg.</ab> <i>ein Individuum</i> (<ls>Spr. 7814</ls>) und ein Fürst dieses Volkes. <dvsn n='2'>— b〉 *<i>Zwerg</i>. <dvsn n='2'>— c〉 *<i>Pferdehirt</i>. <dvsn n='2'>— d〉 <i><bot>Agathotes Chirayta</bot></i>. <dvsn n='1'>— 2〉 <lex>f.</lex> किराती <dvsn n='2'>— a〉 <i>ein weibliches Individuum der</i> <is>Kirāta</is> (ein solches pflegt den Fliegenwedel eines Fürsten zu tragen). <dvsn n='2'>— b〉 *<i>Kupplerin</i>. <dvsn n='2'>— c〉 <ab>Bein.</ab> <dvsn n='3'>— α〉 der <is>Durgā</is>. <dvsn n='3'>— β〉 *der <is>Gaṅgā</is>, sowohl der irdischen als auch der himmlischen."
-        }
-    ],
-    "PWG": [
-        {
-            "word": "किरात",
-            "eid": "17266",
-            "pagenum": 2,
-            "content": "कि/रात¦ <dvsn n='1'> 1) <lex>m.</lex> <dvsn n='2'> a) N. eines verachteten Gebirgsvolks <ls>Z. f. d. K. d. M. 2, 26. fgg.</ls> <ls n='Z. f. d. K. d. M.'>35. fgg.</ls> <ls>LIA. I, 59. 444. 448, N. 1. 853.</ls> गुहा^भ्य\\ः किरा^तम् <ls>VS. 30, 16.</ls> <ls>PAÑCAV. BR.</ls> in <ls>Ind. St. 1, 32.</ls> ein Kriegergeschlecht, welches क्रियालोपात् und ब्राह्मणादर्शनेन zu <is>Śūdra</is> herabgesunken ist nach <ls>M. 10, 44.</ls> zu den <is>Mleccha</is> gezählt <ls>AK. 2, 10, 21.</ls> <ls>TRIK. 3, 3, 153.</ls> <ls>H. 934.</ls> <ls>an. 3, 257.</ls> <ls>MED. t. 104.</ls> वङ्गपुण्ड्रकिरातेषु <ls>MBH. 2, 584.</ls> किरातानामधिपतीनजयत्सप्त <ls n='MBH. 2,'>1089.</ls> फलमूलाशना ये च किराताश्चर्मवाससः । क्रूरशस्त्राः क्रूरकृतः <ls n='MBH. 2,'>1865.</ls> <ls n='MBH.'>6, 358.</ls> <ls n='MBH. 6,'>364.</ls> <ls n='MBH. 6,'>376.</ls> <ls>ARJ. 3, 22. 43.</ls> <ls>R. 4, 40, 28. fgg.</ls> <ls n='R. 4,'>44, 20.</ls> <ls>VARĀH. BṚH. S. 14, 18. 30.</ls> <ls>VP. 175. 190. 192.</ls> पूर्णापूर्णे माने परिचितजनवञ्चनं तथा नित्यम् । मिथ्याक्रयस्य कथनं प्रकृतिरियं स्यात्किरातानाम् ॥ <ls>PAÑCAT. I, 13.</ls> am Hofe des Königs <ls>VIKR. 76, 5.</ls> <ls>RATNĀV. 27, 9</ls> (vgl. <ls>SĀH. D. 36, 7. fgg.</ls>). Schrift der <is>Kirāta</is> <ls>LALIT. 122.</ls> <dvsn n='2'>— b) <i>Zwerg</i> <ls>H. an.</ls> <ls>MED.</ls> <ls>LIA. II, 657.</ls> Hierher wohl कुब्जकिरात <lex>n.</lex> sg. <i>der Bucklige und der Zwerg</i> <is>gaṇa</is> गवाश्वादि zu <ls>P. 2, 4, 11.</ls> Vgl. किलात . <dvsn n='2'>— c) <i>Pferdehirt</i> <ls>SĀRASV.</ls> im <ls>ŚKDR.</ls> <dvsn n='2'>— d) N. einer Pflanze (s. किराततिक्त) <ls>TRIK.</ls> <ls>H. an.</ls> <ls>MED.</ls> <dvsn n='1'>— 2) <lex>f.</lex> ई <dvsn n='2'> a) <i>ein weibliches Individuum aus dem Volke der</i> <is>Kirāta</is> <ls>Verz. d. B. H. No. 324</ls> (?). (नृपः) नौसंश्रयः पार्श्वगतां किरातीमुपात्तबालव्यजनां बभाषे <ls>RAGH. 16, 57.</ls> Daher किराती = चामरधारिणी <i>Trägerin des Fliegenwedels</i> <ls>MED.</ls> Citat beim <ls>Sch.</ls> zu <ls>ŚĀK. 20, 16.</ls> Von der Göttin <is>Durgā</is> heisst es: किरातीं चीरवसनां चौरसेनानमस्कृताम् <ls>HARIV. 10248.</ls> Daher किराती unter den Namen der <is>Durgā</is> <ls>H. ś. 54.</ls> <ls>MED.</ls> <dvsn n='2'>— b) <i>Kupplerin</i> <ls>H. an.</ls> <ls>MED.</ls> <dvsn n='2'>— c) Beiname der <is>Gaṅgā</is> (vgl. किराति) <ls>H. an.</ls> der himmlischen <is>Gaṅgā</is> <ls>ŚABDAM.</ls> im <ls>ŚKDR.</ls> <dvsn n='v'>— Vgl. कैरात, अम्बुकिरात, किंकिरात ."
-        },
-        {
-            "word": "किरात",
-            "eid": "70757",
-            "pagenum": 5,
-            "content": "किरात¦ <dvsn n='1'> 1) <dvsn n='2'> a) pl. <ls>DAŚAR. 2, 42.</ls> <ls>KUMĀRAS. 1, 5. 15.</ls> <ls>RAGH. 4, 76.</ls> <ls>VARĀH. BṚH. S. 5, 35. 80. 9, 35. 32, 19. 22.</ls> °नृपति <ls>Spr. 1772.</ls> <ls>Verz. d. Oxf. H. 339,a,6. 340,a,3.</ls> °भर्तर् <ls>VARĀH. BṚH. S. 9, 17.</ls> °पार्थिव <ls n='VARĀH. BṚH. S.'>11, 54.</ls> किरात sg. <i>der Fürst der</i> <is>Kirāta</is> <ls n='VARĀH. BṚH. S.'>11, 60.</ls> Vgl. <lang n='greek'>Καλατίαι</lang> <ls>HEROD. 3, 38.</ls> <dvsn n='2'>— b) <ls>HALĀY. 2, 456.</ls> <dvsn n='1'>— 2) <dvsn n='2'> a) <ls>Spr. 4349.</ls>"
+            "content": "<i>Mātṛs</i>¦ — a Deva gaṇa;<sup>1</sup> fought with Utkala in the Devāsura war, but were put to flight by Kṛṣṇa.<sup>2</sup> <F>1) Vā. 72. 50.</F> <F>2) Bhā. II. 10. 38; VI. 8. 25; VIII. 10. 33; X. 63. 11.</F>"
         }
     ],
     "SHS": [
         {
-            "word": "किरात",
-            "eid": "10438",
-            "pagenum": 182,
-            "content": "किरात¦ m. (-तः) 1. A savage, one of the barbarous tribes who inhabit woods and mountains and live by the chase, the Kirrhadœ of Arrian. 2. SIVA as a mountaineer opposed to ARJUNA, the account of which is the subject of the poem, the Kiratarjuniya. 3. A kind of gentian: see किराततिक्त. 4. A pigmy a dwarf. 5. A groom, a horseman. f. (-ती) 1. The river GANGES or its goddess. 2. A name of DURGA. 3. A bawd, a procuress. 4. The celestial GANGES or river of Swarga. E. कॄ to scatter, (speech, &c.) and अत who goes; also किरातक."
+            "word": "मातृ",
+            "eid": "31214",
+            "pagenum": 562,
+            "content": "मातृ¦ f. (-ता) 1. A mother. 2. A divine mother, the personified energy of a deity or his wife; in a figurative sense, a mother to mortals; eight divine Mātris are enumerated, BRĀHMĪ, the Mātri of BRAHMĀ; MAHEŚWARĪ, the Mātri of ŚIVA; VAISHNAVĪ, of VISHṆU; AINDRĪ, of INDRA; VĀRĀHĪ, of VISHṆU, as the Varāha Avatār; KAUMĀRĪ, of KĀRTIKEYA; KAUVERĪ or CHĀMUNDĀ of KUVERA, and CHARCHIKĀ of ŚIVA, in one of his minor incarnations; another list calls them MAHEŚWARĪ, BRĀHMĪ, NĀRĀYANĪ, AINDRĪ, VARĀHĪ, KAUMĀRĪ, NARASĪNHĪ, and APARĀJITĀ, differing from the preceding one in the two last names, the first one of which, is the energy of VISHṆU in the Narasinha Avatār, and the latter a form of DURGĀ; another enumeration makes the Mātris sixteen, and another but seven. 3. A cow. 4. A female of the Brāhmana tribe, or the wife of a Brāhman. 5. The earth. 6. A name of LAKSHMĪ. 7. A name of REVATĪ. 8. Space, ether. E. मान to respect, Unādi aff. तृच्, and the final of the radical rejected."
         }
     ],
     "STC": [
         {
-            "word": "किरात",
-            "eid": "8003",
-            "pagenum": 194,
-            "content": "<b>kirāta-</b>¦ <ab>m.</ab> <ab>pl.</ab> <ab>n.</ab> d'un peuple sauvage de l'Himâlaya (regardés comme śūdra ou mleccha) ; <ab>sg.</ab> <ab>ép.</ab> de Śiva ; <i>-ī-</i> <ab>f.</ab> femme d'une certaine caste méprisée."
+            "word": "मातृ",
+            "eid": "16658",
+            "pagenum": 562,
+            "content": "<b>mātṛ-</b>¦ <ab>f.</ab> mère (aussi usité comme mode d'interpellation à des femmes d'un certain âge ou rang) ; Lakṣmī ; <ab>pl.</ab> Mères divines, énergies  des dieux ou génies femelles ; <i>-tas</i> du côté maternel ; <i>-vat</i> comme une mère.  <P><i>°gaṇa-</i> <ab>m.</ab> assemblée des Mères.  <P><i>°gandhinī-</i> <ab>f.</ab> qui n'a de la mère que l'apparence.  <P><i>°gṛha-</i> <ab>nt.</ab> sanctuaire des Mères divines.  <P><i>°ghātaka-</i> <ab>m.</ab> matricide.  <P><i>°cakra-</i> <ab>nt.</ab> cercle des Mères.  <P><i>°datta-</i> <ab>m.</ab> <ab>n.</ab> d'un homme ; <i>-ā-</i> <ab>f.</ab> d'une femme.  <P><i>°deva-</i> <ab>a.</ab> pour qui sa mère est une divinité.  <P><i>°doṣa-</i> <ab>m.</ab> infériorité d'une mère.  <P><i>°pālita-</i> <ab>m.</ab> <ab>n.</ab> d'un Dānava.  <P><i>°bandhū-</i> <ab>a.</ab> <ab>f.</ab> qui n'est mère que de <ab>nom.</ab>  <P><i>°bhakti-</i> <ab>f.</ab> dévotion à une mère.  <P><i>°maṇḍala-</i> <ab>nt.</ab> cercle des Mères.  <P><i>°vaṃśya-</i> <ab>a.</ab> qui appartient à la famille de la mère.  <P><i>°vatsala-</i> <ab>a.</ab> qui aime sa mère.  <P><i>°vidūṣita-</i> <ab>a. v.</ab> souillé par sa mère.  <P><i>°ṣvasṛ-</i> <ab>f.</ab> sœur de la mère.  <P><i>°ṣvaseya-</i> <ab>m.</ab> fils de la sœur de la mère ; <i>-ī-</i> <ab>f.</ab>  <P><i>mātā-duhitṛ-</i> <ab>f.</ab> <ab>du.</ab> mère et fille.  <P><i>°pitṛ-</i> <ab>m.</ab> <ab>du.</ab> père et mère, parents.  <P><i>°putra-</i> <ab>m.</ab> <ab>du.</ab> mère et fils.  <P><i>°maha-</i> <ab>m.</ab> grand'père maternel ; <ab>f.</ab> <i>-ī- ;</i> <ab>a.</ab> (<ab>f.</ab> <i>-ī-</i>) relatif au grand'père maternel."
         }
     ],
     "VEI": [
         {
-            "word": "किरात",
-            "eid": "614",
-            "pagenum": 1,
-            "content": "1. <b>Kirāta</b>¦ is a name applied to a people living in the caves of the mountains, as appears clearly from the dedication of the Kirāta to the caves (<i>guhā</i>) in the Vājasaneyi Saṃhitā,<sup>1</sup> and from the reference in the Atharvaveda<sup>2</sup> to a Kirāta girl (<i>kairā-</i> <i>tikā</i>), who digs a remedy on the ridges of the mountains. Later<sup>3</sup> the people called Kirātas were located in Eastern Nepal, but the name seems to have been applied to any hill folk, no doubt aborigines, though the Mānava Dharma Śāstra<sup>4</sup> regards them as degraded Kṣatriyas. <F>1) xxx. 16; Taittirīya Brāhmaṇa, iii. 4, 12, 1.</F> <F>2) x. 4, 14.</F> <F>3) Lassen, <i>Indische Alterthumskunde,</i> 1^2, 530, 534.</F> <F>4) x. 44. <dvsn n='P'/><i>Cf.</i> Zimmer, <i>Altindisches Leben,</i> 32; Ludwig, Translation of the Rigveda, 3, 207; V. Smith, <i>Journal of the Royal</i> <i>Asiatic Socicty,</i> 1909, 258, n. 1; Lévi, <i>Le Népal,</i> 2, 77.</F>"
-        },
-        {
-            "word": "किरात",
-            "eid": "615",
-            "pagenum": 1,
-            "content": "2. <b>Kirāta.</b>¦ — In the story of <b>Asamāti</b> there appear, as the two priests who are opposed to the <b>Gaupāyanas,</b> Kirāta and <b>Akuli</b> according to the Pañcaviṃśa Brāhmaṇa,<sup>1</sup> or Kilāta and Ākuli according to the Śatapatha Brāhmaṇa.<sup>2</sup> No doubt the name is chosen, not as that of a historic person, but as a suitable designation of a hostile priest; for it is probably identical with the name of the mountaineers described in the preceding article. <F>1) xiii. 12, 5 (where the text reads <i>kirāta-kulyau</i>). Böhtlingk, Dictionary, <i>s.v.,</i> takes the word, with Sāyaṇa, as an adjective, <i>kirāta-kula,</i> ‘of the family of Kirāta.’ The reading in the Bṛhaddevatā (vii. 86) is <i>kirātākulī.</i></F> <F>2) i. 1, 4, 14 (where the text reads <i>kilātākulī</i>). <i>Cf.</i> also Sāṭyāyanaka Brāhmaṇa <i>apud</i> Sāyaṇa on Rv. x. 57, 1; 60, 1; Jaiminīya Brāhmaṇa, iii. 167; <i>Journal of the American Oriental Socicty,</i> 18, 41 <i>et seq.;</i> Hopkins, <i>Transactions of</i> <i>the Connecticut Academy of Arts and</i> <i>Sciences,</i> 15, 48, n. 1.</F>"
+            "word": "मातृ",
+            "eid": "2444",
+            "pagenum": 2,
+            "content": "<b>Mātṛ</b>¦ is the regular word for ‘mother’ from the Rigveda onwards,<sup>1</sup> being a formation probably developed under the influence of an onomatopœtic word <i>mā,</i><sup>2</sup> used like Ambā<sup>3</sup> and <b>Nanā.</b><sup>4</sup> <dvsn n='P'/>The relations of wife and husband, as well as of mother and children, are treated under <b>Pati.</b> It remains only to add that details are given in the Sūtras<sup>5</sup> of the respectful attention paid to a mother, and of the ceremonies in which she is concerned. The mother also appears interested in the fate of her children as in the story of the sale of <b>Śunaḥśepa</b> for adoption by <b>Viśvāmitra</b> in the Aitareya Brāhmaṇa.<sup>6</sup> <dvsn n='P'/>In the household the mother ranked after the father (see <b>Pitṛ</b>). Occasionally <i>mātarā</i> is used for ‘parents,’ as are also <i>pitarā</i> and <i>mātarā pitarā</i><sup>7</sup> and <i>mātā-pitaraḥ.</i><sup>8</sup> <F>1) i. 24, 1; vii. 101, 3, etc.; Vājasaneyi Saṃhitā, xiii. 21, etc.; Aitareya Brāhmaṇa, ii. 6, etc.</F> <F>2) Böhtlingk and Roth, St. Petersburg Dictionary, <i>s.v.,</i> note.</F> <F>3) <i>Cf.</i> <i>ambe ambike ambalike,</i> Vājasaneyi Saṃhitā, xxiii. 18, with variations in Taittirīya Saṃhitā, vii. 4, 19, 1; Maitrāyaṇī Saṃhitā, iii. 12, 20; Taittirīya Brāhmaṇa, iii. 9, 6, 3; also <i>ambā ambāyavī, ambayā,</i> in the Kauṣītaki Upaniṣad, i. 3.</F> <F>4) Rv. ix. 112, 3 (<b>Upalaprakṣiṇī</b>). See von Schroeder, <i>Mysterium und Mimus,</i> 412.</F> <F>5) <i>Cf.</i> Delbrück, <i>Die indogermanischen</i> <i>Verwandtschaftsnamen,</i> 460, 476, 477.</F> <F>6) vii. 18 <i>seq. Cf.</i> also Leist, <i>Altarisches</i> <i>Jus Gentium,</i> 104; Jolly, <i>Die Adoption in</i> <i>Indien,</i> 16, 17.</F> <F>7) Rv. iii. 33, 3; vii. 2, 5, etc. For <i>mātarā pitarā,</i> see Rv. iv. 6, 7; Vājasaneyi Saṃhitā, ix. 19.</F> <F>8) Taittirīya Saṃhitā, i. 3, 10, vi. 3, 11, 3.</F>"
         }
     ],
     "WIL": [
         {
-            "word": "किरात",
-            "eid": "10445",
-            "pagenum": 222,
-            "content": "किरात¦ m. (-तः) .²1 A savage, one of the barbarous tribes who inhabit woods and mountains and live by the chase, the <i>Kirrhadoe</i> of <i>Arrian.</i> .²2 ŚIVA as a mountaineer opposed to ARJUNA, the account of which is the subject of the poem, the <i>Kirātārjunīya.</i> .²3 A kind of gentian: see किराततिक्त. .²4 A pigmy, a dwarf. .²5 A groom, a horseman. f. (-ती) .²1 The river GAṄGES or its goddess. .²2 A name of DURGĀ. .²3 A bawd, a procuress. .²4 The celestial GAṄGES or river of <i>Svarga.</i> .E. कॄ to scatter, (speech, &c.) and अत who goes; also किरातक."
+            "word": "मातृ",
+            "eid": "30137",
+            "pagenum": 655,
+            "content": "मातृ¦ f. (-ता) .²1 A mother. .²2 A divine mother, the personified energy of a deity or his wife; in a figurative sense, a mother to mortals; eight divine <i>Mātṛs</i> are enumerated, BRĀHMĪ, the <i>Mātṛ</i> of BRAHMĀ; MAHEŚVARĪ, the <i>Mātṛ</i> of ŚIVA; VAIṢṆAVĪ, of VIṢṆU; AINDRĪ, of INDRA; VĀRĀHĪ, of VIṢṆU, as the <i>Varāha Avatāra;</i> KAUMĀRĪ, of KĀRTTIKEYA; KĀVERĪ or CĀMUṆḌĀ of KUVERA, and CARCIKĀ of ŚIVA, in one of his minor incarnations; another list calls them MAHEŚVARĪ, BRĀHMĪ, NĀRĀYAṆĪ, AINDRĪ, VĀRĀHĪ, KAUMĀRĪ, NARASIṂHĪ, and APARĀJITĀ, differing from the preceding one in the two last names, the first one of which, is the energy of VIṢṆU in the <i>Narasiṃha Avatāra,</i> and the latter a form of DURGĀ; another enumeration makes the <i>Mātṛs</i> sixteen, and another but seven. .²3 A cow. .²4 A female of the <i>Brahman</i> tribe, or the wife of a <i>Brahman.</i> .²5 The earth. .²6 A name of LAKṢMĪ. .²7 A name of REVATĪ. .²8 Space, ether. .E. मान to respect, Uṇādi aff. तृच्, and the final of the radical rejected."
         }
     ],
     "YAT": [
         {
-            "word": "किरात",
-            "eid": "9885",
-            "pagenum": 187,
-            "content": "किरात¦ (तः) 1. 3. <i>m.</i> A savage; <i>Shiva;</i> a kind of gentian; a pigmy; a groom. <i>f.</i> (ती) The Ganges, or its goddess; <i>Durgā;</i> a bawd or procuress."
-        }
-    ],
-    "SKD": [
-        {
-            "word": "किरात",
-            "eid": "7726",
-            "pagenum": "2-128-b",
-            "content": "किरातः¦, पुं, (किरं अवस्कारादेर्निक्षेपस्थानभूमिं अतति सततं अटतीति । अत + अण् । यद्वा किरं शूकरादिकं अतति हिनस्तीति । अच् ।) म्लेच्छभेदः ॥ (निषादः । यथा, किराते १२ । ५५ । “कच्छान्ते सुरसरितो निधाय सेनाभन्वीतः स कतिपयैः किरातवर्य्यैः” ॥) भूनिम्बः । (यथा, शार्ङ्गधरे मध्यखण्डे २ अः । १७ श्लोके । “पर्पटाब्दामृताविश्वकिरातैः साधितं जलम् । पञ्जभद्रमिदं ज्ञेयं वातपित्तज्वरापहम्” ॥) अल्पतनुः । इति मेदिनी ॥ घोटकरक्षकः । इति सारस्वतः ॥"
+            "word": "मातृ",
+            "eid": "29668",
+            "pagenum": 588,
+            "content": "मातृ¦ (ता) 1. <i>f.</i> A mother; a cow; the earth; <i>lakshmī; Revatī;</i> space."
         }
     ],
     "VCP": [
         {
-            "word": "किरात",
-            "eid": "13673",
-            "pagenum": "2051,a",
-            "content": "किरात¦ पुंस्त्री किरमवस्करादेर्निःक्षेपस्थानं पर्य्यन्तभूमिमतति अत + अण उप० स० । १ नीचजातिभेदे स च अवस्करनिःक्षेपस्थानपर्य्यन्तदेशाश्रयः व्याधादिः । जातिशब्दे विवृतिः । “तप्तकुण्डं समारभ्य रामक्षेत्रान्तकं शिवे! । किरातदेशो विज्ञेयो विन्द्यशैलेऽवतिष्ठते” इति शक्तिसंगमोक्ते २ देशभेदेपु० भूम्नि । वृहत् स० कूर्म्मविभागे ३ ऐशान्यमुक्ते ३ देशभेदे च “ऐशान्यां मेरुकनष्टराज्येण्रपक्रमे “वनराज्यकिरातचीनकौलिन्दाः इत्युक्तम् तद्देशानां राजा अण् । कैरात तद्देशनृपे वहुषु अणोलुक् । किराताः । ते च क्रमशो वेदानध्ययनादिना वृषलत्वमाप्ता यथाह मनुः “शनकैस्तु क्रियालोपादिमाः स्युः क्षत्रजातयः । वृषलत्वं गता लोके ब्राह्मणादर्शनेन च” । पौण्ड्रकाश्चौड्रद्रविडाः काम्बोजा यवनाः शकाः । पारदापह्नवाश्चीना किराताःदरदाः खसाः” इति । जातौ स्त्रियां ङीष् । ४ मत्स्यभेदे पुंस्त्री० “किरातस्तथा स्त्रियां चामरवाहिन्यां मत्स्यजात्यन्तरे द्वयोः” केशवोक्तेः ५ चामरवाहिन्यां स्त्री । “नौसंश्रयां पार्श्वगतां किरातीम्” रघुः “किरातीं--चामरग्राहिणीं दासीम्” मल्लि० । तपस्यदर्ज्जुनप्रसादार्थं किरातरूपेण गतत्वात् ६ शिवे तस्य पत्न्यां तथारूपायां ७ पुर्गायां स्त्री ङीष् “किराती ञ्चीरवसनां चौरसेनानमस्कृताम् । आज्यपां सोमपां सौम्यां सर्व्वपर्व्वतवासिनीम्” हरिवं० १७८ अ० दुर्गास्तवे । तत्र व्याधे “मुक्ताफलैः केशरिणां किराताः” “यद्वायुरन्विष्टमृगैःकिरातैः, कुमा० । ८ भूमिनिम्बे पुं० राजनि० ९ घोटकरक्षके सारस्वतः । १० अल्पतनौ त्रि० मेदि० । “पर्य्यन्ताश्रयिभिर्निजस्य सदृशं नाम्रः किरातैः कृतम्” रत्ना० । अत्र स्वनामसदृशत्वञ्च वानरभिया सङ्कोचितदेहत्वेनाल्पतनुत्वात् स्वनामसमानुपूर्व्वीकपदबोध्याल्पतनुत्वकरणात् पर्य्यन्ताश्रयित्वविशेषणाद्वा तथात्वम् तत्र भूनिम्बगुणाद्युक्तं भावप्र० यथा “किरातः सारको रूक्षःशीतलस्तिक्तको लघुः । सन्निपातज्वरश्वासकफपित्तास्रदाहनुत् । कासशोथतृषाकुष्ठ ज्वरव्रणकृमिप्रणुत् । स्वार्थे क । किरातक भूमिनिम्बे राजनि० । किरातं शिवमधिकृत्य कृतोग्रन्थः अण् कैरात भारतवनपर्व्वान्तर्गतेऽवान्तर पर्व्वभेदे तत्रत्यकथा भा० व०३९ अ० यथा “गतेषु तेषु सर्वेषु तपस्विषु महात्मसु । पिनाकपाणिर्भगवान् सर्वपापहरो हरः । कैरातं वेशमास्थाय काञ्चनद्रुमसन्निभम् । विभ्राजमानो विपुलो गिरिर्मेरुरिवापरः । श्रीमद्धनुरुपादाय शराश्चाशीविषोपमान् । निष्पपात महावेगो दहनो देहवानिव । देव्या सहोमया श्रीमान् समानव्रतवेशया । नानावेशधरैर्हृष्टैर्भूतैरनुगतस्तदा । किरातवेशसंछन्नः स्त्रीमिश्चापि सहस्रशः । अशोभत तदा राजन्! स देशोऽतीव भारत! । क्षणेन तद्वनं सर्वं निःशब्दमभवत्तदा । नादः प्रस्रवणानाञ्च पक्षिणाञ्चाप्युपारमत । स सन्निकर्षमागम्य पार्थस्याक्लिष्टकर्म्मणः । मूकं नाम दनोः पुत्रं ददर्शाद्भुतदर्शनम् । वाराहं रूपमास्याय तर्जयन्तमिवार्ज्जुनम् । हन्तुं परमदुष्टात्मा तमुवाचाथ फाल्गुनः । गाण्डीवं धनुरादाय शरांश्चाशीविषोपमान् । सज्यं धनुर्धरं कृत्वा ज्याघोषेण निनादयन् । यन्मां प्रार्थयसे हन्तुमनागसमिहागतम् । तस्मात्त्वां पूर्वमेवाहं नेताऽद्य यमसादनम् । दृष्ट्वा तं प्रहरिष्यन्तं फाल्गुनं दृढधन्विनम् । किरातरूपी सहसा वारयामास शङ्करः । मयैष प्रार्थितः पूर्वमिन्द्रकीलसमप्रमः । अनादृत्य च तद्वाक्यं प्रजहाराथ फाल्गुनः । किरातश्च समं तस्मिन्नेकलक्ष्ये महाद्युतिः । प्रमुमोचाशनिप्रख्यं शरमग्निशिखोपमम् । तौ मुक्तौ सायकौ ताभ्यां समं तत्र निपेततुः । मूकस्य गात्रे विस्तीर्ण्णे शैलसंहनने तदा । यथाऽशनेर्विनिर्घोषो वज्रस्येव च पर्व्वते । तथा तयोः सन्निपातः शरयोरभवत्तदा । स विद्धो बहुभिर्व्वाणै र्द्दीप्तास्यैः पन्नगैरिव । ममार राक्षसं रूपं भूयः कृत्वा विभीषणम् । स ददर्श ततो जिष्णुः पुरुषं काञ्चनप्रभम् । किरातवेशसंछन्नं स्त्रीसहायममित्रहा । तमब्रवीत् प्रीतमनाः कौन्तेयः प्रहसन्निव । को भवानटते शून्ये वने स्त्रीगणसंवृतः । न त्वमस्मिन् वने घोरे बिभेषि कनकप्रभ! । किमर्थञ्च त्वया विद्धो वराहो मत्परिग्रहः । मयाऽभिपन्नः पूर्वं हि राक्षसोऽयमिहागतः । कामात् परिभवाद्वाऽपि न मे जीवन् विमोक्ष्यसे । न ह्येष मृगयाधर्म्मो यात्वयाऽद्य कृतो मयि । तेन त्वां भ्रंशयिष्यामि जीवितात् पर्वताश्रयम् । इत्युक्तः पाण्डवेयेन किरातः प्रहसन्निव । उवाच श्लक्ष्णया वाचा पाण्डवं सव्यसाचिनम् । न मत्कृते त्वया वोर! भीः कार्य्या वनमन्तिकात् । इयं भूमिः सदाऽस्माकमुचिता वसतां वने । त्वया तु दुष्करः कस्मादिह वासः प्ररोचितः? । वयन्तु बहुसत्वेऽस्मिन्निवसामस्तपोधन! । भवांस्तु कृष्णवर्णाभः सुकुमारः सुखोचितः । कथं शून्यमिमं देशमेकाकी विचरिष्यति । अर्ज्जुन उवाच । गाण्डीवमाश्रयं कृत्वा नाराचांचाग्निसन्निभान् । निवसामि महारण्ये द्वितीय इव पावकः । एष चापि महाजन्तुर्मृगरूपं समाश्रितः । राक्षसो नहतो घोरी हन्तुं मामिह चागतः । किरात उवाच । मयैष धनुर्निर्मुक्तैस्ताडितः पूर्वमेव हि । वाणैरभिहतः शेते नीतश्च यमसादनम् । ममैष लक्ष्यभूतो हि मम पूर्वपरिग्रहः । ममैव च प्रहारेण जीविताद्व्यपरोपितः । दोषान् स्वान्नर्हसेऽन्यस्मै वक्तुं स्ववलदर्पितः । अवलिप्तोऽसि मन्दात्मन्! न मे जीवन् विमोक्ष्यसे । स्थिरो भवस्व मोक्ष्यामि सायकानशनीरिव । घटस्व परया शक्त्या मुञ्च त्वमपि सायकान् । तस्य तद्वचनं श्रुत्वा किरातस्यार्ज्जुनस्तदा । रोषमाहारयामास ताडयामास चेषुभिः । ततो हृष्टेन मनसा प्रतिजग्राह सायकान् । भूयोभूय इति प्राह मन्दमन्देत्युवाच ह । प्रहरस्व शरानेतान्नाराचान्मर्म्मभेदिनः । इत्युक्तो वाणवर्षं स मुमोच सहसाऽर्ज्जुनः । ततस्तौ तत्र संरब्धौ राजमानौ मुहुर्मुहुः । शरैराशीविषाकारैस्ततक्षाते परस्परम् । ततोऽर्ज्जुनः शरवर्षं किराते समवासृजत् । तत्प्रसन्नेन मनसा प्रतिजग्राह शङ्करः । मुहूर्त्तं शरवर्षं तत् प्रतिगृह्य पिनाकधृक् । अक्षतेन शरीरेण तस्थौ गिरिरिवाचलः । स दृष्ट्वा वाणवर्षन्तु मोघीभूतं धनञ्जयः । परमं विस्मयञ्चक्रे साधु साध्विति चाब्रवीत् । अहोऽयं सुकुमाराङ्गो हिमवच्छिखराश्रयः । गाण्डीवमुक्तान्नाराचान् प्रतिगृह्णात्यविह्वलः । कोऽयं देवो भवेत् साक्षात् रुद्रो यक्षः सुरोऽसुरः । विद्यते हि गिरिश्रेष्ठे त्रिदशानां समागमः । नहि मद्वाणजालानामुत्सृष्टानां सहस्रशः । शक्तोऽन्यः सहितुं वेगमृते देवं पिनाकिनम् । देवो वा यदि वा यक्षो रुद्रादन्यो व्यवस्थितः । अहमेनं शरैस्तीक्ष्णैर्नयामि यमसादनम् । ततो हृष्टमना जिष्णुर्नाराचान्मर्म्मभेदिनः । व्यसृजच्छतधा राजन्! मयूखानिव भास्करः । तान् प्रसन्नेन मनसा भगवान् लोकभावनः । शूलपाणिः प्रत्यगृह्णाच्छ्रिलावर्षमिवाचलः । क्षणेन क्षीणवाणोऽथ संवृत्तः फाल्गुनस्तदा । भीश्चैनमाविशत्तीव्रा तं दृष्ट्वा शरसंक्षयम् । चिन्तयामास जिष्णुश्च भगवन्तं हुताशनम् । पुरस्तादक्षयौ दत्तौ तूणौ येनास्य खाण्डवे । किं नु मोक्ष्यामि धनुषा यन्मे वाणाः क्षयं गताः । अयञ्च पुरुषः कोऽपि वाणान् ग्रसति सर्वशः । हत्वा चैनं धनुष्कोठ्या शूलाग्रेणेव कुञ्जरम् । नयामि दण्डधारस्य यमस्य सदनं प्रति । प्रगृह्याथ धनुष्कोठ्या ज्यापाशेनावकृष्य च । मुष्टिभिश्चापि हतवान् वज्रकल्पैर्म्महाद्युतिः । संप्रयुद्धो धनुष्कोठ्या कौन्तेयः परवीरहा । तदप्यस्य धनुर्द्दिव्यं जग्राह गिरिगोचरः । ततोऽर्ज्जुनो ग्रस्तधनुः खड्गपाणिरतिष्ठत । युद्धस्यान्तमभीप्सन् वै वेगेनाभिजगाम तम् । तस्य मूर्द्ध्नि शितं खड्गमसक्तं पर्वतेष्वपि । मुमोच भुजवीर्य्येण विक्रम्य कुरुनन्दनः । तस्य मूर्द्धानमासाद्य पफालासिवरो हि सः । ततो वृक्षैः शिलाभिश्च योधयामास फाल्गुनः । तदा वृक्षान्महाकायः प्रत्यगृह्णादथो शिलाः । किरातरूपो भगवांस्ततः पार्थो महाबलः । मुष्टिभिर्वज्रसङ्काशैर्धूममुत्पादयन् मुखे । प्रजहार दुराधर्षे किरातसमरूपिणि । ततः शक्राशनिसमैर्मुष्टिभिर्भृशदारुणैः । किरातरूपी भगवानर्दयामास पाण्डवम् । ततश्चटचटाशब्दः सुघोरः समपद्यत । पाण्डवस्य च मुष्टीनां किरातस्य च युध्यतः । सुमुहूर्त्तन्तु तद्युद्धमभबल्लोमहर्षणम् । भुजप्रहारसंयुक्तं वृत्रवासवयोरिव । जघानाथ ततो जिष्णुः किरातमुरसा बली । पाण्डवञ्च विचेष्टन्तं किरातोऽप्यहनद्बली । तयोर्भुजविनिष्पेषात् सङ्घर्षेणोरसोस्तथा । समजायत गात्रेषु पावकोऽङ्गारधूमवान् । तत एनं महादेवः पीड्य गात्रैः सुपीडितम् । तेजसा व्यक्रमद्रोषाच्चेतस्तस्य विमोहयन् । ततोऽभिपीडितैर्गात्रैः पीण्डीकृत इवाबभौ । फाल्गुनो गात्रसंरुद्धो देवदेवेन भारत! । निरुच्छ्वासोऽभवच्चैव सन्निरुद्धो महात्मना । पपात भूम्यां निश्चेष्टो गतसत्व इवाभवत् । स मुहूर्त्तन्तथा भूत्वा सचेताः पुनरुत्थितः । रुधिरेणाप्लुताङ्गस्तु पाण्डवो भृशदुःखितः । शरण्यं शरणं गत्वा भगवन्तं पिनाकिनम् । मृण्मयं स्थण्डिलं कृत्वा माल्येनापूजयद्भवम् । तच्च माल्यं तदा पार्थः किरातशिरसि स्थितम् । अपश्यत् पाण्डवश्रेष्ठो हर्षेण प्रकृतिङ्गतः । पपात पादयोस्तस्य ततः प्रीतोऽभवद्भवः । उवाच चैनं वचसा मेघगम्भीरगीर्हरः । जातविस्मयमालोक्य तपःक्षीणाङ्गसंहतिम् । भव उवाच । भो भो फाल्गुन! तुष्टोऽस्मि कर्म्मणाऽप्रतिमेन ते । शौर्य्येणानेन धृत्या च क्षत्त्रियो नास्ति ते समः । समं तेजसि वीर्य्यञ्च ममाद्य तव चानघ । प्रीतस्ते ऽहं महाबाहो! पश्य मा भरतर्षभ! । ददामि ते विशालाक्ष! चक्षुः पूर्व्व ऋषभवान् । विजेष्यसि रणे शत्रूनपि सर्वान् दिवौकसः । प्रोया च तेऽहं दास्यामि यदस्त्रमनिवारितम् । त्वं हि शक्तो मदोयं तदस्त्रं धारयितुं क्षणात् । वैशम्पायन उवाच । ततो देवं महादेवं गिरिशं शूलपा णनम् । ददर्श फाल्गुनस्तत्र सह देव्या महाघुतिम् । स जानुभ्यां महीं गत्वा शिरसा प्रणपत्य च । प्रसादवामास हरं पार्थः परपुरञ्जयः” ।"
+            "word": "मातृ",
+            "eid": "38095",
+            "pagenum": "4747,b",
+            "content": "मातृ¦ त्रि० मा--वृच् । १ प्रमाणकर्त्तरि २ परिमाणकर्त्तरि ३ जीवे ४ आकाशे च मातरिश्वा । मातारौ मातारः । मा--तृ । “ब्राह्मी माहेश्वरी चण्डी वाराही वैष्णवी तथा । कौमारी चैव चामुण्डा चर्चिकेत्यष्ट मातरः” इत्युक्ते ५ शिवसहचरीभेदे । ६ जनन्याम् ७ भूमौ ८ विभूतौ शब्दर० । ९ लक्ष्म्याम् हेमच० १० रेवत्याम् अमरः ११ स्त्री गव्यां मेदि० १२ आखुकर्ण्याम् १३ इन्द्रवारुण्याम् (राखालशशा) १४ जटामांस्यां राजनि० । चण्डीप्रसिद्धासु १५ देवीशक्तिषु च । “मातॄः कोपमयाविष्टः” देवीमा० । आतिदेशिकमातरश्च ब्रह्मवै० पु० गण० ख० १५ अ० उक्ता यथा “स्तन्यदात्री गर्भधात्री भक्ष्यधात्री गुरुप्रिया । अभीष्टदेवपत्नी च पितुः पत्नी च कन्यका । सगर्भजा या भगिनी पुत्रपत्नी प्रियाप्रसूः । मातुर्माता पितुर्माता सोदरस्य० प्रिया तथा । मातुः पितुश्च भगिनी मातुलानी तथैव च । जनानां वेदविहिता मातरः षोडश स्मृताः” । ब्रह्मवै० पु० जन्मख० ५९ अ० अन्यविधा उक्ता यथा “गुरुपत्नी राजपत्नी देवपत्नी तथा बधूः । पित्रोः स्वसा शिष्यपत्नी भृत्यपत्नी च मातुली । पितृपत्नी भ्रातृपत्नो श्वश्रूश्च भगिनीसुता । गर्भधात्रीष्टदेवी च पुंसः षोडश मातरः” । तत्रैव २५ अ० “गुरोःपत्नी राजपत्नी विप्रपत्नी च या सती । पत्नी च भ्रातृसुतयोर्मित्रपत्नी च तत्प्रसूः । प्रसूः पित्रोस्तयोर्भ्रातुःपत्नी श्वश्रूः स्वकन्यका । जननी तत्सपत्नी च भगिनी सुरभी तथा । स्वाभीष्टसुरपत्नी च धात्री कान्ता प्रदायिका । गर्भधात्री स्वनाम्नी च भयात्रातुश्च कामिनी । एता वेदप्रणीताश्च सर्वेषां मातरः स्मृतः” । अस्य रूपं मातरौ मातरः । वृद्ध्यादौ पूज्यासु गौर्य्यादिषु १६ देवीशक्तिभेदेषु “गौरी पद्मा शची मेधा सावित्री विजया जया । देवसेना स्वधा स्वाहा मातरो लोकमातरः । शान्तिः पुष्टिर्धृतिस्तुष्टिरात्मदेवतया सह” शु० त० गृह्यपु० ।"
         }
     ],
     "APHI": [
         {
-            "word": "किरात",
-            "content": "किरातः पुं. -  किरं पर्यन्तभूमिम् अतति गच्छतीति किरातः 'एक पतित पहाड़ी जाति जो शिकार करके अपनी जीविका चलाती है, पहाड़ी'"
+            "word": "मातृ",
+            "content": "मातृ स्त्री. -  मान् पूजायां तृच् न लोपः 'माँ, माता'"
         },
         {
-            "word": "किरात",
-            "content": "किरातः पुं. -  किरं पर्यन्तभूमिम् अतति गच्छतीति किरातः 'वहशी, जंगली'"
+            "word": "मातृ",
+            "content": "मातृ स्त्री. - माता (आदर तथा वात्सल्य सूचक)"
         },
         {
-            "word": "किरात",
-            "content": "किरातः पुं. -  किरं पर्यन्तभूमिम् अतति गच्छतीति किरातः बौना"
+            "word": "मातृ",
+            "content": "मातृ स्त्री. - गाय"
         },
         {
-            "word": "किरात",
-            "content": "किरातः पुं. -  किरं पर्यन्तभूमिम् अतति गच्छतीति किरातः 'साईस, अश्वपाल'"
+            "word": "मातृ",
+            "content": "मातृ स्त्री. - लक्ष्मी का विशेषण"
         },
         {
-            "word": "किरात",
-            "content": "किरातः पुं. -  किरं पर्यन्तभूमिम् अतति गच्छतीति किरातः किरातवेशधारी शिव"
+            "word": "मातृ",
+            "content": "मातृ स्त्री. - दुर्गा का विशेषण"
+        },
+        {
+            "word": "मातृ",
+            "content": "मातृ स्त्री. - 'अन्तरिक्ष, आकाश '"
+        },
+        {
+            "word": "मातृ",
+            "content": "मातृ स्त्री. - पृथ्वी"
+        },
+        {
+            "word": "मातृ",
+            "content": "मातृ स्त्री. - देव-माता"
+        },
+        {
+            "word": "मातृ",
+            "content": "मातृ स्त्री. -  'मान्+तृच्,नलोपः' 'माता,जननी'"
+        },
+        {
+            "word": "मातृ",
+            "content": "मातृ स्त्री. -  'मान्+तृच्,नलोपः' स्त्रियों के प्रति आदर या सम्मान सूचक संबोधन"
+        },
+        {
+            "word": "मातृ",
+            "content": "मातृ स्त्री. -  'मान्+तृच्,नलोपः' गाय"
+        },
+        {
+            "word": "मातृ",
+            "content": "मातृ स्त्री. -  'मान्+तृच्,नलोपः' लक्ष्मी या दुर्गा का विशेषण"
+        },
+        {
+            "word": "मातृ",
+            "content": "मातृ स्त्री. -  'मान्+तृच्,नलोपः' धरती माता"
         }
     ],
     "SHKB": [
         {
-            "word": "किरात",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ವ್ಯಾಧ \\/ಬೇಡರವನು",
-            "निष्पत्तिः": "अत (सातत्यगमने)'अण्' (३-२-१)",
-            "व्युत्पत्तिः": "किरमवस्करदेशमतति",
-            "प्रयोगाः": "'विदन्ति मार्गं नखरन्ध्रमुक्तैर्मुक्ताफलैः केसरिणां किराताः'",
-            "उल्लेखाः": "कुमा० १-६",
+            "word": "मातृ",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಜನನಿ \\/ತಾಯಿ",
+            "निष्पत्तिः": "मान (पूजायाम्)'तृच्' (उ० २-९५)",
+            "व्युत्पत्तिः": "मान्यते पूज्यते",
+            "प्रयोगाः": "'उमेति मात्रा तपसो निषिद्धा पश्चादुमाख्यां सुमुखी जगाम'",
+            "उल्लेखाः": "कुमा० १-२६",
             "content": ""
         },
         {
-            "word": "किरात",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ಗಿಡ್ಡ \\/ಕುಳ್ಳ \\/ವಾಮನ",
-            "प्रयोगाः": "'पर्यन्ताश्रयिभिर्निजस्य सदृशं नाम्नः किरातैः कृतम्'",
-            "उल्लेखाः": "रन्ता० २-३",
+            "word": "मातृ",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಬ್ರಾಹ್ಮೀ ಮೊದಲಾದ ಸಪ್ತ ಮಾತೃಗಳು",
+            "विस्तारः": "ब्राह्मी, माहेश्वरी, कौमारी, वैष्णवी, वाराही, इन्द्राणी, चामुण्डा ಇವರು ಸಪ್ತ ಮಾತೃಗಳು.",
             "content": ""
         },
         {
-            "word": "किरात",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ಕಾಡುಮನುಷ್ಯ \\/ಅರಣ್ಯನಿವಾಸಿ",
+            "word": "मातृ",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಭೂಮಿ",
             "content": ""
         },
         {
-            "word": "किरात",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ಕುದುರೆಯ ಪರಿಚಾರಕ \\/ಕುದುರೆಯ ಯೋಗಕ್ಷೇಮ ನೋಡಿಕೊಳ್ಳುವ ಆಳು",
+            "word": "मातृ",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಗೋವು",
             "content": ""
         },
         {
-            "word": "किरात",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ನೆಲಬೇವು",
+            "word": "मातृ",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಲಕ್ಷ್ಮಿ",
             "content": ""
         },
         {
-            "word": "किरात",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ಮ್ಲೇಚ್ಛಜಾತಿಯವನು",
-            "विस्तारः": "'किरातः स्यादल्पतनौ भूनिम्बम्ल्र्च्छयोरपि'मेदि० ।",
+            "word": "मातृ",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ದುರ್ಗಾದೇವಿ",
+            "विस्तारः": "माता गौर्दुर्गा जननी मही । मातरस्तु ब्रह्माण्यादयःहेम०",
             "content": ""
         },
         {
-            "word": "किरात",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ಕಿರಾತವೇಷಧಾರಿಯಾದ ಪರಮೇಶ್ವರ",
+            "word": "मातृ",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಪುಷ್ಯಮಾಸದ ಹುಣ್ಣಿಮೆ",
+            "विस्तारः": "'पौर्णमास्याग्रहायणी । पौषी तु महिषी माता'वैज०",
             "content": ""
         },
         {
-            "word": "किरात",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ಕಿರಾತ ದೇಶ",
-            "प्रयोगाः": "'तप्तकुण्डं समारभ्य रामक्षेत्रान्तिकं शिवे । किरातदेशो विज्ञेयो विन्द्यशैलेऽवतिष्ठते ॥'",
-            "विस्तारः": "बहुवचनान्तं रूपम् ।",
+            "word": "मातृ",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಬೀಸುವ ಕಲ್ಲಿನ ಕೆಳಗಿನ ಕಲ್ಲು",
+            "content": ""
+        },
+        {
+            "word": "मातृ",
+            "पदविभागः": "स्त्रीलिङ्गः",
+            "कन्नडार्थः": "ಅಕಾರ ಮೊದಲಾದ ಅಕ್ಷರಗಳು",
+            "विस्तारः": "'माता तु गव्यकारादौ ब्राह्म्याद्यस्तु प्रसूमयोः'वैज०",
+            "content": ""
+        },
+        {
+            "word": "मातृ",
+            "पदविभागः": "विशेष्यनिघ्नम्",
+            "कन्नडार्थः": "ಅಳತೆ ಮಾಡುವವನು \\/ಅಳೆಯುವವನು",
+            "निष्पत्तिः": "माङ् (माने)'तृच्' (३-१-१३३)",
             "content": ""
         }
     ],
     "AMARA": [
         {
-            "word": "किरात",
-            "linga": "P",
-            "artha": "किरातः",
+            "word": "मातृ",
+            "linga": "S",
+            "artha": "माता",
             "synonyms": [
-                "किरात"
+                "अम्बा",
+                "मातृ"
             ],
-            "num": "2.10.20",
-            "text": "निषादश्वपचावन्तेवासिचाण्डालपुक्कसाः । भेदाः किरातशबरपुलिन्दा म्लेच्छजातयः ॥",
+            "num": "1.7.15",
+            "text": "अब्रह्मण्यमवध्योक्तौ राजश्यालस्तु राष्ट्रियः । अम्बा माताथ बाला स्याद्वासूरार्यस्तु मारिषः ॥",
+            "content": ""
+        },
+        {
+            "word": "मातृ",
+            "linga": "S",
+            "artha": "जननी",
+            "synonyms": [
+                "जनयित्री",
+                "प्रसू",
+                "मातृ",
+                "जननी"
+            ],
+            "num": "2.6.29",
+            "text": "जनयित्री प्रसूर्माता जननी भगिनी स्वसा । ननान्दा तु स्वसा पत्युर्नप्त्री पौत्री सुतात्मजा ॥",
+            "content": ""
+        },
+        {
+            "word": "मातृ",
+            "linga": "S",
+            "artha": "गौः",
+            "synonyms": [
+                "माहेयी",
+                "सौरभेयी",
+                "गो",
+                "उस्रा",
+                "मातृ",
+                "शृङ्गिणी",
+                "अर्जुनी",
+                "अघ्न्या",
+                "रोहिणी",
+                "इडा",
+                "इला",
+                "सुरभि",
+                "बहुला"
+            ],
+            "num": "2.9.67",
+            "text": "स तु सर्वधुरीणः स्याद्यो वै सर्वधुरावहः । माहेयी सौरभेयी गौरुस्रा माता च शृङ्गिणी ॥",
             "content": ""
         }
     ],
     "AM_VCP": [
         {
-            "word": "किरात",
-            "content": "<li class=\"dict-entry\"><span lang=\"sa\">किरात पुंस्त्री किरमवस्करादेर्निःक्षेपस्थानं पर्य्यन्तभूमिमतति अत + अण उप° स° । <div class=\"h-2\"> </div><b>१</b> नीचजातिभेदे स च अवस्करनिः­क्षेपस्थानपर्य्यन्तदेशाश्रयः व्याधादिः । जातिशब्दे विवृतिः । <q>तप्तकुण्डं समारभ्य रामक्षेत्रान्तकं शिवे! । किरात­देशो विज्ञेयो विन्द्यशैलेऽवतिष्ठते</q> इति शक्तिसं­गमोक्ते <div class=\"h-2\"> </div><b>२</b> देशभेदेपु° भूम्नि । वृहत् स° कूर्म्मविभागे <div class=\"h-2\"> </div><b>३</b> ऐ­शान्यमुक्ते ३ देशभेदे च <q>ऐशान्यां मेरुकनष्टरा­ज्येण्रपक्रमे “वनराज्यकिरातचीनकौलिन्दाः इत्युक्तम् तद्देशानां राजा अण् । कैरात तद्देशनृपे वहुषु अणोलुक् । किराताः । ते च क्रमशो वेदानध्ययनादिना वृषलत्वमाप्ता यथाह मनुः “शनकैस्तु क्रियालोपादिमाः स्युः क्षत्रजातयः । वृषलत्वं गता लोके ब्राह्मणादर्शनेन च</q> । पौण्ड्रकाश्चौड्रद्रविडाः काम्बोजा यवनाः शकाः । पारदापह्नवाश्चीना किराताःदरदाः खसाः” इति । जातौ स्त्रियां ङीष् । <div class=\"h-2\"> </div><b>४</b> मत्स्यभेदे पुंस्त्री° <q>किरातस्तथा स्त्रियां चामरवाहिन्यां मत्स्यजात्यन्तरे द्वयोः</q> केशवोक्तेः <div class=\"h-2\"> </div><b>५</b> चामरवाहिन्यां स्त्री । <q>नौसंश्रयां पार्श्वगतां किरा­तीम्</q> रघुः <q>किरातीं—चामरग्राहिणीं दासीम्</q> म­ल्लि° । तपस्यदर्ज्जुनप्रसादार्थं किरातरूपेण गतत्वात् <div class=\"h-2\"> </div><b>६</b> शिवे तस्य पत्न्यां तथारूपायां <div class=\"h-2\"> </div><b>७</b> पुर्गायां स्त्री ङीष् <q>किराती ञ्चीरवसनां चौरसेनानमस्कृताम् । आज्यपां सोमपां सौम्यां सर्व्वपर्व्वतवासिनीम्</q> हरिवं° १७८ अ° दुर्गास्तवे । तत्र व्याधे <q>मुक्ताफलैः केशरिणां किराताः</q> <q>यद्वायुरन्विष्टमृगैःकि­रातैः, कुमा° । <div class=\"h-2\"> </div><b>८</b> भूमिनिम्बे पुं° राजनि° <div class=\"h-2\"> </div><b>९</b> घोटकर­क्षके सारस्वतः । <div class=\"h-2\"> </div><b>१°</b> अल्पतनौ त्रि° मेदि° । “पर्य्य­न्ताश्रयिभिर्निजस्य सदृशं नाम्रः किरातैः कृतम्</q> रत्ना° । अत्र स्वनामसदृशत्वञ्च वानरभिया सङ्कोचितदेहत्वे­नाल्पतनुत्वात् स्वनामसमानुपूर्व्वीकपदबोध्याल्पतनुत्वक­रणात् पर्य्यन्ताश्रयित्वविशेषणाद्वा तथात्वम् तत्र भूनि­म्बगुणाद्युक्तं भावप्र° यथा <q>किरातः सारको रूक्षः­शीतलस्तिक्तको लघुः । सन्निपातज्वरश्वासकफपित्तास्र­दाहनुत् । कासशोथतृषाकुष्ठ ज्वरव्रणकृमिप्रणुत् । स्वार्थे क । किरातक भूमिनिम्बे राजनि° । किरातं शिवमधिकृत्य कृतोग्रन्थः अण् कैरात भारतवनपर्व्वान्तर्गतेऽवान्तर पर्व्वभेदे तत्रत्यकथा भा° व°३९ अ° यथा “गतेषु तेषु सर्वेषु तपस्विषु महात्मसु । पिनाकपाणि­र्भगवान् सर्वपापहरो हरः । कैरातं वेशमास्थाय काञ्चनद्रुमसन्निभम् । विभ्राजमानो विपुलो गिरिर्मेरु­रिवापरः । श्रीमद्धनुरुपादाय शराश्चाशीविषोपमान् । निष्पपात महावेगो दहनो देहवानिव । देव्या सहो­मया श्रीमान् समानव्रतवेशया । नानावेशधरैर्हृष्टै­र्भूतैरनुगतस्तदा । किरातवेशसंछन्नः स्त्रीमिश्चापि सह­स्रशः । अशोभत तदा राजन्! स देशोऽतीव भारत! । क्षणेन तद्वनं सर्वं निःशब्दमभवत्तदा । नादः प्रस्रवणा­नाञ्च पक्षिणाञ्चाप्युपारमत । स सन्निकर्षमागम्य पार्थ­स्याक्लिष्टकर्म्मणः । मूकं नाम दनोः पुत्रं ददर्शाद्भुत­दर्शनम् । वाराहं रूपमास्याय तर्जयन्तमिवार्ज्जुनम् । हन्तुं परमदुष्टात्मा तमुवाचाथ फाल्गुनः । गाण्डीवं धनुरादाय शरांश्चाशीविषोपमान् । सज्यं धनुर्धरं कृत्वा ज्याघोषेण निनादयन् । यन्मां प्रार्थयसे हन्तुम­नागसमिहागतम् । तस्मात्त्वां पूर्वमेवाहं नेताऽद्य यमसादनम् । दृष्ट्वा तं प्रहरिष्यन्तं फाल्गुनं दृढध­न्विनम् । किरातरूपी सहसा वारयामास शङ्करः । मयैष प्रार्थितः पूर्वमिन्द्रकीलसमप्रमः । अनादृत्य च तद्वाक्यं प्रजहाराथ फाल्गुनः । किरातश्च समं तस्मि­न्नेकलक्ष्ये महाद्युतिः । प्रमुमोचाशनिप्रख्यं शरमग्नि­शिखोपमम् । तौ मुक्तौ सायकौ ताभ्यां समं तत्र निपे­ततुः । मूकस्य गात्रे विस्तीर्ण्णे शैलसंहनने तदा । यथाऽशनेर्विनिर्घोषो वज्रस्येव च पर्व्वते । तथा तयोः सन्निपातः शरयोरभवत्तदा । स विद्धो बहुभिर्व्वाणै र्द्दीप्तास्यैः पन्नगैरिव । ममार राक्षसं रूपं भूयः कृत्वा विभीषणम् । स ददर्श ततो जिष्णुः पुरुषं काञ्चनप्रभम् । किरातवेशसंछन्नं स्त्रीसहायममित्रहा । तमब्रवीत् प्रीतमनाः कौन्तेयः प्रहसन्निव । को भवानटते शून्ये वने स्त्रीगणसंवृतः । न त्वमस्मिन् वने घोरे बिभेषि कन­कप्रभ! । किमर्थञ्च त्वया विद्धो वराहो मत्परिग्रहः । मयाऽभिपन्नः पूर्वं हि राक्षसोऽयमिहागतः । कामात् परिभवाद्वाऽपि न मे जीवन् विमोक्ष्यसे । न ह्येष मृ­गयाधर्म्मो यात्वयाऽद्य कृतो मयि । तेन त्वां भ्रंशयि­ष्यामि जीवितात् पर्वताश्रयम् । इत्युक्तः पाण्डवेयेन किरातः प्रहसन्निव । उवाच श्लक्ष्णया वाचा पाण्डवं सव्यसाचिनम् । न मत्कृते त्वया वोर! भीः कार्य्या वन­मन्तिकात् । इयं भूमिः सदाऽस्माकमुचिता वसतां वने । त्वया तु दुष्करः कस्मादिह वासः प्ररोचितः? । वयन्तु बहुसत्वेऽस्मिन्निवसामस्तपोधन! । भवांस्तु कृष्णवर्णाभः सुकुमारः सुखोचितः । कथं शून्यमिमं देशमेकाकी विचरिष्यति । अर्ज्जुन उवाच । गाण्डीवमाश्रयं कृत्वा नाराचांचाग्निसन्निभान् । निवसामि महारण्ये द्वितीय इव पावकः । एष चापि महाजन्तुर्मृगरूपं समाश्रितः । राक्षसो नहतो घोरी हन्तुं मामिह चागतः । किरात उवाच । मयैष धनुर्निर्मुक्तैस्ता­डितः पूर्वमेव हि । वाणैरभिहतः शेते नीतश्च यमसा­दनम् । ममैष लक्ष्यभूतो हि मम पूर्वपरिग्रहः । ममैव च प्रहारेण जीविताद्व्यपरोपितः । दोषान् स्वान्नर्ह­सेऽन्यस्मै वक्तुं स्ववलदर्पितः । अवलिप्तोऽसि मन्दात्मन्! न मे जीवन् विमोक्ष्यसे । स्थिरो भवस्व मोक्ष्यामि सायकानशनीरिव । घटस्व परया शक्त्या मुञ्च त्वमपि सायकान् । तस्य तद्वचनं श्रुत्वा किरातस्यार्ज्जुनस्तदा । रोषमाहारयामास ताडयामास चेषुभिः । ततो हृष्टेन मनसा प्रतिजग्राह सायकान् । भूयोभूय इति प्राह मन्दमन्देत्युवाच ह । प्रहरस्व शरानेतान्नाराचान्म­र्म्मभेदिनः । इत्युक्तो वाणवर्षं स मुमोच सहसाऽ­र्ज्जुनः । ततस्तौ तत्र संरब्धौ राजमानौ मुहुर्मुहुः । शरैराशीविषाकारैस्ततक्षाते परस्परम् । ततोऽर्ज्जुनः शरवर्षं किराते समवासृजत् । तत्प्रसन्नेन मनसा प्रति­जग्राह शङ्करः । मुहूर्त्तं शरवर्षं तत् प्रतिगृह्य पिना­कधृक् । अक्षतेन शरीरेण तस्थौ गिरिरिवाचलः । स दृष्ट्वा वाणवर्षन्तु मोघीभूतं धनञ्जयः । परमं विस्म­यञ्चक्रे साधु साध्विति चाब्रवीत् । अहोऽयं सुकुमा­राङ्गो हिमवच्छिखराश्रयः । गाण्डीवमुक्तान्नाराचान् प्रतिगृह्णात्यविह्वलः । कोऽयं देवो भवेत् साक्षात् रुद्रो यक्षः सुरोऽसुरः । विद्यते हि गिरिश्रेष्ठे त्रिदशानां समागमः । नहि मद्वाणजालानामुत्सृष्टानां सहस्रशः । शक्तोऽन्यः सहितुं वेगमृते देवं पिनाकिनम् । देवो वा यदि वा यक्षो रुद्रादन्यो व्यवस्थितः । अहमेनं शरैस्तीक्ष्णैर्नयामि यमसादनम् । ततो हृष्टमना जिष्णुर्नाराचान्मर्म्मभेदिनः । व्यसृजच्छतधा राजन्! मयूखानिव भास्करः । तान् प्रसन्नेन मनसा भगवान् लोकभावनः । शूलपाणिः प्रत्यगृह्णाच्छ्रिलावर्षमिवाचलः । क्षणेन क्षीणवाणोऽथ संवृत्तः फाल्गुनस्तदा । भीश्चैन­माविशत्तीव्रा तं दृष्ट्वा शरसंक्षयम् । चिन्तयामास जि­ष्णुश्च भगवन्तं हुताशनम् । पुरस्तादक्षयौ दत्तौ तूणौ येनास्य खाण्डवे । किं नु मोक्ष्यामि धनुषा यन्मे वाणाः क्षयं गताः । अयञ्च पुरुषः कोऽपि वाणान् ग्रसति सर्वशः । हत्वा चैनं धनुष्कोठ्या शूलाग्रेणेव कुञ्जरम् । नयामि दण्डधारस्य यमस्य सदनं प्रति । प्रगृह्याथ धनुष्कोठ्या ज्यापाशेनावकृष्य च । मुष्टिभिश्चापि हत­वान् वज्रकल्पैर्म्महाद्युतिः । संप्रयुद्धो धनुष्कोठ्या कौ­न्तेयः परवीरहा । तदप्यस्य धनुर्द्दिव्यं जग्राह गिरि­गोचरः । ततोऽर्ज्जुनो ग्रस्तधनुः खड्गपाणिरतिष्ठत । युद्धस्यान्तमभीप्सन् वै वेगेनाभिजगाम तम् । तस्य मूर्द्ध्नि शितं खड्गमसक्तं पर्वतेष्वपि । मुमोच भुजवी­र्य्येण विक्रम्य कुरुनन्दनः । तस्य मूर्द्धानमासाद्य पफा­लासिवरो हि सः । ततो वृक्षैः शिलाभिश्च योधयामास फाल्गुनः । तदा वृक्षान्महाकायः प्रत्यगृह्णादथो शिलाः । किरातरूपो भगवांस्ततः पार्थो महाबलः । मुष्टिभिर्वज्रसङ्काशैर्धूममुत्पादयन् मुखे । प्रजहार दु­राधर्षे किरातसमरूपिणि । ततः शक्राशनिसमैर्मुष्टिभि­र्भृशदारुणैः । किरातरूपी भगवानर्दयामास पाण्डवम् । ततश्चटचटाशब्दः सुघोरः समपद्यत । पाण्डवस्य च मुष्टीनां किरातस्य च युध्यतः । सुमुहूर्त्तन्तु तद्युद्धम­भबल्लोमहर्षणम् । भुजप्रहारसंयुक्तं वृत्रवासवयोरिव । जघानाथ ततो जिष्णुः किरातमुरसा बली । पाण्डवञ्च विचेष्टन्तं किरातोऽप्यहनद्बली । तयोर्भुजविनिष्पेषात् सङ्घर्षेणोरसोस्तथा । समजायत गात्रेषु पावकोऽङ्गा­रधूमवान् । तत एनं महादेवः पीड्य गात्रैः सुपीडि­तम् । तेजसा व्यक्रमद्रोषाच्चेतस्तस्य विमोहयन् । ततोऽभिपीडितैर्गात्रैः पीण्डीकृत इवाबभौ । फाल्गुनो गात्रसंरुद्धो देवदेवेन भारत! । निरुच्छ्वासोऽभवच्चैव सन्निरुद्धो महात्मना । पपात भूम्यां निश्चेष्टो गतसत्व इवाभवत् । स मुहूर्त्तन्तथा भूत्वा सचेताः पुनरुत्थितः । रुधिरेणाप्लुताङ्गस्तु पाण्डवो भृशदुःखितः । शरण्यं शरणं गत्वा भगवन्तं पिनाकिनम् । मृण्मयं स्थण्डिलं कृत्वा माल्येनापूजयद्भवम् । तच्च माल्यं तदा पार्थः किरातशिरसि स्थितम् । अपश्यत् पाण्डवश्रेष्ठो हर्षेण प्रकृतिङ्गतः । पपात पादयोस्तस्य ततः प्रीतोऽ­भवद्भवः । उवाच चैनं वचसा मेघगम्भीरगीर्हरः । जातविस्मयमालोक्य तपःक्षीणाङ्गसंहतिम् । भव उवाच । भो भो फाल्गुन! तुष्टोऽस्मि कर्म्मणाऽप्रतिमेन ते । शौर्य्येणानेन धृत्या च क्षत्त्रियो नास्ति ते समः । समं तेजसि वीर्य्यञ्च ममाद्य तव चानघ । प्रीतस्ते ऽहं महा­बाहो! पश्य मा भरतर्षभ! । ददामि ते विशालाक्ष! चक्षुः पूर्व्व ऋषभवान् । विजेष्यसि रणे शत्रूनपि सर्वान् दिवौकसः । प्रोया च तेऽहं दास्यामि यदस्त्रमनिवा­रितम् । त्वं हि शक्तो मदोयं तदस्त्रं धारयितुं क्ष­णात् । वैशम्पायन उवाच । ततो देवं महादेवं गिरिशं शूलपा णनम् । ददर्श फाल्गुनस्तत्र सह देव्या महाघुतिम् । स जानुभ्यां महीं गत्वा शिरसा प्रण­पत्य च । प्रसादवामास हरं पार्थः परपुरञ्जयः</q> ।</span></li>"
+            "word": "मातृ",
+            "content": "<li class=\"dict-entry\"><span lang=\"sa\">मातृ त्रि° मा—वृच् । <div class=\"h-2\"> </div><b>१</b> प्रमाणकर्त्तरि <div class=\"h-2\"> </div><b>२</b> परिमाणकर्त्तरि <div class=\"h-2\"> </div><b>३</b> जीवे <div class=\"h-2\"> </div><b>४</b> आकाशे च मातरिश्वा । मातारौ मातारः । मा—तृ । <q>ब्राह्मी माहेश्वरी चण्डी वाराही वैष्णवी तथा । कौमारी चैव चामुण्डा चर्चिकेत्यष्ट मातरः</q> इत्युक्ते <div class=\"h-2\"> </div><b>५</b> शिवसहचरीभेदे । <div class=\"h-2\"> </div><b>६</b> जनन्याम् <div class=\"h-2\"> </div><b>७</b> भूमौ <div class=\"h-2\"> </div><b>८</b> विभूतौ शब्दर° । <div class=\"h-2\"> </div><b>९</b> लक्ष्म्याम् हेमच° <div class=\"h-2\"> </div><b>१°</b> रेवत्याम् अमरः <div class=\"h-2\"> </div><b>११</b> स्त्री गव्यां मेदि° <div class=\"h-2\"> </div><b>१२</b> आखुकर्ण्याम् <div class=\"h-2\"> </div><b>१३</b> इन्द्रवारुण्याम् (रा­खालशशा) <div class=\"h-2\"> </div><b>१४</b> जटामांस्यां राजनि° । चण्डीप्रसिद्धासु <div class=\"h-2\"> </div><b>१५</b> देवीशक्तिषु च । <q>मातॄः कोपमयाविष्टः</q> देवीमा° । आतिदेशिकमातरश्च ब्रह्मवै° पु° गण° ख° १५ अ° उक्ता यथा <q>स्तन्यदात्री गर्भधात्री भक्ष्यधात्री गुरुप्रिया । अभीष्ट­देवपत्नी च पितुः पत्नी च कन्यका । सगर्भजा या भगिनी पुत्रपत्नी प्रियाप्रसूः । मातुर्माता पितुर्माता सोदरस्य° प्रिया तथा । मातुः पितुश्च भगिनी मातु­लानी तथैव च । जनानां वेदविहिता मातरः षो­डश स्मृताः</q> । ब्रह्मवै° पु° जन्मख° ५९ अ° अन्यविधा उक्ता यथा <q>गुरुपत्नी राजपत्नी देवपत्नी तथा बधूः । पित्रोः स्वसा शिष्यपत्नी भृत्यपत्नी च मातुली । पितृपत्नी भ्रातृपत्नो श्वश्रूश्च भगिनीसुता । गर्भधात्रीष्टदेवी च पुंसः षो­डश मातरः</q> । तत्रैव २५ अ° <q>गुरोःपत्नी राजपत्नी विप्रपत्नी च या सती । पत्नी च भ्रातृसुतयोर्मित्रपत्नी च तत्प्रसूः । प्रसूः पित्रोस्तयोर्भ्रातुःपत्नी श्वश्रूः स्व­कन्यका । जननी तत्सपत्नी च भगिनी सुरभी तथा । स्वाभीष्टसुरपत्नी च धात्री कान्ता प्रदायिका । गर्भधात्री स्वनाम्नी च भयात्रातुश्च कामिनी । एता वेदप्रणीताश्च सर्वेषां मातरः स्मृतः</q> । अस्य रूपं मातरौ मातरः । वृद्ध्यादौ पूज्यासु गौर्य्यादिषु <div class=\"h-2\"> </div><b>१६</b> देवीशक्तिभेदेषु <q>गौरी पद्मा शची मेधा सावित्री विजया जया । देवसेना स्वधा स्वाहा मातरो लोकमातरः । शान्तिः पुष्टि­र्धृतिस्तुष्टिरात्मदेवतया सह</q> शु° त° गृह्यपु° ।</span></li>"
         }
     ],
     "AM_SHS": [
         {
-            "word": "किरात",
-            "content": "<li class=\"dict-entry mw-entry\"><span lang=\"sa\">किरात</span>  <div n=\"1\">m. (<span lang=\"sa\">-तः</span>) </div><div n=\"2\"> 1. A savage, one of the barbarous tribes who inhabit <lb />woods and mountains and live by the chase, the Kirrhadœ of <lb />Arrian. </div><div n=\"2\"> 2. SIVA as a mountaineer opposed to ARJUNA, the account <lb />of which is the subject of the poem, the Kiratarjuniya. </div><div n=\"2\"> 3. A kind <lb />of gentian: see <span lang=\"sa\">किराततिक्त</span>. </div><div n=\"2\"> 4. A pigmy a dwarf. </div><div n=\"2\"> 5. A groom, a <lb />horseman. </div><div n=\"1\">f. (<span lang=\"sa\">-ती</span>) </div><div n=\"2\"> 1. The river GANGES or its goddess. </div><div n=\"2\"> 2. A name <lb />of DURGA. </div><div n=\"2\"> 3. A bawd, a procuress. </div><div n=\"2\"> 4. The celestial GANGES or <lb />river of Swarga.</div><div n=\"E\"> E. <span lang=\"sa\">कॄ</span> to scatter, (speech, &amp;c.) and <span lang=\"sa\">अत</span> who goes; <lb />also <span lang=\"sa\">किरातक</span>.</div></li>"
+            "word": "मातृ",
+            "content": "<li class=\"dict-entry mw-entry\"><span lang=\"sa\">मातृ</span>  <div n=\"1\">f. (<span lang=\"sa\">-ता</span>) </div><div n=\"2\"> 1. A mother. </div><div n=\"2\"> 2. A divine mother, the personified energy <lb />of a deity or his wife; in a figurative sense, a mother to mortals; <lb />eight divine Mātris are enumerated, BRĀHMĪ, the Mātri of <lb />BRAHMĀ; MAHEŚWARĪ, the Mātri of ŚIVA; VAISHNAVĪ, of <lb />VISHṆU; AINDRĪ, of INDRA; VĀRĀHĪ, of VISHṆU, as the Varāha <lb />Avatār; KAUMĀRĪ, of KĀRTIKEYA; KAUVERĪ or CHĀMUNDĀ of <lb />KUVERA, and CHARCHIKĀ of ŚIVA, in one of his minor incarna- <lb />tions; another list calls them MAHEŚWARĪ, BRĀHMĪ, NĀRĀYANĪ, <lb />AINDRĪ, VARĀHĪ, KAUMĀRĪ, NARASĪNHĪ, and APARĀJITĀ, differ- <lb />ing from the preceding one in the two last names, the first one of <lb />which, is the energy of VISHṆU in the Narasinha Avatār, and the <lb />latter a form of DURGĀ; another enumeration makes the Mātris <lb />sixteen, and another but seven. </div><div n=\"2\"> 3. A cow. </div><div n=\"2\"> 4. A female of the Brāh- <lb />mana tribe, or the wife of a Brāhman. </div><div n=\"2\"> 5. The earth. </div><div n=\"2\"> 6. A name of <lb />LAKSHMĪ. </div><div n=\"2\"> 7. A name of REVATĪ. </div><div n=\"2\"> 8. Space, ether.</div><div n=\"E\"> E. <span lang=\"sa\">मान</span> to res- <lb />pect, Unādi aff. <span lang=\"sa\">तृच्,</span> and the final of the radical rejected.</div></li>"
         }
     ],
     "AM_MW72": [
         {
-            "word": "किरात",
-            "content": "<li class=\"dict-entry mw-entry\"><span lang=\"sa\">कि/रात</span>   <span class=\"lex\">m. <abbr>pl.</abbr></span> <abbr>N.</abbr> of a degraded mountain-tribe (inhabiting woods and mountains and living by hunting, having become <span>Śūdra</span>s by their neglect of all prescribed religious rites; also regarded as <span>Mleccha</span>s; the Kirrhadae of Arrian), <cite>VS. xxx, 16</cite>; <cite>TāṇḍyaBr.</cite>; <cite>Mn. x, 44</cite>; <cite>MBh.</cite> &amp;c.</li> <li class=\"dict-entry mw-entry\"><span lang=\"sa\">कि/रात</span>   <span class=\"lex\">m.</span> a man of the <span>Kirāta</span> tribe</li> <li class=\"dict-entry mw-entry\">  a prince of the <span>Kirāta</span>s, <cite>VarBṛS. xi, 60</cite></li> <li class=\"dict-entry mw-entry\">  a dwarf, <cite>L.</cite> (<abbr>cf.</abbr> <span lang=\"sa\">कुब्ज-क्°</span>)</li> <li class=\"dict-entry mw-entry\">  a groom, horseman, <cite>L.</cite></li> <li class=\"dict-entry mw-entry\">  the plant <b>Agathotes Chirayta</b> (also called <span lang=\"sa\">किरात-तिक्त</span>), <cite>L.</cite></li> <li class=\"dict-entry mw-entry\">  <abbr>N.</abbr> of <span>Śiva</span> (as a mountaineer opposed to <span>Arjuna</span>, described in <span>Bhāravi</span>'s poem <span>Kirātārjunīya</span>)</li>"
+            "word": "मातृ",
+            "content": "<li class=\"dict-entry mw-entry\"> <span lang=\"sa\">मा/तृ</span>   <span class=\"lex\">m.</span> (for  <span lang=\"sa\">मातृ/</span> <span class=\"lex\">f.</span> See <span>p. 807, col. 1</span>) a measurer,<cite>Nir. xi, 5</cite></li> <li class=\"dict-entry mw-entry\">  one who measures across or traverses, <cite>RV. viii, 41, 4</cite> (<abbr>cf.</abbr> 10)</li> <li class=\"dict-entry mw-entry\">  a knower, one who has true knowledge, <cite>Cat.</cite></li> <li class=\"dict-entry mw-entry\">  <abbr>N.</abbr> of a <abbr>partic.</abbr> caste, <cite>ib.</cite> (<abbr>w.r.</abbr> for <span lang=\"sa\">माडव</span>?)</li> <li class=\"dict-entry mw-entry\">  of an author, <cite>Bṛh.</cite></li> <li class=\"dict-entry mw-entry\"> <span lang=\"sa\">मातृ/</span>   <span class=\"lex\">f.</span> (derivation from √  <span lang=\"sa\">मा</span> very doubtful; for  <span lang=\"sa\">मा/तृ</span> See <span>p. 804, col. 2</span>) a mother, any mother (applicable to animals), <cite>RV.</cite> &amp;c. &amp;c. (sometimes <abbr>ifc.</abbr>, <abbr>e.g.</abbr> <span lang=\"sa\">कुन्ती-म्°</span>, having <abbr>K°</abbr> for a mother)</li> <li class=\"dict-entry mw-entry\">  <abbr>du.</abbr> father and mother, parents, <cite>RV. iii, 3, 33</cite>; <cite>vii, 2, 5</cite> (also <span lang=\"sa\">मात/रा-पित/रा</span>, <cite>iv, 6, 7</cite>, and <span lang=\"sa\">पित/रा-मात/रा</span>, <cite>Pāṇ. vi, 3, 33</cite>; <abbr>cf.</abbr> <span lang=\"sa\">मातरपितरौ</span>, <abbr>col.</abbr> 2)</li> <li class=\"dict-entry mw-entry\">  the earth (<abbr>du.</abbr> heaven and earth), <cite>RV.</cite></li> <li class=\"dict-entry mw-entry\">  (with or <abbr>scil.</abbr> <span lang=\"sa\">लोकस्य</span>), a cow, <cite>MBh.</cite></li> <li class=\"dict-entry mw-entry\">  (<abbr>du.</abbr> and <abbr>pl.</abbr>) the two pieces of wood used in kindling fire, <cite>RV.</cite> (<abbr>cf.</abbr> <span lang=\"sa\">द्वि-म्°</span>)</li> <li class=\"dict-entry mw-entry\">  (<abbr>pl.</abbr>) the waters, <cite>RV.</cite> (<abbr>cf.</abbr> <span lang=\"sa\">सप्तम्°</span> and <cite>Naigh. i, 13</cite>)</li> <li class=\"dict-entry mw-entry\">  (<abbr>pl.</abbr>) the divine mothers or personified energies of the principal deities (sometimes reckoned as 7 in number, <abbr>viz.</abbr> <span>Brāhmī</span> or <span>Brahmāṇī</span>, <span>Māheśvarī</span>, <span>Kaumārī</span>, <span>Vaiṣṇavī</span>, <span>Vārāhī</span>, <span>Indrāṇī</span> or <span>Aindrī</span> or <span>Māhendrī</span>, <span>Cāmuṇḍā</span>; sometimes 8, <abbr>viz.</abbr> <span>Brāhmi</span>, <span>Māheśvarī</span>, <span>Kaumārī</span>, <span>Vaiṣṇavī</span>, <span>Vārāhī</span>, <span>Raudrī</span>, <span>Carma-muṇḍā</span>, <span>Kāla-saṃkarṣiṇī</span>; sometimes 9, <abbr>viz.</abbr> <span>Brahmāṇī</span>, <span>Vaiṣṇavī</span>, <span>Raudrī</span>, <span>Vārāhī</span>, <span>Nārasiṃhikā</span>, <span>Kaumārī</span>, <span>Māhendrī</span>, <span>Cāmuṇḍā</span>, <span>Caṇḍikā</span>; sometimes 16, <abbr>viz.</abbr> <span>Gaurī</span>, <span>Padmā</span>, <span>Śacī</span>, <span>Medhā</span>, <span>Sāvitrī</span>, <span>Vijayā</span>, <span>Jayā</span>, <span>Deva-senā</span>, <span>Sva-dhā</span>, <span>Svāhā</span>, <span>Śānti</span>, <span>Puṣṭi</span>, <span>Dhṛti</span>, <span>Tuṣṭi</span>, <span>Ātma-devatā</span> and <span>Kula-devatā</span>; they are closely connected with the worship of <span>Śiva</span> and are described as attending on his son <span>Skanda</span> or <span>Kārttikeya</span>, to whom at first only 7 <span>Mātṛ</span>s were assigned, but later an innumerable number; also the 13 wives of <span>Kaśyapa</span> are called, <span lang=\"sa\">लोकानाम् मातरः</span>), <cite>MBh.</cite>; <cite>R.</cite>; <cite>Pur.</cite>; <cite>Hcat.</cite> (<cite>RTL. 222</cite> &amp;c.)</li> <li class=\"dict-entry mw-entry\">  (<abbr>pl.</abbr>) the 8 classes of female ancestors (<abbr>viz.</abbr> mothers, grandmothers, great-grandmothers, paternal and maternal aunts &amp;c., <cite>Saṃskārak.</cite>; but the word ‘mother’ is also applied to other female relatives and in familiar speech to elderly women generally)</li> <li class=\"dict-entry mw-entry\">  <abbr>N.</abbr> of <span>Lakṣmī</span>, <cite>Bhartṛ.</cite></li> <li class=\"dict-entry mw-entry\">  of <span>Durgā</span>, <cite>L.</cite></li> <li class=\"dict-entry mw-entry\">  of <span>Dākṣāyaṇī</span> in certain places, <cite>Cat.</cite></li> <li class=\"dict-entry mw-entry\">  <abbr>accord.</abbr> to <cite>L.</cite> also = a colocynth</li> <li class=\"dict-entry mw-entry\">  <b>Salvinia Cucullata</b>, <b>Nardostachys Jatamansi</b>, <b>Sphaeranthus Indicus</b></li> <li class=\"dict-entry mw-entry\">  air, space</li> <li class=\"dict-entry mw-entry\">  the lower mill-stone</li> <li class=\"dict-entry mw-entry\">  = <span lang=\"sa\">विभूति</span></li> <li class=\"dict-entry mw-entry\">  = <span lang=\"sa\">-रेवती</span> </li> <li class=\"dict-entry mw-entry\"><span lang=\"sa\">मातृ</span>   [<abbr>cf.</abbr> <span>Gk.</span>, <gk>μάτηρ</gk>, <gk>μήτηρ</gk>; <span>Lat.</span> <i>mater</i>; <span>Lith.</span> <i>motė́</i>; <span>Slav.</span> <i>mati</i>; <span>Germ.</span> <i>muotar</i>, <i>Mutter</i>; <span>Eng.</span> <i>mother</i>.]</li>"
         }
     ],
     "AM_APHI": [
         {
-            "word": "किरात",
-            "content": ""
+            "word": "मातृ",
+            "content": "<lexhead no=\"571\">\n<dentry>मातृ</dentry>\n<prAwipaxikam>मातृ</prAwipaxikam>\n<grammar>स्त्री*</grammar>\n<etymology>[मान् पूजायां तृच् न लोपः]</etymology>\n<kind_of>गोमहिष्यादिः</kind_of>\n<jAwi>स्तनपायी</jAwi>\n<kind_of>स्त्री</kind_of>\n<jAwi>मनुष्यः</jAwi>\n<kind_of>नटी</kind_of>\n<jAwi>मनुष्यः</jAwi>\n<sense no=\"1\">माँ, माता, मातृवत्परदारेषु यः पश्यति स पश्यति, सहस्रं तु पितृन् माता गौरवेणातिरिच्यते<citation>सुभा*</citation></sense>\n<sense n=\"2\">माता (आदर तथा वात्सल्य सूचक)मातर्लक्ष्मि भजस्व कंचिदपरम्<citation>भर्तृ* ३।६४</citation>८७, अयि मातर्देवयजनसंभवे देवी सीते<citation>उत्तर* ४</citation></sense>\n<sense n=\"3\">गाय</sense>\n<sense n=\"4\">लक्ष्मी का विशेषण</sense>\n<sense n=\"5\">दुर्गा का विशेषण</sense>\n<sense n=\"6\">अन्तरिक्ष, आकाश</sense>\n<sense n=\"7\">पृथ्वी</sense>\n<sense n=\"8\">देव-मातामातृभ्यो बलिमुपहर<citation>मृच्छ* १</citation></sense>\n</lexhead>\n\n"
         }
     ],
     "AM_SHKB": [
         {
-            "word": "किरात",
-            "content": "<span lang=\"sa\">किरात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ವ್ಯಾಧ /ಬೇಡರವನು<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>अत (सातत्यगमने) - \"अण्\" (३-२-१)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>किरमवस्करदेशमतति<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"विदन्ति मार्गं नखरन्ध्रमुक्तैर्मुक्ताफलैः केसरिणां किराताः\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>कुमा० १-६<div class=\"h-2\"> </div><div class=\"h-2\"> </div>किरात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗಿಡ್ಡ /ಕುಳ್ಳ /ವಾಮನ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"पर्यन्ताश्रयिभिर्निजस्य सदृशं नाम्नः किरातैः कृतम्\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>रन्ता० २-३<div class=\"h-2\"> </div><div class=\"h-2\"> </div>किरात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕಾಡುಮನುಷ್ಯ /ಅರಣ್ಯನಿವಾಸಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>किरात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕುದುರೆಯ ಪರಿಚಾರಕ /ಕುದುರೆಯ ಯೋಗಕ್ಷೇಮ ನೋಡಿಕೊಳ್ಳುವ ಆಳು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>किरात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ನೆಲಬೇವು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>किरात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಮ್ಲೇಚ್ಛಜಾತಿಯವನು<div class=\"h-2\"> </div><b>विस्तारः - </b>\"किरातः स्यादल्पतनौ भूनिम्बम्ल्र्च्छयोरपि\" - मेदि० ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>किरात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕಿರಾತವೇಷಧಾರಿಯಾದ ಪರಮೇಶ್ವರ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>किरात<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಕಿರಾತ ದೇಶ<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"तप्तकुण्डं समारभ्य रामक्षेत्रान्तिकं शिवे । किरातदेशो विज्ञेयो विन्द्यशैलेऽवतिष्ठते ॥\"<div class=\"h-2\"> </div><b>विस्तारः - </b>बहुवचनान्तं रूपम् ।<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
-        }
-    ]
-}
+            "word": "मातृ",
+            "content": "<span lang=\"sa\">मातृ<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಜನನಿ /ತಾಯಿ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>मान (पूजायाम्) - \"तृच्\" (उ० २-९५)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>मान्यते पूज्यते<div class=\"h-2\"> </div><b>प्रयोगाः - </b>\"उमेति मात्रा तपसो निषिद्धा पश्चादुमाख्यां सुमुखी जगाम\"<div class=\"h-2\"> </div><b>उल्लेखाः - </b>कुमा० १-२६<div class=\"h-2\"> </div><div class=\"h-2\"> </div>मातृ<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಬ್ರಾಹ್ಮೀ ಮೊದಲಾದ ಸಪ್ತ ಮಾತೃಗಳು<div class=\"h-2\"> </div><b>विस्तारः - </b>ब्राह्मी, माहेश्वरी, कौमारी, वैष्णवी, वाराही, इन्द्राणी, चामुण्डा ಇವರು ಸಪ್ತ ಮಾತೃಗಳು।<div class=\"h-2\"> </div><div class=\"h-2\"> </div>मातृ<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಭೂಮಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>मातृ<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಗೋವು<div class=\"h-2\"> </div><div class=\"h-2\"> </div>मातृ<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಲಕ್ಷ್ಮಿ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>मातृ<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>स्त्रीलिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ದುರ್ಗಾದೇವಿ<div class=\"h-2\"> </div><b>विस्तारः - </b>

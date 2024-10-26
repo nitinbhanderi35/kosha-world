@@ -1,174 +1,210 @@
 {
-    "word": "पदाजि",
-    "ABCH": [
-        {
-            "word": "पदाजि",
-            "linga": "पुं",
-            "pagenum": "23",
-            "kanda": "मर्त्यकाण्डः",
-            "varga": "",
-            "eid": "1537",
-            "group": "518",
-            "synonyms": [
-                "पदाति",
-                "पत्ति",
-                "पद्ग",
-                "पदातिक",
-                "पादातिक",
-                "पादचारिन्",
-                "पदिक"
-            ],
-            "content": "सहायोऽभिचरोऽनोश्च जीविगामिचरप्लवाः ।\nसेवकोऽथ सेवा भक्तिः परिचर्या प्रसादना ॥ ४९६ ॥\nशुश्रूषाराधनोपास्तिवरिवस्यापरीष्टयः ।\nउपचारः पदातिस्तु पत्तिः पद्गः पदातिकः ॥ ४९७ ॥\nपादातिकः पादचारी पदाजिपदिकावपि ।"
-        }
+  "polyfillFiles": [
+    "static/chunks/polyfills-c67a75d1b6f99dc8.js"
+  ],
+  "devFiles": [],
+  "ampDevFiles": [],
+  "lowPriorityFiles": [
+    "static/iWeFdvKIQLVan8KR-E92S/_buildManifest.js",
+    "static/iWeFdvKIQLVan8KR-E92S/_ssgManifest.js"
+  ],
+  "rootMainFiles": [],
+  "pages": {
+    "/": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/pages/index-b1f57306ab62973c.js"
     ],
-    "LRV": [
-        {
-            "word": "पदाजि",
-            "eid": "20971",
-            "pagenum": 410,
-            "content": "padAji¦ <i>m.</i> 1. A pedestrian; 2. a foot-soldier, <ls>R.</ls>vii.37."
-        }
+    "/404": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/664-bd157c0c144b8096.js",
+      "static/chunks/pages/404-b18b91c8c250038b.js"
     ],
-    "MW": [
-        {
-            "word": "पदाजि",
-            "eid": "115354",
-            "pagenum": "583,3",
-            "content": "padA<srs/>ji <hom>a</hom> ¦ &c. See <ab>s.v.</ab>"
-        },
-        {
-            "word": "पदाजि",
-            "eid": "115415",
-            "pagenum": "584,1",
-            "content": "पदाजि <hom>b</hom> ¦ <lex>m.</lex> (<ab>fr.</ab> पद + आजि? <ls>Pāṇ. vi, 3, 52</ls>) a footman, foot-soldier, <ls>L.</ls><info lex='m'/>"
-        }
+    "/_app": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/css/2c9b8e920ef6cc0d.css",
+      "static/chunks/pages/_app-ef607e594ec8eefd.js"
     ],
-    "PW": [
-        {
-            "word": "पदाजि",
-            "eid": "62792",
-            "pagenum": 4,
-            "content": "*पदाजि¦ <lex>m.</lex> <i>Fussgänger, Fussknecht</i>."
-        }
+    "/_error": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/pages/_error-5a00309fd5f4b49e.js"
     ],
-    "PWG": [
-        {
-            "word": "पदाजि",
-            "eid": "42063",
-            "pagenum": 4,
-            "content": "पदाजि/¦ (2. पद् oder पद + आजि <i>gehend</i> von अज्) <ls>UṆĀDIS. 4, 131.</ls> <ls>P. 6, 3, 52</ls> (vgl. <is>Vārtt</is>. 2). <lex>m.</lex> <i>Fussgänger, Fussknecht</i> <ls>AK. 2, 8, 2, 34.</ls> <ls>H. 498.</ls> <dvsn n='v'>— Vgl. पदाति ."
-        }
+    "/addwing/[project_id]": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/100-e1a059db7a53e947.js",
+      "static/chunks/pages/addwing/[project_id]-b8602a3cd0d79e0b.js"
     ],
-    "SHS": [
-        {
-            "word": "पदाजि",
-            "eid": "23129",
-            "pagenum": 418,
-            "content": "पदाजि¦ m. (-जिः) A foot soldier. E. पद a foot, अज् to go, इन् Unādi aff."
-        }
+    "/agreement": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/75fc9c18-af385d3bdb0a9ad1.js",
+      "static/chunks/e21e5bbe-ed8f85b14f020dcc.js",
+      "static/chunks/90cba634-2745579695f5c65d.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/85-2d0caccbbd59d752.js",
+      "static/chunks/777-27dcaa80afa9c288.js",
+      "static/chunks/pages/agreement-8586afe20f9f8260.js"
     ],
-    "WIL": [
-        {
-            "word": "पदाजि",
-            "eid": "23143",
-            "pagenum": 500,
-            "content": "पदाजि¦ m. (-जिः) A foot soldier. .E. पद a foot, अज to go, इन् Uṇādi aff."
-        }
+    "/agreement/test": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/75fc9c18-af385d3bdb0a9ad1.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/85-2d0caccbbd59d752.js",
+      "static/chunks/pages/agreement/test-48793dddd33f801a.js"
     ],
-    "YAT": [
-        {
-            "word": "पदाजि",
-            "eid": "22616",
-            "pagenum": 446,
-            "content": "पदा_जि¦ (जिः) 2. <i>m.</i> A foot soldier."
-        }
+    "/balancesheet": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/75fc9c18-af385d3bdb0a9ad1.js",
+      "static/chunks/e21e5bbe-ed8f85b14f020dcc.js",
+      "static/chunks/90cba634-2745579695f5c65d.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/85-2d0caccbbd59d752.js",
+      "static/chunks/777-27dcaa80afa9c288.js",
+      "static/chunks/pages/balancesheet-69de471372a4a02d.js"
     ],
-    "SKD": [
-        {
-            "word": "पदाजि",
-            "eid": "20206",
-            "pagenum": "3-040-a",
-            "content": "पदाजिः¦, पुं, (पादाभ्यामजतीति । अज गतौ + “पादे च ।” उणां । ४ । १३१ । इति पादे चोपपदे अजेरिण् । “पादस्य पदाज्यातिगोपहतेषु ।” ६ । ३ । ५२ । इति पदादेशः । बहुलवचनात् अजेर्व्यभावः ।) पदातिकः । इत्यमरः । २ । ८ । ६६ ॥"
-        }
+    "/common/add": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/75fc9c18-af385d3bdb0a9ad1.js",
+      "static/chunks/e21e5bbe-ed8f85b14f020dcc.js",
+      "static/chunks/90cba634-2745579695f5c65d.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/85-2d0caccbbd59d752.js",
+      "static/chunks/208-ee68f22d786e19f3.js",
+      "static/chunks/pages/common/add-ce7e8ebd56a07060.js"
     ],
-    "VCP": [
-        {
-            "word": "पदाजि",
-            "eid": "30506",
-            "pagenum": "4225,a",
-            "content": "पदाजि¦ पु० पादेन अजति गच्छति अज--इण् । “पादस्य पदाज्यतीति” निर्देशात् व्यभावः पादस्य पद इत्यादेशः । पादेन गन्तरि पदातौ अमरः ।"
-        }
+    "/common/details": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/75fc9c18-af385d3bdb0a9ad1.js",
+      "static/chunks/e21e5bbe-ed8f85b14f020dcc.js",
+      "static/chunks/90cba634-2745579695f5c65d.js",
+      "static/chunks/674a26a7-94cf6e4427067302.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/85-2d0caccbbd59d752.js",
+      "static/chunks/8-b3a9d054c34f2dee.js",
+      "static/chunks/734-ce4e4f4e5944de23.js",
+      "static/chunks/pages/common/details-d53c3249384fc8b5.js"
     ],
-    "APHI": [
-        {
-            "word": "पदाजि",
-            "content": "पदाजिः पुं. पदम्-आजिः  - पैदलसिपाही"
-        }
+    "/contractor": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/75fc9c18-af385d3bdb0a9ad1.js",
+      "static/chunks/e21e5bbe-ed8f85b14f020dcc.js",
+      "static/chunks/90cba634-2745579695f5c65d.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/85-2d0caccbbd59d752.js",
+      "static/chunks/pages/contractor-f80bf8c1db805c5d.js"
     ],
-    "SHKB": [
-        {
-            "word": "पदाजि",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ಪದಾತಿ\\/ಕಾಲಾಳು\\/ಕಾಲ್ಬಲ",
-            "निष्पत्तिः": "अज(गतिक्षेपणयोः) 'इण्' (उ० ४-१३१) पादस्य 'पद' आदेशः (६-३-५२)",
-            "व्युत्पत्तिः": "पादाभ्यामजति",
-            "content": ""
-        },
-        {
-            "word": "पदाजि",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ಯುದ್ಧ",
-            "content": ""
-        },
-        {
-            "word": "पदाजि",
-            "पदविभागः": "पुल्लिङ्गः",
-            "कन्नडार्थः": "ರಸ್ತೆ",
-            "विस्तारः": "'पदाजिर्युधि मार्गे च' वैज०",
-            "content": ""
-        }
+    "/createproject": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/100-e1a059db7a53e947.js",
+      "static/chunks/pages/createproject-fe672efe1225c693.js"
     ],
-    "AMARA": [
-        {
-            "word": "पदाजि",
-            "linga": "P",
-            "artha": "पदातिः",
-            "synonyms": [
-                "पदाति",
-                "पत्ति",
-                "पदग",
-                "पादातिक",
-                "पदाजि",
-                "पद्ग",
-                "पदिक"
-            ],
-            "num": "2.8.66",
-            "text": "त्रिष्वामुक्तादयो वर्मभृतां कावचिकं गणे । पदातिपत्तिपदगपादातिकपदाजयः ॥",
-            "content": ""
-        }
+    "/dashboard": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/e21e5bbe-ed8f85b14f020dcc.js",
+      "static/chunks/90cba634-2745579695f5c65d.js",
+      "static/chunks/ea88be26-3ef8a5f788c0ad28.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/424-d6847cf3e3b70720.js",
+      "static/chunks/664-bd157c0c144b8096.js",
+      "static/chunks/496-a422eaa4102154ec.js",
+      "static/chunks/pages/dashboard-bab387aa9fd67bfa.js"
     ],
-    "AM_VCP": [
-        {
-            "word": "पदाजि",
-            "content": "<li class=\"dict-entry\"><span lang=\"sa\">पदाजि पु° पादेन अजति गच्छति अज—इण् । <q>पादस्य पदाज्यतीति</q> निर्देशात् व्यभावः पादस्य पद इत्यादेशः । पादेन गन्तरि पदातौ अमरः ।</span></li>"
-        }
+    "/flatstatus": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/75fc9c18-af385d3bdb0a9ad1.js",
+      "static/chunks/ea88be26-3ef8a5f788c0ad28.js",
+      "static/chunks/674a26a7-94cf6e4427067302.js",
+      "static/chunks/cb355538-62b1c0443498d538.js",
+      "static/chunks/ebc70433-c3fea098187463e5.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/424-d6847cf3e3b70720.js",
+      "static/chunks/541-b7f8dcc0fb9aa0ab.js",
+      "static/chunks/496-a422eaa4102154ec.js",
+      "static/chunks/pages/flatstatus-5363d0d64590de26.js"
     ],
-    "AM_SHS": [
-        {
-            "word": "पदाजि",
-            "content": "<li class=\"dict-entry mw-entry\"><span lang=\"sa\">पदाजि</span>  <div n=\"1\">m. (<span lang=\"sa\">-जिः</span>) A foot soldier.</div><div n=\"E\"> E. <span lang=\"sa\">पद</span> a foot, <span lang=\"sa\">अज्</span> to go, <span lang=\"sa\">इन्</span> Unādi aff.</div></li>"
-        }
+    "/investment": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/e21e5bbe-ed8f85b14f020dcc.js",
+      "static/chunks/90cba634-2745579695f5c65d.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/85-2d0caccbbd59d752.js",
+      "static/chunks/pages/investment-f19b8f81661466c1.js"
     ],
-    "AM_APHI": [
-        {
-            "word": "पदाजि",
-            "content": ""
-        }
+    "/khatavahi/add": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/75fc9c18-af385d3bdb0a9ad1.js",
+      "static/chunks/e21e5bbe-ed8f85b14f020dcc.js",
+      "static/chunks/90cba634-2745579695f5c65d.js",
+      "static/chunks/ea88be26-3ef8a5f788c0ad28.js",
+      "static/chunks/674a26a7-94cf6e4427067302.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/85-2d0caccbbd59d752.js",
+      "static/chunks/424-d6847cf3e3b70720.js",
+      "static/chunks/496-a422eaa4102154ec.js",
+      "static/chunks/208-ee68f22d786e19f3.js",
+      "static/chunks/pages/khatavahi/add-36ff0cb2edad45b3.js"
     ],
-    "AM_SHKB": [
-        {
-            "word": "पदाजि",
-            "content": "<span lang=\"sa\">पदाजि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಪದಾತಿ/ಕಾಲಾಳು/ಕಾಲ್ಬಲ<div class=\"h-2\"> </div><b>निष्पत्तिः - </b>अज(गतिक्षेपणयोः) \"इण्\" (उ० ४-१३१) पादस्य \"पद\" आदेशः (६-३-५२)<div class=\"h-2\"> </div><b>व्युत्पत्तिः - </b>पादाभ्यामजति<div class=\"h-2\"> </div><div class=\"h-2\"> </div>पदाजि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ಯುದ್ಧ<div class=\"h-2\"> </div><div class=\"h-2\"> </div>पदाजि<div class=\"h-2\"> </div><div class=\"h-2\"> </div><b>पदविभागः - </b>पुल्लिङ्गः<div class=\"h-2\"> </div><b>कन्नडार्थः - </b>ರಸ್ತೆ<div class=\"h-2\"> </div><b>विस्तारः - </b>\"पदाजिर्युधि मार्गे च\" वैज०<div class=\"h-2\"> </div><div class=\"h-2\"> </div></span>"
-        }
-    ]
-}
+    "/khatavahi/details": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "static/chunks/4577d2ec-1ce1beacb5df56bd.js",
+      "static/chunks/75fc9c18-af385d3bdb0a9ad1.js",
+      "static/chunks/e21e5bbe-ed8f85b14f020dcc.js",
+      "static/chunks/90cba634-2745579695f5c65d.js",
+      "static/chunks/ea88be26-3ef8a5f788c0ad28.js",
+      "static/chunks/674a26a7-94cf6e4427067302.js",
+      "static/chunks/121-131b5ad3b15a485d.js",
+      "static/chunks/85-2d0caccbbd59d752.js",
+      "static/chunks/424-d6847cf3e3b70720.js",
+      "static/chunks/496-a422eaa4102154ec.js",
+      "static/chunks/734-ce4e4f4e5944de23.js",
+      "static/chunks/pages/khatavahi/details-9cee4f0dfecd4db8.js"
+    ],
+    "/login": [
+      "static/chunks/webpack-b6681a77dbfb7bfd.js",
+      "static/chunks/framework-5429a50ba5373c56.js",
+      "static/chunks/main-930135e47dff83e9.js",
+      "sta

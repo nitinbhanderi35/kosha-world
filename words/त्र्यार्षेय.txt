@@ -1,69 +1,845 @@
-{
-    "word": "त्र्यार्षेय",
-    "MW": [
-        {
-            "word": "त्र्यार्षेय",
-            "eid": "88897",
-            "pagenum": "463,1",
-            "content": "त्र्य्—आर्षेय ¦ <lex>mfn.</lex> having 3 sacred ancestors, <ls>MānŚr. xi</ls>; <ls>Pravar.</ls><info lex='m:f:n'/>"
-        },
-        {
-            "word": "त्र्यार्षेय",
-            "eid": "88898",
-            "pagenum": "463,1",
-            "content": "त्र्य्—आर्षेय ¦ <lex>m. <ab>pl.</ab></lex> a blind, a deaf, and a dumb person, <ls>W.</ls><info lex='m'/>"
+r iteratorFn = getIteratorFn(node);
+
+    if (iteratorFn) {
+      {
+        validateIterable(node, iteratorFn);
+      }
+
+      var iterator = iteratorFn.call(node);
+
+      if (iterator) {
+        // We need to know how many total children are in this set, so that we
+        // can allocate enough id slots to acommodate them. So we must exhaust
+        // the iterator before we start recursively rendering the children.
+        // TODO: This is not great but I think it's inherent to the id
+        // generation algorithm.
+        var step = iterator.next(); // If there are not entries, we need to push an empty so we start by checking that.
+
+        if (!step.done) {
+          var children = [];
+
+          do {
+            children.push(step.value);
+            step = iterator.next();
+          } while (!step.done);
+
+          renderChildrenArray(request, task, children);
+          return;
         }
-    ],
-    "PW": [
-        {
-            "word": "त्र्यार्षेय",
-            "eid": "48155",
-            "pagenum": 3,
-            "content": "त्र्यार्षेय¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>drei</i> <is>Ṛṣi</is>-<i>Stammbäume in sich schliessend</i> <ls>MĀN. ŚR. 11,8,4. 7. 8</ls>. <dvsn n='1'>— 2〉 *<lex>m.</lex> <ab>Pl.</ab> <i>ein Blinder, ein Tauber und ein Stummer</i>."
-        }
-    ],
-    "PWG": [
-        {
-            "word": "त्र्यार्षेय",
-            "eid": "31403",
-            "pagenum": 3,
-            "content": "त्र्यार्षेय¦ (त्रि + आ°) <lex>adj.</lex> <i>drei</i> <is>Ṛṣi</is> - <i>Stammbäume in sich schliessend</i>: प्रवर <ls>PRAVARĀDHY.</ls> in <ls>Verz. d. B. H. 55. fgg.</ls> Nach <ls>CANDRAŚEKHARA-VĀCASPATI'S CANDANADHENUVIDHI</ls> im <ls>ŚKDR.</ls> soll der pl. so v. a. <i>ein Blinder, ein Tauber und ein Stummer</i> (!) bedeuten."
-        }
-    ],
-    "PWKVN": [
-        {
-            "word": "त्र्यार्षेय",
-            "eid": "4815",
-            "pagenum": 3,
-            "content": "त्र्यार्षेय¦ 1〉 besser <i>mit drei heiligen Ahnen</i>."
-        },
-        {
-            "word": "त्र्यार्षेय",
-            "eid": "18006",
-            "pagenum": 7,
-            "content": "त्र्यार्षेय und त्र्यु^द्धि¦ III. 3."
-        }
-    ],
-    "SCH": [
-        {
-            "word": "त्र्यार्षेय",
-            "eid": "15007",
-            "pagenum": 206,
-            "content": "<i>tryārṣeya</i>¦ 1. besser: mit drei heiligen Ahnen. {part=,seq=15243,type=,n=2}"
-        }
-    ],
-    "VCP": [
-        {
-            "word": "त्र्यार्षेय",
-            "eid": "23968",
-            "pagenum": "3397,b",
-            "content": "त्र्यार्षेय¦ पु० त्रयः आर्षेयाः ऋषयः यत्र । त्रिप्रवरे १ गोत्रभेदे आर्षेयशब्दे दृश्यम् । ऋषेरयम् ढक् आर्षेयः ऋषिधर्मः त्रयः आर्षेया धर्मायेषाम् । २ अन्धबधिरमूकेषु तेषाञ्च यथा ऋषिधर्मवत्त्वंतथा समर्थितं तत्त्वबोधिन्याम् यथा “एतन्न्यायमूलक एव तिर्य्यक्पङ्गुत्य्रार्थेयदेवतानां यागेषु नाधिकार इति प्रवादः । त्र्यार्षेयास्त्रय ऋषिधर्मा अन्धत्वबधिरत्वमूकत्वानि येषां ते ऋषीणां हि परद्रव्यदर्शनेन तत्र रागोत्पत्तिसम्भावनया चक्षुर्निमीलनेनान्धत्वं, परनिन्दाश्रवणशङ्कया श्रोत्रनिग्रहेण बधिरत्वं मिथ्याकथनशङ्कया वाक्यसंयमनान्मौक्यम्” । अन्धादीनां कर्म्मानधिकारे हेतुश्च “मनुष्याणां वा आरम्भसामर्थ्यात्” ४ “अङ्गहीनाश्रोत्रियषण्ढशूद्रवर्जम्” कात्या० श्रौ० १ । १ । ५ । सूत्राभ्यां निरूपितः अत्र कर्कव्याख्या “अङ्गहीनाश्रोत्रियषण्ढशूद्रान् वर्जयित्वा मनुष्याणामधिकारः कर्मसु भवति । मनुष्या अपि ये अङ्गहीना अङ्गेने चक्षुरादिना हीना अन्धपङ्गुमूकवधिरादयः अश्रोत्रिया अनधीतवेदाः षण्ढा नपुंसकाः शूद्राश्च नैतेषामधिकार इत्यर्थः । आरम्भसामर्थ्यादित्यत्राप्यनुवर्त्तते न चैतेऽङ्गहीनादयो यथाश्रुतं कर्मारब्धुं कर्तुं शक्रुवन्ति तद्यथा न ह्यन्ध आज्यावेक्षणं कर्तुं शक्नोति मूकश्च मन्त्रीच्चारणम्, पङ्गुश्च विष्णुक्रमम् । बधिरश्च प्रैषश्रवणम् अनधीतवेदोऽश्रोत्रिय इत्युच्यते स च किमपि मन्त्रसाध्यं कर्तुं न शक्रोति षण्ढो नपुंसकः तस्याप्यनधीतवेदत्वादद्रव्यत्वादशुचित्वाच्च नाधिकारः शूद्रस्य चानधीतवेदत्वादनधिकारः । आज्यावेक्षणाभिश्च विना कर्मणो वैगुण्यं भवत्येव । ननूक्तम् अशक्याङ्गरहितकर्मानुष्ठानादधिकारो भविष्यतीति । अत्रोच्यते । भवेदेवं यदि आज्यमवेक्षत इत्यादीन्यङ्गवाक्यानि स्वातन्त्र्येण पुरुषैः सम्बध्येरन् प्रधानवाक्यशेषत्वात्तेषाम् । तदङ्गयुक्तेन प्रधानवाक्येन तदङ्गयुक्तः क्रतुः पुरुषैः सम्बध्यमानोऽसमर्थान् परित्यज्य समर्थान् प्रतिज्ञायते तेनान्धस्य क्रतुरेवाविहितो न त्वाज्यावेक्षणमेवाविहितमितरच्च विहितमिति मन्तव्यम् । न च प्रधानवाक्यविरोधः सर्वाधिकारानिश्चयात् विशेषभावाद्धि सर्वाधिकारः स्यात् अस्ति च विशेषः आरम्भ सामर्थ्यम् अतः समर्थानामेवाधिकारः । यत्र तु प्रधानवाक्यविरोधो यावज्जीवं यजेतेत्यादौ तत्र यथाशक्तिप्रयोगादपि फलं भवति तदविरोधे तु सर्वाङ्गयुक्तकर्मानुष्ठानादेव फलम् । ननु आरम्भसामर्थ्यादित्यनेनैव गवादीनामिवान्धादीनामप्यधिकाराभावसिद्धेः किमर्थं पुनरङ्गहीनादिवर्जमित्युक्तम् उच्यते नियमार्थम् एतेषामेवानधिकारो न निर्धनस्य तस्य चाधिकारो भवत्येव न त्वारम्भसामर्थ्याभावादनधिकारः अतो निर्धनोऽपि क्रत्वर्थं धनमर्जनादिना सम्पाद्यावश्यं यजेतेति । एवमन्धादिरपि यद्योषधिशस्त्रादिनान्धत्वादिकं स्फोटयितुं शक्नोति तस्याप्यधिकारो भवत्य व पूर्वमनङ्गहीनत्वावस्थायामाहिताग्निश्चेत् पश्चाद्रोगादिनाङ्गवैकल्ये जाते काम्येष्वधिकारो न भवति नित्येषु तु यथाशक्ति कुर्वन्नधिक्रियत एव अङ्गवैकल्ये सति अग्न्याधेयं न भवत्येव” त्रीणि आर्षेयाणि यस्य । ३ त्रिगोत्रोत्पन्ने माधवः । अत्रेदमभिधीयते तत्त्वबोधिन्याम् त्र्यार्षेयशब्दस्यान्धादिपरत्वकल्पनं सूत्रभाष्यविरुद्धम् । तथाहि “अङ्गहोनश्च तद्धर्म्मा” ६ । १ । ४१ । जै० सू० । “अग्निहीत्रादिषु एवाङ्गहीनं प्रति सन्देहः किम् असावधिक्रियते, उत न इति । तत्राप्यधिकरणातिदेशः । असमर्थः इति कृत्वा पूर्वः पक्षः शक्तेर्विद्यमानत्वात् उत्तरः । तदिदम् अभिधीयते अङ्गहीनश्च तद्धर्मा । किंधर्मा अद्रव्यधर्मा” शव० भा० । “उत्पत्तौ नित्यसंयोगात्” जै० ६ । १ । ४२ “यस्य तु अप्रतिसमाधेयमङ्गवैकल्यं तं प्रति विचारः किं अधिक्रियते न, इति पूर्वाधिकरणेन अधिक्रियते इति प्राप्ते ब्रूमः न अधिक्रियते इति । कुतः? शक्त्यभावात् न असौ केनचित् अपि प्रकारेण शक्तोति यष्टुम्, तस्मात् तस्य अधिकारो न गम्यते । ननु यत् शक्नोति तत्र अधिक्रियते इति चक्षुर्विकलो विना आज्यावेक्षणेन, विना विष्णुक्रमैः पङ्गुः, विना प्रैषादिश्रवणेन च बधिरः, एतान् पदार्थान् प्रति चक्षुर्विकलादीनामनधिकारः इति यदि हि तं प्रति निर्दिश्येत ततो विकलोऽप्यधिक्रियते क्रतुम् प्रति । एषाम् उपदेशः प्रकरणाविशेषात् पुरुषस्य च आख्यातेन अनभिधानात् इति उक्तमेतत् । “विधिर्वा संयोगान्तरात् (३ । ४ । १३ ) इत्यत्र । तैश्च विना विगुणं कर्म प्रयुक्तमपि न फलं साधयेत् । तस्मात् तस्य अनधिकारः” भा० । “अत्रार्षेयस्य स न स्यात्” जै०६ । १ । ४३ “दर्शपूर्णमासयोः श्रूयते, “आर्षेयं वृणीते एकं वृणीते द्वौ वृणीते त्रीन् वृणीते न चतुरो वृणीते पञ्चाति वृणीते इति । तत्र सन्देहः किम् अत्र्यार्षेयस्य अधिकारः उत न इति किं प्राप्तम् । अत्र्यार्षेयोऽप्यधि क्रियते” इति कुतः आर्षेयं वृणीते इति सामान्यवचनम् तस्मात् एकं वरिष्यति द्वौ वा तच्च दर्शयति एकं वृणीते इति तथा प्रतिषेधति न चतुरो वृणीते इति । न हि अप्राप्तस्य प्रतिषेधोऽवकल्पते । तस्मात् अत्र्याषे योऽप्यधिक्रियेत । एवं प्राप्ते ब्रूमः यो न त्र्यार्षेयः स न अधिक्रियते । कुतः? त्रीन् वृणीते इति विशेषवचनात् विधिश्च अप्राप्तत्वात् । ननु एकं वृणीते इत्यपि विशेषवचनमस्ति । न इत्युच्यते, विधायिकाया विभक्तेरभावात् । ननु स्तुत्या विधास्यन्ते यथा त्रीन् वृणीत इति । उच्यते त्रयाणामेव स्तुतिः सा त्रित्वं विधास्यति । एकं वृणीते इत्यवयुत्यवादोऽयं त्रयाणामेव, तत्रापि त्रित्वमेव श्रूयते विधातुम् । एवम् एकवाक्येन विधानं भविष्यति इति । न चतुरो वृणोते न पञ्चातिवृणीते इति नित्यानुवादो भविष्यति । तस्मात् त्र्यार्षेयस्य अधिकारो नान्यस्य इति” शव० भा० । न्यायमालायां माधवेस्तु “ऋषिर्गोत्रप्रवर्त्तकः कश्यपभरद्वाजादिस्तस्य सम्बन्ध आर्षेयस्तं वृणीते उच्चारयति कश्यपगोत्रोऽहं भरद्वाजगोत्रोऽहभिति एवम् उपमन्युवशिष्ठमोत्रोऽहमिति द्विगोत्रोच्चारणम् । आङ्गिरसवार्हस्पत्यभरद्वाजगोत्रोऽहमिति त्रिगोत्रोच्चारणम्” । एवञ्च सूत्रभाष्यादिग्रन्थेषु त्र्यार्षेयशब्दस्य अन्यार्थपरत्वात् जात्यन्धादेः सूत्रान्तरेण अनधिकारस्य प्रतिपादनात् त्र्यार्षेयशब्दस्य न अन्धादिपरत्वमिति सुधीभिर्भाव्यम् ।"
-        }
-    ],
-    "AM_VCP": [
-        {
-            "word": "त्र्यार्षेय",
-            "content": "<li class=\"dict-entry\"><span lang=\"sa\">त्र्यार्षेय पु° त्रयः आर्षेयाः ऋषयः यत्र । त्रिप्रवरे <div class=\"h-2\"> </div><b>१</b> गोत्रभेदे आर्षेयशब्दे दृश्यम् । ऋषेरयम् ढक् आर्षेयः ऋषि­धर्मः त्रयः आर्षेया धर्मायेषाम् । <div class=\"h-2\"> </div><b>२</b> अन्धबधिरमूकेषु तेषाञ्च यथा ऋषिधर्मवत्त्वंतथा समर्थितं तत्त्वबोधिन्याम् यथा <q>एतन्न्यायमूलक एव तिर्य्यक्पङ्गुत्य्रार्थेयदेवतानां यागेषु नाधिकार इति प्रवादः । त्र्यार्षेयास्त्रय ऋषि­धर्मा अन्धत्वबधिरत्वमूकत्वानि येषां ते ऋषीणां हि पर­द्रव्यदर्शनेन तत्र रागोत्पत्तिसम्भावनया चक्षुर्नि­मीलनेनान्धत्वं, परनिन्दाश्रवणशङ्कया श्रोत्रनिग्रहेण बधिरत्वं मिथ्याकथनशङ्कया वाक्यसंयमनान्मौक्यम्</q> । अन्धादीनां कर्म्मानधिकारे हेतुश्च <q>मनुष्याणां वा आर­म्भसामर्थ्यात्</q> ४ <q>अङ्गहीनाश्रोत्रियषण्ढशूद्रवर्जम्</q> कात्या° श्रौ° १ । १ । ५ । सूत्राभ्यां निरूपितः अत्र कर्कव्याख्या <q>अङ्गहीनाश्रोत्रियषण्ढशूद्रान् वर्जयित्वा मनुष्याणा­मधिकारः कर्मसु भवति । मनुष्या अपि ये अङ्गहीना अङ्गेने चक्षुरादिना हीना अन्धपङ्गुमूकवधिरादयः अश्रोत्रिया अनधीतवेदाः षण्ढा नपुंसकाः शूद्राश्च नैतेषामधिकार इत्यर्थः । आरम्भसामर्थ्यादित्यत्राप्यनु­वर्त्तते न चैतेऽङ्गहीनादयो यथाश्रुतं कर्मारब्धुं कर्तुं शक्रुवन्ति तद्यथा न ह्यन्ध आज्यावेक्षणं कर्तुं शक्नोति मूकश्च मन्त्रीच्चारणम्, पङ्गुश्च विष्णुक्रमम् । बधिरश्च प्रैषश्रवणम् अनधीतवेदोऽश्रोत्रिय इत्युच्यते स च किमपि मन्त्रसाध्यं कर्तुं न शक्रोति षण्ढो नपुं­सकः तस्याप्यनधीतवेदत्वादद्रव्यत्वादशुचित्वाच्च नाधि­कारः शूद्रस्य चानधीतवेदत्वादनधिकारः । आज्यावेक्षणा­भिश्च विना कर्मणो वैगुण्यं भवत्येव । ननूक्तम् अशक्याङ्गरहितकर्मानुष्ठानादधिकारो भविष्यतीति । अत्रोच्यते । भवेदेवं यदि आज्यमवेक्षत इत्यादीन्यङ्ग­वाक्यानि स्वातन्त्र्येण पुरुषैः सम्बध्येरन् प्रधानवाक्य­शेषत्वात्तेषाम् । तदङ्गयुक्तेन प्रधानवाक्येन तदङ्गयुक्तः क्रतुः पुरुषैः सम्बध्यमानोऽसमर्थान् परित्यज्य समर्थान् प्रतिज्ञायते तेनान्धस्य क्रतुरेवाविहितो न त्वाज्या­वेक्षणमेवाविहितमितरच्च विहितमिति मन्तव्यम् । न च प्रधानवाक्यविरोधः सर्वाधिकारानिश्चयात् विशेष­भावाद्धि सर्वाधिकारः स्यात् अस्ति च विशेषः आरम्भ सामर्थ्यम् अतः समर्थानामेवाधिकारः । यत्र तु प्रधान­वाक्यविरोधो यावज्जीवं यजेतेत्यादौ तत्र यथाशक्ति­प्रयोगादपि फलं भवति तदविरोधे तु सर्वाङ्गयुक्त­कर्मानुष्ठानादेव फलम् । ननु आरम्भसामर्थ्यादित्यनेनैव गवादीनामिवान्धादीनामप्यधिकाराभावसिद्धेः किमर्थं पुनरङ्गहीनादिवर्जमित्युक्तम् उच्यते नियमार्थम् एतेषा­मेवानधिकारो न निर्धनस्य तस्य चाधिकारो भवत्येव न त्वारम्भसामर्थ्याभावादनधिकारः अतो निर्धनोऽपि क्रत्वर्थं धनमर्जनादिना सम्पाद्यावश्यं यजेतेति । एव­मन्धादिरपि यद्योषधिशस्त्रादिनान्धत्वादिकं स्फोटयितुं शक्नोति तस्याप्यधिकारो भवत्य व पूर्वमनङ्गहीनत्वाव­स्थायामाहिताग्निश्चेत् पश्चाद्रोगादिनाङ्गवैकल्ये जाते काम्येष्वधिकारो न भवति नित्येषु तु यथाशक्ति कुर्व­न्नधिक्रियत एव अङ्गवैकल्ये सति अग्न्याधेयं न भवत्येव</q> त्रीणि आर्षेयाणि यस्य । <div class=\"h-2\"> </div><b>३</b> त्रिगोत्रोत्पन्ने माधवः । अत्रेदमभिधीयते तत्त्वबोधिन्याम् त्र्यार्षेयशब्दस्यान्धादि­परत्वकल्पनं सूत्रभाष्यविरुद्धम् । तथाहि <q>अङ्गहोनश्च तद्धर्म्मा</q> ६ । १ । ४१ । जै° सू° । <q>अग्निहीत्रादिषु एवाङ्ग­हीनं प्रति सन्देहः किम् असावधिक्रियते, उत न इति । तत्राप्यधिकरणातिदेशः । असमर्थः इति कृत्वा पूर्वः पक्षः शक्तेर्विद्यमानत्वात् उत्तरः । तदिदम् अभिधीयते अङ्गहीनश्च तद्धर्मा । किंधर्मा अद्रव्यधर्मा</q> शव° भा° । <q>उत्पत्तौ नित्यसंयोगात्</q> जै° ६ । १ । ४२ <q>यस्य तु अप्रतिसमाधेयमङ्गवैकल्यं तं प्रति विचारः किं अधि­क्रियते न, इति पूर्वाधिकरणेन अधिक्रियते इति प्राप्ते ब्रूमः न अधिक्रियते इति । कुतः? शक्त्यभावात् न असौ केनचित् अपि प्रकारेण शक्तोति यष्टुम्, तस्मात् तस्य अधिकारो न गम्यते । ननु यत् शक्नोति तत्र अधिक्रियते इति चक्षुर्विकलो विना आज्यावेक्षणेन, विना विष्णुक्रमैः पङ्गुः, विना प्रैषादिश्रवणेन च बधिरः, एतान् पदार्थान् प्रति चक्षुर्विकलादीनामनधिकारः इति यदि हि तं प्रति निर्दिश्येत ततो विकलोऽप्यधिक्रियते क्रतुम् प्रति । एषाम् उपदेशः प्रकरणाविशेषात् पुरुषस्य च आख्यातेन अनभिधानात् इति उक्तमेतत् । “विधि­र्वा संयोगान्तरात् (३ । <div class=\"h-2\"> </div><b>४</b> । १३ ) इत्यत्र । तैश्च विना विगुणं कर्म प्रयुक्तमपि न फलं साधयेत् । तस्मात् तस्य अनधिकारः</q> भा° । <q>अत्रार्षेयस्य स न स्यात्</q> जै°६ । १ । ४३ <q>दर्शपूर्णमासयोः श्रूयते, “आर्षेयं वृणीते एकं वृणीते द्वौ वृणीते त्रीन् वृणीते न चतुरो वृणीते पञ्चाति वृणीते इति । तत्र सन्देहः किम् अत्र्यार्षेयस्य अधि­कारः उत न इति किं प्राप्तम् । अत्र्यार्षेयोऽप्यधि क्रियते</q> इति कुतः आर्षेयं वृणीते इति सामान्यवचनम् तस्मात् एकं वरिष्यति द्वौ वा तच्च दर्शयति एकं वृणीते इति तथा प्रतिषेधति न चतुरो वृणीते इति । न हि अप्राप्तस्य प्रतिषेधोऽवकल्पते । तस्मात् अत्र्याषे योऽप्यधिक्रियेत । एवं प्राप्ते ब्रूमः यो न त्र्यार्षेयः स न अधिक्रियते । कुतः? त्रीन् वृणीते इति विशेषवचनात् विधिश्च अ­प्राप्तत्वात् । ननु एकं वृणीते इत्यपि विशेषवचनमस्ति । न इत्युच्यते, विधायिकाया विभक्तेरभावात् । ननु स्तुत्या विधास्यन्ते यथा त्रीन् वृणीत इति । उच्यते त्रयाणामेव स्तुतिः सा त्रित्वं विधास्यति । एकं वृणीते इत्यवयुत्यवादोऽयं त्रयाणामेव, तत्रापि त्रित्वमेव श्रूयते विधातुम् । एवम् एकवाक्येन विधानं भविष्यति इति । न चतुरो वृणोते न पञ्चातिवृणीते इति नित्यानुवादो भविष्यति । तस्मात् त्र्यार्षेयस्य अधिकारो नान्यस्य इति” शव° भा° । न्यायमालायां माधवेस्तु <q>ऋषि­र्गोत्रप्रवर्त्तकः कश्यपभरद्वाजादिस्तस्य सम्बन्ध आर्षेयस्तं वृणीते उच्चारयति कश्यपगोत्रोऽहं भरद्वाजगोत्रोऽह­भिति एवम् उपमन्युवशिष्ठमोत्रोऽहमिति द्विगोत्रोच्चार­णम् । आङ्गिरसवार्हस्पत्यभरद्वाजगोत्रोऽहमिति त्रि­गोत्रोच्चारणम्</q> । एवञ्च सूत्रभाष्यादिग्रन्थेषु त्र्या­र्षेयशब्दस्य अन्यार्थपरत्वात् जात्यन्धादेः सूत्रान्तरेण अनधिकारस्य प्रतिपादनात् त्र्यार्षेयशब्दस्य न अन्धादि­परत्वमिति सुधीभिर्भाव्यम् ।</span></li>"
-        }
-    ]
+
+        return;
+      }
+    }
+
+    var childString = Object.prototype.toString.call(node);
+    throw new Error("Objects are not valid as a React child (found: " + (childString === '[object Object]' ? 'object with keys {' + Object.keys(node).join(', ') + '}' : childString) + "). " + 'If you meant to render a collection of children, use an array ' + 'instead.');
+  }
+
+  if (typeof node === 'string') {
+    var segment = task.blockedSegment;
+    segment.lastPushedText = pushTextInstance(task.blockedSegment.chunks, node, request.responseState, segment.lastPushedText);
+    return;
+  }
+
+  if (typeof node === 'number') {
+    var _segment = task.blockedSegment;
+    _segment.lastPushedText = pushTextInstance(task.blockedSegment.chunks, '' + node, request.responseState, _segment.lastPushedText);
+    return;
+  }
+
+  {
+    if (typeof node === 'function') {
+      error('Functions are not valid as a React child. This may happen if ' + 'you return a Component instead of <Component /> from render. ' + 'Or maybe you meant to call this function rather than return it.');
+    }
+  }
 }
+
+function renderChildrenArray(request, task, children) {
+  var totalChildren = children.length;
+
+  for (var i = 0; i < totalChildren; i++) {
+    var prevTreeContext = task.treeContext;
+    task.treeContext = pushTreeContext(prevTreeContext, totalChildren, i);
+
+    try {
+      // We need to use the non-destructive form so that we can safely pop back
+      // up and render the sibling if something suspends.
+      renderNode(request, task, children[i]);
+    } finally {
+      task.treeContext = prevTreeContext;
+    }
+  }
+}
+
+function spawnNewSuspendedTask(request, task, x) {
+  // Something suspended, we'll need to create a new segment and resolve it later.
+  var segment = task.blockedSegment;
+  var insertionIndex = segment.chunks.length;
+  var newSegment = createPendingSegment(request, insertionIndex, null, segment.formatContext, // Adopt the parent segment's leading text embed
+  segment.lastPushedText, // Assume we are text embedded at the trailing edge
+  true);
+  segment.children.push(newSegment); // Reset lastPushedText for current Segment since the new Segment "consumed" it
+
+  segment.lastPushedText = false;
+  var newTask = createTask(request, task.node, task.blockedBoundary, newSegment, task.abortSet, task.legacyContext, task.context, task.treeContext);
+
+  {
+    if (task.componentStack !== null) {
+      // We pop one task off the stack because the node that suspended will be tried again,
+      // which will add it back onto the stack.
+      newTask.componentStack = task.componentStack.parent;
+    }
+  }
+
+  var ping = newTask.ping;
+  x.then(ping, ping);
+} // This is a non-destructive form of rendering a node. If it suspends it spawns
+// a new task and restores the context of this task to what it was before.
+
+
+function renderNode(request, task, node) {
+  // TODO: Store segment.children.length here and reset it in case something
+  // suspended partially through writing something.
+  // Snapshot the current context in case something throws to interrupt the
+  // process.
+  var previousFormatContext = task.blockedSegment.formatContext;
+  var previousLegacyContext = task.legacyContext;
+  var previousContext = task.context;
+  var previousComponentStack = null;
+
+  {
+    previousComponentStack = task.componentStack;
+  }
+
+  try {
+    return renderNodeDestructive(request, task, node);
+  } catch (x) {
+    resetHooksState();
+
+    if (typeof x === 'object' && x !== null && typeof x.then === 'function') {
+      spawnNewSuspendedTask(request, task, x); // Restore the context. We assume that this will be restored by the inner
+      // functions in case nothing throws so we don't use "finally" here.
+
+      task.blockedSegment.formatContext = previousFormatContext;
+      task.legacyContext = previousLegacyContext;
+      task.context = previousContext; // Restore all active ReactContexts to what they were before.
+
+      switchContext(previousContext);
+
+      {
+        task.componentStack = previousComponentStack;
+      }
+
+      return;
+    } else {
+      // Restore the context. We assume that this will be restored by the inner
+      // functions in case nothing throws so we don't use "finally" here.
+      task.blockedSegment.formatContext = previousFormatContext;
+      task.legacyContext = previousLegacyContext;
+      task.context = previousContext; // Restore all active ReactContexts to what they were before.
+
+      switchContext(previousContext);
+
+      {
+        task.componentStack = previousComponentStack;
+      } // We assume that we don't need the correct context.
+      // Let's terminate the rest of the tree and don't render any siblings.
+
+
+      throw x;
+    }
+  }
+}
+
+function erroredTask(request, boundary, segment, error) {
+  // Report the error to a global handler.
+  var errorDigest = logRecoverableError(request, error);
+
+  if (boundary === null) {
+    fatalError(request, error);
+  } else {
+    boundary.pendingTasks--;
+
+    if (!boundary.forceClientRender) {
+      boundary.forceClientRender = true;
+      boundary.errorDigest = errorDigest;
+
+      {
+        captureBoundaryErrorDetailsDev(boundary, error);
+      } // Regardless of what happens next, this boundary won't be displayed,
+      // so we can flush it, if the parent already flushed.
+
+
+      if (boundary.parentFlushed) {
+        // We don't have a preference where in the queue this goes since it's likely
+        // to error on the client anyway. However, intentionally client-rendered
+        // boundaries should be flushed earlier so that they can start on the client.
+        // We reuse the same queue for errors.
+        request.clientRenderedBoundaries.push(boundary);
+      }
+    }
+  }
+
+  request.allPendingTasks--;
+
+  if (request.allPendingTasks === 0) {
+    var onAllReady = request.onAllReady;
+    onAllReady();
+  }
+}
+
+function abortTaskSoft(task) {
+  // This aborts task without aborting the parent boundary that it blocks.
+  // It's used for when we didn't need this task to complete the tree.
+  // If task was needed, then it should use abortTask instead.
+  var request = this;
+  var boundary = task.blockedBoundary;
+  var segment = task.blockedSegment;
+  segment.status = ABORTED;
+  finishedTask(request, boundary, segment);
+}
+
+function abortTask(task, request, reason) {
+  // This aborts the task and aborts the parent that it blocks, putting it into
+  // client rendered mode.
+  var boundary = task.blockedBoundary;
+  var segment = task.blockedSegment;
+  segment.status = ABORTED;
+
+  if (boundary === null) {
+    request.allPendingTasks--; // We didn't complete the root so we have nothing to show. We can close
+    // the request;
+
+    if (request.status !== CLOSED) {
+      request.status = CLOSED;
+
+      if (request.destination !== null) {
+        close(request.destination);
+      }
+    }
+  } else {
+    boundary.pendingTasks--;
+
+    if (!boundary.forceClientRender) {
+      boundary.forceClientRender = true;
+
+      var _error = reason === undefined ? new Error('The render was aborted by the server without a reason.') : reason;
+
+      boundary.errorDigest = request.onError(_error);
+
+      {
+        var errorPrefix = 'The server did not finish this Suspense boundary: ';
+
+        if (_error && typeof _error.message === 'string') {
+          _error = errorPrefix + _error.message;
+        } else {
+          // eslint-disable-next-line react-internal/safe-string-coercion
+          _error = errorPrefix + String(_error);
+        }
+
+        var previousTaskInDev = currentTaskInDEV;
+        currentTaskInDEV = task;
+
+        try {
+          captureBoundaryErrorDetailsDev(boundary, _error);
+        } finally {
+          currentTaskInDEV = previousTaskInDev;
+        }
+      }
+
+      if (boundary.parentFlushed) {
+        request.clientRenderedBoundaries.push(boundary);
+      }
+    } // If this boundary was still pending then we haven't already cancelled its fallbacks.
+    // We'll need to abort the fallbacks, which will also error that parent boundary.
+
+
+    boundary.fallbackAbortableTasks.forEach(function (fallbackTask) {
+      return abortTask(fallbackTask, request, reason);
+    });
+    boundary.fallbackAbortableTasks.clear();
+    request.allPendingTasks--;
+
+    if (request.allPendingTasks === 0) {
+      var onAllReady = request.onAllReady;
+      onAllReady();
+    }
+  }
+}
+
+function queueCompletedSegment(boundary, segment) {
+  if (segment.chunks.length === 0 && segment.children.length === 1 && segment.children[0].boundary === null) {
+    // This is an empty segment. There's nothing to write, so we can instead transfer the ID
+    // to the child. That way any existing references point to the child.
+    var childSegment = segment.children[0];
+    childSegment.id = segment.id;
+    childSegment.parentFlushed = true;
+
+    if (childSegment.status === COMPLETED) {
+      queueCompletedSegment(boundary, childSegment);
+    }
+  } else {
+    var completedSegments = boundary.completedSegments;
+    completedSegments.push(segment);
+  }
+}
+
+function finishedTask(request, boundary, segment) {
+  if (boundary === null) {
+    if (segment.parentFlushed) {
+      if (request.completedRootSegment !== null) {
+        throw new Error('There can only be one root segment. This is a bug in React.');
+      }
+
+      request.completedRootSegment = segment;
+    }
+
+    request.pendingRootTasks--;
+
+    if (request.pendingRootTasks === 0) {
+      // We have completed the shell so the shell can't error anymore.
+      request.onShellError = noop$1;
+      var onShellReady = request.onShellReady;
+      onShellReady();
+    }
+  } else {
+    boundary.pendingTasks--;
+
+    if (boundary.forceClientRender) ; else if (boundary.pendingTasks === 0) {
+      // This must have been the last segment we were waiting on. This boundary is now complete.
+      if (segment.parentFlushed) {
+        // Our parent segment already flushed, so we need to schedule this segment to be emitted.
+        // If it is a segment that was aborted, we'll write other content instead so we don't need
+        // to emit it.
+        if (segment.status === COMPLETED) {
+          queueCompletedSegment(boundary, segment);
+        }
+      }
+
+      if (boundary.parentFlushed) {
+        // The segment might be part of a segment that didn't flush yet, but if the boundary's
+        // parent flushed, we need to schedule the boundary to be emitted.
+        request.completedBoundaries.push(boundary);
+      } // We can now cancel any pending task on the fallback since we won't need to show it anymore.
+      // This needs to happen after we read the parentFlushed flags because aborting can finish
+      // work which can trigger user code, which can start flushing, which can change those flags.
+
+
+      boundary.fallbackAbortableTasks.forEach(abortTaskSoft, request);
+      boundary.fallbackAbortableTasks.clear();
+    } else {
+      if (segment.parentFlushed) {
+        // Our parent already flushed, so we need to schedule this segment to be emitted.
+        // If it is a segment that was aborted, we'll write other content instead so we don't need
+        // to emit it.
+        if (segment.status === COMPLETED) {
+          queueCompletedSegment(boundary, segment);
+          var completedSegments = boundary.completedSegments;
+
+          if (completedSegments.length === 1) {
+            // This is the first time since we last flushed that we completed anything.
+            // We can schedule this boundary to emit its partially completed segments early
+            // in case the parent has already been flushed.
+            if (boundary.parentFlushed) {
+              request.partialBoundaries.push(boundary);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  request.allPendingTasks--;
+
+  if (request.allPendingTasks === 0) {
+    // This needs to be called at the very end so that we can synchronously write the result
+    // in the callback if needed.
+    var onAllReady = request.onAllReady;
+    onAllReady();
+  }
+}
+
+function retryTask(request, task) {
+  var segment = task.blockedSegment;
+
+  if (segment.status !== PENDING) {
+    // We completed this by other means before we had a chance to retry it.
+    return;
+  } // We restore the context to what it was when we suspended.
+  // We don't restore it after we leave because it's likely that we'll end up
+  // needing a very similar context soon again.
+
+
+  switchContext(task.context);
+  var prevTaskInDEV = null;
+
+  {
+    prevTaskInDEV = currentTaskInDEV;
+    currentTaskInDEV = task;
+  }
+
+  try {
+    // We call the destructive form that mutates this task. That way if something
+    // suspends again, we can reuse the same task instead of spawning a new one.
+    renderNodeDestructive(request, task, task.node);
+    pushSegmentFinale(segment.chunks, request.responseState, segment.lastPushedText, segment.textEmbedded);
+    task.abortSet.delete(task);
+    segment.status = COMPLETED;
+    finishedTask(request, task.blockedBoundary, segment);
+  } catch (x) {
+    resetHooksState();
+
+    if (typeof x === 'object' && x !== null && typeof x.then === 'function') {
+      // Something suspended again, let's pick it back up later.
+      var ping = task.ping;
+      x.then(ping, ping);
+    } else {
+      task.abortSet.delete(task);
+      segment.status = ERRORED;
+      erroredTask(request, task.blockedBoundary, segment, x);
+    }
+  } finally {
+    {
+      currentTaskInDEV = prevTaskInDEV;
+    }
+  }
+}
+
+function performWork(request) {
+  if (request.status === CLOSED) {
+    return;
+  }
+
+  var prevContext = getActiveContext();
+  var prevDispatcher = ReactCurrentDispatcher$1.current;
+  ReactCurrentDispatcher$1.current = Dispatcher;
+  var prevGetCurrentStackImpl;
+
+  {
+    prevGetCurrentStackImpl = ReactDebugCurrentFrame$1.getCurrentStack;
+    ReactDebugCurrentFrame$1.getCurrentStack = getCurrentStackInDEV;
+  }
+
+  var prevResponseState = currentResponseState;
+  setCurrentResponseState(request.responseState);
+
+  try {
+    var pingedTasks = request.pingedTasks;
+    var i;
+
+    for (i = 0; i < pingedTasks.length; i++) {
+      var task = pingedTasks[i];
+      retryTask(request, task);
+    }
+
+    pingedTasks.splice(0, i);
+
+    if (request.destination !== null) {
+      flushCompletedQueues(request, request.destination);
+    }
+  } catch (error) {
+    logRecoverableError(request, error);
+    fatalError(request, error);
+  } finally {
+    setCurrentResponseState(prevResponseState);
+    ReactCurrentDispatcher$1.current = prevDispatcher;
+
+    {
+      ReactDebugCurrentFrame$1.getCurrentStack = prevGetCurrentStackImpl;
+    }
+
+    if (prevDispatcher === Dispatcher) {
+      // This means that we were in a reentrant work loop. This could happen
+      // in a renderer that supports synchronous work like renderToString,
+      // when it's called from within another renderer.
+      // Normally we don't bother switching the contexts to their root/default
+      // values when leaving because we'll likely need the same or similar
+      // context again. However, when we're inside a synchronous loop like this
+      // we'll to restore the context to what it was before returning.
+      switchContext(prevContext);
+    }
+  }
+}
+
+function flushSubtree(request, destination, segment) {
+  segment.parentFlushed = true;
+
+  switch (segment.status) {
+    case PENDING:
+      {
+        // We're emitting a placeholder for this segment to be filled in later.
+        // Therefore we'll need to assign it an ID - to refer to it by.
+        var segmentID = segment.id = request.nextSegmentId++; // When this segment finected promise.
+         */
+        noDeleteOnFetchRejection?: boolean;
+        /**
+         * Do not delete stale items when they are retrieved with
+         * {@link LRUCache#get}.
+         *
+         * Note that the `get` return value will still be `undefined`
+         * unless {@link OptionsBase.allowStale} is true.
+         *
+         * When using time-expiring entries with `ttl`, by default stale
+         * items will be removed from the cache when the key is accessed
+         * with `cache.get()`.
+         *
+         * Setting this option will cause stale items to remain in the cache, until
+         * they are explicitly deleted with `cache.delete(key)`, or retrieved with
+         * `noDeleteOnStaleGet` set to `false`.
+         *
+         * This may be overridden by passing an options object to `cache.get()`.
+         *
+         * Only relevant if a ttl is used.
+         */
+        noDeleteOnStaleGet?: boolean;
+        /**
+         * Set to true to allow returning stale data when a
+         * {@link OptionsBase.fetchMethod} throws an error or returns a rejected
+         * promise.
+         *
+         * This differs from using {@link OptionsBase.allowStale} in that stale
+         * data will ONLY be returned in the case that the {@link LRUCache#fetch}
+         * fails, not any other times.
+         *
+         * If a `fetchMethod` fails, and there is no stale value available, the
+         * `fetch()` will resolve to `undefined`. Ie, all `fetchMethod` errors are
+         * suppressed.
+         *
+         * Implies `noDeleteOnFetchRejection`.
+         *
+         * This may be set in calls to `fetch()`, or defaulted on the constructor,
+         * or overridden by modifying the options object in the `fetchMethod`.
+         */
+        allowStaleOnFetchRejection?: boolean;
+        /**
+         * Set to true to return a stale value from the cache when the
+         * `AbortSignal` passed to the {@link OptionsBase.fetchMethod} dispatches
+         * an `'abort'` event, whether user-triggered, or due to internal cache
+         * behavior.
+         *
+         * Unless {@link OptionsBase.ignoreFetchAbort} is also set, the underlying
+         * {@link OptionsBase.fetchMethod} will still be considered canceled, and
+         * any value it returns will be ignored and not cached.
+         *
+         * Caveat: since fetches are aborted when a new value is explicitly
+         * set in the cache, this can lead to fetch returning a stale value,
+         * since that was the fallback value _at the moment the `fetch()` was
+         * initiated_, even though the new updated value is now present in
+         * the cache.
+         *
+         * For example:
+         *
+         * ```ts
+         * const cache = new LRUCache<string, any>({
+         *   ttl: 100,
+         *   fetchMethod: async (url, oldValue, { signal }) =>  {
+         *     const res = await fetch(url, { signal })
+         *     return await res.json()
+         *   }
+         * })
+         * cache.set('https://example.com/', { some: 'data' })
+         * // 100ms go by...
+         * const result = cache.fetch('https://example.com/')
+         * cache.set('https://example.com/', { other: 'thing' })
+         * console.log(await result) // { some: 'data' }
+         * console.log(cache.get('https://example.com/')) // { other: 'thing' }
+         * ```
+         */
+        allowStaleOnFetchAbort?: boolean;
+        /**
+         * Set to true to ignore the `abort` event emitted by the `AbortSignal`
+         * object passed to {@link OptionsBase.fetchMethod}, and still cache the
+         * resulting resolution value, as long as it is not `undefined`.
+         *
+         * When used on its own, this means aborted {@link LRUCache#fetch} calls
+         * are not immediately resolved or rejected when they are aborted, and
+         * instead take the full time to await.
+         *
+         * When used with {@link OptionsBase.allowStaleOnFetchAbort}, aborted
+         * {@link LRUCache#fetch} calls will resolve immediately to their stale
+         * cached value or `undefined`, and will continue to process and eventually
+         * update the cache when they resolve, as long as the resulting value is
+         * not `undefined`, thus supporting a "return stale on timeout while
+         * refreshing" mechanism by passing `AbortSignal.timeout(n)` as the signal.
+         *
+         * For example:
+         *
+         * ```ts
+         * const c = new LRUCache({
+         *   ttl: 100,
+         *   ignoreFetchAbort: true,
+         *   allowStaleOnFetchAbort: true,
+         *   fetchMethod: async (key, oldValue, { signal }) => {
+         *     // note: do NOT pass the signal to fetch()!
+         *     // let's say this fetch can take a long time.
+         *     const res = await fetch(`https://slow-backend-server/${key}`)
+         *     return await res.json()
+         *   },
+         * })
+         *
+         * // this will return the stale value after 100ms, while still
+         * // updating in the background for next time.
+         * const val = await c.fetch('key', { signal: AbortSignal.timeout(100) })
+         * ```
+         *
+         * **Note**: regardless of this setting, an `abort` event _is still
+         * emitted on the `AbortSignal` object_, so may result in invalid results
+         * when passed to other underlying APIs that use AbortSignals.
+         *
+         * This may be overridden in the {@link OptionsBase.fetchMethod} or the
+         * call to {@link LRUCache#fetch}.
+         */
+        ignoreFetchAbort?: boolean;
+    }
+    interface OptionsMaxLimit<K, V, FC> extends OptionsBase<K, V, FC> {
+        max: Count;
+    }
+    interface OptionsTTLLimit<K, V, FC> extends OptionsBase<K, V, FC> {
+        ttl: Milliseconds;
+        ttlAutopurge: boolean;
+    }
+    interface OptionsSizeLimit<K, V, FC> extends OptionsBase<K, V, FC> {
+        maxSize: Size;
+    }
+    /**
+     * The valid safe options for the {@link LRUCache} constructor
+     */
+    type Options<K, V, FC> = OptionsMaxLimit<K, V, FC> | OptionsSizeLimit<K, V, FC> | OptionsTTLLimit<K, V, FC>;
+    /**
+     * Entry objects used by {@link LRUCache#load} and {@link LRUCache#dump},
+     * and returned by {@link LRUCache#info}.
+     */
+    interface Entry<V> {
+        value: V;
+        ttl?: Milliseconds;
+        size?: Size;
+        start?: Milliseconds;
+    }
+}
+/**
+ * Default export, the thing you're using this module to get.
+ *
+ * The `K` and `V` types define the key and value types, respectively. The
+ * optional `FC` type defines the type of the `context` object passed to
+ * `cache.fetch()` and `cache.memo()`.
+ *
+ * Keys and values **must not** be `null` or `undefined`.
+ *
+ * All properties from the options object (with the exception of `max`,
+ * `maxSize`, `fetchMethod`, `memoMethod`, `dispose` and `disposeAfter`) are
+ * added as normal public members. (The listed options are read-only getters.)
+ *
+ * Changing any of these will alter the defaults for subsequent method calls.
+ */
+export declare class LRUCache<K extends {}, V extends {}, FC = unknown> implements Map<K, V> {
+    #private;
+    /**
+     * {@link LRUCache.OptionsBase.ttl}
+     */
+    ttl: LRUCache.Milliseconds;
+    /**
+     * {@link LRUCache.OptionsBase.ttlResolution}
+     */
+    ttlResolution: LRUCache.Milliseconds;
+    /**
+     * {@link LRUCache.OptionsBase.ttlAutopurge}
+     */
+    ttlAutopurge: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.updateAgeOnGet}
+     */
+    updateAgeOnGet: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.updateAgeOnHas}
+     */
+    updateAgeOnHas: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.allowStale}
+     */
+    allowStale: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.noDisposeOnSet}
+     */
+    noDisposeOnSet: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.noUpdateTTL}
+     */
+    noUpdateTTL: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.maxEntrySize}
+     */
+    maxEntrySize: LRUCache.Size;
+    /**
+     * {@link LRUCache.OptionsBase.sizeCalculation}
+     */
+    sizeCalculation?: LRUCache.SizeCalculator<K, V>;
+    /**
+     * {@link LRUCache.OptionsBase.noDeleteOnFetchRejection}
+     */
+    noDeleteOnFetchRejection: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.noDeleteOnStaleGet}
+     */
+    noDeleteOnStaleGet: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.allowStaleOnFetchAbort}
+     */
+    allowStaleOnFetchAbort: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.allowStaleOnFetchRejection}
+     */
+    allowStaleOnFetchRejection: boolean;
+    /**
+     * {@link LRUCache.OptionsBase.ignoreFetchAbort}
+     */
+    ignoreFetchAbort: boolean;
+    /**
+     * Do not call this method unless you need to inspect the
+     * inner workings of the cache.  If anything returned by this
+     * object is modified in any way, strange breakage may occur.
+     *
+     * These fields are private for a reason!
+     *
+     * @internal
+     */
+    static unsafeExposeInternals<K extends {}, V extends {}, FC extends unknown = unknown>(c: LRUCache<K, V, FC>): {
+        starts: ZeroArray | undefined;
+        ttls: ZeroArray | undefined;
+        sizes: ZeroArray | undefined;
+        keyMap: Map<K, number>;
+        keyList: (K | undefined)[];
+        valList: (V | BackgroundFetch<V> | undefined)[];
+        next: NumberArray;
+        prev: NumberArray;
+        readonly head: Index;
+        readonly tail: Index;
+        free: StackLike;
+        isBackgroundFetch: (p: any) => boolean;
+        backgroundFetch: (k: K, index: number | undefined, options: LRUCache.FetchOptions<K, V, FC>, context: any) => BackgroundFetch<V>;
+        moveToTail: (index: number) => void;
+        indexes: (options?: {
+            allowStale: boolean;
+        }) => Generator<Index, void, unknown>;
+        rindexes: (options?: {
+            allowStale: boolean;
+        }) => Generator<Index, void, unknown>;
+        isStale: (index: number | undefined) => boolean;
+    };
+    /**
+     * {@link LRUCache.OptionsBase.max} (read-only)
+     */
+    get max(): LRUCache.Count;
+    /**
+     * {@link LRUCache.OptionsBase.maxSize} (read-only)
+     */
+    get maxSize(): LRUCache.Count;
+    /**
+     * The total computed size of items in the cache (read-only)
+     */
+    get calculatedSize(): LRUCache.Size;
+    /**
+     * The number of items stored in the cache (read-only)
+     */
+    get size(): LRUCache.Count;
+    /**
+     * {@link LRUCache.OptionsBase.fetchMethod} (read-only)
+     */
+    get fetchMethod(): LRUCache.Fetcher<K, V, FC> | undefined;
+    get memoMethod(): LRUCache.Memoizer<K, V, FC> | undefined;
+    /**
+     * {@link LRUCache.OptionsBase.dispose} (read-only)
+     */
+    get dispose(): LRUCache.Disposer<K, V> | undefined;
+    /**
+     * {@link LRUCache.OptionsBase.disposeAfter} (read-only)
+     */
+    get disposeAfter(): LRUCache.Disposer<K, V> | undefined;
+    constructor(options: LRUCache.Options<K, V, FC> | LRUCache<K, V, FC>);
+    /**
+     * Return the number of ms left in the item's TTL. If item is not in cache,
+     * returns `0`. Returns `Infinity` if item is in cache without a defined TTL.
+     */
+    getRemainingTTL(key: K): number;
+    /**
+     * Return a generator yielding `[key, value]` pairs,
+     * in order from most recently used to least recently used.
+     */
+    entries(): Generator<[K, V], void, unknown>;
+    /**
+     * Inverse order version of {@link LRUCache.entries}
+     *
+     * Return a generator yielding `[key, value]` pairs,
+     * in order from least recently used to most recently used.
+     */
+    rentries(): Generator<(K | V | BackgroundFetch<V> | undefined)[], void, unknown>;
+    /**
+     * Return a generator yielding the keys in the cache,
+     * in order from most recently used to least recently used.
+     */
+    keys(): Generator<K, void, unknown>;
+    /**
+     * Inverse order version of {@link LRUCache.keys}
+     *
+     * Return a generator yielding the keys in the cache,
+     * in order from least recently used to most recently used.
+     */
+    rkeys(): Generator<K, void, unknown>;
+    /**
+     * Return a generator yielding the values in the cache,
+     * in order from most recently used to least recently used.
+     */
+    values(): Generator<V, void, unknown>;
+    /**
+     * Inverse order version of {@link LRUCache.values}
+     *
+     * Return a generator yielding the values in the cache,
+     * in order from least recently used to most recently used.
+     */
+    rvalues(): Generator<V | BackgroundFetch<V> | undefined, void, unknown>;
+    /**
+     * Iterating over the cache itself yields the same results as
+     * {@link LRUCache.entries}
+     */
+    [Symbol.iterator](): Generator<[K, V], void, unknown>;
+    /**
+     * A String value that is used in the creation of the default string
+     * description of an object. Called by the built-in method
+     * `Object.prototype.toString`.
+     */
+    [Symbol.toStringTag]: string;
+    /**
+     * Find a value for which the supplied fn method returns a truthy value,
+     * similar to `Array.find()`. fn is called as `fn(value, key, cache)`.
+     */
+    find(fn: (v: V, k: K, self: LRUCache<K, V, FC>) => boolean, getOptions?: LRUCache.GetOptions<K, V, FC>): V | undefined;
+    /**
+     * Call the supplied function on each item in the cache, in order from most
+     * recently used to least recently used.
+     *
+     * `fn` is called as `fn(value, key, cache)`.
+     *
+     * If `thisp` is provided, function will be called in the `this`-context of
+     * the provided object, or the cache if no `thisp` object is provided.
+     *
+     * Does not update age or recenty of use, or iterate over stale values.
+     */
+    forEach(fn: (v: V, k: K, self: LRUCache<K, V, FC>) => any, thisp?: any): void;
+    /**
+     * The same as {@link LRUCache.forEach} but items are iterated over in
+     * reverse order.  (ie, less recently used items are iterated over first.)
+     */
+    rforEach(fn: (v: V, k: K, self: LRUCache<K, V, FC>) => any, thisp?: any): void;
+    /**
+     * Delete any stale entries. Returns true if anything was removed,
+     * false otherwise.
+     */
+    purgeStale(): boolean;
+    /**
+     * Get the extended info about a given entry, to get its value, size, and
+     * TTL info simultaneously. Returns `undefined` if the key is not present.
+     *
+     * Unlike {@link LRUCache#dump}, which is designed to be portable and survive
+     * serialization, the `start` value is always the current timestamp, and the
+     * `ttl` is a calculated remaining time to live (negative if expired).
+     *
+     * Always ret

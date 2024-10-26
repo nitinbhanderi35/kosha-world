@@ -1,25 +1,13 @@
-{
-    "word": "म्रुन्च",
-    "SKD": [
-        {
-            "word": "म्रुन्च",
-            "eid": "28231",
-            "pagenum": "3-791-b",
-            "content": "म्रुन्च¦, उ गत्याम् । इति कविकल्पद्रुमः ॥ (भ्वा०पर०-सक०-सेट् ।) उ, म्रुञ्चित्वा म्रुक्त्वा । इति दुर्गादासः ॥"
-        }
-    ],
-    "VCP": [
-        {
-            "word": "म्रुन्च",
-            "eid": "38758",
-            "pagenum": "4766,b",
-            "content": "म्रुन्च¦ गतौ सर्वं म्रुचवत् । म्रुञ्चति अम्रुचत् अम्नुञ्चीत् ।"
-        }
-    ],
-    "AM_VCP": [
-        {
-            "word": "म्रुन्च",
-            "content": "<li class=\"dict-entry\"><span lang=\"sa\">म्रुन्च गतौ सर्वं म्रुचवत् । म्रुञ्चति अम्रुचत् अम्नुञ्चीत् ।</span></li>"
-        }
-    ]
-}
+leObject with hint String coerces to non-stringified toString');
+
+	t.equal(toPrimitive(coercibleFnObject), coercibleFnObject.toString(), 'coercibleFnObject coerces to non-stringified toString');
+	t.equal(toPrimitive(coercibleFnObject, Number), coercibleFnObject.toString(), 'coercibleFnObject with hint Number coerces to non-stringified toString');
+	t.equal(toPrimitive(coercibleFnObject, String), coercibleFnObject.toString(), 'coercibleFnObject with hint String coerces to non-stringified toString');
+
+	t.equal(toPrimitive({}), '[object Object]', '{} with no hint coerces to Object#toString');
+	t.equal(toPrimitive({}, Number), '[object Object]', '{} with hint Number coerces to Object#toString');
+	t.equal(toPrimitive({}, String), '[object Object]', '{} with hint String coerces to Object#toString');
+
+	t.equal(toPrimitive(toStringOnlyObject), toStringOnlyObject.toString(), 'toStringOnlyObject returns non-stringified toString');
+	t.equal(toPrimitive(toStringOnlyObject, Number), toStringOnlyObject.toString(), 'toStringOnlyObject with hint Number returns non-stringified toString');
+	t.equal(toPrimitive(toStringOnlyObject, String), toStringOnlyObject.toString(), 'toS

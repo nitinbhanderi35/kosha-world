@@ -1,71 +1,144 @@
-{
-    "word": "एकादशिन्",
-    "AP90": [
-        {
-            "word": "एकादशिन्",
-            "eid": "9533",
-            "pagenum": 355,
-            "content": "एकादशिन्¦ <i><ab>a.</ab></i> Consisting of eleven."
-        }
-    ],
-    "BEN": [
-        {
-            "word": "एकादशिन्",
-            "eid": "2602",
-            "pagenum": 140,
-            "content": "एकादशिन्¦ <i>ekādaśin,</i> <ab>i. e.</ab> <i>ekādaśan</i> <i>+ in,</i> <b>I.</b> <ab>adj.</ab> Consisting of eleven, <ls>MBh.</ls>  13, 10668. <b>II.</b> <ab>f.</ab> <i>nī,</i> Eleven (hymns), <ls>Yājñ.</ls> 3, 309."
-        }
-    ],
-    "CAE": [
-        {
-            "word": "एकादशिन्",
-            "eid": "6485",
-            "pagenum": 101,
-            "content": "एकादशि/न्¦ <lex>a.</lex> consisting of eleven; <lex>f.</lex> °शि/नी the number eleven."
-        }
-    ],
-    "MW": [
-        {
-            "word": "एकादशिन्",
-            "eid": "39794",
-            "pagenum": "230,1",
-            "content": "एकादशि/न् ¦ <lex>mfn.</lex> consisting of eleven<info lex='m:f:n'/>"
-        }
-    ],
-    "PW": [
-        {
-            "word": "एकादशिन्",
-            "eid": "22077",
-            "pagenum": 1,
-            "content": "एकादशि/न्¦ <dvsn n='1'>— 1〉 <lex>Adj.</lex> <i>aus Eilfen bestehend</i>. <dvsn n='1'>— 2〉 <lex>f.</lex> °शि/नी <i>Eilfzahl</i>."
-        }
-    ],
-    "PWG": [
-        {
-            "word": "एकादशिन्",
-            "eid": "13421",
-            "pagenum": 1,
-            "content": "एकादशि/न्¦ (von एकादशन्) <dvsn n='1'> 1) <lex>adj.</lex> <i>aus Eilfen bestehend</i>: विश्वे देवास्त्रयस्त्रिंशास्त्रिरेकादशिनः <ls>ŚĀṄKH. ŚR. 4, 10, 2.</ls> <ls>MBH. 3, 10668.</ls> <dvsn n='1'>— 2) <lex>f.</lex> °शिनी <i>Eilfzahl</i> <ls>TS. 5, 5, 7, 1.</ls> <ls n='TS.'>6, 6, 5, 1.</ls> <ls>ŚAT. BR. 3, 9, 1, 4.</ls> यू/पैकादशिनी <ls n='ŚAT. BR.'>7, 1, 22.</ls> प\\श्वे^कादशिनी <ls n='ŚAT. BR.'>9, 1, 23. 13, 6, 1, 6.</ls> रुद्रैकादशिनी <i>die eilf</i> <is>Rudra</is> - <i>Hymnen</i> <ls>YĀJÑ. 3, 309.</ls>"
+import React, { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { useDebounce } from "use-debounce";
+import { NavButton } from "@/components/button/NavButton";
+import {
+  FaArrowLeft,
+  FaChevronLeft,
+  FaChevronRight,
+  FaHome,
+} from "react-icons/fa";
+import { convertToHindi } from "@/utils/function";
+import axiosInstance from "@/utils/axiosInstance";
+import LottieAnimation from "@/components/LottieAnimation";
+
+const CustomEditor = dynamic(() => import("../../components/custom-editor"), {
+  ssr: false,
+});
+
+const DhatuId = ({ dhatu_id }) => {
+  const [currentDhatupath, setCurrentDhatupath] = useState();
+  const [dhatupath, setDhatupath] = useState();
+  const [content, setContent] = useState("");
+  const [status, setStatus] = useState("Saved!");
+  const [saveContent] = useDebounce(content, 500);
+  const [focus, setFocus] = useState(false);
+
+  const getCurrentDhatu = async () => {
+    try {
+      const response = await axiosInstance.get("/dhatu");
+      setDhatupath(response.data.data);
+      return;
+    } catch (error) {
+      console.error("Error geting data:", error);
+    }
+  };
+
+  const getCurrentVartikpath = async (id) => {
+    try {
+      const response = await axiosInstance.get("/dhatu", {
+        params: {
+          i: id,
         },
-        {
-            "word": "एकादशिन्",
-            "eid": "68942",
-            "pagenum": 5,
-            "content": "एकादशिन्¦ <dvsn n='1'> 1) <ls>ṚV. PRĀT. 8, 21.</ls> <ls n='ṚV. PRĀT.'>17, 21.</ls>"
-        }
-    ],
-    "VCP": [
-        {
-            "word": "एकादशिन्",
-            "eid": "10729",
-            "pagenum": "1487,b",
-            "content": "एकादशिन्¦ त्रि० एकादश संख्या परिमाणमस्य डिनि । एकादशसंख्यामितस्तोमादौ स्त्रियां ङीप् । “एकामेकादशिनीमपश्यत्” “स एकादशिन्येष्ट्वांप्रजापतिः पुनरात्मानम्” “तस्मै कमेकादशिन्या यजेत” शत० ब्रा० ३, ९, १, ४, ५ । “यूपैकादशिनी स्यात्” ३, ७, १, २२ । यद्यु पश्वेकादशिनी स्यात् ३, ९, १, २३ ।"
-        }
-    ],
-    "AM_VCP": [
-        {
-            "word": "एकादशिन्",
-            "content": "<li class=\"dict-entry\"><span lang=\"sa\">एकादशिन् त्रि° एकादश संख्या परिमाणमस्य डिनि । एकादशसंख्यामितस्तोमादौ स्त्रियां ङीप् । <q>एकामे­कादशिनीमपश्यत्</q> <q>स एकादशिन्येष्ट्वांप्रजापतिः पुनरा­त्मानम्</q> <q>तस्मै कमेकादशिन्या यजेत</q> शत° ब्रा° ३, ९, १, ४, ५ । <q>यूपैकादशिनी स्यात्</q> ३, ७, १, २२ । यद्यु पश्वे­कादशिनी स्यात् ३, ९, १, २३ ।</span></li>"
-        }
-    ]
-}
+      });
+      setCurrentDhatupath(response.data.data);
+      setContent(response.data.data.data);
+      return;
+    } catch (error) {
+      console.error("Error geting data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getCurrentDhatu();
+    getCurrentVartikpath(dhatu_id);
+  }, [dhatu_id]);
+
+  const handleSave = async (content) => {
+    try {
+      await axiosInstance.post("/dhatu", {
+        id: currentDhatupath?._id,
+        data: content,
+      });
+      setStatus("Saved!");
+    } catch (error) {
+      console.error("Error inserting data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (focus) {
+      handleSave(content);
+    }
+  }, [saveContent]);
+
+  const handleOnBlur = () => {
+    handleSave(content);
+    setFocus(false);
+  };
+
+  const handlePage = (page) => {
+    const currentObject =
+      dhatupath && dhatupath?.find((obj) => obj.i == dhatu_id);
+    const currentIndexInArray = dhatupath?.indexOf(currentObject);
+    if (page == "NEXT") {
+      const nextObject = dhatupath?.[currentIndexInArray + 1];
+      return `${nextObject ? nextObject.i : dhatu_id}`;
+    }
+    if (page == "PREVIOUS") {
+      const nextObject = dhatupath?.[currentIndexInArray - 1];
+      return `${nextObject ? nextObject.i : dhatu_id}`;
+    }
+  };
+
+  console.log("currentDhatupath--------", currentDhatupath);
+
+  return (
+    <div>
+      <div className="flex justify-between gap-2 items-center z-30 sticky top-0 bg-secondary p-2 -m-4 mb-1">
+        <div className="grow-0 gap-2 items-center">
+          <div className="flex gap-2 items-center">
+            <NavButton
+              type="link"
+              link="/dashboard"
+              label="back-btn"
+              className="flex"
+            >
+              <FaHome />
+            </NavButton>
+            <NavButton
+              type="link"
+              link="/dhatu"
+              label="back-btn"
+              className="flex"
+            >
+              <FaArrowLeft />
+            </NavButton>
+          </div>
+        </div>
+        <div className="grow text-primary text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl">
+          {currentDhatupath?.word && (
+            <div className="flex justify-center items-center gap-10">
+              <NavButton
+                type="link"
+                link={`${handlePage("PREVIOUS")}`}
+                label="back-btn"
+                className="flex"
+              >
+                <FaChevronLeft className="w-5 h-5 md:w-7 md:h-7" />
+              </NavButton>
+              <div className="flex justify-center">
+                {convertToHindi(
+                  `${currentDhatupath?.chapter}.${currentDhatupath?.dhatu}`
+                )}{" "}
+                - {currentDhatupath?.word}{" "} 
+                <span className="text-gray-400 font-normal">
+                  {currentDhatupath?.aupadeshik} {currentDhatupath?.artha}
+                </span>
+              </div>
+              <NavButton
+                type="link"
+                link={`${handlePage("NEXT")}`}
+                label="back-btn"
+                className="flex"
+    

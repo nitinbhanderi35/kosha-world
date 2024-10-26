@@ -1,79 +1,125 @@
-{
-    "word": "द्युगण",
-    "MW": [
-        {
-            "word": "द्युगण",
-            "eid": "97287",
-            "pagenum": "499,3",
-            "content": "द्यु—गण ¦ <lex>m.</lex> = दिनराशि, <ls>Sūryas.</ls><info lex='m'/>"
+import ContentTitle from "@/components/Card/ContentTitle";
+import LottieAnimation from "@/components/LottieAnimation";
+import Link from "next/link";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { convertToEnglish, convertToHindi } from "@/utils/function";
+import axiosInstance from "@/utils/axiosInstance";
+import { NavButton } from "@/components/button/NavButton";
+import { FaHome } from "react-icons/fa";
+import { VariableSizeList as List } from "react-window";
+import { useWindowResize } from "@/components/CustomHook/useWindowResize";
+import DataStatus from "@/components/DataStatus";
+
+const Index = () => {
+  const [dhatu, setDhatu] = useState();
+  const [filterDhatu, setFilterDhatu] = useState();
+  const getCurrentSutraani = async () => {
+    try {
+      const response = await axiosInstance.get("/dhatu");
+      setDhatu(response.data.data);
+      setFilterDhatu(response.data.data);
+      return;
+    } catch (error) {
+      console.error("Error geting data:", error);
+    }
+  };
+
+  useEffect(() => {
+    getCurrentSutraani();
+  }, []);
+
+  function generateFormattedString(str) {
+    const firstPart = str.slice(0, 2);
+    const secondPart = str.slice(2, 5).replace(/^0+/, "");
+    return `${firstPart[0]}.${firstPart[1]}.${secondPart}`;
+  }
+
+  function padWithLeadingZeros(num, totalLength) {
+    return String(num).padStart(totalLength, "0");
+  }
+
+  const formatKey = (input) => {
+    const splitInput = input.split(".");
+    const first = splitInput[0];
+    const second = splitInput[1];
+    const third = padWithLeadingZeros(splitInput[2], 3);
+    return `${first}${second}${third}`;
+  };
+
+  const handelSutraaniSearch = (val) => {
+    if (val.length > 0) {
+      const filterData = dhatu.filter((s) => {
+        if (
+          s?.word.includes(val) ||
+          s?.chapter.startsWith(val) ||
+          convertToHindi(`${s?.chapter}.${s?.dhatu}`) == convertToHindi(val)
+        ) {
+          return true;
         }
-    ],
-    "PW": [
-        {
-            "word": "द्युगण",
-            "eid": "53177",
-            "pagenum": 3,
-            "content": "द्युगण¦ <lex>m.</lex> = अहर्गण 2〉."
-        }
-    ],
-    "PWG": [
-        {
-            "word": "द्युगण",
-            "eid": "35157",
-            "pagenum": 3,
-            "content": "द्युगण¦ (2. द्यु + गण) <lex>m.</lex> = दिनराशि <ls>SŪRYAS. 1, 51. 3, 9.</ls>"
-        }
-    ],
-    "SHS": [
-        {
-            "word": "द्युगण",
-            "eid": "19873",
-            "pagenum": 356,
-            "content": "द्युगण¦ m. (-णः) A given term of days, as a month, &c. E. द्यु, and गण a number."
-        }
-    ],
-    "WIL": [
-        {
-            "word": "द्युगण",
-            "eid": "19887",
-            "pagenum": 428,
-            "content": "द्युगण¦ m. (-णः) A given term of days, as a month, &c. .E. द्यु, and गण a number."
-        }
-    ],
-    "YAT": [
-        {
-            "word": "द्युगण",
-            "eid": "19367",
-            "pagenum": 381,
-            "content": "द्यु-गण¦ (णः) 1. <i>m.</i> Number of days."
-        }
-    ],
-    "SKD": [
-        {
-            "word": "द्युगण",
-            "eid": "17201",
-            "pagenum": "2-756-b",
-            "content": "द्युगणः¦ पुं, (द्यूनां दिनानां गणः ।) अहर्गणः । तस्यानयनमाह । “कथितकल्पगतोऽर्कसमा गणा रविगुणो गतमाससमन्वितः । खदहनैर्गुणितस्तिथिसंयुतः पृथगतोऽधिकमाससमाहतात् ॥ रविदिनाप्तगताधिकमासकैः कृतदिबैः सहितो द्युगणो विधोः । पृथगतः पठितावमसंगुणाद्बिधुदिनाप्तगतावमवर्ज्जितः ॥ भवति भास्करवासरपूर्व्वको दिनगणो रविमध्यमसावनः । अधिकमासदिनक्षयशेषतो द्युघटकादिकमत्र न गृह्यते ॥” इति सिद्धान्तशिरोमणिः ॥"
-        }
-    ],
-    "VCP": [
-        {
-            "word": "द्युगण",
-            "eid": "26330",
-            "pagenum": "3772,a",
-            "content": "द्युगण¦ पु० द्यूनां दिवां वा दिनानां गणः । ग्रहाणां मध्यगतिसाधनाङ्गे दिनवृन्दे अहर्गणशब्दे ५७७ पृ० तदानयनादि दृश्यम् । “रविदिनान्तगताधिकमासकैः कृतदिनैः सहितो द्युगणो विधोः” सि० शि० ।"
-        }
-    ],
-    "AM_VCP": [
-        {
-            "word": "द्युगण",
-            "content": "<li class=\"dict-entry\"><span lang=\"sa\">द्युगण पु° द्यूनां दिवां वा दिनानां गणः । ग्रहाणां मध्य­गतिसाधनाङ्गे दिनवृन्दे अहर्गणशब्दे ५७७ पृ° तदान­यनादि दृश्यम् । <q>रविदिनान्तगताधिकमासकैः कृतदिनैः सहितो द्युगणो विधोः</q> सि° शि° ।</span></li>"
-        }
-    ],
-    "AM_SHS": [
-        {
-            "word": "द्युगण",
-            "content": "<li class=\"dict-entry mw-entry\"><span lang=\"sa\">द्युगण</span>  <div n=\"1\">m. (<span lang=\"sa\">-णः</span>) A given term of days, as a month, &amp;c.</div><div n=\"E\"> E. <span lang=\"sa\">द्यु,</span> and <span lang=\"sa\">गण</span> a <lb />number.</div></li>"
-        }
-    ]
-}
+      });
+      setFilterDhatu(filterData);
+    } else {
+      setFilterDhatu(dhatu);
+    }
+  };
+
+  // ============= on scroll render ============
+
+  const [windowWidth] = useWindowResize();
+  const listRef = useRef();
+  const sizeMap = useRef({});
+  const [screenHeight, setScreenHeight] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => setScreenHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  //data render onscroll
+  const setSize = useCallback((index, size) => {
+    sizeMap.current = { ...sizeMap.current, [index]: size };
+    listRef.current.resetAfterIndex(index);
+  }, []);
+
+  const getSize = (index) => sizeMap.current[index] || 50;
+
+  const Row = ({ data, index }) => {
+    const rowRef = useRef();
+    const item = data[index];
+
+    useEffect(() => {
+      setSize(index, rowRef.current.getBoundingClientRect().height);
+    }, [setSize, index, windowWidth]);
+
+    return (
+      <div ref={rowRef}>
+        <div className="flex-col md:flex-row  md:flex md:items-center md:justify-between border-b border-x border-b_color p-2 sm:p-2 text-xs 2xs:text-xs xs:text-base md:text-lg lg:text-xl font-medium text-font max-w-full">
+          <Link key={item?.i} href={`/dhatu/${item?.i}`} className="flex-grow">
+            <div className="flex items-center">
+              <div className="mr-2 text-secondary bg-[url('/indexBG.webp')] bg-center bg-cover inline-block px-[0.4em] py-[0.2em] text-center rounded whitespace-pre-wrap align-middle">
+                {convertToHindi(`${item?.chapter}.${item?.dhatu}`)}
+              </div>
+              <div className="break-words text-justify align-baseline text-red font-bold">
+                {item?.word} <span className="text-gray-400 font-normal">({item?.aupadeshik} {item?.artha})</span>
+              </div>
+            </div>
+          </Link>
+          <div className="flex-none">
+            <div className="flex items-center gap-3">
+              <DataStatus condition={item?.data} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <nav className="flex justify-between gap-2 items-center z-30 sticky top-0 bg-secondary p-2 -m-4 mb-1">
+        <div className="grow-0 gap-2 items-center">
+          <div className="flex gap-2 items-center">
+            <NavButton
+              type="lin
